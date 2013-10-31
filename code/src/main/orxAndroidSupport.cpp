@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-//#define DEBUG_ANDROID_SUPPORT
+#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -197,21 +197,31 @@ int8_t app_read_cmd() {
 }
 
 static void app_write_cmd(int8_t cmd) {
-    if (write(sstAndroid.pipeCmd[1], &cmd, sizeof(cmd)) != sizeof(cmd)) {
-        LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
+    if(sstAndroid.pipeCmd[1] != -1) {
+        if (write(sstAndroid.pipeCmd[1], &cmd, sizeof(cmd)) != sizeof(cmd)) {
+            LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
+        }
     }
 }
 
 // Called before main() to initialize JNI bindings
-static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
+static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 {
     LOGI("orxAndroid_Init()");
 
+    jclass objClass;
+    jmethodID midGetActivity;
+    jobject jActivity;
+
     Android_JNI_SetupThread();
 
-    sstAndroid.mActivity = mEnv->NewGlobalRef(thiz);
+    objClass = mEnv->FindClass("android/support/v4/app/Fragment");
+    midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
+    jActivity = mEnv->CallObjectMethod(jFragment, midGetActivity);
+    sstAndroid.mActivity = mEnv->NewGlobalRef(jActivity);
 
-    jclass objClass = mEnv->GetObjectClass(thiz);
+    objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
+    
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
 
@@ -221,7 +231,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 
     // setup AssetManager
     jmethodID midGetAssets = mEnv->GetMethodID(objClass, "getAssets", "()Landroid/content/res/AssetManager;");
-    jobject jAssetManager = mEnv->CallObjectMethod(thiz, midGetAssets);
+    jobject jAssetManager = mEnv->CallObjectMethod(jActivity, midGetAssets);
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
 
@@ -252,16 +262,24 @@ static void orxAndroid_Exit(JNIEnv* env)
 
   close(sstAndroid.pipeCmd[0]);
   close(sstAndroid.pipeCmd[1]);
+  sstAndroid.pipeCmd[0] = -1;
+  sstAndroid.pipeCmd[1] = -1;
+
   close(sstAndroid.pipeTouchEvent[0]);
   close(sstAndroid.pipeTouchEvent[1]);
+  sstAndroid.pipeTouchEvent[0] = -1;
+  sstAndroid.pipeTouchEvent[1] = -1;
+
   close(sstAndroid.pipeKeyEvent[0]);
   close(sstAndroid.pipeKeyEvent[1]);
+  sstAndroid.pipeKeyEvent[0] = -1;
+  sstAndroid.pipeKeyEvent[1] = -1;
 }
 
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeCreate(JNIEnv *env, jobject thiz)
 {
     LOGI("nativeCreate()");
 
@@ -288,10 +306,10 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject t
 }
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxActivity_runOrx(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_runOrx(JNIEnv* env, jobject thiz, jobject fragment)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
-    orxAndroid_Init(env, thiz);
+    orxAndroid_Init(env, fragment);
 
     /* Run the application code! */
     int status;
@@ -305,27 +323,35 @@ extern "C" void Java_org_orx_lib_OrxActivity_runOrx(JNIEnv* env, jobject thiz)
 // Keydown
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keycode)
 {
-  orxANDROID_KEY_EVENT stKeyEvent;
+    orxANDROID_KEY_EVENT stKeyEvent;
 
-  stKeyEvent.u32Action = 0;
-  stKeyEvent.u32KeyCode = keycode;
-  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
-  {
-    LOGE("Failure writing keycode: %s\n", strerror(errno));
-  }
+    stKeyEvent.u32Action = 0;
+    stKeyEvent.u32KeyCode = keycode;
+
+    if(sstAndroid.pipeKeyEvent[1] != -1)
+    {
+        if(write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+        {
+            LOGE("Failure writing keycode: %s\n", strerror(errno));
+        }
+    }
 }
 
 // Keyup
 extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
-  orxANDROID_KEY_EVENT stKeyEvent;
+    orxANDROID_KEY_EVENT stKeyEvent;
 
-  stKeyEvent.u32Action = 1;
-  stKeyEvent.u32KeyCode = keycode;
-  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
-  {
-    LOGE("Failure writing keycode: %s\n", strerror(errno));
-  }
+    stKeyEvent.u32Action = 1;
+    stKeyEvent.u32KeyCode = keycode;
+
+    if(sstAndroid.pipeKeyEvent[1] != -1)
+    {
+      if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+      {
+          LOGE("Failure writing keycode: %s\n", strerror(errno));
+      }
+    }
 }
 
 // Touch
@@ -334,33 +360,36 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
                                     jint touch_device_id_in, jint pointer_finger_id_in,
                                     jint action, jfloat x, jfloat y, jfloat p)
 {
-  orxANDROID_TOUCH_EVENT stTouchEvent;
+    orxANDROID_TOUCH_EVENT stTouchEvent;
 
-  stTouchEvent.u32ID = pointer_finger_id_in;
-  stTouchEvent.u32Action = action;
-  stTouchEvent.fX = x;
-  stTouchEvent.fY = y;
+    stTouchEvent.u32ID = pointer_finger_id_in;
+    stTouchEvent.u32Action = action;
+    stTouchEvent.fX = x;
+    stTouchEvent.fY = y;
 
-  if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
-  {
-    LOGE("Failure writing touch event: %s\n", strerror(errno));
-  }
+    if(sstAndroid.pipeTouchEvent[1] != -1)
+    {
+        if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
+        {
+            LOGE("Failure writing touch event: %s\n", strerror(errno));
+        }
+    }
 }
 
 // Quit
-extern "C" void Java_org_orx_lib_OrxActivity_nativeQuit(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeQuit(JNIEnv* env, jobject thiz)
 {    
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void Java_org_orx_lib_OrxActivity_nativePause(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativePause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
@@ -422,14 +451,15 @@ int LocalReferenceHolder::s_active;
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
-  LOGI("orxAndroid_GetNativeWindow()");
-  while(sstAndroid.window == orxNULL) {
-    // no window received yet
-    LOGI("no window received yet");
-    orxAndroid_PumpEvents();
-  }
+    LOGI("orxAndroid_GetNativeWindow()");
 
-  return sstAndroid.window;
+    while(sstAndroid.window == orxNULL) {
+      // no window received yet
+      LOGI("no window received yet");
+      orxAndroid_PumpEvents();
+    }
+
+    return sstAndroid.window;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -458,7 +488,8 @@ extern "C" jobject orxAndroid_GetActivity()
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-    if (!sstAndroid.s_AndroidInternalFilesPath) {
+    if (!sstAndroid.s_AndroidInternalFilesPath)
+    {
         LocalReferenceHolder refs(__FUNCTION__);
         jmethodID mid;
         jobject fileObject;
