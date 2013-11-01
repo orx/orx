@@ -71,12 +71,13 @@
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        // Main activity
-        jobject mActivity;
+        // Hosting Fragment
+        jobject mFragment;
 
         // method signatures
         jmethodID midGetRotation;
 	jmethodID midSetWindowFormat;
+        jmethodID midGetActivity;
 
         // AssetManager
         AAssetManager *poAssetManager;
@@ -215,13 +216,11 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 
     Android_JNI_SetupThread();
 
+    sstAndroid.mFragment = mEnv->NewGlobalRef(jFragment);
     objClass = mEnv->FindClass("android/support/v4/app/Fragment");
-    midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
-    jActivity = mEnv->CallObjectMethod(jFragment, midGetActivity);
-    sstAndroid.mActivity = mEnv->NewGlobalRef(jActivity);
-
+    sstAndroid.midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
+    jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
-    
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
 
@@ -251,7 +250,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 
 static void orxAndroid_Exit(JNIEnv* env)
 {
-  env->DeleteGlobalRef(sstAndroid.mActivity);
+  env->DeleteGlobalRef(sstAndroid.mFragment);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
   free(sstAndroid.s_AndroidInternalFilesPath);
@@ -465,15 +464,16 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
     JNIEnv *env = Android_JNI_GetEnv();
-    
-    jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
+    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);    
+    jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
     return rotation;
 }
 
 extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
 {
     JNIEnv *env = Android_JNI_GetEnv();
-    env->CallVoidMethod(sstAndroid.mActivity, sstAndroid.midSetWindowFormat, format);
+    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+    env->CallVoidMethod(jActivity, sstAndroid.midSetWindowFormat, format);
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
@@ -483,7 +483,9 @@ extern "C" void *orxAndroid_GetJNIEnv()
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-  return sstAndroid.mActivity;
+    JNIEnv *env = Android_JNI_GetEnv();
+    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+    return jActivity;
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
@@ -495,16 +497,18 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
         jobject fileObject;
         jstring pathString;
         const char *path;
+        jobject jActivity;
 
         JNIEnv *env = Android_JNI_GetEnv();
         if (!refs.init(env)) {
             return NULL;
         }
 
+        jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
         // fileObj = context.getFilesDir();
-        mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity),
+        mid = env->GetMethodID(env->GetObjectClass(jActivity),
                 "getFilesDir", "()Ljava/io/File;");
-        fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
+        fileObject = env->CallObjectMethod(jActivity, mid);
         if (!fileObject) {
             LOGE("Couldn't get internal directory");
             return NULL;
