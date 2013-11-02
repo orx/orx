@@ -224,8 +224,8 @@ typedef struct __orxDISPLAY_STATIC_t
   EGLContext                context;
   EGLint                    format;
 
-  int32_t                   width;
-  int32_t                   height;
+  orxU32                    u32SurfaceWidth;
+  orxU32                    u32SurfaceHeight;
 
 } orxDISPLAY_STATIC;
 
@@ -476,6 +476,8 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
 static void orxAndroid_Display_CreateContext()
 {
   EGLBoolean result;
+  orxDISPLAY_VIDEO_MODE stVideoMode;
+  int32_t width, height;
 
   if(sstDisplay.display == EGL_NO_DISPLAY || sstDisplay.context == EGL_NO_CONTEXT)
   {
@@ -506,10 +508,12 @@ static void orxAndroid_Display_CreateContext()
   sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
   eglASSERT();
 
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &sstDisplay.width);
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &width);
   eglASSERT();
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &sstDisplay.height);
+  sstDisplay.u32SurfaceWidth = (orxU32)width;
+  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &height);
   eglASSERT();
+  sstDisplay.u32SurfaceHeight = (orxU32)height;
 
   result = eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
   eglASSERT();
@@ -3477,8 +3481,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
   orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
 
-   /* Passes it to shader */
-   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  /* Passes it to shader */
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* For all texture units */
   for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
@@ -3526,8 +3530,62 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
   if(_pstEvent->eType == orxEVENT_TYPE_SYSTEM && _pstEvent->eID == orxSYSTEM_EVENT_FOCUS_GAINED)
   {
+    orxDISPLAY_EVENT_PAYLOAD stPayload;
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
+    stPayload.u32Depth                = sstDisplay.u32Depth;
+    stPayload.u32RefreshRate          = 60;
+    stPayload.u32PreviousWidth        = sstDisplay.u32SurfaceWidth;
+    stPayload.u32PreviousHeight       = sstDisplay.u32SurfaceHeight;
+    stPayload.u32PreviousDepth        = sstDisplay.u32Depth;
+    stPayload.u32PreviousRefreshRate  = 60;
+    stPayload.bFullScreen             = orxTRUE;
+
     orxAndroid_Display_CreateContext();
     initGLESConfig();
+
+    stPayload.u32Width                = sstDisplay.u32SurfaceWidth;
+    stPayload.u32Height               = sstDisplay.u32SurfaceHeight;
+
+    sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
+    sstDisplay.pstScreen->fHeight = orxU2F(sstDisplay.u32SurfaceHeight);
+    sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+    sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
+    sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+    sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+    sstDisplay.pstScreen->u32DataSize    = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
+    orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
+    orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
+    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
+    /* Clears new display surface */
+    glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
+    glASSERT();
+    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(sstDisplay.stLastColor)));
+    glASSERT();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glASSERT();
+
+    /* Stores clipping values */
+    sstDisplay.u32LastClipX       = 0;
+    sstDisplay.u32LastClipY       = 0;
+    sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+    sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Updates config info */
+    orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
+    orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
+    orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.u32Depth);
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -3618,8 +3676,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-        sstDisplay.pstScreen->fWidth = orxS2F(sstDisplay.width);
-        sstDisplay.pstScreen->fHeight = orxS2F(sstDisplay.height);
+        sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
+        sstDisplay.pstScreen->fHeight = orxU2F(sstDisplay.u32SurfaceHeight);
         sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
         sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
