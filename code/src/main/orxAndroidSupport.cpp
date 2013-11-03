@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-// #define DEBUG_ANDROID_SUPPORT
+//#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -406,6 +406,18 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, j
   app_write_cmd(APP_CMD_SURFACE_READY);
 }
 
+// Focus gained
+extern "C" void Java_org_orx_lib_OrxActivity_nativeFocusGained(JNIEnv* env, jobject thiz)
+{
+  app_write_cmd(APP_CMD_FOCUS_GAINED);
+}
+
+// Focus lost
+extern "C" void Java_org_orx_lib_OrxActivity_nativeFocusLost(JNIEnv* env, jobject thiz)
+{
+  app_write_cmd(APP_CMD_FOCUS_LOST);
+}
+
 class LocalReferenceHolder
 {
 private:
@@ -557,18 +569,26 @@ extern "C" void orxAndroid_PumpEvents()
         sstAndroid.bSurfaceReady = orxFALSE;
         ANativeWindow_release(sstAndroid.window);
         sstAndroid.window = orxNULL;
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_SURFACE_READY) {
         LOGI("APP_CMD_SURFACE_READY");
         sstAndroid.window = sstAndroid.pendingWindow;
         sstAndroid.bSurfaceReady = orxTRUE;
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_QUIT) {
         LOGI("APP_CMD_QUIT");
         sstAndroid.bDestroyRequested = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+      }
+      if(cmd == APP_CMD_FOCUS_GAINED) {
+        LOGI("APP_CMD_FOCUS_GAINED");
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+      }
+      if(cmd == APP_CMD_FOCUS_LOST) {
+        LOGI("APP_CMD_FOCUS_LOST");
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       }
     }
 
@@ -600,7 +620,7 @@ extern "C" void orxAndroid_PumpEvents()
 
       if (read(sstAndroid.pipeKeyEvent[0], &stKeyEvent, sizeof(stKeyEvent)) == sizeof(stKeyEvent))
       {
-        orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD,
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD,
                        stKeyEvent.u32Action == 0 ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
                        orxNULL, orxNULL, &stKeyEvent);
       } else {

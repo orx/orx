@@ -271,7 +271,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
       for(i = 0; i < orxKEYBOARD_MAX_ANDROID_KEYCODE; i++)
@@ -294,7 +294,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD), orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));

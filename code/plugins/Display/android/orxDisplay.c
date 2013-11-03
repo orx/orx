@@ -3528,7 +3528,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     glASSERT();
   }
 
-  if(_pstEvent->eType == orxEVENT_TYPE_SYSTEM && _pstEvent->eID == orxSYSTEM_EVENT_FOCUS_GAINED)
+  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
     orxDISPLAY_EVENT_PAYLOAD stPayload;
 
@@ -3542,50 +3542,54 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     stPayload.u32PreviousRefreshRate  = 60;
     stPayload.bFullScreen             = orxTRUE;
 
+    /* Create new EGL Surface */
     orxAndroid_Display_CreateContext();
     initGLESConfig();
 
     stPayload.u32Width                = sstDisplay.u32SurfaceWidth;
     stPayload.u32Height               = sstDisplay.u32SurfaceHeight;
 
-    sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
-    sstDisplay.pstScreen->fHeight = orxU2F(sstDisplay.u32SurfaceHeight);
-    sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
-    sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
-    sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
-    sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
-    sstDisplay.pstScreen->u32DataSize    = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
-    orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
-    orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+    if(stPayload.u32PreviousWidth != stPayload.u32Width || stPayload.u32PreviousHeight != stPayload.u32Height)
+    {
+      sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
+      sstDisplay.pstScreen->fHeight = orxU2F(sstDisplay.u32SurfaceHeight);
+      sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
+      sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
+      sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
+      sstDisplay.pstScreen->fRecRealHeight = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+      sstDisplay.pstScreen->u32DataSize    = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
+      orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
+      orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
+      sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
-    /* Clears new display surface */
-    glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
-    glASSERT();
-    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(sstDisplay.stLastColor)));
-    glASSERT();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glASSERT();
+      /* Clears new display surface */
+      glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
+      glASSERT();
+      glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(sstDisplay.stLastColor)));
+      glASSERT();
+      glClear(GL_COLOR_BUFFER_BIT);
+      glASSERT();
 
-    /* Stores clipping values */
-    sstDisplay.u32LastClipX       = 0;
-    sstDisplay.u32LastClipY       = 0;
-    sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
-    sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = 0;
+      sstDisplay.u32LastClipY       = 0;
+      sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+      sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
 
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      /* Pushes display section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-    /* Updates config info */
-    orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
-    orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
-    orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.u32Depth);
+      /* Updates config info */
+      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
+      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.u32Depth);
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
   }
 
   /* Done! */
@@ -3670,7 +3674,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
-        orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
+        orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxDisplay_Android_EventHandler);
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
@@ -3830,7 +3834,7 @@ void orxFASTCALL orxDisplay_Android_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxDisplay_Android_EventHandler);
 
     /* Deletes default shaders */
     orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);

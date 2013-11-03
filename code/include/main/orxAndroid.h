@@ -75,7 +75,9 @@ enum {
     APP_CMD_RESUME,
     APP_CMD_SURFACE_DESTROYED,
     APP_CMD_SURFACE_READY,
-    APP_CMD_QUIT
+    APP_CMD_QUIT,
+    APP_CMD_FOCUS_LOST,
+    APP_CMD_FOCUS_GAINED
 };
 
 typedef struct __orxANDROID_TOUCH_EVENT_t {
@@ -115,9 +117,13 @@ jobject orxAndroid_GetActivity();
 }
 #endif
 
-#define orxANDROID_EVENT_KEYBOARD       0
-#define orxANDROID_EVENT_KEYBOARD_DOWN  0
-#define orxANDROID_EVENT_KEYBOARD_UP    1
+#define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
+#define orxANDROID_EVENT_KEYBOARD_DOWN       0
+#define orxANDROID_EVENT_KEYBOARD_UP         1
+
+#define orxANDROID_EVENT_TYPE_SURFACE        (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 1)
+#define orxANDROID_EVENT_SURFACE_DESTROYED   0
+#define orxANDROID_EVENT_SURFACE_CREATED     1
 
 #endif /* __orxANDROID__ */
 
