@@ -203,7 +203,6 @@ androidfolderinfolist = docfolderinfolist + [
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/openal-soft/lib/android',                        'dst': None},
     {'src': '../extern/SOIL/lib/android',                               'dst': None},
-    {'src': '../extern/Tremor/lib/android',                             'dst': None},
     {'src': '../extern/Tremolo/lib/android',                            'dst': None},
     {'src': 'demo/android',                                             'dst': None},
     {'src': 'plugins/Display/android',                                  'dst': None},
