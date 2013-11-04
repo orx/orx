@@ -65,8 +65,19 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
-                    $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),armeabi)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),x86)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremor
+endif
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__
 
@@ -140,8 +151,19 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
-                    $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),armeabi)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),x86)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremor
+endif
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__
 
@@ -215,8 +237,19 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
                     $(LOCAL_PATH)/../../extern/SOIL/include \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
-                    $(LOCAL_PATH)/../../extern/Tremor \
                     $(LOCAL_PATH)/../../extern/openal-soft/include
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),armeabi)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremolo
+endif
+
+ifeq ($(TARGET_ARCH_ABI),x86)
+    LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../extern/Tremor
+endif
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -O0
 
