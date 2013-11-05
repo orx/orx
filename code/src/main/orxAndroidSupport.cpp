@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-//#define DEBUG_ANDROID_SUPPORT
+// #define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -112,9 +112,6 @@ static JavaVM* mJavaVM;
 /*******************************************************************************
                                Globals
 *******************************************************************************/
-
-// TODO move this to Joystick plugin
-ASensorEventQueue* sensorEventQueue;
 
 static JNIEnv* Android_JNI_GetEnv() {
     /* From http://developer.android.com/guide/practices/jni.html
@@ -278,7 +275,7 @@ static void orxAndroid_Exit(JNIEnv* env)
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeCreate(JNIEnv *env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, jobject thiz)
 {
     LOGI("nativeCreate()");
 
@@ -305,7 +302,7 @@ extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeCreate(JNIEnv *env, job
 }
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxThreadFragment_runOrx(JNIEnv* env, jobject thiz, jobject fragment)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject thiz, jobject fragment)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     orxAndroid_Init(env, fragment);
@@ -320,7 +317,7 @@ extern "C" void Java_org_orx_lib_OrxThreadFragment_runOrx(JNIEnv* env, jobject t
 }
 
 // Keydown
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode)
 {
     orxANDROID_KEY_EVENT stKeyEvent;
 
@@ -337,7 +334,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobjec
 }
 
 // Keyup
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
     orxANDROID_KEY_EVENT stKeyEvent;
 
@@ -354,7 +351,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject 
 }
 
 // Touch
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch(
                                     JNIEnv* env, jobject thiz,
                                     jint touch_device_id_in, jint pointer_finger_id_in,
                                     jint action, jfloat x, jfloat y, jfloat p)
@@ -376,46 +373,47 @@ extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
 }
 
 // Quit
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeQuit(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
 {    
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativePause(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnPause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeResume(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
 
 // SurfaceDestroyed
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
 {
   sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
   app_write_cmd(APP_CMD_SURFACE_READY);
 }
 
-// Focus gained
-extern "C" void Java_org_orx_lib_OrxActivity_nativeFocusGained(JNIEnv* env, jobject thiz)
+// Focus gained / lost
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv* env, jobject thiz, jboolean hasFocus)
 {
-  app_write_cmd(APP_CMD_FOCUS_GAINED);
-}
-
-// Focus lost
-extern "C" void Java_org_orx_lib_OrxActivity_nativeFocusLost(JNIEnv* env, jobject thiz)
-{
-  app_write_cmd(APP_CMD_FOCUS_LOST);
+  if(hasFocus == JNI_TRUE)
+  {
+    app_write_cmd(APP_CMD_FOCUS_GAINED);
+  }
+  else
+  {
+    app_write_cmd(APP_CMD_FOCUS_LOST);
+  }
 }
 
 class LocalReferenceHolder
@@ -594,24 +592,7 @@ extern "C" void orxAndroid_PumpEvents()
 
     if(ident == LOOPER_ID_SENSOR)
     {
-      orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
-      ASensorEvent event;
-
-      while (ASensorEventQueue_getEvents(sensorEventQueue, &event, 1) > 0)
-      {
-        orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-        stAccelPayload.stAccelerometer.dTime = orxFLOAT_0;
-  
-        /* Set acceleration vector */
-        orxVector_Set(&stAccelPayload.stAccelerometer.vAcceleration,
-            orx2F(event.acceleration.x),
-            orx2F(event.acceleration.y),
-            orx2F(event.acceleration.z));
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
-      }
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE);
     }
 
     if(ident == LOOPER_ID_KEY_EVENT)
