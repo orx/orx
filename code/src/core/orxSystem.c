@@ -241,8 +241,8 @@ void orxFASTCALL orxSystem_Exit()
   return;
 }
 
-/** Gets App Elapsed time.
- * @return Returns the amount of seconds elapsed from the application start.
+/** Gets current time (elapsed from the beginning of the application, in seconds)
+ * @return Current time
  */
 orxDOUBLE orxFASTCALL orxSystem_GetTime()
 {
@@ -258,8 +258,8 @@ orxDOUBLE orxFASTCALL orxSystem_GetTime()
   return(dCurrentTime - sstSystem.dStartTime);
 }
 
-/** Gets real time
- * @return Returns the amount of seconds elapsed since reference time
+/** Gets real time (in seconds)
+ * @return Returns the amount of seconds elapsed since reference time (epoch)
  */
 orxU64 orxFASTCALL orxSystem_GetRealTime()
 {
@@ -276,6 +276,9 @@ orxU64 orxFASTCALL orxSystem_GetRealTime()
   return u64Result;
 }
 
+/** Gets current internal system time (in seconds)
+ * @return Current internal system time
+ */
 orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 {
   orxDOUBLE dResult;
@@ -357,8 +360,8 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
   return dResult;
 }
 
-/** Delays the program for given number of seconds.
- * @param[in] _fSeconds Number of seconds to wait.
+/** Delay the program for given number of seconds
+ * @param[in] _fSeconds             Number of seconds to wait
  */
 void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 {
