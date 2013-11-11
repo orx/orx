@@ -7919,7 +7919,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(orxOBJECT *_pstObject,
 
 /** Picks the first active object with graphic "under" the given position, within a given group
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _u32GroupID     Group ID to consider, orxNULL for all
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID)
