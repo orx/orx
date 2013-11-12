@@ -1579,6 +1579,16 @@ void orxFASTCALL orxCommand_CommandDivide(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/* Command: Normalize */
+void orxFASTCALL orxCommand_CommandNormalize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  orxVector_Normalize(&(_pstResult->vValue), &(_astArgList[0].vValue));
+
+  /* Done! */
+  return;
+}
+
 /* Command: Minimum */
 void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -1838,6 +1848,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Divide */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Divide, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_STRING}, {"Operand2", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Normalize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Normalize, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+
   /* Command: Minimum */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Minimum, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_STRING}, {"Operand2", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: Maximum */
@@ -1908,6 +1921,12 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("*", "Math.Mul", orxNULL);
   /* Alias: / */
   orxCommand_AddAlias("/", "Math.Div", orxNULL);
+
+  /* Alias: Vector.Normalize */
+  orxCommand_AddAlias("Vector.Normalize", "Command.Normalize", orxNULL);
+
+  /* Alias: Normalize */
+  orxCommand_AddAlias("Normalize", "Vector.Normalize", orxNULL);
 
   /* Alias: Math.Min */
   orxCommand_AddAlias("Math.Min", "Command.Minimum", orxNULL);
@@ -1993,6 +2012,12 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: / */
   orxCommand_RemoveAlias("/");
 
+  /* Alias: Vector.Normalize */
+  orxCommand_RemoveAlias("Vector.Normalize");
+
+  /* Alias: Normalize */
+  orxCommand_RemoveAlias("Normalize");
+
   /* Alias: Math.Min */
   orxCommand_RemoveAlias("Math.Min");
   /* Alias: Math.Max */
@@ -2056,6 +2081,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Multiply);
   /* Command: Divide */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Divide);
+
+  /* Command: Normalize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Normalize);
 
   /* Command: Minimum */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Minimum);
