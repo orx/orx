@@ -47,6 +47,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
+#include "display/orxDisplay.h"
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "render/orxViewport.h"
@@ -94,7 +95,7 @@ typedef enum __orxRENDER_EVENT_t
  */
 typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
 {
-  orxFRAME *pstRenderFrame;              /**< Frame position where object is rendered : 4 / 8 */
+  orxDISPLAY_TRANSFORM *pstTransform;     /**< Object display transform : 4 / 8 */
 
 } orxRENDER_EVENT_OBJECT_PAYLOAD;
 

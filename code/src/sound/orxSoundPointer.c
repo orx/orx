@@ -225,6 +225,7 @@ static orxINLINE void orxSoundPointer_DeleteAll()
     pstSoundPointer = orxSOUNDPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUNDPOINTER));
   }
 
+  /* Done! */
   return;
 }
 
@@ -332,6 +333,7 @@ void orxFASTCALL orxSoundPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_SOUND);
 
+  /* Done! */
   return;
 }
 
@@ -416,6 +418,7 @@ void orxFASTCALL orxSoundPointer_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to exit Sound Pointer module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -557,6 +560,7 @@ void orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBO
     orxStructure_SetFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_NONE, orxSOUNDPOINTER_KU32_FLAG_ENABLED);
   }
 
+  /* Done! */
   return;
 }
 
