@@ -97,6 +97,9 @@ typedef struct __orxANDROID_STATIC_t {
         ANativeWindow* pendingWindow;
         ANativeWindow* window;
 
+        orxU32 u32SurfaceWidth;
+        orxU32 u32SurfaceHeight;
+
 } orxANDROID_STATIC;
 
 /***************************************************************************
@@ -397,10 +400,18 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* en
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
 {
   sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
-  app_write_cmd(APP_CMD_SURFACE_READY);
+  app_write_cmd(APP_CMD_SURFACE_CREATED);
+}
+
+// SurfaceChanged
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jint width, jint height)
+{
+  sstAndroid.u32SurfaceWidth = width;
+  sstAndroid.u32SurfaceHeight = height;
+  app_write_cmd(APP_CMD_SURFACE_CHANGED);
 }
 
 // Focus gained / lost
@@ -460,15 +471,31 @@ int LocalReferenceHolder::s_active;
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
-    LOGI("orxAndroid_GetNativeWindow()");
+  int ident;
+  int events;
 
-    while(sstAndroid.window == orxNULL) {
-      // no window received yet
-      LOGI("no window received yet");
-      orxAndroid_PumpEvents();
+  LOGI("orxAndroid_GetNativeWindow()");
+
+  while(sstAndroid.window == orxNULL)
+  {
+    LOGI("no window received yet");
+
+    ident=ALooper_pollAll(-1, NULL, &events, NULL);
+
+    if(ident == LOOPER_ID_MAIN)
+    {
+      int8_t cmd = app_read_cmd();
+
+      if(cmd == APP_CMD_SURFACE_CREATED)
+      {
+        LOGI("APP_CMD_SURFACE_CREATED");
+        sstAndroid.window = sstAndroid.pendingWindow;
+        sstAndroid.bSurfaceReady = orxTRUE;
+      }
     }
+  }
 
-    return sstAndroid.window;
+  return sstAndroid.window;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -567,12 +594,23 @@ extern "C" void orxAndroid_PumpEvents()
         sstAndroid.bSurfaceReady = orxFALSE;
         ANativeWindow_release(sstAndroid.window);
         sstAndroid.window = orxNULL;
+
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
       }
-      if(cmd == APP_CMD_SURFACE_READY) {
-        LOGI("APP_CMD_SURFACE_READY");
+      if(cmd == APP_CMD_SURFACE_CHANGED) {
+        LOGI("APP_CMD_SURFACE_CHANGED");
+        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+
+        stSurfaceChangedEvent.u32Width = sstAndroid.u32SurfaceWidth;
+        stSurfaceChangedEvent.u32Height = sstAndroid.u32SurfaceHeight;
+
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+      }
+      if(cmd == APP_CMD_SURFACE_CREATED) {
+        LOGI("APP_CMD_SURFACE_CREATED");
         sstAndroid.window = sstAndroid.pendingWindow;
         sstAndroid.bSurfaceReady = orxTRUE;
+
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_QUIT) {

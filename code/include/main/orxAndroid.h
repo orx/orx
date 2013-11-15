@@ -74,7 +74,8 @@ enum {
     APP_CMD_PAUSE,
     APP_CMD_RESUME,
     APP_CMD_SURFACE_DESTROYED,
-    APP_CMD_SURFACE_READY,
+    APP_CMD_SURFACE_CREATED,
+    APP_CMD_SURFACE_CHANGED,
     APP_CMD_QUIT,
     APP_CMD_FOCUS_LOST,
     APP_CMD_FOCUS_GAINED
@@ -93,6 +94,12 @@ typedef struct __orxANDROID_KEY_EVENT_t {
        orxU32 u32KeyCode;
 
 } orxANDROID_KEY_EVENT;
+
+typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
+        orxU32   u32Width;
+        orxU32   u32Height;
+
+} orxANDROID_SURFACE_CHANGED_EVENT;
 
 ANativeWindow * orxAndroid_GetNativeWindow();
 
@@ -124,6 +131,7 @@ jobject orxAndroid_GetActivity();
 #define orxANDROID_EVENT_TYPE_SURFACE        (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 1)
 #define orxANDROID_EVENT_SURFACE_DESTROYED   0
 #define orxANDROID_EVENT_SURFACE_CREATED     1
+#define orxANDROID_EVENT_SURFACE_CHANGED     2
 
 #endif /* __orxANDROID__ */
 

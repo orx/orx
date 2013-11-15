@@ -476,36 +476,33 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
 static void orxAndroid_Display_CreateContext()
 {
   EGLBoolean result;
-  orxDISPLAY_VIDEO_MODE stVideoMode;
   int32_t width, height;
 
-  if(sstDisplay.display == EGL_NO_DISPLAY || sstDisplay.context == EGL_NO_CONTEXT)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Starting up OpenGL ES");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Starting up OpenGL ES");
 
-    sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    eglASSERT();
-    orxASSERT(sstDisplay.display != EGL_NO_DISPLAY);
+  sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  eglASSERT();
+  orxASSERT(sstDisplay.display != EGL_NO_DISPLAY);
 
-    eglInitialize(sstDisplay.display, 0, 0);
-    eglASSERT();
-    sstDisplay.config = defaultEGLChooser(sstDisplay.display);
-    orxASSERT(sstDisplay.config != orxNULL);
+  eglInitialize(sstDisplay.display, 0, 0);
+  eglASSERT();
+  sstDisplay.config = defaultEGLChooser(sstDisplay.display);
+  orxASSERT(sstDisplay.config != orxNULL);
 
-    eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
-    eglASSERT();
-    EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-    sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
-    eglASSERT();
-    orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
-  }
+  eglGetConfigAttrib(sstDisplay.display, sstDisplay.config, EGL_NATIVE_VISUAL_ID, &sstDisplay.format);
+  eglASSERT();
+
+  EGLint contextAttrs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+  sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
+  eglASSERT();
+  orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
+
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
 
   ANativeWindow *window = orxAndroid_GetNativeWindow();
   ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
   orxAndroid_JNI_SetWindowFormat(sstDisplay.format);
 
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
-  
   sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
   eglASSERT();
 
@@ -515,6 +512,24 @@ static void orxAndroid_Display_CreateContext()
   eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &height);
   eglASSERT();
   sstDisplay.u32SurfaceHeight = (orxU32)height;
+
+  result = eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
+  eglASSERT();
+  orxASSERT(result == EGL_TRUE);
+}
+
+static void orxAndroid_Display_CreateSurface()
+{
+  EGLBoolean result;
+
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
+
+  ANativeWindow *window = orxAndroid_GetNativeWindow();
+  ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
+  orxAndroid_JNI_SetWindowFormat(sstDisplay.format);
+
+  sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
+  eglASSERT();
 
   result = eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
   eglASSERT();
@@ -3531,7 +3546,16 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
-    orxDISPLAY_EVENT_PAYLOAD stPayload;
+    orxAndroid_Display_CreateSurface();
+  }
+
+  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)
+  {
+    orxDISPLAY_EVENT_PAYLOAD           stPayload;
+    orxANDROID_SURFACE_CHANGED_EVENT  *pstSurfaceChangedEvent;
+
+    /* Gets payload */
+    pstSurfaceChangedEvent = (orxANDROID_SURFACE_CHANGED_EVENT *)_pstEvent->pstPayload;
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
@@ -3542,13 +3566,17 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     stPayload.u32PreviousDepth        = sstDisplay.u32Depth;
     stPayload.u32PreviousRefreshRate  = 60;
     stPayload.bFullScreen             = orxTRUE;
+    stPayload.u32Width                = pstSurfaceChangedEvent->u32Width;
+    stPayload.u32Height               = pstSurfaceChangedEvent->u32Height;
 
-    /* Create new EGL Surface */
-    orxAndroid_Display_CreateContext();
-    initGLESConfig();
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "surface changed (%dx%d)->(%dx%d)",
+                   stPayload.u32PreviousWidth,
+                   stPayload.u32PreviousHeight,
+                   stPayload.u32Width,
+                   stPayload.u32Height);
 
-    stPayload.u32Width                = sstDisplay.u32SurfaceWidth;
-    stPayload.u32Height               = sstDisplay.u32SurfaceHeight;
+    sstDisplay.u32SurfaceWidth = pstSurfaceChangedEvent->u32Width;
+    sstDisplay.u32SurfaceHeight = pstSurfaceChangedEvent->u32Height;
 
     if(stPayload.u32PreviousWidth != stPayload.u32Width || stPayload.u32PreviousHeight != stPayload.u32Height)
     {
@@ -3661,7 +3689,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
 
-        // Init OpenGL ES 2.0
+        // Create OpenGL ES Context
         orxAndroid_Display_CreateContext();
 
         zGlRenderer = (const orxSTRING) glGetString(GL_RENDERER);
@@ -3679,6 +3707,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+        sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
         sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
@@ -3690,7 +3720,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.pstScreen->u32DataSize    = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
-        sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
         glGenFramebuffers(1, &sstDisplay.uiFrameBuffer);
         glASSERT();
