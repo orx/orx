@@ -1,4 +1,4 @@
-package com.example.orxdemo;
+package org.orxproject.orxtest;
 
 import android.annotation.TargetApi;
 import android.os.Build;
