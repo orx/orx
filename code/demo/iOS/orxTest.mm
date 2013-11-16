@@ -42,7 +42,7 @@ static orxVIEWPORT *spstViewport;
 static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  
+
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
 
