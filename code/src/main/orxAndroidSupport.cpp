@@ -90,7 +90,6 @@ typedef struct __orxANDROID_STATIC_t {
         int pipeTouchEvent[2];
         int pipeKeyEvent[2];
 
-        orxBOOL bSurfaceReady;
         orxBOOL bPaused;
         orxBOOL bDestroyRequested;
 
@@ -234,7 +233,6 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
 
-    sstAndroid.bSurfaceReady = orxFALSE;
     sstAndroid.bPaused = orxFALSE;
     sstAndroid.bDestroyRequested = orxFALSE;
     sstAndroid.window = orxNULL;
@@ -254,6 +252,12 @@ static void orxAndroid_Exit(JNIEnv* env)
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
   free(sstAndroid.s_AndroidInternalFilesPath);
+
+  if(sstAndroid.window != orxNULL)
+  {
+    ANativeWindow_release(sstAndroid.window);
+    sstAndroid.window = orxNULL;
+  }
 
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeCmd[0]);
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0]);
@@ -490,7 +494,6 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
       {
         LOGI("APP_CMD_SURFACE_CREATED");
         sstAndroid.window = sstAndroid.pendingWindow;
-        sstAndroid.bSurfaceReady = orxTRUE;
       }
     }
   }
@@ -565,7 +568,7 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
 
 static inline orxBOOL isInteractible()
 {
-  return (sstAndroid.bSurfaceReady == orxTRUE && sstAndroid.bPaused == orxFALSE);
+  return (sstAndroid.window != orxNULL && sstAndroid.bPaused == orxFALSE);
 }
 
 extern "C" void orxAndroid_PumpEvents()
@@ -591,11 +594,13 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
-        sstAndroid.bSurfaceReady = orxFALSE;
-        ANativeWindow_release(sstAndroid.window);
-        sstAndroid.window = orxNULL;
 
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
+        if(sstAndroid.window != orxNULL)
+        {
+          ANativeWindow_release(sstAndroid.window);
+          sstAndroid.window = orxNULL;
+        }
       }
       if(cmd == APP_CMD_SURFACE_CHANGED) {
         LOGI("APP_CMD_SURFACE_CHANGED");
@@ -609,7 +614,6 @@ extern "C" void orxAndroid_PumpEvents()
       if(cmd == APP_CMD_SURFACE_CREATED) {
         LOGI("APP_CMD_SURFACE_CREATED");
         sstAndroid.window = sstAndroid.pendingWindow;
-        sstAndroid.bSurfaceReady = orxTRUE;
 
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }

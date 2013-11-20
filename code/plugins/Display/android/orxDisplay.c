@@ -536,6 +536,17 @@ static void orxAndroid_Display_CreateSurface()
   orxASSERT(result == EGL_TRUE);
 }
 
+static void orxAndroid_Display_DestroySurface()
+{
+  eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+  eglASSERT();
+
+  eglDestroySurface(sstDisplay.display, sstDisplay.surface);
+  eglASSERT();
+
+  sstDisplay.surface = EGL_NO_SURFACE;
+}
+
 static orxINLINE orxBOOL initGLESConfig()
 {
   /* Inits it */
@@ -1857,6 +1868,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
 
   eglWaitNative(EGL_CORE_NATIVE_ENGINE);
   eglWaitGL();
+
   eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
 
   /* Waits for GPU work to be done */
@@ -3554,6 +3566,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
   {
+    orxAndroid_Display_DestroySurface();
+
     /* Adds render inhibiter */
     orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
   }
@@ -3904,6 +3918,31 @@ void orxFASTCALL orxDisplay_Android_Exit()
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
     orxBank_Delete(sstDisplay.pstShaderBank);
+
+    if (sstDisplay.display != EGL_NO_DISPLAY)
+    {
+      eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+      eglASSERT();
+
+      if (sstDisplay.context != EGL_NO_CONTEXT)
+      {
+        eglDestroyContext(sstDisplay.display, sstDisplay.context);
+        eglASSERT();
+
+        sstDisplay.context = EGL_NO_CONTEXT;
+      }
+      if (sstDisplay.surface != EGL_NO_SURFACE)
+      {
+        eglDestroySurface(sstDisplay.display, sstDisplay.surface);
+        eglASSERT();
+
+        sstDisplay.surface = EGL_NO_SURFACE;
+      }
+      eglTerminate(sstDisplay.display);
+      eglASSERT();
+
+      sstDisplay.display = EGL_NO_DISPLAY;
+    }
 
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
