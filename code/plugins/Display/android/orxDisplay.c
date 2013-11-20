@@ -3531,6 +3531,14 @@ orxBOOL orxFASTCALL orxDisplay_Android_IsVideoModeAvailable(const orxDISPLAY_VID
   return bResult;
 }
 
+/** Render inhibiter
+ */
+static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibiter(const orxEVENT *_pstEvent)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   /* Render stop? */
@@ -3544,9 +3552,18 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     glASSERT();
   }
 
+  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
+  {
+    /* Adds render inhibiter */
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
+  }
+
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
     orxAndroid_Display_CreateSurface();
+
+    /* Removes render inhibiter */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)
