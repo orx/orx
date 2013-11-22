@@ -70,6 +70,10 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__
 
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_CFLAGS += -mhard-float
+endif
+
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
 
@@ -145,6 +149,10 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxPROFILER__
 
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_CFLAGS += -mhard-float
+endif
+
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9
 
@@ -219,6 +227,10 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremolo
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__ -D__orxDEBUG__ -O0
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_CFLAGS += -mhard-float
+endif
 
 LOCAL_ARM_MODE := arm
 TARGET_PLATFORM = android-9

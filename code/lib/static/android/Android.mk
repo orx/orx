@@ -11,6 +11,13 @@ LOCAL_EXPORT_CFLAGS := -D__orxANDROID__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_EXPORT_CFLAGS += -mhard-float
+    ifeq (,$(filter -fuse-ld=mcld,$(APP_LDFLAGS) $(LOCAL_LDFLAGS)))
+        LOCAL_EXPORT_LDLIBS += -Wl,--no-warn-mismatch
+    endif
+endif
+
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -24,6 +31,13 @@ LOCAL_EXPORT_CFLAGS := -D__orxANDROID__ -D__orxDEBUG__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_EXPORT_CFLAGS += -mhard-float
+    ifeq (,$(filter -fuse-ld=mcld,$(APP_LDFLAGS) $(LOCAL_LDFLAGS)))
+        LOCAL_EXPORT_LDLIBS += -Wl,--no-warn-mismatch
+    endif
+endif
+
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -36,6 +50,13 @@ TARGET_PLATFORM = android-9
 LOCAL_EXPORT_CFLAGS := -D__orxANDROID__ -D__orxPROFILER__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_EXPORT_CFLAGS += -mhard-float
+    ifeq (,$(filter -fuse-ld=mcld,$(APP_LDFLAGS) $(LOCAL_LDFLAGS)))
+        LOCAL_EXPORT_LDLIBS += -Wl,--no-warn-mismatch
+    endif
+endif
 
 include $(PREBUILT_STATIC_LIBRARY)
 

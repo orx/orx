@@ -358,17 +358,17 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject 
 }
 
 // Touch
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch(
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch (
                                     JNIEnv* env, jobject thiz,
                                     jint touch_device_id_in, jint pointer_finger_id_in,
-                                    jint action, jfloat x, jfloat y, jfloat p)
+                                    jint action, jint x, jint y)
 {
     orxANDROID_TOUCH_EVENT stTouchEvent;
 
     stTouchEvent.u32ID = pointer_finger_id_in;
     stTouchEvent.u32Action = action;
-    stTouchEvent.fX = x;
-    stTouchEvent.fY = y;
+    stTouchEvent.fX = orx2F(x);
+    stTouchEvent.fY = orx2F(y);
 
     if(sstAndroid.pipeTouchEvent[1] != -1)
     {
