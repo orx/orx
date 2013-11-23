@@ -67,8 +67,6 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo
 
-LOCAL_STATIC_LIBRARIES := orxAndroidSupport
-
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
