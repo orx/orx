@@ -58,7 +58,8 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
@@ -66,8 +67,6 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo
-
-LOCAL_STATIC_LIBRARIES := orxAndroidSupport
 
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID__
 
@@ -138,7 +137,8 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
@@ -216,7 +216,8 @@ LOCAL_SRC_FILES = \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp
+        plugin/orxPlugin_EmbeddedList.cpp \
+	main/orxAndroidSupport.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
