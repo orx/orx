@@ -46,15 +46,6 @@
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
-
-  #ifdef __orxWINDOWS__
-
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
-  #endif /* __orxWINDOWS__ */
-
 #endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
 
 

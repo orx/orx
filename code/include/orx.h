@@ -371,9 +371,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
     #ifdef __orxMSVC__
 
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
 /** Orx main execution function (console-less windows application)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
