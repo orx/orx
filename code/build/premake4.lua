@@ -337,9 +337,6 @@ project "orx"
             "rt"
         }
 
-    configuration {"linux", "x64", "*Static*"}
-        links {"pthread"}
-
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
         buildoptions {"-fschedule-insns"}
@@ -356,6 +353,7 @@ project "orx"
             "glfw",
             "SOIL",
             "sndfile",
+            "pthread",
             "OpenAL.framework",
             "OpenGL.framework"
         }
@@ -453,8 +451,10 @@ project "orxLIB"
             "Xrandr",
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
+        defines {"_GNU_SOURCE"}
 
     configuration {"linux", "*Static*"}
         buildoptions {"-fPIC"}
@@ -487,6 +487,7 @@ project "orxLIB"
             "glfw",
             "SOIL",
             "sndfile",
+            "pthread",
             "OpenAL.framework",
             "OpenGL.framework"
         }

@@ -36,6 +36,7 @@
 
 #define USE_DL_PREFIX
 #define USE_BUILTIN_FFS 1
+#undef _GNU_SOURCE
 #include "malloc.c"
 
 

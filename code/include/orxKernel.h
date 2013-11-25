@@ -58,6 +58,7 @@
 #include "core/orxLocale.h"
 #include "core/orxResource.h"
 #include "core/orxSystem.h"
+#include "core/orxThread.h"
 
 #include "debug/orxDebug.h"
 #include "debug/orxFPS.h"
