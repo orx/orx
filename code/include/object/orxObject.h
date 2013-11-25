@@ -47,13 +47,13 @@
 
 #include "orxInclude.h"
 
-#include "object/orxStructure.h"
-#include "core/orxClock.h"
-#include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "core/orxClock.h"
 #include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
+#include "memory/orxBank.h"
+#include "object/orxStructure.h"
 #include "sound/orxSound.h"
 
 

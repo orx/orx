@@ -99,7 +99,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(const orxTEXT *_pstTex
 extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText);
 
 
-/** Gets text string 
+/** Gets text string
  * @param[in]   _pstText      Concerned text
  * @return      Text string / orxSTRING_EMPTY
  */
