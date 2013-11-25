@@ -1271,6 +1271,7 @@ var searchData=
   ['orxmemory',['OrxMemory',['../group__orx_memory.html',1,'']]],
   ['orxmemory_2eh',['orxMemory.h',['../orx_memory_8h.html',1,'']]],
   ['orxmemory_5fallocate',['orxMemory_Allocate',['../group__orx_memory.html#ga74fb333b07c13bf3a668c5ee88204ea8',1,'orxMemory.h']]],
+  ['orxmemory_5fbarrier',['orxMEMORY_BARRIER',['../group__orx_decl.html#ga7240bc33642336c84068c3f70adb967a',1,'orxDecl.h']]],
   ['orxmemory_5fcompare',['orxMemory_Compare',['../group__orx_memory.html#gacc3b257d3c6bec8af29c59fa62a01e59',1,'orxMemory.h']]],
   ['orxmemory_5fcopy',['orxMemory_Copy',['../group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c',1,'orxMemory.h']]],
   ['orxmemory_5fexit',['orxMemory_Exit',['../group__orx_memory.html#ga643c775ffcf970857a16d419bf298020',1,'orxMemory.h']]],
