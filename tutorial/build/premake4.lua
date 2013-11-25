@@ -138,6 +138,9 @@ solution "Tutorial"
         "FloatFast",
         "NoNativeWChar",
         "NoExceptions",
+        "NoIncrementalLink",
+        "NoEditAndContinue",
+        "NoMinimalRebuild",
         "Symbols",
         "StaticRuntime"
     }

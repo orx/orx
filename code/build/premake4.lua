@@ -166,6 +166,9 @@ solution "orx"
         "FloatFast",
         "NoNativeWChar",
         "NoExceptions",
+        "NoIncrementalLink",
+        "NoEditAndContinue",
+        "NoMinimalRebuild",
         "Symbols",
         "StaticRuntime"
     }
