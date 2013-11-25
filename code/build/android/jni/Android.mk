@@ -37,6 +37,7 @@ LOCAL_SRC_FILES = \
 	core/orxEvent.c           \
 	core/orxResource.c        \
 	core/orxSystem.c          \
+	core/orxThread.c          \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
@@ -112,6 +113,7 @@ LOCAL_SRC_FILES = \
 	core/orxEvent.c           \
 	core/orxResource.c        \
 	core/orxSystem.c          \
+	core/orxThread.c          \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
@@ -187,6 +189,7 @@ LOCAL_SRC_FILES = \
 	core/orxEvent.c           \
 	core/orxResource.c        \
 	core/orxSystem.c          \
+	core/orxThread.c          \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
