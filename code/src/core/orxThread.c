@@ -52,18 +52,47 @@
 /** Module flags
  */
 #define orxTHREAD_KU32_STATIC_FLAG_NONE               0x00000000  /**< No flags have been set */
-#define orxTHREAD_KU32_STATIC_FLAG_READY              0x00000001  /**< The module has been initialized */
+#define orxTHREAD_KU32_STATIC_FLAG_READY              0x00000001  /**< Static flag */
+#define orxTHREAD_KU32_STATIC_MASK_ALL                0xFFFFFFFF  /**< The module has been initialized */
+
+#define orxTHREAD_KU32_INFO_FLAG_NONE                 0x00000000  /**< No flags have been set */
+#define orxTHREAD_KU32_INFO_FLAG_INITIALIZED          0x00000001  /**< Initialized flag */
+#define orxTHREAD_KU32_INFO_FLAG_STOP                 0x10000000  /**< Stop flag */
+#define orxTHREAD_KU32_INFO_MASK_ALL                  0xFFFFFFFF  /**< The module has been initialized */
+
+#define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
+#define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/* Thread info structure
+ */
+typedef struct __orxTHREAD_INFO_t
+{
+#ifdef __orxWINDOWS__
+
+  HANDLE                  hThread;
+
+#else /* __orxWINDOWS__ */
+
+  pthread_t               hThread;
+
+#endif /* __orxWINDOWS__ */
+
+  orxU32                  u32Flags;
+
+} orxTHREAD_INFO;
+
 /** Static structure
  */
 typedef struct __orxTHREAD_STATIC_t
 {
-  orxU32 u32Flags;
+  volatile orxTHREAD_INFO astThreadInfoList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
+
+  orxU32                  u32Flags;
 
 } orxTHREAD_STATIC;
 
@@ -90,6 +119,9 @@ static orxTHREAD_STATIC sstThread;
  */
 void orxFASTCALL orxThread_Setup()
 {
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_THREAD, orxMODULE_ID_MEMORY);
+
   /* Done! */
   return;
 }
@@ -104,29 +136,37 @@ orxSTATUS orxFASTCALL orxThread_Init()
   /* Was not already initialized? */
   if(!(sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY))
   {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
+
 #if defined(__orxWINDOWS__)
 
+    /* Stores main thread ID */
+    sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread = GetCurrentThread();
+
     /* Sets thread CPU affinity to remain on the same core */
-    SetThreadAffinityMask(GetCurrentThread(), 1);
+    SetThreadAffinityMask(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, 1);
 
     /* Asks for small time slices */
     timeBeginPeriod(1);
 
 #elif defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
 
-    cpu_set_t stSet;
+    {
+      cpu_set_t stSet;
 
-    /* Sets CPU affinity mask */
-    CPU_ZERO(&stSet);
-    CPU_SET(0, &stSet);
+      /* Stores main thread ID */
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread = pthread_self();
 
-    /* Applies it */
-    sched_setaffinity(0, sizeof(cpu_set_t), &stSet);
+      /* Sets CPU affinity mask */
+      CPU_ZERO(&stSet);
+      CPU_SET(0, &stSet);
+
+      /* Applies it */
+      pthread_setaffinity_np(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, sizeof(cpu_set_t), &stSet);
+    }
 
 #endif
-
-    /* Cleans static controller */
-    orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
 
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -178,17 +218,35 @@ orxU32 orxFASTCALL orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pCo
 
 /** Joins a thread (blocks & waits until the other thread finishes)
  * @param[in]   _u32ThreadID                          ID of the thread for which to wait
- * @param[out]  _ppReturnValue                        Return value from the joined thread
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID, void **_ppReturnValue)
+orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
 
-  //! TODO
+  /* Updates stop flag */
+  orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+
+#ifdef __orxWINDOWS__
+
+  /* Waits for thread */
+  WaitForSingleObject(sstThread.astThreadInfoList[_u32ThreadID].hThread, INFINITE);
+
+#else /* __orxWINDOWS__ */
+
+  /* Joins thread */
+  pthread_join(sstThread.astThreadInfoList[_u32ThreadID].hThread, NULL);
+
+#endif /* __orxWINDOWS__ */
+
+  /* Clears thread info */
+  sstThread.astThreadInfoList[_u32ThreadID].u32Flags  = orxTHREAD_KU32_INFO_FLAG_NONE;
+  orxMEMORY_BARRIER();
+  sstThread.astThreadInfoList[_u32ThreadID].hThread   = 0;
 
   /* Done! */
   return eResult;
@@ -199,12 +257,38 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID, void **_ppReturnValue)
  */
 orxU32 orxFASTCALL orxThread_GetCurrent()
 {
-  orxU32 u32Result = orxU32_UNDEFINED;
+  orxU32 u32Result = orxU32_UNDEFINED, i;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+#ifdef __orxWINDOWS__
+
+  HANDLE hThread;
+
+  /* Gets current thread ID */
+  hThread = GetCurrentThread();
+
+#else /* __orxWINDOWS__ */
+
+  pthread_t hThread;
+
+  /* Gets current thread ID */
+  hThread = pthread_self();
+
+#endif /* __orxWINDOWS__ */
+
+  /* For all threads */
+  for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+  {
+    /* Matches? */
+    if(sstThread.astThreadInfoList[i].hThread == hThread)
+    {
+      /* Updates result */
+      u32Result = i;
+      break;
+    }
+  }
 
   /* Done! */
   return u32Result;
@@ -217,5 +301,16 @@ void orxFASTCALL orxThread_Yield()
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+#ifdef __orxWINDOWS__
+
+  Sleep(0);
+
+#else /* __orxWINDOWS__ */
+
+  sched_yield();
+
+#endif /* __orxWINDOWS__ */
+
+  /* Done! */
+  return;
 }

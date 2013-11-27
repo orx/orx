@@ -192,6 +192,7 @@ void orxFASTCALL orxMemory_Setup()
 {
   /* Adds module dependencies */
 
+  /* Done! */
   return;
 }
 

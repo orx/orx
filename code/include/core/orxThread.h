@@ -47,7 +47,7 @@
 
 
 /** Thread run function type */
-typedef void *(*orxTHREAD_FUNCTION)(void *_pContext);
+typedef orxSTATUS (orxFASTCALL *orxTHREAD_FUNCTION)(void *_pContext);
 
 
 /** Thread module setup
@@ -73,10 +73,9 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Create(const orx
 
 /** Joins a thread (blocks & waits until the other thread finishes)
  * @param[in]   _u32ThreadID                          ID of the thread for which to wait
- * @param[out]  _ppReturnValue                        Return value from the joined thread
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Join(orxU32 _u32ThreadID, void **_ppReturnValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Join(orxU32 _u32ThreadID);
 
 /** Gets current thread ID
  * @return      Current thread ID

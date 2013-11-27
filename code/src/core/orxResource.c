@@ -561,6 +561,7 @@ void orxFASTCALL orxResource_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_THREAD);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_FILE);

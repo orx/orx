@@ -115,7 +115,6 @@ void orxFASTCALL orxSystem_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_THREAD);
 
   /* Done! */
   return;
