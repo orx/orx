@@ -45,6 +45,25 @@
 
 #include "orxInclude.h"
 
+#ifdef __orxWINDOWS__
+  #include "memory/orxMemory.h"
+#else /* __orxWINDOWS__ */
+  #include <semaphore.h>
+#endif /* __orxWINDOWS__ */
+
+
+#ifdef __orxWINDOWS__
+
+typedef HANDLE                                        orxTHREAD_SEMAPHORE;
+
+#else /* __orxWINDOWS__ */
+
+#include <semaphore.h>
+
+typedef sem_t                                         orxTHREAD_SEMAPHORE;
+
+#endif /* __orxWINDOWS__ */
+
 
 /** Thread run function type */
 typedef orxSTATUS (orxFASTCALL *orxTHREAD_FUNCTION)(void *_pContext);
@@ -85,6 +104,32 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetCurrent();
 /** Yields to other threads
  */
 extern orxDLLAPI void orxFASTCALL                     orxThread_Yield();
+
+
+/** Inits a semaphore with the given value
+ * @param[in]   _pstSemaphore                         Concerned semaphore
+ * @param[in]   _u32Value                             Value with which to init the semaphore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_InitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore, orxU32 _u32Value);
+
+/** Exits from a semaphore (ie. "deletes" it)
+ * @param[in]   _pstSemaphore                         Concerned semaphore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_ExitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore);
+
+/** Waits for a semaphore
+ * @param[in]   _pstSemaphore                         Concerned semaphore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_WaitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore);
+
+/** Signals a semaphore
+ * @param[in]   _pstSemaphore                         Concerned semaphore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SignalSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore);
 
 
 #endif /* _orxTHREAD_H_ */
