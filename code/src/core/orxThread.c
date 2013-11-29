@@ -53,6 +53,17 @@
 #endif /* __orxWINDOWS__ */
 
 
+#if defined(__orxX86_64__) || defined(__orxPPC64__)
+
+  #define orxTHREAD_CAST_HELPER   (orxU64)
+
+#else /* __orxX86_64__ || __orxPPC64__ */
+
+  #define orxTHREAD_CAST_HELPER
+
+#endif /* __orxX86_64__ || __orxPPC64__ */
+
+
 /** Module flags
  */
 #define orxTHREAD_KU32_STATIC_FLAG_NONE               0x00000000  /**< No flags have been set */
@@ -129,7 +140,7 @@ static void *orxThread_Execute(void *_pContext)
   orxSTATUS                 eResult;
 
   /* Gets thread's info */
-  pstInfo = &(sstThread.astThreadInfoList[(orxU32)_pContext]);
+  pstInfo = &(sstThread.astThreadInfoList[(orxU32) orxTHREAD_CAST_HELPER _pContext]);
 
 #ifdef __orxWINDOWS__
 
@@ -317,7 +328,7 @@ orxU32 orxFASTCALL orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pCo
 #else /* __orxWINDOWS__ */
 
     /* Creates thread */
-    if(pthread_create(&(pstInfo->hThread), NULL, orxThread_Execute, (void *)u32Index) != 0)
+    if(pthread_create((pthread_t *)&(pstInfo->hThread), NULL, orxThread_Execute, (void *) orxTHREAD_CAST_HELPER u32Index) == 0)
     {
       /* Updates result */
       u32Result = u32Index;
