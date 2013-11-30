@@ -2641,9 +2641,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
     sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
     /* While file isn't empty */
-    for(u32Size = (orxU32)orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE, acBuffer), u32Offset = 0, bFirstTime = orxTRUE;
+    for(u32Size = (orxU32)orxResource_Read(hResource, orxCONFIG_KU32_BUFFER_SIZE, acBuffer, orxNULL, orxNULL), u32Offset = 0, bFirstTime = orxTRUE;
         u32Size > 0;
-        u32Size = (orxU32)orxResource_Read(hResource, (orxS64)(orxCONFIG_KU32_BUFFER_SIZE - u32Offset), acBuffer + u32Offset) + u32Offset, bFirstTime = orxFALSE)
+        u32Size = (orxU32)orxResource_Read(hResource, (orxS64)(orxCONFIG_KU32_BUFFER_SIZE - u32Offset), acBuffer + u32Offset, orxNULL, orxNULL) + u32Offset, bFirstTime = orxFALSE)
     {
       orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
       orxBOOL   bBlockMode;
@@ -3306,7 +3306,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
         sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
         /* Adds encryption tag */
-        orxResource_Write(hResource, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, orxCONFIG_KZ_ENCRYPTION_TAG);
+        orxResource_Write(hResource, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, orxCONFIG_KZ_ENCRYPTION_TAG, orxNULL, orxNULL);
       }
 
       /* For all sections */
@@ -3361,7 +3361,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
+          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer, orxNULL, orxNULL);
 
           /* For all entries */
           for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
@@ -3447,7 +3447,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               }
 
               /* Saves it */
-              orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
+              orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer, orxNULL, orxNULL);
             }
           }
 
@@ -3462,7 +3462,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Saves it */
-          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer);
+          orxResource_Write(hResource, (orxS64)u32BufferSize, acBuffer, orxNULL, orxNULL);
         }
       }
 

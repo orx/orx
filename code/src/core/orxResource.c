@@ -1700,9 +1700,11 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to read (in bytes)
  * @param[out] _pBuffer         Buffer that will be filled by the read data
+ * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
+ * @param[in] _pContext         Context that will be transmitted to the callback when called
  * @return Size of the read data, in bytes
  */
-orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer)
+orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext)
 {
   orxS64 s64Result = 0;
 
@@ -1730,9 +1732,11 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to write (in bytes)
  * @param[out] _pBuffer         Buffer that will be written
- * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
+ * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
+ * @param[in] _pContext         Context that will be transmitted to the callback when called
+ * @return Size of the written data, in bytes, 0 if nothing could be written/no write support for this resource type or -1 for successful asynchronous call
  */
-orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer)
+orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext)
 {
   orxS64 s64Result = 0;
 
@@ -1753,11 +1757,6 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
     {
       /* Updates result */
       s64Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s64Size, _pBuffer);
-    }
-    else
-    {
-      /* Updates result */
-      s64Result = -1;
     }
   }
 

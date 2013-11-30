@@ -269,7 +269,7 @@ sf_count_t orxSoundSystem_OpenAL_Resource_Read(void *_pBuffer, sf_count_t _s64Si
   hResource = (orxHANDLE)_pData;
 
   /* Updates result */
-  s64Result = (sf_count_t)orxResource_Read(hResource, _s64Size, _pBuffer);
+  s64Result = (sf_count_t)orxResource_Read(hResource, _s64Size, _pBuffer, orxNULL, orxNULL);
 
   /* Done! */
   return s64Result;

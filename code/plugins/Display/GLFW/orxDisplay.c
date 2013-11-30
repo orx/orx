@@ -715,7 +715,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
       GLuint          uiWidth, uiHeight, uiBytesPerPixel;
 
       /* Loads data from resource */
-      s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
+      s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxNULL, orxNULL);
 
       /* Loads image */
       pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);

@@ -177,7 +177,7 @@ static ov_callbacks sstOggVorbis_Callbacks;
 
 static size_t read_func(void* ptr, size_t size, size_t nmemb, void* datasource)
 {
-  orxS64 s64Read = orxResource_Read((orxHANDLE) datasource, size * nmemb, ptr);
+  orxS64 s64Read = orxResource_Read((orxHANDLE) datasource, size * nmemb, ptr, orxNULL, orxNULL);
 
   return (size_t)s64Read;
 }

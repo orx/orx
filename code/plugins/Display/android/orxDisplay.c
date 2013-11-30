@@ -2504,7 +2504,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
 
       /* Loads PVR header from file */
       if((s64FileSize >= (orxS64)sizeof(PVRTexHeader))
-      && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader) > 0))
+      && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader, orxNULL, orxNULL) > 0))
       {
         /* Swaps the header's bytes to host format */
         letoh32(stHeader.headerLength);
@@ -2642,7 +2642,7 @@ static orxBITMAP *orxDisplay_Android_LoadPVRBitmap(const orxSTRING _zFilename)
             au8ImageBuffer = (orxU8 *)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
             /* Reads the image content (mimaps will be ignored) */
-            if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer) > 0)
+            if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer, orxNULL, orxNULL) > 0)
             {
               /* Allocates bitmap */
               pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -2742,7 +2742,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
       orxCHAR       filecode[4];
 
       // read in file marker, make sure its a DDS file
-      orxResource_Read(hResource, 4, filecode);
+      orxResource_Read(hResource, 4, filecode, orxNULL, orxNULL);
       if(orxMemory_Compare(filecode, gDDSTexIdentifier, 4) != 0)
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "!> No DDS marker in file header: %s", _zFilename);
@@ -2751,7 +2751,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
       }
 
       /* Loads DDS header from file */
-      if(orxResource_Read(hResource, sizeof(DDS_HEADER), &stHeader) > 0)
+      if(orxResource_Read(hResource, sizeof(DDS_HEADER), &stHeader, orxNULL, orxNULL) > 0)
       {
         /* Swaps the header's bytes to host format */
         letoh32(stHeader.dwSize);
@@ -2952,7 +2952,7 @@ static orxBITMAP *orxDisplay_Android_LoadDDSBitmap(const orxSTRING _zFilename)
         au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
         /* Reads the image content (mimaps will be ignored) */
-        if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer) > 0)
+        if(orxResource_Read(hResource, (orxS64)u32DataSize, au8ImageBuffer, orxNULL, orxNULL) > 0)
         {
           /* Allocates bitmap */
           pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3049,7 +3049,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
       KTX_header stHeader;
 
       /* Loads KTX header from file */
-      if(orxResource_Read(hResource, sizeof(KTX_header), &stHeader) > 0)
+      if(orxResource_Read(hResource, sizeof(KTX_header), &stHeader, orxNULL, orxNULL) > 0)
       {
         orxBOOL bCompressed = orxFALSE;
         GLint  previousUnpackAlignment;
@@ -3087,7 +3087,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
         GLsizei pixelHeight = stHeader.pixelHeight;
         GLsizei pixelDepth  = stHeader.pixelDepth;
 
-        if(orxResource_Read(hResource, sizeof(orxU32), &u32DataSize) > 0)
+        if(orxResource_Read(hResource, sizeof(orxU32), &u32DataSize, orxNULL, orxNULL) > 0)
         {
           orxU8 *au8ImageBuffer;
 
@@ -3096,7 +3096,7 @@ static orxBITMAP *orxDisplay_Android_LoadKTXBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = (orxU8*)orxMemory_Allocate(u32DataSizeRounded, orxMEMORY_TYPE_MAIN);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxResource_Read(hResource, (orxS64)u32DataSizeRounded, au8ImageBuffer) > 0)
+          if(orxResource_Read(hResource, (orxS64)u32DataSizeRounded, au8ImageBuffer, orxNULL, orxNULL) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3220,7 +3220,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
           GLuint          uiWidth, uiHeight, uiBytesPerPixel;
 
           /* Loads data from resource */
-          s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
+          s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxNULL, orxNULL);
 
           /* Loads image */
           pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);

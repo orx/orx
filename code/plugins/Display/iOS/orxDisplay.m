@@ -1715,7 +1715,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
 
     /* Loads PVR header from file */
     if((s64FileSize >= (orxS64)sizeof(PVRTexHeader))
-    && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader) > 0))
+    && (orxResource_Read(hResource, sizeof(PVRTexHeader), &stHeader, orxNULL, orxNULL) > 0))
     {
       /* Swaps the header's bytes to host format */
       stHeader.headerLength = CFSwapInt32LittleToHost(stHeader.headerLength);
@@ -1853,7 +1853,7 @@ static orxBITMAP *orxDisplay_iOS_LoadPVRBitmap(const orxSTRING _zFilename)
           au8ImageBuffer = orxMemory_Allocate(u32DataSize, orxMEMORY_TYPE_MAIN);
 
           /* Reads the image content (mimaps will be ignored) */
-          if(orxResource_Read(hResource, (orxS64)(u32DataSize * sizeof(orxU8)), au8ImageBuffer) > 0)
+          if(orxResource_Read(hResource, (orxS64)(u32DataSize * sizeof(orxU8)), au8ImageBuffer, orxNULL, orxNULL) > 0)
           {
             /* Allocates bitmap */
             pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3439,7 +3439,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
           UIImage  *poSourceImage;
 
           /* Loads data from resource */
-          orxResource_Read(hResource, s64Size, au8Buffer);
+          orxResource_Read(hResource, s64Size, au8Buffer, orxNULL, orxNULL);
 
           /* Creates NSData from memory */
           poData = [[NSData alloc] initWithBytesNoCopy:au8Buffer length:(NSUInteger)s64Size freeWhenDone: NO];
