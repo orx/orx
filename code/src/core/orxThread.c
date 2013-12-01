@@ -33,8 +33,11 @@
 
 #include "core/orxThread.h"
 
+#include "core/orxSystem.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
+#include "utils/orxString.h"
+
 
 #ifdef __orxWINDOWS__
 
@@ -43,6 +46,9 @@
 #else /* __orxWINDOWS__ */
 
   #include <pthread.h>
+  #include <errno.h>
+  #include <sys/types.h>
+  #include <unistd.h>
 
   #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
 
@@ -154,6 +160,9 @@ static void *orxThread_Execute(void *_pContext)
   {
     /* Runs thread function */
     eResult = pstInfo->pfnRun(pstInfo->pContext);
+
+    /* Yields */
+    orxThread_Yield();
   }
   while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
 
@@ -213,14 +222,16 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* Asks for small time slices */
       timeBeginPeriod(1);
 
-#elif defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
+#else /* __orxWINDOWS__ */
+
+      /* Inits main thread info */
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
+
+  #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
 
       {
         cpu_set_t stSet;
-
-        /* Inits main thread info */
-        sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
-        sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
         /* Sets CPU affinity mask */
         CPU_ZERO(&stSet);
@@ -230,7 +241,9 @@ orxSTATUS orxFASTCALL orxThread_Init()
         pthread_setaffinity_np(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, sizeof(cpu_set_t), &stSet);
       }
 
-#endif
+  #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
+
+#endif /* __orxWINDOWS__ */
     }
     else
     {
@@ -549,7 +562,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     pstResult = (orxTHREAD_SEMAPHORE *)sem_open(acBuffer, O_CREAT, 0644, _u32Value);
 
     /* Success? */
-    if(pstResult != SEM_FAILED)
+    if((sem_t *)pstResult != SEM_FAILED)
     {
       /* Unlinks it */
       sem_unlink(acBuffer);
@@ -570,7 +583,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
   if(pstResult != orxNULL)
   {
     /* Inits it */
-    if(sem_init(_pstSemaphore, 0, _u32Value) == -1)
+    if(sem_init((sem_t *)pstResult, 0, _u32Value) == -1)
     {
       /* Frees it */
       orxMemory_Free(pstResult);
