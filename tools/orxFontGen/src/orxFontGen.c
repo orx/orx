@@ -1176,6 +1176,9 @@ int main(int argc, char **argv)
         Run();
       }
 
+      // Joins all threads
+      orxThread_JoinAll();
+
       // Exits from engine
       orxModule_Exit(orxMODULE_ID_MAIN);
     }

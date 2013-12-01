@@ -244,6 +244,9 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
     }
 
+    /* Joins all threads */
+    orxThread_JoinAll();
+
     /* Exits from engine */
     orxModule_Exit(orxMODULE_ID_MAIN);
   }

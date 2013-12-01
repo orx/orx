@@ -96,6 +96,11 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Create(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Join(orxU32 _u32ThreadID);
 
+/** Joins all threads (blocks & waits until the other threads finish)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_JoinAll();
+
 /** Gets current thread ID
  * @return      Current thread ID
  */

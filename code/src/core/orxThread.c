@@ -155,7 +155,7 @@ static void *orxThread_Execute(void *_pContext)
     /* Runs thread function */
     eResult = pstInfo->pfnRun(pstInfo->pContext);
   }
-  while(eResult != orxSTATUS_FAILURE);
+  while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
 
   /* Done! */
   return 0;
@@ -252,6 +252,9 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    /* Joins all remaining threads */
+    orxThread_JoinAll();
+
 #ifdef __orxWINDOWS__
 
     /* Resets time slices */
@@ -366,31 +369,70 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
   orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
 
-  /* Updates stop flag */
-  orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+  /* Is initialized? */
+  if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
+  {
+    /* Waits for semaphore */
+    orxThread_WaitSemaphore(&(sstThread.stSemaphore));
+
+    /* Updates stop flag */
+    orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
 
 #ifdef __orxWINDOWS__
 
-  /* Waits for thread */
-  WaitForSingleObject(sstThread.astThreadInfoList[_u32ThreadID].hThread, INFINITE);
+    /* Waits for thread */
+    WaitForSingleObject(sstThread.astThreadInfoList[_u32ThreadID].hThread, INFINITE);
 
-  /* Clears thread ID */
-  sstThread.astThreadInfoList[_u32ThreadID].u32ThreadID = 0;
+    /* Clears thread ID */
+    sstThread.astThreadInfoList[_u32ThreadID].u32ThreadID = 0;
 
 #else /* __orxWINDOWS__ */
 
-  /* Joins thread */
-  pthread_join(sstThread.astThreadInfoList[_u32ThreadID].hThread, NULL);
+    /* Joins thread */
+    pthread_join(sstThread.astThreadInfoList[_u32ThreadID].hThread, NULL);
 
 #endif /* __orxWINDOWS__ */
 
-  /* Clears thread info */
-  sstThread.astThreadInfoList[_u32ThreadID].hThread     = 0;
-  sstThread.astThreadInfoList[_u32ThreadID].u32ParentID = 0;
-  sstThread.astThreadInfoList[_u32ThreadID].pfnRun      = orxNULL;
-  sstThread.astThreadInfoList[_u32ThreadID].pContext    = orxNULL;
-  orxMEMORY_BARRIER();
-  sstThread.astThreadInfoList[_u32ThreadID].u32Flags    = orxTHREAD_KU32_INFO_FLAG_NONE;
+    /* Clears thread info */
+    sstThread.astThreadInfoList[_u32ThreadID].hThread     = 0;
+    sstThread.astThreadInfoList[_u32ThreadID].u32ParentID = 0;
+    sstThread.astThreadInfoList[_u32ThreadID].pfnRun      = orxNULL;
+    sstThread.astThreadInfoList[_u32ThreadID].pContext    = orxNULL;
+    sstThread.astThreadInfoList[_u32ThreadID].u32Flags    = orxTHREAD_KU32_INFO_FLAG_NONE;
+    orxMEMORY_BARRIER();
+
+    /* Signals semaphore */
+    orxThread_SignalSemaphore(&(sstThread.stSemaphore));
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Joins all threads (blocks & waits until the other threads finish)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxThread_JoinAll()
+{
+  orxU32    u32Index;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+
+  /* For all slots */
+  for(u32Index = 0; u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER; u32Index++)
+  {
+    /* Not main? */
+    if(u32Index != orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Joins it */
+      orxThread_Join(u32Index);
+    }
+  }
 
   /* Done! */
   return eResult;
