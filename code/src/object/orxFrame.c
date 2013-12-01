@@ -541,22 +541,22 @@ static orxINLINE void orxFrame_UpdateData(orxFRAME *_pstFrame, const orxFRAME *_
   /* 2D data? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
-    const orxFRAME *pstParent;
-    orxVECTOR       vPos, vScale;
-    orxFLOAT        fRotation;
+    orxVECTOR vPos, vScale;
+    orxFLOAT  fRotation;
 
     /* Gets frame's local data */
     _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, &vScale);
     fRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
     orxVector_Copy(&vPos, _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL));
 
-    /* Gets parent frame */
-    pstParent = orxFrame_GetParent(_pstFrame);
-
-    /* Transforms them */
-    orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
-    fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
-    orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
+    /* Is not root? */
+    if(_pstParent != sstFrame.pstRoot)
+    {
+      /* Transforms them */
+      orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
+      fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
+      orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
+    }
 
     /* Stores them */
     _orxFrame_SetRotation(_pstFrame, fRotation, orxFRAME_SPACE_GLOBAL);
