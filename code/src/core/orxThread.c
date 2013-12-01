@@ -110,7 +110,7 @@ typedef struct __orxTHREAD_INFO_t
 typedef struct __orxTHREAD_STATIC_t
 {
   volatile orxTHREAD_INFO astThreadInfoList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
-  orxTHREAD_SEMAPHORE     stSemaphore;
+  orxTHREAD_SEMAPHORE*    pstSemaphore;
 
   orxU32                  u32Flags;
 
@@ -172,6 +172,7 @@ void orxFASTCALL orxThread_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_THREAD, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_THREAD, orxMODULE_ID_SYSTEM);
 
   /* Done! */
   return;
@@ -193,8 +194,11 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
 
-    /* Inits semaphore */
-    if(orxThread_InitSemaphore(&(sstThread.stSemaphore), 1) != orxSTATUS_FAILURE)
+    /* Creates semaphore */
+    sstThread.pstSemaphore = orxThread_CreateSemaphore(1);
+
+    /* Success? */
+    if(sstThread.pstSemaphore != orxNULL)
     {
 #if defined(__orxWINDOWS__)
 
@@ -262,8 +266,8 @@ void orxFASTCALL orxThread_Exit()
 
 #endif /* __orxWINDOWS__ */
 
-     /* Exits from semaphore */
-    orxThread_ExitSemaphore(&(sstThread.stSemaphore));
+    /* Deletes semaphore */
+    orxThread_DeleteSemaphore(sstThread.pstSemaphore);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
@@ -287,7 +291,7 @@ orxU32 orxFASTCALL orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pCo
   orxASSERT(_pfnRun != orxNULL);
 
   /* Waits for semaphore */
-  orxThread_WaitSemaphore(&(sstThread.stSemaphore));
+  orxThread_WaitSemaphore(sstThread.pstSemaphore);
 
   /* For all slots */
   for(u32Index = 0; u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER; u32Index++)
@@ -351,7 +355,7 @@ orxU32 orxFASTCALL orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pCo
   }
 
   /* Signals semaphore */
-  orxThread_SignalSemaphore(&(sstThread.stSemaphore));
+  orxThread_SignalSemaphore(sstThread.pstSemaphore);
 
   /* Done! */
   return u32Result;
@@ -373,7 +377,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
   if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
   {
     /* Waits for semaphore */
-    orxThread_WaitSemaphore(&(sstThread.stSemaphore));
+    orxThread_WaitSemaphore(sstThread.pstSemaphore);
 
     /* Updates stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
@@ -402,7 +406,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     orxMEMORY_BARRIER();
 
     /* Signals semaphore */
-    orxThread_SignalSemaphore(&(sstThread.stSemaphore));
+    orxThread_SignalSemaphore(sstThread.pstSemaphore);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -515,44 +519,80 @@ void orxFASTCALL orxThread_Yield()
   return;
 }
 
-/** Inits a semaphore with the given value
- * @param[in]   _pstSemaphore                         Concerned semaphore
+/** Creates a semaphore with s given value
  * @param[in]   _u32Value                             Value with which to init the semaphore
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxTHREAD_SEMAPHORE / orxNULL
  */
-orxSTATUS orxFASTCALL orxThread_InitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore, orxU32 _u32Value)
+orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
 {
-  orxSTATUS eResult;
+  orxTHREAD_SEMAPHORE *pstResult;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstSemaphore != orxNULL);
-  orxASSERT(_u32Value != 0);
 
 #ifdef __orxWINDOWS__
 
   /* Creates semaphore */
-  *_pstSemaphore = CreateSemaphore(NULL, (LONG)_u32Value, (LONG)_u32Value, NULL);
-
-  /* Updates result */
-  eResult = (*_pstSemaphore != NULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  pstResult = (orxTHREAD_SEMAPHORE *)CreateSemaphore(NULL, (LONG)_u32Value, (LONG)_u32Value, NULL);
 
 #else /* __orxWINDOWS__ */
 
-  /* Inits semaphore */
-  eResult = (sem_init(_pstSemaphore, 0, _u32Value) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  #ifdef __orxMAC__
+
+  {
+    orxCHAR acBuffer[256];
+
+    /* Prints name */
+    acBuffer[orxString_NPrint(acBuffer, 255, "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime())] = orxCHAR_NULL;
+
+    /* Opens semaphore */
+    pstResult = (orxTHREAD_SEMAPHORE *)sem_open(acBuffer, O_CREAT, 0644, _u32Value);
+
+    /* Success? */
+    if(pstResult != SEM_FAILED)
+    {
+      /* Unlinks it */
+      sem_unlink(acBuffer);
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  #else /* __orxMAC__ */
+
+  /* Allocates semaphore */
+  pstResult = (orxTHREAD_SEMAPHORE *)orxMemory_Allocate(sizeof(sem_t), orxMEMORY_TYPE_SYSTEM);
+
+  /* Success? */
+  if(pstResult != orxNULL)
+  {
+    /* Inits it */
+    if(sem_init(_pstSemaphore, 0, _u32Value) == -1)
+    {
+      /* Frees it */
+      orxMemory_Free(pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  #endif /* __orxMAC__ */
 
 #endif /* __orxWINDOWS__ */
 
   /* Done! */
-  return eResult;
+  return pstResult;
 }
 
-/** Exits from a semaphore (ie. "deletes" it)
+/** Deletes a semaphore
  * @param[in]   _pstSemaphore                         Concerned semaphore
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxThread_ExitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore)
+orxSTATUS orxFASTCALL orxThread_DeleteSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore)
 {
   orxSTATUS eResult;
 
@@ -563,12 +603,24 @@ orxSTATUS orxFASTCALL orxThread_ExitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore
 #ifdef __orxWINDOWS__
 
   /* Closes the semaphore */
-  eResult = (CloseHandle(*_pstSemaphore) != 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = (CloseHandle((HANDLE)_pstSemaphore) != 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
 #else /* __orxWINDOWS__ */
 
+  #ifdef __orxMAC__
+
+  /* Closes it */
+  eResult = (sem_close((sem_t *)_pstSemaphore) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  #else /* __orxMAC__ */
+
   /* Destroys semaphore */
-  eResult = (sem_destroy(_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = (sem_destroy((sem_t *)_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Frees it */
+  orxMemory_Free(_pstSemaphore);
+
+  #endif /* __orxMAC__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -591,12 +643,24 @@ orxSTATUS orxFASTCALL orxThread_WaitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore
 #ifdef __orxWINDOWS__
 
   /* Waits for semaphore */
-  eResult = (WaitForSingleObject(*_pstSemaphore, INFINITE) != WAIT_FAILED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = (WaitForSingleObject((HANDLE)_pstSemaphore, INFINITE) != WAIT_FAILED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
 #else /* __orxWINDOWS__ */
 
-  /* Waits for semaphore */
-  eResult = (sem_wait(_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  {
+    int iReturnCode;
+
+    /* GDB-proof semaphore wait (when breaking in debug, wait can prematurally return with EINTR) */
+    do
+    {
+      /* Waits */
+      iReturnCode = sem_wait((sem_t *)_pstSemaphore);
+    }
+    while((iReturnCode == -1) && (errno == EINTR));
+
+    /* Updates result */
+    eResult = (iReturnCode != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
 
 #endif /* __orxWINDOWS__ */
 
@@ -619,12 +683,12 @@ orxSTATUS orxFASTCALL orxThread_SignalSemaphore(orxTHREAD_SEMAPHORE *_pstSemapho
 #ifdef __orxWINDOWS__
 
   /* Releases semaphore */
-  eResult = (ReleaseSemaphore(*_pstSemaphore, 1, NULL) != 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = (ReleaseSemaphore((HANDLE)_pstSemaphore, 1, NULL) != 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
 #else /* __orxWINDOWS__ */
 
   /* Posts to a semaphore */
-  eResult = (sem_post(_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = (sem_post((sem_t *)_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
 #endif /* __orxWINDOWS__ */
 

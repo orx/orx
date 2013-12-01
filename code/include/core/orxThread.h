@@ -52,17 +52,8 @@
 #endif /* __orxWINDOWS__ */
 
 
-#ifdef __orxWINDOWS__
-
-typedef HANDLE                                        orxTHREAD_SEMAPHORE;
-
-#else /* __orxWINDOWS__ */
-
-#include <semaphore.h>
-
-typedef sem_t                                         orxTHREAD_SEMAPHORE;
-
-#endif /* __orxWINDOWS__ */
+/** Semaphore structure */
+typedef struct __orxTHREAD_SEMAPHORE_t                orxTHREAD_SEMAPHORE;
 
 
 /** Thread run function type */
@@ -111,18 +102,17 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetCurrent();
 extern orxDLLAPI void orxFASTCALL                     orxThread_Yield();
 
 
-/** Inits a semaphore with the given value
- * @param[in]   _pstSemaphore                         Concerned semaphore
+/** Inits a semaphore with a given value
  * @param[in]   _u32Value                             Value with which to init the semaphore
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxTHREAD_SEMAPHORE / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_InitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore, orxU32 _u32Value);
+extern orxDLLAPI orxTHREAD_SEMAPHORE *orxFASTCALL     orxThread_CreateSemaphore(orxU32 _u32Value);
 
-/** Exits from a semaphore (ie. "deletes" it)
+/** Deletes a semaphore
  * @param[in]   _pstSemaphore                         Concerned semaphore
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_ExitSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_DeleteSemaphore(orxTHREAD_SEMAPHORE *_pstSemaphore);
 
 /** Waits for a semaphore
  * @param[in]   _pstSemaphore                         Concerned semaphore
