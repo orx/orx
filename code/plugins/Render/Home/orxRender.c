@@ -75,7 +75,7 @@
 #define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT      orx2F(0.25f)
 #define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
-#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(32.0f)
+#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(24.0f)
 #define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
 #define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT       orx2F(1.0f)
