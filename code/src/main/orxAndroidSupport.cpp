@@ -218,6 +218,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     sstAndroid.mFragment = mEnv->NewGlobalRef(jFragment);
     objClass = mEnv->FindClass("android/support/v4/app/Fragment");
     sstAndroid.midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
+
     jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
@@ -503,67 +504,68 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
-    JNIEnv *env = Android_JNI_GetEnv();
-    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);    
-    jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
-    return rotation;
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);    
+  jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
+  return rotation;
 }
 
 extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
-    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-    env->CallVoidMethod(jActivity, sstAndroid.midSetWindowFormat, format);
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  env->CallVoidMethod(jActivity, sstAndroid.midSetWindowFormat, format);
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
 {
-    return Android_JNI_GetEnv();
+  return Android_JNI_GetEnv();
 }
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-    JNIEnv *env = Android_JNI_GetEnv();
-    jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-    return jActivity;
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  return jActivity;
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-    if (!sstAndroid.s_AndroidInternalFilesPath)
+  if (!sstAndroid.s_AndroidInternalFilesPath)
+  {
+    LocalReferenceHolder refs(__FUNCTION__);
+    jmethodID mid;
+    jobject fileObject;
+    jstring pathString;
+    const char *path;
+    jobject jActivity;
+
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (!refs.init(env))
     {
-        LocalReferenceHolder refs(__FUNCTION__);
-        jmethodID mid;
-        jobject fileObject;
-        jstring pathString;
-        const char *path;
-        jobject jActivity;
-
-        JNIEnv *env = Android_JNI_GetEnv();
-        if (!refs.init(env)) {
-            return NULL;
-        }
-
-        jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-        // fileObj = context.getFilesDir();
-        mid = env->GetMethodID(env->GetObjectClass(jActivity),
-                "getFilesDir", "()Ljava/io/File;");
-        fileObject = env->CallObjectMethod(jActivity, mid);
-        if (!fileObject) {
-            LOGE("Couldn't get internal directory");
-            return NULL;
-        }
-
-        // path = fileObject.getAbsolutePath();
-        mid = env->GetMethodID(env->GetObjectClass(fileObject),
-                "getAbsolutePath", "()Ljava/lang/String;");
-        pathString = (jstring)env->CallObjectMethod(fileObject, mid);
-
-        path = env->GetStringUTFChars(pathString, NULL);
-        sstAndroid.s_AndroidInternalFilesPath = strdup(path);
-        env->ReleaseStringUTFChars(pathString, path);
+      return NULL;
     }
-    return sstAndroid.s_AndroidInternalFilesPath;
+
+    jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+    // fileObj = context.getFilesDir();
+    mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
+    fileObject = env->CallObjectMethod(jActivity, mid);
+    if (!fileObject)
+    {
+      LOGE("Couldn't get internal directory");
+      return NULL;
+    }
+
+    // path = fileObject.getAbsolutePath();
+    mid = env->GetMethodID(env->GetObjectClass(fileObject), "getAbsolutePath", "()Ljava/lang/String;");
+    pathString = (jstring)env->CallObjectMethod(fileObject, mid);
+
+    path = env->GetStringUTFChars(pathString, NULL);
+    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    env->ReleaseStringUTFChars(pathString, path);
+  }
+
+  return sstAndroid.s_AndroidInternalFilesPath;
 }
 
 static inline orxBOOL isInteractible()

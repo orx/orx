@@ -57,6 +57,7 @@ typedef struct __orxKEYBOARD_STATIC_t
 {
   orxU32            u32Flags;
   orxBOOL           abKeyPressed[orxKEYBOARD_MAX_ANDROID_KEYCODE];
+  jmethodID         midShowKeyboard;
 } orxKEYBOARD_STATIC;
 
 
@@ -279,6 +280,10 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
         sstKeyboard.abKeyPressed[i] = orxFALSE;
       }
 
+      JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
+      jclass objClass = env->FindClass("org/orx/lib/OrxActivity");
+      sstKeyboard.midShowKeyboard = env->GetMethodID(objClass, "showKeyboard","(Z)V");
+
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
     }
@@ -363,6 +368,15 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
   return;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Show(orxBOOL _bShow)
+{
+  JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
+  jobject jActivity = orxAndroid_GetActivity();
+  env->CallVoidMethod(jActivity, sstKeyboard.midShowKeyboard, _bShow == orxTRUE ? JNI_TRUE : JNI_FALSE);  
+
+  /* Done */
+  return orxSTATUS_SUCCESS;
+}
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -375,4 +389,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_IsKeyPressed, KEYBOARD, IS_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

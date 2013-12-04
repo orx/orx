@@ -554,6 +554,11 @@ void orxFASTCALL orxKeyboard_GLFW_ClearBuffer()
   return;
 }
 
+orxSTATUS orxFASTCALL orxKeyboard_GLFW_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -565,4 +570,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_IsKeyPressed, KEYBOARD, IS_KEY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

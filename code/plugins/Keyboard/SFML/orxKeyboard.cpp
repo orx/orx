@@ -409,6 +409,11 @@ extern "C" void orxFASTCALL orxKeyboard_SFML_ClearBuffer()
   return;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -420,4 +425,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_IsKeyPressed, KEYBOARD, IS_KEY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();
