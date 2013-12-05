@@ -440,93 +440,96 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;      <span class="comment">/* iOS versions can only be embedded due to the lack of dlfcn presence */</span></div>
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="preprocessor">      #define __orxEMBEDDED__</span></div>
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="comment">/* Plugin include? */</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="preprocessor">#if defined(__orxPLUGIN__)</span></div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="preprocessor">  #ifdef __orxEMBEDDED__</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT </span><span class="comment">/* Compiling embedded plug-in =&gt; API doesn&#39;t need to be imported */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">  #else</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT orxDLLIMPORT </span><span class="comment">/* Compiling plug-in =&gt; API needs to be imported */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxEMBEDDED__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="comment">/* External include? */</span></div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor">#elif defined(__orxEXTERN__)</span></div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;      <span class="comment">/* always use static on iOS, Android and Raspberry */</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="preprocessor">      #define __orxSTATIC__</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment">/* Plugin include? */</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="preprocessor">#if defined(__orxPLUGIN__)</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">  #ifdef __orxEMBEDDED__</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT </span><span class="comment">/* Compiling embedded plug-in =&gt; API doesn&#39;t need to be imported */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor">  #else</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT orxDLLIMPORT </span><span class="comment">/* Compiling plug-in =&gt; API needs to be imported */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxEMBEDDED__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="preprocessor">  #ifdef __orxSTATIC__</span></div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT </span><span class="comment">/* Linking executable against orx static library */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">  #else </span><span class="comment">/* __orxSTATIC__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT orxDLLIMPORT </span><span class="comment">/* Linking executable against orx dynamic library */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxSTATIC__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="comment">/* Internal (library) include */</span></div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="comment">/* External include? */</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="preprocessor">#elif defined(__orxEXTERN__)</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor">  #ifdef __orxSTATIC__</span></div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT </span><span class="comment">/* Linking executable against orx static library */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="preprocessor">  #else </span><span class="comment">/* __orxSTATIC__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="preprocessor">    #define orxDLLAPI orxIMPORT orxDLLIMPORT </span><span class="comment">/* Linking executable against orx dynamic library */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxSTATIC__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00390"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">  390</a></span>&#160;<span class="preprocessor">  #define orxDLLAPI orxIMPORT orxDLLEXPORT </span><span class="comment">/* Compiling orx library =&gt; API needs to be exported */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#if defined(__orxGCC__) || defined(__orxLLVM__)</span></div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()           __sync_synchronize()</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #define orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="comment">/* Internal (library) include */</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00393"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">  393</a></span>&#160;<span class="preprocessor">  #define orxDLLAPI orxIMPORT orxDLLEXPORT </span><span class="comment">/* Compiling orx library =&gt; API needs to be exported */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="preprocessor">#if defined(__orxGCC__) || defined(__orxLLVM__)</span></div>
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">#elif defined(__orxMSVC__)</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()           MemoryBarrier()</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #define orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()           __sync_synchronize()</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #define orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#elif defined(__orxMSVC__)</span></div>
 <div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00408"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7240bc33642336c84068c3f70adb967a">  408</a></span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #undef orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()           MemoryBarrier()</span></div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #define orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;<span class="preprocessor">  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.</span></div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;</div>
-<div class="line"><a name="l00417"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">  417</a></span>&#160;<span class="preprocessor">#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) &amp; (~((size_t)(BLOCK_SIZE) - 1)))</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00419"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gad568d895c9d5dd496b0d720750b4429f">  419</a></span>&#160;<span class="preprocessor">#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7f7f410f595812b1c9c36c21ef1c3480">  420</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9108596dcc7bb4203fee1d30fd1db504">  421</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;</div>
-<div class="line"><a name="l00425"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d">  425</a></span>&#160;<span class="preprocessor">#define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))</span></div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00432"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">  432</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00439"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">  439</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span></div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00446"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">  446</a></span>&#160;<span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00453"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">  453</a></span>&#160;<span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span></div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;<span class="preprocessor">do                            \</span></div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;<span class="preprocessor">{                             \</span></div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;<span class="preprocessor">  (X) &amp;= ~(R);                \</span></div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="preprocessor">  (X) |= (A);                 \</span></div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">} while(orxFALSE)</span></div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00464"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">  464</a></span>&#160;<span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span></div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00411"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7240bc33642336c84068c3f70adb967a">  411</a></span>&#160;<span class="preprocessor">  #define orxMEMORY_BARRIER()</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor"></span><span class="preprocessor">  #undef orxHAS_MEMORY_BARRIER</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;<span class="preprocessor">  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.</span></div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;</div>
+<div class="line"><a name="l00420"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">  420</a></span>&#160;<span class="preprocessor">#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) &amp; (~((size_t)(BLOCK_SIZE) - 1)))</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00422"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gad568d895c9d5dd496b0d720750b4429f">  422</a></span>&#160;<span class="preprocessor">#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7f7f410f595812b1c9c36c21ef1c3480">  423</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)</span></div>
+<div class="line"><a name="l00424"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9108596dcc7bb4203fee1d30fd1db504">  424</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)</span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;</div>
+<div class="line"><a name="l00428"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d">  428</a></span>&#160;<span class="preprocessor">#define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00435"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b">  435</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST_ALL(X, F) (((X) &amp; (F)) == (F))</span></div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00442"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88">  442</a></span>&#160;<span class="preprocessor">#define orxFLAG_TEST(X, F) (((X) &amp; (F)) != 0)</span></div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00449"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">  449</a></span>&#160;<span class="preprocessor">#define orxFLAG_GET(X, M) ((X) &amp; (M))</span></div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00456"></a><span class="lineno"><a class="code" href="group__orx_decl.html#ga88b2b45c15bf1250aeb1ac6d1ed24c99">  456</a></span>&#160;<span class="preprocessor">#define orxFLAG_SET(X, A, R)  \</span></div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;<span class="preprocessor">do                            \</span></div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;<span class="preprocessor">{                             \</span></div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;<span class="preprocessor">  (X) &amp;= ~(R);                \</span></div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="preprocessor">  (X) |= (A);                 \</span></div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="preprocessor">} while(orxFALSE)</span></div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00467"></a><span class="lineno"><a class="code" href="group__orx_decl.html#gab05629baa4da4ecca103047729ad7b5e">  467</a></span>&#160;<span class="preprocessor">#define orxFLAG_SWAP(X, S) ((X) ^= (S))</span></div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orxDECL_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>
