@@ -325,37 +325,38 @@ extern "C" void Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject
 }
 
 // Keydown
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode, jint unicode)
 {
-    orxANDROID_KEY_EVENT stKeyEvent;
+  orxANDROID_KEY_EVENT stKeyEvent;
 
-    stKeyEvent.u32Action = 0;
-    stKeyEvent.u32KeyCode = keycode;
+  stKeyEvent.u32Action = 0;
+  stKeyEvent.u32KeyCode = keycode;
+  stKeyEvent.u32Unicode = unicode;
 
-    if(sstAndroid.pipeKeyEvent[1] != -1)
+  if(sstAndroid.pipeKeyEvent[1] != -1)
+  {
+    if(write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
     {
-        if(write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
-        {
-            LOGE("Failure writing keycode: %s\n", strerror(errno));
-        }
+      LOGE("Failure writing keycode: %s\n", strerror(errno));
     }
+  }
 }
 
 // Keyup
 extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
-    orxANDROID_KEY_EVENT stKeyEvent;
+  orxANDROID_KEY_EVENT stKeyEvent;
 
-    stKeyEvent.u32Action = 1;
-    stKeyEvent.u32KeyCode = keycode;
+  stKeyEvent.u32Action = 1;
+  stKeyEvent.u32KeyCode = keycode;
 
-    if(sstAndroid.pipeKeyEvent[1] != -1)
+  if(sstAndroid.pipeKeyEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
     {
-      if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
-      {
-          LOGE("Failure writing keycode: %s\n", strerror(errno));
-      }
+      LOGE("Failure writing keycode: %s\n", strerror(errno));
     }
+  }
 }
 
 // Touch

@@ -45,7 +45,10 @@
 
 #define orxKEYBOARD_KU32_STATIC_MASK_ALL        0xFFFFFFFF /**< All mask */
 
-#define orxKEYBOARD_MAX_ANDROID_KEYCODE         256
+/** Misc
+ */
+#define orxKEYBOARD_KU32_BUFFER_SIZE            64
+#define orxKEYBOARD_KU32_STRING_BUFFER_SIZE     (orxKEYBOARD_KU32_BUFFER_SIZE * 4 + 1)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -56,7 +59,12 @@
 typedef struct __orxKEYBOARD_STATIC_t
 {
   orxU32            u32Flags;
-  orxBOOL           abKeyPressed[orxKEYBOARD_MAX_ANDROID_KEYCODE];
+  orxBOOL           abKeyPressed[orxKEYBOARD_KEY_NUMBER];
+
+  orxU32            u32KeyReadIndex, u32KeyWriteIndex, u32CharReadIndex, u32CharWriteIndex;
+  orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
   jmethodID         midShowKeyboard;
 } orxKEYBOARD_STATIC;
 
@@ -78,7 +86,7 @@ static orxKEYBOARD_STATIC sstKeyboard;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(int _eKey)
+static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
 {
   orxKEYBOARD_KEY eResult;
 
@@ -88,11 +96,10 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(int _eKey)
     case AKEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
     case AKEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}
     case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}
-    case AKEYCODE_CLEAR:              {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
+    case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
     case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
     case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
     case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGEDOWN; break;}
-    case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_DELETE; break;}
     case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}
     case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}
     case AKEYCODE_MEDIA_PLAY_PAUSE:   {eResult = orxKEYBOARD_KEY_PAUSE; break;}
@@ -158,90 +165,11 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(int _eKey)
   return eResult;
 }
 
-static int orxFASTCALL orxKeyboard_Android_GetAKey(orxKEYBOARD_KEY _eKey)
-{
-  int eResult;
-
-  /* Depending on key */
-  switch(_eKey)
-  {
-    case orxKEYBOARD_KEY_ESCAPE:        {eResult = AKEYCODE_BACK; break;}
-    case orxKEYBOARD_KEY_SPACE:         {eResult = AKEYCODE_SPACE; break;}
-    case orxKEYBOARD_KEY_RETURN:        {eResult = AKEYCODE_ENTER; break;}
-    case orxKEYBOARD_KEY_BACKSPACE:     {eResult = AKEYCODE_CLEAR; break;}
-    case orxKEYBOARD_KEY_TAB:           {eResult = AKEYCODE_TAB; break;}
-    case orxKEYBOARD_KEY_PAGEUP:        {eResult = AKEYCODE_PAGE_UP; break;}
-    case orxKEYBOARD_KEY_PAGEDOWN:      {eResult = AKEYCODE_PAGE_DOWN; break;}
-    case orxKEYBOARD_KEY_DELETE:        {eResult = AKEYCODE_DEL; break;}
-    case orxKEYBOARD_KEY_ADD:           {eResult = AKEYCODE_PLUS; break;}
-    case orxKEYBOARD_KEY_MULTIPLY:      {eResult = AKEYCODE_STAR; break;}
-    case orxKEYBOARD_KEY_PAUSE:         {eResult = AKEYCODE_MEDIA_PLAY_PAUSE; break;}
-    case orxKEYBOARD_KEY_RALT:          {eResult = AKEYCODE_ALT_RIGHT; break;}
-    case orxKEYBOARD_KEY_RSHIFT:        {eResult = AKEYCODE_SHIFT_RIGHT; break;}
-    case orxKEYBOARD_KEY_LALT:          {eResult = AKEYCODE_ALT_LEFT; break;}
-    case orxKEYBOARD_KEY_LSHIFT:        {eResult = AKEYCODE_SHIFT_LEFT; break;}
-    case orxKEYBOARD_KEY_MENU:          {eResult = AKEYCODE_MENU; break;}
-    case orxKEYBOARD_KEY_LBRACKET:      {eResult = AKEYCODE_LEFT_BRACKET; break;}
-    case orxKEYBOARD_KEY_RBRACKET:      {eResult = AKEYCODE_RIGHT_BRACKET; break;}
-    case orxKEYBOARD_KEY_SEMICOLON:     {eResult = AKEYCODE_SEMICOLON; break;}
-    case orxKEYBOARD_KEY_COMMA:         {eResult = AKEYCODE_COMMA; break;}
-    case orxKEYBOARD_KEY_PERIOD:        {eResult = AKEYCODE_PERIOD; break;}
-    case orxKEYBOARD_KEY_QUOTE:         {eResult = AKEYCODE_APOSTROPHE; break;}
-    case orxKEYBOARD_KEY_SLASH:         {eResult = AKEYCODE_SLASH; break;}
-    case orxKEYBOARD_KEY_BACKSLASH:     {eResult = AKEYCODE_BACKSLASH; break;}
-    case orxKEYBOARD_KEY_EQUAL:         {eResult = AKEYCODE_EQUALS; break;}
-    case orxKEYBOARD_KEY_DASH:          {eResult = AKEYCODE_MINUS; break;}
-    case orxKEYBOARD_KEY_UP:            {eResult = AKEYCODE_DPAD_UP; break;}
-    case orxKEYBOARD_KEY_RIGHT:         {eResult = AKEYCODE_DPAD_RIGHT; break;}
-    case orxKEYBOARD_KEY_DOWN:          {eResult = AKEYCODE_DPAD_DOWN; break;}
-    case orxKEYBOARD_KEY_LEFT:          {eResult = AKEYCODE_DPAD_LEFT; break;}
-    case orxKEYBOARD_KEY_A:             {eResult = AKEYCODE_A; break;}
-    case orxKEYBOARD_KEY_Z:             {eResult = AKEYCODE_Z; break;}
-    case orxKEYBOARD_KEY_E:             {eResult = AKEYCODE_E; break;}
-    case orxKEYBOARD_KEY_R:             {eResult = AKEYCODE_R; break;}
-    case orxKEYBOARD_KEY_T:             {eResult = AKEYCODE_T; break;}
-    case orxKEYBOARD_KEY_Y:             {eResult = AKEYCODE_Y; break;}
-    case orxKEYBOARD_KEY_U:             {eResult = AKEYCODE_U; break;}
-    case orxKEYBOARD_KEY_I:             {eResult = AKEYCODE_I; break;}
-    case orxKEYBOARD_KEY_O:             {eResult = AKEYCODE_O; break;}
-    case orxKEYBOARD_KEY_P:             {eResult = AKEYCODE_P; break;}
-    case orxKEYBOARD_KEY_Q:             {eResult = AKEYCODE_Q; break;}
-    case orxKEYBOARD_KEY_S:             {eResult = AKEYCODE_S; break;}
-    case orxKEYBOARD_KEY_D:             {eResult = AKEYCODE_D; break;}
-    case orxKEYBOARD_KEY_F:             {eResult = AKEYCODE_F; break;}
-    case orxKEYBOARD_KEY_G:             {eResult = AKEYCODE_G; break;}
-    case orxKEYBOARD_KEY_H:             {eResult = AKEYCODE_H; break;}
-    case orxKEYBOARD_KEY_J:             {eResult = AKEYCODE_J; break;}
-    case orxKEYBOARD_KEY_K:             {eResult = AKEYCODE_K; break;}
-    case orxKEYBOARD_KEY_L:             {eResult = AKEYCODE_L; break;}
-    case orxKEYBOARD_KEY_M:             {eResult = AKEYCODE_M; break;}
-    case orxKEYBOARD_KEY_W:             {eResult = AKEYCODE_W; break;}
-    case orxKEYBOARD_KEY_X:             {eResult = AKEYCODE_X; break;}
-    case orxKEYBOARD_KEY_C:             {eResult = AKEYCODE_C; break;}
-    case orxKEYBOARD_KEY_V:             {eResult = AKEYCODE_V; break;}
-    case orxKEYBOARD_KEY_B:             {eResult = AKEYCODE_B; break;}
-    case orxKEYBOARD_KEY_N:             {eResult = AKEYCODE_N; break;}
-    case orxKEYBOARD_KEY_0:             {eResult = AKEYCODE_0; break;}
-    case orxKEYBOARD_KEY_1:             {eResult = AKEYCODE_1; break;}
-    case orxKEYBOARD_KEY_2:             {eResult = AKEYCODE_2; break;}
-    case orxKEYBOARD_KEY_3:             {eResult = AKEYCODE_3; break;}
-    case orxKEYBOARD_KEY_4:             {eResult = AKEYCODE_4; break;}
-    case orxKEYBOARD_KEY_5:             {eResult = AKEYCODE_5; break;}
-    case orxKEYBOARD_KEY_6:             {eResult = AKEYCODE_6; break;}
-    case orxKEYBOARD_KEY_7:             {eResult = AKEYCODE_7; break;}
-    case orxKEYBOARD_KEY_8:             {eResult = AKEYCODE_8; break;}
-    case orxKEYBOARD_KEY_9:             {eResult = AKEYCODE_9; break;}
-    default:                            {eResult = AKEYCODE_UNKNOWN; break;}
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxANDROID_KEY_EVENT *pstKeyEvent;
+  orxKEYBOARD_KEY eKey;
 
   /* Gets payload */
   pstKeyEvent = (orxANDROID_KEY_EVENT *) _pstEvent->pstPayload;
@@ -250,10 +178,48 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
   switch(_pstEvent->eID)
   {
     case orxANDROID_EVENT_KEYBOARD_DOWN:
-      sstKeyboard.abKeyPressed[pstKeyEvent->u32KeyCode] = orxTRUE;
+      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
+
+      if(eKey != orxKEYBOARD_KEY_NONE)
+      {
+        sstKeyboard.abKeyPressed[eKey] = orxTRUE;
+
+        /* Stores it */
+        sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = pstKeyEvent->u32KeyCode;
+        sstKeyboard.u32KeyWriteIndex = (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+        /* Full? */
+        if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+        {
+          /* Bounces read index */
+          sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+        }
+      }
+
+      /* has unicode */
+      if(pstKeyEvent->u32Unicode != 0)
+      {
+        /* Stores it */
+        sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = pstKeyEvent->u32Unicode;
+        sstKeyboard.u32CharWriteIndex = (sstKeyboard.u32CharWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+        /* Full? */
+        if(sstKeyboard.u32CharReadIndex == sstKeyboard.u32CharWriteIndex)
+        {
+          /* Bounces read index */
+          sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+        }
+      }
+
       break;
+
     case orxANDROID_EVENT_KEYBOARD_UP:
-      sstKeyboard.abKeyPressed[pstKeyEvent->u32KeyCode] = orxFALSE;
+      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
+
+      if(eKey != orxKEYBOARD_KEY_NONE)
+      {
+        sstKeyboard.abKeyPressed[eKey] = orxFALSE;
+      }
       break;
   }
 
@@ -275,7 +241,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
-      for(i = 0; i < orxKEYBOARD_MAX_ANDROID_KEYCODE; i++)
+      for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
       {
         sstKeyboard.abKeyPressed[i] = orxFALSE;
       }
@@ -310,27 +276,14 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
 
 extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
-  orxS32 s32KeyIdx;
   orxBOOL bResult;
 
   /* Checks */
   orxASSERT(_eKey < orxKEYBOARD_KEY_NUMBER);
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  /* Gets Event key enum */
-  s32KeyIdx = orxKeyboard_Android_GetAKey(_eKey);
-
-  /* Valid? */
-  if(s32KeyIdx != AKEYCODE_UNKNOWN)
-  {
-    /* Updates result */
-    bResult = sstKeyboard.abKeyPressed[s32KeyIdx];
-  }
-  else
-  {
-    /* Updates result */
-    bResult = orxFALSE;
-  }
+  /* Updates result */
+  bResult = sstKeyboard.abKeyPressed[_eKey];
 
   /* Done! */
   return bResult;
@@ -339,10 +292,25 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
 
 extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 {
-  orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
+  orxKEYBOARD_KEY eResult;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Not empty? */
+  if(sstKeyboard.u32KeyReadIndex != sstKeyboard.u32KeyWriteIndex)
+  {
+    /* Updates result */
+    eResult = orxKeyboard_Android_GetKey((orxS32)sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyReadIndex]);
+
+    /* Updates read index */
+    sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxKEYBOARD_KEY_NONE;
+  }
 
   /* Done! */
   return eResult;
@@ -350,10 +318,32 @@ extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 
 extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  orxU32          u32BufferSize;
+  orxCHAR        *pc;
+  const orxSTRING zResult = sstKeyboard.acStringBuffer;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* For all characters */
+  for(zResult = pc = sstKeyboard.acStringBuffer, u32BufferSize = orxKEYBOARD_KU32_STRING_BUFFER_SIZE - 1;
+      sstKeyboard.u32CharReadIndex != sstKeyboard.u32CharWriteIndex;
+      sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1))
+  {
+    orxU32 u32Size;
+
+    /* Writes it */
+    u32Size = orxString_PrintUTF8Character(pc, u32BufferSize, sstKeyboard.au32CharBuffer[sstKeyboard.u32CharReadIndex]);
+
+    /* Updates buffer size */
+    u32BufferSize -= u32Size;
+
+    /* Updates char pointer */
+    pc += u32Size;
+  }
+
+  /* Terminates string */
+  *pc = orxCHAR_NULL;
 
   /* Done! */
   return zResult;
@@ -361,8 +351,14 @@ extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 
 extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 {
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Clears all buffer indices */
+  sstKeyboard.u32KeyReadIndex   =
+  sstKeyboard.u32KeyWriteIndex  = 
+  sstKeyboard.u32CharReadIndex  =
+  sstKeyboard.u32CharWriteIndex = 0;
 
   /* Done! */
   return;
