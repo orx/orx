@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74":[1,35,100],
 "group__orx_object.html#gad99b0892c7f5eb9847b906d24c8aae5d":[1,35,53],
 "group__orx_object.html#gada022dc8a3ef36235ccb5b6cc6e6b06a":[1,35,79],
 "group__orx_object.html#gada5553e90d127d2889985f4ed2a1f822":[1,35,37],
@@ -191,8 +192,9 @@ var NAVTREEINDEX6 =
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194":[1,38,34,3],
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c":[1,38,34,2],
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143":[1,38,34,4],
-"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8":[1,38,34,7],
-"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9":[1,38,34,6],
+"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8":[1,38,34,8],
+"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9":[1,38,34,7],
+"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faabcb4ec884c1904f969926ef13519220a":[1,38,34,6],
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458":[1,38,34,5],
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f":[1,38,34,0],
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335":[1,38,34,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX6 =
 "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01":[1,38,33,5],
 "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38":[1,38,33,4],
 "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7aab122a0901b3cd4d0e718a7363f10ce7":[1,38,33,0],
-"group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5":[1,38,33,2],
-"group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7aed21b2a00c74b547f67ca0ba858b65a4":[1,38,33,1],
-"group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a03896fbd0f69d41f8c93d64297dbd41a":[1,38,32,15]
+"group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5":[1,38,33,2]
 };
