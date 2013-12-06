@@ -324,6 +324,11 @@ void orxFASTCALL orxKeyboard_SDL_ClearBuffer()
   return;
 }
 
+orxSTATUS orxFASTCALL orxKeyboard_SDL_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -335,4 +340,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_IsKeyPressed, KEYBOARD, IS_KEY_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

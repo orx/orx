@@ -93,6 +93,11 @@ void orxFASTCALL orxKeyboard_Dummy_ClearBuffer()
   return;
 }
 
+orxSTATUS orxFASTCALL orxKeyboard_Dummy_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -104,4 +109,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_IsKeyPressed, KEYBOARD, IS_KE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();
