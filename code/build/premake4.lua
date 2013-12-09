@@ -231,16 +231,12 @@ solution "orx"
         buildoptions
         {
             "-x c++",
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
-            "-mmacosx-version-min=10.6",
             "-gdwarf-2",
             "-Wno-write-strings",
             "-fvisibility-inlines-hidden"
         }
         linkoptions
         {
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
-            "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
 
