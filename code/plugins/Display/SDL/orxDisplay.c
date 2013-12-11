@@ -612,7 +612,7 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
   orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Applies color */
-  glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
+  glColor4f(_pstBitmap->stColor.vRGBA.fR, _pstBitmap->stColor.vRGBA.fG, _pstBitmap->stColor.vRGBA.fB, _pstBitmap->stColor.vRGBA.fA);
   glASSERT();
 
   /* Done! */

@@ -518,7 +518,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             orxRGBA   stRGBA;
 
             /* Gets associated color */
-            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+            stColor.vHSVA.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
             stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
 
             /* For all past frames */
@@ -1056,8 +1056,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
     /* Updates color */
     orxColor_FromRGBToHSV(&stColor, &stColor);
-    stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u32Size) * sfSaturationThreshold);
-    stColor.vHSV.fS = orx2F(0.8f);
+    stColor.vHSVA.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u32Size) * sfSaturationThreshold);
+    stColor.vHSVA.fS = orx2F(0.8f);
     orxColor_FromHSVToRGB(&stColor, &stColor);
     orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(&stColor));
 

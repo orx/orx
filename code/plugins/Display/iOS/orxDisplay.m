@@ -3505,10 +3505,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
                   orxColor_SetRGBA(&stColor, *pstPixel);
 
                   /* Has alpha? */
-                  if(stColor.fAlpha > orxFLOAT_0)
+                  if(stColor.vRGBA.fA > orxFLOAT_0)
                   {
                     /* Updates color components */
-                    orxVector_Divf(&(stColor.vRGB), &(stColor.vRGB), stColor.fAlpha);
+                    orxVector_Divf(&(stColor.vRGBA), &(stColor.vRGBA), stColor.vRGBA.fA);
                   }
 
                   /* Updates pixel */

@@ -102,8 +102,8 @@ void ClearLights()
   for(i = 0; i < LIGHT_NUMBER; i++)
   {
     /* Inits it */
-    orxConfig_GetVector("Color", &(astLightList[i].stColor.vRGB));
-    astLightList[i].stColor.fAlpha = orxFLOAT_0;
+    orxConfig_GetVector("Color", &(astLightList[i].stColor.vRGBA));
+    astLightList[i].stColor.vRGBA.fA = orxFLOAT_0;
     orxVector_Copy(&(astLightList[i].vPosition), &orxVECTOR_0);
     astLightList[i].fRadius = orxConfig_GetFloat("Radius");
   }
@@ -123,7 +123,7 @@ void ComputeGreyImage(orxU8 *_pu8Buffer, orxU32 _u32BufferSize)
   {
     orxCOLOR        stColor;
     orxRGBA         u32Pixel;
-    const orxVECTOR vBW = {orx2F(0.299f), orx2F(0.587f), orx2F(0.114f)};
+    const orxVECTOR vBW = {orx2F(0.299f), orx2F(0.587f), orx2F(0.114f), orx2F(0.0f)};
 
     /* Gets pixel's value */
     u32Pixel = orx2RGBA(_pu8Buffer[i], _pu8Buffer[i + 1], _pu8Buffer[i + 2], _pu8Buffer[i + 3]);
@@ -132,7 +132,7 @@ void ComputeGreyImage(orxU8 *_pu8Buffer, orxU32 _u32BufferSize)
     orxColor_SetRGBA(&stColor, u32Pixel);
 
     /* Gets its grey value */
-    orxVector_SetAll(&stColor.vRGB, orxVector_Dot(&stColor.vRGB, &vBW));
+    orxVector_SetAll(&stColor.vRGBA, orxVector_Dot(&stColor.vRGBA, &vBW));
 
     /* Updates pixel value */
     u32Pixel = orxColor_ToRGBA(&stColor);
@@ -179,8 +179,8 @@ void ComputeNormalMap(const orxU8 *_pu8SrcBuffer, orxU8 *_pu8DstBuffer, orxS32 _
       fDown   = _pu8SrcBuffer[s32Down] * orxCOLOR_NORMALIZER;
 
       /* Gets normal as color */
-      orxVector_Add(&stNormal.vRGB, orxVector_Mulf(&stNormal.vRGB, orxVector_Set(&stNormal.vRGB, (fLeft - fRight), fDown - fUp, orx2F(0.5f)), orx2F(0.5f)), &vHalf);
-      stNormal.fAlpha = orxFLOAT_1;
+      orxVector_Add(&stNormal.vRGBA, orxVector_Mulf(&stNormal.vRGBA, orxVector_Set(&stNormal.vRGBA, (fLeft - fRight), fDown - fUp, orx2F(0.5f)), orx2F(0.5f)), &vHalf);
+      stNormal.vRGBA.fA = orxFLOAT_1;
 
       /* Gets pixel value */
       stPixel = orxColor_ToRGBA(&stNormal);
@@ -305,13 +305,13 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       else if(!orxString_Compare(pstPayload->zParamName, "avLightColor"))
       {
         /* Updates light color */
-        orxVector_Copy(&(pstPayload->vValue), &(astLightList[pstPayload->s32ParamIndex].stColor.vRGB));
+        orxVector_Copy(&(pstPayload->vValue), &(astLightList[pstPayload->s32ParamIndex].stColor.vRGBA));
       }
       /* Light alpha? */
       else if(!orxString_Compare(pstPayload->zParamName, "afLightAlpha"))
       {
         /* Updates light alpha */
-        pstPayload->fValue = astLightList[pstPayload->s32ParamIndex].stColor.fAlpha;
+        pstPayload->fValue = astLightList[pstPayload->s32ParamIndex].stColor.vRGBA.fA;
       }
       /* Light position? */
       else if(!orxString_Compare(pstPayload->zParamName, "avLightPos"))
@@ -447,7 +447,7 @@ orxSTATUS orxFASTCALL Run()
   /* Toggle alpha? */
   else if(orxInput_IsActive("ToggleAlpha") && orxInput_HasNewStatus("ToggleAlpha"))
   {
-    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
+    astLightList[s32LightIndex].stColor.vRGBA.fA = orx2F(1.5f) - astLightList[s32LightIndex].stColor.vRGBA.fA;
   }
   /* Should quit? */
   else if(orxInput_IsActive("Quit"))
