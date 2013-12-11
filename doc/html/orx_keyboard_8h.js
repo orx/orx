@@ -110,6 +110,7 @@ var orx_keyboard_8h =
       [ "orxKEYBOARD_KEY_NUMBER", "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea01bfff170c6773d41ca6cc627ab599c4", null ],
       [ "orxKEYBOARD_KEY_NONE", "orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea725387db4e5ab1cb06111eca89c7d164", null ]
     ] ],
+    [ "orxKeybard_Show", "orx_keyboard_8h.html#ga231f33fd60ede254f62fc6e08f7a9748", null ],
     [ "orxKeyboard_ClearBuffer", "orx_keyboard_8h.html#ga21ca03325eb7843d3f80214f6e9a0d2a", null ],
     [ "orxKeyboard_Exit", "orx_keyboard_8h.html#ga0d09f92bcd5854e4955faf3ce86863c2", null ],
     [ "orxKeyboard_GetKeyName", "orx_keyboard_8h.html#ga1e2d858b8ecd23c4e0d56aad0137e520", null ],

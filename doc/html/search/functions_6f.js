@@ -536,6 +536,7 @@ var searchData=
   ['orxjoystick_5finit',['orxJoystick_Init',['../group__orx_joystick.html#ga1ab26b1f55c5e0e104b8ff00ae833990',1,'orxJoystick.h']]],
   ['orxjoystick_5fisbuttonpressed',['orxJoystick_IsButtonPressed',['../group__orx_joystick.html#ga3b060fab3b7afd5484d9a29e3af826b4',1,'orxJoystick.h']]],
   ['orxjoystick_5fsetup',['orxJoystick_Setup',['../group__orx_joystick.html#ga303b00feabf090588da3658e3fa3fd84',1,'orxJoystick.h']]],
+  ['orxkeybard_5fshow',['orxKeybard_Show',['../group__orx_keyboard.html#ga231f33fd60ede254f62fc6e08f7a9748',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fclearbuffer',['orxKeyboard_ClearBuffer',['../group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fexit',['orxKeyboard_Exit',['../group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fgetkeyname',['orxKeyboard_GetKeyName',['../group__orx_keyboard.html#ga1e2d858b8ecd23c4e0d56aad0137e520',1,'orxKeyboard.h']]],

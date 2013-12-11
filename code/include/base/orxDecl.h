@@ -325,6 +325,9 @@
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
+      /* always use static on iOS, Android and Raspberry */
+      #define __orxSTATIC__
+
     #endif /* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
