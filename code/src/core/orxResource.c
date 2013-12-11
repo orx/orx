@@ -1702,7 +1702,7 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
  * @param[out] _pBuffer         Buffer that will be filled by the read data
  * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
  * @param[in] _pContext         Context that will be transmitted to the callback when called
- * @return Size of the read data, in bytes
+ * @return Size of the read data, in bytes or -1 for successful asynchronous call
  */
 orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext)
 {
@@ -1720,8 +1720,19 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
-    /* Updates result */
-    s64Result = pstOpenInfo->pstTypeInfo->pfnRead(pstOpenInfo->hResource, _s64Size, _pBuffer);
+    /* Has a callback (asynchronous call) */
+    if(_pfnCallback != orxNULL)
+    {
+      //! TODO
+
+      /* Updates result */
+      s64Result = -1;
+    }
+    else
+    {
+      /* Updates result */
+      s64Result = pstOpenInfo->pstTypeInfo->pfnRead(pstOpenInfo->hResource, _s64Size, _pBuffer);
+    }
   }
 
   /* Done! */
@@ -1755,8 +1766,19 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
     /* Supports writing? */
     if(pstOpenInfo->pstTypeInfo->pfnWrite != orxNULL)
     {
-      /* Updates result */
-      s64Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s64Size, _pBuffer);
+      /* Has a callback (asynchronous call) */
+      if(_pfnCallback != orxNULL)
+      {
+        //! TODO
+
+        /* Updates result */
+        s64Result = -1;
+      }
+      else
+      {
+        /* Updates result */
+        s64Result = pstOpenInfo->pstTypeInfo->pfnWrite(pstOpenInfo->hResource, _s64Size, _pBuffer);
+      }
     }
   }
 
