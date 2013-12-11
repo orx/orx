@@ -352,6 +352,9 @@ static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
   /* Deletes storage bank */
   orxBank_Delete(_pstGroup->pstStorageBank);
 
+  /* Deletes it */
+  orxBank_Free(sstResource.pstGroupBank, _pstGroup);
+
   /* Done! */
   return;
 }
