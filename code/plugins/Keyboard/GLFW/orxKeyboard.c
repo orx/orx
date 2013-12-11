@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -133,7 +133,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_GLFW_GetKey(GLFWKey _eKey)
     case '\'':                      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
     case '/':                       {eResult = orxKEYBOARD_KEY_SLASH; break;}
     case '\\':                      {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case '`':                       {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case '`':                       {eResult = orxKEYBOARD_KEY_BACKQUOTE; break;}
     case '=':                       {eResult = orxKEYBOARD_KEY_EQUAL; break;}
     case '-':                       {eResult = orxKEYBOARD_KEY_DASH; break;}
     case GLFW_KEY_F1:               {eResult = orxKEYBOARD_KEY_F1; break;}
@@ -253,7 +253,7 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_QUOTE:         {eResult = (GLFWKey)'\''; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = (GLFWKey)'/'; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = (GLFWKey)'\\'; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = (GLFWKey)'`'; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = (GLFWKey)'`'; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = (GLFWKey)'='; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = (GLFWKey)'-'; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = GLFW_KEY_F1; break;}
@@ -554,6 +554,11 @@ void orxFASTCALL orxKeyboard_GLFW_ClearBuffer()
   return;
 }
 
+orxSTATUS orxFASTCALL orxKeyboard_GLFW_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -565,4 +570,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_IsKeyPressed, KEYBOARD, IS_KEY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_GLFW_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

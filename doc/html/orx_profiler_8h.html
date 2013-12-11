@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -116,6 +123,8 @@ $(document).ready(function(){initNavTree('orx_profiler_8h.html','');});
 Macros</h2></td></tr>
 <tr class="memitem:ga2b4928419f83ca68d4f4b65164e83efe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga2b4928419f83ca68d4f4b65164e83efe">orxPROFILER_KS32_MARKER_ID_NONE</a>&#160;&#160;&#160;-1</td></tr>
 <tr class="separator:ga2b4928419f83ca68d4f4b65164e83efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac4f1815b6680b23d52244da9a3463a5a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gac4f1815b6680b23d52244da9a3463a5a">orxPROFILER_KU32_HISTORY_LENGTH</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:gac4f1815b6680b23d52244da9a3463a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga90c7c9280ab9e00ad524b12b14f4ead2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga90c7c9280ab9e00ad524b12b14f4ead2">orxPROFILER_POP_MARKER</a>()</td></tr>
 <tr class="separator:ga90c7c9280ab9e00ad524b12b14f4ead2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga26117096ab5a2206800707b3bbaf7218"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga26117096ab5a2206800707b3bbaf7218">orxPROFILER_PUSH_MARKER</a>(NAME)</td></tr>
@@ -123,6 +132,8 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gafe00bb52816854dd43b31dd9d6baa680"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gafe00bb52816854dd43b31dd9d6baa680">orxProfiler_AreMarkerOperationsEnabled</a> ()</td></tr>
+<tr class="separator:gafe00bb52816854dd43b31dd9d6baa680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6d33bf751bc265edd09c9e17e9ab055a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga6d33bf751bc265edd09c9e17e9ab055a">orxProfiler_EnableMarkerOperations</a> (orxBOOL _bEnable)</td></tr>
 <tr class="separator:ga6d33bf751bc265edd09c9e17e9ab055a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabb8e3390ac3ec8f7b4d68415baaf957b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gabb8e3390ac3ec8f7b4d68415baaf957b">orxProfiler_Exit</a> ()</td></tr>
@@ -156,8 +167,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gac592fd81a652a5790828f07b8c3f3977"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga248c546475a3b764918fd8ed11eecad0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga248c546475a3b764918fd8ed11eecad0">orxProfiler_IsMarkerIDValid</a> (orxS32 _s32MarkerID)</td></tr>
 <tr class="separator:ga248c546475a3b764918fd8ed11eecad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf13d8fbaa0e9f559a8b968bbda20fee0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gaf13d8fbaa0e9f559a8b968bbda20fee0">orxProfiler_IsPaused</a> ()</td></tr>
+<tr class="separator:gaf13d8fbaa0e9f559a8b968bbda20fee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1f3bcc11278643df85accaf4758c9804"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga1f3bcc11278643df85accaf4758c9804">orxProfiler_IsUniqueMarker</a> (orxS32 _s32MarkerID)</td></tr>
 <tr class="separator:ga1f3bcc11278643df85accaf4758c9804"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9e7857308907bfa77c8f46c35af9d321"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga9e7857308907bfa77c8f46c35af9d321">orxProfiler_Pause</a> (orxBOOL _bPause)</td></tr>
+<tr class="separator:ga9e7857308907bfa77c8f46c35af9d321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab85f78c90aa0ecf16ce7a181a650f669"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gab85f78c90aa0ecf16ce7a181a650f669">orxProfiler_PopMarker</a> ()</td></tr>
 <tr class="separator:gab85f78c90aa0ecf16ce7a181a650f669"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7ab4f2f459d8abdd543f989fef2da971"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971">orxProfiler_PushMarker</a> (orxS32 _s32MarkerID)</td></tr>
@@ -166,6 +181,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga324b7b0136fbda66d63b7dd715c5728b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a3ec1d7238daade394651ed47909a11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11">orxProfiler_ResetAllMaxima</a> ()</td></tr>
 <tr class="separator:ga7a3ec1d7238daade394651ed47909a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga44ddc46885e13981d10165f99d030607"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga44ddc46885e13981d10165f99d030607">orxProfiler_SelectQueryFrame</a> (orxU32 _u32QueryFrame)</td></tr>
+<tr class="separator:ga44ddc46885e13981d10165f99d030607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga77435c60c85ff4da82d2599f238632cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb">orxProfiler_Setup</a> ()</td></tr>
 <tr class="separator:ga77435c60c85ff4da82d2599f238632cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

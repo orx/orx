@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -205,9 +212,10 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca109031a2954c14e60394b49532675c84">orxDISPLAY_BLEND_MODE_ALPHA</a> = 0, 
 <a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca261a25b5ba1e31c61fe52dfbbc6ed3a8">orxDISPLAY_BLEND_MODE_MULTIPLY</a>, 
 <a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fcaa280c24899a96b50fad2cb3359df0eea">orxDISPLAY_BLEND_MODE_ADD</a>, 
-<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23">orxDISPLAY_BLEND_MODE_NUMBER</a>, 
+<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fcaa14d13f5c4c5ea5b613bc34e1936d889">orxDISPLAY_BLEND_MODE_PREMUL</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820">orxDISPLAY_BLEND_MODE_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23">orxDISPLAY_BLEND_MODE_NUMBER</a>, 
+<a class="el" href="group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820">orxDISPLAY_BLEND_MODE_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
 <tr class="separator:gad54faad16cd6fe98b24adbdde00137fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -253,8 +261,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga497ef75237b5ba9a4fad420e761be164"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacfe7630f589a37750b8a64611b5fcedc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gacfe7630f589a37750b8a64611b5fcedc">orxDisplay_CreateBitmap</a> (orxU32 _u32Width, orxU32 _u32Height)</td></tr>
 <tr class="separator:gacfe7630f589a37750b8a64611b5fcedc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa9943e90cc99fcbafaf56c63f62525c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaa9943e90cc99fcbafaf56c63f62525c7">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList)</td></tr>
-<tr class="separator:gaa9943e90cc99fcbafaf56c63f62525c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0587d98e18d1172f0e2af286f447a89c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga0587d98e18d1172f0e2af286f447a89c">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList, orxBOOL _bUseCustomParam)</td></tr>
+<tr class="separator:ga0587d98e18d1172f0e2af286f447a89c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf17f6bda43eee81dd41e66acb61478c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf17f6bda43eee81dd41e66acb61478c2">orxDisplay_DeleteBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr class="separator:gaf17f6bda43eee81dd41e66acb61478c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga37a6f1e12616eca46dac46f8ff81a9d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2">orxDisplay_DeleteShader</a> (orxHANDLE _hShader)</td></tr>
@@ -277,12 +285,16 @@ Functions</h2></td></tr>
 <tr class="separator:ga0af5c24229c1176913296242dfa2d4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad115c2a3c5a27410cc1509bb100bf44c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_r_g_b_a.html">orxRGBA</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr class="separator:gad115c2a3c5a27410cc1509bb100bf44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae1da1268cc2137d50a7026d1c29e3a2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae1da1268cc2137d50a7026d1c29e3a2a">orxDisplay_GetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
-<tr class="separator:gae1da1268cc2137d50a7026d1c29e3a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga83e034c2d49365fec77eebed6743e844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga83e034c2d49365fec77eebed6743e844">orxDisplay_GetBitmapData</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
+<tr class="separator:ga83e034c2d49365fec77eebed6743e844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9debbe6efef28318112423a7b884822f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9debbe6efef28318112423a7b884822f">orxDisplay_GetBitmapID</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 <tr class="separator:ga9debbe6efef28318112423a7b884822f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad88758772634d94e250d0163567af051"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad88758772634d94e250d0163567af051">orxDisplay_GetBitmapSize</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 <tr class="separator:gad88758772634d94e250d0163567af051"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf4568ab2690ea70bf69fa9286138e3a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <br class="typebreak"/>
+<a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf4568ab2690ea70bf69fa9286138e3a3">orxDisplay_GetBlendModeFromString</a> (const orxSTRING _zBlendMode)</td></tr>
+<tr class="separator:gaf4568ab2690ea70bf69fa9286138e3a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab67814d8200a6d3f0348fba25be8981d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab67814d8200a6d3f0348fba25be8981d">orxDisplay_GetParameterID</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)</td></tr>
 <tr class="separator:gab67814d8200a6d3f0348fba25be8981d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga023526bf404541a05221652a94850c34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga023526bf404541a05221652a94850c34">orxDisplay_GetScreenBitmap</a> ()</td></tr>
@@ -317,8 +329,10 @@ Functions</h2></td></tr>
 <tr class="separator:ga18aa50eae6667cacdfc804e0643bfa47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf8a80961deb17b680772616fe2fd7239"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239">orxDisplay_SetBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)</td></tr>
 <tr class="separator:gaf8a80961deb17b680772616fe2fd7239"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad4098ceb20034f92eabf178087d29b27"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gad4098ceb20034f92eabf178087d29b27">orxDisplay_SetDestinationBitmap</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst)</td></tr>
-<tr class="separator:gad4098ceb20034f92eabf178087d29b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga21afdb1c33f362aa5a1a0660385a64ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga21afdb1c33f362aa5a1a0660385a64ff">orxDisplay_SetBlendMode</a> (<a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr class="separator:ga21afdb1c33f362aa5a1a0660385a64ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac191bdfc80e11b88a093d0ffb2208b8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac191bdfc80e11b88a093d0ffb2208b8e">orxDisplay_SetDestinationBitmaps</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> **_apstBitmapList, orxU32 _u32Number)</td></tr>
+<tr class="separator:gac191bdfc80e11b88a093d0ffb2208b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga26e2f135b978a2dc39e53a8465940e42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
 <tr class="separator:ga26e2f135b978a2dc39e53a8465940e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae35b6b44dc14c72c07b9eac939938653"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, orxS32 _s32ID, const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>

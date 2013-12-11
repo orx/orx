@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxDisplay
- * 
+ *
  * Display plugin module
  * Module that handles display
  *
@@ -81,6 +81,7 @@ typedef struct __orxRGBA_t
 
 typedef struct __orxBITMAP_t        orxBITMAP;
 
+
 /** Vertex info structure
  */
 typedef struct __orxDISPLAY_VERTEX_t
@@ -108,6 +109,7 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 typedef struct __orxDISPLAY_VIDEO_MODE_t
 {
   orxU32  u32Width, u32Height, u32Depth, u32RefreshRate;
+  orxBOOL bFullScreen;
 
 } orxDISPLAY_VIDEO_MODE;
 
@@ -151,6 +153,7 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
   orxDISPLAY_BLEND_MODE_ALPHA = 0,
   orxDISPLAY_BLEND_MODE_MULTIPLY,
   orxDISPLAY_BLEND_MODE_ADD,
+  orxDISPLAY_BLEND_MODE_PREMUL,
 
   orxDISPLAY_BLEND_MODE_NUMBER,
 
@@ -289,14 +292,14 @@ extern orxDLLAPI void orxFASTCALL orxDisplay_Setup();
 static orxINLINE orxRGBA          orxRGBA_Set(orxU8 _u8R, orxU8 _u8G, orxU8 _u8B, orxU8 _u8A)
 {
   orxRGBA stResult;
-  
-  // Updates result
+
+  /* Updates result */
   stResult.u8R = _u8R;
   stResult.u8G = _u8G;
   stResult.u8B = _u8B;
   stResult.u8A = _u8A;
 
-  // Done!
+  /* Done! */
   return stResult;
 }
 
@@ -740,6 +743,12 @@ static orxCOLOR *orxFASTCALL      orxColor_FromHSVToRGB(orxCOLOR *_pstDst, const
   return pstResult;
 }
 
+/** Gets blend mode from a string
+ * @param[in]    _zBlendMode                          String to evaluate
+ * @return orxDISPLAY_BLEND_MODE
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL    orxDisplay_GetBlendModeFromString(const orxSTRING _zBlendMode);
+
 
 /***************************************************************************
  * Functions extended by plugins
@@ -801,11 +810,12 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
 
 
-/** Sets destination bitmap
- * @param[in]   _pstDst                               Destination bitmap
+/** Sets destination bitmaps
+ * @param[in]   _apstBitmapList                       Destination bitmap list
+ * @param[in]   _u32Number                            Number of destination bitmaps
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
 
 /** Clears a bitmap
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -813,6 +823,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationB
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
+
+/** Sets current blend mode
+ * @param[in]   _eBlendMode                           Blend mode to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Sets a bitmap clipping for blitting (both as source and destination)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -846,7 +862,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(o
  * @param[in]   _u32ByteNumber                        Number of bytes of the buffer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
 /** Sets a bitmap color (lighting/hue)
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -957,9 +973,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_HasShaderSuppor
 /** Creates (compiles) a shader
  * @param[in]   _zCode                                Shader code to compile
  * @param[in]   _pstParamList                         Shader parameters (should be a link list of orxSHADER_PARAM)
+ * @param[in]   _bUseCustomParam                      Shader uses custom parameters
  * @return orxHANDLE of the compiled shader is successful, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam);
 
 /** Deletes a compiled shader
  * @param[in]   _hShader                              Shader to delete
@@ -1042,7 +1059,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
 extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCounter();
 
 /** Gets an available video mode
- * @param[in]   _u32Index                             Video mode index, must be lesser than orxDisplay_GetVideoModeCounter()
+ * @param[in]   _u32Index                             Video mode index, pass _u32Index < orxDisplay_GetVideoModeCounter() for an available listed mode, orxU32_UNDEFINED for the the default (desktop) mode and any other value for current mode
  * @param[out]  _pstVideoMode                         Storage for the video mode
  * @return orxDISPLAY_VIDEO_MODE / orxNULL if invalid
  */

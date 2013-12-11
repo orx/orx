@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -43,6 +43,24 @@
 
 #include "orxInclude.h"
 #include "display/orxFont.h"
+#include "io/orxInput.h"
+
+
+/** Inputs
+ */
+
+#define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
+
+#define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
+#define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
+#define orxCONSOLE_KZ_INPUT_DELETE                    "Delete"                        /**< Delete input */
+#define orxCONSOLE_KZ_INPUT_ENTER                     "Enter"                         /**< Enter input */
+#define orxCONSOLE_KZ_INPUT_PREVIOUS                  "Previous"                      /**< Previous input */
+#define orxCONSOLE_KZ_INPUT_NEXT                      "Next"                          /**< Next input */
+#define orxCONSOLE_KZ_INPUT_LEFT                      "Left"                          /**< Cursor move left */
+#define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
+#define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
+#define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
 
 
 /** Console module setup
@@ -68,6 +86,14 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL 
  * @return orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
+
+
+/** Sets the console toggle
+* @param[in] _eInputType      Type of input peripheral
+* @param[in] _eInputID        ID of button/key/axis
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID);
 
 
 /** Logs to the console

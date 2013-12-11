@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -153,6 +160,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ga79d37130ab40eb8e4617ebe23b7ac6f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga79d37130ab40eb8e4617ebe23b7ac6f8">orxBody_GetJointName</a> (const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint)</td></tr>
 <tr class="separator:ga79d37130ab40eb8e4617ebe23b7ac6f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa65d1974ceb8cf8e2bb1b06d8b96e20d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gaa65d1974ceb8cf8e2bb1b06d8b96e20d">orxBody_GetJointReactionForce</a> (const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvForce)</td></tr>
+<tr class="separator:gaa65d1974ceb8cf8e2bb1b06d8b96e20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga45eb847eadced86787baeb134a0f2218"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga45eb847eadced86787baeb134a0f2218">orxBody_GetJointReactionTorque</a> (const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint)</td></tr>
+<tr class="separator:ga45eb847eadced86787baeb134a0f2218"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga74e07998f3b1303b4592372d8e306b5a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga74e07998f3b1303b4592372d8e306b5a">orxBody_GetLinearDamping</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
 <tr class="separator:ga74e07998f3b1303b4592372d8e306b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9382982502a79dd94490893ac1326b00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga9382982502a79dd94490893ac1326b00">orxBody_GetMass</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
@@ -166,8 +177,13 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gae2d0e00dc1fb881d37c2dcd1ab07d3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1a492f7be69dba98bb266af4209f0fc1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga1a492f7be69dba98bb266af4209f0fc1">orxBody_GetOwner</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
 <tr class="separator:ga1a492f7be69dba98bb266af4209f0fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga94e258979b219f6edced5cc742c79d5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga94e258979b219f6edced5cc742c79d5f">orxBody_GetPartBody</a> (const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
+<tr class="separator:ga94e258979b219f6edced5cc742c79d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2c0e1c2ebb5f49125269f3f8e07990bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU16 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga2c0e1c2ebb5f49125269f3f8e07990bc">orxBody_GetPartCheckMask</a> (const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
 <tr class="separator:ga2c0e1c2ebb5f49125269f3f8e07990bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacef26b2e740bdf6d9fe8f900bdcedc63"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <br class="typebreak"/>
+<a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gacef26b2e740bdf6d9fe8f900bdcedc63">orxBody_GetPartDef</a> (const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
+<tr class="separator:gacef26b2e740bdf6d9fe8f900bdcedc63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga04088bb68cbfb21dcf639d5ee8dcb075"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga04088bb68cbfb21dcf639d5ee8dcb075">orxBody_GetPartName</a> (const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
 <tr class="separator:ga04088bb68cbfb21dcf639d5ee8dcb075"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,8 +195,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga09f387007a1609c4d694e47bbb5e6030"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaffa909a07c3902c34c00c4664e738599"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gaffa909a07c3902c34c00c4664e738599">orxBody_GetSpeed</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSpeed)</td></tr>
 <tr class="separator:gaffa909a07c3902c34c00c4664e738599"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa852c6b5049d89c78efaac9d690d82ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gaa852c6b5049d89c78efaac9d690d82ef">orxBody_GetSpeedAtWorldPosition</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSpeed)</td></tr>
+<tr class="separator:gaa852c6b5049d89c78efaac9d690d82ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga027908adf63c94d330b53155432ffb14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga027908adf63c94d330b53155432ffb14">orxBody_Init</a> ()</td></tr>
 <tr class="separator:ga027908adf63c94d330b53155432ffb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae3b6abaf62b05ddc4f25e55d440d5df6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gae3b6abaf62b05ddc4f25e55d440d5df6">orxBody_IsFixedRotation</a> (const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
+<tr class="separator:gae3b6abaf62b05ddc4f25e55d440d5df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad0dad8a12d22a3e37a78d54a9ac305f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gad0dad8a12d22a3e37a78d54a9ac305f0">orxBody_IsPartSolid</a> (const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
 <tr class="separator:gad0dad8a12d22a3e37a78d54a9ac305f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga60bb6bd3200d8fd5f97ab238703bf180"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga60bb6bd3200d8fd5f97ab238703bf180">orxBody_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
@@ -197,6 +217,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga22f88b5bfb6ae234c68f6dad79da20df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga81b54ce47fe89e5a55735924bea22491"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga81b54ce47fe89e5a55735924bea22491">orxBody_SetCustomGravity</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCustomGravity)</td></tr>
 <tr class="separator:ga81b54ce47fe89e5a55735924bea22491"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4254debb8b2aea836c0ead8bc8ac37bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga4254debb8b2aea836c0ead8bc8ac37bf">orxBody_SetFixedRotation</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxBOOL _bFixed)</td></tr>
+<tr class="separator:ga4254debb8b2aea836c0ead8bc8ac37bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadbdce7304dd2971dd53b3e2860f1c7b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gadbdce7304dd2971dd53b3e2860f1c7b6">orxBody_SetJointMaxMotorTorque</a> (<a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint, orxFLOAT _fMaxTorque)</td></tr>
 <tr class="separator:gadbdce7304dd2971dd53b3e2860f1c7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga32bfada2441ca4534acdfc26c48d1be7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga32bfada2441ca4534acdfc26c48d1be7">orxBody_SetJointMotorSpeed</a> (<a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *_pstBodyJoint, orxFLOAT _fSpeed)</td></tr>
@@ -857,6 +879,65 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gaa65d1974ceb8cf8e2bb1b06d8b96e20d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxFASTCALL orxBody_GetJointReactionForce </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *&#160;</td>
+          <td class="paramname"><em>_pstBodyJoint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvForce</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the reaction force on the attached body at the joint anchor </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyJoint</td><td>Concerned body joint </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvForce</td><td>Reaction force </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reaction force in Newtons </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga45eb847eadced86787baeb134a0f2218"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL orxBody_GetJointReactionTorque </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#ga62308ed6fd216153c1197f118bdb550a">orxBODY_JOINT</a> *&#160;</td>
+          <td class="paramname"><em>_pstBodyJoint</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the reaction torque on the attached body </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyJoint</td><td>Concerned body joint </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reaction torque </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga74e07998f3b1303b4592372d8e306b5a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1034,6 +1115,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga94e258979b219f6edced5cc742c79d5f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a>* orxFASTCALL orxBody_GetPartBody </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *&#160;</td>
+          <td class="paramname"><em>_pstBodyPart</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a body part body (ie. owner) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyPart</td><td>Concerned body part </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxBODY / orxNULL </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga2c0e1c2ebb5f49125269f3f8e07990bc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1055,6 +1160,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Check mask of the body part </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gacef26b2e740bdf6d9fe8f900bdcedc63"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a>* orxFASTCALL orxBody_GetPartDef </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#ga1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *&#160;</td>
+          <td class="paramname"><em>_pstBodyPart</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a body part definition (matching current part status) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyPart</td><td>Concerned body part </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> / orxNULL </dd></dl>
 
 </div>
 </div>
@@ -1200,6 +1329,48 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gaa852c6b5049d89c78efaac9d690d82ef"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxFASTCALL orxBody_GetSpeedAtWorldPosition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"><em>_pstBody</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvPosition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvSpeed</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a body speed at a specified world position </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Concerned world position </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvSpeed</td><td>Speed to get </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Body speed / orxNULL </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga027908adf63c94d330b53155432ffb14"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1213,6 +1384,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 <p>Inits the Body module </p>
+
+</div>
+</div>
+<a class="anchor" id="gae3b6abaf62b05ddc4f25e55d440d5df6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxBody_IsFixedRotation </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"><em>_pstBody</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is a body using a fixed rotation </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE if fixed rotation, orxFALSE otherwise </dd></dl>
 
 </div>
 </div>
@@ -1491,6 +1686,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvCustomGravity</td><td>Custom gravity to set / orxNULL to remove it </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga4254debb8b2aea836c0ead8bc8ac37bf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxBody_SetFixedRotation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"><em>_pstBody</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bFixed</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets a body fixed rotation </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBody</td><td>Concerned body </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bFixed</td><td>Fixed / not fixed </td></tr>
   </table>
   </dd>
 </dl>

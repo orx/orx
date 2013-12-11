@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -62,6 +62,7 @@
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00100000  /**< Blend mode alpha flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00800000  /**< Blend mode premul flag */
 
 #define orxGRAPHIC_KU32_MASK_ALIGN                0x000003F0  /**< Alignment mask */
 
@@ -98,9 +99,6 @@
 #define orxGRAPHIC_KZ_X                           "x"
 #define orxGRAPHIC_KZ_Y                           "y"
 #define orxGRAPHIC_KZ_BOTH                        "both"
-#define orxGRAPHIC_KZ_ALPHA                       "alpha"
-#define orxGRAPHIC_KZ_MULTIPLY                    "multiply"
-#define orxGRAPHIC_KZ_ADD                         "add"
 
 
 /***************************************************************************
@@ -111,7 +109,7 @@
  */
 struct __orxGRAPHIC_t
 {
-  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 32 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
   orxVECTOR     vPivot;                     /**< Pivot : 32 */
   orxCOLOR      stColor;                    /**< Color : 48 */
@@ -393,6 +391,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
+            /* Updates its owner */
+            orxStructure_SetOwner(pstTexture, pstResult);
+
             /* Inits default 2D flags */
             u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
@@ -465,6 +466,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             /* Links it */
             if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstText) != orxSTATUS_FAILURE)
             {
+              /* Sets its owner */
+              orxStructure_SetOwner(pstText, pstResult);
+
               /* Inits default text flags */
               u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_TEXT;
 
@@ -486,8 +490,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has data? */
       if(pstResult->pstData != orxNULL)
       {
-        orxSTRING zFlipping;
-        orxVECTOR vPivot;
+        const orxSTRING zFlipping;
+        orxVECTOR       vPivot;
 
         /* Gets pivot value */
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
@@ -498,11 +502,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has relative pivot point? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_PIVOT) != orxFALSE)
         {
+          orxCHAR   acBuffer[64];
           orxSTRING zRelativePos;
           orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
 
-          /* Gets it */
-          zRelativePos = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT));
+          /* Gets lower case value */
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT), sizeof(acBuffer) - 1));
 
           /* Left? */
           if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
@@ -553,22 +559,22 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Gets flipping value */
-        zFlipping = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
+        zFlipping = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP);
 
         /* X flipping? */
-        if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_X) == 0)
+        if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_X) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X;
         }
         /* Y flipping? */
-        else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
+        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_Y;
         }
         /* Both flipping? */
-        else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
+        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
         {
           /* Updates frame flags */
           u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
@@ -654,29 +660,57 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has blend mode? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
         {
-          orxSTRING zBlendMode;
+          const orxSTRING       zBlendMode;
+          orxDISPLAY_BLEND_MODE eBlendMode;
 
           /* Gets blend mode value */
-          zBlendMode = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE));
+          zBlendMode = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE);
+          eBlendMode = orxDisplay_GetBlendModeFromString(zBlendMode);
 
-          /* alpha blend mode? */
-          if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)
+          /* Depending on blend mode */
+          switch(eBlendMode)
           {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+            case orxDISPLAY_BLEND_MODE_ALPHA:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_MULTIPLY:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_ADD:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
+
+              break;
+            }
+
+            case orxDISPLAY_BLEND_MODE_PREMUL:
+            {
+              /* Updates flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
+
+              break;
+            }
+
+            default:
+            {
+            }
           }
-          /* Multiply blend mode? */
-          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_MULTIPLY) == 0)
-          {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
-          }
-          /* Add blend mode? */
-          else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ADD) == 0)
-          {
-            /* Updates flags */
-            u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
-          }
+        }
+        else
+        {
+          /* Defaults to alpha */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
         }
 
         /* Updates status flags */
@@ -766,6 +800,9 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     /* Internally handled? */
     if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_INTERNAL))
     {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
+
       /* 2D data? */
       if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {
@@ -1491,6 +1528,14 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
       break;
     }
 
+    case orxDISPLAY_BLEND_MODE_PREMUL:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
     default:
     {
       /* Updates status */
@@ -1542,6 +1587,14 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
     {
       /* Updates result */
       eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+      break;
+    }
+
+    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
 
       break;
     }

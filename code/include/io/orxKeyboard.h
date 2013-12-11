@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -154,7 +154,7 @@ typedef enum __orxKEYBOARD_KEY_t
   orxKEYBOARD_KEY_QUOTE,
   orxKEYBOARD_KEY_SLASH,
   orxKEYBOARD_KEY_BACKSLASH,
-  orxKEYBOARD_KEY_TILDE,
+  orxKEYBOARD_KEY_BACKQUOTE,
   orxKEYBOARD_KEY_EQUAL,
   orxKEYBOARD_KEY_DASH,
   orxKEYBOARD_KEY_NUMBER,
@@ -210,6 +210,12 @@ extern orxDLLAPI void orxFASTCALL             orxKeyboard_ClearBuffer();
  * @return Key's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey);
+
+/** Show/Hide the virtual keyboard
+ * @param[in]   _bShow          Show/hide virtual keyboard
+ * @return orxSTATUS_SUCCESS if supported by platform, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxKeybard_Show(orxBOOL _bShow);
 
 #endif /* _orxKEYBOARD_H_ */
 

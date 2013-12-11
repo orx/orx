@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -87,10 +87,10 @@ typedef struct __orxFXPOINTER_HOLDER_t
  */
 struct __orxFXPOINTER_t
 {
-  orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 16 */
-  orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 64 */
-  orxFLOAT                fTime;                                  /**< Time stamp : 68 */
-  const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 72 */
+  orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 32 */
+  orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 112 */
+  orxFLOAT                fTime;                                  /**< Time stamp : 116 */
+  const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 120 */
 };
 
 /** Static structure
@@ -248,6 +248,9 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
               /* Is internal? */
               if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
               {
+                /* Removes its owner */
+                orxStructure_SetOwner(pstFX, orxNULL);
+
                 /* Deletes it */
                 orxFX_Delete(pstFX);
               }
@@ -420,6 +423,9 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(_pstFXPointer->astFXList[i].pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(_pstFXPointer->astFXList[i].pstFX);
         }
@@ -627,6 +633,9 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(pstFX);
         }
@@ -726,6 +735,9 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
 
       /* Inits its start time */
       _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime + _fDelay;
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstFX, _pstFXPointer);
 
       /* Updates its flags */
       orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
@@ -867,6 +879,9 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
         {
+          /* Removes its owner */
+          orxStructure_SetOwner(pstFX, orxNULL);
+
           /* Deletes it */
           orxFX_Delete(pstFX);
         }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -93,11 +93,11 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
   union
   {
-    orxLINKLIST_NODE stLinkListNode;          /**< Linklist node : 12 */
-    orxTREE_NODE stTreeNode;                  /**< Tree node : 16 */
-  };                                          /**< Storage node union : 16 */
-  orxSTRUCTURE *pstStructure;                 /**< Pointer to structure : 20 */
-  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24 */
+    orxLINKLIST_NODE        stLinkListNode;   /**< Linklist node : 12/24 */
+    orxTREE_NODE            stTreeNode;       /**< Tree node : 16/32 */
+  };                                          /**< Storage node union : 16/32 */
+  orxSTRUCTURE             *pstStructure;     /**< Pointer to structure : 20/40 */
+  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24/44 */
 
 } orxSTRUCTURE_STORAGE_NODE;
 
@@ -140,6 +140,7 @@ void orxFASTCALL orxStructure_Setup()
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 
@@ -264,6 +265,7 @@ void orxFASTCALL orxStructure_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit structure module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -359,8 +361,7 @@ orxSTATUS orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 {
-  register orxSTRUCTURE_STORAGE_NODE *pstNode;
-  register orxSTRUCTURE *pstStructure = orxNULL;
+  orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxStructure_Create");
@@ -380,6 +381,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
     /* Valid? */
     if(pstStructure != orxNULL)
     {
+      orxSTRUCTURE_STORAGE_NODE *pstNode;
+
       /* Creates node */
       pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstNodeBank);
 
@@ -394,7 +397,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         /* Stores its type */
         pstNode->eType = sstStructure.astStorage[_eStructureID].eType;
 
-        /* Dependig on type */
+        /* Depending on type */
         switch(pstNode->eType)
         {
           case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
@@ -447,6 +450,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
                                 | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
                                 | ((orxU64)sstStructure.au32InstanceCounter[_eStructureID] << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+
+          /* Cleans owner GUID */
+          pstStructure->u64OwnerGUID = orxU64_UNDEFINED;
 
           /* Stores storage handle */
           pstStructure->hStorageNode = (orxHANDLE)pstNode;
@@ -512,6 +518,7 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(((orxSTRUCTURE *)_pStructure)->u64OwnerGUID == orxU64_UNDEFINED);
 
   /* Gets storage node */
   pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
@@ -519,7 +526,9 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   /* Valid? */
   if(pstNode != orxNULL)
   {
-    /* Dependig on type */
+    orxSTRUCTURE_ID eStructureID;
+
+    /* Depending on type */
     switch(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType)
     {
       case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
@@ -547,14 +556,17 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
       }
     }
 
-    /* Deletes it */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstNodeBank, pstNode);
-
-    /* Deletes structure */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstStructureBank, _pStructure);
+    /* Gets structure ID */
+    eStructureID = orxStructure_GetID(_pStructure);
 
     /* Tags structure as deleted */
     orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
+
+    /* Deletes storage node */
+    orxBank_Free(sstStructure.astStorage[eStructureID].pstNodeBank, pstNode);
+
+    /* Deletes structure */
+    orxBank_Free(sstStructure.astStorage[eStructureID].pstStructureBank, _pStructure);
   }
   else
   {
@@ -592,7 +604,7 @@ orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
-  /* Dependig on type */
+  /* Depending on type */
   switch(sstStructure.astStorage[_eStructureID].eType)
   {
     case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
@@ -708,6 +720,54 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Get(orxU64 _u64GUID)
 
   /* Done! */
   return pstResult;
+}
+
+/** Gets structure's owner
+ * @param[in]   _pStructure    Concerned structure
+ * @return      orxSTRUCTURE / orxNULL if not found/alive
+ */
+orxSTRUCTURE *orxFASTCALL orxStructure_GetOwner(const void *_pStructure)
+{
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pStructure);
+
+  /* Updates result */
+  pstResult = orxStructure_Get(((orxSTRUCTURE *)_pStructure)->u64OwnerGUID);
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Sets structure owner
+ * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pParent       Structure to set as owner
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxStructure_SetOwner(void *_pStructure, void *_pOwner)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pStructure);
+
+  /* Has owner? */
+  if(_pOwner != orxNULL)
+  {
+    /* Updates structure's owner GUID */
+    orxSTRUCTURE(_pStructure)->u64OwnerGUID = orxStructure_GetGUID(_pOwner);
+  }
+  else
+  {
+    /* Removes owner */
+    orxSTRUCTURE(_pStructure)->u64OwnerGUID = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets first stored structure (first list cell or tree root depending on storage type)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,18 +56,7 @@
 #include "../plugins/Mouse/android/orxMouse.c"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/android/orxSoundSystem.cpp"
-
-/* Native Android? */
-#elif defined(__orxANDROID_NATIVE__)
-
-#include "../plugins/Keyboard/android-native/orxKeyboard.cpp"
-#include "../plugins/Physics/Box2D/orxPhysics.cpp"
-#include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Joystick/android-native/orxJoystick.c"
-#include "../plugins/Mouse/android-native/orxMouse.c"
-#include "../plugins/Display/android-native/orxDisplay.c"
-#include "../plugins/Sound/android-native/orxSoundSystem.c"
+#include "../plugins/Sound/android/orxSoundSystem.c"
 
 /* Others */
 #else

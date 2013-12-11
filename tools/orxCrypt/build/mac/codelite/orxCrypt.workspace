@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Workspace Name="orxCrypt" Database="./orxCrypt.tags">
+  <Project Name="orxCrypt" Path="orxCrypt.project" Active="Yes" />
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug|x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Debug|x64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Profile|x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Profile|x64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release|x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Release|x64"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Debug|x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Debug|x32"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Profile|x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Profile|x32"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release|x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Release|x32"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

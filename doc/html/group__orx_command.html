@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -168,6 +175,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gaaeb95264c698906fdaf3f54ba91011b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2d0c16347e4fb4075ed39b0c561be3e6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">orxCommand_IsRegistered</a> (const orxSTRING _zCommand)</td></tr>
 <tr class="separator:ga2d0c16347e4fb4075ed39b0c561be3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafc5ae72195e0e034dc9bf5052d9ac5cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb">orxCommand_ParseNumericalArguments</a> (orxU32 _u32ArgNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astOperandList)</td></tr>
+<tr class="separator:gafc5ae72195e0e034dc9bf5052d9ac5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaabb6d028ab52dffb1c9bbfe3e75b9601"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a> (const orxSTRING _zCommand, const <a class="el" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a> _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_astParamList, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_pstResult)</td></tr>
 <tr class="separator:gaabb6d028ab52dffb1c9bbfe3e75b9601"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa10f6ec80ec202751165294ee369bf51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51">orxCommand_RemoveAlias</a> (const orxSTRING _zAlias)</td></tr>
@@ -233,15 +242,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                          \</div>
-<div class="line">{                                                                                                                                                           <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
-<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  stResult;                                                                                                                             <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
-<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">\</a></div>
-<div class="line"><a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">  orxSTATUS</a>           eStatus;                                                                                                                              \</div>
-<div class="line">  stResult.<a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">eType</a>    = RESULT_TYPE;                                                                                                                          \</div>
-<div class="line">  stResult.zName    = RESULT_NAME;                                                                                                                          \</div>
-<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &amp;stResult); \</div>
-<div class="line">  orxASSERT(eStatus != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>);                                                                                                                  \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                              \</div>
+<div class="line">{                                                                                                                                                               <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
+<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  stResult;                                                                                                                                 <a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">\</a></div>
+<div class="line"><a class="code" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">  orxCOMMAND_VAR_DEF</a>  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{<span class="stringliteral">&quot;Dummy&quot;</span>, <a class="code" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">orxCOMMAND_VAR_TYPE_NONE</a>}, __VA_ARGS__};                               <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">\</a></div>
+<div class="line"><a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">  orxSTATUS</a>           eStatus;                                                                                                                                  \</div>
+<div class="line">  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
+<div class="line">  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
+<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult); \</div>
+<div class="line">  orxASSERT(eStatus != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>);                                                                                                                      \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment --><p>Command registration helpers </p>
 
@@ -272,9 +281,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                          \</div>
-<div class="line">{                                                                                                                                                           \</div>
-<div class="line">  orxCommand_Unregister(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                                                                                                              \</div>
+<div class="line">{                                                                                                                                                               \</div>
+<div class="line">  orxCommand_Unregister(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                    \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_command_8h_source.html#l00114">114</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
@@ -608,6 +617,48 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gafc5ae72195e0e034dc9bf5052d9ac5cb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxCommand_ParseNumericalArguments </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32ArgNumber</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *&#160;</td>
+          <td class="paramname"><em>_astArgList</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *&#160;</td>
+          <td class="paramname"><em>_astOperandList</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Parses numerical arguments, string arguments will be evaluated to vectors or float when possible </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32ArgNumber</td><td>Number of arguments to parse </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_astArgList</td><td>List of arguments to parse </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_astOperandList</td><td>List of parsed arguments </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise </dd></dl>
 
 </div>
 </div>

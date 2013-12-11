@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -63,7 +63,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   /* Non empty? */
   if(_pstList->u32Counter != 0)
   {
-    register orxLINKLIST_NODE *pstNode, *pstCurrent;
+    orxLINKLIST_NODE *pstNode;
 
     /* Gets first node */
     pstNode = _pstList->pstFirst;
@@ -71,6 +71,8 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
     /* Clean all nodes */
     while(pstNode != orxNULL)
     {
+      orxLINKLIST_NODE *pstCurrent;
+
       /* Backups current node */
       pstCurrent = pstNode;
 
@@ -400,7 +402,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Target's list is not valid.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't remove node from list: it isn't part of any list.");
 
     /* Failed */
     eResult = orxSTATUS_FAILURE;

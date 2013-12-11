@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,12 +34,16 @@
 #include "plugin/orxPluginCore.h"
 
 
-/***************************************************************************
- orxDisplay_Setup
- Display module setup.
+/** Misc defines
+ */
+#define orxDISPLAY_KZ_ALPHA                       "alpha"
+#define orxDISPLAY_KZ_MULTIPLY                    "multiply"
+#define orxDISPLAY_KZ_ADD                         "add"
+#define orxDISPLAY_KZ_PREMUL                      "premul"
 
- returns: nothing
- ***************************************************************************/
+
+/** Display module setup
+ */
 void orxFASTCALL orxDisplay_Setup()
 {
   /* Adds module dependencies */
@@ -48,10 +52,54 @@ void orxFASTCALL orxDisplay_Setup()
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_RESOURCE);
 
   return;
+}
+
+/** Gets blend mode from a string
+ * @param[in]    _zBlendMode                          String to evaluate
+ * @return orxDISPLAY_BLEND_MODE
+ */
+orxDISPLAY_BLEND_MODE orxFASTCALL orxDisplay_GetBlendModeFromString(const orxSTRING _zBlendMode)
+{
+  orxDISPLAY_BLEND_MODE eResult;
+
+  /* Alpha blend mode? */
+  if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_ALPHA) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+  }
+  /* Multiply blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_MULTIPLY) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+  }
+  /* Add blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_ADD) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_ADD;
+  }
+  /* Pre-multiplied alpha blend mode? */
+  else if(orxString_ICompare(_zBlendMode, orxDISPLAY_KZ_PREMUL) == 0)
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_PREMUL;
+  }
+  else
+  {
+    /* Updates blend mode */
+    eResult = orxDISPLAY_BLEND_MODE_NONE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 
@@ -75,15 +123,17 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmap, orxSTATUS, orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmaps, orxSTATUS, orxBITMAP **, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBlendMode, orxSTATUS, orxDISPLAY_BLEND_MODE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, orxBITMAP *, orxU8 *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, const orxBITMAP *, orxU8 *, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
@@ -103,7 +153,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawMesh, orxSTATUS, const orxBITMAP *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE, orxU32, const orxDISPLAY_VERTEX *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING, const orxLINKLIST *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StopShader, orxSTATUS, const orxHANDLE);
@@ -142,8 +192,10 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_BITMAP, orxDisplay_DeleteBitma
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, LOAD_BITMAP, orxDisplay_LoadBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAP, orxDisplay_SetDestinationBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAPS, orxDisplay_SetDestinationBitmaps)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BLEND_MODE, orxDisplay_SetBlendMode)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR_KEY, orxDisplay_SetBitmapColorKey)
@@ -265,9 +317,14 @@ orxSTATUS orxFASTCALL orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stC
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SetDestinationBitmap(orxBITMAP *_pstDst)
+orxSTATUS orxFASTCALL orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetDestinationBitmap)(_pstDst);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBlendMode)(_eBlendMode);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetDestinationBitmaps)(_apstBitmapList, _u32Number);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
@@ -310,7 +367,7 @@ orxBITMAP *orxFASTCALL orxDisplay_LoadBitmap(const orxSTRING _zFileName)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadBitmap)(_zFileName);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapData)(_pstBitmap, _au8Data, _u32ByteNumber);
 }
@@ -330,9 +387,9 @@ orxBOOL orxFASTCALL orxDisplay_HasShaderSupport()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_HasShaderSupport)();
 }
 
-orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_zCode, _pstParamList);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_zCode, _pstParamList, _bUseCustomParam);
 }
 
 void orxFASTCALL orxDisplay_DeleteShader(orxHANDLE _hShader)

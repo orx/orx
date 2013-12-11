@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -171,6 +171,8 @@ static orxINLINE void orxLocale_UnregisterCommands()
 void orxFASTCALL orxLocale_Setup()
 {
   /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_COMMAND);
@@ -417,9 +419,9 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
 /** Gets language counter
  * @return Number of languages defined
  */
-orxS32 orxFASTCALL orxLocale_GetLanguageCounter()
+orxU32 orxFASTCALL orxLocale_GetLanguageCounter()
 {
-  orxS32 s32Result;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -428,20 +430,20 @@ orxS32 orxFASTCALL orxLocale_GetLanguageCounter()
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
   /* Updates result */
-  s32Result = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+  u32Result = (orxU32)orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
   /* Pops config section */
   orxConfig_PopSection();
 
   /* Done! */
-  return s32Result;
+  return u32Result;
 }
 
 /** Gets language at the given index
- * @param[in] _s32LanguageIndex Index of the desired language
+ * @param[in] _u32LanguageIndex Index of the desired language
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex)
+const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxU32 _u32LanguageIndex)
 {
   const orxSTRING zResult;
 
@@ -452,7 +454,7 @@ const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex)
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
   /* Updates result */
-  zResult = orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, _s32LanguageIndex);
+  zResult = orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, _u32LanguageIndex);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -582,9 +584,9 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
 /** Gets key counter for the current language
  * @return Key counter the current language if valid, 0 otherwise
  */
-orxS32 orxFASTCALL orxLocale_GetKeyCounter()
+orxU32 orxFASTCALL orxLocale_GetKeyCounter()
 {
-  orxS32 s32Result;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -596,7 +598,7 @@ orxS32 orxFASTCALL orxLocale_GetKeyCounter()
     orxConfig_PushSection(sstLocale.zCurrentLanguage);
 
     /* Updates result */
-    s32Result = orxConfig_GetKeyCounter();
+    u32Result = orxConfig_GetKeyCounter();
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -604,18 +606,18 @@ orxS32 orxFASTCALL orxLocale_GetKeyCounter()
   else
   {
     /* Updates result */
-    s32Result = 0;
+    u32Result = 0;
   }
 
   /* Done! */
-  return s32Result;
+  return u32Result;
 }
 
 /** Gets key for the current language at the given index
- * @param[in] _s32KeyIndex      Index of the desired key
+ * @param[in] _u32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxNULL otherwise
  */
-const orxSTRING orxFASTCALL orxLocale_GetKey(orxS32 _s32KeyIndex)
+const orxSTRING orxFASTCALL orxLocale_GetKey(orxU32 _u32KeyIndex)
 {
   const orxSTRING zResult;
 
@@ -629,7 +631,7 @@ const orxSTRING orxFASTCALL orxLocale_GetKey(orxS32 _s32KeyIndex)
     orxConfig_PushSection(sstLocale.zCurrentLanguage);
 
     /* Updates result */
-    zResult = orxConfig_GetKey(_s32KeyIndex);
+    zResult = orxConfig_GetKey(_u32KeyIndex);
 
     /* Pops config section */
     orxConfig_PopSection();

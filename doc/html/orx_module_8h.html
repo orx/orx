@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -155,24 +162,27 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708aaf10ffde3b9351aabffb03b8a074af79">orxMODULE_ID_PROFILER</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a371b24036c2eec2a4699eeb9f22c3305">orxMODULE_ID_RENDER</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a8f4c2507939ee5e0a7c852d8d2633628">orxMODULE_ID_SCREENSHOT</a>, 
+&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708acdb6d4d87d122beaca1e6c7118bf4fc5">orxMODULE_ID_RESOURCE</a>, 
+<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a8f4c2507939ee5e0a7c852d8d2633628">orxMODULE_ID_SCREENSHOT</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708afeeb506b27d982b4aa2a5fe97abbb9b3">orxMODULE_ID_SHADER</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ad971dcf62e16fdf71f2a2e002f5b7693">orxMODULE_ID_SHADERPOINTER</a>, 
-<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708aa6f773be1c333e991778cd44f4269312">orxMODULE_ID_SOUND</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a177da56f1cd218fb7dcc920c80aff7f2">orxMODULE_ID_SOUNDPOINTER</a>, 
+&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708aa6f773be1c333e991778cd44f4269312">orxMODULE_ID_SOUND</a>, 
+<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a177da56f1cd218fb7dcc920c80aff7f2">orxMODULE_ID_SOUNDPOINTER</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708adf8fd36b3fe37b2cc1947795d97e9ebe">orxMODULE_ID_SOUNDSYSTEM</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ad29b6f2ac402e0cb5482c9fbc4a2f290">orxMODULE_ID_SPAWNER</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a441b74c1e724d2f5b58b01845c590eb8">orxMODULE_ID_STRING</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708af694c68af1ab094db8961aaa3fa732cc">orxMODULE_ID_STRUCTURE</a>, 
-<br/>
-&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ac6a13e1f67caab3688d6655b827a30c6">orxMODULE_ID_SYSTEM</a>, 
+<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ac6a13e1f67caab3688d6655b827a30c6">orxMODULE_ID_SYSTEM</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a31f755b56737397757487f8a50066108">orxMODULE_ID_TEXT</a>, 
-<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ae62cd8c9c3b495099e42aac53e01754b">orxMODULE_ID_TEXTURE</a>, 
-<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a9bad17bdd034daf9b5daaeac3ba9ea0b">orxMODULE_ID_TIMELINE</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a0dcac02f924f00d04f246747460f1286">orxMODULE_ID_VIEWPORT</a>, 
+&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708ae62cd8c9c3b495099e42aac53e01754b">orxMODULE_ID_TEXTURE</a>, 
+<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a9bad17bdd034daf9b5daaeac3ba9ea0b">orxMODULE_ID_TIMELINE</a>, 
+<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a0dcac02f924f00d04f246747460f1286">orxMODULE_ID_VIEWPORT</a>, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2f515e313a4217d32d5037c714f4641d">orxMODULE_ID_NUMBER</a>, 
-<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a31508cb1039bfdd3651a118f2c302fdc">orxMODULE_ID_MAX_NUMBER</a> = 64, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a31508cb1039bfdd3651a118f2c302fdc">orxMODULE_ID_MAX_NUMBER</a> = 64, 
 <a class="el" href="group__orx_module.html#ggada33eee351097708b92f32d0c5972708a64582956b0fd503bbb81e25f452e1e66">orxMODULE_ID_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
@@ -202,8 +212,6 @@ Functions</h2></td></tr>
 <tr class="separator:ga91a59b4a84dcf9c880bbca8056828b99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10bf7e12da32a1f3ad58beee77900609"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609">orxModule_SetupAll</a> ()</td></tr>
 <tr class="separator:ga10bf7e12da32a1f3ad58beee77900609"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga008e1262481bde971669f93c9e0afbda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#ga008e1262481bde971669f93c9e0afbda">orxModule_UpdateDependencies</a> ()</td></tr>
-<tr class="separator:ga008e1262481bde971669f93c9e0afbda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44141f0bc45f319187952b4629b862c"><td class="memItemLeft" align="right" valign="top">typedef&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxSTATUS</a> (orxFASTCALL *orxMODULE_INIT_FUNCTION)()</td></tr>
 <tr class="separator:gaf44141f0bc45f319187952b4629b862c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga83fece8538c577b8a4a0801ee4573a86"><td class="memItemLeft" align="right" valign="top">typedef&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> (orxFASTCALL *orxMODULE_EXIT_FUNCTION)()</td></tr>

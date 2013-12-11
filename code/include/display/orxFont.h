@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,6 +47,11 @@
 
 #include "display/orxTexture.h"
 #include "math/orxVector.h"
+
+
+/** Misc defines
+ */
+#define orxFONT_KZ_DEFAULT_FONT_NAME                  "-=DefaultFont=-"
 
 
 /** Internal font structure */

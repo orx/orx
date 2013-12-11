@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -113,7 +113,7 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
  */
 struct __orxCLOCK_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
   orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 40 */
   orxFLOAT          fPartialDT;                 /**< Clock partial DT : 44 */
   orxBANK          *pstFunctionBank;            /**< Function bank : 48 */
@@ -317,6 +317,7 @@ void orxFASTCALL orxClock_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);
@@ -700,10 +701,10 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             orxCLOCK_MOD_TYPE eModifierType;
 
             /* Gets modifier type */
-            zModifierType = orxString_LowerCase((orxSTRING)orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE));
+            zModifierType = orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE);
 
             /* Capped? */
-            if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
+            if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
             {
               /* Updates modifier value */
               fModifierValue = orxFLOAT_1 / fModifierValue;
@@ -712,7 +713,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
               eModifierType = orxCLOCK_MOD_TYPE_MAXED;
             }
             /* Fixed? */
-            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
             {
               /* Updates modifier value */
               fModifierValue = orxFLOAT_1 / fModifierValue;
@@ -721,7 +722,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
               eModifierType = orxCLOCK_MOD_TYPE_FIXED;
             }
             /* Multiply? */
-            else if(orxString_Compare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
             {
               /* Updates modifier type */
               eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
@@ -1011,7 +1012,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
  */
 const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
 {
-  const orxCLOCK_INFO *pstClockInfo = orxNULL;
+  const orxCLOCK_INFO *pstClockInfo;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -1030,14 +1031,14 @@ const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
  */
 orxCLOCK *orxFASTCALL orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxCLOCK *pstClock = orxNULL;
+  orxCLOCK *pstClock;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Gets clock */
-  pstClock = (orxCLOCK *)((orxU8 *)_pstClockInfo - (orxU8 *)&(((orxCLOCK *)0)->stClockInfo));
+  pstClock = orxSTRUCT_GET_FROM_FIELD(orxCLOCK, stClockInfo, _pstClockInfo);
 
   /* Done! */
   return pstClock;
@@ -1056,7 +1057,7 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_eModType < orxCLOCK_MOD_TYPE_NUMBER);
+  orxASSERT((_eModType < orxCLOCK_MOD_TYPE_NUMBER) || (_eModType == orxCLOCK_MOD_TYPE_NONE));
 
   /* Valid modifier value? */
   if(_fModValue >= orxFLOAT_0)

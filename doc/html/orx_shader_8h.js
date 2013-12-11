@@ -25,10 +25,12 @@ var orx_shader_8h =
     [ "orxShader_Enable", "orx_shader_8h.html#gac27e790b7913206f56fd598822ee9f47", null ],
     [ "orxShader_Exit", "orx_shader_8h.html#ga4cdf9639bf729cb4a6dd26b1cb655f54", null ],
     [ "orxShader_GetName", "orx_shader_8h.html#gafb33ac8cb6d593ce19a1c84a5b8f59b3", null ],
-    [ "orxShader_GetParamList", "orx_shader_8h.html#ga107c0364f5c749d496cfc11cf3b9f37d", null ],
     [ "orxShader_Init", "orx_shader_8h.html#gafb85fac6a25b5d2ca6d7972c814fcd9c", null ],
     [ "orxShader_IsEnabled", "orx_shader_8h.html#ga90b62cdab01eb571ac8fb4d1c1620a84", null ],
+    [ "orxShader_SetFloatParam", "orx_shader_8h.html#gac6ac3194160112a55c2c94be75737704", null ],
+    [ "orxShader_SetTextureParam", "orx_shader_8h.html#gad58623e105ed1d5df93a27298e6bae6a", null ],
     [ "orxShader_Setup", "orx_shader_8h.html#ga33b20cc352fbcab74c0de9e62e35b55b", null ],
+    [ "orxShader_SetVectorParam", "orx_shader_8h.html#gad521c24602914051107489944a5ca8b2", null ],
     [ "orxShader_Start", "orx_shader_8h.html#ga18f6009dc119f90cb9fb5b48a7d30c50", null ],
     [ "orxShader_Stop", "orx_shader_8h.html#ga650247fe0da8917b20b7f8c9e01e762d", null ]
 ];

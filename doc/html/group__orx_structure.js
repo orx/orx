@@ -1,9 +1,11 @@
 var group__orx_structure =
 [
     [ "orxSTRUCTURE", "structorx_s_t_r_u_c_t_u_r_e.html", [
+      [ "au8Padding", "structorx_s_t_r_u_c_t_u_r_e.html#acb0e1b5a9d4cfdce5dc767c51a4f0910", null ],
       [ "hStorageNode", "structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723", null ],
       [ "u32Flags", "structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef", null ],
-      [ "u64GUID", "structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b", null ]
+      [ "u64GUID", "structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b", null ],
+      [ "u64OwnerGUID", "structorx_s_t_r_u_c_t_u_r_e.html#a74470ce89445905ff831bfb16cd8fcd4", null ]
     ] ],
     [ "orxANIM", "group__orx_structure.html#gafed02c22755889a77177dfcfe6b0e263", null ],
     [ "orxANIMPOINTER", "group__orx_structure.html#ga012e39cef7a6dbbc9905b59484916402", null ],
@@ -86,6 +88,7 @@ var group__orx_structure =
     [ "orxStructure_GetID", "group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c", null ],
     [ "orxStructure_GetLast", "group__orx_structure.html#gac368eeddaae9c34df6c1a56f950e528b", null ],
     [ "orxStructure_GetNext", "group__orx_structure.html#gadc054536d88700f7e8b10489e94609cf", null ],
+    [ "orxStructure_GetOwner", "group__orx_structure.html#gae7fd7c3caf111fe23c2c27e72dbecb29", null ],
     [ "orxStructure_GetParent", "group__orx_structure.html#ga862d22374bae77072677d56b7f74d80d", null ],
     [ "orxStructure_GetPrevious", "group__orx_structure.html#ga878386b7ca9d5180181fb0806d56abb6", null ],
     [ "orxStructure_GetRefCounter", "group__orx_structure.html#ga75c64fc468f26c889ee428608903b01c", null ],
@@ -95,6 +98,7 @@ var group__orx_structure =
     [ "orxStructure_Init", "group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c", null ],
     [ "orxStructure_Register", "group__orx_structure.html#gaa56cb39392bd2ec50767317b4f7603fa", null ],
     [ "orxStructure_SetFlags", "group__orx_structure.html#ga95058db32c35e47042cf42e560bda596", null ],
+    [ "orxStructure_SetOwner", "group__orx_structure.html#gae4e2dfb3c7a38e389941211b90931e1e", null ],
     [ "orxStructure_SetParent", "group__orx_structure.html#ga0bf3ea9346ad84fbca753c8fa3e79572", null ],
     [ "orxStructure_Setup", "group__orx_structure.html#ga32f6863a9c76944bc7856b77e590bf65", null ],
     [ "orxStructure_TestAllFlags", "group__orx_structure.html#gacdcd1868be2f1b62e444c81dfccb1c27", null ],

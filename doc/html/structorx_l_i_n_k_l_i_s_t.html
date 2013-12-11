@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -134,7 +141,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>First node pointer : 4 </p>
+<p>First node pointer : 4/8 </p>
 
 <p>Definition at line <a class="el" href="orx_link_list_8h_source.html#l00106">106</a> of file <a class="el" href="orx_link_list_8h_source.html">orxLinkList.h</a>.</p>
 
@@ -149,7 +156,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Last node pointer : 8 </p>
+<p>Last node pointer : 8/16 </p>
 
 <p>Definition at line <a class="el" href="orx_link_list_8h_source.html#l00107">107</a> of file <a class="el" href="orx_link_list_8h_source.html">orxLinkList.h</a>.</p>
 
@@ -164,7 +171,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Node counter : 12 </p>
+<p>Node counter : 12/20 </p>
 
 <p>Definition at line <a class="el" href="orx_link_list_8h_source.html#l00108">108</a> of file <a class="el" href="orx_link_list_8h_source.html">orxLinkList.h</a>.</p>
 

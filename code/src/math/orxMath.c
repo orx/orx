@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -62,15 +62,15 @@ static orxINLINE orxU32 orxMath_Xor128()
  ***************************************************************************/
 
 /** Inits the random seed
- * @param[in]   _s32Seed                        Value to use as seed for random number generation
+ * @param[in]   _u32Seed                        Value to use as seed for random number generation
  */
-void orxFASTCALL orxMath_InitRandom(orxS32 _s32Seed)
+void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 {
   /* Inits random seed */
-  su32X = (orxU32)_s32Seed;
-  su32Y = su32X * (orxU32)_s32Seed;
-  su32Z = su32Y * (orxU32)_s32Seed;
-  su32W = su32Z * (orxU32)_s32Seed;
+  su32X = _u32Seed;
+  su32Y = su32X * _u32Seed;
+  su32Z = su32Y * _u32Seed;
+  su32W = su32Z * _u32Seed;
 }
 
 /** Gets a random orxFLOAT value
@@ -173,4 +173,34 @@ orxS64 orxFASTCALL orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max)
 
   /* Done! */
   return s64Result;
+}
+
+/** Gets the current random seeds
+ * @param[out]  _au32Seeds[4]                   Current seeds
+ */
+void orxFASTCALL orxMath_GetRandomSeeds(orxU32 _au32Seeds[4])
+{
+  /* Gets all seeds */
+  _au32Seeds[0] = su32X;
+  _au32Seeds[1] = su32Y;
+  _au32Seeds[2] = su32Z;
+  _au32Seeds[3] = su32W;
+
+  /* Done! */
+  return;
+}
+
+/** Sets (replaces) the current random seeds
+ * @param[in]   _au32Seeds[4]                   Seeds to set
+ */
+void orxFASTCALL orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4])
+{
+  /* Gets all seeds */
+  su32X = _au32Seeds[0];
+  su32Y = _au32Seeds[1];
+  su32Z = _au32Seeds[2];
+  su32W = _au32Seeds[3];
+
+  /* Done! */
+  return;
 }

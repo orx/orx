@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,7 +53,9 @@
 
 /** Misc defines
  */
-#define orxINPUT_KU32_BINDING_NUMBER    4
+#define orxINPUT_KU32_BINDING_NUMBER      4
+
+#define orxINPUT_KZ_INTERNAL_SET_PREFIX   "-="
 
 
 /** Input type enum
@@ -127,8 +129,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Load(const orxSTRING 
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Save(const orxSTRING _zFileName);
 
 
-/** Selects current working set
+/** Selects (and enables) current working set
  * @param[in] _zSetName         Set name to select
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxSTRING _zSetName);
 
@@ -136,6 +139,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxST
  * @return Current selected set
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
+
+
+/** Enables/disables working set (without selecting it)
+ * @param[in] _zSetName         Set name to enable/disable
+ * @param[in] _bEnable          Enable / Disable
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEnable);
+
+/** Is working set enabled (includes current working set)?
+ * @param[in] _zSetName         Set name to check
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
 
 
 /** Is input active?

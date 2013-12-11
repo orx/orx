@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -107,7 +114,7 @@ $(document).ready(function(){initNavTree('orx_file_8h_source.html','');});
 <div class="contents">
 <a href="orx_file_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Orx - Portable Game Engine</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2012 Orx-Project</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2013 Orx-Project</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This software is provided &#39;as-is&#39;, without any express or implied</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * warranty. In no event will the authors be held liable for any damages</span></div>
@@ -131,7 +138,7 @@ $(document).ready(function(){initNavTree('orx_file_8h_source.html','');});
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifndef _orxFILE_H_</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _orxFILE_H_</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="orx_include_8h.html">orxInclude.h</a>&quot;</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
@@ -145,9 +152,9 @@ $(document).ready(function(){initNavTree('orx_file_8h_source.html','');});
 <div class="line"><a name="l00057"></a><span class="lineno"><a class="code" href="group__orx_file.html#ga86b8ab492ac1345a01f7965aa32c9cf4">   57</a></span>&#160;<span class="preprocessor">#define orxFILE_KU32_FLAG_OPEN_BINARY       0x00000008  </span></div>
 <div class="line"><a name="l00061"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html">   61</a></span>&#160;<span class="preprocessor">typedef struct __orxFILE_INFO_t</span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor"></span>{</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964">   63</a></span>&#160;  orxU32    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964">u32Flags</a>;                                   </div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a68b7054ff31b0c16337370fcc41976fd">   64</a></span>&#160;  orxU32    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a68b7054ff31b0c16337370fcc41976fd">u32TimeStamp</a>;                               </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a201c42c11c9eb4b9b6863b96d77caa57">   65</a></span>&#160;  orxU32    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a201c42c11c9eb4b9b6863b96d77caa57">u32Size</a>;                                    </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a8b146b47d476608ee798cd126ffd62a4">   63</a></span>&#160;  orxS64    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a8b146b47d476608ee798cd126ffd62a4">s64Size</a>;                                    </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b">   64</a></span>&#160;  orxS64    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b">s64TimeStamp</a>;                               </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964">   65</a></span>&#160;  orxU32    <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964">u32Flags</a>;                                   </div>
 <div class="line"><a name="l00066"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#ae5bfe98651850cc6c7dc02e5271f083f">   66</a></span>&#160;  orxHANDLE <a class="code" href="structorx_f_i_l_e___i_n_f_o.html#ae5bfe98651850cc6c7dc02e5271f083f">hInternal</a>;                                  </div>
 <div class="line"><a name="l00067"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#ae6d272aa5102c9ad888cc679c43af7e4">   67</a></span>&#160;  orxCHAR   zName[256];                                 </div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="code" href="structorx_f_i_l_e___i_n_f_o.html#aa977df232302a0884d1efad4d0be5ed4">   68</a></span>&#160;  orxCHAR   zPattern[256];                              </div>
@@ -177,22 +184,24 @@ $(document).ready(function(){initNavTree('orx_file_8h_source.html','');});
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *orxFASTCALL       <a class="code" href="group__orx_file.html#ga69cb0d04489c13daba0ebd380a4ae19b">orxFile_Open</a>(<span class="keyword">const</span> orxSTRING _zFileName, orxU32 _u32OpenFlags);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL         <a class="code" href="group__orx_file.html#ga6b28e81a5fe57e673f79b20c3f6c641f">orxFile_Read</a>(<span class="keywordtype">void</span> *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#ga9ee4abd9c34e1217218667fc95c97d3b">orxFile_Read</a>(<span class="keywordtype">void</span> *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL         <a class="code" href="group__orx_file.html#ga179d964e4e74c7266468f7f6c54dc1ad">orxFile_Write</a>(<span class="keywordtype">void</span> *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#ga78d8a632fb1a9e52fe3a0bd15f2f1cf2">orxFile_Write</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL      <a class="code" href="group__orx_file.html#gaad3788ccc8b930c0034b59039ab23344">orxFile_Seek</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxS32 _s32Position);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL         <a class="code" href="group__orx_file.html#ga7e03dfe3355ee7eedf288737757389bf">orxFile_Tell</a>(<span class="keyword">const</span> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL         <a class="code" href="group__orx_file.html#ga017e8a1b07e7dac74193f5908bcabfcf">orxFile_GetSize</a>(<span class="keyword">const</span> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxCDECL            <a class="code" href="group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde">orxFile_Print</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, <span class="keyword">const</span> orxSTRING _zString, ...);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#gac8fd28773af6bc29e0d059144e1d652e">orxFile_Seek</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, orxS64 _s64Position, <a class="code" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> _eWhence);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#gae9e4ff1d2d29b68e461e1e8967e97f9f">orxFile_Tell</a>(<span class="keyword">const</span> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#ga89e9d6542f6969ac17b268424960ea5a">orxFile_GetSize</a>(<span class="keyword">const</span> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL         <a class="code" href="group__orx_file.html#ga98c8abe42adee0ecf4c9a5b48f82f9b0">orxFile_GetTime</a>(<span class="keyword">const</span> <a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL      <a class="code" href="group__orx_file.html#ga8e45150c5019dc189069413c4ced085b">orxFile_Close</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxFILE_H_ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxCDECL            <a class="code" href="group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde">orxFile_Print</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile, <span class="keyword">const</span> orxSTRING _zString, ...);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL      <a class="code" href="group__orx_file.html#ga8e45150c5019dc189069413c4ced085b">orxFile_Close</a>(<a class="code" href="group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxFILE_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

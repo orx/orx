@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -304,17 +304,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 #endif /* __orxMSVC__ */
-
-#ifdef __orxANDROID_NATIVE__
-
-void android_main(struct android_app *_pstApp)
-{
-  /* Executes orx */
-  orx_AndroidExecute(_pstApp, orxMain_Init, orxMain_Run, orxMain_Exit);
-
-  /* Done! */
-  return;
-}
-
-#endif /* __orxANDROID_NATIVE__ */
 

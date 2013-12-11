@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="orxCrypt">
+  <VirtualDirectory Name="src">
+    <File Name="../../../src/orxCrypt.c"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <Configuration Name="Debug|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orxd" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Profile|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orxp" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orx" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Debug|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orxd" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Profile|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orxp" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../lib" />
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <Library Value="orx" />
+        <Library Value="Foundation.framework" />
+        <Library Value="AppKit.framework" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies name="Debug|x64">
+  </Dependencies>
+  <Dependencies name="Profile|x64">
+  </Dependencies>
+  <Dependencies name="Release|x64">
+  </Dependencies>
+  <Dependencies name="Debug|x32">
+  </Dependencies>
+  <Dependencies name="Profile|x32">
+  </Dependencies>
+  <Dependencies name="Release|x32">
+  </Dependencies>
+</CodeLite_Project>

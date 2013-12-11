@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -108,6 +115,8 @@ $(document).ready(function(){initNavTree('group__orx_object.html','');});
 Macros</h2></td></tr>
 <tr class="memitem:ga327727f4ebf89729d8518e90c918fddd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga327727f4ebf89729d8518e90c918fddd">orxOBJECT_GET_STRUCTURE</a>(OBJECT, TYPE)&#160;&#160;&#160;orx##TYPE(<a class="el" href="group__orx_object.html#ga16b071f6b40931ce6617479ca3294b49">_orxObject_GetStructure</a>(OBJECT, orxSTRUCTURE_ID_##TYPE))</td></tr>
 <tr class="separator:ga327727f4ebf89729d8518e90c918fddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5957f0de4c583012e4f102e026ed2599"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga5957f0de4c583012e4f102e026ed2599">orxOBJECT_KZ_DEFAULT_GROUP</a>&#160;&#160;&#160;&quot;default&quot;</td></tr>
+<tr class="separator:ga5957f0de4c583012e4f102e026ed2599"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -116,10 +125,17 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga6d3be2b225f5e2ae28fc521d39cbb6b1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1">orxOBJECT_EVENT</a> { <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a">orxOBJECT_EVENT_CREATE</a> = 0, 
+<tr class="memitem:ga6d3be2b225f5e2ae28fc521d39cbb6b1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1">orxOBJECT_EVENT</a> { <br/>
+&#160;&#160;<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a">orxOBJECT_EVENT_CREATE</a> = 0, 
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a7758a0718fb8208481577f472793ed11">orxOBJECT_EVENT_DELETE</a>, 
+<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960">orxOBJECT_EVENT_ENABLE</a>, 
+<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f">orxOBJECT_EVENT_DISABLE</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112">orxOBJECT_EVENT_PAUSE</a>, 
+<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce">orxOBJECT_EVENT_UNPAUSE</a>, 
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9">orxOBJECT_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a67c375a6b5d3f7ae7599a35a79da3449">orxOBJECT_EVENT_NONE</a> = orxENUM_NONE
+<br/>
  }</td></tr>
 <tr class="separator:ga6d3be2b225f5e2ae28fc521d39cbb6b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -191,7 +207,7 @@ Flip</h2></td></tr>
 <tr class="separator:gada5553e90d127d2889985f4ed2a1f822"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Graphic</h2></td></tr>
+graphic</h2></td></tr>
 <tr class="memitem:gab5eff9d2aa5ca146cc0e615a4179a6d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3">orxObject_SetPivot</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPivot)</td></tr>
 <tr class="separator:gab5eff9d2aa5ca146cc0e615a4179a6d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaba6395e153b0e580949380fc06112acc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaba6395e153b0e580949380fc06112acc">orxObject_SetOrigin</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOrigin)</td></tr>
@@ -204,6 +220,24 @@ Graphic</h2></td></tr>
 <tr class="separator:ga5281d5b25fc332ca30172165bb18cbda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf6f62a36ba59e6bcec6fd56bce495932"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaf6f62a36ba59e6bcec6fd56bce495932">orxObject_GetSize</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSize)</td></tr>
 <tr class="separator:gaf6f62a36ba59e6bcec6fd56bce495932"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac05ae1a614b249d4f193e70bbb2e588c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gac05ae1a614b249d4f193e70bbb2e588c">orxObject_SetColor</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
+<tr class="separator:gac05ae1a614b249d4f193e70bbb2e588c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga97faf0d61aaa751ca3a9a0638903cd32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga97faf0d61aaa751ca3a9a0638903cd32">orxObject_ClearColor</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga97faf0d61aaa751ca3a9a0638903cd32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga11619a4851d3c57e768301fce73da901"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga11619a4851d3c57e768301fce73da901">orxObject_HasColor</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga11619a4851d3c57e768301fce73da901"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga07d3d5f43109b5d142634e9bc5e67b84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga07d3d5f43109b5d142634e9bc5e67b84">orxObject_GetColor</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
+<tr class="separator:ga07d3d5f43109b5d142634e9bc5e67b84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad7e69150f8ba78a9e52309ca2f6d9a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74">orxObject_SetRepeat</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)</td></tr>
+<tr class="separator:gad7e69150f8ba78a9e52309ca2f6d9a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad99b0892c7f5eb9847b906d24c8aae5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad99b0892c7f5eb9847b906d24c8aae5d">orxObject_GetRepeat</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)</td></tr>
+<tr class="separator:gad99b0892c7f5eb9847b906d24c8aae5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga10d807123d929e60b41c2bfd06bab1d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga10d807123d929e60b41c2bfd06bab1d8">orxObject_SetBlendMode</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr class="separator:ga10d807123d929e60b41c2bfd06bab1d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab328cf54c18b2efaf17e1b30704fc2bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <br class="typebreak"/>
+<a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab328cf54c18b2efaf17e1b30704fc2bc">orxObject_GetBlendMode</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:gab328cf54c18b2efaf17e1b30704fc2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Frame</h2></td></tr>
@@ -236,6 +270,12 @@ Frame</h2></td></tr>
 Parent</h2></td></tr>
 <tr class="memitem:ga14fd6946764c919597aeda13cd7429d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pParent)</td></tr>
 <tr class="separator:ga14fd6946764c919597aeda13cd7429d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga29150fea08eae5ca1cd84740e7fe84ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga29150fea08eae5ca1cd84740e7fe84ac">orxObject_GetParent</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga29150fea08eae5ca1cd84740e7fe84ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga704d2951756ea95748fc48429a726611"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga704d2951756ea95748fc48429a726611">orxObject_GetChild</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga704d2951756ea95748fc48429a726611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga596144d94bca0814dc292dbc1a561807"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga596144d94bca0814dc292dbc1a561807">orxObject_GetSibling</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga596144d94bca0814dc292dbc1a561807"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac43eb6ebd857fd938f9c0c92bbcd6a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gac43eb6ebd857fd938f9c0c92bbcd6a74">orxObject_Attach</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pParent)</td></tr>
 <tr class="separator:gac43eb6ebd857fd938f9c0c92bbcd6a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab2c1240e6bec4a872ea25570d1ecf0ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab2c1240e6bec4a872ea25570d1ecf0ca">orxObject_Detach</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
@@ -299,17 +339,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 Bounding box</h2></td></tr>
 <tr class="memitem:gab0961cefa231821769f9288de56e5ded"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab0961cefa231821769f9288de56e5ded">orxObject_GetBoundingBox</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBoundingBox)</td></tr>
 <tr class="separator:gab0961cefa231821769f9288de56e5ded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Color</h2></td></tr>
-<tr class="memitem:gac05ae1a614b249d4f193e70bbb2e588c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gac05ae1a614b249d4f193e70bbb2e588c">orxObject_SetColor</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
-<tr class="separator:gac05ae1a614b249d4f193e70bbb2e588c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga97faf0d61aaa751ca3a9a0638903cd32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga97faf0d61aaa751ca3a9a0638903cd32">orxObject_ClearColor</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
-<tr class="separator:ga97faf0d61aaa751ca3a9a0638903cd32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga11619a4851d3c57e768301fce73da901"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga11619a4851d3c57e768301fce73da901">orxObject_HasColor</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
-<tr class="separator:ga11619a4851d3c57e768301fce73da901"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga07d3d5f43109b5d142634e9bc5e67b84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga07d3d5f43109b5d142634e9bc5e67b84">orxObject_GetColor</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a> *_pstColor)</td></tr>
-<tr class="separator:ga07d3d5f43109b5d142634e9bc5e67b84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 FX</h2></td></tr>
@@ -383,19 +412,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gab08d846f3d0dfad0ff5ec1dddfc45e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Graphic / texture</h2></td></tr>
+texture</h2></td></tr>
 <tr class="memitem:ga3ae56cd449d690621f6062d044dbd9de"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga3ae56cd449d690621f6062d044dbd9de">orxObject_GetWorkingTexture</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:ga3ae56cd449d690621f6062d044dbd9de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad7e69150f8ba78a9e52309ca2f6d9a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74">orxObject_SetRepeat</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)</td></tr>
-<tr class="separator:gad7e69150f8ba78a9e52309ca2f6d9a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad99b0892c7f5eb9847b906d24c8aae5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad99b0892c7f5eb9847b906d24c8aae5d">orxObject_GetRepeat</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)</td></tr>
-<tr class="separator:gad99b0892c7f5eb9847b906d24c8aae5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga10d807123d929e60b41c2bfd06bab1d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga10d807123d929e60b41c2bfd06bab1d8">orxObject_SetBlendMode</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
-<tr class="separator:ga10d807123d929e60b41c2bfd06bab1d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab328cf54c18b2efaf17e1b30704fc2bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <br class="typebreak"/>
-<a class="el" href="group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab328cf54c18b2efaf17e1b30704fc2bc">orxObject_GetBlendMode</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
-<tr class="separator:gab328cf54c18b2efaf17e1b30704fc2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Life time / active time</h2></td></tr>
@@ -407,11 +426,22 @@ Life time / active time</h2></td></tr>
 <tr class="separator:gaeedb8303518d6456b563726ac18dc6d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
+Group</h2></td></tr>
+<tr class="memitem:ga859f1f819fd22f263301534e4c407b4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga859f1f819fd22f263301534e4c407b4b">orxObject_GetDefaultGroupID</a> ()</td></tr>
+<tr class="separator:ga859f1f819fd22f263301534e4c407b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0e49127ca680b84696e726cfe964292b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga0e49127ca680b84696e726cfe964292b">orxObject_GetGroupID</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga0e49127ca680b84696e726cfe964292b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga62fcdaa867f31be6230742326d4da91a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga62fcdaa867f31be6230742326d4da91a">orxObject_SetGroupID</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga62fcdaa867f31be6230742326d4da91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8b4031eaa626dd8f3b2c83029a979d28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga8b4031eaa626dd8f3b2c83029a979d28">orxObject_GetNext</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga8b4031eaa626dd8f3b2c83029a979d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Picking</h2></td></tr>
-<tr class="memitem:gafa2c2c03e15a0aaabde7d3ef42c68cdf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gafa2c2c03e15a0aaabde7d3ef42c68cdf">orxObject_Pick</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
-<tr class="separator:gafa2c2c03e15a0aaabde7d3ef42c68cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2eccd4a07e7ceef241b6401dcc7009e2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2eccd4a07e7ceef241b6401dcc7009e2">orxObject_BoxPick</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox)</td></tr>
-<tr class="separator:ga2eccd4a07e7ceef241b6401dcc7009e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa7f5946ded728ecc944e0f38b4d73676"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaa7f5946ded728ecc944e0f38b4d73676">orxObject_Pick</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:gaa7f5946ded728ecc944e0f38b4d73676"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51ca82e2024e8cb619fb25b384b5e101"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga51ca82e2024e8cb619fb25b384b5e101">orxObject_BoxPick</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga51ca82e2024e8cb619fb25b384b5e101"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... </p>
@@ -445,6 +475,20 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga5957f0de4c583012e4f102e026ed2599"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxOBJECT_KZ_DEFAULT_GROUP&#160;&#160;&#160;&quot;default&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00063">63</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="ga780c6211b200bb2a9f0ca89eba707457"></a>
 <div class="memitem">
@@ -457,7 +501,7 @@ Picking</h2></td></tr>
 </div><div class="memdoc">
 <p>Internal object structure </p>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00079">79</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00085">85</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -477,6 +521,14 @@ Picking</h2></td></tr>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a7758a0718fb8208481577f472793ed11"></a>orxOBJECT_EVENT_DELETE</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960"></a>orxOBJECT_EVENT_ENABLE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f"></a>orxOBJECT_EVENT_DISABLE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112"></a>orxOBJECT_EVENT_PAUSE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce"></a>orxOBJECT_EVENT_UNPAUSE</em>&nbsp;</td><td>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9"></a>orxOBJECT_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a67c375a6b5d3f7ae7599a35a79da3449"></a>orxOBJECT_EVENT_NONE</em>&nbsp;</td><td>
@@ -485,7 +537,7 @@ Picking</h2></td></tr>
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00066">66</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00068">68</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -938,7 +990,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga2eccd4a07e7ceef241b6401dcc7009e2"></a>
+<a class="anchor" id="ga51ca82e2024e8cb619fb25b384b5e101"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -946,15 +998,26 @@ Picking</h2></td></tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_BoxPick </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
-          <td class="paramname"><em>_pstBox</em></td><td>)</td>
+          <td class="paramname"><em>_pstBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with graphic in contact with the given box </p>
+<p>Picks the first active object with graphic in contact with the given box, withing a given group </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box to use for picking </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
   </table>
   </dd>
 </dl>
@@ -1063,7 +1126,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Deletes an object, <em>unsafe</em> when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead </p>
+<p>Deletes an object, <em>unsafe</em> when called from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1346,6 +1409,30 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga704d2951756ea95748fc48429a726611"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxObject_GetChild </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets object's first child </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>First child structure (object, spawner, camera or frame) / orxNULL </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gad59c5a311d83f40cea6b27dccb4b1048"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1440,6 +1527,23 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga859f1f819fd22f263301534e4c407b4b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxObject_GetDefaultGroupID </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets default group ID </p>
+<dl class="section return"><dt>Returns</dt><dd>Default group ID </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gada5553e90d127d2889985f4ed2a1f822"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1479,6 +1583,30 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga0e49127ca680b84696e726cfe964292b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxObject_GetGroupID </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets object's group ID </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Object's group ID </dd></dl>
 
 </div>
 </div>
@@ -1613,6 +1741,41 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga8b4031eaa626dd8f3b2c83029a979d28"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_GetNext </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets next object in group </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object, orxNULL to get the first one </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxOBJECT / orxNULL </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga5281d5b25fc332ca30172165bb18cbda"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1717,6 +1880,30 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Owner / orxNULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga29150fea08eae5ca1cd84740e7fe84ac"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxObject_GetParent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets object's parent </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Parent (object, spawner, camera or frame) / orxNULL </dd></dl>
 
 </div>
 </div>
@@ -1923,6 +2110,30 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Scale vector </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga596144d94bca0814dc292dbc1a561807"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxObject_GetSibling </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets object's next sibling </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Next sibling structure (object, spawner, camera or frame) / orxNULL </dd></dl>
 
 </div>
 </div>
@@ -2462,7 +2673,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gafa2c2c03e15a0aaabde7d3ef42c68cdf"></a>
+<a class="anchor" id="gaa7f5946ded728ecc944e0f38b4d73676"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2470,15 +2681,26 @@ Picking</h2></td></tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_Pick </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvPosition</em></td><td>)</td>
+          <td class="paramname"><em>_pvPosition</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with graphic "under" the given position </p>
+<p>Picks the first active object with graphic "under" the given position, within a given group </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
   </table>
   </dd>
 </dl>
@@ -3011,6 +3233,41 @@ Picking</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_bFlipX</td><td>Flip it on X axis </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_bFlipY</td><td>Flip it on Y axis </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga62fcdaa867f31be6230742326d4da91a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetGroupID </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets object's group ID </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to set </td></tr>
   </table>
   </dd>
 </dl>

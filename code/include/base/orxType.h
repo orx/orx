@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -118,7 +118,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
     typedef void *                orxHANDLE;
 
@@ -165,11 +165,25 @@
 
     #define orxENUM_NONE          0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
 #endif /* __orxWINDOWS__ */
 
 /* *** Misc constants *** */
+
+/* *** Seek offset constants *** */
+typedef enum __orxSEEK_OFFSET_WHENCE_t
+{
+  orxSEEK_OFFSET_WHENCE_START = 0,
+  orxSEEK_OFFSET_WHENCE_CURRENT,
+  orxSEEK_OFFSET_WHENCE_END,
+
+  orxSEEK_OFFSET_WHENCE_NUMBER,
+
+  orxSEEK_OFFSET_WHENCE_NONE = orxENUM_NONE
+
+} orxSEEK_OFFSET_WHENCE;
+
 
 /* *** Boolean constants *** */
 #define orxFALSE                  ((orxBOOL)(1 != 1))
@@ -179,7 +193,12 @@
 /* *** Float constants *** */
 static const orxFLOAT             orxFLOAT_0            = orx2F(0.0f);
 static const orxFLOAT             orxFLOAT_1            = orx2F(1.0f);
-static const orxFLOAT             orxFLOAT_MAX          = orx2F(1e37);
+static const orxFLOAT             orxFLOAT_MAX          = orx2F(3.402823466e+38f);
+
+/* *** Double constants *** */
+static const orxDOUBLE            orxDOUBLE_0           = orx2D(0.0);
+static const orxDOUBLE            orxDOUBLE_1           = orx2D(1.0);
+static const orxDOUBLE            orxDOUBLE_MAX         = orx2D(1.7976931348623158e+308);
 
 
 /* *** Undefined constants *** */
@@ -214,7 +233,7 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '\\'
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '/'
 

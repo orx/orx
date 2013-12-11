@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxFile
- * 
+ *
  * File / file system module
  * Module that handles file / file system access
  *
@@ -42,7 +42,7 @@
 
 #ifndef _orxFILE_H_
 #define _orxFILE_H_
- 
+
 #include "orxInclude.h"
 
 
@@ -60,9 +60,9 @@
 /** Store datas about the current file. */
 typedef struct __orxFILE_INFO_t
 {
+  orxS64    s64Size;                                    /**< File's size (in bytes) */
+  orxS64    s64TimeStamp;                               /**< Timestamp of the last modification */
   orxU32    u32Flags;                                   /**< File attributes (see list of availables flags) */
-  orxU32    u32TimeStamp;                               /**< Timestamp of the last modification */
-  orxU32    u32Size;                                    /**< File's size (in bytes) */
   orxHANDLE hInternal;                                  /**< Internal use handle */
   orxCHAR   zName[256];                                 /**< File's name */
   orxCHAR   zPattern[256];                              /**< Search pattern */
@@ -128,40 +128,47 @@ extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileN
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
- * @param[in] _s32Position          Position (from start) where to set the indicator
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _s64Position          Position (from start) where to set the indicator
+ * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
+ * @return Absolute cursor positionif succesful, -1 otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_OFFSET_WHENCE _eWhence);
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
  * @return Returns the current position of the file indicator, -1 is invalid
  */
-extern orxDLLAPI orxS32 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
 
 /** Retrieves a file's size
  * @param[in] _pstFile              Concerned file
  * @return Returns the length of the file, <= 0 if invalid
  */
-extern orxDLLAPI orxS32 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
+
+/** Retrieves a file's time of last modification
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the time of the last modification, in seconds, since epoch
+ */
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetTime(const orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer on the file descriptor

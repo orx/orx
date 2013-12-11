@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -107,7 +114,7 @@ $(document).ready(function(){initNavTree('orx_spawner_8h_source.html','');});
 <div class="contents">
 <a href="orx_spawner_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Orx - Portable Game Engine</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2012 Orx-Project</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2013 Orx-Project</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This software is provided &#39;as-is&#39;, without any express or implied</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * warranty. In no event will the authors be held liable for any damages</span></div>
@@ -245,16 +252,13 @@ $(document).ready(function(){initNavTree('orx_spawner_8h_source.html','');});
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;</div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL      <a class="code" href="group__orx_spawner.html#gabdbe00e4edfe81e1861c8eb27a23280f">orxSpawner_SetParent</a>(<a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, <span class="keywordtype">void</span> *_pParent);</div>
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> orxFASTCALL           <a class="code" href="group__orx_spawner.html#ga5087a1a7f2208d1a0fdcd0536f5296bb">orxSpawner_SetOwner</a>(<a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner, <span class="keywordtype">void</span> *_pOwner);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL  <a class="code" href="group__orx_spawner.html#ga5df9094e4b084ca4e3741eb61f4a33b3">orxSpawner_GetParent</a>(<span class="keyword">const</span> <a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL  <a class="code" href="group__orx_spawner.html#gaee94910c703d0c9cdd9deefe9597bc6d">orxSpawner_GetOwner</a>(<span class="keyword">const</span> <a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL <a class="code" href="group__orx_spawner.html#ga916c22f1f611db75738be14dfee0d846">orxSpawner_GetName</a>(<span class="keyword">const</span> <a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner);</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keyword">const</span> orxSTRING orxFASTCALL <a class="code" href="group__orx_spawner.html#ga916c22f1f611db75738be14dfee0d846">orxSpawner_GetName</a>(<span class="keyword">const</span> <a class="code" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSPAWNER</a> *_pstSpawner);</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxSPAWNER_H_ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxSPAWNER_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

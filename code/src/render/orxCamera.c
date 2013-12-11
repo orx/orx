@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -33,6 +33,7 @@
 #include "render/orxCamera.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "memory/orxMemory.h"
 #include "object/orxObject.h"
@@ -59,6 +60,7 @@
 
 /** Misc defines
  */
+#define orxCAMERA_KZ_CONFIG_GROUP_LIST        "GroupList"
 #define orxCAMERA_KZ_CONFIG_ZOOM              "Zoom"
 #define orxCAMERA_KZ_CONFIG_POSITION          "Position"
 #define orxCAMERA_KZ_CONFIG_ROTATION          "Rotation"
@@ -68,7 +70,7 @@
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 
-#define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   4           /**< Reference table size */
+#define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 
 
 /***************************************************************************
@@ -79,12 +81,12 @@
  */
 struct __orxCAMERA_t
 {
-  orxSTRUCTURE    stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE    stStructure;                /**< Public structure, first structure member : 32 */
   orxFRAME       *pstFrame;                   /**< Frame : 20 */
   orxAABOX        stFrustum;                  /**< Frustum : 44 */
   const orxSTRING zReference;                 /**< Reference : 48 */
+  orxU32          au32GroupIDList[orxCAMERA_KU32_GROUP_ID_NUMBER]; /**< Group ID list : 112 */
 };
-
 
 /** Static structure
  */
@@ -108,6 +110,469 @@ static orxCAMERA_STATIC sstCamera;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Create
+ */
+void orxFASTCALL orxCamera_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Creates camera */
+  pstCamera = orxCamera_CreateFromConfig(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->u64Value = (pstCamera != orxNULL) ? orxStructure_GetGUID(pstCamera) : orxU64_UNDEFINED;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Delete
+ */
+void orxFASTCALL orxCamera_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Deletes it */
+    orxCamera_Delete(pstCamera);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetID
+ */
+void orxFASTCALL orxCamera_CommandGetID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetPosition
+ */
+void orxFASTCALL orxCamera_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Sets its position */
+    orxCamera_SetPosition(pstCamera, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetRotation
+ */
+void orxFASTCALL orxCamera_CommandSetRotation(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Sets its rotation */
+    orxCamera_SetRotation(pstCamera, orxMATH_KF_DEG_TO_RAD * _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetZoom
+ */
+void orxFASTCALL orxCamera_CommandSetZoom(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Sets its zoom */
+    orxCamera_SetZoom(pstCamera, _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetPosition
+ */
+void orxFASTCALL orxCamera_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Gets its position */
+    orxCamera_GetPosition(pstCamera, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRotation
+ */
+void orxFASTCALL orxCamera_CommandGetRotation(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Gets its position */
+    _pstResult->fValue = orxMATH_KF_RAD_TO_DEG * orxCamera_GetRotation(pstCamera);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetZoom
+ */
+void orxFASTCALL orxCamera_CommandGetZoom(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Gets its zoom */
+    _pstResult->fValue = orxCamera_GetZoom(pstCamera);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetFrustum
+ */
+void orxFASTCALL orxCamera_CommandSetFrustum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if((pstCamera != orxNULL)
+  && (_astArgList[1].fValue >= orxFLOAT_0)
+  && (_astArgList[2].fValue >= orxFLOAT_0)
+  && (_astArgList[3].fValue) <= (_astArgList[4].fValue))
+  {
+    /* Sets its zoom */
+    orxCamera_SetFrustum(pstCamera, _astArgList[1].fValue, _astArgList[2].fValue, _astArgList[3].fValue, _astArgList[4].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Get
+ */
+void orxFASTCALL orxCamera_CommandGet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCamera_Get(_astArgList[0].zValue);
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxStructure_GetGUID(pstCamera);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetName
+ */
+void orxFASTCALL orxCamera_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = (pstCamera != orxNULL) ? orxCamera_GetName(pstCamera) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetParent
+ */
+void orxFASTCALL orxCamera_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Has parent? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].u64Value != 0))
+    {
+      orxSTRUCTURE *pstParent;
+
+      /* Gets parent */
+      pstParent = orxStructure_Get(_astArgList[1].u64Value);
+
+      /* Valid? */
+      if(pstParent != orxNULL)
+      {
+        /* Updates its parent */
+        orxCamera_SetParent(pstCamera, pstParent);
+      }
+    }
+    else
+    {
+      /* Removes parent */
+      orxCamera_SetParent(pstCamera, orxNULL);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetParent
+ */
+void orxFASTCALL orxCamera_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    orxSTRUCTURE *pstParent;
+
+    /* Gets its parent */
+    pstParent = orxCamera_GetParent(pstCamera);
+
+    /* Valid? */
+    if(pstParent != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstParent);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the camera commands
+ */
+static orxINLINE void orxCamera_RegisterCommands()
+{
+  /* Command: Create */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, Create, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Delete */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, Delete, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: GetID */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetID, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetPosition, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: SetRotation */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetRotation, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Rotation", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: SetZoom */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetZoom, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Zoom", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: GetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetRotation */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetRotation, "Rotation", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetZoom */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetZoom, "Zoom", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetFrustum */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetFrustum, "Camera", orxCOMMAND_VAR_TYPE_U64, 5, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Width", orxCOMMAND_VAR_TYPE_FLOAT}, {"Height", orxCOMMAND_VAR_TYPE_FLOAT}, {"Near", orxCOMMAND_VAR_TYPE_FLOAT}, {"Far", orxCOMMAND_VAR_TYPE_FLOAT});
+
+  /* Command: Get */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, Get, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetName */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetParent, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetParent, "Parent", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+}
+
+/** Unregisters all the camera commands
+ */
+static orxINLINE void orxCamera_UnregisterCommands()
+{
+  /* Command: Create */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, Create);
+  /* Command: Delete */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, Delete);
+
+  /* Command: GetID */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetID);
+
+  /* Command: SetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetPosition);
+  /* Command: SetRotation */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetRotation);
+  /* Command: SetZoom */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetZoom);
+  /* Command: GetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetPosition);
+  /* Command: GetRotation */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetRotation);
+  /* Command: GetZoom */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetZoom);
+
+  /* Command: SetFrustum */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetFrustum);
+
+  /* Command: Get */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, Get);
+  /* Command: GetName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetName);
+
+  /* Command: SetParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetParent);
+  /* Command: GetParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetParent);
+}
 
 /** Deletes all cameras
  */
@@ -142,10 +607,13 @@ void orxFASTCALL orxCamera_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_COMMAND);
 
+  /* Done! */
   return;
 }
 
@@ -168,6 +636,9 @@ orxSTATUS orxFASTCALL orxCamera_Init()
     /* Valid? */
     if(sstCamera.pstReferenceTable != orxNULL)
     {
+      /* Register commands */
+      orxCamera_RegisterCommands();
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
     }
@@ -212,6 +683,9 @@ void orxFASTCALL orxCamera_Exit()
   /* Initialized? */
   if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxCamera_UnregisterCommands();
+
     /* Deletes camera list */
     orxCamera_DeleteAll();
 
@@ -240,7 +714,7 @@ void orxFASTCALL orxCamera_Exit()
  */
 orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
 {
-  orxCAMERA *pstCamera = orxNULL;
+  orxCAMERA *pstCamera;
   orxFRAME  *pstFrame;
 
   /* Checks */
@@ -265,8 +739,14 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         /* Stores frame */
         pstCamera->pstFrame = pstFrame;
 
+        /* Updates its owner */
+        orxStructure_SetOwner(pstFrame, pstCamera);
+
         /* Increases its reference counter */
         orxStructure_IncreaseCounter(pstFrame);
+
+        /* Adds default group ID */
+        orxCamera_AddGroupID(pstCamera, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP), orxFALSE);
 
         /* Updates flags */
         orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_2D, orxCAMERA_KU32_FLAG_NONE);
@@ -344,6 +824,22 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         orxVECTOR       vPosition;
         const orxSTRING zParentName;
         orxFLOAT        fNear, fFar, fWidth, fHeight;
+
+        /* Has group list? */
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_GROUP_LIST) != orxFALSE)
+        {
+          orxU32 i, u32Number;
+
+          /* Removes default group ID */
+          orxCamera_RemoveGroupID(pstResult, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP));
+
+          /* For all groups */
+          for(i = 0, u32Number = orxConfig_GetListCounter(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < u32Number; i++)
+          {
+            /* Adds it */
+            orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
+          }
+        }
 
         /* Gets frustum info */
         fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
@@ -450,6 +946,9 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
     /* Removes frame reference */
     orxStructure_DecreaseCounter(_pstCamera->pstFrame);
 
+    /* Removes its owner */
+    orxStructure_SetOwner(_pstCamera->pstFrame, orxNULL);
+
     /* Deletes frame*/
     orxFrame_Delete(_pstCamera->pstFrame);
 
@@ -478,6 +977,173 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
 
   /* Done! */
   return eResult;
+}
+
+/** Adds a group ID to a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to add
+ * @param[in] _bAddFirst        If true this group will be used *before* any already added ones, otherwise it'll be used *after* all of them
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Valid? */
+  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  {
+    orxU32 u32Counter;
+
+    /* Gets number of current stored IDs */
+    u32Counter = orxCamera_GetGroupIDCounter(_pstCamera);
+
+    /* Room left? */
+    if(u32Counter < orxCAMERA_KU32_GROUP_ID_NUMBER)
+    {
+      /* Should add it first? */
+      if(_bAddFirst != orxFALSE)
+      {
+        /* For all stored IDs */
+        for(; u32Counter > 0; u32Counter--)
+        {
+          /* Pushes it one slot further */
+          _pstCamera->au32GroupIDList[u32Counter] = _pstCamera->au32GroupIDList[u32Counter - 1];
+        }
+
+        /* Stores new ID */
+        _pstCamera->au32GroupIDList[0] = _u32GroupID;
+      }
+      else
+      {
+        /* Stores it */
+        _pstCamera->au32GroupIDList[u32Counter] = _u32GroupID;
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: maximum of IDs <%u> already reached.", u32Counter);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID <0x%X>.", _u32GroupID);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a group ID from a camera
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32GroupID       ID of the group to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Valid? */
+  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  {
+    orxU32 i;
+
+    /* For all stored ID */
+    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+    {
+      /* Found? */
+      if(_pstCamera->au32GroupIDList[i] == _u32GroupID)
+      {
+        /* For all stored IDs after current one */
+        for(; (i < orxCAMERA_KU32_GROUP_ID_NUMBER - 1) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+        {
+          /* Moves it one slot closer */
+          _pstCamera->au32GroupIDList[i] = _pstCamera->au32GroupIDList[i + 1];
+        }
+
+        /* Clears last slot */
+        _pstCamera->au32GroupIDList[i] = 0;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(eResult == orxSTATUS_FAILURE)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID <0x%X> not found.", _u32GroupID);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID <0x%X>.", _u32GroupID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets number of group IDs of camera
+ * @param[in] _pstCamera        Concerned camera
+ * @return Number of group IDs of this camera
+ */
+orxU32 orxFASTCALL orxCamera_GetGroupIDCounter(const orxCAMERA *_pstCamera)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Updates result*/
+  for(u32Result = 0; (u32Result < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[u32Result] != 0); u32Result++);
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets the group ID of a camera at the given index
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID
+ * @return Group ID if index is valid, orxU32_UNDEFINED otherwise
+ */
+orxU32 orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+  orxASSERT(_u32Index < orxCAMERA_KU32_GROUP_ID_NUMBER);
+
+  /* Updates result */
+  u32Result = (_pstCamera->au32GroupIDList[_u32Index] != 0) ? _pstCamera->au32GroupIDList[_u32Index] : orxU32_UNDEFINED;
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Sets camera frustum (3D rectangle for 2D camera)
@@ -744,7 +1410,7 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
         break;
       }
-      
+
       case orxSTRUCTURE_ID_SPAWNER:
       {
         /* Updates its parent */
@@ -768,4 +1434,49 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets camera parent
+ * @param[in]   _pstCamera      Concerned camera
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxCamera_GetParent(const orxCAMERA *_pstCamera)
+{
+  orxFRAME     *pstFrame, *pstParentFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Gets frame */
+  pstFrame = _pstCamera->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's parent */
+  pstParentFrame = orxFrame_GetParent(pstFrame);
+
+  /* Valid? */
+  if(pstParentFrame != orxNULL)
+  {
+    /* Gets its owner */
+    pstResult = orxStructure_GetOwner(pstParentFrame);
+
+    /* No owner? */
+    if(pstResult == orxNULL)
+    {
+      /* Updates result with frame itself */
+      pstResult = (orxSTRUCTURE *)pstParentFrame;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }

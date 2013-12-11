@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -197,11 +197,94 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
+  #ifdef __orxANDROID__
 
 #include "main/orxAndroid.h"
 
-  #else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_pfnRun != orxNULL);
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Registers all other modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Displays help */
+      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      {
+        orxSYSTEM_EVENT_PAYLOAD stPayload;
+        orxSTATUS               eClockStatus, eMainStatus;
+        orxBOOL                 bStop;
+
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+        /* Main loop */
+        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
+            bStop == orxFALSE;
+            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+        {
+          orxAndroid_PumpEvents();
+
+          /* Sends frame start event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
+          /* Runs the engine */
+          eMainStatus = _pfnRun();
+
+          /* Updates clock system */
+          eClockStatus = orxClock_Update();
+
+          /* Sends frame stop event */
+          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+          /* Updates frame counter */
+          stPayload.u32FrameCounter++;
+        }
+      }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
+    }
+
+    /* Exits from all modules */
+    orxModule_ExitAll();
+  }
+
+  /* Exits from the Debug system */
+
+  orxDEBUG_EXIT();
+}
+
+  #else /* __orxANDROID__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -288,9 +371,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
     #ifdef __orxMSVC__
 
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
 /** Orx main execution function (console-less windows application)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
@@ -334,7 +414,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 
     #endif /* __orxMSVC__ */
 
-  #endif /* __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
 #endif /* __orxIOS__ */
 

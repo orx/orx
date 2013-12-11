@@ -1,16 +1,47 @@
 How to install BuildBot
 =======================
 
-1. For windows, follow instructions at http://trac.buildbot.net/wiki/RunningBuildbotOnWindows
-   For other OSes, similar steps should be followed
+0. Install prerequisites (after http://trac.buildbot.net/wiki/RunningBuildbotOnWindows)
+  - Python 2.x: http://www.python.org (prefer the 32bit version on windows unless you have a 64bit compiler handy) and add it to the PATH (including 'scripts' sub-folder)
+  - setuptools: http://pypi.python.org/pypi/setuptools/
+  - Windows only, PyWin32: easy_install PyWin32 (or http://sourceforge.net/projects/pywin32/files/)
+  - Mercurial: easy_install Mercurial
+  - Master only, PyOpenSSL: easy_install PyOpenSSL
+  - Master only, BuildBot: easy_install buildbot
+  - Slave only, BuildBot-Slave: easy_install buildbot-slave
 
-2. Use code/build/buildbot/master.cfg to generate a local buildbot slave
-   instructions at http://buildbot.net/buildbot/docs/current/tutorial/firstrun.html (buildslave create-slave)
+More info at http://buildbot.net/buildbot/docs/current/index.html
 
-3. Modify buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
+
+Master
+======
+
+1. Create a master with: buildbot create-master <master-folder>
+
+2. Copy orx/code/build/buildbot/master.cfg to <master-folder>
+
+3. Update the list of authorized users in master.cfg (authz_cfg)
+
+4. Modify master.cfg l.14 with the path to the hg binary (full path needed on windows)
+
+5. Modify <Python>/Lib/site-packages/buildbot.*.egg/buildbot/changes/hgpoller.py to enforce UTF-8 comments
    (otherwise it'll choke when non ASCII-characters have been used in the svn history)
-   line 86, in _getRevDetails, args = ['log', '--encoding', 'utf8', '-r', rev, os.linesep.join((
+   line 86, in _getRevDetails, args = ['log', '--encoding', self.encoding, '-r', rev, os.linesep.join((
 
-4. On windows, add VCExpress (or DevEnv) to the PATH environment variable
+6. Start BuildBot master: buildbot start <master-folder> (and add it as a service/init script if desired)
 
-5. For master only: update the list of authorized users in authz_cfg
+More info on adding buildbot windows services at http://trac.buildbot.net/wiki/RunningBuildbotOnWindows
+
+
+Slave
+=====
+
+1. Create a slave with: buildslave create-slave <slave-folder> buildbot.orx-project.org:9989 <slave-name> <slave-pass>
+
+2. Make sure the tools needed by the slave are in the PATH (such as gcc, DevEnv/VCExpress, doxygen, etc...)
+
+3. Edit <slave-folder>/info/host with info on the platform/tool version and <slave-folder>/info/admin with your contact info
+
+4. Starts BuildBot slave: buildslave start <slave-folder> (and add it as a service/init script if desired)
+
+More info on adding buildbot windows services at http://trac.buildbot.net/wiki/RunningBuildbotOnWindows

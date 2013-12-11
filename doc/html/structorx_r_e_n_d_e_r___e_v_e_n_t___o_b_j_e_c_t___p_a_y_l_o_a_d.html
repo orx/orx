@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -113,43 +120,26 @@ $(document).ready(function(){initNavTree('structorx_r_e_n_d_e_r___e_v_e_n_t___o_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a09bc8e5c015fc924439c34d9bf1f9f9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a09bc8e5c015fc924439c34d9bf1f9f9a">pstRenderBitmap</a></td></tr>
-<tr class="separator:a09bc8e5c015fc924439c34d9bf1f9f9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9581e959503204d4ce5dde0ed9c05783"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a9581e959503204d4ce5dde0ed9c05783">pstRenderFrame</a></td></tr>
-<tr class="separator:a9581e959503204d4ce5dde0ed9c05783"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51da2e6bb53c5c6d4e299b931951fba9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a51da2e6bb53c5c6d4e299b931951fba9">pstTransform</a></td></tr>
+<tr class="separator:a51da2e6bb53c5c6d4e299b931951fba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Event payload </p>
 
-<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00083">83</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00096">96</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a09bc8e5c015fc924439c34d9bf1f9f9a"></a>
+<a class="anchor" id="a51da2e6bb53c5c6d4e299b931951fba9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a>* orxRENDER_EVENT_OBJECT_PAYLOAD::pstRenderBitmap</td>
+          <td class="memname"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a>* orxRENDER_EVENT_OBJECT_PAYLOAD::pstTransform</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Bitmap where object is rendered : 4 </p>
+<p>Object display transform : 4 / 8 </p>
 
-<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00085">85</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a9581e959503204d4ce5dde0ed9c05783"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a>* orxRENDER_EVENT_OBJECT_PAYLOAD::pstRenderFrame</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Frame position where object is rendered : 8 </p>
-
-<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00086">86</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00098">98</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
 
 </div>
 </div>

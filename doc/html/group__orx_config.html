@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -96,6 +103,7 @@ $(document).ready(function(){initNavTree('group__orx_config.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -104,6 +112,11 @@ $(document).ready(function(){initNavTree('group__orx_config.html','');});
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga292cacf010a38b185f65e2e54bce8733"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733">orxCONFIG_KZ_RESOURCE_GROUP</a>&#160;&#160;&#160;&quot;Config&quot;</td></tr>
+<tr class="separator:ga292cacf010a38b185f65e2e54bce8733"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga7e6115a8a97bcce5c51485a75445d52a"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7e6115a8a97bcce5c51485a75445d52a">orxCONFIG_SAVE_FUNCTION</a> )(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)</td></tr>
@@ -146,11 +159,11 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gaae70c4ac05073b8bea6983e9b884d7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6ee371e72eb36c58ffa1cc84bc85e93b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga6ee371e72eb36c58ffa1cc84bc85e93b">orxConfig_GetFloat</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga6ee371e72eb36c58ffa1cc84bc85e93b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac20175fac9546218198afac0145d438c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gac20175fac9546218198afac0145d438c">orxConfig_GetKey</a> (orxS32 _s32KeyIndex)</td></tr>
-<tr class="separator:gac20175fac9546218198afac0145d438c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0830333bca9f0d0cc7bce107d47e2ee0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0830333bca9f0d0cc7bce107d47e2ee0">orxConfig_GetKeyCounter</a> ()</td></tr>
-<tr class="separator:ga0830333bca9f0d0cc7bce107d47e2ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9eb6e288c6ba814066e098f43e93965a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9eb6e288c6ba814066e098f43e93965a">orxConfig_GetKey</a> (orxU32 _u32KeyIndex)</td></tr>
+<tr class="separator:ga9eb6e288c6ba814066e098f43e93965a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9fda325b2493f2ea34bb085163e57338"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9fda325b2493f2ea34bb085163e57338">orxConfig_GetKeyCounter</a> ()</td></tr>
+<tr class="separator:ga9fda325b2493f2ea34bb085163e57338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga313f411f3ac4dcfb3cf42c5da0637bee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga313f411f3ac4dcfb3cf42c5da0637bee">orxConfig_GetListBool</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
 <tr class="separator:ga313f411f3ac4dcfb3cf42c5da0637bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf2dbe2df9129458c4dfab09f7207516c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaf2dbe2df9129458c4dfab09f7207516c">orxConfig_GetListCounter</a> (const orxSTRING _zKey)</td></tr>
@@ -159,16 +172,25 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga51753d69cf634c7bbb1547da993f723c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacc4f2a87c9360dd789a0437ff0aa446c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gacc4f2a87c9360dd789a0437ff0aa446c">orxConfig_GetListS32</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
 <tr class="separator:gacc4f2a87c9360dd789a0437ff0aa446c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga727050cf91c3cab4c22922d3158a66a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga727050cf91c3cab4c22922d3158a66a0">orxConfig_GetListS64</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+<tr class="separator:ga727050cf91c3cab4c22922d3158a66a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a87cbbc3f57c1c95af63bb0746bb0ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga2a87cbbc3f57c1c95af63bb0746bb0ba">orxConfig_GetListString</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
 <tr class="separator:ga2a87cbbc3f57c1c95af63bb0746bb0ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa993b5c8612463a53f4e8d3d272dec36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaa993b5c8612463a53f4e8d3d272dec36">orxConfig_GetListU32</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
 <tr class="separator:gaa993b5c8612463a53f4e8d3d272dec36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0cb8fa0f8ec474dfbd5c1a3e036b0fea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0cb8fa0f8ec474dfbd5c1a3e036b0fea">orxConfig_GetListU64</a> (const orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+<tr class="separator:ga0cb8fa0f8ec474dfbd5c1a3e036b0fea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga871e097485e20e9cc3b27f80b352e1b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga871e097485e20e9cc3b27f80b352e1b6">orxConfig_GetListVector</a> (const orxSTRING _zKey, orxS32 _s32ListIndex, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
 <tr class="separator:ga871e097485e20e9cc3b27f80b352e1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga747a224b80a0c047b3aa7d31794d4053"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga747a224b80a0c047b3aa7d31794d4053">orxConfig_GetMainFileName</a> ()</td></tr>
 <tr class="separator:ga747a224b80a0c047b3aa7d31794d4053"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4939987f72a20bb800f868eba8bee3d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga4939987f72a20bb800f868eba8bee3d2">orxConfig_GetOrigin</a> (const orxSTRING _zSectionName)</td></tr>
+<tr class="separator:ga4939987f72a20bb800f868eba8bee3d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae8ab83ed018c82f369b5493e6a6c7f58"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gae8ab83ed018c82f369b5493e6a6c7f58">orxConfig_GetOriginID</a> (const orxSTRING _zSectionName)</td></tr>
+<tr class="separator:gae8ab83ed018c82f369b5493e6a6c7f58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9c67829801e603be067ba7d3bfa5127e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9c67829801e603be067ba7d3bfa5127e">orxConfig_GetParent</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga9c67829801e603be067ba7d3bfa5127e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -176,14 +198,11 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga70670ce00716ab2003d48c63c54319d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee6c39874f4e63e136d7433e2b8e2959"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaee6c39874f4e63e136d7433e2b8e2959">orxConfig_GetS64</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:gaee6c39874f4e63e136d7433e2b8e2959"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf7e3ecdd10608757dfe219698df4f021"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaf7e3ecdd10608757dfe219698df4f021">orxConfig_GetSection</a> (orxS32 _s32SectionIndex)</td></tr>
-<tr class="separator:gaf7e3ecdd10608757dfe219698df4f021"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5d6afc37488e6fffdb6d4c12be6239d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5d6afc37488e6fffdb6d4c12be6239d7">orxConfig_GetSectionCounter</a> ()</td></tr>
-<tr class="separator:ga5d6afc37488e6fffdb6d4c12be6239d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaafd0328311c70393415ea21f4f66f5a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaafd0328311c70393415ea21f4f66f5a5">orxConfig_GetSectionOrigin</a> (const orxSTRING _zSectionName)</td></tr>
-<tr class="separator:gaafd0328311c70393415ea21f4f66f5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga58f521eb01abf13b8663ebdf1fdd7a57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga58f521eb01abf13b8663ebdf1fdd7a57">orxConfig_GetSection</a> (orxU32 _u32SectionIndex)</td></tr>
+<tr class="separator:ga58f521eb01abf13b8663ebdf1fdd7a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5aeab0b7b913b93887aa1d701be9cac0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5aeab0b7b913b93887aa1d701be9cac0">orxConfig_GetSectionCounter</a> ()</td></tr>
+<tr class="separator:ga5aeab0b7b913b93887aa1d701be9cac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5d903626427ae7fcb638130cadc09ec4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5d903626427ae7fcb638130cadc09ec4">orxConfig_GetString</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga5d903626427ae7fcb638130cadc09ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,6 +271,22 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Config module Module that handles configuration files </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga292cacf010a38b185f65e2e54bce8733"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONFIG_KZ_RESOURCE_GROUP&#160;&#160;&#160;&quot;Config&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>DefinesConfig resource group </p>
+
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00054">54</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="ga7e6115a8a97bcce5c51485a75445d52a"></a>
 <div class="memitem">
@@ -264,7 +299,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Config callback function type to use with save function </p>
 
-<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00068">68</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00073">73</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -297,7 +332,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00054">54</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00059">59</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -398,7 +433,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Copies a file with optional encryption </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zDstFileName</td><td>Name of the destionation file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zDstFileName</td><td>Name of the destination file </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zSrcFileName</td><td>Name of the source file </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zEncryptionKey</td><td>Encryption key to use when writing destination file, orxNULL for no encryption </td></tr>
   </table>
@@ -530,15 +565,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gac20175fac9546218198afac0145d438c"></a>
+<a class="anchor" id="ga9eb6e288c6ba814066e098f43e93965a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetKey </td>
           <td>(</td>
-          <td class="paramtype">orxS32&#160;</td>
-          <td class="paramname"><em>_s32KeyIndex</em></td><td>)</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32KeyIndex</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -546,7 +581,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets key for the current section at the given index </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_s32KeyIndex</td><td>Index of the desired key </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32KeyIndex</td><td>Index of the desired key </td></tr>
   </table>
   </dd>
 </dl>
@@ -554,12 +589,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga0830333bca9f0d0cc7bce107d47e2ee0"></a>
+<a class="anchor" id="ga9fda325b2493f2ea34bb085163e57338"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxConfig_GetKeyCounter </td>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetKeyCounter </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -700,6 +735,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga727050cf91c3cab4c22922d3158a66a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL orxConfig_GetListS64 </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&#160;</td>
+          <td class="paramname"><em>_s32ListIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads a signed integer value from config list </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_s32ListIndex</td><td>Index of desired item in list / -1 for random </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga2a87cbbc3f57c1c95af63bb0746bb0ba"></a>
 <div class="memitem">
 <div class="memproto">
@@ -741,6 +811,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetListU32 </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&#160;</td>
+          <td class="paramname"><em>_s32ListIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reads an unsigned integer value from config list </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_s32ListIndex</td><td>Index of desired item in list / -1 for random </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The value </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga0cb8fa0f8ec474dfbd5c1a3e036b0fea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU64 orxFASTCALL orxConfig_GetListU64 </td>
           <td>(</td>
           <td class="paramtype">const orxSTRING&#160;</td>
           <td class="paramname"><em>_zKey</em>, </td>
@@ -829,6 +934,54 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga4939987f72a20bb800f868eba8bee3d2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetOrigin </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets section origin (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTRING if found, orxSTRING_EMPTY otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gae8ab83ed018c82f369b5493e6a6c7f58"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetOriginID </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets section origin ID (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String ID if found, 0 otherwise </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga9c67829801e603be067ba7d3bfa5127e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -901,15 +1054,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gaf7e3ecdd10608757dfe219698df4f021"></a>
+<a class="anchor" id="ga58f521eb01abf13b8663ebdf1fdd7a57"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetSection </td>
           <td>(</td>
-          <td class="paramtype">orxS32&#160;</td>
-          <td class="paramname"><em>_s32SectionIndex</em></td><td>)</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32SectionIndex</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -917,7 +1070,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets section at the given index </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_s32SectionIndex</td><td>Index of the desired section </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32SectionIndex</td><td>Index of the desired section </td></tr>
   </table>
   </dd>
 </dl>
@@ -925,12 +1078,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga5d6afc37488e6fffdb6d4c12be6239d7"></a>
+<a class="anchor" id="ga5aeab0b7b913b93887aa1d701be9cac0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL orxConfig_GetSectionCounter </td>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetSectionCounter </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -939,30 +1092,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Gets section counter </p>
 <dl class="section return"><dt>Returns</dt><dd>Section counter </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaafd0328311c70393415ea21f4f66f5a5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetSectionOrigin </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zSectionName</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets section origin (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTRING if found, orxSTRING_EMPTY otherwise </dd></dl>
 
 </div>
 </div>

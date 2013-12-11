@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -42,6 +42,12 @@
 #ifndef _orxDECL_H_
 #define _orxDECL_H_
 
+#ifdef __orxDEBUG__
+
+  #define __orxPROFILER__
+
+#endif /* __orxDEBUG__ */
+
 #ifdef __APPLE__
 
   #include "TargetConditionals.h"
@@ -53,6 +59,8 @@
   #include <android/api-level.h>
 
 #endif /* TARGET_OS_ANDROID */
+
+#include <stddef.h>
 
 
 /* *** Platform dependent base declarations */
@@ -76,7 +84,7 @@
     #define __orxPPC64__
 
   /* x86_64? */
-  #elif defined(__x86_64)
+  #elif defined(__x86_64) || defined(_M_X64) || defined(__ia64__)
 
     #define __orxX86_64__
 
@@ -89,18 +97,37 @@
 
 #endif /* !__orxARM__ && !__orxPPC__ && !__orxPPC64__ && !__orxX86_64__ && !__orxX86__ */
 
-/* Power PC? */
-#ifdef __orxPPC__
+/* Has byte order? */
+#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
 
-  #define __orxBIG_ENDIAN__
-  #undef __orxLITTLE_ENDIAN__
+  #if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 
-#else /* __orxPPC__ */
+    #define __orxBIG_ENDIAN__
+    #undef __orxLITTLE_ENDIAN__
 
-  #define __orxLITTLE_ENDIAN__
-  #undef __orxBIG_ENDIAN__
+  #else /* (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) */
 
-#endif /* __orxPPC__ */
+    #define __orxLITTLE_ENDIAN__
+    #undef __orxBIG_ENDIAN__
+
+  #endif /* (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) */
+
+#else /* __BYTE_ORDER__ && __ORDER_BIG_ENDIAN__ */
+
+  /* Power PC? */
+  #ifdef __orxPPC__
+
+    #define __orxBIG_ENDIAN__
+    #undef __orxLITTLE_ENDIAN__
+
+  #else /* __orxPPC__ */
+
+    #define __orxLITTLE_ENDIAN__
+    #undef __orxBIG_ENDIAN__
+
+  #endif /* __orxPPC__ */
+
+#endif /* __BYTE_ORDER__ && __ORDER_BIG_ENDIAN__ */
 
 /* No compiler defines? */
 #if !defined(__orxLLVM__) && !defined(__orxGCC__) && !defined(__orxMSVC__)
@@ -130,7 +157,7 @@
 
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__) && !defined(__orxRASPBERRY_PI__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxRASPBERRY_PI__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -145,15 +172,7 @@
   /* Android */
   #elif defined(TARGET_OS_ANDROID)
 
-    #if __ANDROID_API__ >= 9
-
-      #define __orxANDROID_NATIVE__
-
-    #else /* __ANDROID_API__ >= 9 */
-
-      #define __orxANDROID__
-
-    #endif /* __ANDROID_API__ >= 9 */
+    #define __orxANDROID__
 
   /* Raspberry Pi */
   #elif defined(__orxARM__)
@@ -165,6 +184,8 @@
 
     #define __orxLINUX__
 
+    #pragma GCC diagnostic ignored "-Wunused-function"
+
   /* Mac? */
   #elif TARGET_OS_MAC
 
@@ -172,11 +193,11 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxANDROID_NATIVE__/__orxRASPBERRY_PI__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxRASPBERRY_PI__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxANDROID_NATIVE__ && !__orxRASPBERRY_PI__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxRASPBERRY_PI__ */
 
 
 #ifdef __cplusplus
@@ -204,6 +225,32 @@
 
 /* Windows */
 #ifdef __orxWINDOWS__
+
+  #ifdef NO_WIN32_LEAN_AND_MEAN
+
+    #undef WIN32_LEAN_AND_MEAN
+
+  #else /* NO_WIN32_LEAN_AND_MEAN */
+
+    #ifndef WIN32_LEAN_AND_MEAN
+
+      #define WIN32_LEAN_AND_MEAN
+      #define DEFINED_WIN32_LEAN_AND_MEAN
+
+    #endif /* !WIN32_LEAN_AND_MEAN */
+
+  #endif /* NO_WIN32_LEAN_AND_MEAN */
+
+  #include <windows.h>
+
+  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
+
+    #undef WIN32_LEAN_AND_MEAN
+    #undef DEFINED_WIN32_LEAN_AND_MEAN
+
+  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
+
+  #undef NO_WIN32_LEAN_AND_MEAN
 
   #ifdef __orxFREEBASIC__
 
@@ -251,9 +298,9 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
-    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
+    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxRASPBERRY_PI__)
 
       #define orxFASTCALL
 
@@ -261,7 +308,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -277,7 +324,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -299,14 +346,17 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
+    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxRASPBERRY_PI__)
 
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-    #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+      /* always use static on iOS, Android and Raspberry */
+      #define __orxSTATIC__
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -345,13 +395,37 @@
 #endif
 
 
+/** Memory barrier macros */
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+
+  #define orxMEMORY_BARRIER()           __sync_synchronize()
+  #define orxHAS_MEMORY_BARRIER
+
+#elif defined(__orxMSVC__)
+
+  #define orxMEMORY_BARRIER()           MemoryBarrier()
+  #define orxHAS_MEMORY_BARRIER
+
+#else
+
+  #define orxMEMORY_BARRIER()
+  #undef orxHAS_MEMORY_BARRIER
+
+  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.
+
+#endif
+
+
 /** Memory alignment macros */
-#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((ADDRESS) + ((BLOCK_SIZE) - 1)) & (~((BLOCK_SIZE) - 1)))
+#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) & (~((size_t)(BLOCK_SIZE) - 1)))
 
 #define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
 #define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)
 #define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
 
+
+/** Structure macros */
+#define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))
 
 /** Tests all flags
  * @param[in] X Flag container

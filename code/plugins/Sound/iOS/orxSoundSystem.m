@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -101,6 +101,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
     struct
     {
       stb_vorbis     *pstFile;
+      orxHANDLE       hResource;
     } vorbis;
 
     struct
@@ -303,121 +304,146 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
 
 static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  const orxSTRING zResourceLocation;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(_zFilename != orxNULL);
   orxASSERT(_pstData != orxNULL);
 
-  /* Opens file with vorbis */
-  _pstData->vorbis.pstFile = stb_vorbis_open_filename((char *)_zFilename, NULL, NULL);
+  /* Gets resource name */
+  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(_pstData->vorbis.pstFile != NULL)
+  if(zResourceLocation != orxNULL)
   {
-    stb_vorbis_info stFileInfo;
+    orxHANDLE hResource;
 
-    /* Gets file info */
-    stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+    /* Opens resource */
+    hResource = orxResource_Open(zResourceLocation, orxFALSE);
 
-    /* Stores info */
-    _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-    _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-    _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
-
-    /* Updates status */
-    _pstData->bVorbis                 = orxTRUE;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    NSString *poName;
-    NSURL    *poURL;
-
-    /* Gets NSString */
-    poName = [NSString stringWithCString:_zFilename encoding:NSUTF8StringEncoding];
-
-    /* Gets associated URL */
-    poURL = [NSURL fileURLWithPath:poName];
-
-    /* Opens file */
-    if(ExtAudioFileOpenURL((CFURLRef)poURL, &(_pstData->extaudio.oFileRef)) == 0)
+    /* Success? */
+    if(hResource != orxHANDLE_UNDEFINED)
     {
-      AudioStreamBasicDescription stFileInfo;
-      UInt32                      u32InfoSize;
+      /* Opens file with vorbis */
+      _pstData->vorbis.pstFile = stb_vorbis_open_file(hResource, FALSE, NULL, NULL);
 
-      /* Gets file info size  */
-      u32InfoSize = sizeof(AudioStreamBasicDescription);
-
-      /* Clears file info */
-      orxMemory_Zero(&stFileInfo, u32InfoSize);
-
-      /* Gets file info */
-      if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileDataFormat, &u32InfoSize, &stFileInfo) == 0)
+      /* Success? */
+      if(_pstData->vorbis.pstFile != NULL)
       {
-        /* Valid number of channels */
-        if(stFileInfo.mChannelsPerFrame <= 2)
+        stb_vorbis_info stFileInfo;
+
+        /* Gets file info */
+        stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+
+        /* Stores info */
+        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+        _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+        _pstData->vorbis.hResource        = hResource;
+
+        /* Updates status */
+        _pstData->bVorbis                 = orxTRUE;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Closes resource */
+        orxResource_Close(hResource);
+      }
+    }
+
+    /* Not a valid ogg vorbis? */
+    if(eResult == orxSTATUS_FAILURE)
+    {
+      NSString *poName;
+      NSURL    *poURL;
+
+      /* Gets NSString */
+      poName = [NSString stringWithCString:orxResource_GetPath(zResourceLocation) encoding:NSUTF8StringEncoding];
+
+      /* Gets associated URL */
+      poURL = [NSURL fileURLWithPath:poName];
+
+      /* Opens file */
+      if(ExtAudioFileOpenURL((CFURLRef)poURL, &(_pstData->extaudio.oFileRef)) == 0)
+      {
+        AudioStreamBasicDescription stFileInfo;
+        UInt32                      u32InfoSize;
+
+        /* Gets file info size  */
+        u32InfoSize = sizeof(AudioStreamBasicDescription);
+
+        /* Clears file info */
+        orxMemory_Zero(&stFileInfo, u32InfoSize);
+
+        /* Gets file info */
+        if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileDataFormat, &u32InfoSize, &stFileInfo) == 0)
         {
-          /* Updates file info for 16bit PCM data */
-          stFileInfo.mFormatID        = kAudioFormatLinearPCM;
-          stFileInfo.mBytesPerPacket  = 2 * stFileInfo.mChannelsPerFrame;
-          stFileInfo.mFramesPerPacket = 1;
-          stFileInfo.mBytesPerFrame   = 2 * stFileInfo.mChannelsPerFrame;
-          stFileInfo.mBitsPerChannel  = 16;
-          stFileInfo.mFormatFlags     = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
-
-          /* Applies it */
-          if(ExtAudioFileSetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_ClientDataFormat, u32InfoSize, &stFileInfo) == 0)
+          /* Valid number of channels */
+          if(stFileInfo.mChannelsPerFrame <= 2)
           {
-            SInt64 s64FrameNumber;
+            /* Updates file info for 16bit PCM data */
+            stFileInfo.mFormatID        = kAudioFormatLinearPCM;
+            stFileInfo.mBytesPerPacket  = 2 * stFileInfo.mChannelsPerFrame;
+            stFileInfo.mFramesPerPacket = 1;
+            stFileInfo.mBytesPerFrame   = 2 * stFileInfo.mChannelsPerFrame;
+            stFileInfo.mBitsPerChannel  = 16;
+            stFileInfo.mFormatFlags     = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
 
-            /* Gets frame number size */
-            u32InfoSize = sizeof(SInt64);
-
-            /* Get the frame number */
-            if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileLengthFrames, &u32InfoSize, &s64FrameNumber) == 0)
+            /* Applies it */
+            if(ExtAudioFileSetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_ClientDataFormat, u32InfoSize, &stFileInfo) == 0)
             {
-              /* Stores info */
-              _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.mChannelsPerFrame;
-              _pstData->stInfo.u32FrameNumber   = (orxU32)s64FrameNumber;
-              _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.mSampleRate;
+              SInt64 s64FrameNumber;
 
-              /* Updates status */
-              _pstData->bVorbis                 = orxFALSE;
+              /* Gets frame number size */
+              u32InfoSize = sizeof(SInt64);
 
-              /* Updates result */
-              eResult = orxSTATUS_SUCCESS;
+              /* Get the frame number */
+              if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileLengthFrames, &u32InfoSize, &s64FrameNumber) == 0)
+              {
+                /* Stores info */
+                _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.mChannelsPerFrame;
+                _pstData->stInfo.u32FrameNumber   = (orxU32)s64FrameNumber;
+                _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.mSampleRate;
+
+                /* Updates status */
+                _pstData->bVorbis                 = orxFALSE;
+
+                /* Updates result */
+                eResult = orxSTATUS_SUCCESS;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't get file size.", _zFilename);
+              }
             }
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't get file size.", _zFilename);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't convert to 16bit PCM.", _zFilename);
             }
           }
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't convert to 16bit PCM.", _zFilename);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: too many channels.", _zFilename);
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: too many channels.", _zFilename);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid format.", _zFilename);
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid format.", _zFilename);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't find/load the file.", _zFilename);
       }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't find/load the file.", _zFilename);
     }
   }
 
@@ -439,6 +465,10 @@ static orxINLINE void orxSoundSystem_iOS_CloseFile(orxSOUNDSYSTEM_DATA *_pstData
       /* Closes file */
       stb_vorbis_close(_pstData->vorbis.pstFile);
       _pstData->vorbis.pstFile = orxNULL;
+
+      /* Closes resource */
+      orxResource_Close(_pstData->vorbis.hResource);
+      _pstData->vorbis.hResource = orxNULL;
     }
   }
   /* extaudio */
@@ -1131,6 +1161,9 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_iOS_LoadSample(const orxSTRING
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
+
+  /* Clears data */
+  orxMemory_Zero(&stData, sizeof(orxSOUNDSYSTEM_DATA));
 
   /* Opens file */
   if(orxSoundSystem_iOS_OpenFile(_zFilename, &stData) != orxSTATUS_FAILURE)

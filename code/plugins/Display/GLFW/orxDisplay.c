@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -84,9 +84,17 @@
 
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
+#define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
+
 
 /**  Misc defines
  */
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
+
 #ifdef __orxDEBUG__
 
 #define glASSERT()                                                        \
@@ -100,9 +108,21 @@ do                                                                        \
   }                                                                       \
 } while(orxFALSE)
 
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glGetError();}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
+
 #else /* __orxDEBUG__ */
 
 #define glASSERT()
+
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+#else /* __orxGCC__ || __orxLLVM__ */
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+#endif /* __orxGCC__ || __orxLLVM__ */
 
 #endif /* __orxDEBUG__ */
 
@@ -120,6 +140,16 @@ typedef struct __orxDISPLAY_MATRIX_t
 
 } orxDISPLAY_MATRIX;
 
+/** Internal vertex structure
+ */
+typedef struct __orxDISPLAY_GLFW_VERTEX_t
+{
+  GLfloat fX, fY;
+  GLfloat fU, fV;
+  orxRGBA stRGBA;
+
+} orxDISPLAY_GLFW_VERTEX;
+
 /** Internal bitmap structure
  */
 struct __orxBITMAP_t
@@ -130,7 +160,9 @@ struct __orxBITMAP_t
   orxAABOX                  stClip;
   orxU32                    u32RealWidth, u32RealHeight, u32Depth;
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
+  orxU32                    u32DataSize;
   orxRGBA                   stColor;
+  const orxSTRING           zLocation;
 };
 
 /** Internal texture info structure
@@ -154,11 +186,13 @@ typedef struct __orxDISPLAY_PARAM_INFO_t
  */
 typedef struct __orxDISPLAY_SHADER_t
 {
+  orxLINKLIST_NODE          stNode;
   GLhandleARB               hProgram;
+  GLint                     iTextureLocation;
   GLint                     iTextureCounter;
   orxS32                    s32ParamCounter;
-  orxBOOL                   bActive;
-  orxBOOL                   bInitialized;
+  orxBOOL                   bPending;
+  orxBOOL                   bUseCustomParam;
   orxSTRING                 zCode;
   orxDISPLAY_TEXTURE_INFO  *astTextureInfoList;
   orxDISPLAY_PARAM_INFO    *astParamInfoList;
@@ -171,19 +205,24 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxBANK                  *pstBitmapBank;
   orxBANK                  *pstShaderBank;
+  orxLINKLIST               stActiveShaderList;
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
-  orxBITMAP                *pstDestinationBitmap;
-  const orxBITMAP          *pstLastBitmap;
+  orxRGBA                   stLastColor;
+  orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
-  orxS32                    s32BitmapCounter;
-  orxS32                    s32ShaderCounter;
+  orxS32                    s32PendingShaderCounter;
+  GLint                     iLastViewportX, iLastViewportY;
+  GLsizei                   iLastViewportWidth, iLastViewportHeight;
+  GLdouble                  dLastOrthoRight, dLastOrthoBottom;
+  orxDISPLAY_SHADER        *pstDefaultShader;
+  orxDISPLAY_SHADER        *pstNoTextureShader;
   GLint                     iTextureUnitNumber;
+  GLint                     iDrawBufferNumber;
+  orxU32                    u32DestinationBitmapCounter;
   GLuint                    uiFrameBuffer;
   GLuint                    uiIndexBuffer;
-  orxS32                    s32ActiveShaderCounter;
   orxS32                    s32BufferIndex;
-  orxU32                    u32GLFWFlags;
   orxU32                    u32Flags;
   orxU32                    u32Depth;
   orxU32                    u32RefreshRate;
@@ -191,7 +230,12 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultHeight;
   orxU32                    u32DefaultDepth;
   orxU32                    u32DefaultRefreshRate;
-  orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
+  orxS32                    s32ActiveTextureUnit;
+  GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  orxBITMAP                *apstDestinationBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  orxDOUBLE                 adMRUBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  orxDISPLAY_GLFW_VERTEX    astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
 
@@ -236,6 +280,7 @@ PFNGLDELETEFRAMEBUFFERSEXTPROC      glDeleteFramebuffersEXT     = NULL;
 PFNGLBINDFRAMEBUFFEREXTPROC         glBindFramebufferEXT        = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  glCheckFramebufferStatusEXT = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    glFramebufferTexture2DEXT   = NULL;
+PFNGLDRAWBUFFERSARBPROC             glDrawBuffersARB            = NULL;
 
   #ifndef __orxLINUX__
 
@@ -276,10 +321,11 @@ static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
       orxDISPLAY_VIDEO_MODE stVideoMode;
 
       /* Inits video mode */
-      stVideoMode.u32Width       = (orxU32)_iWidth;
-      stVideoMode.u32Height      = (orxU32)_iHeight;
-      stVideoMode.u32Depth       = sstDisplay.u32Depth;
-      stVideoMode.u32RefreshRate = sstDisplay.u32RefreshRate;
+      stVideoMode.u32Width        = (orxU32)_iWidth;
+      stVideoMode.u32Height       = (orxU32)_iHeight;
+      stVideoMode.u32Depth        = sstDisplay.u32Depth;
+      stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+      stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
       /* Applies it */
       orxDisplay_SetVideoMode(&stVideoMode);
@@ -370,6 +416,81 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   return;
 }
 
+static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
+{
+  orxDOUBLE dBestTime;
+  orxS32    i, s32BestCandidate;
+
+  /* For all texture units */
+  for(i = 0, s32BestCandidate = -1, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Found? */
+    if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+    {
+      /* Stops */
+      break;
+    }
+    /* Is first empty? */
+    else if((dBestTime != orxDOUBLE_0) && (sstDisplay.apstBoundBitmapList[i] == orxNULL))
+    {
+      /* Selects it */
+      s32BestCandidate = i;
+      dBestTime = orxDOUBLE_0;
+    }
+    /* Older candidate? */
+    else if(sstDisplay.adMRUBitmapList[i] < dBestTime)
+    {
+      /* Selects it */
+      s32BestCandidate = i;
+      dBestTime = sstDisplay.adMRUBitmapList[i];
+    }
+  }
+
+  /* Found? */
+  if(i < (orxS32)sstDisplay.iTextureUnitNumber)
+  {
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Selects unit */
+      glActiveTextureARB(GL_TEXTURE0_ARB + i);
+      glASSERT();
+    }
+
+    /* Updates MRU timestamp */
+    sstDisplay.adMRUBitmapList[i] = orxSystem_GetSystemTime();
+
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = i;
+  }
+  else
+  {
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Selects unit */
+      glActiveTextureARB(GL_TEXTURE0_ARB + s32BestCandidate);
+      glASSERT();
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Stores texture */
+    sstDisplay.apstBoundBitmapList[s32BestCandidate] = _pstBitmap;
+
+    /* Updates MRU timestamp */
+    sstDisplay.adMRUBitmapList[s32BestCandidate] = orxSystem_GetSystemTime();
+
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = s32BestCandidate;
+  }
+
+  /* Done! */
+  return;
+}
+
 static orxINLINE orxDISPLAY_MATRIX *orxDisplay_GLFW_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
 {
   orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY;
@@ -411,6 +532,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_EXT_READY))
   {
+      orxU32 i;
+
     /* Supports frame buffer? */
     if(glfwExtensionSupported("GL_EXT_framebuffer_object") != GL_FALSE)
     {
@@ -432,6 +555,33 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER);
+    }
+
+    /* Supports draw buffer? */
+    if(glfwExtensionSupported("GL_ARB_draw_buffers") != GL_FALSE)
+    {
+#ifndef __orxMAC__
+
+      /* Loads draw buffers extension functions */
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDRAWBUFFERSARBPROC, glDrawBuffersARB);
+
+#endif /* __orxMAC__ */
+
+      /* Gets number of available draw buffers */
+      glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &sstDisplay.iDrawBufferNumber);
+      glASSERT();
+      sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+    }
+    else
+    {
+      /* Uses only a single draw buffer */
+      sstDisplay.iDrawBufferNumber = 1;
+    }
+
+    /* Fills the list of draw buffer symbols */
+    for(i = 0; i < (orxU32)sstDisplay.iDrawBufferNumber; i++)
+    {
+      sstDisplay.aeDrawBufferList[i] = GL_COLOR_ATTACHMENT0_EXT + i;
     }
 
     /* Has NPOT texture support? */
@@ -502,6 +652,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB, &(sstDisplay.iTextureUnitNumber));
+      sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
       glASSERT();
 
       /* Updates status flags */
@@ -509,6 +660,9 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     }
     else
     {
+      /* Updates texture unit number */
+      sstDisplay.iTextureUnitNumber = 1;
+
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
     }
@@ -516,6 +670,188 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     /* Updates status flags */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_EXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
   }
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+  /* Stores texture unit and draw buffer numbers */
+  orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
+  orxConfig_SetU32("DrawBufferNumber", (orxU32)sstDisplay.iDrawBufferNumber);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxHANDLE hResource;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Opens resource */
+  hResource = orxResource_Open(_pstBitmap->zLocation, orxFALSE);
+
+  /* Success? */
+  if(hResource != orxHANDLE_UNDEFINED)
+  {
+    orxS64  s64Size;
+    orxU8  *pu8Buffer;
+
+    /* Gets its size */
+    s64Size = orxResource_GetSize(hResource);
+
+    /* Checks */
+    orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
+
+    /* Allocates buffer */
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
+
+    /* Success? */
+    if(pu8Buffer != orxNULL)
+    {
+      unsigned char  *pu8ImageData;
+      GLuint          uiWidth, uiHeight, uiBytesPerPixel;
+
+      /* Loads data from resource */
+      s64Size = orxResource_Read(hResource, s64Size, pu8Buffer);
+
+      /* Loads image */
+      pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+
+      /* Valid? */
+      if(pu8ImageData != NULL)
+      {
+        GLuint  uiRealWidth, uiRealHeight;
+        orxU8  *pu8ImageBuffer;
+
+        /* Has NPOT texture support? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+        {
+          /* Uses image buffer */
+          pu8ImageBuffer = pu8ImageData;
+
+          /* Gets real size */
+          uiRealWidth   = uiWidth;
+          uiRealHeight  = uiHeight;
+        }
+        else
+        {
+          GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
+
+          /* Gets real size */
+          uiRealWidth   = (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
+          uiRealHeight  = (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
+
+          /* Allocates buffer */
+          pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+          /* Checks */
+          orxASSERT(pu8ImageBuffer != orxNULL);
+
+          /* Gets line sizes */
+          uiLineSize      = uiWidth * 4 * sizeof(orxU8);
+          uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
+
+          /* Clears padding */
+          orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
+
+          /* For all lines */
+          for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
+              i < uiHeight;
+              i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
+          {
+            /* Copies data */
+            orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+            /* Adds padding */
+            orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+          }
+        }
+
+        /* Inits bitmap */
+        _pstBitmap->fWidth          = orxU2F(uiWidth);
+        _pstBitmap->fHeight         = orxU2F(uiHeight);
+        _pstBitmap->u32RealWidth    = (orxU32)uiRealWidth;
+        _pstBitmap->u32RealHeight   = (orxU32)uiRealHeight;
+        _pstBitmap->u32Depth        = 32;
+        _pstBitmap->fRecRealWidth   = orxFLOAT_1 / orxU2F(_pstBitmap->u32RealWidth);
+        _pstBitmap->fRecRealHeight  = orxFLOAT_1 / orxU2F(_pstBitmap->u32RealHeight);
+        _pstBitmap->u32DataSize     = _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+        orxVector_Copy(&(_pstBitmap->stClip.vTL), &orxVECTOR_0);
+        orxVector_Set(&(_pstBitmap->stClip.vBR), _pstBitmap->fWidth, _pstBitmap->fHeight, orxFLOAT_0);
+
+        /* Tracks video memory */
+        orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxTRUE);
+
+        /* Creates new texture */
+        glGenTextures(1, &_pstBitmap->uiTexture);
+        glASSERT();
+        glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+        glASSERT();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (_pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (_pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+        glASSERT();
+
+        /* Restores previous texture */
+        glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+        glASSERT();
+
+        /* Frees image buffer */
+        if(pu8ImageBuffer != pu8ImageData)
+        {
+          orxMemory_Free(pu8ImageBuffer);
+        }
+
+        /* Deletes surface */
+        SOIL_free_image_data(pu8ImageData);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      /* Frees buffer */
+      orxMemory_Free(pu8Buffer);
+    }
+
+    /* Closes resource */
+    orxResource_Close(hResource);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxS32 i;
+
+  /* For all bound bitmaps */
+  for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Is deleted bitmap? */
+    if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+    {
+      /* Resets it */
+      sstDisplay.apstBoundBitmapList[i] = orxNULL;
+      sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+    }
+  }
+
+  /* Tracks video memory */
+  orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
+
+  /* Deletes its texture */
+  glDeleteTextures(1, &(_pstBitmap->uiTexture));
+  glASSERT();
 
   /* Done! */
   return;
@@ -528,6 +864,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     "{"
     "  gl_TexCoord[0] = gl_MultiTexCoord0;"
     "  gl_Position    = gl_ProjectionMatrix * gl_Vertex;"
+    "  gl_FrontColor  = gl_Color;"
     "}";
 
   GLhandleARB hProgram, hVertexShader, hFragmentShader;
@@ -584,6 +921,10 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glLinkProgramARB(hProgram);
       glASSERT();
 
+      /* Gets texture location */
+      _pstShader->iTextureLocation = glGetUniformLocationARB(hProgram, "orxTexture");
+      glASSERT();
+
       /* Gets linking status */
       glGetObjectParameterivARB(hProgram, GL_OBJECT_LINK_STATUS_ARB, &iSuccess);
       glASSERT();
@@ -603,8 +944,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[1024];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
         glASSERT();
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
         /* Outputs log */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -619,8 +961,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[1024];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
       glASSERT();
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Outputs log */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile fragment shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -639,8 +982,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[1024];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, 1024 * sizeof(orxCHAR), NULL, (GLcharARB *)acBuffer);
+    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
     glASSERT();
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Outputs log */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't compile vertex shader:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
@@ -667,35 +1011,18 @@ static void orxFASTCALL orxDisplay_GLFW_InitShader(orxDISPLAY_SHADER *_pstShader
   /* Has custom textures? */
   if(_pstShader->iTextureCounter > 0)
   {
-    GLint   i;
-    orxBOOL bCaptured = orxFALSE;
+    GLint i;
 
     /* For all defined textures */
     for(i = 0; i < _pstShader->iTextureCounter; i++)
     {
-      /* Updates corresponding texture unit */
-      glUniform1iARB(_pstShader->astTextureInfoList[i].iLocation, i);
-      glASSERT();
-      glActiveTextureARB(GL_TEXTURE0_ARB + i);
-      glASSERT();
-      glBindTexture(GL_TEXTURE_2D, _pstShader->astTextureInfoList[i].pstBitmap->uiTexture);
-      glASSERT();
+      /* Binds bitmap */
+      orxDisplay_GLFW_BindBitmap(_pstShader->astTextureInfoList[i].pstBitmap);
 
-      /* Screen and not already captured? */
-      if((_pstShader->astTextureInfoList[i].pstBitmap == sstDisplay.pstScreen) && (bCaptured == orxFALSE))
-      {
-        /* Copies screen content */
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(sstDisplay.pstScreen->fHeight) - sstDisplay.pstScreen->u32RealHeight), (GLsizei)orxF2U(sstDisplay.pstScreen->fWidth), (GLsizei)sstDisplay.pstScreen->u32RealHeight);
-        glASSERT();
-
-        /* Updates captured status */
-        bCaptured = orxTRUE;
-      }
+      /* Updates shader uniform */
+      glUNIFORM(1iARB, _pstShader->astTextureInfoList[i].iLocation, sstDisplay.s32ActiveTextureUnit);
     }
   }
-
-  /* Updates its status */
-  _pstShader->bInitialized = orxTRUE;
 
   /* Done! */
   return;
@@ -724,25 +1051,50 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     }
 
     /* Has active shaders? */
-    if(sstDisplay.s32ActiveShaderCounter > 0)
+    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
     {
-      orxDISPLAY_SHADER *pstShader;
+      orxDISPLAY_SHADER *pstShader, *pstNextShader;
 
-      /* For all shaders */
-      for(pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, orxNULL);
+      /* For all active shaders */
+      for(pstShader = (orxDISPLAY_SHADER *)orxLinkList_GetFirst(&(sstDisplay.stActiveShaderList));
           pstShader != orxNULL;
-          pstShader = (orxDISPLAY_SHADER *)orxBank_GetNext(sstDisplay.pstShaderBank, pstShader))
+          pstShader = pstNextShader)
       {
-        /* Is active? */
-        if(pstShader->bActive != orxFALSE)
-        {
-          /* Inits shader */
-          orxDisplay_GLFW_InitShader(pstShader);
+        /* Inits shader */
+        orxDisplay_GLFW_InitShader(pstShader);
 
-          /* Draws elements */
-          glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
-          glASSERT();
+        /* Draws elements */
+        glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
+        glASSERT();
+
+        /* Gets next shader */
+        pstNextShader = (orxDISPLAY_SHADER *)orxLinkList_GetNext(&(pstShader->stNode));
+
+        /* Was pending removal? */
+        if(pstShader->bPending != orxFALSE)
+        {
+          /* Clears its texture counter */
+          pstShader->iTextureCounter = 0;
+
+          /* Clears its texture info list */
+          orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
+
+          /* Removes its pending status */
+          pstShader->bPending = orxFALSE;
+
+          /* Removes it from active list */
+          orxLinkList_Remove(&(pstShader->stNode));
+
+          /* Updates counter */
+          sstDisplay.s32PendingShaderCounter--;
         }
+      }
+
+      /* Has shader support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+      {
+        /* Uses default shader */
+        orxDisplay_StopShader(orxNULL);
       }
     }
     else
@@ -770,26 +1122,34 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
   /* Checks */
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
-  /* New bitmap? */
-  if(_pstBitmap != sstDisplay.pstLastBitmap)
+  /* Has pending shaders? */
+  if(sstDisplay.s32PendingShaderCounter != 0)
   {
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
-    /* Binds source's texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
+    /* Checks */
+    orxASSERT(sstDisplay.s32PendingShaderCounter == 0);
+  }
 
-    /* No active shader? */
-    if(sstDisplay.s32ActiveShaderCounter == 0)
+  /* New bitmap? */
+  if(_pstBitmap != sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit])
+  {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Binds source bitmap */
+    orxDisplay_GLFW_BindBitmap(_pstBitmap);
+
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
-      /* Stores it */
-      sstDisplay.pstLastBitmap = _pstBitmap;
-    }
-    else
-    {
-      /* Clears last bitmap */
-      sstDisplay.pstLastBitmap = orxNULL;
+      /* No other shader active? */
+      if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+      {
+        /* Updates shader uniform */
+        glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      }
     }
   }
 
@@ -853,57 +1213,8 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     }
   }
 
-  /* New blend mode? */
-  if(_eBlendMode != sstDisplay.eLastBlendMode)
-  {
-    /* Draws remaining items */
-    orxDisplay_GLFW_DrawArrays();
-
-    /* Stores it */
-    sstDisplay.eLastBlendMode = _eBlendMode;
-
-    /* Depending on blend mode */
-    switch(_eBlendMode)
-    {
-      case orxDISPLAY_BLEND_MODE_ALPHA:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_MULTIPLY:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_ADD:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glASSERT();
-
-        break;
-      }
-
-      default:
-      {
-        glDisable(GL_BLEND);
-        glASSERT();
-
-        break;
-      }
-    }
-  }
+  /* Sets blend mode */
+  orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Done! */
   return;
@@ -921,9 +1232,9 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   fHeight = (GLfloat)(_pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY);
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
   {
-    /* Draw arrays */
+    /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
   }
 
@@ -943,9 +1254,9 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
 
   /* Fills the color list */
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -965,9 +1276,21 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
-  /* Disables texturing */
-  glDisable(GL_TEXTURE_2D);
-  glASSERT();
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Starts no texture shader */
+    orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Inits it */
+    orxDisplay_GLFW_InitShader(sstDisplay.pstNoTextureShader);
+  }
+  else
+  {
+    /* Disables texturing */
+    glDisable(GL_TEXTURE_2D);
+    glASSERT();
+  }
 
   /* Has alpha? */
   if(orxRGBA_A(_stColor) != 0xFF)
@@ -977,12 +1300,18 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
     glASSERT();
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glASSERT();
+
+    /* Updates blend mode */
+    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_ALPHA;
   }
   else
   {
     /* Disables alpha blending */
     glDisable(GL_BLEND);
     glASSERT();
+
+    /* Updates blend mode */
+    sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NONE;
   }
 
   /* Only 2 vertices? */
@@ -1019,18 +1348,54 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
     }
   }
 
-  /* Reenables texturing */
-  glEnable(GL_TEXTURE_2D);
-  glASSERT();
+  /* Has shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Bypasses the full screen rendering when stopping shader */
+    sstDisplay.s32BufferIndex = -1;
 
-  /* Clears last blend mode */
-  sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+    /* Stops current shader */
+    orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+
+    /* Resets buffer index */
+    sstDisplay.s32BufferIndex = 0;
+  }
+  else
+  {
+    /* Reenables texturing */
+    glEnable(GL_TEXTURE_2D);
+    glASSERT();
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Render stop? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Flushes pending commands */
+    glFlush();
+    glASSERT();
+
+    /* Polls events */
+    glfwPollEvents();
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
@@ -1112,9 +1477,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           fWidth = pstGlyph->fWidth;
 
           /* End of buffer? */
-          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
           {
-            /* Draw arrays */
+            /* Draws arrays */
             orxDisplay_GLFW_DrawArrays();
           }
 
@@ -1133,9 +1498,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(orxFLOAT_1 - _pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
 
           /* Fills the color list */
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -1328,7 +1693,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
 {
   const orxBITMAP  *pstBitmap;
-  GLfloat           fWidth, fHeight, fXCoef, fYCoef, fXBorder, fYBorder;
+  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef;
   orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -1338,34 +1703,27 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   orxASSERT(_astVertexList != orxNULL);
 
   /* Gets bitmap to use */
-  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.pstLastBitmap;
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
 
   /* Prepares bitmap for drawing */
   orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
 
   /* Gets bitmap working size */
-  fWidth  = (GLfloat)(pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX);
-  fHeight = (GLfloat)(pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY);
+  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
+  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
+
+  /* Gets top-left corner  */
+  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
+  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
 
   /* Gets X & Y coefs */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-  {
-    fXCoef = fYCoef = orxFLOAT_1;
-  }
-  else
-  {
-    fXCoef = pstBitmap->fWidth * pstBitmap->fRecRealWidth;
-    fYCoef = pstBitmap->fHeight * pstBitmap->fRecRealHeight;
-  }
-
-  /* Gets X & Y border fixes */
-  fXBorder = pstBitmap->fRecRealWidth * orxDISPLAY_KF_BORDER_FIX;
-  fYBorder = pstBitmap->fRecRealHeight * orxDISPLAY_KF_BORDER_FIX;
+  fXCoef = pstBitmap->fRecRealWidth * fWidth;
+  fYCoef = pstBitmap->fRecRealHeight * fHeight;
 
   /* End of buffer? */
-  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 3)
   {
-    /* Draw arrays */
+    /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
 
     /* Too many vertices? */
@@ -1390,8 +1748,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
 
     /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fXCoef * _astVertexList[i].fU + fXBorder);
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(orxFLOAT_1 - (fYCoef * _astVertexList[i].fV + fYBorder));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
 
     /* Copies color */
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
@@ -1408,8 +1766,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     }
   }
 
-  /* Odd number of vertices in the triangle strip? */
-  if(iIndex & 1)
+  /* Not enough vertices for a final quad in the triangle strip? */
+  while(iIndex & 3)
   {
     /* Completes the quad */
     orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
@@ -1432,21 +1790,14 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    /* Is last used bitmap? */
-    if(sstDisplay.pstLastBitmap == _pstBitmap)
-    {
-      /* Resets it */
-      sstDisplay.pstLastBitmap = orxNULL;
-    }
-
-    /* Deletes its texture */
-    glDeleteTextures(1, &(_pstBitmap->uiTexture));
-    glASSERT();
+    /* Deletes its data */
+    orxDisplay_GLFW_DeleteBitmapData(_pstBitmap);
 
     /* Deletes it */
     orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
   }
 
+  /* Done! */
   return;
 }
 
@@ -1463,13 +1814,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
   /* Valid? */
   if(pstBitmap != orxNULL)
   {
-    GLint iTexture;
-
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
     /* Inits it */
-    pstBitmap->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+    pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
     pstBitmap->u32RealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Width : orxMath_GetNextPowerOfTwo(_u32Width);
@@ -1477,13 +1823,14 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     pstBitmap->u32Depth       = 32;
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+    pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+    pstBitmap->zLocation      = orxSTRING_EMPTY;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
 
     /* Creates new texture */
     glGenTextures(1, &pstBitmap->uiTexture);
@@ -1502,11 +1849,8 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
-
-    /* Pops config section */
-    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -1515,77 +1859,149 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+  orxU32      u32BackupBitmapCounter;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Is not screen? */
-  if(_pstBitmap != sstDisplay.pstScreen)
+  /* Backups current destinations */
+  orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
+  u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
+
+  /* Sets new destination bitmap */
+  if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
   {
-    orxBITMAP *pstBackupBitmap;
-
-    /* Backups current destination */
-    pstBackupBitmap = sstDisplay.pstDestinationBitmap;
-
-    /* Sets new destination bitmap */
-    if(orxDisplay_SetDestinationBitmap(_pstBitmap) != orxSTATUS_FAILURE)
+    /* Different clear color? */
+    if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
     {
-      /* Clears the color buffer with given color */
+      /* Updates it */
       glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
       glASSERT();
-      glClear(GL_COLOR_BUFFER_BIT);
-      glASSERT();
 
-      /* Restores previous destination */
-      orxDisplay_SetDestinationBitmap(pstBackupBitmap);
+      /* Stores it */
+      sstDisplay.stLastColor.u32RGBA = _stColor.u32RGBA;
     }
-    else
-    {
-      GLint     iTexture;
-      orxRGBA  *astBuffer, *pstPixel;
 
-      /* Allocates buffer */
-      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_VIDEO);
-
-      /* Checks */
-      orxASSERT(astBuffer != orxNULL);
-
-      /* For all pixels */
-      for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
-      {
-        /* Sets its value */
-        *pstPixel = _stColor;
-      }
-
-      /* Backups current texture */
-      glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-      glASSERT();
-
-      /* Binds texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
-      /* Updates texture */
-      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-      glASSERT();
-
-      /* Restores previous texture */
-      glBindTexture(GL_TEXTURE_2D, iTexture);
-      glASSERT();
-
-      /* Frees buffer */
-      orxMemory_Free(astBuffer);
-    }
-  }
-  else
-  {
     /* Clears the color buffer with given color */
-    glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
-    glASSERT();
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
+
+    /* Is screen and has depth buffer? */
+    if((_pstBitmap == sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)))
+    {
+      /* Clears depth buffer */
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glASSERT();
+    }
+
+    /* Restores previous destination */
+    orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+  }
+  /* Not screen? */
+  else if(_pstBitmap != sstDisplay.pstScreen)
+  {
+    orxRGBA *astBuffer, *pstPixel;
+
+    /* Allocates buffer */
+    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+
+    /* Checks */
+    orxASSERT(astBuffer != orxNULL);
+
+    /* For all pixels */
+    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+    {
+      /* Sets its value */
+      *pstPixel = _stColor;
+    }
+
+    /* Binds texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+    glASSERT();
+
+    /* Updates texture */
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+    glASSERT();
+
+    /* Frees buffer */
+    orxMemory_Free(astBuffer);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_PREMUL:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+
+        break;
+      }
+    }
   }
 
   /* Done! */
@@ -1604,6 +2020,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Swap()
 
   /* Swap buffers */
   glfwSwapBuffers();
+
+  /* Is fullscreen & VSync? */
+  if(orxFLAG_TEST_ALL(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN | orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
+  {
+    /* Waits for the end of GPU work */
+    glFinish();
+    glASSERT();
+  }
 
   /* Done! */
   return eResult;
@@ -1626,35 +2050,40 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
   /* Valid? */
   if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * 4 * sizeof(orxU8)))
   {
-    GLint   iTexture;
-    orxU8  *pu8ImageBuffer;
-    orxU32  i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
+    orxU8 *pu8ImageBuffer;
 
-    /* Allocates buffer */
-    pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-    /* Gets line sizes */
-    u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
-    u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
-
-    /* Clears padding */
-    orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
-
-    /* For all lines */
-    for(i = 0, u32SrcOffset = 0, u32DstOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - 1);
-        i < u32Height;
-        i++, u32SrcOffset += u32LineSize, u32DstOffset -= u32RealLineSize)
+    /* Has NPOT texture support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
     {
-      /* Copies data */
-      orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
-
-      /* Adds padding */
-      orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
+      /* Uses sources bitmap */
+      pu8ImageBuffer = (orxU8 *)_au8Data;
     }
+    else
+    {
+      orxU32 i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-    glASSERT();
+      /* Allocates buffer */
+      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+      /* Gets line sizes */
+      u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
+      u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
+
+      /* Clears padding */
+      orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
+
+      /* For all lines */
+      for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
+          i < u32Height;
+          i++, u32SrcOffset += u32LineSize, u32DstOffset += u32RealLineSize)
+      {
+        /* Copies data */
+        orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
+
+        /* Adds padding */
+        orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
+      }
+    }
 
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
@@ -1665,11 +2094,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
     glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
-    /* Frees buffer */
-    orxMemory_Free(pu8ImageBuffer);
+    /* Needs to free buffer? */
+    if(pu8ImageBuffer != _au8Data)
+    {
+      /* Frees it */
+      orxMemory_Free(pu8ImageBuffer);
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1696,7 +2129,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxU32    u32BufferSize;
   orxSTATUS eResult;
@@ -1713,68 +2146,90 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(orxBITMAP *_pstBitmap, orxU8
   if(_u32ByteNumber == u32BufferSize)
   {
     orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
-    orxU8  *pu8ImageData;
-    GLint   iTexture;
+    orxU8  *pu8ImageBuffer;
 
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
     /* Allocates buffer */
-    pu8ImageData = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+    pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
     /* Checks */
-    orxASSERT(pu8ImageData != orxNULL);
+    orxASSERT(pu8ImageBuffer != orxNULL);
 
-    /* Backups current texture */
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
+    /* Binds bitmap's associated texture */
+    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
 
     /* Screen capture? */
     if(_pstBitmap == sstDisplay.pstScreen)
     {
-      /* Binds its backup texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
       /* Copies screen content */
       glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight), (GLsizei)orxF2U(_pstBitmap->fWidth), (GLsizei)_pstBitmap->u32RealHeight);
       glASSERT();
-      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
-      glASSERT();
     }
-    else
-    {
-      /* Binds bitmap */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
 
-      /* Copies bitmap data */
-      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
-      glASSERT();
-    }
+    /* Copies bitmap data */
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+    glASSERT();
 
     /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, iTexture);
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
 
     /* Gets line sizes */
     u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
     u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
 
-    /* Clears padding */
-    orxMemory_Zero(_au8Data, u32LineSize * orxF2U(_pstBitmap->fHeight));
-
-    /* For all lines */
-    for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
-        i < orxF2U(_pstBitmap->fHeight);
-        i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+    /* Screen? */
+    if(_pstBitmap == sstDisplay.pstScreen)
     {
-      /* Copies data */
-      orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
-    }
+      orxRGBA stOpaque;
 
-    /* Frees buffers */
-    orxMemory_Free(pu8ImageData);
+      /* Sets opaque pixel */
+      stOpaque = orx2RGBA(0x00, 0x00, 0x00, 0xFF);
+
+      /* For all lines */
+      for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
+          i < orxF2U(_pstBitmap->fHeight);
+          i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+      {
+        orxU32 j;
+
+        /* For all columns */
+        for(j = 0; j < orxF2U(_pstBitmap->fWidth); j++)
+        {
+          orxRGBA stPixel;
+
+          /* Gets opaque pixel */
+          stPixel.u32RGBA = ((orxRGBA *)(pu8ImageBuffer + u32SrcOffset))[j].u32RGBA | stOpaque.u32RGBA;
+
+          /* Stores it */
+          ((orxRGBA *)(_au8Data + u32DstOffset))[j] = stPixel;
+        }
+      }
+
+      /* Deletes buffer */
+      orxMemory_Free(pu8ImageBuffer);
+    }
+    else
+    {
+      /* Doesn't have NPOT texture support? */
+      if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+      {
+        /* For all lines */
+        for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
+            i < orxF2U(_pstBitmap->fHeight);
+            i++, u32SrcOffset += u32RealLineSize, u32DstOffset += u32LineSize)
+        {
+          /* Copies data */
+          orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageBuffer + u32SrcOffset, u32LineSize);
+        }
+
+        /* Deletes buffer */
+        orxMemory_Free(pu8ImageBuffer);
+      }
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1841,103 +2296,214 @@ orxRGBA orxFASTCALL orxDisplay_GLFW_GetBitmapColor(const orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmap(orxBITMAP *_pstBitmap)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
+  orxU32    i, j, u32Number;
+  orxBOOL   bBound = orxFALSE, bFlush = orxFALSE;
+  GLdouble  dOrthoRight, dOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_apstBitmapList != orxNULL)
 
-  /* Different destination bitmap? */
-  if(_pstBitmap != sstDisplay.pstDestinationBitmap)
+  /* Too many destinations? */
+  if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)
+  {
+    /* Outputs logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can only attach the first <%d> bitmaps as destinations, out of the <%d> requested.", sstDisplay.iDrawBufferNumber, _u32Number);
+
+    /* Updates bitmap counter */
+    u32Number = (orxU32)sstDisplay.iDrawBufferNumber;
+  }
+  else
+  {
+    /* Gets bitmap counter */
+    u32Number = _u32Number;
+  }
+
+  /* For all bitmaps */
+  for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+  {
+    orxBITMAP *pstBitmap;
+
+    /* Gets bitmap */
+    pstBitmap = _apstBitmapList[i];
+
+    /* Different destination bitmap? */
+    if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+    {
+      /* Draws remaining items */
+      orxDisplay_GLFW_DrawArrays();
+
+      /* Has framebuffer support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
+      {
+        /* Screen? */
+        if(pstBitmap == sstDisplay.pstScreen)
+        {
+          /* Checks */
+          orxASSERT((i == 0) && (_u32Number == 1) && "Can only use screen as bitmap destination by itself.");
+
+          /* Binds default frame buffer */
+          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+          glASSERT();
+
+          /* Updates result */
+          eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          glASSERT();
+
+          /* Requests pending commands flush */
+          bFlush = orxTRUE;
+        }
+        /* Valid texture? */
+        else if(pstBitmap != orxNULL)
+        {
+          /* Wasn't linked to the texture FBO? */
+          if((bBound == orxFALSE)
+          && ((sstDisplay.apstDestinationBitmapList[i] == sstDisplay.pstScreen)
+           || (sstDisplay.apstDestinationBitmapList[i] == orxNULL)))
+          {
+            /* Binds frame buffer */
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
+            glASSERT();
+
+            /* Updates bind status */
+            bBound = orxTRUE;
+          }
+
+          /* Links texture to it */
+          glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
+          glASSERT();
+
+          /* Updates result */
+          eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          glASSERT();
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+      else
+      {
+        /* Not screen? */
+        if((pstBitmap != sstDisplay.pstScreen) || (i != 0))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap <0x%X> as destination bitmap: only screen can be used as frame buffer isn't supported by this hardware.", pstBitmap);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+
+      /* Stores new destination bitmap */
+      sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
+    }
+  }
+
+  /* Not the same number of destinations? */
+  if(i != sstDisplay.u32DestinationBitmapCounter)
   {
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
+  }
 
-    /* Stores it */
-    sstDisplay.pstDestinationBitmap = _pstBitmap;
+  /* For all previous destinations */
+  for(j = i; j < sstDisplay.u32DestinationBitmapCounter; j++)
+  {
+    /* Clears it */
+    sstDisplay.apstDestinationBitmapList[j] = orxNULL;
+  }
 
-    /* Has framebuffer support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
+  /* Updates counter */
+  sstDisplay.u32DestinationBitmapCounter = i;
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    GLint   iX, iY;
+    GLsizei iWidth, iHeight;
+
+    /* Is screen? */
+    if(sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
     {
-      /* Screen? */
-      if(_pstBitmap == sstDisplay.pstScreen)
-      {
-        /* Binds default frame buffer */
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        glASSERT();
+      /* Updates viewport info */
+      iX      = 0;
+      iY      = 0;
+      iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
+      iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
 
-        /* Updates result */
-        eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-        glASSERT();
-
-        /* Flushes pending commands */
-        glFlush();
-        glASSERT();
-      }
-      /* Valid texture? */
-      else if(_pstBitmap != orxNULL)
-      {
-        /* Binds frame buffer */
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
-        glASSERT();
-
-        /* Links texture to it */
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, _pstBitmap->uiTexture, 0);
-        glASSERT();
-
-        /* Updates result */
-        eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-        glASSERT();
-      }
-      else
-      {
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
+      /* Updates ortho info */
+      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      dOrthoBottom  = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
     else
     {
-      /* Not screen? */
-      if(_pstBitmap != sstDisplay.pstScreen)
+      /* Supports more than a single draw buffer? */
+      if(sstDisplay.iDrawBufferNumber > 1)
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap <0x%X> as destination bitmap: only screen can be used as frame buffer isn't supported by this hardware.", _pstBitmap);
-
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
+        /* Updates draw buffers */
+        glDrawBuffersARB((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
+        glASSERT();
       }
+
+      /* Updates viewport info */
+      iX      = 0;
+      iY      = 0;
+      iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
+      iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
+
+      /* Updates ortho info */
+      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      dOrthoBottom  = (GLdouble)-sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Should update viewport? */
+    if((iX != sstDisplay.iLastViewportX)
+    || (iY != sstDisplay.iLastViewportY)
+    || (iWidth != sstDisplay.iLastViewportWidth)
+    || (iHeight != sstDisplay.iLastViewportHeight))
     {
-      /* Is screen? */
-      if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
-      {
-        /* Inits viewport */
-        glViewport(0, 0, (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
-        glASSERT();
-      }
-      else
-      {
-        /* Inits viewport */
-        glViewport(0, (orxS32)sstDisplay.pstDestinationBitmap->u32RealHeight - orxF2S(sstDisplay.pstDestinationBitmap->fHeight), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fWidth), (GLsizei)orxF2S(sstDisplay.pstDestinationBitmap->fHeight));
-        glASSERT();
-      }
+      /* Inits viewport */
+      glViewport(iX, iY, iWidth, iHeight);
+      glASSERT();
 
+      /* Stores its info */
+      sstDisplay.iLastViewportX       = iX;
+      sstDisplay.iLastViewportY       = iY;
+      sstDisplay.iLastViewportWidth   = iWidth;
+      sstDisplay.iLastViewportHeight  = iHeight;
+    }
+
+    /* Should update the orthogonal projection? */
+    if((dOrthoRight != sstDisplay.dLastOrthoRight)
+    || (dOrthoBottom != sstDisplay.dLastOrthoBottom))
+    {
       /* Inits matrices */
       glMatrixMode(GL_PROJECTION);
       glASSERT();
       glLoadIdentity();
       glASSERT();
-      glOrtho(0.0f, sstDisplay.pstDestinationBitmap->fWidth, sstDisplay.pstDestinationBitmap->fHeight, 0.0f, -1.0f, 1.0f);
+      sstDisplay.dLastOrthoRight  = dOrthoRight;
+      sstDisplay.dLastOrthoBottom = dOrthoBottom;
+      (dOrthoBottom >= 0.0)
+      ? glOrtho(0.0f, dOrthoRight, dOrthoBottom, 0.0f, -1.0f, 1.0f)
+      : glOrtho(0.0f, dOrthoRight, 0.0f, -dOrthoBottom, -1.0f, 1.0f);
       glASSERT();
       glMatrixMode(GL_MODELVIEW);
       glASSERT();
-      glLoadIdentity();
-      glASSERT();
     }
+  }
+
+  /* Should flush? */
+  if(bFlush != orxFALSE)
+  {
+    /* Flushes command buffer */
+    glFlush();
+    glASSERT();
   }
 
   /* Done! */
@@ -1991,7 +2557,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
     /* Inits texture coords */
     fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-    fTop    = orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+    fTop    = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
 
     /* For all lines */
     for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -2004,13 +2570,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
       }
       else
       {
         /* Resets texture coords */
         fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(orxFLOAT_1 - _pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
       }
 
       /* Resets bitmap width */
@@ -2030,7 +2596,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
         }
 
         /* End of buffer? */
-        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 1)
+        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
         {
           /* Draws arrays */
           orxDisplay_GLFW_DrawArrays();
@@ -2073,11 +2639,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  int             iFormat;
-  GLint           iTexture;
-  orxU32          u32Length, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
-  const orxCHAR  *zExtension;
-  orxU8          *pu8ImageBuffer, *pu8ImageData;
+  orxU32          u32BufferSize;
+  orxU8          *pu8ImageData;
   orxSTATUS       eResult;
 
   /* Checks */
@@ -2085,98 +2648,70 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Gets file name's length */
-  u32Length = orxString_GetLength(_zFilename);
+  /* Gets buffer size */
+  u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
-  /* Gets extension */
-  zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+  /* Allocates buffer */
+  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
 
-  /* PNG? */
-  if(orxString_ICompare(zExtension, "png") == 0)
+  /* Valid? */
+  if(pu8ImageData != orxNULL)
   {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_PNG;
-  }
-  /* DDS? */
-  else if(orxString_ICompare(zExtension, "dds") == 0)
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_DDS;
-  }
-  /* BMP? */
-  else if(orxString_ICompare(zExtension, "bmp") == 0)
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_BMP;
-  }
-  /* TGA */
-  else
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_TGA;
-  }
-
-  /* Allocates buffers */
-  pu8ImageData    = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-  pu8ImageBuffer  = (orxU8 *)orxMemory_Allocate(orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-  /* Checks */
-  orxASSERT(pu8ImageData != orxNULL);
-  orxASSERT(pu8ImageBuffer != orxNULL);
-
-  /* Backups current texture */
-  glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-  glASSERT();
-
-  /* Binds its associated texture */
-  glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-  glASSERT();
-
-  /* Screen capture? */
-  if(_pstBitmap == sstDisplay.pstScreen)
-  {
-    /* Isn't screen the current destination? */
-    if(sstDisplay.pstScreen != sstDisplay.pstDestinationBitmap)
+    /* Gets bitmap data */
+    if(orxDisplay_GLFW_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      /* Sets it as destination */
-      orxDisplay_GLFW_SetDestinationBitmap(sstDisplay.pstScreen);
+      const orxCHAR  *zExtension;
+      orxU32          u32Length;
+      int             iFormat;
+
+      /* Gets file name's length */
+      u32Length = orxString_GetLength(_zFilename);
+
+      /* Gets extension */
+      zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+      /* PNG? */
+      if(orxString_ICompare(zExtension, "png") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_PNG;
+      }
+      /* DDS? */
+      else if(orxString_ICompare(zExtension, "dds") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_DDS;
+      }
+      /* BMP? */
+      else if(orxString_ICompare(zExtension, "bmp") == 0)
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_BMP;
+      }
+      /* TGA */
+      else
+      {
+        /* Updates format */
+        iFormat = SOIL_SAVE_TYPE_TGA;
+      }
+
+      /* Saves image to disk */
+      eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
 
-    /* Copies screen content */
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight), (GLsizei)orxF2U(_pstBitmap->fWidth), (GLsizei)_pstBitmap->u32RealHeight);
-    glASSERT();
+    /* Frees buffer */
+    orxMemory_Free(pu8ImageData);
   }
-
-  /* Copies bitmap data */
-  glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageData);
-  glASSERT();
-
-  /* Restores previous texture */
-  glBindTexture(GL_TEXTURE_2D, iTexture);
-  glASSERT();
-
-  /* Gets line sizes */
-  u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
-  u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
-
-  /* Clears padding */
-  orxMemory_Zero(pu8ImageBuffer, u32LineSize * orxF2U(_pstBitmap->fHeight));
-
-  /* For all lines */
-  for(i = 0, u32SrcOffset = u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)), u32DstOffset = u32LineSize * (orxF2U(_pstBitmap->fHeight) - 1);
-    i < orxF2U(_pstBitmap->fHeight);
-    i++, u32SrcOffset += u32RealLineSize, u32DstOffset -= u32LineSize)
+  else
   {
-    /* Copies data */
-    orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
-
-  /* Saves screenshot */
-  eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageBuffer) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-  /* Frees buffers */
-  orxMemory_Free(pu8ImageBuffer);
-  orxMemory_Free(pu8ImageData);
 
   /* Done! */
   return eResult;
@@ -2184,18 +2719,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
 {
-  unsigned char  *pu8ImageData;
-  GLuint          uiWidth, uiHeight, uiBytesPerPixel;
+  const orxSTRING zResourceName;
   orxBITMAP      *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Loads image */
-  pu8ImageData = SOIL_load_image(_zFilename, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+  /* Gets resource name */
+  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
 
-  /* Valid? */
-  if(pu8ImageData != NULL)
+  /* Success? */
+  if(zResourceName != orxNULL)
   {
     /* Allocates bitmap */
     pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -2203,88 +2737,20 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      GLuint  i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize, uiRealWidth, uiRealHeight;
-      GLint   iTexture;
-      orxU8  *pu8ImageBuffer;
+      /* Inits it */
+      pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
+      pstResult->zLocation  = zResourceName;
 
-      /* Gets its real size */
-      uiRealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiWidth : (GLuint)orxMath_GetNextPowerOfTwo(uiWidth);
-      uiRealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? uiHeight : (GLuint)orxMath_GetNextPowerOfTwo(uiHeight);
-
-      /* Pushes display section */
-      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-      /* Inits bitmap */
-      pstResult->bSmoothing     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-      pstResult->fWidth         = orxU2F(uiWidth);
-      pstResult->fHeight        = orxU2F(uiHeight);
-      pstResult->u32RealWidth   = uiRealWidth;
-      pstResult->u32RealHeight  = uiRealHeight;
-      pstResult->u32Depth       = 32;
-      pstResult->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstResult->u32RealWidth);
-      pstResult->fRecRealHeight = orxFLOAT_1 / orxU2F(pstResult->u32RealHeight);
-      pstResult->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
-      orxVector_Copy(&(pstResult->stClip.vTL), &orxVECTOR_0);
-      orxVector_Set(&(pstResult->stClip.vBR), pstResult->fWidth, pstResult->fHeight, orxFLOAT_0);
-
-      /* Allocates buffer */
-      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(uiRealWidth * uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-      /* Checks */
-      orxASSERT(pu8ImageBuffer != orxNULL);
-
-      /* Gets line sizes */
-      uiLineSize      = uiWidth * 4 * sizeof(orxU8);
-      uiRealLineSize  = uiRealWidth * 4 * sizeof(orxU8);
-
-      /* Clears padding */
-      orxMemory_Zero(pu8ImageBuffer, uiRealLineSize * (uiRealHeight - uiHeight));
-
-      /* For all lines */
-      for(i = 0, uiSrcOffset = 0, uiDstOffset = uiRealLineSize * (uiRealHeight - 1);
-          i < uiHeight;
-          i++, uiSrcOffset += uiLineSize, uiDstOffset -= uiRealLineSize)
+      /* Loads its data */
+      if(orxDisplay_GLFW_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
       {
-        /* Copies data */
-        orxMemory_Copy(pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+        /* Deletes it */
+        orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
 
-        /* Adds padding */
-        orxMemory_Zero(pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+        /* Updates result */
+        pstResult = orxNULL;
       }
-
-      /* Backups current texture */
-      glGetIntegerv(GL_TEXTURE_BINDING_2D, &iTexture);
-      glASSERT();
-
-      /* Creates new texture */
-      glGenTextures(1, &pstResult->uiTexture);
-      glASSERT();
-      glBindTexture(GL_TEXTURE_2D, pstResult->uiTexture);
-      glASSERT();
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstResult->u32RealWidth, (GLsizei)pstResult->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstResult->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
-
-      /* Restores previous texture */
-      glBindTexture(GL_TEXTURE_2D, iTexture);
-      glASSERT();
-
-      /* Frees image buffer */
-      orxMemory_Free(pu8ImageBuffer);
-
-      /* Pops config section */
-      orxConfig_PopSection();
     }
-
-    /* Deletes surface */
-    SOIL_free_image_data(pu8ImageData);
   }
 
   /* Done! */
@@ -2335,23 +2801,34 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Destination bitmap? */
-  if(_pstBitmap == sstDisplay.pstDestinationBitmap)
+  if(_pstBitmap == sstDisplay.apstDestinationBitmapList[0])
   {
+    orxU32 u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight;
+
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
-    /* Is screen? */
-    if(sstDisplay.pstDestinationBitmap == sstDisplay.pstScreen)
+    /* Gets new clipping values */
+    u32ClipX      = _u32TLX;
+    u32ClipY      = (_pstBitmap == sstDisplay.pstScreen) ? orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY : _u32TLY;
+    u32ClipWidth  = _u32BRX - _u32TLX;
+    u32ClipHeight = _u32BRY - _u32TLY;
+
+    /* Different clipping? */
+    if((u32ClipX != sstDisplay.u32LastClipX)
+    || (u32ClipY != sstDisplay.u32LastClipY)
+    || (u32ClipWidth != sstDisplay.u32LastClipWidth)
+    || (u32ClipHeight != sstDisplay.u32LastClipHeight))
     {
       /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(orxF2U(sstDisplay.pstDestinationBitmap->fHeight) - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
+      glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
       glASSERT();
-    }
-    else
-    {
-      /* Sets OpenGL clipping */
-      glScissor((GLint)_u32TLX, (GLint)(sstDisplay.pstDestinationBitmap->u32RealHeight - _u32BRY), (GLsizei)(_u32BRX - _u32TLX), (GLsizei)(_u32BRY - _u32TLY));
-      glASSERT();
+
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = u32ClipX;
+      sstDisplay.u32LastClipY       = u32ClipY;
+      sstDisplay.u32LastClipWidth   = u32ClipWidth;
+      sstDisplay.u32LastClipHeight  = u32ClipHeight;
     }
   }
 
@@ -2391,14 +2868,15 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
   /* Gets video mode list */
   u32Counter = (orxU32)glfwGetVideoModes(astModeList, 256);
 
-  /* Is index valid? */
-  if(_u32Index < u32Counter)
+  /* Request the default mode? */
+  if(_u32Index == orxU32_UNDEFINED)
   {
     /* Stores info */
-    _pstVideoMode->u32Width       = astModeList[_u32Index].Width;
-    _pstVideoMode->u32Height      = astModeList[_u32Index].Height;
-    _pstVideoMode->u32Depth       = astModeList[_u32Index].RedBits + astModeList[_u32Index].GreenBits + astModeList[_u32Index].BlueBits;
-    _pstVideoMode->u32RefreshRate = (astModeList[_u32Index].RefreshRate != 0) ? astModeList[_u32Index].RefreshRate : sstDisplay.u32DefaultRefreshRate;
+    _pstVideoMode->u32Width       = sstDisplay.u32DefaultWidth;
+    _pstVideoMode->u32Height      = sstDisplay.u32DefaultHeight;
+    _pstVideoMode->u32Depth       = sstDisplay.u32DefaultDepth;
+    _pstVideoMode->u32RefreshRate = sstDisplay.u32DefaultRefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
     /* 24-bit? */
     if(_pstVideoMode->u32Depth == 24)
@@ -2406,15 +2884,37 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
       /* Gets 32-bit instead */
       _pstVideoMode->u32Depth = 32;
     }
-
-    /* Updates result */
-    pstResult = _pstVideoMode;
   }
+  /* Is index valid? */
+  else if(_u32Index < u32Counter)
+  {
+    /* Stores info */
+    _pstVideoMode->u32Width       = astModeList[_u32Index].Width;
+    _pstVideoMode->u32Height      = astModeList[_u32Index].Height;
+    _pstVideoMode->u32Depth       = astModeList[_u32Index].RedBits + astModeList[_u32Index].GreenBits + astModeList[_u32Index].BlueBits;
+    _pstVideoMode->u32RefreshRate = (astModeList[_u32Index].RefreshRate != 0) ? astModeList[_u32Index].RefreshRate : sstDisplay.u32DefaultRefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* 24-bit? */
+    if(_pstVideoMode->u32Depth == 24)
+    {
+      /* Gets 32-bit instead */
+      _pstVideoMode->u32Depth = 32;
+    }
+  }
+  /* Gets current mode */
   else
   {
-    /* Updates result */
-    pstResult = orxNULL;
+    /* Stores info */
+    _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+    _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+    _pstVideoMode->u32Depth       = sstDisplay.pstScreen->u32Depth;
+    _pstVideoMode->u32RefreshRate = sstDisplay.u32RefreshRate;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
   }
+
+  /* Updates result */
+  pstResult = _pstVideoMode;
 
   /* Done! */
   return pstResult;
@@ -2466,8 +2966,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
+
+    /* Updates VSync status */
+    glfwSwapInterval(-1);
+
+#else /* __orxWINDOWS__ || __orxLINUX__ */
+
     /* Updates VSync status */
     glfwSwapInterval(1);
+
+#endif /* __orxWINDOWS__ || __orxLINUX__ */
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -2487,7 +2996,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
 
 orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2501,16 +3010,20 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVSyncEnabled()
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxU8   **aau8BufferArray;
+  orxS32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  /* Draws remaining items */
+  orxDisplay_GLFW_DrawArrays();
+
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
-    int iWidth, iHeight, iDepth, iRefreshRate;
+    int     iWidth, iHeight, iDepth, iRefreshRate;
+    orxS32  s32BitmapCounter = 0, s32ShaderCounter = 0;
 
     /* Gets its info */
     iWidth        = (int)_pstVideoMode->u32Width;
@@ -2518,9 +3031,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iDepth        = (int)_pstVideoMode->u32Depth;
     iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
-    /* Not in full screen and same depth/refresh rate? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN)
-    && !orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN)
+    /* Same fullscreen/windowed mode and same depth/refresh rate? */
+    if(((orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE) == _pstVideoMode->bFullScreen)
     && (sstDisplay.u32Depth == (orxU32)iDepth)
     && (sstDisplay.u32RefreshRate == (orxU32)iRefreshRate))
     {
@@ -2536,7 +3048,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
       stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-      stPayload.bFullScreen             = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+      stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
 
       /* Ignores resize event for now */
       sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
@@ -2547,10 +3059,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Reactivates resize event */
       sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
 
-      /* Deletes screen backup texture */
-      glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
-      glASSERT();
-
       /* Stores screen info */
       sstDisplay.pstScreen->fWidth          = orxS2F(iWidth);
       sstDisplay.pstScreen->fHeight         = orxS2F(iHeight);
@@ -2560,31 +3068,38 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
       sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+      sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
 
-      /* Creates texture for screen backup */
-      glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-      glASSERT();
-      glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-      glASSERT();
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-      glASSERT();
+      /* Updates bound texture */
+      sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
       /* Clears destination bitmap */
-      sstDisplay.pstDestinationBitmap = orxNULL;
+      sstDisplay.apstDestinationBitmapList[0] = orxNULL;
+      sstDisplay.u32DestinationBitmapCounter  = 1;
 
       /* Clears new display surface */
       glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
       glASSERT();
+      glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(sstDisplay.stLastColor)));
+      glASSERT();
       glClear(GL_COLOR_BUFFER_BIT);
       glASSERT();
+
+      /* Stores clipping values */
+      sstDisplay.u32LastClipX       = 0;
+      sstDisplay.u32LastClipY       = 0;
+      sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+      sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
+
+      /* Has depth buffer? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+      {
+        /* Clears depth buffer */
+        glClearDepth(1.0f);
+        glASSERT();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glASSERT();
+      }
 
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
@@ -2595,20 +3110,30 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     }
     else
     {
+      orxU8 **aau8BufferArray;
+
       /* Has opened window? */
       if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
       {
+        /* Has shader support? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+        {
+          /* Deletes default shaders */
+          orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+          orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
+        }
+
         /* Gets bitmap counter */
-        sstDisplay.s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
+        s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
 
         /* Valid? */
-        if(sstDisplay.s32BitmapCounter > 0)
+        if(s32BitmapCounter > 0)
         {
           orxBITMAP  *pstBitmap;
           orxU32      u32Index;
 
           /* Allocates buffer array */
-          aau8BufferArray = (orxU8 **)orxMemory_Allocate(sstDisplay.s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
+          aau8BufferArray = (orxU8 **)orxMemory_Allocate(s32BitmapCounter * sizeof(orxU8 *), orxMEMORY_TYPE_MAIN);
 
           /* Checks */
           orxASSERT(aau8BufferArray != orxNULL);
@@ -2622,7 +3147,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             if(pstBitmap != sstDisplay.pstScreen)
             {
               /* Allocates its buffer */
-              aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+              aau8BufferArray[u32Index] = (orxU8 *)orxMemory_Allocate(pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
               /* Checks */
               orxASSERT(aau8BufferArray[u32Index] != orxNULL);
@@ -2635,6 +3160,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
               glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, aau8BufferArray[u32Index++]);
               glASSERT();
 
+              /* Tracks video memory */
+              orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxFALSE);
+
               /* Deletes it */
               glDeleteTextures(1, &(pstBitmap->uiTexture));
               glASSERT();
@@ -2642,15 +3170,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           }
         }
 
-        /* Deletes screen backup texture */
-        glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-
         /* Gets shader counter */
-        sstDisplay.s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
+        s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
 
         /* Valid? */
-        if(sstDisplay.s32ShaderCounter > 0)
+        if(s32ShaderCounter > 0)
         {
           orxDISPLAY_SHADER *pstShader;
 
@@ -2699,7 +3223,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 16:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 5, 6, 5, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2708,7 +3232,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 24:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 0, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2718,7 +3242,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         case 32:
         {
           /* Updates video mode */
-          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (int)sstDisplay.u32GLFWFlags) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+          eResult = (glfwOpenWindow(iWidth, iHeight, 8, 8, 8, 8, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) ? 16 : 0, 0, (_pstVideoMode->bFullScreen != orxFALSE) ? GLFW_FULLSCREEN : GLFW_WINDOW) != GL_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
           break;
         }
@@ -2728,6 +3252,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       if(eResult != orxSTATUS_FAILURE)
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
+
+        /* Disables events auto-polling */
+        glfwDisable(GLFW_AUTO_POLL_EVENTS);
+
+        /* Is fullscreen? */
+        if(_pstVideoMode->bFullScreen != orxFALSE)
+        {
+          /* Updates status */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+        }
+        else
+        {
+          /* Updates status */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
+        }
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
@@ -2739,7 +3278,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
         stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
         stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-        stPayload.bFullScreen             = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+        stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
 
         /* Inits extensions */
         orxDisplay_GLFW_InitExtensions();
@@ -2778,6 +3317,47 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
 
+        /* Has depth buffer? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+        {
+          /* Enables depth test */
+          glEnable(GL_DEPTH_TEST);
+          glASSERT();
+
+          /* Sets depth function */
+          glDepthFunc(GL_LEQUAL);
+          glASSERT();
+
+          /* Clears depth buffer */
+          glClearDepth(1.0f);
+          glASSERT();
+          glClear(GL_DEPTH_BUFFER_BIT);
+          glASSERT();
+        }
+
+        /* Has shader support? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+        {
+          static const orxSTRING szFragmentShaderSource =
+          "uniform sampler2D orxTexture;"
+          "void main()"
+          "{"
+          "  gl_FragColor = gl_Color.rgba * texture2D(orxTexture, gl_TexCoord[0].st).rgba;"
+          "}";
+          static const orxSTRING szNoTextureFragmentShaderSource =
+          "void main()"
+          "{"
+          "  gl_FragColor = gl_Color;"
+          "}";
+
+          /* Creates default & no texture shaders */
+          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
+
+          /* Uses default shader */
+          orxDisplay_StopShader(orxNULL);
+        }
+
         /* Has framebuffer support? */
         if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
         {
@@ -2813,40 +3393,37 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           sstDisplay.pstScreen->bSmoothing      = sstDisplay.bDefaultSmoothing;
           sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
           sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
+          sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
         }
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
-        /* Creates texture for screen backup */
-        glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
-        glASSERT();
-        glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
-        glASSERT();
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-        glASSERT();
-
         /* Clears destination bitmap */
-        sstDisplay.pstDestinationBitmap = orxNULL;
+        sstDisplay.apstDestinationBitmapList[0] = orxNULL;
+        sstDisplay.u32DestinationBitmapCounter  = 1;
+
+        /* Updates bound texture */
+        sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
         /* Clears new display surface */
         glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
         glASSERT();
+        glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(sstDisplay.stLastColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(sstDisplay.stLastColor)));
+        glASSERT();
         glClear(GL_COLOR_BUFFER_BIT);
         glASSERT();
+
+        /* Stores clipping values */
+        sstDisplay.u32LastClipX       = 0;
+        sstDisplay.u32LastClipY       = 0;
+        sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
+        sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
 
         /* Enforces VSync status */
         orxDisplay_GLFW_EnableVSync(orxDisplay_GLFW_IsVSyncEnabled());
 
         /* Had bitmaps? */
-        if(sstDisplay.s32BitmapCounter > 0)
+        if(s32BitmapCounter > 0)
         {
           orxBITMAP  *pstBitmap;
           orxU32      u32Index;
@@ -2859,6 +3436,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             /* Not screen? */
             if(pstBitmap != sstDisplay.pstScreen)
             {
+              /* Tracks video memory */
+              orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
+
               /* Creates new texture */
               glGenTextures(1, &pstBitmap->uiTexture);
               glASSERT();
@@ -2885,7 +3465,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         }
 
         /* Had shaders? */
-        if(sstDisplay.s32ShaderCounter > 0)
+        if(s32ShaderCounter > 0)
         {
           orxDISPLAY_SHADER *pstShader;
 
@@ -2898,9 +3478,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
             orxDisplay_GLFW_CompileShader(pstShader);
           }
         }
-
-        /* Clears counters */
-        sstDisplay.s32BitmapCounter = sstDisplay.s32ShaderCounter = 0;
 
         /* Stores screen depth & refresh rate */
         sstDisplay.u32Depth       = (orxU32)iDepth;
@@ -2919,7 +3496,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Isn't fullscreen? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
       orxVECTOR vPosition;
 
@@ -2934,13 +3511,50 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Updates its title */
     glfwSetWindowTitle(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
 
+    /* Updates active texture unit */
+    sstDisplay.s32ActiveTextureUnit = 0;
+
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Selects first texture unit */
+      glActiveTextureARB(GL_TEXTURE0_ARB);
+      glASSERT();
+
+      /* Uses default shader */
+      orxDisplay_StopShader(orxNULL);
+    }
+
+    /* Inits matrices */
+    glMatrixMode(GL_PROJECTION);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+    sstDisplay.dLastOrthoRight  = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
+    sstDisplay.dLastOrthoBottom = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
+    glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f);
+    glASSERT();
+    glMatrixMode(GL_MODELVIEW);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+
     /* Pops config section */
     orxConfig_PopSection();
   }
 
-  /* Clears last blend mode & last bitmap */
+  /* For all texture units */
+  for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Clears its bound bitmap */
+    sstDisplay.apstBoundBitmapList[i] = orxNULL;
+
+    /* Clears its MRU timestamp */
+    sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+  }
+
+  /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.pstLastBitmap  = orxNULL;
 
   /* Done! */
   return eResult;
@@ -2958,11 +3572,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   if(_bFullScreen != orxFALSE)
   {
     /* Wasn't already full screen? */
-    if(!orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN, GLFW_WINDOW);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -2970,11 +3581,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   else
   {
     /* Was full screen? */
-    if(orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32GLFWFlags, GLFW_WINDOW, GLFW_FULLSCREEN);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -2990,6 +3598,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
     stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
     stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
     stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+    stVideoMode.bFullScreen     = _bFullScreen;
 
     /* Updates video mode */
     eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);
@@ -2998,22 +3607,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
     if(eResult == orxSTATUS_FAILURE)
     {
       /* Restores previous full screen status */
-      orxFLAG_SWAP(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN);
+      stVideoMode.bFullScreen = !stVideoMode.bFullScreen;
 
       /* Updates video mode */
       orxDisplay_GLFW_SetVideoMode(&stVideoMode);
-    }
-
-    /* Has full screen? */
-    if(orxFLAG_TEST(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN))
-    {
-      /* Updates current status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
-    else
-    {
-      /* Updates current status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
     }
   }
 
@@ -3023,13 +3620,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
 
 orxBOOL orxFASTCALL orxDisplay_GLFW_IsFullScreen()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  bResult = orxFLAG_TEST_ALL(sstDisplay.u32GLFWFlags, GLFW_FULLSCREEN) ? orxTRUE : orxFALSE;
+  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -3070,179 +3667,233 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Creates banks */
-      sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      /* Adds event handler */
+      eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
 
-      /* Valid? */
-      if((sstDisplay.pstBitmapBank != orxNULL)
-      && (sstDisplay.pstShaderBank != orxNULL))
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        orxDISPLAY_VIDEO_MODE stVideoMode;
-        GLFWvidmode           stDesktopMode;
-
-        /* Gets desktop mode */
-        glfwGetDesktopMode(&stDesktopMode);
-
-        /* Updates default mode */
-        sstDisplay.u32DefaultWidth        = (orxU32)stDesktopMode.Width;
-        sstDisplay.u32DefaultHeight       = (orxU32)stDesktopMode.Height;
-        sstDisplay.u32DefaultDepth        = (orxU32)(stDesktopMode.RedBits + stDesktopMode.GreenBits +stDesktopMode.BlueBits);
-        sstDisplay.u32DefaultRefreshRate  = stDesktopMode.RefreshRate;
-
-        /* Pushes display section */
-        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-        /* Gets resolution from config */
-        stVideoMode.u32Width        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : sstDisplay.u32DefaultWidth;
-        stVideoMode.u32Height       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
-        stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
-        stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
-
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Updates flags */
-          sstDisplay.u32GLFWFlags = GLFW_FULLSCREEN;
-        }
-        else
-        {
-          /* Updates flags */
-          sstDisplay.u32GLFWFlags = GLFW_WINDOW;
-        }
-
-        /* No decoration? */
-        if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE)
-        && (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE))
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "This GLFW plugin can't create windows with no decorations.");
-        }
-
-        /* Sets module as ready */
-        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
-
-        /* Depth buffer? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
-        {
-           /* Updates flags */
-           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-
-        /* Doesn't allow resize? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE) == orxFALSE)
-        {
-          /* Updates flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-
-        /* Allocates screen bitmap */
-        sstDisplay.pstScreen = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
-        orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
-
-        /* Sets video mode? */
-        if((eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode)) == orxSTATUS_FAILURE)
-        {
-          /* Updates display flags */
-          sstDisplay.u32GLFWFlags = GLFW_WINDOW;
-
-          /* Updates resolution */
-          stVideoMode.u32Width        = sstDisplay.u32DefaultWidth;
-          stVideoMode.u32Height       = sstDisplay.u32DefaultHeight;
-          stVideoMode.u32Depth        = sstDisplay.u32DefaultDepth;
-          stVideoMode.u32RefreshRate  = sstDisplay.u32DefaultRefreshRate;
-
-          /* Sets video mode using default parameters */
-          eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);
-        }
+        /* Creates banks */
+        sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
         /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
+        if((sstDisplay.pstBitmapBank != orxNULL)
+        && (sstDisplay.pstShaderBank != orxNULL))
         {
-          orxCLOCK *pstClock;
+          orxDISPLAY_VIDEO_MODE stVideoMode;
+          GLFWvidmode           stDesktopMode;
 
-          /* Has VSync value? */
-          if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+          /* Gets desktop mode */
+          glfwGetDesktopMode(&stDesktopMode);
+
+          /* Updates default mode */
+          sstDisplay.u32DefaultWidth        = (orxU32)stDesktopMode.Width;
+          sstDisplay.u32DefaultHeight       = (orxU32)stDesktopMode.Height;
+          sstDisplay.u32DefaultDepth        = (orxU32)(stDesktopMode.RedBits + stDesktopMode.GreenBits +stDesktopMode.BlueBits);
+
+          /* 24-bit? */
+          if(sstDisplay.u32DefaultDepth == 24)
           {
-            /* Updates vertical sync */
-            orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
+            /* Gets 32-bit instead */
+            sstDisplay.u32DefaultDepth = 32;
+          }
+
+          /* Hack: Corrects imprecise refresh rate reports for default mode */
+          switch(stDesktopMode.RefreshRate)
+          {
+            case 59:
+            case 60:
+            case 61:
+            {
+              sstDisplay.u32DefaultRefreshRate = 60;
+              break;
+            }
+
+            case 49:
+            case 50:
+            case 51:
+            {
+              sstDisplay.u32DefaultRefreshRate = 50;
+              break;
+            }
+
+            default:
+            {
+              sstDisplay.u32DefaultRefreshRate = stDesktopMode.RefreshRate;
+              break;
+            }
+          }
+
+          /* Pushes display section */
+          orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+          /* Gets resolution from config */
+          stVideoMode.u32Width        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : sstDisplay.u32DefaultWidth;
+          stVideoMode.u32Height       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
+          stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
+          stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
+          stVideoMode.bFullScreen     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN);
+
+          /* No decoration? */
+          if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE)
+          && (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "This GLFW plugin can't create windows with no decorations.");
+          }
+
+          /* Sets module as ready */
+          sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
+
+          /* Depth buffer? */
+          if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEPTHBUFFER) != orxFALSE)
+          {
+             /* Updates flags */
+             orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+          }
+
+          /* Doesn't allow resize? */
+          if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE) == orxFALSE)
+          {
+            /* Updates flags */
+            orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+          }
+
+          /* Allocates screen bitmap */
+          sstDisplay.pstScreen = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+          orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
+
+          /* Sets video mode? */
+          if((eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode)) == orxSTATUS_FAILURE)
+          {
+            /* Updates resolution */
+            stVideoMode.u32Width        = sstDisplay.u32DefaultWidth;
+            stVideoMode.u32Height       = sstDisplay.u32DefaultHeight;
+            stVideoMode.u32Depth        = sstDisplay.u32DefaultDepth;
+            stVideoMode.u32RefreshRate  = sstDisplay.u32DefaultRefreshRate;
+            stVideoMode.bFullScreen     = orxFALSE;
+
+            /* Sets video mode using default parameters */
+            eResult = orxDisplay_GLFW_SetVideoMode(&stVideoMode);
+          }
+
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            orxCLOCK *pstClock;
+
+            /* Has VSync value? */
+            if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+            {
+              /* Updates vertical sync */
+              orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
+            }
+            else
+            {
+              /* Enables vertical sync */
+              orxDisplay_GLFW_EnableVSync(orxTRUE);
+            }
+
+            /* Has VSync value? */
+            if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+            {
+              /* Updates vertical sync */
+              orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
+            }
+
+            /* Inits info */
+            sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
+            sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
+
+            /* Gets clock */
+            pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+            /* Registers update function */
+            if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
+            {
+              /* Shows mouse cursor */
+              glfwEnable(GLFW_MOUSE_CURSOR);
+
+              /* Ignores resize event for now */
+              sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+
+              /* Registers resize callback */
+              glfwSetWindowSizeCallback(orxDisplay_GLFW_ResizeCallback);
+
+              /* Reactivates resize event */
+              sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+            }
+            else
+            {
+              /* Terminates GLFW */
+              glfwTerminate();
+
+              /* Frees screen bitmap */
+              orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
+
+              /* Deletes banks */
+              orxBank_Delete(sstDisplay.pstBitmapBank);
+              sstDisplay.pstBitmapBank = orxNULL;
+              orxBank_Delete(sstDisplay.pstShaderBank);
+              sstDisplay.pstShaderBank = orxNULL;
+
+              /* Updates status */
+              orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to register GLFW/display event handler.");
+            }
           }
           else
           {
-            /* Enables vertical sync */
-            orxDisplay_GLFW_EnableVSync(orxTRUE);
+            /* Frees screen bitmap */
+            orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
+
+            /* Deletes banks */
+            orxBank_Delete(sstDisplay.pstBitmapBank);
+            sstDisplay.pstBitmapBank = orxNULL;
+            orxBank_Delete(sstDisplay.pstShaderBank);
+            sstDisplay.pstShaderBank = orxNULL;
+
+            /* Updates status */
+            orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to init GLFW/OpenGL default video mode.");
           }
 
-          /* Has VSync value? */
-          if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
-          {
-            /* Updates vertical sync */
-            orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
-          }
-
-          /* Inits info */
-          sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
-          sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
-
-          /* Gets clock */
-          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-          /* Valid? */
-          if(pstClock != orxNULL)
-          {
-            /* Registers update function */
-            eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
-          }
-
-          /* Shows mouse cursor */
-          glfwEnable(GLFW_MOUSE_CURSOR);
-
-          /* Ignores resize event for now */
-          sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
-
-          /* Registers resize callback */
-          glfwSetWindowSizeCallback(orxDisplay_GLFW_ResizeCallback);
-
-          /* Reactivates resize event */
-          sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+          /* Pops config section */
+          orxConfig_PopSection();
         }
         else
         {
-          /* Frees screen bitmap */
-          orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
-
           /* Deletes banks */
-          orxBank_Delete(sstDisplay.pstBitmapBank);
-          sstDisplay.pstBitmapBank = orxNULL;
-          orxBank_Delete(sstDisplay.pstShaderBank);
-          sstDisplay.pstShaderBank = orxNULL;
+          if(sstDisplay.pstBitmapBank != orxNULL)
+          {
+            orxBank_Delete(sstDisplay.pstBitmapBank);
+            sstDisplay.pstBitmapBank = orxNULL;
+          }
+          if(sstDisplay.pstShaderBank != orxNULL)
+          {
+            orxBank_Delete(sstDisplay.pstShaderBank);
+            sstDisplay.pstShaderBank = orxNULL;
+          }
 
-          /* Updates status */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_READY);
+          /* Exits from GLFW */
+          glfwTerminate();
 
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to init GLFW/OpenGL default video mode.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to create bitmap/shader banks.");
         }
-
-        /* Pops config section */
-        orxConfig_PopSection();
       }
       else
       {
-        /* Deletes banks */
-        if(sstDisplay.pstBitmapBank != orxNULL)
-        {
-          orxBank_Delete(sstDisplay.pstBitmapBank);
-          sstDisplay.pstBitmapBank = orxNULL;
-        }
-        if(sstDisplay.pstShaderBank != orxNULL)
-        {
-          orxBank_Delete(sstDisplay.pstShaderBank);
-          sstDisplay.pstShaderBank = orxNULL;
-        }
+        /* Exits from GLFW */
+        glfwTerminate();
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to create bitmap/shader banks.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to register event handler.");
       }
     }
     else
@@ -3261,8 +3912,19 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Has shader support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Deletes default shaders */
+      orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+      orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
+    }
+
     /* Exits from GLFW */
     glfwTerminate();
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_GLFW_Update);
@@ -3287,13 +3949,12 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_HasShaderSupport()
   return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstParamList != orxNULL);
 
   /* Has shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
@@ -3309,63 +3970,68 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
       /* Successful? */
       if(pstShader != orxNULL)
       {
-        orxSHADER_PARAM  *pstParam;
-        orxCHAR          *pc;
-        orxS32            s32Free;
+        orxCHAR  *pc;
+        orxS32    s32Free;
 
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
         pc                                = sstDisplay.acShaderCodeBuffer;
         s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
 
-        /* For all parameters */
-        for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
-            pstParam != orxNULL;
-            pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+        /* Has parameters? */
+        if(_pstParamList != orxNULL)
         {
-          /* Depending on type */
-          switch(pstParam->eType)
+          orxSHADER_PARAM *pstParam;
+
+          /* For all parameters */
+          for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
+              pstParam != orxNULL;
+              pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
           {
-            case orxSHADER_PARAM_TYPE_FLOAT:
-            case orxSHADER_PARAM_TYPE_TIME:
+            /* Depending on type */
+            switch(pstParam->eType)
             {
-              orxS32 s32Offset;
+              case orxSHADER_PARAM_TYPE_FLOAT:
+              case orxSHADER_PARAM_TYPE_TIME:
+              {
+                orxS32 s32Offset;
 
-              /* Adds its literal value */
-              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
-              pc       += s32Offset;
-              s32Free  -= s32Offset;
+                /* Adds its literal value */
+                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+                pc       += s32Offset;
+                s32Free  -= s32Offset;
 
-              break;
-            }
+                break;
+              }
 
-            case orxSHADER_PARAM_TYPE_TEXTURE:
-            {
-              orxS32 s32Offset;
+              case orxSHADER_PARAM_TYPE_TEXTURE:
+              {
+                orxS32 s32Offset;
 
-              /* Adds its literal value and automated coordinates */
-              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%d];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
-              pc       += s32Offset;
-              s32Free  -= s32Offset;
+                /* Adds its literal value and automated coordinates */
+                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%d];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%d];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
+                pc       += s32Offset;
+                s32Free  -= s32Offset;
 
-              break;
-            }
+                break;
+              }
 
-            case orxSHADER_PARAM_TYPE_VECTOR:
-            {
-              orxS32 s32Offset;
+              case orxSHADER_PARAM_TYPE_VECTOR:
+              {
+                orxS32 s32Offset;
 
-              /* Adds its literal value */
-              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
-              pc       += s32Offset;
-              s32Free  -= s32Offset;
+                /* Adds its literal value */
+                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
+                pc       += s32Offset;
+                s32Free  -= s32Offset;
 
-              break;
-            }
+                break;
+              }
 
-            default:
-            {
-              break;
+              default:
+              {
+                break;
+              }
             }
           }
         }
@@ -3374,11 +4040,12 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         orxString_NPrint(pc, s32Free, "%s\n", _zCode);
 
         /* Inits shader */
+        orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
         pstShader->hProgram               = (GLhandleARB)orxU32_UNDEFINED;
         pstShader->iTextureCounter        = 0;
         pstShader->s32ParamCounter        = 0;
-        pstShader->bActive                = orxFALSE;
-        pstShader->bInitialized           = orxFALSE;
+        pstShader->bPending               = orxFALSE;
+        pstShader->bUseCustomParam        = _bUseCustomParam;
         pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
         pstShader->astTextureInfoList     = (orxDISPLAY_TEXTURE_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO), orxMEMORY_TYPE_MAIN);
         pstShader->astParamInfoList       = (orxDISPLAY_PARAM_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO), orxMEMORY_TYPE_MAIN);
@@ -3452,22 +4119,30 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StartShader(orxHANDLE _hShader)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
 
-  /* Draws remaining items */
-  orxDisplay_GLFW_DrawArrays();
-
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Uses program */
+  /* Not pending or use custom param? */
+  if((pstShader->bPending == orxFALSE) || (pstShader->bUseCustomParam != orxFALSE))
+  {
+    /* Draw remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Adds it to the active list */
+    orxLinkList_AddEnd(&(sstDisplay.stActiveShaderList), &(pstShader->stNode));
+  }
+  else
+  {
+    /* Resets its pending status */
+    pstShader->bPending = orxFALSE;
+
+    /* Updates counter */
+    sstDisplay.s32PendingShaderCounter--;
+  }
+
+  /* Uses its program */
   glUseProgramObjectARB(pstShader->hProgram);
   glASSERT();
-
-  /* Updates its status */
-  pstShader->bActive      = orxTRUE;
-  pstShader->bInitialized = orxFALSE;
-
-  /* Updates active shader counter */
-  sstDisplay.s32ActiveShaderCounter++;
 
   /* Done! */
   return eResult;
@@ -3480,72 +4155,151 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
-
-  /* Draws remaining items */
-  orxDisplay_GLFW_DrawArrays();
+  orxASSERT(_hShader != orxHANDLE_UNDEFINED);
 
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Wasn't initialized? */
-  if(pstShader->bInitialized == orxFALSE)
+  /* Has shader? */
+  if(pstShader != orxNULL)
   {
-    /* Inits it */
-    orxDisplay_GLFW_InitShader(pstShader);
+    /* Not already removed? */
+    if((orxLinkList_GetList(&(pstShader->stNode)) != orxNULL)
+    && (pstShader->bPending == orxFALSE))
+    {
+      /* Empty buffer? */
+      if(sstDisplay.s32BufferIndex == 0)
+      {
+        orxDISPLAY_SHADER *pstActive, *pstNextActive;
 
-    /* Defines the vertex list */
-    sstDisplay.astVertexList[0].fX  =
-    sstDisplay.astVertexList[1].fX  = sstDisplay.pstScreen->stClip.vTL.fX;
-    sstDisplay.astVertexList[2].fX  =
-    sstDisplay.astVertexList[3].fX  = sstDisplay.pstScreen->stClip.vBR.fX;
-    sstDisplay.astVertexList[1].fY  =
-    sstDisplay.astVertexList[3].fY  = sstDisplay.pstScreen->stClip.vTL.fY;
-    sstDisplay.astVertexList[0].fY  =
-    sstDisplay.astVertexList[2].fY  = sstDisplay.pstScreen->stClip.vBR.fY;
+        /* For all active shaders */
+        for(pstActive = (orxDISPLAY_SHADER *)orxLinkList_GetFirst(&(sstDisplay.stActiveShaderList));
+            pstActive != orxNULL;
+            pstActive = pstNextActive)
+        {
+          /* Gets next shader */
+          pstNextActive = (orxDISPLAY_SHADER *)orxLinkList_GetNext(&(pstActive->stNode));
 
-    /* Defines the texture coord list */
-    sstDisplay.astVertexList[0].fU  =
-    sstDisplay.astVertexList[1].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vTL.fX);
-    sstDisplay.astVertexList[2].fU  =
-    sstDisplay.astVertexList[3].fU  = (GLfloat)(sstDisplay.pstScreen->fRecRealWidth * sstDisplay.pstScreen->stClip.vBR.fX);
-    sstDisplay.astVertexList[1].fV  =
-    sstDisplay.astVertexList[3].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vTL.fY);
-    sstDisplay.astVertexList[0].fV  =
-    sstDisplay.astVertexList[2].fV  = (GLfloat)(orxFLOAT_1 - sstDisplay.pstScreen->fRecRealHeight * sstDisplay.pstScreen->stClip.vBR.fY);
+          /* Was pending removal? */
+          if(pstActive->bPending != orxFALSE)
+          {
+            /* Clears its texture counter */
+            pstActive->iTextureCounter = 0;
 
-    /* Fills the color list */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
+            /* Clears its texture info list */
+            orxMemory_Zero(pstActive->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
 
-    /* Updates counter */
-    sstDisplay.s32BufferIndex = 4;
+            /* Removes its pending status */
+            pstActive->bPending = orxFALSE;
 
-    /* Draws arrays */
-    orxDisplay_GLFW_DrawArrays();
+            /* Removes it from active list */
+            orxLinkList_Remove(&(pstActive->stNode));
+
+            /* Updates counter */
+            sstDisplay.s32PendingShaderCounter--;
+          }
+        }
+
+        /* Defines the vertex list */
+        sstDisplay.astVertexList[0].fX  =
+        sstDisplay.astVertexList[1].fX  = sstDisplay.apstDestinationBitmapList[0]->stClip.vTL.fX;
+        sstDisplay.astVertexList[2].fX  =
+        sstDisplay.astVertexList[3].fX  = sstDisplay.apstDestinationBitmapList[0]->stClip.vBR.fX;
+        sstDisplay.astVertexList[1].fY  =
+        sstDisplay.astVertexList[3].fY  = sstDisplay.apstDestinationBitmapList[0]->stClip.vTL.fY;
+        sstDisplay.astVertexList[0].fY  =
+        sstDisplay.astVertexList[2].fY  = sstDisplay.apstDestinationBitmapList[0]->stClip.vBR.fY;
+
+        /* Defines the texture coord list */
+        sstDisplay.astVertexList[0].fU  =
+        sstDisplay.astVertexList[1].fU  = 0.0f;
+        sstDisplay.astVertexList[2].fU  =
+        sstDisplay.astVertexList[3].fU  = 1.0f;
+        sstDisplay.astVertexList[1].fV  =
+        sstDisplay.astVertexList[3].fV  = 0.0f;
+        sstDisplay.astVertexList[0].fV  =
+        sstDisplay.astVertexList[2].fV  = 1.0f;
+
+        /* Fills the color list */
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
+
+        /* Updates counter */
+        sstDisplay.s32BufferIndex = 4;
+
+        /* Draws arrays */
+        orxDisplay_GLFW_DrawArrays();
+
+        /* Clears texture counter */
+        pstShader->iTextureCounter = 0;
+
+        /* Clears texture info list */
+        orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
+
+        /* Removes it from active list */
+        orxLinkList_Remove(&(pstShader->stNode));
+      }
+      /* Using custom param? */
+      else if(pstShader->bUseCustomParam != orxFALSE)
+      {
+        /* Has something to display? */
+        if(sstDisplay.s32BufferIndex > 0)
+        {
+          /* Draws arrays */
+          orxDisplay_GLFW_DrawArrays();
+        }
+        else
+        {
+          /* Uses default program */
+          glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
+          glASSERT();
+
+          /* Updates its texture unit */
+          glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+        }
+
+        /* Clears texture counter */
+        pstShader->iTextureCounter = 0;
+
+        /* Clears texture info list */
+        orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
+
+        /* Removes it from active list */
+        orxLinkList_Remove(&(pstShader->stNode));
+      }
+      else
+      {
+        /* Marks it as pending */
+        pstShader->bPending = orxTRUE;
+
+        /* Updates counter */
+        sstDisplay.s32PendingShaderCounter++;
+
+        /* Uses default program */
+        glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
+        glASSERT();
+
+        /* Updates its texture unit */
+        glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
+  else
+  {
+    /* Uses default program */
+    glUseProgramObjectARB(sstDisplay.pstDefaultShader->hProgram);
+    glASSERT();
 
-  /* Uses default program */
-  glUseProgramObjectARB(0);
-  glASSERT();
-
-  /* Selects first texture unit */
-  glActiveTextureARB(GL_TEXTURE0_ARB);
-  glASSERT();
-
-  /* Clears texture counter */
-  pstShader->iTextureCounter = 0;
-
-  /* Clears texture info list */
-  orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
-
-  /* Updates its status */
-  pstShader->bActive = orxFALSE;
-
-  /* Updates active shader counter */
-  sstDisplay.s32ActiveShaderCounter--;
+    /* Updates its texture unit */
+    glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+  }
 
   /* Done! */
   return eResult;
@@ -3574,7 +4328,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
-    acBuffer[255] = orxCHAR_NULL;
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
@@ -3586,29 +4340,29 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -3619,22 +4373,22 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -3647,8 +4401,8 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
-      acBuffer[255] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, acBuffer);
@@ -3669,64 +4423,89 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32 _s32ID, const orxBITMAP *_pstValue)
 {
   orxDISPLAY_SHADER  *pstShader;
-  orxSTATUS           eResult;
+  orxSTATUS           eResult = orxSTATUS_FAILURE;
+  orxS32              i;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+  orxASSERT((_pstValue != sstDisplay.pstScreen) && "Can't use screen bitmap as texture parameter (ID <%d>) for fragment shader.", _s32ID);
 
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
-  /* Has free texture unit left? */
-  if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+  /* For all already used texture units */
+  for(i = 0; i < pstShader->iTextureCounter; i++)
   {
-    /* Valid? */
-    if(_s32ID >= 0)
+    /* Same location? */
+    if(pstShader->astTextureInfoList[i].iLocation == pstShader->astParamInfoList[_s32ID].iLocation)
     {
-      /* No bitmap? */
-      if(_pstValue == orxNULL)
+      /* Different texture? */
+      if(pstShader->astTextureInfoList[i].pstBitmap != _pstValue)
       {
-        /* Uses screen bitmap */
-        _pstValue = sstDisplay.pstScreen;
+        /* Draws remaining items */
+        orxDisplay_GLFW_DrawArrays();
+
+        /* Updates texture info */
+        pstShader->astTextureInfoList[i].pstBitmap = _pstValue;
+
+        /* Updates corner values */
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
       }
-
-      /* Updates texture info */
-      pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
-      pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
-
-      /* Updates corner values */
-      glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
-      glASSERT();
-      glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
-      glASSERT();
-      glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(orxFLOAT_1 - (_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
-      glASSERT();
-      glUniform1fARB(pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
-      glASSERT();
-
-      /* Updates texture counter */
-      pstShader->iTextureCounter++;
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
+
+      break;
+    }
+  }
+
+  /* Not already done? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Has free texture unit left? */
+    if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+    {
+      /* Valid? */
+      if(_s32ID >= 0)
+      {
+        /* No bitmap? */
+        if(_pstValue == orxNULL)
+        {
+          /* Uses screen bitmap */
+          _pstValue = sstDisplay.pstScreen;
+        }
+
+        /* Updates texture info */
+        pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
+        pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
+
+        /* Updates corner values */
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationLeft, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vTL.fX));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY));
+        glUNIFORM(1fARB, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
+
+        /* Updates texture counter */
+        pstShader->iTextureCounter++;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Outputs log */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: invalid ID.", _s32ID);
+      }
     }
     else
     {
       /* Outputs log */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't find texture parameter (ID <%d>) for fragment shader.", _s32ID);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: all the texture units are used.", _s32ID);
     }
-  }
-  else
-  {
-    /* Outputs log */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't bind texture parameter (ID <%d>) for fragment shader: all the texture units are used.", _s32ID);
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -3744,9 +4523,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderFloat(orxHANDLE _hShader, orxS32 
   /* Valid? */
   if(_s32ID >= 0)
   {
-    /* Updates its value */
-    glUniform1fARB((GLint)_s32ID, (GLfloat)_fValue);
-    glASSERT();
+    /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
+    glUNIFORM_NO_ASSERT(1fARB, (GLint)_s32ID, (GLfloat)_fValue);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -3773,9 +4551,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderVector(orxHANDLE _hShader, orxS32
   /* Valid? */
   if(_s32ID >= 0)
   {
-    /* Updates its value */
-    glUniform3fARB((GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
-    glASSERT();
+    /* Updates its value (no glASSERT() as this can be set more than once per use and would trigger it) */
+    glUNIFORM_NO_ASSERT(3fARB, (GLint)_s32ID, (GLfloat)_pvValue->fX, (GLfloat)_pvValue->fY, (GLfloat)_pvValue->fZ);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -3805,8 +4582,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateBitmap, DISPLAY, CREATE_B
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

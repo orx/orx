@@ -33,6 +33,7 @@ var orx_module_8h =
       [ "orxMODULE_ID_PLUGIN", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708aa0b823edf8a02181b4b38d3e5dc89379", null ],
       [ "orxMODULE_ID_PROFILER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708aaf10ffde3b9351aabffb03b8a074af79", null ],
       [ "orxMODULE_ID_RENDER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a371b24036c2eec2a4699eeb9f22c3305", null ],
+      [ "orxMODULE_ID_RESOURCE", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708acdb6d4d87d122beaca1e6c7118bf4fc5", null ],
       [ "orxMODULE_ID_SCREENSHOT", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a8f4c2507939ee5e0a7c852d8d2633628", null ],
       [ "orxMODULE_ID_SHADER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708afeeb506b27d982b4aa2a5fe97abbb9b3", null ],
       [ "orxMODULE_ID_SHADERPOINTER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708ad971dcf62e16fdf71f2a2e002f5b7693", null ],
@@ -40,6 +41,7 @@ var orx_module_8h =
       [ "orxMODULE_ID_SOUNDPOINTER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a177da56f1cd218fb7dcc920c80aff7f2", null ],
       [ "orxMODULE_ID_SOUNDSYSTEM", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708adf8fd36b3fe37b2cc1947795d97e9ebe", null ],
       [ "orxMODULE_ID_SPAWNER", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708ad29b6f2ac402e0cb5482c9fbc4a2f290", null ],
+      [ "orxMODULE_ID_STRING", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a441b74c1e724d2f5b58b01845c590eb8", null ],
       [ "orxMODULE_ID_STRUCTURE", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708af694c68af1ab094db8961aaa3fa732cc", null ],
       [ "orxMODULE_ID_SYSTEM", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708ac6a13e1f67caab3688d6655b827a30c6", null ],
       [ "orxMODULE_ID_TEXT", "orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a31f755b56737397757487f8a50066108", null ],
@@ -61,7 +63,6 @@ var orx_module_8h =
     [ "orxModule_RegisterAll", "orx_module_8h.html#ga7a0361e51ff409dc42025c1019758d02", null ],
     [ "orxModule_Setup", "orx_module_8h.html#ga91a59b4a84dcf9c880bbca8056828b99", null ],
     [ "orxModule_SetupAll", "orx_module_8h.html#ga10bf7e12da32a1f3ad58beee77900609", null ],
-    [ "orxModule_UpdateDependencies", "orx_module_8h.html#ga008e1262481bde971669f93c9e0afbda", null ],
     [ "orxSTATUS", "orx_module_8h.html#gaf44141f0bc45f319187952b4629b862c", null ],
     [ "void", "orx_module_8h.html#ga83fece8538c577b8a4a0801ee4573a86", null ]
 ];

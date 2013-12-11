@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -163,13 +163,19 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
  */
 typedef struct __orxSTRUCTURE_t
 {
-  orxU64          u64GUID;          /**< Structure GUID : 8 */
-  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 12/16 */
-  orxU32          u32Flags;       /**< Flags : 16/20 */
+  orxU64          u64GUID;        /**< Structure GUID : 8 */
+  orxU64          u64OwnerGUID;   /**< Owner's GUID : 16 */
+  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 20/24 */
+  orxU32          u32Flags;       /**< Flags : 24/28 */
+
 
 #if defined(__orxX86_64__) || defined(__orxPPC64__)
 
-  orxU8           au8Padding[12]; /**< Extra padding to be 16-bit aligned on 64bit architectures */
+  orxU8           au8Padding[4]; /**< Extra padding to be 32-bytes aligned on 64bit architectures */
+
+#else /* __orxX86_64__ || __orxPPC64__ */
+
+  orxU8           au8Padding[8]; /**< Extra padding to be 32-bytes aligned on 32bit architectures */
 
 #endif /* __orxX86_64__ || __orxPPC64__ */
 
@@ -272,6 +278,19 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(void
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_Get(orxU64 _u64GUID);
 
+/** Gets structure's owner
+ * @param[in]   _pStructure    Concerned structure
+ * @return      orxSTRUCTURE / orxNULL if not found/alive
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetOwner(const void *_pStructure);
+
+/** Sets structure owner
+ * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pOwner        Structure to set as owner
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_SetOwner(void *_pStructure, void *_pOwner);
+
 /** Gets first stored structure (first list cell or tree root depending on storage type)
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxSTRUCTURE
@@ -365,7 +384,7 @@ static orxINLINE void                                   orxStructure_DecreaseCou
   u64Counter = (orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNTER) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNTER;
 
   /* Checks */
-  orxASSERT(u64Counter > 0);
+  orxASSERT(u64Counter != 0);
 
   /* Updates it */
   u64Counter--;
@@ -400,7 +419,7 @@ static orxINLINE orxU64                                 orxStructure_GetGUID(con
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return orxSTRUCTURE(_pStructure)->u64GUID;
+  return orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNTER;
 }
 
 /** Gets structure ID

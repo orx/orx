@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -136,6 +143,16 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:ga08815b27cb2e29018e06e3d847116915"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> { <br/>
+&#160;&#160;<a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba">orxSEEK_OFFSET_WHENCE_START</a> = 0, 
+<a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29">orxSEEK_OFFSET_WHENCE_CURRENT</a>, 
+<a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915ac884d90cc7d4169b442cf667e54e702a">orxSEEK_OFFSET_WHENCE_END</a>, 
+<a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a4b89ac4dca34cc2521377d537821a2c1">orxSEEK_OFFSET_WHENCE_NUMBER</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a5e05ecf7aeecad1539fbb9fa4798e027">orxSEEK_OFFSET_WHENCE_NONE</a> = orxENUM_NONE
+<br/>
+ }</td></tr>
+<tr class="separator:ga08815b27cb2e29018e06e3d847116915"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga18b11c4d0ed79ac2f8542e3bcfac340d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> { <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a> = 0, 
 <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>, 
 <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340da8eebe889e601ec634f60f02b456e11bf">orxSTATUS_NUMBER</a>, 
@@ -145,11 +162,17 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:ga51d2ebd5fa76d351c989320f63407a10"><td class="memItemLeft" align="right" valign="top">static const orxDOUBLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga51d2ebd5fa76d351c989320f63407a10">orxDOUBLE_0</a> = orx2D(0.0)</td></tr>
+<tr class="separator:ga51d2ebd5fa76d351c989320f63407a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabdf7a945561859cfae77c03f8943974c"><td class="memItemLeft" align="right" valign="top">static const orxDOUBLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gabdf7a945561859cfae77c03f8943974c">orxDOUBLE_1</a> = orx2D(1.0)</td></tr>
+<tr class="separator:gabdf7a945561859cfae77c03f8943974c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f3008a8bfb2e9e3d1a05cd731006b4b"><td class="memItemLeft" align="right" valign="top">static const orxDOUBLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga4f3008a8bfb2e9e3d1a05cd731006b4b">orxDOUBLE_MAX</a> = orx2D(1.7976931348623158e+308)</td></tr>
+<tr class="separator:ga4f3008a8bfb2e9e3d1a05cd731006b4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad7be3fa68f9c7280e208fc7a65b80e9a"><td class="memItemLeft" align="right" valign="top">static const orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a> = orx2F(0.0f)</td></tr>
 <tr class="separator:gad7be3fa68f9c7280e208fc7a65b80e9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga90038a35c998993f88db62d2a02e4dc7"><td class="memItemLeft" align="right" valign="top">static const orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> = orx2F(1.0f)</td></tr>
 <tr class="separator:ga90038a35c998993f88db62d2a02e4dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga26d9eda0236909a5bc1b0b3a81b47ed7"><td class="memItemLeft" align="right" valign="top">static const orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga26d9eda0236909a5bc1b0b3a81b47ed7">orxFLOAT_MAX</a> = orx2F(1e37)</td></tr>
+<tr class="memitem:ga26d9eda0236909a5bc1b0b3a81b47ed7"><td class="memItemLeft" align="right" valign="top">static const orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#ga26d9eda0236909a5bc1b0b3a81b47ed7">orxFLOAT_MAX</a> = orx2F(3.402823466e+38f)</td></tr>
 <tr class="separator:ga26d9eda0236909a5bc1b0b3a81b47ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae4b900add41fedc3497a0f7dd2926136"><td class="memItemLeft" align="right" valign="top">static const orxHANDLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_type.html#gae4b900add41fedc3497a0f7dd2926136">orxHANDLE_UNDEFINED</a> = (orxHANDLE)(-1)</td></tr>
 <tr class="separator:gae4b900add41fedc3497a0f7dd2926136"><td class="memSeparator" colspan="2">&#160;</td></tr>

@@ -12,5 +12,7 @@ var orx_decl_8h =
     [ "orxFLAG_SWAP", "orx_decl_8h.html#gab05629baa4da4ecca103047729ad7b5e", null ],
     [ "orxFLAG_TEST", "orx_decl_8h.html#ga5d4201fb766a44a355bed3bde7426d88", null ],
     [ "orxFLAG_TEST_ALL", "orx_decl_8h.html#ga7191791f19d4f02ca26020c70410924b", null ],
-    [ "orxIMPORT", "orx_decl_8h.html#gab970a40e167e4b5346aec7ae059d8929", null ]
+    [ "orxIMPORT", "orx_decl_8h.html#gab970a40e167e4b5346aec7ae059d8929", null ],
+    [ "orxMEMORY_BARRIER", "orx_decl_8h.html#ga7240bc33642336c84068c3f70adb967a", null ],
+    [ "orxSTRUCT_GET_FROM_FIELD", "orx_decl_8h.html#gab7c66fa6bc13f251ee92b6883260aa1d", null ]
 ];

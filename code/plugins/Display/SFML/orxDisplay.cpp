@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -283,8 +283,7 @@ extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_GetScreen()
 
 extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
-  sf::Sprite       *poSprite;
-  const sf::Image  *poImage;
+  sf::Sprite *poSprite;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -293,6 +292,8 @@ extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != orxDisplay::spoScreen)
   {
+    const sf::Image *poImage;
+
     /* Gets sprite */
     poSprite = (sf::Sprite *)_pstBitmap;
 
@@ -383,6 +384,17 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitm
     glClearColor(orxCOLOR_NORMALIZER * orxRGBA_R(_stColor), orxCOLOR_NORMALIZER * orxRGBA_G(_stColor), orxCOLOR_NORMALIZER * orxRGBA_B(_stColor), orxCOLOR_NORMALIZER * orxRGBA_A(_stColor));
     glClear(GL_COLOR_BUFFER_BIT);
   }
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
 
   /* Done! */
   return eResult;
@@ -479,7 +491,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstB
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxSTATUS eResult;
 
@@ -616,13 +628,13 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(const orxBITMAP *_ps
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmap(orxBITMAP *_pstDst)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetDestinationBitmaps(orxBITMAP **_apstDst, orxU32 _u32Number)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstDst == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_apstDst[0] == orxDisplay::spoScreen) && "Can only draw on screen with this version!");
 
   /* Done! */
   return eResult;
@@ -947,25 +959,44 @@ extern "C" orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SFML_GetVideoMode(orxU3
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstVideoMode != orxNULL);
 
+  /* Desktop mode? */
+  if(_u32Index == orxU32_UNDEFINED)
+  {
+    /* Gets desktop video mode */
+    sf::VideoMode roVideoMode = sf::VideoMode::GetDesktopMode();
+
+    /* Stores info */
+    _pstVideoMode->u32Width       = roVideoMode.Width;
+    _pstVideoMode->u32Height      = roVideoMode.Height;
+    _pstVideoMode->u32Depth       = roVideoMode.BitsPerPixel;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
+  }
   /* Is index valid? */
-  if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
+  else if(_u32Index < orxDisplay_SFML_GetVideoModeCounter())
   {
     /* Gets video mode */
     sf::VideoMode roVideoMode = sf::VideoMode::GetMode(_u32Index);
 
     /* Stores info */
-    _pstVideoMode->u32Width   = roVideoMode.Width;
-    _pstVideoMode->u32Height  = roVideoMode.Height;
-    _pstVideoMode->u32Depth   = roVideoMode.BitsPerPixel;
-
-    /* Updates result */
-    pstResult = _pstVideoMode;
+    _pstVideoMode->u32Width       = roVideoMode.Width;
+    _pstVideoMode->u32Height      = roVideoMode.Height;
+    _pstVideoMode->u32Depth       = roVideoMode.BitsPerPixel;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
   }
   else
   {
-    /* Updates result */
-    pstResult = orxNULL;
+    /* Stores info */
+    _pstVideoMode->u32Width       = sstDisplay.u32ScreenWidth;
+    _pstVideoMode->u32Height      = sstDisplay.u32ScreenHeight;
+    _pstVideoMode->u32Depth       = sstDisplay.u32ScreenDepth;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxDisplay_SFML_IsFullScreen();
   }
+
+  /* Updates result */
+  pstResult = _pstVideoMode;
 
   /* Done! */
   return pstResult;
@@ -1016,7 +1047,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Full screen? */
-    if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+    if(_pstVideoMode->bFullScreen != orxFALSE)
     {
       /* Updates flags */
       sstDisplay.ulWindowStyle = sf::Style::Fullscreen;
@@ -1042,6 +1073,18 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetVideoMode(const orxDISPLAY_V
 
     /* Enforces VSync status */
     sstDisplay.poRenderWindow->UseVerticalSync(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
+
+    /* Is fullscreen? */
+    if(_pstVideoMode->bFullScreen != orxFALSE)
+    {
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
+    }
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -1162,7 +1205,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
         if(pstClock != orxNULL)
         {
           /* Registers event update function */
-          eResult = orxClock_Register(pstClock, orxDisplay_SFML_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+          eResult = orxClock_Register(pstClock, orxDisplay_SFML_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER);
         }
 
         /* Has VSync value? */
@@ -1730,7 +1773,7 @@ extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_HasShaderSupport()
   return (sf::PostFX::CanUsePostFX() != false) ? orxTRUE : orxFALSE;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -1756,7 +1799,7 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
         orxS32            s32Free;
 
         /* Inits buffer */
-        acBuffer[0] = acBuffer[32767] = orxCHAR_NULL;
+        acBuffer[0] = acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         pc          = acBuffer;
         s32Free     = 32767;
 
@@ -1920,7 +1963,7 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Inits buffer */
-  acBuffer[255] = orxCHAR_NULL;
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
   /* Screen? */
   if((_pstValue == orxNULL) || (_pstValue == orxDisplay::spoScreen))
@@ -1935,19 +1978,19 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
     fRecHeight = 1.0f / (float)sstDisplay.u32ScreenHeight;
 
     /* Gets top parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
     pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vTL.fY));
 
     /* Gets left parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
     pstShader->poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vTL.fX);
 
     /* Gets bottom parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
     pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * sstDisplay.stScreenClip.vBR.fY));
 
     /* Gets right parameter location */
-    orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
     pstShader->poFX->SetParameter(acBuffer, fRecWidth * sstDisplay.stScreenClip.vBR.fX);
   }
   else
@@ -1975,19 +2018,19 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hSha
       fRecHeight = 1.0f / (float)poImage->GetHeight();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, zText);
       pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Top));
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, zText);
       pstShader->poFX->SetParameter(acBuffer, fRecWidth * stClip.Left);
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, zText);
       pstShader->poFX->SetParameter(acBuffer, 1.0f - (fRecHeight * stClip.Bottom));
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, zText);
       pstShader->poFX->SetParameter(acBuffer, fRecWidth * stClip.Right);
     }
     else
@@ -2051,13 +2094,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

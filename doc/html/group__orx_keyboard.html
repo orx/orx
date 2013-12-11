@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -234,7 +241,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96eb533a99e1b899960127b93995c204">orxKEYBOARD_KEY_QUOTE</a>, 
 <a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaae2cda1137017c0acc1047994bf2e950">orxKEYBOARD_KEY_SLASH</a>, 
 <a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feab1d572d6a3f5c70885ba5fb13d35032f">orxKEYBOARD_KEY_BACKSLASH</a>, 
-<a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feab2d16b508f36e2617e4c6e5fc05f6667">orxKEYBOARD_KEY_TILDE</a>, 
+<a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea6492356cfe9ff292123142114d93e83c">orxKEYBOARD_KEY_BACKQUOTE</a>, 
 <br/>
 &#160;&#160;<a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea2b9c662bd8c9825c2a5dabac9427cdde">orxKEYBOARD_KEY_EQUAL</a>, 
 <a class="el" href="group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fead21be374f6452ee27a42f031d986be1a">orxKEYBOARD_KEY_DASH</a>, 
@@ -246,6 +253,8 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga231f33fd60ede254f62fc6e08f7a9748"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga231f33fd60ede254f62fc6e08f7a9748">orxKeybard_Show</a> (orxBOOL _bShow)</td></tr>
+<tr class="separator:ga231f33fd60ede254f62fc6e08f7a9748"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga21ca03325eb7843d3f80214f6e9a0d2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a">orxKeyboard_ClearBuffer</a> ()</td></tr>
 <tr class="separator:ga21ca03325eb7843d3f80214f6e9a0d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0d09f92bcd5854e4955faf3ce86863c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2">orxKeyboard_Exit</a> ()</td></tr>
@@ -486,7 +495,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga50a25da712297bb6cbbd47e66ac233feab1d572d6a3f5c70885ba5fb13d35032f"></a>orxKEYBOARD_KEY_BACKSLASH</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="gga50a25da712297bb6cbbd47e66ac233feab2d16b508f36e2617e4c6e5fc05f6667"></a>orxKEYBOARD_KEY_TILDE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" id="gga50a25da712297bb6cbbd47e66ac233fea6492356cfe9ff292123142114d93e83c"></a>orxKEYBOARD_KEY_BACKQUOTE</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga50a25da712297bb6cbbd47e66ac233fea2b9c662bd8c9825c2a5dabac9427cdde"></a>orxKEYBOARD_KEY_EQUAL</em>&nbsp;</td><td>
 </td></tr>
@@ -505,6 +514,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="ga231f33fd60ede254f62fc6e08f7a9748"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxKeybard_Show </td>
+          <td>(</td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bShow</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Show/Hide the virtual keyboard </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bShow</td><td>Show/hide virtual keyboard </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if supported by platform, orxSTATUS_FAILURE otherwise </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga21ca03325eb7843d3f80214f6e9a0d2a"></a>
 <div class="memitem">
 <div class="memproto">

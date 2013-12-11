@@ -14,6 +14,7 @@ var orx_event_8h =
       [ "orxEVENT_TYPE_OBJECT", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a9e2b65534b3062514d8aed635bb121e7", null ],
       [ "orxEVENT_TYPE_RENDER", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8ab79eabe1d47047e4698b31e03b05f91c", null ],
       [ "orxEVENT_TYPE_PHYSICS", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a707ba32273ced7fa1dba95fcb8836d4b", null ],
+      [ "orxEVENT_TYPE_RESOURCE", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a21931d6efa82a9b425dd8e40f218fa4a", null ],
       [ "orxEVENT_TYPE_SHADER", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7e85f40a47f2a73c1ab09b1f0241cab2", null ],
       [ "orxEVENT_TYPE_SOUND", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a871a91df2463417ce5acc81bb4a20448", null ],
       [ "orxEVENT_TYPE_SPAWNER", "orx_event_8h.html#gga4576598772ee9b827a80ca5b6c9a6cd8a3f6047dad21b480b5a982b8223e6a2e9", null ],

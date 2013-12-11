@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -166,14 +173,16 @@ Functions</h2></td></tr>
 <tr class="separator:ga200337a54e068d3ee9f03817d7364bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4fdf762bf779e366f214dd1d2755ff59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga4fdf762bf779e366f214dd1d2755ff59">orxMath_GetRandomS64</a> (orxS64 _s64Min, orxS64 _s64Max)</td></tr>
 <tr class="separator:ga4fdf762bf779e366f214dd1d2755ff59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaeac6be239504eaa18fbf6e7790b2ad77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gaeac6be239504eaa18fbf6e7790b2ad77">orxMath_GetRandomSeeds</a> (orxU32 _au32Seeds[4])</td></tr>
+<tr class="separator:gaeac6be239504eaa18fbf6e7790b2ad77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2486997fa74ede624d529480179c9c8b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga2486997fa74ede624d529480179c9c8b">orxMath_GetRandomU32</a> (orxU32 _u32Min, orxU32 _u32Max)</td></tr>
 <tr class="separator:ga2486997fa74ede624d529480179c9c8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga04060c5441b3236a18a5f8c90fb00ca9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga04060c5441b3236a18a5f8c90fb00ca9">orxMath_GetRandomU64</a> (orxU64 _u64Min, orxU64 _u64Max)</td></tr>
 <tr class="separator:ga04060c5441b3236a18a5f8c90fb00ca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaea41a680ebfc7f5935f99dde8fbe923e"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e">orxMath_GetTrailingZeroCount</a> (orxU32 _u32Value)</td></tr>
 <tr class="separator:gaea41a680ebfc7f5935f99dde8fbe923e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga042dd7e93abc0120b673abdb4e3ed98c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga042dd7e93abc0120b673abdb4e3ed98c">orxMath_InitRandom</a> (orxS32 _s32Seed)</td></tr>
-<tr class="separator:ga042dd7e93abc0120b673abdb4e3ed98c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6c72f24ba256435c70dafea7e34b94e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga6c72f24ba256435c70dafea7e34b94e3">orxMath_InitRandom</a> (orxU32 _u32Seed)</td></tr>
+<tr class="separator:ga6c72f24ba256435c70dafea7e34b94e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf88e117449b1482040ebd7b082c60f6b"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxBOOL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b">orxMath_IsPowerOfTwo</a> (orxU32 _u32Value)</td></tr>
 <tr class="separator:gaf88e117449b1482040ebd7b082c60f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga34841c1401b13000e35b536cb54eb147"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga34841c1401b13000e35b536cb54eb147">orxMath_Mod</a> (orxFLOAT _fOp1, orxFLOAT _fOp2)</td></tr>
@@ -182,6 +191,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga81a33144236fc734774ce120004e2804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad02a74ddd644dc3294d4da2a047c5aa3"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gad02a74ddd644dc3294d4da2a047c5aa3">orxMath_Round</a> (orxFLOAT _fOp)</td></tr>
 <tr class="separator:gad02a74ddd644dc3294d4da2a047c5aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga25295e6d451f076a0eeb85cb2f6ec214"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga25295e6d451f076a0eeb85cb2f6ec214">orxMath_SetRandomSeeds</a> (const orxU32 _au32Seeds[4])</td></tr>
+<tr class="separator:ga25295e6d451f076a0eeb85cb2f6ec214"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf584502f6429224677bcf8d5ddb29104"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gaf584502f6429224677bcf8d5ddb29104">orxMath_Sin</a> (orxFLOAT _fOp)</td></tr>
 <tr class="separator:gaf584502f6429224677bcf8d5ddb29104"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62b8906f87f3de3e9af21a0b2e23f7b2"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga62b8906f87f3de3e9af21a0b2e23f7b2">orxMath_SmootherStep</a> (orxFLOAT _fMin, orxFLOAT _fMax, orxFLOAT _fValue)</td></tr>
@@ -347,7 +358,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>2 PI constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00282">282</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00292">292</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -362,7 +373,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Degree to radian conversion constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00286">286</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00296">296</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -377,7 +388,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Epsilon constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00280">280</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00290">290</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -392,7 +403,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>PI constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00283">283</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00293">293</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -407,7 +418,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>PI / 2 constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00284">284</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00294">294</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -422,7 +433,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>PI / 4 constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00285">285</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00295">295</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -437,7 +448,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Radian to degree conversion constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00287">287</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00297">297</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -452,7 +463,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sqrt(2) constant </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00279">279</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00289">289</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -467,7 +478,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Tiny epsilon </p>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00281">281</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00291">291</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -628,7 +639,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Absolute value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00554">554</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00564">564</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -662,7 +673,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Arccosine of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00368">368</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00378">378</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -696,7 +707,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Arcsine of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00392">392</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00402">402</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -741,7 +752,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Arctangent of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00417">417</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00427">427</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -775,7 +786,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Ceiled value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00483">483</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00493">493</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -809,7 +820,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Cosine of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00296">296</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00306">306</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -843,7 +854,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Floored value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00459">459</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00469">469</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -877,7 +888,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bits that are set in the value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00162">162</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00172">172</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -911,7 +922,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>If _u32Value is already a power of two, returns it, otherwise the next power of two </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00208">208</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00218">218</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1020,6 +1031,29 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gaeac6be239504eaa18fbf6e7790b2ad77"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxMath_GetRandomSeeds </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_au32Seeds</em>[4]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the current random seeds </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">_au32Seeds[4]</td><td>Current seeds </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="ga2486997fa74ede624d529480179c9c8b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1120,19 +1154,19 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of trailing zeros </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00176">176</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00186">186</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ga042dd7e93abc0120b673abdb4e3ed98c"></a>
+<a class="anchor" id="ga6c72f24ba256435c70dafea7e34b94e3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxMath_InitRandom </td>
           <td>(</td>
-          <td class="paramtype">orxS32&#160;</td>
-          <td class="paramname"><em>_s32Seed</em></td><td>)</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Seed</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1140,7 +1174,7 @@ Functions</h2></td></tr>
 <p>Inits the random seed </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_s32Seed</td><td>Value to use as seed for random number generation </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Seed</td><td>Value to use as seed for random number generation </td></tr>
   </table>
   </dd>
 </dl>
@@ -1177,7 +1211,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00193">193</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00203">203</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1222,7 +1256,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Modulo value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00523">523</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00533">533</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1267,7 +1301,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Powed value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00539">539</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00549">549</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1301,7 +1335,30 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Rounded value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00498">498</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00508">508</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga25295e6d451f076a0eeb85cb2f6ec214"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxMath_SetRandomSeeds </td>
+          <td>(</td>
+          <td class="paramtype">const orxU32&#160;</td>
+          <td class="paramname"><em>_au32Seeds</em>[4]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets (replaces) the current random seeds </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_au32Seeds[4]</td><td>Seeds to set </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1335,7 +1392,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Sine of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00320">320</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00330">330</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1387,7 +1444,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0.0 if _fValue &lt;= _fMin, 1.0 if _fValue &gt;= _fMax, smooth(er)ed value between 0.0 &amp; 1.0 otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00261">261</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00271">271</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1439,7 +1496,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0.0 if _fValue &lt;= _fMin, 1.0 if _fValue &gt;= _fMax, smoothed value between 0.0 &amp; 1.0 otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00240">240</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00250">250</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1473,7 +1530,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Square root of the given value </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00444">444</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00454">454</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>
@@ -1507,7 +1564,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Tangent of the given angle </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00344">344</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_math_8h_source.html#l00354">354</a> of file <a class="el" href="orx_math_8h_source.html">orxMath.h</a>.</p>
 
 </div>
 </div>

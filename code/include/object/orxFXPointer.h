@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,7 +51,7 @@
 
 /** Misc defines
  */
-#define orxFXPOINTER_KU32_FX_NUMBER             4
+#define orxFXPOINTER_KU32_FX_NUMBER             8
 
 
 /** Internal FXPointer structure */

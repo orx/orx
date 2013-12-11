@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,6 +34,15 @@
 
 #include "plugin/orxPluginCore.h"
 
+#include "core/orxConfig.h"
+#include "utils/orxString.h"
+
+#ifdef __orxMSVC__
+
+  #include "malloc.h"
+
+#endif /* __orxMSVC__ */
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -46,12 +55,139 @@ void orxFASTCALL orxPhysics_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_EVENT);
 
   return;
+}
+
+/** Gets collision flag literal name
+ * @param[in] _u32Flag      Concerned collision flag numerical value
+ * @return Flag's name
+ */
+const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(_u32Flag != 0);
+
+  /* Is a flag? */
+  if(orxMath_IsPowerOfTwo(_u32Flag) != orxFALSE)
+  {
+    orxU32 u32Index;
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Gets flag index */
+    u32Index = orxMath_GetTrailingZeroCount(_u32Flag);
+
+    /* Valid? */
+    if(u32Index < (orxU32)orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST))
+    {
+      /* Updates result */
+      zResult = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, u32Index);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: no flag has been defined with this value!", _u32Flag);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: value needs to be a power of two!", _u32Flag);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets collision flag numerical value
+ * @param[in] _zFlag        Concerned collision flag literal name
+ * @return Flag's value
+ */
+orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
+{
+  orxU32 u32Result = 0, u32Counter, i;
+
+  /* Checks */
+  orxASSERT(_zFlag != orxNULL);
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+  /* Gets flag list counter */
+  u32Counter = orxConfig_GetListCounter(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
+
+  {
+#ifdef __orxMSVC__
+
+    const orxSTRING *azFlagList = (const orxSTRING *)alloca((u32Counter + 1) * sizeof(orxSTRING *));
+
+#else /* __orxMSVC__ */
+
+    const orxSTRING azFlagList[u32Counter + 1];
+
+#endif /* __orxMSVC__ */
+
+    /* For all flags */
+    for(i = 0; i < u32Counter; i++)
+    {
+      /* Gets it */
+      azFlagList[i] = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, i);
+
+      /* Found? */
+      if(!orxString_ICompare(_zFlag, azFlagList[i]))
+      {
+        /* Updates result */
+        u32Result = 1 << i;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(u32Result == 0)
+    {
+      /* Is there room to add the new flag? */
+      if(u32Counter < 16)
+      {
+        /* Stores its name */
+        azFlagList[u32Counter] = _zFlag;
+
+        /* Updates flag list */
+        if(orxConfig_SetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, azFlagList, u32Counter + 1) != orxSTATUS_FAILURE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%d>.", _zFlag, 1 << u32Counter);
+
+          /* Updates result */
+          u32Result = 1 << u32Counter;
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't add collision flag <%s>: too many collision flags already defined!", _zFlag);
+      }
+    }
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return u32Result;
 }
 
 
@@ -67,23 +203,28 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetGravity, orxSTATUS, const orxVECTOR
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetGravity, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBody, void, orxPHYSICS_BODY *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_PART_DEF *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, void, orxPHYSICS_BODY_PART *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_JOINT_DEF *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBodyJoint, void, orxPHYSICS_BODY_JOINT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreatePart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_PART_DEF *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeletePart, void, orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateJoint, orxPHYSICS_BODY_JOINT *, orxPHYSICS_BODY *, orxPHYSICS_BODY *, const orxHANDLE, const orxBODY_JOINT_DEF *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteJoint, void, orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMotorSpeed, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorTorque, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetJointReactionForce, orxVECTOR *, const orxPHYSICS_BODY_JOINT *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetJointReactionTorque, orxFLOAT, const orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetAngularVelocity, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetCustomGravity, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetFixedRotation, orxSTATUS, orxPHYSICS_BODY *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeedAtWorldPosition, orxVECTOR *, const orxPHYSICS_BODY *, const orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetCustomGravity, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsFixedRotation, orxBOOL, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetMass, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetMassCenter, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetLinearDamping, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
@@ -113,20 +254,23 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_GRAVITY, orxPhysics_SetGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_GRAVITY, orxPhysics_GetGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY, orxPhysics_CreateBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY, orxPhysics_DeleteBody)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_PART, orxPhysics_CreateBodyPart)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_PART, orxPhysics_DeleteBodyPart)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_JOINT, orxPhysics_CreateBodyJoint)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY_JOINT, orxPhysics_DeleteBodyJoint)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_PART, orxPhysics_CreatePart)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_PART, orxPhysics_DeletePart)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_JOINT, orxPhysics_CreateJoint)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_JOINT, orxPhysics_DeleteJoint)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_POSITION, orxPhysics_SetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ROTATION, orxPhysics_SetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_SPEED, orxPhysics_SetSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ANGULAR_VELOCITY, orxPhysics_SetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_CUSTOM_GRAVITY, orxPhysics_SetCustomGravity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_FIXED_ROTATION, orxPhysics_SetFixedRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_POSITION, orxPhysics_GetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ROTATION, orxPhysics_GetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED, orxPhysics_GetSpeed)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED_AT_WORLD_POSITION, orxPhysics_GetSpeedAtWorldPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ANGULAR_VELOCITY, orxPhysics_GetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_CUSTOM_GRAVITY, orxPhysics_GetCustomGravity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_FIXED_ROTATION, orxPhysics_IsFixedRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_MASS, orxPhysics_GetMass)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_MASS_CENTER, orxPhysics_GetMassCenter)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_LINEAR_DAMPING, orxPhysics_SetLinearDamping)
@@ -145,6 +289,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_SOLID, orxPhysics_SetPartSol
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_MOTOR, orxPhysics_EnableMotor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MOTOR_SPEED, orxPhysics_SetJointMotorSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysics_SetJointMaxMotorTorque)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_FORCE, orxPhysics_GetJointReactionForce)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_TORQUE, orxPhysics_GetJointReactionTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, RAYCAST, orxPhysics_Raycast)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_SIMULATION, orxPhysics_EnableSimulation)
 
@@ -183,24 +329,24 @@ void orxFASTCALL orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBody)(_pstBody);
 }
 
-orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
+orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyPart)(_pstBody, _hUserData, _pstBodyPartDef);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreatePart)(_pstBody, _hUserData, _pstBodyPartDef);
 }
 
-void orxFASTCALL orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+void orxFASTCALL orxPhysics_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyPart)(_pstBodyPart);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeletePart)(_pstBodyPart);
 }
 
-orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
+orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_CreateJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyJoint)(_pstSrcBody, _pstDstBody, _hUserData, _pstBodyJointDef);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateJoint)(_pstSrcBody, _pstDstBody, _hUserData, _pstBodyJointDef);
 }
 
-void orxFASTCALL orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+void orxFASTCALL orxPhysics_DeleteJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyJoint)(_pstBodyJoint);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteJoint)(_pstBodyJoint);
 }
 
 orxSTATUS orxFASTCALL orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
@@ -228,6 +374,11 @@ orxSTATUS orxFASTCALL orxPhysics_SetCustomGravity(orxPHYSICS_BODY *_pstBody, con
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetCustomGravity)(_pstBody, _pvCustomGravity);
 }
 
+orxSTATUS orxFASTCALL orxPhysics_SetFixedRotation(orxPHYSICS_BODY *_pstBody, orxBOOL _bFixed)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetFixedRotation)(_pstBody, _bFixed);
+}
+
 orxVECTOR *orxFASTCALL orxPhysics_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPosition)(_pstBody, _pvPosition);
@@ -243,6 +394,11 @@ orxVECTOR *orxFASTCALL orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxV
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeed)(_pstBody, _pvSpeed);
 }
 
+orxVECTOR *orxFASTCALL orxPhysics_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeedAtWorldPosition)(_pstBody, _pvPosition, _pvSpeed);
+}
+
 orxFLOAT orxFASTCALL orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetAngularVelocity)(_pstBody);
@@ -251,6 +407,11 @@ orxFLOAT orxFASTCALL orxPhysics_GetAngularVelocity(const orxPHYSICS_BODY *_pstBo
 orxVECTOR *orxFASTCALL orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetCustomGravity)(_pstBody, _pvCustomGravity);
+}
+
+orxBOOL orxFASTCALL orxPhysics_IsFixedRotation(const orxPHYSICS_BODY *_pstBody)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_IsFixedRotation)(_pstBody);
 }
 
 orxFLOAT orxFASTCALL orxPhysics_GetMass(const orxPHYSICS_BODY *_pstBody)
@@ -341,6 +502,16 @@ void orxFASTCALL orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJo
 void orxFASTCALL orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMaxMotorTorque)(_pstBodyJoint, _fMaxTorque);
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetJointReactionForce)(_pstBodyJoint, _pvForce);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetJointReactionTorque)(_pstBodyJoint);
 }
 
 orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)

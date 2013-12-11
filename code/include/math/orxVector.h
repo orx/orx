@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -350,9 +350,6 @@ static orxINLINE orxVECTOR *                  orxVector_Div(orxVECTOR *_pvRes, c
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_pvOp2 != orxNULL);
-  orxASSERT(_pvOp2->fX != orxFLOAT_0);
-  orxASSERT(_pvOp2->fY != orxFLOAT_0);
-  orxASSERT(_pvOp2->fZ != orxFLOAT_0);
 
   /* Divs all */
   _pvRes->fX = _pvOp1->fX / _pvOp2->fX;

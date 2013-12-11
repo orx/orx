@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,6 +29,7 @@
  *
  */
 
+#define NO_WIN32_LEAN_AND_MEAN
 
 #include "core/orxSystem.h"
 
@@ -38,11 +39,7 @@
 
 #include <time.h>
 
-#ifdef __orxWINDOWS__
-
-#include <windows.h>
-
-#else /* __orxWINDOWS__ */
+#ifndef __orxWINDOWS__
 
 #if defined(__orxMAC__) || defined(__orxIOS__)
 
@@ -53,7 +50,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#endif /* __orxWINDOWS__ */
+#endif /* !__orxWINDOWS__ */
 
 
 /** Module flags
@@ -84,7 +81,7 @@ typedef struct __orxSYSTEM_STATIC_t
   orxDOUBLE dResolution;
 
   #else /* __orxMAC__ || __orxIOS__ */
-  
+
   orxBOOL bUseMonotonic;
 
   #endif /* __orxMAC__ || __orxIOS__ */
@@ -108,87 +105,6 @@ static orxSYSTEM_STATIC sstSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-static orxINLINE orxDOUBLE orxSystem_GetSystemTime()
-{
-  orxDOUBLE dResult;
-
-#ifdef __orxWINDOWS__
-
-  /* Use high performance timer? */
-  if(sstSystem.bUseHighPerformanceTimer != orxFALSE)
-  {
-    LARGE_INTEGER s64CurrentTime;
-
-    /* Gets current time */
-    QueryPerformanceCounter(&s64CurrentTime);
-
-    /* Updates result */
-    dResult = orx2D(s64CurrentTime.QuadPart) / sstSystem.dFrequency;
-  }
-  else
-  {
-    /* Updates result */
-    dResult = orx2D(GetTickCount()) * orx2D(0.001);
-  }
-  
-#else /* __orxWINDOWS__ */
-
-  #if defined(__orxMAC__) || defined(__orxIOS__)
-
-  dResult = orx2D(mach_absolute_time()) * sstSystem.dResolution;
-
-  #else /* __orxMAC__ || __orxIOS__ */
-
-    #ifdef CLOCK_MONOTONIC
-
-  /* Use monotonic clock? */
-  if(sstSystem.bUseMonotonic != orxFALSE)
-  {
-    struct timespec stCurrentTime;
-
-    /* Gets current time */
-    clock_gettime(CLOCK_MONOTONIC, &stCurrentTime);
-
-    /* Updates result */
-    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
-  }
-  else
-
-    #endif /* CLOCK_MONOTONIC */
-
-  {
-
-    #if !defined(__orxANDROID_NATIVE__) && !defined(__orxANDROID__)
-
-    struct timeval stCurrentTime;
-
-    /* Gets current time */
-    if(gettimeofday(&stCurrentTime, NULL) == 0)
-    {
-      /* Updates result */
-      dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_usec) * orx2D(0.000001));
-    }
-    else
-
-    #endif /* !__orxANDROID_NATIVE__ && !__orxANDROID__ */
-
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
-
-      /* Updates result */
-      dResult = orx2D(0.0);
-    }
-  }
-
-  #endif /* __orxMAC__ || __orxIOS__ */
-
-#endif /* __orxWINDOWS__ */
-
-  /* Done! */
-  return dResult;
-}
 
 
 /***************************************************************************
@@ -322,8 +238,8 @@ void orxFASTCALL orxSystem_Exit()
   return;
 }
 
-/** Gets App Elapsed time.
- * @return Returns the amount of seconds elapsed from the application start.
+/** Gets current time (elapsed from the beginning of the application, in seconds)
+ * @return Current time
  */
 orxDOUBLE orxFASTCALL orxSystem_GetTime()
 {
@@ -339,26 +255,110 @@ orxDOUBLE orxFASTCALL orxSystem_GetTime()
   return(dCurrentTime - sstSystem.dStartTime);
 }
 
-/** Gets real time
- * @return Returns the amount of seconds elapsed since reference time
+/** Gets real time (in seconds)
+ * @return Returns the amount of seconds elapsed since reference time (epoch)
  */
-orxS32 orxFASTCALL orxSystem_GetRealTime()
+orxU64 orxFASTCALL orxSystem_GetRealTime()
 {
   time_t  stTime;
-  orxS32  s32Result;
+  orxU64  u64Result;
 
   /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets time */
-  s32Result = (orxS32)time(&stTime);
+  u64Result = (orxU64)time(&stTime);
 
   /* Done! */
-  return s32Result;
+  return u64Result;
 }
 
-/** Delays the program for given number of seconds.
- * @param[in] _fSeconds Number of seconds to wait.
+/** Gets current internal system time (in seconds)
+ * @return Current internal system time
+ */
+orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
+{
+  orxDOUBLE dResult;
+
+#ifdef __orxWINDOWS__
+
+  /* Use high performance timer? */
+  if(sstSystem.bUseHighPerformanceTimer != orxFALSE)
+  {
+    LARGE_INTEGER s64CurrentTime;
+
+    /* Gets current time */
+    QueryPerformanceCounter(&s64CurrentTime);
+
+    /* Updates result */
+    dResult = orx2D(s64CurrentTime.QuadPart) / sstSystem.dFrequency;
+  }
+  else
+  {
+    /* Updates result */
+    dResult = orx2D(GetTickCount()) * orx2D(0.001);
+  }
+
+#else /* __orxWINDOWS__ */
+
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+
+  dResult = orx2D(mach_absolute_time()) * sstSystem.dResolution;
+
+  #else /* __orxMAC__ || __orxIOS__ */
+
+    #ifdef CLOCK_MONOTONIC
+
+  /* Use monotonic clock? */
+  if(sstSystem.bUseMonotonic != orxFALSE)
+  {
+    struct timespec stCurrentTime;
+
+    /* Gets current time */
+    clock_gettime(CLOCK_MONOTONIC, &stCurrentTime);
+
+    /* Updates result */
+    dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_nsec) * orx2D(0.000000001));
+  }
+  else
+
+    #endif /* CLOCK_MONOTONIC */
+
+  {
+
+    #if !defined(__orxANDROID__)
+
+    struct timeval stCurrentTime;
+
+    /* Gets current time */
+    if(gettimeofday(&stCurrentTime, NULL) == 0)
+    {
+      /* Updates result */
+      dResult = orx2D(stCurrentTime.tv_sec) + (orx2D(stCurrentTime.tv_usec) * orx2D(0.000001));
+    }
+    else
+
+    #endif /* !__orxANDROID__ */
+
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: can't get system time.");
+
+      /* Updates result */
+      dResult = orxDOUBLE_0;
+    }
+  }
+
+  #endif /* __orxMAC__ || __orxIOS__ */
+
+#endif /* __orxWINDOWS__ */
+
+  /* Done! */
+  return dResult;
+}
+
+/** Delay the program for given number of seconds
+ * @param[in] _fSeconds             Number of seconds to wait
  */
 void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 {

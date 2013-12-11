@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,6 +56,7 @@
 #include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "core/orxLocale.h"
+#include "core/orxResource.h"
 #include "core/orxSystem.h"
 
 #include "debug/orxDebug.h"

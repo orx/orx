@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -81,7 +81,7 @@ typedef struct __orxANIM_KEY_t
  */
 struct __orxANIM_t
 {
-  orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE          stStructure;        /**< Public structure, first structure member : 32 */
   const orxSTRING       zName;              /**< Anim name : 20 */
   orxU16                u16KeySize;         /**< Key size : 22 */
   orxU16                u16KeyCounter;      /**< Key counter : 24 */
@@ -346,6 +346,7 @@ void orxFASTCALL orxAnim_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_CONFIG);
@@ -644,7 +645,12 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
               fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
 
               /* Adds it */
-              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
+              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+              {
+                /* Updates graphic's owner */
+                orxStructure_SetOwner(pstGraphic, pstResult);
+              }
+              else
               {
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation.");
@@ -700,8 +706,6 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnim) == 0)
   {
-    /* Cleans members */
-
     /* 2D Animation? */
     if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
     {
@@ -717,6 +721,12 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
 
     /* Removes all events */
     orxAnim_RemoveAllEvents(_pstAnim);
+
+    /* Frees key array */
+    orxMemory_Free(_pstAnim->astKeyList);
+
+    /* Frees event array */
+    orxMemory_Free(_pstAnim->astEventList);
 
     /* Deletes structure */
     orxStructure_Delete(_pstAnim);
@@ -827,6 +837,9 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
       /* Is 2D data? */
       if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D))
       {
+        /* Removes its owner */
+        orxStructure_SetOwner(pstKey->pstData, orxNULL);
+
         /* Deletes it */
         orxGraphic_Delete(orxGRAPHIC(pstKey->pstData));
       }
@@ -901,7 +914,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
        pstEvent = &(_pstAnim->astEventList[u32Counter]);
 
        /* Stores key info */
-       pstEvent->zName       = orxString_Duplicate(_zEventName);
+       pstEvent->zName       = orxString_GetFromID(orxString_GetID(_zEventName));
        pstEvent->fTimeStamp  = _fTimeStamp;
        pstEvent->fValue      = _fValue;
 
@@ -962,9 +975,6 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastEvent(orxANIM *_pstAnim)
 
     /* Updates event counter */
     orxAnim_DecreaseEventCounter(_pstAnim);
-
-    /* Deletes event name */
-    orxString_Delete((orxSTRING)pstEvent->zName);
 
     /* Cleans the event info */
     orxMemory_Zero(pstEvent, sizeof(orxANIM_CUSTOM_EVENT));

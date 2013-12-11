@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxLocale
- * 
+ *
  * Localization module
  * Module that handles localized strings
  *
@@ -51,8 +51,8 @@
  */
 typedef enum __orxLOCALE_EVENT_t
 {
-  orxLOCALE_EVENT_SELECT_LANGUAGE = 0,                  /**< Event sent when selecting a language */
-  orxLOCALE_EVENT_SET_STRING,                           /**< Event sent when setting a string */
+  orxLOCALE_EVENT_SELECT_LANGUAGE = 0,                    /**< Event sent when selecting a language */
+  orxLOCALE_EVENT_SET_STRING,                             /**< Event sent when setting a string */
 
   orxLOCALE_EVENT_NUMBER,
 
@@ -64,84 +64,84 @@ typedef enum __orxLOCALE_EVENT_t
  */
 typedef struct __orxLOCALE_EVENT_PAYLOAD_t
 {
-  const orxSTRING zLanguage;                            /**< Current language : 4 */
-  const orxSTRING zStringKey;                           /**< String key : 8 */
-  const orxSTRING zStringValue;                         /**< String value : 12 */
+  const orxSTRING zLanguage;                              /**< Current language : 4 */
+  const orxSTRING zStringKey;                             /**< String key : 8 */
+  const orxSTRING zStringValue;                           /**< String value : 12 */
 
 } orxLOCALE_EVENT_PAYLOAD;
 
 
 /** Locale module setup
  */
-extern orxDLLAPI void orxFASTCALL       orxLocale_Setup();
+extern orxDLLAPI void orxFASTCALL                         orxLocale_Setup();
 
 /** Initializes the Locale Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxLocale_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_Init();
 
 /** Exits from the Locale Module
  */
-extern orxDLLAPI void orxFASTCALL       orxLocale_Exit();
+extern orxDLLAPI void orxFASTCALL                         orxLocale_Exit();
 
 
 /** Selects current working language
  * @param[in] _zLanguage        Language to select
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxLocale_SelectLanguage(const orxSTRING _zLanguage);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SelectLanguage(const orxSTRING _zLanguage);
 
 /** Gets current language
  * @return Current selected language
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxLocale_GetCurrentLanguage();
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetCurrentLanguage();
 
 /** Has given language? (if not correctly defined, false will be returned)
  * @param[in] _zLanguage        Concerned language
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxLocale_HasLanguage(const orxSTRING _zLanguage);
+extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasLanguage(const orxSTRING _zLanguage);
 
 /** Gets language counter
  * @return Number of languages defined
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxLocale_GetLanguageCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetLanguageCounter();
 
 /** Gets language at the given index
- * @param[in] _s32LanguageIndex Index of the desired language
+ * @param[in] _u32LanguageIndex Index of the desired language
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxS32 _s32LanguageIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetLanguage(orxU32 _u32LanguageIndex);
 
 
 /** Has string for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxLocale_HasString(const orxSTRING _zKey);
+extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasString(const orxSTRING _zKey);
 
 /** Reads a string in the current language for the given key
  * @param[in] _zKey             Key name
  * @return The value
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetString(const orxSTRING _zKey);
 
 /** Writes a string in the current language for the given key
  * @param[in] _zKey             Key name
  * @param[in] _zValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
 
 /** Gets key counter for the current language
  * @return Key counter the current language if valid, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxLocale_GetKeyCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCounter();
 
 /** Gets key for the current language at the given index
- * @param[in] _s32KeyIndex      Index of the desired key
+ * @param[in] _u32KeyIndex      Index of the desired key
  * @return orxSTRING if exist, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxLocale_GetKey(orxS32 _s32KeyIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxU32 _u32KeyIndex);
 
 #endif /*__orxLOCALE_H_*/
 

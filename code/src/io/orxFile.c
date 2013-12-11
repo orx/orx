@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,24 +51,10 @@
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxANDROID_NATIVE__
-
-    #include <android/native_activity.h>
-
-    ANativeActivity* orxAndroid_GetNativeActivity();
-    JNIEnv* orxAndroid_GetCurrentJNIEnv();
-
-    static ANativeActivity     *pstApp;
-    static JNIEnv              *poJEnv;
-
-  #endif /* __orxANDROID_NATIVE__ */
-
   #ifdef __orxANDROID__
 
-    #include <nv_file/nv_file.h>
     #include <jni.h>
-
-    extern jobject              oActivity;
+    #include "main/orxAndroid.h"
 
   #endif /* __orxANDROID__ */
 
@@ -91,45 +77,16 @@
 
 /** File structure
  */
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-typedef enum __orxFILE_TYPE_t
-{
-  orxFILE_TYPE_APK = 0,
-  orxFILE_TYPE_STD,
-
-  orxFILE_TYPE_NUMBER,
-
-  orxFILE_TYPE_NONE = orxENUM_NONE
-
-} orxFILE_TYPE;
-
-struct __orxFILE_t
-{
-  orxFILE_TYPE  eType;
-  void         *pHandle;
-};
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
 struct __orxFILE_t
 {
   FILE stFile;
 };
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 /** Static structure
  */
 typedef struct __orxFILE_STATIC_t
 {
   orxU32 u32Flags;
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-  orxSTRING zInternalDataPath;
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
 
 } orxFILE_STATIC;
 
@@ -156,10 +113,10 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Stores info */
-  _pstFileInfo->u32Size       = _pstData->size;
-  _pstFileInfo->u32TimeStamp  = (orxU32)_pstData->time_write;
-  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, 255);
-  _pstFileInfo->zName[255]    = orxCHAR_NULL;
+  _pstFileInfo->s64Size       = (orxS64)_pstData->size;
+  _pstFileInfo->s64TimeStamp  = (orxS64)_pstData->time_write;
+  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
+  _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
   _pstFileInfo->u32Flags      = (_pstData->attrib == 0)
                                 ? orxFILE_KU32_FLAG_INFO_NORMAL
@@ -185,8 +142,8 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   zName = (orxSTRING)_pstData->d_name;
 
   /* Stores info */
-  orxString_NCopy(_pstFileInfo->zName, zName, 255);
-  _pstFileInfo->zName[255] = orxCHAR_NULL;
+  orxString_NCopy(_pstFileInfo->zName, zName, sizeof(_pstFileInfo->zName) - 1);
+  _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
 
   /* Gets file info */
@@ -195,8 +152,11 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   _pstFileInfo->u32Flags = 0;
 
   /* Read only file ? */
-  /* TODO : Update the way that read only is computed. It depends of the reader user/group */
-  if((stStat.st_mode & S_IROTH) && !(stStat.st_mode & S_IWOTH))
+  if(access(_pstFileInfo->zFullName, R_OK | W_OK) == 0)
+  {
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_NORMAL;
+  }
+  else if(access(_pstFileInfo->zFullName, R_OK) == 0)
   {
     _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_RDONLY;
   }
@@ -214,14 +174,14 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   }
 
   /* Normal file ? */
-  if(_pstFileInfo->u32Flags == 0)
+  if(_pstFileInfo->u32Flags != orxFILE_KU32_FLAG_INFO_NORMAL)
   {
-    _pstFileInfo->u32Flags = orxFILE_KU32_FLAG_INFO_NORMAL;
+    _pstFileInfo->u32Flags &= ~orxFILE_KU32_FLAG_INFO_NORMAL;
   }
 
-  /* Sets time and last file access time */
-  _pstFileInfo->u32Size       = stStat.st_size;
-  _pstFileInfo->u32TimeStamp  = stStat.st_mtime;
+  /* Sets size and last file access time */
+  _pstFileInfo->s64Size       = (orxS64)stStat.st_size;
+  _pstFileInfo->s64TimeStamp  = (orxS64)stStat.st_mtime;
 
   return;
 }
@@ -237,6 +197,7 @@ void orxFASTCALL orxFile_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_STRING);
 
   return;
 }
@@ -253,78 +214,14 @@ orxSTATUS orxFASTCALL orxFile_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
 
-#ifdef __orxANDROID_NATIVE__
-
-    // TODO Retrieves the zExternalDataPath from Java
-    // sstFile.zExternalDataPath = orxNULL;
-
-    pstApp = orxAndroid_GetNativeActivity();
-    poJEnv = orxAndroid_GetCurrentJNIEnv();
-
-    /* Retrieves the zInternalDataPath from Java */
-    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, pstApp->clazz);
-    orxASSERT(objClass != orxNULL);
-    jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
-    orxASSERT(getFilesDir != orxNULL);
-    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, pstApp->clazz, getFilesDir);
-    orxASSERT(fileDir != orxNULL);
-    jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
-    orxASSERT(fileClass != orxNULL);
-    jmethodID getAbsolutePath = (*poJEnv)->GetMethodID(poJEnv, fileClass, "getAbsolutePath", "()Ljava/lang/String;");
-    orxASSERT(getAbsolutePath != orxNULL);
-    jstring absolutePath = (*poJEnv)->CallObjectMethod(poJEnv, fileDir, getAbsolutePath);
-    orxASSERT(absolutePath != orxNULL);
-    const char *zInternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, absolutePath, 0);
-    orxASSERT(zInternalDataPath != orxNULL);
-
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "InternalDataPath is %s", zInternalDataPath);
-    sstFile.zInternalDataPath = orxString_Duplicate(zInternalDataPath);
-
-    /* Releases Java String */
-    (*poJEnv)->ReleaseStringUTFChars(poJEnv, absolutePath, zInternalDataPath);
-
-    if(chdir((const char*)sstFile.zInternalDataPath) != 0)
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
-    }
-
-#endif /* __orxANDROID_NATIVE__ */
-
 #ifdef __orxANDROID__
 
-    // TODO Retrieves the zExternalDataPath from Java
-    // sstFile.zExternalDataPath = orxNULL;
-
-    /* Retrieves the zInternalDataPath from Java */
-    JNIEnv *poJEnv = (JNIEnv*) NVThreadGetCurrentJNIEnv();
-
-    jclass objClass = (*poJEnv)->GetObjectClass(poJEnv, oActivity);
-    orxASSERT(objClass != orxNULL);
-    jmethodID getFilesDir = (*poJEnv)->GetMethodID(poJEnv, objClass, "getFilesDir", "()Ljava/io/File;");
-    orxASSERT(getFilesDir != orxNULL);
-    jobject fileDir = (*poJEnv)->CallObjectMethod(poJEnv, oActivity, getFilesDir);
-    orxASSERT(fileDir != orxNULL);
-    jclass fileClass = (*poJEnv)->GetObjectClass(poJEnv, fileDir);
-    orxASSERT(fileClass != orxNULL);
-    jmethodID getAbsolutePath = (*poJEnv)->GetMethodID(poJEnv, fileClass, "getAbsolutePath", "()Ljava/lang/String;");
-    orxASSERT(getAbsolutePath != orxNULL);
-    jstring absolutePath = (*poJEnv)->CallObjectMethod(poJEnv, fileDir, getAbsolutePath);
-    orxASSERT(absolutePath != orxNULL);
-    const char *zInternalDataPath = (*poJEnv)->GetStringUTFChars(poJEnv, absolutePath, 0);
-    orxASSERT(zInternalDataPath != orxNULL);
-
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "InternalDataPath is %s", zInternalDataPath);
-    sstFile.zInternalDataPath = orxString_Duplicate(zInternalDataPath);
-
-    /* Releases Java String */
-    (*poJEnv)->ReleaseStringUTFChars(poJEnv, absolutePath, zInternalDataPath);
-
-    if(chdir((const char*)sstFile.zInternalDataPath) != 0)
+    if(chdir(orxAndroid_GetInternalStoragePath()) != 0)
     {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", sstFile.zInternalDataPath);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", orxAndroid_GetInternalStoragePath());
     }
 
-#endif /* __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -341,13 +238,6 @@ void orxFASTCALL orxFile_Exit()
   /* Was initialized? */
   if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
   {
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    /* free zInternalDataPath memory */
-    orxString_Delete(sstFile.zInternalDataPath);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
   }
@@ -367,7 +257,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-	return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+  return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
@@ -416,13 +306,13 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
       orxU32 u32Index;
 
       /* Updates path & full name base */
-      u32Index = orxMIN(s32LastSeparator + 1, 1023);
+      u32Index = orxMIN(s32LastSeparator + 1, sizeof(_pstFileInfo->zPath) - 1);
       orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
       _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
       orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
       /* Stores pattern */
-      u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, 255);
+      u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, sizeof(_pstFileInfo->zPattern) - 1);
       orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
       _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
     }
@@ -435,7 +325,7 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
       _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Index = orxMIN(orxString_GetLength(_zSearchPattern), 255);
+      u32Index = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
       orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
       _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
     }
@@ -479,13 +369,13 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
     orxU32 u32Index;
 
     /* Updates path & full name base */
-    u32Index = orxMIN(s32LastSeparator + 1, 1023);
+    u32Index = orxMIN((orxU32)(s32LastSeparator + 1), sizeof(_pstFileInfo->zPath) - 1);
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
     _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
     orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
     /* Stores pattern */
-    u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, 255);
+    u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, sizeof(_pstFileInfo->zPattern) - 1);
     orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
     _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
   }
@@ -494,7 +384,7 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
     orxU32 u32Index;
 
     /* Stores pattern */
-    u32Index = orxMIN(orxString_GetLength(_zSearchPattern), 255);
+    u32Index = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
     orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
     _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
 
@@ -563,7 +453,7 @@ orxBOOL orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
   /* Updates full name */
   orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
-  /* Read directory */
+  /* Reads directory */
 
   /* loop on entries until the pattern match */
   while((!bResult)
@@ -681,10 +571,10 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
    *** AVAILABLE CONVERSIONS :
    * READ | WRITE | APPEND | result
    *  X   |       |        | r
-   *      |  X    |        | w
+   *      |  X    |        | w+
    *      |       |   X    | a
    *      |  X    |   X    | a
-   *  X   |  X    |        | w+
+   *  X   |  X    |        | r+
    *  X   |       |   X    | a+
    *  X   |  X    |   X    | a+
    */
@@ -726,12 +616,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "wb");
+      orxString_Print(acMode, "wb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "w");
+      orxString_Print(acMode, "w+");
     }
   }
   /* Append only ? */
@@ -756,12 +646,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "wb+");
+      orxString_Print(acMode, "rb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "w+");
+      orxString_Print(acMode, "r+");
     }
   }
   else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))
@@ -780,77 +670,21 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     }
   }
 
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-  orxFILE *pstFile = NULL;
-
-  /* try first to open the file in Internal Data Path */
-  FILE *pstStdFile = fopen(_zFileName, acMode);
-  if(pstStdFile != NULL)
-  {
-    pstFile = (orxFILE *)malloc(sizeof(orxFILE));
-    pstFile->eType = orxFILE_TYPE_STD;
-    pstFile->pHandle = pstStdFile;
-    return pstFile;
-  }
-
-  /* file not found in zInternalDataPath try in asset */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "file %s not found in zInternalDataPath!", _zFileName);
-
-  if(_u32OpenFlags & orxFILE_KU32_FLAG_OPEN_WRITE)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "orxFILE_KU32_FLAG_OPEN_WRITE not supported for assets!");
-    return orxNULL;
-  }
-  if(_u32OpenFlags & orxFILE_KU32_FLAG_OPEN_APPEND)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "orxFILE_KU32_FLAG_OPEN_APPEND not supported for assets!");
-    return orxNULL;
-  }
-
-  #ifdef __orxANDROID_NATIVE__
-
-  AAsset *poAsset = AAssetManager_open(pstApp->assetManager, _zFileName, AASSET_MODE_RANDOM);
-
-  #else /* __orxANDROID_NATIVE__ */
-
-  NvFile *poAsset = NvFOpen(_zFileName);
-
-  #endif /* __orxANDROID_NATIVE__ */
-
-  if(poAsset != NULL)
-  {
-    pstFile = (orxFILE *)malloc(sizeof(orxFILE));
-    pstFile->eType = orxFILE_TYPE_APK;
-    pstFile->pHandle = poAsset;
-    return pstFile;
-  }
-  else
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "file %s not found!", _zFileName);
-    return orxNULL;
-  }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
   /* Open the file */
   return(orxFILE *)fopen(_zFileName, acMode);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
 }
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
-  orxU32 u32Ret = 0;
+  orxS64 s64Ret = 0;
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -858,49 +692,24 @@ orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType == orxFILE_TYPE_APK)
-    {
-      #ifdef __orxANDROID_NATIVE__
-
-      u32Ret = (orxU32)AAsset_read((AAsset *)_pstFile->pHandle, _pReadData, _u32ElemSize * _u32NbElem);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      u32Ret = (orxU32)NvFRead(_pReadData, _u32ElemSize, _u32NbElem, (NvFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
-    }
-    else
-    {
-      u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE *)_pstFile->pHandle);
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
-    u32Ret = (orxU32)fread(_pReadData, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
+    s64Ret = (orxS64)fread(_pReadData, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
-  return u32Ret;
+  return s64Ret;
 }
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
- * @param[in] _u32ElemSize         Size of 1 element
- * @param[in] _u32NbElem           Number of elements
+ * @param[in] _s64ElemSize         Size of 1 element
+ * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
-  orxU32 u32Ret = 0;
+  orxS64 s64Ret = 0;
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -911,37 +720,22 @@ orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU3
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType != orxFILE_TYPE_APK)
-    {
-      u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE *)_pstFile->pHandle);
-    }
-    else
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "read only file!");
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
-    u32Ret = (orxU32)fwrite(_pDataToWrite, (size_t)_u32ElemSize, (size_t)_u32NbElem, (FILE *)_pstFile);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
+    s64Ret = (orxS64)fwrite(_pDataToWrite, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
-  return u32Ret;
+  return s64Ret;
 }
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _s64Position          Position (from start) where to set the indicator
+ * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
+ * @return Absolute cursor positionif succesful, -1 otherwise
  */
-orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
+orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_OFFSET_WHENCE _eWhence)
 {
-  orxSTATUS eResult;
+  orxS64 s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -949,51 +743,29 @@ orxSTATUS orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS32 _s32Position)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
+    fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
+
     /* Updates result */
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType == orxFILE_TYPE_APK)
-    {
-      #ifdef __orxANDROID_NATIVE__
-
-      eResult =  (AAsset_seek((AAsset *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      eResult = (NvFSeek((NvFile*)_pstFile->pHandle, _s32Position,  SEEK_SET) == 0 ) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-      #endif /* __orxANDROID_NATIVE__ */
-    }
-    else
-    {
-      eResult = (fseek((FILE *)_pstFile->pHandle, _s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
-    eResult = (fseek((FILE *)_pstFile, (size_t)_s32Position, SEEK_SET) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
+    s64Result = orxFile_Tell(_pstFile);
 
   }
   else
   {
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    s64Result = -1;
   }
 
   /* Done! */
-  return eResult;
+  return s64Result;
 }
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
  * @return Returns the current position of the file indicator, -1 if invalid
  */
-orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
 {
-  orxS32 s32Result;
+  orxS64 s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -1002,51 +774,26 @@ orxS32 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
     /* Updates result */
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType == orxFILE_TYPE_APK)
-    {
-      #ifdef __orxANDROID_NATIVE__
-
-      s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle) - AAsset_getRemainingLength((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      s32Result = NvFTell((NvFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
-    }
-    else
-    {
-      s32Result = ftell((FILE *)_pstFile->pHandle);
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
-    s32Result = ftell((FILE *)_pstFile);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
+    s64Result = ftell((FILE *)_pstFile);
   }
   else
   {
     /* Updates result */
-    s32Result = -1;
+    s64Result = -1;
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
 }
 
 /** Retrieves a file's size
  * @param[in] _pstFile              Concerned file
  * @return Returns the length of the file, <= 0 if invalid
  */
-orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 {
   struct stat stStat;
-  orxS32      s32Result;
+  orxS64      s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -1054,29 +801,6 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType == orxFILE_TYPE_APK)
-    {
-      #ifdef __orxANDROID_NATIVE__
-
-      s32Result = AAsset_getLength((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      s32Result = NvFSize((NvFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
-    }
-    else
-    {
-      fstat(fileno((FILE *)_pstFile->pHandle), &stStat);
-      s32Result = stStat.st_size;
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
 #ifdef __orxMSVC__
 
     /* Gets file stats */
@@ -1090,19 +814,56 @@ orxS32 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 #endif /* __orxMSVC__ */
 
     /* Updates result */
-    s32Result = stStat.st_size;
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
+    s64Result = (orxS64)stStat.st_size;
   }
   else
   {
     /* Updates result */
-    s32Result = 0;
+    s64Result = 0;
   }
 
   /* Done! */
-  return s32Result;
+  return s64Result;
+}
+
+/** Retrieves a file's time of last modification
+ * @param[in] _pstFile              Concerned file
+ * @return Returns the time of the last modification, in seconds, since epoch
+ */
+orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
+{
+  struct stat stStat;
+  orxS64      s64Result;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstFile != orxNULL)
+  {
+#ifdef __orxMSVC__
+
+    /* Gets file stats */
+    fstat(((FILE *)_pstFile)->_file, &stStat);
+
+#else /* __orxMSVC__ */
+
+    /* Gets file stats */
+    fstat(fileno((FILE *)_pstFile), &stStat);
+
+#endif /* __orxMSVC__ */
+
+    /* Updates result */
+    s64Result = (orxS64)stStat.st_mtime;
+  }
+  else
+  {
+    /* Updates result */
+    s64Result = 0;
+  }
+
+  /* Done! */
+  return s64Result;
 }
 
 /** Prints a formatted string to a file
@@ -1121,34 +882,12 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...)
   /* Valid input? */
   if(_pstFile != orxNULL)
   {
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType != orxFILE_TYPE_APK)
-    {
-      va_list stArgs;
-
-      /* Gets variable arguments & print the string */
-      va_start(stArgs, _zString);
-      s32Result = vfprintf((FILE *)_pstFile->pHandle, _zString, stArgs);
-      va_end(stArgs);
-    }
-    else
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "read only file!");
-    }
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
     va_list stArgs;
 
     /* Gets variable arguments & print the string */
     va_start(stArgs, _zString);
     s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
     va_end(stArgs);
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
   }
 
   /* Done! */
@@ -1173,46 +912,12 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
   /* valid ? */
   if(_pstFile != orxNULL)
   {
-
-#if defined(__orxANDROID_NATIVE__) || defined(__orxANDROID__)
-
-    if(_pstFile->eType == orxFILE_TYPE_APK)
-    {
-      /* Close file pointer */
-      #ifdef __orxANDROID_NATIVE__
-
-      AAsset_close((AAsset *)_pstFile->pHandle);
-
-      #else /* __orxANDROID_NATIVE__ */
-
-      NvFClose((NvFile*)_pstFile->pHandle);
-
-      #endif /* __orxANDROID_NATIVE__ */
-
-      eRet = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Close file pointer */
-      if(fclose((FILE *)_pstFile->pHandle) == 0)
-      {
-        /* Success ! */
-        eRet = orxSTATUS_SUCCESS;
-      }
-    }
-    free(_pstFile);
-
-#else /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
     /* Close file pointer */
     if(fclose((FILE *)_pstFile) == 0)
     {
       /* Success ! */
       eRet = orxSTATUS_SUCCESS;
     }
-
-#endif /* __orxANDROID_NATIVE__ || __orxANDROID__ */
-
   }
 
   /* return success status */

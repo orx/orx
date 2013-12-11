@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -126,15 +133,42 @@ $(document).ready(function(){initNavTree('functions_0x70.html','');});
 <div class="textblock">Here is a list of all struct and union fields with links to the structures/unions they belong to:</div>
 
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>pfnClose
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071">orxRESOURCE_TYPE_INFO</a>
+</li>
 <li>pfnDefaultFunction
 : <a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a59c02b7101fa52392319ac8946079494">orxPLUGIN_CORE_FUNCTION</a>
 </li>
 <li>pfnFunction
-: <a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a161ea38cabc71ee957856e99e845526b">orxPLUGIN_CORE_FUNCTION</a>
-, <a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#aac0ab8ecb81273d2a43ebf180b11ee15">orxPLUGIN_USER_FUNCTION_INFO</a>
+: <a class="el" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#aac0ab8ecb81273d2a43ebf180b11ee15">orxPLUGIN_USER_FUNCTION_INFO</a>
+, <a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a161ea38cabc71ee957856e99e845526b">orxPLUGIN_CORE_FUNCTION</a>
+</li>
+<li>pfnGetSize
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae2b0d0bbbfbb0772338857d5be454a11">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnGetTime
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a6b43de5bfa2eb4389e4505e40dedc0dc">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnLocate
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a826168d1d30b8d34285ad1c16c35e2b4">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnOpen
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac86a5c3beb69681f5ae1d286a31a9695">orxRESOURCE_TYPE_INFO</a>
 </li>
 <li>pfnParser
 : <a class="el" href="structorx_p_a_r_a_m.html#aff9e775c9cc9f7387e62fb09fc4b3add">orxPARAM</a>
+</li>
+<li>pfnRead
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a124c1581a96127e9ec4f90065cc97a4a">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnSeek
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac1c9fb9344200a727f50c5ac3365eeba">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnTell
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae5b87aec335d24b4314377aa79d3d9b0">orxRESOURCE_TYPE_INFO</a>
+</li>
+<li>pfnWrite
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a7cfd554c9170f173cea714f304b254a3">orxRESOURCE_TYPE_INFO</a>
 </li>
 <li>pstAnim
 : <a class="el" href="structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ab9257a59b2cb5e9100e7cd0183128288">orxANIM_EVENT_PAYLOAD</a>
@@ -172,12 +206,6 @@ $(document).ready(function(){initNavTree('functions_0x70.html','');});
 <li>pstPrevious
 : <a class="el" href="structorx_l_i_n_k_l_i_s_t___n_o_d_e.html#a78532d6c5e868b20abc649b55e130f05">orxLINKLIST_NODE</a>
 </li>
-<li>pstRenderBitmap
-: <a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a09bc8e5c015fc924439c34d9bf1f9f9a">orxRENDER_EVENT_OBJECT_PAYLOAD</a>
-</li>
-<li>pstRenderFrame
-: <a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a9581e959503204d4ce5dde0ed9c05783">orxRENDER_EVENT_OBJECT_PAYLOAD</a>
-</li>
 <li>pstRoot
 : <a class="el" href="structorx_t_r_e_e.html#ac8eb6aef655adaecc1a09e4d697f8f50">orxTREE</a>
 </li>
@@ -193,8 +221,14 @@ $(document).ready(function(){initNavTree('functions_0x70.html','');});
 <li>pstTimeLine
 : <a class="el" href="structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a662ae17a1541e6c892fe9561294d9156">orxTIMELINE_EVENT_PAYLOAD</a>
 </li>
+<li>pstTransform
+: <a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html#a51da2e6bb53c5c6d4e299b931951fba9">orxRENDER_EVENT_OBJECT_PAYLOAD</a>
+</li>
 <li>pstTree
 : <a class="el" href="structorx_t_r_e_e___n_o_d_e.html#a233f841c3a069f150739d1a8ae25d990">orxTREE_NODE</a>
+</li>
+<li>pstTypeInfo
+: <a class="el" href="structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a38a4889cbe0abe36904f0552802f442a">orxRESOURCE_EVENT_PAYLOAD</a>
 </li>
 <li>pstValue
 : <a class="el" href="structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#adcccd8c1da60b3b7692de23cd44932f5">orxSHADER_EVENT_PAYLOAD</a>

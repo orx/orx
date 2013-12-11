@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -65,7 +65,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove, bButtonPressed;
+  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor, bUpdateCursor;
   orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
@@ -133,6 +133,9 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
   /* Registers mouse wheel callback */
   glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
 
+  /* Asks for cursor update */
+  sstMouse.bUpdateCursor = orxTRUE;
+
   /* Done! */
   return eResult;
 }
@@ -143,6 +146,23 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxMouse_Update");
+
+  /* Should update cursor? */
+  if(sstMouse.bUpdateCursor != orxFALSE)
+  {
+    /* Restores cursor status */
+    if(sstMouse.bShowCursor != orxFALSE)
+    {
+      glfwEnable(GLFW_MOUSE_CURSOR);
+    }
+    else
+    {
+      glfwDisable(GLFW_MOUSE_CURSOR);
+    }
+
+    /* Updates status */
+    sstMouse.bUpdateCursor = orxFALSE;
+  }
 
   /* Is left button pressed? */
   if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
@@ -250,6 +270,9 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
+  /* Stores status */
+  sstMouse.bShowCursor = _bShow;
+
   /* Show cursor? */
   if(_bShow != orxFALSE)
   {
@@ -286,7 +309,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       if(pstClock != orxNULL)
       {
         /* Registers update function */
-        eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_HIGHEST);
+        eResult = orxClock_Register(pstClock, orxMouse_GLFW_Update, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_HIGHER);
 
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)

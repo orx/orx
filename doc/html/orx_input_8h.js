@@ -1,6 +1,7 @@
 var orx_input_8h =
 [
     [ "orxINPUT_KU32_BINDING_NUMBER", "orx_input_8h.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
+    [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "orx_input_8h.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "orx_input_8h.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
       [ "orxINPUT_EVENT_ON", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809", null ],
       [ "orxINPUT_EVENT_OFF", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00", null ],
@@ -19,6 +20,7 @@ var orx_input_8h =
       [ "orxINPUT_TYPE_NONE", "orx_input_8h.html#gga13d8a7334d0c18530536658991628659ab866e5f4e6df8eb07878919669d8a3d8", null ]
     ] ],
     [ "orxInput_Bind", "orx_input_8h.html#ga6445ff03f53efd756258070b52f8eea9", null ],
+    [ "orxInput_EnableSet", "orx_input_8h.html#ga8b0c6c19d0753b894b6d0add816516bc", null ],
     [ "orxInput_Exit", "orx_input_8h.html#ga494bcae3fb2c30b26d44069ce7a844a1", null ],
     [ "orxInput_GetActiveBinding", "orx_input_8h.html#gaf6ad5f021a20889b303ca270a9e3d8a2", null ],
     [ "orxInput_GetBinding", "orx_input_8h.html#gaba4b01e74bf2c456659a815cf67281c9", null ],
@@ -33,6 +35,7 @@ var orx_input_8h =
     [ "orxInput_Init", "orx_input_8h.html#ga6ccb0b601cbaa9dad16033ff7f242555", null ],
     [ "orxInput_IsActive", "orx_input_8h.html#ga4ee461925448ad4a31a3e82749bd0d92", null ],
     [ "orxInput_IsInCombineMode", "orx_input_8h.html#ga802173143cf6500c21cd543515cbecad", null ],
+    [ "orxInput_IsSetEnabled", "orx_input_8h.html#ga353743b746e3bece0070e95850a0cbe6", null ],
     [ "orxInput_Load", "orx_input_8h.html#gad85a555d5e7ee7bd35815a6a52baefbb", null ],
     [ "orxInput_ResetValue", "orx_input_8h.html#ga2a34aa6090226956398b7b1753760f71", null ],
     [ "orxInput_Save", "orx_input_8h.html#gacb452866d26f0e8845775a8fe7b414d0", null ],

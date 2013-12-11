@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -115,12 +122,12 @@ $(document).ready(function(){initNavTree('structorx_f_i_l_e___i_n_f_o.html','');
 Data Fields</h2></td></tr>
 <tr class="memitem:ae5bfe98651850cc6c7dc02e5271f083f"><td class="memItemLeft" align="right" valign="top">orxHANDLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#ae5bfe98651850cc6c7dc02e5271f083f">hInternal</a></td></tr>
 <tr class="separator:ae5bfe98651850cc6c7dc02e5271f083f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b146b47d476608ee798cd126ffd62a4"><td class="memItemLeft" align="right" valign="top">orxS64&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#a8b146b47d476608ee798cd126ffd62a4">s64Size</a></td></tr>
+<tr class="separator:a8b146b47d476608ee798cd126ffd62a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade13600f1c4d82dff5ea2a9b25cb786b"><td class="memItemLeft" align="right" valign="top">orxS64&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b">s64TimeStamp</a></td></tr>
+<tr class="separator:ade13600f1c4d82dff5ea2a9b25cb786b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2051c84e777f93482a316b7d2cf1d964"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964">u32Flags</a></td></tr>
 <tr class="separator:a2051c84e777f93482a316b7d2cf1d964"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a201c42c11c9eb4b9b6863b96d77caa57"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#a201c42c11c9eb4b9b6863b96d77caa57">u32Size</a></td></tr>
-<tr class="separator:a201c42c11c9eb4b9b6863b96d77caa57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68b7054ff31b0c16337370fcc41976fd"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#a68b7054ff31b0c16337370fcc41976fd">u32TimeStamp</a></td></tr>
-<tr class="separator:a68b7054ff31b0c16337370fcc41976fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57d4f6f0b89259e57065481e0458e717"><td class="memItemLeft" align="right" valign="top">orxCHAR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#a57d4f6f0b89259e57065481e0458e717">zFullName</a> [1280]</td></tr>
 <tr class="separator:a57d4f6f0b89259e57065481e0458e717"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6d272aa5102c9ad888cc679c43af7e4"><td class="memItemLeft" align="right" valign="top">orxCHAR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_i_l_e___i_n_f_o.html#ae6d272aa5102c9ad888cc679c43af7e4">zName</a> [256]</td></tr>
@@ -150,6 +157,36 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a8b146b47d476608ee798cd126ffd62a4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxS64 orxFILE_INFO::s64Size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>File's size (in bytes) </p>
+
+<p>Definition at line <a class="el" href="orx_file_8h_source.html#l00063">63</a> of file <a class="el" href="orx_file_8h_source.html">orxFile.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ade13600f1c4d82dff5ea2a9b25cb786b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxS64 orxFILE_INFO::s64TimeStamp</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Timestamp of the last modification </p>
+
+<p>Definition at line <a class="el" href="orx_file_8h_source.html#l00064">64</a> of file <a class="el" href="orx_file_8h_source.html">orxFile.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a2051c84e777f93482a316b7d2cf1d964"></a>
 <div class="memitem">
 <div class="memproto">
@@ -161,37 +198,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>File attributes (see list of availables flags) </p>
 
-<p>Definition at line <a class="el" href="orx_file_8h_source.html#l00063">63</a> of file <a class="el" href="orx_file_8h_source.html">orxFile.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a201c42c11c9eb4b9b6863b96d77caa57"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxU32 orxFILE_INFO::u32Size</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>File's size (in bytes) </p>
-
 <p>Definition at line <a class="el" href="orx_file_8h_source.html#l00065">65</a> of file <a class="el" href="orx_file_8h_source.html">orxFile.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a68b7054ff31b0c16337370fcc41976fd"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxU32 orxFILE_INFO::u32TimeStamp</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Timestamp of the last modification </p>
-
-<p>Definition at line <a class="el" href="orx_file_8h_source.html#l00064">64</a> of file <a class="el" href="orx_file_8h_source.html">orxFile.h</a>.</p>
 
 </div>
 </div>

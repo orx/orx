@@ -1,5 +1,16 @@
 var group__orx_console =
 [
+    [ "orxCONSOLE_KZ_INPUT_AUTOCOMPLETE", "group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63", null ],
+    [ "orxCONSOLE_KZ_INPUT_DELETE", "group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023", null ],
+    [ "orxCONSOLE_KZ_INPUT_END", "group__orx_console.html#ga7cf90b1814c4ab1ce2b31f56325c9b79", null ],
+    [ "orxCONSOLE_KZ_INPUT_ENTER", "group__orx_console.html#gaa7fe6035175d80d28aaf5bb02e0afbe1", null ],
+    [ "orxCONSOLE_KZ_INPUT_LEFT", "group__orx_console.html#ga2613d6eeaf63099c8447ad92ecdccf1e", null ],
+    [ "orxCONSOLE_KZ_INPUT_NEXT", "group__orx_console.html#ga20c76b2fc619147d29290b8523cc0e82", null ],
+    [ "orxCONSOLE_KZ_INPUT_PREVIOUS", "group__orx_console.html#gad93ec6077faace2cbb856e3a090ee290", null ],
+    [ "orxCONSOLE_KZ_INPUT_RIGHT", "group__orx_console.html#gaefcdd23907049ded9b12ea7ce421f663", null ],
+    [ "orxCONSOLE_KZ_INPUT_SET", "group__orx_console.html#ga4d5c257aca0b99f7e7c92d0b72ce8197", null ],
+    [ "orxCONSOLE_KZ_INPUT_START", "group__orx_console.html#ga29d52437b05553a053b434165d5bbeab", null ],
+    [ "orxCONSOLE_KZ_INPUT_TOGGLE", "group__orx_console.html#ga332e8d61d04138184aaf878193623431", null ],
     [ "orxConsole_Enable", "group__orx_console.html#gad3bae40e302c140330f2c9b84bce62b9", null ],
     [ "orxConsole_Exit", "group__orx_console.html#ga131e4e88f33df218f1651e1a9c7f7c6b", null ],
     [ "orxConsole_GetFont", "group__orx_console.html#gaf8426d4d9c05745a70ff23b3308364e5", null ],
@@ -11,5 +22,6 @@ var group__orx_console =
     [ "orxConsole_Log", "group__orx_console.html#gae38e4c990bc8bd3caa6724690a1b83ee", null ],
     [ "orxConsole_SetFont", "group__orx_console.html#ga112f1868a022f4f279c86aad0ee9361c", null ],
     [ "orxConsole_SetLogLineLength", "group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210", null ],
+    [ "orxConsole_SetToggle", "group__orx_console.html#gaa51b5f9a49e93eab97254b126f160792", null ],
     [ "orxConsole_Setup", "group__orx_console.html#ga86a9705132e4f6e0a4b4f5378308dc32", null ]
 ];

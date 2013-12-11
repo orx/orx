@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -84,6 +84,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_PLUGIN,
   orxMODULE_ID_PROFILER,
   orxMODULE_ID_RENDER,
+  orxMODULE_ID_RESOURCE,
   orxMODULE_ID_SCREENSHOT,
   orxMODULE_ID_SHADER,
   orxMODULE_ID_SHADERPOINTER,
@@ -91,6 +92,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_SOUNDPOINTER,
   orxMODULE_ID_SOUNDSYSTEM,
   orxMODULE_ID_SPAWNER,
+  orxMODULE_ID_STRING,
   orxMODULE_ID_STRUCTURE,
   orxMODULE_ID_SYSTEM,
   orxMODULE_ID_TEXT,
@@ -137,9 +139,6 @@ extern orxDLLAPI void orxFASTCALL         orxModule_AddDependency(orxMODULE_ID _
  * @param[in]   _eDependID                Module ID of the optionally needed module
  */
 extern orxDLLAPI void orxFASTCALL         orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
-
-/** Updates dependencies for all modules */
-extern orxDLLAPI void orxFASTCALL         orxModule_UpdateDependencies();
 
 /** Calls a module setup callback
  * @param[in]   _eModuleID                Concerned module ID

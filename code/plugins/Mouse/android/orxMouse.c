@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -24,15 +24,16 @@
 
 /**
  * @file orxMouse.c
- * @date 13/01/2011
- * @author simons.philippe@gmail.com
+ * @date 31/01/2010
+ * @author iarwain@orx-project.org
  *
- * Android mouse plugin implementation
+ * android mouse plugin implementation
  *
  */
 
 
 #include "orxPluginAPI.h"
+
 
 /** Module flags
  */
@@ -52,6 +53,7 @@
 typedef struct __orxMOUSE_STATIC_t
 {
   orxU32      u32Flags;
+  orxU32      u32TouchCounter;
   orxBOOL     bIsClicked;
   orxVECTOR   vMouseMove, vMousePosition;
 
@@ -71,10 +73,6 @@ static orxMOUSE_STATIC sstMouse;
  * Private functions                                                       *
  ***************************************************************************/
 
-extern struct engine engine;
-
-/** Event handler
- */
 static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -84,35 +82,54 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
   {
     /* Touch? */
     case orxSYSTEM_EVENT_TOUCH_BEGIN:
-    case orxSYSTEM_EVENT_TOUCH_MOVE:
-    case orxSYSTEM_EVENT_TOUCH_END:
     {
-      orxVECTOR vNewPosition;
-      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
-      orxBOOL bActive = orxFALSE;
+      /* Updates counter */
+      sstMouse.u32TouchCounter++;
+
+      /* Fall through */
+    }
+
+    case orxSYSTEM_EVENT_TOUCH_MOVE:
+    {
+      orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
+      orxVECTOR                 vNewPosition;
 
       /* Gets payload */
-      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *) _pstEvent->pstPayload;
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-	  /* Gets new position */
-	  orxVector_Set(&vNewPosition, orx2F(pstPayload->stTouch.fX), orx2F(pstPayload->stTouch.fY), orxFLOAT_0);
-	
-	  /* Updates mouse move */
-	  orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
-	  orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &vNewPosition);
+      /* Gets new position */
+      orxVector_Set(&vNewPosition, pstPayload->stTouch.fX, pstPayload->stTouch.fY, orxFLOAT_0);
 
-	  /* Updates mouse position */
-	  orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
+      /* Updates mouse move */
+      orxVector_Sub(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &(sstMouse.vMousePosition));
+      orxVector_Add(&(sstMouse.vMouseMove), &(sstMouse.vMouseMove), &vNewPosition);
 
-	  if(_pstEvent->eID == orxSYSTEM_EVENT_TOUCH_BEGIN || _pstEvent->eID == orxSYSTEM_EVENT_TOUCH_MOVE) 
-	  {
-	    bActive = orxTRUE;
-	  }
-	
-	  /* Updates click status */
-	  sstMouse.bIsClicked = bActive;
+      /* Updates mouse position */
+      orxVector_Copy(&(sstMouse.vMousePosition), &vNewPosition);
+
+      /* Updates click status */
+      sstMouse.bIsClicked = orxTRUE;
+
+      break;
+    }
+
+    case orxSYSTEM_EVENT_TOUCH_END:
+    {
+      /* Checks */
+      orxASSERT(sstMouse.u32TouchCounter > 0);
+
+      /* Updates counter */
+      sstMouse.u32TouchCounter--;
+
+      /* Updates click status */
+      sstMouse.bIsClicked = (sstMouse.u32TouchCounter == 0) ? orxFALSE : orxTRUE;
+
+      break;
+    }
       
-	  break;
+    default:
+    {
+      break;
     }
   }
 
@@ -122,9 +139,12 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
 
 orxSTATUS orxFASTCALL orxMouse_Android_ShowCursor(orxBOOL _bShow)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Shows cursor */
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
   /* Done! */
@@ -135,7 +155,7 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Was already initialized. */
+  /* Wasn't already initialized? */
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
@@ -156,10 +176,10 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
         /* Updates cursor status */
         orxMouse_Android_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
       }
-  
-      /* Pops config section */
-      orxConfig_PopSection();
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */

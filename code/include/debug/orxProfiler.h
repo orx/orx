@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,13 +51,6 @@
 //#define __orxPROFILER__
 
 
-#ifdef __orxDEBUG__
-
-  #define __orxPROFILER__
-
-#endif /* __orxDEBUG__ */
-
-
 /** Profiler macros
  */
 #ifdef __orxPROFILER__
@@ -78,11 +71,15 @@
 
   #define orxPROFILER_POP_MARKER()                orxProfiler_PopMarker();
 
+  #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)
+
 #else /* __orxPROFILER__ */
 
   #define orxPROFILER_PUSH_MARKER(NAME)
 
   #define orxPROFILER_POP_MARKER()
+
+  #define orxPROFILER_KU32_HISTORY_LENGTH         1
 
 #endif /* __orxPROFILER__ */
 
@@ -131,6 +128,21 @@ extern orxDLLAPI void orxFASTCALL                 orxProfiler_PopMarker();
  */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_EnableMarkerOperations(orxBOOL _bEnable);
 
+/** Are marker push/pop operations enabled?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_AreMarkerOperationsEnabled();
+
+/** Pauses/unpauses the profiler
+ * @param[in] _bPause           Pause
+ */
+extern orxDLLAPI void orxFASTCALL                 orxProfiler_Pause(orxBOOL _bPause);
+
+/** Is profiler paused?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxProfiler_IsPaused();
+
 
 /** Resets all markers (usually called at the end of the frame)
  */
@@ -168,6 +180,13 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextMarkerID(or
  * @return Next registered marker's ID / orxPROFILER_KS32_MARKER_ID_NONE if the current marker was the last one
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID);
+
+
+/** Selects the query frame for all GetMarker* functions below, in number of frame elapsed from the last one
+ * @param[in] _u32QueryFrame    Query frame, in number of frame elapsed since the last one (ie. 0 -> last frame, 1 -> frame before last, ...)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILRE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxProfiler_SelectQueryFrame(orxU32 _u32QueryFrame);
 
 
 /** Gets the marker's cumulated time

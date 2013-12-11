@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,18 +47,20 @@
 
 #include "orxInclude.h"
 
-#include "object/orxStructure.h"
-#include "core/orxClock.h"
-#include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "core/orxClock.h"
 #include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
+#include "memory/orxBank.h"
+#include "object/orxStructure.h"
 #include "sound/orxSound.h"
 
 
 /** Defines */
 #define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orx##TYPE(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE))
+
+#define orxOBJECT_KZ_DEFAULT_GROUP          "default"
 
 
 /** Event enum
@@ -67,6 +69,10 @@ typedef enum __orxOBJECT_EVENT_t
 {
   orxOBJECT_EVENT_CREATE = 0,
   orxOBJECT_EVENT_DELETE,
+  orxOBJECT_EVENT_ENABLE,
+  orxOBJECT_EVENT_DISABLE,
+  orxOBJECT_EVENT_PAUSE,
+  orxOBJECT_EVENT_UNPAUSE,
 
   orxOBJECT_EVENT_NUMBER,
 
@@ -108,7 +114,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orxSTRING _zConfigID);
 
-/** Deletes an object, *unsafe* when call from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
+/** Deletes an object, *unsafe* when called from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead
  * @param[in] _pstObject        Concerned object
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -386,6 +392,25 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
 
+/** Gets object's parent
+ * @param[in]   _pstObject    Concerned object
+ * @return      Parent (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT *_pstObject);
+
+/** Gets object's first child
+ * @param[in]   _pstObject    Concerned object
+ * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetChild(const orxOBJECT *_pstObject);
+
+/** Gets object's next sibling
+ * @param[in]   _pstObject    Concerned object
+ * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+
 /** Attaches an object to a parent while maintaining the object's world position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pParent        Parent structure to attach to (object, spawner, camera or frame)
@@ -585,36 +610,6 @@ extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOB
 /** @} */
 
 
-/** @name Color
- * @{ */
-/** Sets object color
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
-
-/** Clears object color
- * @param[in]   _pstObject      Concerned object
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
-
-/** Object has color accessor
- * @param[in]   _pstObject      Concerned object
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *_pstObject);
-
-/** Gets object color
- * @param[in]   _pstObject      Concerned object
- * @param[out]  _pstColor       Object's color
- * @return      orxCOLOR / orxNULL
- */
-extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
-/** @} */
-
-
 /** @name FX
  * @{ */
 /** Adds an FX using its config ID
@@ -803,13 +798,43 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const o
 /** @} */
 
 
-/** @name Graphic / texture
+/** @name texture
  * @{ */
 /** Gets object working texture
  * @param[in]   _pstObject     Concerned object
  * @return orxTEXTURE / orxNULL
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name graphic
+ * @{ */
+/** Sets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
+
+/** Clears object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
+
+/** Object has color accessor
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *_pstObject);
+
+/** Gets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
+ */
+extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
 
 
 /** Sets object repeat (wrap) values
@@ -866,20 +891,50 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJEC
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
 /** @} */
 
+/** @name Group
+ * @{ */
+/** Gets default group ID
+ * @return      Default group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID();
+
+/** Gets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object's group ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT *_pstObject);
+
+/** Sets object's group ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32GroupID     Group ID to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+
+/** Gets next object in group
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+/** @} */
+
 
 /** @name Picking
  * @{ */
-/** Picks the first active object with graphic "under" the given position
+/** Picks the first active object with graphic "under" the given position, within a given group
  * @param[in]   _pvPosition     Position to pick from
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID);
 
-/** Picks the first active object with graphic in contact with the given box
+/** Picks the first active object with graphic in contact with the given box, withing a given group
  * @param[in]   _pstBox         Box to use for picking
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32GroupID);
 /** @} */
 
 #endif /* _orxOBJECT_H_ */

@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -158,6 +165,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga2da19cebead5fb95d7c1d0bfb4f97a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf0e806d876d6bb7506429850ce567f08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gaf0e806d876d6bb7506429850ce567f08">orxFrame_Exit</a> ()</td></tr>
 <tr class="separator:gaf0e806d876d6bb7506429850ce567f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga662a90bb46f78bac43fcff8f6d5332e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga662a90bb46f78bac43fcff8f6d5332e9">orxFrame_GetChild</a> (const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
+<tr class="separator:ga662a90bb46f78bac43fcff8f6d5332e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaaee7f5ca1f2e80e445e859b0968c6512"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gaaee7f5ca1f2e80e445e859b0968c6512">orxFrame_GetParent</a> (const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
 <tr class="separator:gaaee7f5ca1f2e80e445e859b0968c6512"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7ed8f5fee4724dfbfa779856ba778752"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga7ed8f5fee4724dfbfa779856ba778752">orxFrame_GetPosition</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPos)</td></tr>
@@ -166,6 +175,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad2b6e40258a6a518a7390429cb31e5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga70e670a1cacd89ea1f78f5dbe1fecedb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga70e670a1cacd89ea1f78f5dbe1fecedb">orxFrame_GetScale</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvScale)</td></tr>
 <tr class="separator:ga70e670a1cacd89ea1f78f5dbe1fecedb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga09ad6c14564c00740ab938656a670deb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga09ad6c14564c00740ab938656a670deb">orxFrame_GetSibling</a> (const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
+<tr class="separator:ga09ad6c14564c00740ab938656a670deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae4f85427057f0712456f260a0b880f74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gae4f85427057f0712456f260a0b880f74">orxFrame_Init</a> ()</td></tr>
 <tr class="separator:gae4f85427057f0712456f260a0b880f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8982c83b484b6c879311589df6c4fe4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga8982c83b484b6c879311589df6c4fe4b">orxFrame_IsRootChild</a> (const <a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame)</td></tr>
@@ -174,18 +185,24 @@ Functions</h2></td></tr>
 <tr class="separator:ga9adbd9d8601bdd7eef70fbe53c808e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8663586bec819ab0e639bbd9601bd001"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga8663586bec819ab0e639bbd9601bd001">orxFrame_SetPosition</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPos)</td></tr>
 <tr class="separator:ga8663586bec819ab0e639bbd9601bd001"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4fc050a4860f728823572393a3fdf7bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga4fc050a4860f728823572393a3fdf7bc">orxFrame_SetRotation</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, orxFLOAT _fAngle)</td></tr>
-<tr class="separator:ga4fc050a4860f728823572393a3fdf7bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabdeab621d64afb895d034f6d99708ec9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gabdeab621d64afb895d034f6d99708ec9">orxFrame_SetRotation</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, orxFLOAT _fRotation)</td></tr>
+<tr class="separator:gabdeab621d64afb895d034f6d99708ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga13722c7c1c5b5170466b72519702ae67"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga13722c7c1c5b5170466b72519702ae67">orxFrame_SetScale</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvScale)</td></tr>
 <tr class="separator:ga13722c7c1c5b5170466b72519702ae67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga315fa8b686358a68de12231f684b99dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga315fa8b686358a68de12231f684b99dd">orxFrame_Setup</a> ()</td></tr>
 <tr class="separator:ga315fa8b686358a68de12231f684b99dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga85aad91242dc15522f0e5887ff392b5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga85aad91242dc15522f0e5887ff392b5f">orxFrame_TransformPosition</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPos)</td></tr>
+<tr class="separator:ga85aad91242dc15522f0e5887ff392b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0181345a1e59950dc84cce561d2f8e2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#ga0181345a1e59950dc84cce561d2f8e2b">orxFrame_TransformRotation</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, orxFLOAT _fRotation)</td></tr>
+<tr class="separator:ga0181345a1e59950dc84cce561d2f8e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab9b6ca59726c95193bc1ff7bd0193e36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_frame.html#gab9b6ca59726c95193bc1ff7bd0193e36">orxFrame_TransformScale</a> (<a class="el" href="group__orx_frame.html#ga235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *_pstFrame, <a class="el" href="group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7">orxFRAME_SPACE</a> _eSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvScale)</td></tr>
+<tr class="separator:gab9b6ca59726c95193bc1ff7bd0193e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><dl class="section date"><dt>Date</dt><dd>01/12/2003 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'iar'+'wa'+'in@'+'or'+'x-p'+'ro'+'jec'+'t.'+'org'; return false;">iarwa<span style="display: none;">.nosp@m.</span>in@o<span style="display: none;">.nosp@m.</span>rx-pr<span style="display: none;">.nosp@m.</span>ojec<span style="display: none;">.nosp@m.</span>t.org</a></dd></dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000034">Todo:</a></b></dt><dd><ul>
-<li>Use matrix instead of disjoint position vector/angle float/scale vector</li>
+<li>Use matrix instead of disjoint position vector/rotation float/scale vector</li>
 <li>Add 3D support </li>
 </ul>
 </dd></dl>

@@ -56,6 +56,7 @@ var searchData=
   ['orxpluginuser_2eh',['orxPluginUser.h',['../orx_plugin_user_8h.html',1,'']]],
   ['orxprofiler_2eh',['orxProfiler.h',['../orx_profiler_8h.html',1,'']]],
   ['orxrender_2eh',['orxRender.h',['../orx_render_8h.html',1,'']]],
+  ['orxresource_2eh',['orxResource.h',['../orx_resource_8h.html',1,'']]],
   ['orxscreenshot_2eh',['orxScreenshot.h',['../orx_screenshot_8h.html',1,'']]],
   ['orxshader_2eh',['orxShader.h',['../orx_shader_8h.html',1,'']]],
   ['orxshaderpointer_2eh',['orxShaderPointer.h',['../orx_shader_pointer_8h.html',1,'']]],

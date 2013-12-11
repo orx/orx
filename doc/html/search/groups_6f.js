@@ -41,6 +41,7 @@ var searchData=
   ['orxplugin',['OrxPlugin',['../group__orx_plugin.html',1,'']]],
   ['orxprofiler',['OrxProfiler',['../group__orx_profiler.html',1,'']]],
   ['orxrender',['OrxRender',['../group__orx_render.html',1,'']]],
+  ['orxresource',['OrxResource',['../group__orx_resource.html',1,'']]],
   ['orxscreenshot',['OrxScreenshot',['../group__orx_screenshot.html',1,'']]],
   ['orxshader',['OrxShader',['../group__orx_shader.html',1,'']]],
   ['orxshaderpointer',['OrxShaderPointer',['../group__orx_shader_pointer.html',1,'']]],

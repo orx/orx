@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -110,6 +117,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga9a1f6b4f1e78210654a689fea7eb5195"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa7e36c65bb31a0dffaa87cd0212ba3a3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gaa7e36c65bb31a0dffaa87cd0212ba3a3">orxCAMERA_KU32_FLAG_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
 <tr class="separator:gaa7e36c65bb31a0dffaa87cd0212ba3a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaca7ead4667817f7601925ccac095f16f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gaca7ead4667817f7601925ccac095f16f">orxCAMERA_KU32_GROUP_ID_NUMBER</a>&#160;&#160;&#160;16</td></tr>
+<tr class="separator:gaca7ead4667817f7601925ccac095f16f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab4b4bbdab06d1b31ea625840e4c5e5fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gab4b4bbdab06d1b31ea625840e4c5e5fd">orxCAMERA_KU32_MASK_USER_ALL</a>&#160;&#160;&#160;0x000000FF</td></tr>
 <tr class="separator:gab4b4bbdab06d1b31ea625840e4c5e5fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -120,6 +129,8 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga0b0256bfff38ccfcd29a4ae353de6784"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga0b0256bfff38ccfcd29a4ae353de6784">orxCamera_AddGroupID</a> (<a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst)</td></tr>
+<tr class="separator:ga0b0256bfff38ccfcd29a4ae353de6784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8366c7aadf1b7503e1f01b35a0c1dbff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga8366c7aadf1b7503e1f01b35a0c1dbff">orxCamera_Create</a> (orxU32 _u32Flags)</td></tr>
 <tr class="separator:ga8366c7aadf1b7503e1f01b35a0c1dbff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20eaded547d921b13f39a38cccbf424f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga20eaded547d921b13f39a38cccbf424f">orxCamera_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
@@ -134,9 +145,15 @@ Functions</h2></td></tr>
 <tr class="separator:ga0ddadcb114f4d34fec41a7eb6f3fe9fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8b88cc610d014c016c46034f66014f9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga8b88cc610d014c016c46034f66014f9c">orxCamera_GetFrustum</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *_pstFrustum)</td></tr>
 <tr class="separator:ga8b88cc610d014c016c46034f66014f9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9f73655c6d4a2e1ae7a56242847b239b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga9f73655c6d4a2e1ae7a56242847b239b">orxCamera_GetGroupID</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxU32 _u32Index)</td></tr>
+<tr class="separator:ga9f73655c6d4a2e1ae7a56242847b239b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab823a96ae2a15065df5003325f119595"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gab823a96ae2a15065df5003325f119595">orxCamera_GetGroupIDCounter</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
+<tr class="separator:gab823a96ae2a15065df5003325f119595"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab9edd5fc69d31f154c27c87fa2e3022c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gab9edd5fc69d31f154c27c87fa2e3022c">orxCamera_GetName</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
 <tr class="separator:gab9edd5fc69d31f154c27c87fa2e3022c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0f4a7776168cb58ff3bd2dd0cdf882d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga0f4a7776168cb58ff3bd2dd0cdf882d9">orxCamera_GetParent</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
+<tr class="separator:ga0f4a7776168cb58ff3bd2dd0cdf882d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga763544898f06821bdc7976ed6b53f308"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga763544898f06821bdc7976ed6b53f308">orxCamera_GetPosition</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 <tr class="separator:ga763544898f06821bdc7976ed6b53f308"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1a7c7a04d79a5ac6fa8b2e846d20cf70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga1a7c7a04d79a5ac6fa8b2e846d20cf70">orxCamera_GetRotation</a> (const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
@@ -145,6 +162,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gac8d9820499ba6883db51a6b2154c01d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1bd3cc33cb5847a85b84f87c5f8773b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga1bd3cc33cb5847a85b84f87c5f8773b9">orxCamera_Init</a> ()</td></tr>
 <tr class="separator:ga1bd3cc33cb5847a85b84f87c5f8773b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8eef5d87f93174ec37e3deb832361012"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga8eef5d87f93174ec37e3deb832361012">orxCamera_RemoveGroupID</a> (<a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga8eef5d87f93174ec37e3deb832361012"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9fecc3918027aebd2e2812470df8104e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga9fecc3918027aebd2e2812470df8104e">orxCamera_SetFrustum</a> (<a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)</td></tr>
 <tr class="separator:ga9fecc3918027aebd2e2812470df8104e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga56aeb4f2d9c5f73b6695e455d46b5b00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ga56aeb4f2d9c5f73b6695e455d46b5b00">orxCamera_SetParent</a> (<a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pParent)</td></tr>
@@ -172,7 +191,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>2D flag </p>
 
-<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00059">59</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00060">60</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
 
 </div>
 </div>
@@ -187,7 +206,22 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Anim flagsNo flags </p>
 
-<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00057">57</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00058">58</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaca7ead4667817f7601925ccac095f16f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCAMERA_KU32_GROUP_ID_NUMBER&#160;&#160;&#160;16</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Misc </p>
+
+<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00067">67</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +236,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>User all mask </p>
 
-<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00061">61</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00062">62</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
 
 </div>
 </div>
@@ -218,11 +252,53 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Internal camera structure </p>
 
-<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00066">66</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_camera_8h_source.html#l00072">72</a> of file <a class="el" href="orx_camera_8h_source.html">orxCamera.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="ga0b0256bfff38ccfcd29a4ae353de6784"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxCamera_AddGroupID </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&#160;</td>
+          <td class="paramname"><em>_pstCamera</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bAddFirst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Adds a group ID to a camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCamera</td><td>Concerned camera </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>ID of the group to add </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bAddFirst</td><td>If true this group will be used <em>before</em> any already added ones, otherwise it'll be used <em>after</em> all of them </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga8366c7aadf1b7503e1f01b35a0c1dbff"></a>
 <div class="memitem">
 <div class="memproto">
@@ -393,6 +469,65 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga9f73655c6d4a2e1ae7a56242847b239b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxCamera_GetGroupID </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&#160;</td>
+          <td class="paramname"><em>_pstCamera</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the group ID of a camera at the given index </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCamera</td><td>Concerned camera </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Index</td><td>Index of group ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Group ID if index is valid, orxU32_UNDEFINED otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab823a96ae2a15065df5003325f119595"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxCamera_GetGroupIDCounter </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&#160;</td>
+          <td class="paramname"><em>_pstCamera</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets number of group IDs of camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCamera</td><td>Concerned camera </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of group IDs of this camera </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gab9edd5fc69d31f154c27c87fa2e3022c"></a>
 <div class="memitem">
 <div class="memproto">
@@ -414,6 +549,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTRING / orxSTRING_EMPTY </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga0f4a7776168cb58ff3bd2dd0cdf882d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxCamera_GetParent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&#160;</td>
+          <td class="paramname"><em>_pstCamera</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets camera parent </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCamera</td><td>Concerned camera </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Parent (object, spawner, camera or frame) / orxNULL </dd></dl>
 
 </div>
 </div>
@@ -513,6 +672,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 <p>Inits the Camera module </p>
+
+</div>
+</div>
+<a class="anchor" id="ga8eef5d87f93174ec37e3deb832361012"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxCamera_RemoveGroupID </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_camera.html#ga86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&#160;</td>
+          <td class="paramname"><em>_pstCamera</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a group ID from a camera </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCamera</td><td>Concerned camera </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>ID of the group to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>

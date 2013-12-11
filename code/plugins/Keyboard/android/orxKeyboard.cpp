@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,8 @@
 
 #include "orxPluginAPI.h"
 
-#include <nv_event/nv_event.h>
+#include "main/orxAndroid.h"
+#include "android/keycodes.h"
 
 /** Module flags
  */
@@ -44,6 +45,10 @@
 
 #define orxKEYBOARD_KU32_STATIC_MASK_ALL        0xFFFFFFFF /**< All mask */
 
+/** Misc
+ */
+#define orxKEYBOARD_KU32_BUFFER_SIZE            64
+#define orxKEYBOARD_KU32_STRING_BUFFER_SIZE     (orxKEYBOARD_KU32_BUFFER_SIZE * 4 + 1)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -54,7 +59,13 @@
 typedef struct __orxKEYBOARD_STATIC_t
 {
   orxU32            u32Flags;
-  orxBOOL           abKeyPressed[NV_MAX_KEYCODE];
+  orxBOOL           abKeyPressed[orxKEYBOARD_KEY_NUMBER];
+
+  orxU32            u32KeyReadIndex, u32KeyWriteIndex, u32CharReadIndex, u32CharWriteIndex;
+  orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
+  orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
+  jmethodID         midShowKeyboard;
 } orxKEYBOARD_STATIC;
 
 
@@ -70,154 +81,84 @@ static orxKEYBOARD_STATIC sstKeyboard;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-static NVKeyCode orxFASTCALL orxKeyboard_Android_GetNVKey(orxKEYBOARD_KEY _eKey)
-{
-  NVKeyCode eResult;
 
-  /* Depending on key */
-  switch(_eKey)
-  {
-    case orxKEYBOARD_KEY_ESCAPE:        {eResult = NV_KEYCODE_BACK; break;}
-    case orxKEYBOARD_KEY_MENU:          {eResult = NV_KEYCODE_MENU; break;}
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
 
-    case orxKEYBOARD_KEY_SPACE:         {eResult = NV_KEYCODE_SPACE; break;}
-    case orxKEYBOARD_KEY_RETURN:        {eResult = NV_KEYCODE_ENTER; break;}
-    case orxKEYBOARD_KEY_BACKSPACE:     {eResult = NV_KEYCODE_DEL; break;}
-    case orxKEYBOARD_KEY_TAB:           {eResult = NV_KEYCODE_TAB; break;}
-    case orxKEYBOARD_KEY_HOME:          {eResult = NV_KEYCODE_HOME; break;}
-    case orxKEYBOARD_KEY_ADD:           {eResult = NV_KEYCODE_PLUS; break;}
-    case orxKEYBOARD_KEY_SUBTRACT:      {eResult = NV_KEYCODE_MINUS; break;}
-    case orxKEYBOARD_KEY_MULTIPLY:      {eResult = NV_KEYCODE_STAR; break;}
-    case orxKEYBOARD_KEY_RALT:          {eResult = NV_KEYCODE_ALT_RIGHT; break;}
-    case orxKEYBOARD_KEY_RSHIFT:        {eResult = NV_KEYCODE_SHIFT_RIGHT; break;}
-    case orxKEYBOARD_KEY_LALT:          {eResult = NV_KEYCODE_ALT_LEFT; break;}
-    case orxKEYBOARD_KEY_LSHIFT:        {eResult = NV_KEYCODE_SHIFT_LEFT; break;}
-    case orxKEYBOARD_KEY_LBRACKET:      {eResult = NV_KEYCODE_LEFT_BRACKET; break;}
-    case orxKEYBOARD_KEY_RBRACKET:      {eResult = NV_KEYCODE_RIGHT_BRACKET; break;}
-    case orxKEYBOARD_KEY_SEMICOLON:     {eResult = NV_KEYCODE_SEMICOLON; break;}
-    case orxKEYBOARD_KEY_COMMA:         {eResult = NV_KEYCODE_COMMA; break;}
-    case orxKEYBOARD_KEY_PERIOD:        {eResult = NV_KEYCODE_PERIOD; break;}
-    case orxKEYBOARD_KEY_SLASH:         {eResult = NV_KEYCODE_SLASH; break;}
-    case orxKEYBOARD_KEY_BACKSLASH:     {eResult = NV_KEYCODE_BACKSLASH; break;}
-    case orxKEYBOARD_KEY_EQUAL:         {eResult = NV_KEYCODE_EQUALS; break;}
-    case orxKEYBOARD_KEY_UP:            {eResult = NV_KEYCODE_DPAD_UP; break;}
-    case orxKEYBOARD_KEY_RIGHT:         {eResult = NV_KEYCODE_DPAD_RIGHT; break;}
-    case orxKEYBOARD_KEY_DOWN:          {eResult = NV_KEYCODE_DPAD_DOWN; break;}
-    case orxKEYBOARD_KEY_LEFT:          {eResult = NV_KEYCODE_DPAD_LEFT; break;}
-    case orxKEYBOARD_KEY_A:             {eResult = NV_KEYCODE_A; break;}
-    case orxKEYBOARD_KEY_Z:             {eResult = NV_KEYCODE_Z; break;}
-    case orxKEYBOARD_KEY_E:             {eResult = NV_KEYCODE_E; break;}
-    case orxKEYBOARD_KEY_R:             {eResult = NV_KEYCODE_R; break;}
-    case orxKEYBOARD_KEY_T:             {eResult = NV_KEYCODE_T; break;}
-    case orxKEYBOARD_KEY_Y:             {eResult = NV_KEYCODE_Y; break;}
-    case orxKEYBOARD_KEY_U:             {eResult = NV_KEYCODE_U; break;}
-    case orxKEYBOARD_KEY_I:             {eResult = NV_KEYCODE_I; break;}
-    case orxKEYBOARD_KEY_O:             {eResult = NV_KEYCODE_O; break;}
-    case orxKEYBOARD_KEY_P:             {eResult = NV_KEYCODE_P; break;}
-    case orxKEYBOARD_KEY_Q:             {eResult = NV_KEYCODE_Q; break;}
-    case orxKEYBOARD_KEY_S:             {eResult = NV_KEYCODE_S; break;}
-    case orxKEYBOARD_KEY_D:             {eResult = NV_KEYCODE_D; break;}
-    case orxKEYBOARD_KEY_F:             {eResult = NV_KEYCODE_F; break;}
-    case orxKEYBOARD_KEY_G:             {eResult = NV_KEYCODE_G; break;}
-    case orxKEYBOARD_KEY_H:             {eResult = NV_KEYCODE_H; break;}
-    case orxKEYBOARD_KEY_J:             {eResult = NV_KEYCODE_J; break;}
-    case orxKEYBOARD_KEY_K:             {eResult = NV_KEYCODE_K; break;}
-    case orxKEYBOARD_KEY_L:             {eResult = NV_KEYCODE_L; break;}
-    case orxKEYBOARD_KEY_M:             {eResult = NV_KEYCODE_M; break;}
-    case orxKEYBOARD_KEY_W:             {eResult = NV_KEYCODE_W; break;}
-    case orxKEYBOARD_KEY_X:             {eResult = NV_KEYCODE_X; break;}
-    case orxKEYBOARD_KEY_C:             {eResult = NV_KEYCODE_C; break;}
-    case orxKEYBOARD_KEY_V:             {eResult = NV_KEYCODE_V; break;}
-    case orxKEYBOARD_KEY_B:             {eResult = NV_KEYCODE_B; break;}
-    case orxKEYBOARD_KEY_N:             {eResult = NV_KEYCODE_N; break;}
-    case orxKEYBOARD_KEY_0:             {eResult = NV_KEYCODE_0; break;}
-    case orxKEYBOARD_KEY_1:             {eResult = NV_KEYCODE_1; break;}
-    case orxKEYBOARD_KEY_2:             {eResult = NV_KEYCODE_2; break;}
-    case orxKEYBOARD_KEY_3:             {eResult = NV_KEYCODE_3; break;}
-    case orxKEYBOARD_KEY_4:             {eResult = NV_KEYCODE_4; break;}
-    case orxKEYBOARD_KEY_5:             {eResult = NV_KEYCODE_5; break;}
-    case orxKEYBOARD_KEY_6:             {eResult = NV_KEYCODE_6; break;}
-    case orxKEYBOARD_KEY_7:             {eResult = NV_KEYCODE_7; break;}
-    case orxKEYBOARD_KEY_8:             {eResult = NV_KEYCODE_8; break;}
-    case orxKEYBOARD_KEY_9:             {eResult = NV_KEYCODE_9; break;}
-    default:                            {eResult = NV_KEYCODE_NULL; break;}
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(NVKeyCode _eKey)
+static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
 {
   orxKEYBOARD_KEY eResult;
 
   /* Depending on key */
   switch(_eKey)
   {
-    case NV_KEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}        
-    case NV_KEYCODE_MENU:               {eResult = orxKEYBOARD_KEY_MENU; break;}          
-                                                           
-    case NV_KEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}         
-    case NV_KEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}        
-    case NV_KEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}     
-    case NV_KEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}           
-    case NV_KEYCODE_HOME:               {eResult = orxKEYBOARD_KEY_HOME; break;}          
-    case NV_KEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}           
-    case NV_KEYCODE_MINUS:              {eResult = orxKEYBOARD_KEY_SUBTRACT; break;}      
-    case NV_KEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}      
-    case NV_KEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}          
-    case NV_KEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}        
-    case NV_KEYCODE_ALT_LEFT:           {eResult = orxKEYBOARD_KEY_LALT; break;}          
-    case NV_KEYCODE_SHIFT_LEFT:         {eResult = orxKEYBOARD_KEY_LSHIFT; break;}        
-    case NV_KEYCODE_LEFT_BRACKET:       {eResult = orxKEYBOARD_KEY_LBRACKET; break;}      
-    case NV_KEYCODE_RIGHT_BRACKET:      {eResult = orxKEYBOARD_KEY_RBRACKET; break;}      
-    case NV_KEYCODE_SEMICOLON:          {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}     
-    case NV_KEYCODE_COMMA:              {eResult = orxKEYBOARD_KEY_COMMA; break;}         
-    case NV_KEYCODE_PERIOD:             {eResult = orxKEYBOARD_KEY_PERIOD; break;}        
-    case NV_KEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}
-    case NV_KEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case NV_KEYCODE_EQUALS:             {eResult = orxKEYBOARD_KEY_EQUAL; break;}         
-    case NV_KEYCODE_DPAD_UP:            {eResult = orxKEYBOARD_KEY_UP; break;}            
-    case NV_KEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}         
-    case NV_KEYCODE_DPAD_DOWN:          {eResult = orxKEYBOARD_KEY_DOWN; break;}          
-    case NV_KEYCODE_DPAD_LEFT:          {eResult = orxKEYBOARD_KEY_LEFT; break;}          
-    case NV_KEYCODE_A:                  {eResult = orxKEYBOARD_KEY_A; break;}             
-    case NV_KEYCODE_Z:                  {eResult = orxKEYBOARD_KEY_Z; break;}             
-    case NV_KEYCODE_E:                  {eResult = orxKEYBOARD_KEY_E; break;}             
-    case NV_KEYCODE_R:                  {eResult = orxKEYBOARD_KEY_R; break;}             
-    case NV_KEYCODE_T:                  {eResult = orxKEYBOARD_KEY_T; break;}             
-    case NV_KEYCODE_Y:                  {eResult = orxKEYBOARD_KEY_Y; break;}             
-    case NV_KEYCODE_U:                  {eResult = orxKEYBOARD_KEY_U; break;}             
-    case NV_KEYCODE_I:                  {eResult = orxKEYBOARD_KEY_I; break;}             
-    case NV_KEYCODE_O:                  {eResult = orxKEYBOARD_KEY_O; break;}             
-    case NV_KEYCODE_P:                  {eResult = orxKEYBOARD_KEY_P; break;}             
-    case NV_KEYCODE_Q:                  {eResult = orxKEYBOARD_KEY_Q; break;}             
-    case NV_KEYCODE_S:                  {eResult = orxKEYBOARD_KEY_S; break;}             
-    case NV_KEYCODE_D:                  {eResult = orxKEYBOARD_KEY_D; break;}             
-    case NV_KEYCODE_F:                  {eResult = orxKEYBOARD_KEY_F; break;}             
-    case NV_KEYCODE_G:                  {eResult = orxKEYBOARD_KEY_G; break;}             
-    case NV_KEYCODE_H:                  {eResult = orxKEYBOARD_KEY_H; break;}             
-    case NV_KEYCODE_J:                  {eResult = orxKEYBOARD_KEY_J; break;}             
-    case NV_KEYCODE_K:                  {eResult = orxKEYBOARD_KEY_K; break;}             
-    case NV_KEYCODE_L:                  {eResult = orxKEYBOARD_KEY_L; break;}             
-    case NV_KEYCODE_M:                  {eResult = orxKEYBOARD_KEY_M; break;}             
-    case NV_KEYCODE_W:                  {eResult = orxKEYBOARD_KEY_W; break;}             
-    case NV_KEYCODE_X:                  {eResult = orxKEYBOARD_KEY_X; break;}             
-    case NV_KEYCODE_C:                  {eResult = orxKEYBOARD_KEY_C; break;}             
-    case NV_KEYCODE_V:                  {eResult = orxKEYBOARD_KEY_V; break;}             
-    case NV_KEYCODE_B:                  {eResult = orxKEYBOARD_KEY_B; break;}             
-    case NV_KEYCODE_N:                  {eResult = orxKEYBOARD_KEY_N; break;}             
-    case NV_KEYCODE_0:                  {eResult = orxKEYBOARD_KEY_0; break;}             
-    case NV_KEYCODE_1:                  {eResult = orxKEYBOARD_KEY_1; break;}             
-    case NV_KEYCODE_2:                  {eResult = orxKEYBOARD_KEY_2; break;}             
-    case NV_KEYCODE_3:                  {eResult = orxKEYBOARD_KEY_3; break;}             
-    case NV_KEYCODE_4:                  {eResult = orxKEYBOARD_KEY_4; break;}             
-    case NV_KEYCODE_5:                  {eResult = orxKEYBOARD_KEY_5; break;}             
-    case NV_KEYCODE_6:                  {eResult = orxKEYBOARD_KEY_6; break;}             
-    case NV_KEYCODE_7:                  {eResult = orxKEYBOARD_KEY_7; break;}             
-    case NV_KEYCODE_8:                  {eResult = orxKEYBOARD_KEY_8; break;}             
-    case NV_KEYCODE_9:                  {eResult = orxKEYBOARD_KEY_9; break;}             
-    default:                            {eResult = orxKEYBOARD_KEY_NONE; break;}
+    case AKEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
+    case AKEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}
+    case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}
+    case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
+    case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
+    case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
+    case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGEDOWN; break;}
+    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}
+    case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}
+    case AKEYCODE_MEDIA_PLAY_PAUSE:   {eResult = orxKEYBOARD_KEY_PAUSE; break;}
+    case AKEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}
+    case AKEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}
+    case AKEYCODE_ALT_LEFT:           {eResult = orxKEYBOARD_KEY_LALT; break;}
+    case AKEYCODE_SHIFT_LEFT:         {eResult = orxKEYBOARD_KEY_LSHIFT; break;}
+    case AKEYCODE_MENU:               {eResult = orxKEYBOARD_KEY_MENU; break;}
+    case AKEYCODE_LEFT_BRACKET:       {eResult = orxKEYBOARD_KEY_LBRACKET; break;}
+    case AKEYCODE_RIGHT_BRACKET:      {eResult = orxKEYBOARD_KEY_RBRACKET; break;}
+    case AKEYCODE_SEMICOLON:          {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}
+    case AKEYCODE_COMMA:              {eResult = orxKEYBOARD_KEY_COMMA; break;}
+    case AKEYCODE_PERIOD:             {eResult = orxKEYBOARD_KEY_PERIOD; break;}
+    case AKEYCODE_APOSTROPHE:         {eResult = orxKEYBOARD_KEY_QUOTE; break;}
+    case AKEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}
+    case AKEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
+    case AKEYCODE_EQUALS:             {eResult = orxKEYBOARD_KEY_EQUAL; break;}
+    case AKEYCODE_MINUS:              {eResult = orxKEYBOARD_KEY_DASH; break;}
+    case AKEYCODE_DPAD_UP:            {eResult = orxKEYBOARD_KEY_UP; break;}
+    case AKEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}
+    case AKEYCODE_DPAD_DOWN:          {eResult = orxKEYBOARD_KEY_DOWN; break;}
+    case AKEYCODE_DPAD_LEFT:          {eResult = orxKEYBOARD_KEY_LEFT; break;}
+    case AKEYCODE_A:                  {eResult = orxKEYBOARD_KEY_A; break;}
+    case AKEYCODE_Z:                  {eResult = orxKEYBOARD_KEY_Z; break;}
+    case AKEYCODE_E:                  {eResult = orxKEYBOARD_KEY_E; break;}
+    case AKEYCODE_R:                  {eResult = orxKEYBOARD_KEY_R; break;}
+    case AKEYCODE_T:                  {eResult = orxKEYBOARD_KEY_T; break;}
+    case AKEYCODE_Y:                  {eResult = orxKEYBOARD_KEY_Y; break;}
+    case AKEYCODE_U:                  {eResult = orxKEYBOARD_KEY_U; break;}
+    case AKEYCODE_I:                  {eResult = orxKEYBOARD_KEY_I; break;}
+    case AKEYCODE_O:                  {eResult = orxKEYBOARD_KEY_O; break;}
+    case AKEYCODE_P:                  {eResult = orxKEYBOARD_KEY_P; break;}
+    case AKEYCODE_Q:                  {eResult = orxKEYBOARD_KEY_Q; break;}
+    case AKEYCODE_S:                  {eResult = orxKEYBOARD_KEY_S; break;}
+    case AKEYCODE_D:                  {eResult = orxKEYBOARD_KEY_D; break;}
+    case AKEYCODE_F:                  {eResult = orxKEYBOARD_KEY_F; break;}
+    case AKEYCODE_G:                  {eResult = orxKEYBOARD_KEY_G; break;}
+    case AKEYCODE_H:                  {eResult = orxKEYBOARD_KEY_H; break;}
+    case AKEYCODE_J:                  {eResult = orxKEYBOARD_KEY_J; break;}
+    case AKEYCODE_K:                  {eResult = orxKEYBOARD_KEY_K; break;}
+    case AKEYCODE_L:                  {eResult = orxKEYBOARD_KEY_L; break;}
+    case AKEYCODE_M:                  {eResult = orxKEYBOARD_KEY_M; break;}
+    case AKEYCODE_W:                  {eResult = orxKEYBOARD_KEY_W; break;}
+    case AKEYCODE_X:                  {eResult = orxKEYBOARD_KEY_X; break;}
+    case AKEYCODE_C:                  {eResult = orxKEYBOARD_KEY_C; break;}
+    case AKEYCODE_V:                  {eResult = orxKEYBOARD_KEY_V; break;}
+    case AKEYCODE_B:                  {eResult = orxKEYBOARD_KEY_B; break;}
+    case AKEYCODE_N:                  {eResult = orxKEYBOARD_KEY_N; break;}
+    case AKEYCODE_0:                  {eResult = orxKEYBOARD_KEY_0; break;}
+    case AKEYCODE_1:                  {eResult = orxKEYBOARD_KEY_1; break;}
+    case AKEYCODE_2:                  {eResult = orxKEYBOARD_KEY_2; break;}
+    case AKEYCODE_3:                  {eResult = orxKEYBOARD_KEY_3; break;}
+    case AKEYCODE_4:                  {eResult = orxKEYBOARD_KEY_4; break;}
+    case AKEYCODE_5:                  {eResult = orxKEYBOARD_KEY_5; break;}
+    case AKEYCODE_6:                  {eResult = orxKEYBOARD_KEY_6; break;}
+    case AKEYCODE_7:                  {eResult = orxKEYBOARD_KEY_7; break;}
+    case AKEYCODE_8:                  {eResult = orxKEYBOARD_KEY_8; break;}
+    case AKEYCODE_9:                  {eResult = orxKEYBOARD_KEY_9; break;}
+    default:                          {eResult = orxKEYBOARD_KEY_NONE; break;}
   }
 
   /* Done! */
@@ -227,19 +168,58 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(NVKeyCode _eKey)
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  NVEventKey *pstNVEventKey;
+  orxANDROID_KEY_EVENT *pstKeyEvent;
+  orxKEYBOARD_KEY eKey;
 
   /* Gets payload */
-  pstNVEventKey = (NVEventKey *) _pstEvent->pstPayload;
+  pstKeyEvent = (orxANDROID_KEY_EVENT *) _pstEvent->pstPayload;
 
-  switch(pstNVEventKey->m_action)
+  /* Depending on ID */
+  switch(_pstEvent->eID)
   {
-    case NV_KEYACTION_DOWN:
-      sstKeyboard.abKeyPressed[(orxU32)pstNVEventKey->m_code] = orxTRUE;
+    case orxANDROID_EVENT_KEYBOARD_DOWN:
+      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
+
+      if(eKey != orxKEYBOARD_KEY_NONE)
+      {
+        sstKeyboard.abKeyPressed[eKey] = orxTRUE;
+
+        /* Stores it */
+        sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = pstKeyEvent->u32KeyCode;
+        sstKeyboard.u32KeyWriteIndex = (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+        /* Full? */
+        if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+        {
+          /* Bounces read index */
+          sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+        }
+      }
+
+      /* has unicode */
+      if(pstKeyEvent->u32Unicode != 0)
+      {
+        /* Stores it */
+        sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = pstKeyEvent->u32Unicode;
+        sstKeyboard.u32CharWriteIndex = (sstKeyboard.u32CharWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+
+        /* Full? */
+        if(sstKeyboard.u32CharReadIndex == sstKeyboard.u32CharWriteIndex)
+        {
+          /* Bounces read index */
+          sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+        }
+      }
+
       break;
-    case NV_KEYACTION_UP:
-      sstKeyboard.abKeyPressed[(orxU32)pstNVEventKey->m_code] = orxFALSE;
+
+    case orxANDROID_EVENT_KEYBOARD_UP:
+      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
+
+      if(eKey != orxKEYBOARD_KEY_NONE)
+      {
+        sstKeyboard.abKeyPressed[eKey] = orxFALSE;
+      }
       break;
   }
 
@@ -258,13 +238,17 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
     
     /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY), orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
-      for(i = 0; i < NV_MAX_KEYCODE; i++)
+      for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
       {
         sstKeyboard.abKeyPressed[i] = orxFALSE;
       }
+
+      JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
+      jclass objClass = env->FindClass("org/orx/lib/OrxActivity");
+      sstKeyboard.midShowKeyboard = env->GetMethodID(objClass, "showKeyboard","(Z)V");
 
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
@@ -281,7 +265,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + NV_EVENT_KEY), orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
@@ -292,30 +276,14 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
 
 extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
-  NVKeyCode eNVKey;
   orxBOOL bResult;
 
   /* Checks */
   orxASSERT(_eKey < orxKEYBOARD_KEY_NUMBER);
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  /* Gets NvEvent key enum */
-  eNVKey = orxKeyboard_Android_GetNVKey(_eKey);
-
-  /* Valid? */
-  if(eNVKey != NV_KEYCODE_NULL)
-  {
-    /* Updates result */
-    bResult = sstKeyboard.abKeyPressed[eNVKey];
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD,"Key <%s> is not handled by this plugin.", orxKeyboard_GetKeyName(_eKey));
-
-    /* Updates result */
-    bResult = orxFALSE;
-  }
+  /* Updates result */
+  bResult = sstKeyboard.abKeyPressed[_eKey];
 
   /* Done! */
   return bResult;
@@ -324,10 +292,25 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
 
 extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 {
-  orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
+  orxKEYBOARD_KEY eResult;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Not empty? */
+  if(sstKeyboard.u32KeyReadIndex != sstKeyboard.u32KeyWriteIndex)
+  {
+    /* Updates result */
+    eResult = orxKeyboard_Android_GetKey((orxS32)sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyReadIndex]);
+
+    /* Updates read index */
+    sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxKEYBOARD_KEY_NONE;
+  }
 
   /* Done! */
   return eResult;
@@ -335,10 +318,32 @@ extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 
 extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  orxU32          u32BufferSize;
+  orxCHAR        *pc;
+  const orxSTRING zResult = sstKeyboard.acStringBuffer;
 
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* For all characters */
+  for(zResult = pc = sstKeyboard.acStringBuffer, u32BufferSize = orxKEYBOARD_KU32_STRING_BUFFER_SIZE - 1;
+      sstKeyboard.u32CharReadIndex != sstKeyboard.u32CharWriteIndex;
+      sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1))
+  {
+    orxU32 u32Size;
+
+    /* Writes it */
+    u32Size = orxString_PrintUTF8Character(pc, u32BufferSize, sstKeyboard.au32CharBuffer[sstKeyboard.u32CharReadIndex]);
+
+    /* Updates buffer size */
+    u32BufferSize -= u32Size;
+
+    /* Updates char pointer */
+    pc += u32Size;
+  }
+
+  /* Terminates string */
+  *pc = orxCHAR_NULL;
 
   /* Done! */
   return zResult;
@@ -346,13 +351,28 @@ extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 
 extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 {
-  /* Not yet implemented */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_KEYBOARD, "Not yet implemented!");
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Clears all buffer indices */
+  sstKeyboard.u32KeyReadIndex   =
+  sstKeyboard.u32KeyWriteIndex  = 
+  sstKeyboard.u32CharReadIndex  =
+  sstKeyboard.u32CharWriteIndex = 0;
 
   /* Done! */
   return;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Show(orxBOOL _bShow)
+{
+  JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
+  jobject jActivity = orxAndroid_GetActivity();
+  env->CallVoidMethod(jActivity, sstKeyboard.midShowKeyboard, _bShow == orxTRUE ? JNI_TRUE : JNI_FALSE);  
+
+  /* Done */
+  return orxSTATUS_SUCCESS;
+}
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -365,4 +385,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_IsKeyPressed, KEYBOARD, IS_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

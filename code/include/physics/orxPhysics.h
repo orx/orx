@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -295,9 +295,9 @@ typedef struct __orxPHYSICS_BODY_JOINT_t  orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_GRAVITY      "Gravity"
 #define orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP  "AllowSleep"
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
-#define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
 #define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG   "ShowDebug"
+#define orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST      "CollisionFlagList"
 
 
 /***************************************************************************
@@ -307,6 +307,19 @@ typedef struct __orxPHYSICS_BODY_JOINT_t  orxPHYSICS_BODY_JOINT;
 /** Physics module setup
  */
 extern orxDLLAPI void orxFASTCALL                     orxPhysics_Setup();
+
+
+/** Gets collision flag literal name
+ * @param[in] _u32Flag      Concerned collision flag numerical value
+ * @return Flag's name
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxPhysics_GetCollisionFlagName(orxU32 _u32Flag);
+
+/** Gets collision flag numerical value
+ * @param[in] _zFlag        Concerned collision flag literal name
+ * @return Flag's value
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag);
 
 
 /***************************************************************************
@@ -354,12 +367,12 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBody(orxP
  * @param[in]   _pstBodyPartDef                       Physical body part definition
  * @return orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxPHYSICS_BODY_PART *orxFASTCALL    orxPhysics_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Deletes a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  */
-extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart);
 
 
 /** Creates a joint to link two physical bodies together
@@ -369,12 +382,12 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyPart(
  * @param[in]   _pstBodyJointDef                      Physical body joint definition
  * @return orxPHYSICS_BODY_JOINT / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateBodyJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
+extern orxDLLAPI orxPHYSICS_BODY_JOINT *orxFASTCALL   orxPhysics_CreateJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef);
 
 /** Deletes a physical body joint
  * @param[in]   _pstBodyJoint                         Concerned physical body joint
  */
-extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteBodyJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint);
+extern orxDLLAPI void orxFASTCALL                     orxPhysics_DeleteJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoint);
 
 
 /** Sets the position of a physical body
@@ -412,6 +425,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularVeloc
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity);
 
+/** Sets the fixed rotation property of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _bFixed                               Fixed / not fixed
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetFixedRotation(orxPHYSICS_BODY *_pstBody, orxBOOL _bFixed);
+
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvPosition                           Position to get
@@ -432,6 +452,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetRotation(con
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
 
+/** Gets the speed of a physical body at a specified world position
+ * @param[in]   _pstBody                              Concerned body
+ * @param[in]   _pvPosition                           Concerned world position
+ * @param[out]  _pvSpeed                              Speed to get
+ * @return Speed of the physical body
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed);
+
 /** Gets the angular velocity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @return Angular velocity (radians/seconds) of the physical body
@@ -444,6 +472,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularVeloc
  * @return Physical body custom gravity / orxNULL is object doesn't have any
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity);
+
+/** Is a physical body using a fixed rotation
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE if fixed rotation, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsFixedRotation(const orxPHYSICS_BODY *_pstBody);
 
 /** Gets the mass of a physical body
  * @param[in]   _pstBody                              Concerned physical body
@@ -480,7 +514,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAngularDampi
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetLinearDamping(const orxPHYSICS_BODY *_pstBody);
 
 /** Gets angular damping of a physical body
- * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pstBody                              Concerned physical body
  * @return Angular damping of the physical body
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetAngularDamping(const orxPHYSICS_BODY *_pstBody);
@@ -537,13 +571,13 @@ extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartSelfFlag
 extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
 /** Is a physical body part solid?
- * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
 /** Sets a physical body part solid
- * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
  * @param[in]   _bSolid         Solid or sensor?
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -570,6 +604,20 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMotorSp
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI void orxFASTCALL                     orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
+
+
+/** Gets the reaction force on the attached body at the joint anchor
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[out]  _pvForce                              Reaction force
+ * @return      Reaction force in Newtons
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce);
+
+/** Gets the reaction torque on the attached body
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @return      Reaction torque
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOINT *_pstBodyJoint);
 
 
 /** Issues a raycast to test for potential physics bodies in the way

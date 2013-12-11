@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxEvent
- * 
+ *
  * Event module
  * Module that handles internal events
  * @{
@@ -80,6 +80,7 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_OBJECT,
   orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
+  orxEVENT_TYPE_RESOURCE,
   orxEVENT_TYPE_SHADER,
   orxEVENT_TYPE_SOUND,
   orxEVENT_TYPE_SPAWNER,
@@ -91,7 +92,7 @@ typedef enum __orxEVENT_TYPE_t
 
   orxEVENT_TYPE_FIRST_RESERVED = orxEVENT_TYPE_CORE_NUMBER,
 
-  orxEVENT_TYPE_LAST_RESERVED = 127,
+  orxEVENT_TYPE_LAST_RESERVED = 255,
 
   orxEVENT_TYPE_USER_DEFINED,
 

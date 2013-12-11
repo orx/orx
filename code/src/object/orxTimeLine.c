@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -39,6 +39,7 @@
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "object/orxObject.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
@@ -101,7 +102,7 @@
  */
 typedef struct __orxTIMELINE_TRACK_EVENT_t
 {
-  orxSTRING                 zEventText;               /**< Event text : 4 */
+  const orxSTRING           zEventText;               /**< Event text : 4 */
   orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 */
 
 } orxTIMELINE_TRACK_EVENT;
@@ -133,7 +134,7 @@ typedef struct __orxTIMELINE_TRACK_HOLDER_t
  */
 struct __orxTIMELINE_t
 {
-  orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 32 */
   const orxSTRUCTURE       *pstOwner;                 /**< Owner structure : 20 */
   orxFLOAT                  fTime;                    /**< Time : 24 */
   orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 152 */
@@ -237,10 +238,10 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
       if(pstResult != orxNULL)
       {
         /* Stores its ID */
-        pstResult->u32ID = orxString_ToCRC(_zTrackID);
+        pstResult->u32ID = orxString_GetID(orxConfig_GetCurrentSection());
 
         /* Adds it to reference table */
-        if(orxHashTable_Add(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
+        if(orxHashTable_Set(sstTimeLine.pstTrackTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
         {
           orxU32 u32EventIndex;
 
@@ -279,7 +280,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
 
               /* Stores event */
               pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
-              pstResult->astEventList[u32EventIndex].zEventText = orxString_Duplicate(orxConfig_GetListString(zKey, i));
+              pstResult->astEventList[u32EventIndex].zEventText = orxString_GetFromID(orxString_GetID(orxConfig_GetListString(zKey, i)));
             }
 
             /* Clears time entry */
@@ -287,10 +288,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           }
 
           /* Stores its reference */
-          pstResult->zReference = orxConfig_GetCurrentSection();
-
-          /* Protects it */
-          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+          pstResult->zReference = orxString_GetFromID(pstResult->u32ID);
 
           /* Updates track counters */
           pstResult->u32RefCounter    = 1;
@@ -318,13 +316,13 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
     }
 
     /* Pops previous section */
@@ -350,24 +348,12 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
   /* Not referenced? */
   if(_pstTrack->u32RefCounter == 0)
   {
-    orxU32 i;
-
     /* Has an ID? */
     if((_pstTrack->zReference != orxNULL)
     && (_pstTrack->zReference != orxSTRING_EMPTY))
     {
       /* Removes it from the table */
       orxHashTable_Remove(sstTimeLine.pstTrackTable, _pstTrack->u32ID);
-
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstTrack->zReference, orxFALSE);
-    }
-
-    /* For all its events */
-    for(i = 0; i < _pstTrack->u32EventCounter; i++)
-    {
-      /* Frees its text event */
-      orxString_Delete(_pstTrack->astEventList[i].zEventText);
     }
 
     /* Deletes it */
@@ -376,6 +362,106 @@ static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
 
   /* Done! */
   return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      orxHANDLE           hIterator;
+      orxU32              u32Key;
+      orxTIMELINE_TRACK  *pstTrack;
+
+      /* For all tracks */
+      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstTrack);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u32Key, (void **)&pstTrack))
+      {
+        /* Match origin? */
+        if(orxConfig_GetOriginID(pstTrack->zReference) == pstPayload->u32NameID)
+        {
+          orxTIMELINE        *pstTimeLine;
+          orxTIMELINE_TRACK  *pstNewTrack;
+          orxU32              u32Counter, u32ID, u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+          const orxSTRING     zReference;
+
+          /* Backups counter, ID & reference */
+          u32Counter  = pstTrack->u32RefCounter;
+          u32ID       = pstTrack->u32ID;
+          zReference  = pstTrack->zReference;
+
+          /* Deletes it (but keeps it reference in the hashtable to prevent infinite loop upon table changes) */
+          orxMemory_Free(pstTrack);
+
+          /* Creates new track */
+          pstNewTrack = orxTimeLine_CreateTrack(zReference);
+
+          /* Success? */
+          if(pstNewTrack != orxNULL)
+          {
+            /* Restores its counter */
+            pstNewTrack->u32RefCounter = u32Counter;
+
+            /* Pushes its config section */
+            orxConfig_PushSection(zReference);
+
+            /* Should loop? */
+            if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_LOOP) != orxFALSE)
+            {
+              /* Updates flags */
+              u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_LOOP;
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
+          else
+          {
+            /* Removes old reference from the table */
+            orxHashTable_Remove(sstTimeLine.pstTrackTable, u32ID);
+          }
+
+          /* For all timelines */
+          for(pstTimeLine = orxTIMELINE(orxStructure_GetFirst(orxSTRUCTURE_ID_TIMELINE));
+              pstTimeLine != orxNULL;
+              pstTimeLine = orxTIMELINE(orxStructure_GetNext(pstTimeLine)))
+          {
+            orxU32 u32Index;
+
+            /* For all its track */
+            for(u32Index = 0; u32Index < orxTIMELINE_KU32_TRACK_NUMBER; u32Index++)
+            {
+              /* Matches? */
+              if(pstTimeLine->astTrackList[u32Index].pstTrack == pstTrack)
+              {
+                /* Updates its data */
+                pstTimeLine->astTrackList[u32Index].pstTrack = pstNewTrack;
+
+                /* Updates its flags */
+                orxFLAG_SET(pstTimeLine->astTrackList[u32Index].u32Flags, u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_LOOP);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Deletes all the TimeLines
@@ -586,6 +672,7 @@ void orxFASTCALL orxTimeLine_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_CLOCK);
@@ -637,6 +724,9 @@ orxSTATUS orxFASTCALL orxTimeLine_Init()
   {
     /* Inits Flags */
     orxFLAG_SET(sstTimeLine.u32Flags, orxTIMELINE_KU32_STATIC_FLAG_READY, orxTIMELINE_KU32_STATIC_FLAG_NONE);
+
+    /* Adds event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTimeLine_EventHandler);
   }
   else
   {
@@ -659,6 +749,9 @@ void orxFASTCALL orxTimeLine_Exit()
   if(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY)
   {
     orxTIMELINE_TRACK *pstTrack;
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTimeLine_EventHandler);
 
     /* Deletes TimeLine list */
     orxTimeLine_DeleteAll();

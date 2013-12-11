@@ -1,5 +1,6 @@
 var orx_sound_8h =
 [
+    [ "orxSOUND_KZ_RESOURCE_GROUP", "orx_sound_8h.html#gabe95e9dd9341847d9dbfc11c2fd09b60", null ],
     [ "orxSOUND", "orx_sound_8h.html#ga58e0a61f287672d13130384705fe6c87", null ],
     [ "orxSOUND_EVENT", "orx_sound_8h.html#gae4874020c9c68ac319642a5eb6d49775", [
       [ "orxSOUND_EVENT_START", "orx_sound_8h.html#ggae4874020c9c68ac319642a5eb6d49775aac1c77343d17aa3aefa55d46ecb041a5", null ],

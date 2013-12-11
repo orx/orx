@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -208,6 +208,14 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(c
  * @return Current Anim ID. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget);
+
+/** Finds next Anim given current and destination Anim IDs
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32SrcAnim                         Source (current) Anim ID
+ * @param[in]   _u32DstAnim                         Destination Anim ID, if none (auto mode) set it to orxU32_UNDEFINED
+ * @return Next Anim ID if found, orxU32_UNDEFINED otherwise
+*/
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_FindNextAnim(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim);
 
 /** AnimSet Anim get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet

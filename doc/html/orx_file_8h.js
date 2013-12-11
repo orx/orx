@@ -16,13 +16,14 @@ var orx_file_8h =
     [ "orxFile_FindFirst", "orx_file_8h.html#ga053cfcea3db4c6d74d643bfa7e210773", null ],
     [ "orxFile_FindNext", "orx_file_8h.html#gab1b28f2e382eedcc12d639ae99e83b67", null ],
     [ "orxFile_GetInfo", "orx_file_8h.html#gab3f0c189fe842c6628177e5bdbd89166", null ],
-    [ "orxFile_GetSize", "orx_file_8h.html#ga017e8a1b07e7dac74193f5908bcabfcf", null ],
+    [ "orxFile_GetSize", "orx_file_8h.html#ga89e9d6542f6969ac17b268424960ea5a", null ],
+    [ "orxFile_GetTime", "orx_file_8h.html#ga98c8abe42adee0ecf4c9a5b48f82f9b0", null ],
     [ "orxFile_Init", "orx_file_8h.html#ga58fad06e476d24fe45d96f42c304eb65", null ],
     [ "orxFile_Open", "orx_file_8h.html#ga69cb0d04489c13daba0ebd380a4ae19b", null ],
     [ "orxFile_Print", "orx_file_8h.html#gaa488b51b271b256b7b4515516cb08dde", null ],
-    [ "orxFile_Read", "orx_file_8h.html#ga6b28e81a5fe57e673f79b20c3f6c641f", null ],
-    [ "orxFile_Seek", "orx_file_8h.html#gaad3788ccc8b930c0034b59039ab23344", null ],
+    [ "orxFile_Read", "orx_file_8h.html#ga9ee4abd9c34e1217218667fc95c97d3b", null ],
+    [ "orxFile_Seek", "orx_file_8h.html#gac8fd28773af6bc29e0d059144e1d652e", null ],
     [ "orxFile_Setup", "orx_file_8h.html#ga3211b72acbc9ff98a67d97ee757acd7d", null ],
-    [ "orxFile_Tell", "orx_file_8h.html#ga7e03dfe3355ee7eedf288737757389bf", null ],
-    [ "orxFile_Write", "orx_file_8h.html#ga179d964e4e74c7266468f7f6c54dc1ad", null ]
+    [ "orxFile_Tell", "orx_file_8h.html#gae9e4ff1d2d29b68e461e1e8967e97f9f", null ],
+    [ "orxFile_Write", "orx_file_8h.html#ga78d8a632fb1a9e52fe3a0bd15f2f1cf2", null ]
 ];

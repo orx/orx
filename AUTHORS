@@ -11,32 +11,39 @@ Orx authors:
     Emilien Kia
     Romain Killian
 
-  IDE project files (CodeLite, Visual Studio, XCode) and external dependencies:
+  IDE project files (CodeLite, Visual Studio, XCode, Premake) and external dependencies:
+    4babce
     Grey
     Romain Killian
 
-  MacOS X (ppc/x86) version:
+  Windows, MacOS X & Linux versions:
     Romain Killian
 
   iOS (iPhone/iPod Touch/iPad) version:
     Romain Killian
 
-  Android versions:
+  Android version:
     Cai 'laschweinski' Huaxu (1.6+)
-    Philippe 'Lydesik' Simons (native, 2.3+)
-    Gilles 'faistoiplaisir' Zucchini (native, 2.3+)
+    Philippe 'Lydesik' Simons (2.3+)
+    Gilles 'faistoiplaisir' Zucchini (2.3+)
 
-  Main executable, demos and tutorials:
+  Launcher, demos and tutorials:
     Romain Killian
 
   Community tutorials:
+    Acksys
     Grey
     Iarwain
+    Katarak
     Lydesik
     Sausage
     TDomhan
 
-  OpenAL sound recording, compressed texture support:
+  OpenAL sound recording:
+    TDomhan
+
+  Compressed texture support:
+    Lydesik
     TDomhan
 
   Most error and warning messages:
@@ -48,5 +55,5 @@ Orx authors:
   Demo graphics:
     Ebe, Mochi
 
-  Default font:
+  Default font (dina):
     Jørgen 'Jibs' Ibsen

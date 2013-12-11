@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -89,7 +89,7 @@ static orxSTATUS orxFASTCALL Run()
   orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
 
   /* Gets mouse position in world space */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos))
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
   {
     orxVECTOR vGeneratorPos;
 
@@ -104,14 +104,14 @@ static orxSTATUS orxFASTCALL Run()
   }
 
   /* Gets gravity vector from input */
-  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), orxInput_GetValue("GravityY"), orxFLOAT_0);
+  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"), orxFLOAT_0);
 
   /* Significant enough? */
   if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
   {
     static orxVECTOR svSmoothedGravity =
     {
-      0.0,1.0f,0.0
+      orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
     };
 
     /* Gets smoothed gravity from new value (low-pass filter) */

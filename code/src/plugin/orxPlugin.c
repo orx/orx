@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -42,20 +42,11 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__)
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-  #ifdef __orxWINDOWS__
-
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
-  #endif /* __orxWINDOWS__ */
-
-#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
 
 
 /** Platform dependent type & function defines
@@ -552,7 +543,7 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
  */
 static orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
 {
-  orxPLUGIN_INFO *pstPluginInfo = orxNULL;
+  orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
   orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
@@ -808,6 +799,7 @@ void orxFASTCALL orxPlugin_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_CONFIG);
 
@@ -1055,7 +1047,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   orxASSERT(_zPluginName != orxNULL);
 
   /* Inits buffer */
-  zFileName[255] = orxCHAR_NULL;
+  zFileName[sizeof(zFileName) - 1] = orxCHAR_NULL;
 
 #ifdef __orxDEBUG__
 
@@ -1063,7 +1055,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   zDebugSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX);
 
   /* Gets complete name */
-  orxString_NPrint(zFileName, 255, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
+  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
 
   /* Loads it */
   hResult = orxPlugin_Load(zFileName, _zPluginName);
@@ -1073,9 +1065,9 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   {
 
 #endif /* __orxDEBUG__ */
-    
+
   /* Gets complete name */
-  orxString_NPrint(zFileName, 255, "%s.%s", _zPluginFileName, szPluginLibraryExt);
+  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   /* Loads it */
   hResult = orxPlugin_Load(zFileName, _zPluginName);

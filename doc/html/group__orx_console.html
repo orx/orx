@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -96,12 +103,38 @@ $(document).ready(function(){initNavTree('group__orx_console.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OrxConsole</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga2ef0b8d0a9bd93e786ab72e4e44cfe63"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63">orxCONSOLE_KZ_INPUT_AUTOCOMPLETE</a>&#160;&#160;&#160;&quot;AutoComplete&quot;</td></tr>
+<tr class="separator:ga2ef0b8d0a9bd93e786ab72e4e44cfe63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaffdbd164c84f06647c8e0c79b49e7023"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023">orxCONSOLE_KZ_INPUT_DELETE</a>&#160;&#160;&#160;&quot;Delete&quot;</td></tr>
+<tr class="separator:gaffdbd164c84f06647c8e0c79b49e7023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7cf90b1814c4ab1ce2b31f56325c9b79"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga7cf90b1814c4ab1ce2b31f56325c9b79">orxCONSOLE_KZ_INPUT_END</a>&#160;&#160;&#160;&quot;End&quot;</td></tr>
+<tr class="separator:ga7cf90b1814c4ab1ce2b31f56325c9b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa7fe6035175d80d28aaf5bb02e0afbe1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gaa7fe6035175d80d28aaf5bb02e0afbe1">orxCONSOLE_KZ_INPUT_ENTER</a>&#160;&#160;&#160;&quot;Enter&quot;</td></tr>
+<tr class="separator:gaa7fe6035175d80d28aaf5bb02e0afbe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2613d6eeaf63099c8447ad92ecdccf1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga2613d6eeaf63099c8447ad92ecdccf1e">orxCONSOLE_KZ_INPUT_LEFT</a>&#160;&#160;&#160;&quot;Left&quot;</td></tr>
+<tr class="separator:ga2613d6eeaf63099c8447ad92ecdccf1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20c76b2fc619147d29290b8523cc0e82"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga20c76b2fc619147d29290b8523cc0e82">orxCONSOLE_KZ_INPUT_NEXT</a>&#160;&#160;&#160;&quot;Next&quot;</td></tr>
+<tr class="separator:ga20c76b2fc619147d29290b8523cc0e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad93ec6077faace2cbb856e3a090ee290"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gad93ec6077faace2cbb856e3a090ee290">orxCONSOLE_KZ_INPUT_PREVIOUS</a>&#160;&#160;&#160;&quot;Previous&quot;</td></tr>
+<tr class="separator:gad93ec6077faace2cbb856e3a090ee290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaefcdd23907049ded9b12ea7ce421f663"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gaefcdd23907049ded9b12ea7ce421f663">orxCONSOLE_KZ_INPUT_RIGHT</a>&#160;&#160;&#160;&quot;Right&quot;</td></tr>
+<tr class="separator:gaefcdd23907049ded9b12ea7ce421f663"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4d5c257aca0b99f7e7c92d0b72ce8197"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga4d5c257aca0b99f7e7c92d0b72ce8197">orxCONSOLE_KZ_INPUT_SET</a>&#160;&#160;&#160;&quot;-=ConsoleSet=-&quot;</td></tr>
+<tr class="separator:ga4d5c257aca0b99f7e7c92d0b72ce8197"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga29d52437b05553a053b434165d5bbeab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga29d52437b05553a053b434165d5bbeab">orxCONSOLE_KZ_INPUT_START</a>&#160;&#160;&#160;&quot;Start&quot;</td></tr>
+<tr class="separator:ga29d52437b05553a053b434165d5bbeab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga332e8d61d04138184aaf878193623431"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga332e8d61d04138184aaf878193623431">orxCONSOLE_KZ_INPUT_TOGGLE</a>&#160;&#160;&#160;&quot;Toggle&quot;</td></tr>
+<tr class="separator:ga332e8d61d04138184aaf878193623431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gad3bae40e302c140330f2c9b84bce62b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gad3bae40e302c140330f2c9b84bce62b9">orxConsole_Enable</a> (orxBOOL _bEnable)</td></tr>
@@ -129,11 +162,179 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga112f1868a022f4f279c86aad0ee9361c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacd3c960e8277577e152b9fe22e8ae210"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210">orxConsole_SetLogLineLength</a> (orxU32 _u32LineLength)</td></tr>
 <tr class="separator:gacd3c960e8277577e152b9fe22e8ae210"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa51b5f9a49e93eab97254b126f160792"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gaa51b5f9a49e93eab97254b126f160792">orxConsole_SetToggle</a> (<a class="el" href="group__orx_input.html#ga13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eInputType, orxENUM _eInputID)</td></tr>
+<tr class="separator:gaa51b5f9a49e93eab97254b126f160792"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga86a9705132e4f6e0a4b4f5378308dc32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga86a9705132e4f6e0a4b4f5378308dc32">orxConsole_Setup</a> ()</td></tr>
 <tr class="separator:ga86a9705132e4f6e0a4b4f5378308dc32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Console module Module that can execute consoles and log info at runtime </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga2ef0b8d0a9bd93e786ab72e4e44cfe63"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE&#160;&#160;&#160;&quot;AutoComplete&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Autocomplete input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00055">55</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaffdbd164c84f06647c8e0c79b49e7023"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_DELETE&#160;&#160;&#160;&quot;Delete&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Delete input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00056">56</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga7cf90b1814c4ab1ce2b31f56325c9b79"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_END&#160;&#160;&#160;&quot;End&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cursor move end </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00063">63</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaa7fe6035175d80d28aaf5bb02e0afbe1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_ENTER&#160;&#160;&#160;&quot;Enter&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enter input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00057">57</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga2613d6eeaf63099c8447ad92ecdccf1e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_LEFT&#160;&#160;&#160;&quot;Left&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cursor move left </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00060">60</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga20c76b2fc619147d29290b8523cc0e82"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_NEXT&#160;&#160;&#160;&quot;Next&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Next input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00059">59</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gad93ec6077faace2cbb856e3a090ee290"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_PREVIOUS&#160;&#160;&#160;&quot;Previous&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Previous input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00058">58</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaefcdd23907049ded9b12ea7ce421f663"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_RIGHT&#160;&#160;&#160;&quot;Right&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cursor move right </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00061">61</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga4d5c257aca0b99f7e7c92d0b72ce8197"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_SET&#160;&#160;&#160;&quot;-=ConsoleSet=-&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>InputsConsole input set </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00052">52</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga29d52437b05553a053b434165d5bbeab"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_START&#160;&#160;&#160;&quot;Start&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cursor move start </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00062">62</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga332e8d61d04138184aaf878193623431"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxCONSOLE_KZ_INPUT_TOGGLE&#160;&#160;&#160;&quot;Toggle&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Toggle input </p>
+
+<p>Definition at line <a class="el" href="orx_console_8h_source.html#l00054">54</a> of file <a class="el" href="orx_console_8h_source.html">orxConsole.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="gad3bae40e302c140330f2c9b84bce62b9"></a>
 <div class="memitem">
@@ -359,6 +560,41 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS/ orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaa51b5f9a49e93eab97254b126f160792"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConsole_SetToggle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_input.html#ga13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a>&#160;</td>
+          <td class="paramname"><em>_eInputType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxENUM&#160;</td>
+          <td class="paramname"><em>_eInputID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the console toggle </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eInputType</td><td>Type of input peripheral </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eInputID</td><td>ID of button/key/axis </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>

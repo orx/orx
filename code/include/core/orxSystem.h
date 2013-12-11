@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxSystem
- * 
+ *
  * Module file
  * Code that handles modules and their dependencies
  *
@@ -45,21 +45,6 @@
 
 #include "orxInclude.h"
 #include "math/orxVector.h"
-
-#if defined(__orxIOS__) && defined(__orxOBJC__)
-
-  #import <UIKit/UIKit.h>
-
-#endif /* __orxIOS__ && __orxOBJC__ */
-
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-  #include <jni.h>
-
-  // Max number touch available for the Android version
-  #define orxANDROID_TOUCH_NUMBER 4
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Event enum
  */
@@ -80,7 +65,7 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_TOUCH_END,
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
-  
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -127,15 +112,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxSystem_Init();
  */
 extern orxDLLAPI void orxFASTCALL       orxSystem_Exit();
 
-/** Gets current time (elapsed from the beginning of the application)
+/** Gets current time (elapsed from the beginning of the application, in seconds)
  * @return Current time
  */
 extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetTime();
 
-/** Gets current real time (in seconds)
- * @return Current real time
+/** Gets real time (in seconds)
+ * @return Returns the amount of seconds elapsed since reference time (epoch)
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxSystem_GetRealTime();
+extern orxDLLAPI orxU64 orxFASTCALL     orxSystem_GetRealTime();
+
+/** Gets current internal system time (in seconds)
+ * @return Current internal system time
+ */
+extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetSystemTime();
 
 /** Delay the program for given number of seconds
  * @param[in] _fSeconds             Number of seconds to wait

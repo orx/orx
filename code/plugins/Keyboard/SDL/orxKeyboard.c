@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -123,7 +123,7 @@ static SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_QUOTE:         {eResult = SDLK_QUOTE; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = SDLK_SLASH; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = SDLK_BACKSLASH; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = SDLK_BACKQUOTE; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = SDLK_BACKQUOTE; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = SDLK_EQUALS; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = SDLK_UNDERSCORE; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = SDLK_F1; break;}
@@ -324,6 +324,11 @@ void orxFASTCALL orxKeyboard_SDL_ClearBuffer()
   return;
 }
 
+orxSTATUS orxFASTCALL orxKeyboard_SDL_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -335,4 +340,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_IsKeyPressed, KEYBOARD, IS_KEY_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SDL_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

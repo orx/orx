@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -112,7 +112,7 @@ static sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eK
     case orxKEYBOARD_KEY_QUOTE:         {eResult = sf::Key::Quote; break;}
     case orxKEYBOARD_KEY_SLASH:         {eResult = sf::Key::Slash; break;}
     case orxKEYBOARD_KEY_BACKSLASH:     {eResult = sf::Key::BackSlash; break;}
-    case orxKEYBOARD_KEY_TILDE:         {eResult = sf::Key::Tilde; break;}
+    case orxKEYBOARD_KEY_BACKQUOTE:     {eResult = sf::Key::Tilde; break;}
     case orxKEYBOARD_KEY_EQUAL:         {eResult = sf::Key::Equal; break;}
     case orxKEYBOARD_KEY_DASH:          {eResult = sf::Key::Dash; break;}
     case orxKEYBOARD_KEY_F1:            {eResult = sf::Key::F1; break;}
@@ -227,7 +227,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_GetKeyID(sf::Key::Code _eKey
     case sf::Key::Quote:      {eResult = orxKEYBOARD_KEY_QUOTE; break;}
     case sf::Key::Slash:      {eResult = orxKEYBOARD_KEY_SLASH; break;}
     case sf::Key::BackSlash:  {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case sf::Key::Tilde:      {eResult = orxKEYBOARD_KEY_TILDE; break;}
+    case sf::Key::Tilde:      {eResult = orxKEYBOARD_KEY_BACKQUOTE; break;}
     case sf::Key::Equal:      {eResult = orxKEYBOARD_KEY_EQUAL; break;}
     case sf::Key::Dash:       {eResult = orxKEYBOARD_KEY_DASH; break;}
     case sf::Key::F1:         {eResult = orxKEYBOARD_KEY_F1; break;}
@@ -409,6 +409,11 @@ extern "C" void orxFASTCALL orxKeyboard_SFML_ClearBuffer()
   return;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Show(orxBOOL _bShow)
+{
+  return orxSTATUS_FAILURE;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -420,4 +425,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_IsKeyPressed, KEYBOARD, IS_KEY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_Show, KEYBOARD, SHOW);
 orxPLUGIN_USER_CORE_FUNCTION_END();

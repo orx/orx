@@ -1,5 +1,6 @@
 var orx_texture_8h =
 [
+    [ "orxTEXTURE_KZ_RESOURCE_GROUP", "orx_texture_8h.html#gaca0712d36a90486d46a2d4c159e2444d", null ],
     [ "orxTEXTURE_KZ_SCREEN_NAME", "orx_texture_8h.html#gaaf12ea9274ab61238614c097cafb790d", null ],
     [ "orxTEXTURE", "orx_texture_8h.html#gacdeb7b348fc4cb4910155013b459ea4a", null ],
     [ "orxTEXTURE_EVENT", "orx_texture_8h.html#gaf4b625f49855b667995b2ed8b9887a75", [

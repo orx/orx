@@ -13,7 +13,7 @@ var group__orx_command =
     ] ],
     [ "orxCOMMAND_VAR_DEF", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html", [
       [ "eType", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7", null ],
-      [ "zName", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a31bc95621905ff6dd27223d39fe2a66c", null ]
+      [ "zName", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79", null ]
     ] ],
     [ "orxCOMMAND_REGISTER_CORE_COMMAND", "group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2", null ],
     [ "orxCOMMAND_UNREGISTER_CORE_COMMAND", "group__orx_command.html#gac5f19d9731fa026b64528d186415fe67", null ],
@@ -39,6 +39,7 @@ var group__orx_command =
     [ "orxCommand_Init", "group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc", null ],
     [ "orxCommand_IsAlias", "group__orx_command.html#gaaeb95264c698906fdaf3f54ba91011b3", null ],
     [ "orxCommand_IsRegistered", "group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6", null ],
+    [ "orxCommand_ParseNumericalArguments", "group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb", null ],
     [ "orxCommand_Register", "group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601", null ],
     [ "orxCommand_RemoveAlias", "group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51", null ],
     [ "orxCommand_Setup", "group__orx_command.html#ga74927728d29562dce492a1c305a470ad", null ],

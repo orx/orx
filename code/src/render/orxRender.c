@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,6 +34,55 @@
 
 #include "plugin/orxPluginCore.h"
 
+#include "core/orxCommand.h"
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+/** Command: GetWorldPosition
+ */
+void orxFASTCALL orxRender_CommandGetWorldPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Gets world position */
+  orxRender_GetWorldPosition(&(_astArgList[0].vValue), orxNULL, &(_pstResult->vValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetScreenPosition
+ */
+void orxFASTCALL orxRender_CommandGetScreenPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Gets screen position */
+  orxRender_GetScreenPosition(&(_astArgList[0].vValue), orxNULL, &(_pstResult->vValue));
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the render commands
+ */
+static orxINLINE void orxRender_RegisterCommands()
+{
+  /* Command: GetWorldPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetWorldPosition, "WorldPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetScreenPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetScreenPosition, "ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"WorldPos", orxCOMMAND_VAR_TYPE_VECTOR});
+}
+
+/** Unregisters all the render commands
+ */
+static orxINLINE void orxRender_UnregisterCommands()
+{
+  /* Command: GetWorldPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Render, GetWorldPosition);
+  /* Command: GetScreenPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Render, GetScreenPosition);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -50,6 +99,7 @@ void orxFASTCALL orxRender_Setup()
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_FPS);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_VIEWPORT);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_DISPLAY);
@@ -70,7 +120,7 @@ void orxFASTCALL orxRender_Setup()
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, void, void);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, const orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, const orxVECTOR *, const orxVIEWPORT *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetScreenPosition, orxVECTOR *, const orxVECTOR *, const orxVIEWPORT *, orxVECTOR *);
 
 
@@ -90,17 +140,33 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
 orxSTATUS orxFASTCALL orxRender_Init()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
+  orxSTATUS eResult;
+
+  /* Updates result */
+  eResult = orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Registers all commands */
+    orxRender_RegisterCommands();
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 void orxFASTCALL orxRender_Exit()
 {
+  /* Unregisters commands */
+  orxRender_UnregisterCommands();
+
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
 }
 
-orxVECTOR *orxFASTCALL orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxFASTCALL orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvWorldPosition)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pstViewport, _pvWorldPosition);
 }
 
 orxVECTOR *orxFASTCALL orxRender_GetScreenPosition(const orxVECTOR *_pvWorldPosition, const orxVIEWPORT *_pstViewport, orxVECTOR *_pvScreenPosition)

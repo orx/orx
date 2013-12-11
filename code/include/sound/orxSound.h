@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,6 +47,11 @@
 #include "orxInclude.h"
 #include "sound/orxSoundSystem.h"
 #include "math/orxVector.h"
+
+
+/** Misc defines
+ */
+#define orxSOUND_KZ_RESOURCE_GROUP            "Sound"
 
 
 /** Sound status enum
@@ -156,7 +161,7 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const or
  * @param[in] _u32ChannelNumber Number of channels of the stream
  * @param[in] _u32SampleRate    Sampling rate of the stream (ie. number of frames per second)
  * @param[in] _zName            Name to associate with this sound
- * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ * @return orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zName);
 

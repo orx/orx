@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,20 +34,22 @@
 
 #include "orxPluginAPI.h"
 
-#define             TRAIL_POINT_NUMBER                      40
+#define             TRAIL_POINT_NUMBER                      80
 
 static orxU32       su32VideoModeIndex                    = 0;
-static orxSPAWNER  *spoBallSpawner;
-static orxVIEWPORT *spstViewport;
-static orxOBJECT   *spstWalls;
+static orxBOOL      sbShaderEnabled                       = orxFALSE;
+static orxSPAWNER  *spoBallSpawner                        = orxNULL;
+static orxOBJECT   *spstWalls                             = orxNULL;
 static orxFLOAT     sfShaderPhase                         = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude                     = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency                     = orx2F(1.0f);
-static orxVECTOR    svColor;
+static orxVECTOR    svColor                               = {0};
 static orxFLOAT     sfColorTime                           = orx2F(0.0f);
+static orxFLOAT     sfTrailTimer                          = orx2F(0.0f);
 static orxBOOL      sbRecord                              = orxFALSE;
 static orxU32       su32TrailIndex                        = 0;
 static orxVECTOR    savTrailPointList[TRAIL_POINT_NUMBER] = {0};
+static orxVECTOR    savTrailSpeedList[TRAIL_POINT_NUMBER] = {0};
 
 /** Applies current selected video mode
  */
@@ -86,7 +88,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     if(i < TRAIL_POINT_NUMBER - 1)
     {
       /* Gets offset vector */
-      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(12.0f));
+      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(40.0f) / orxMath_Pow(orxS2F(i), orx2F(0.6f)));
     }
 
     /* Computes vertices positions */
@@ -94,8 +96,8 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     orxVector_Sub(&vVertex2, &savTrailPointList[u32Index], &vOffset);
 
     /* Stores vertices */
-    STORE_VERTEX(i * 2, vVertex1.fX, vVertex1.fY, 0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0x00, 0xFF * i / (TRAIL_POINT_NUMBER - 1)));
-    STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, 1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0x00, 0xFF * i / (TRAIL_POINT_NUMBER - 1)));
+    STORE_VERTEX(i * 2, vVertex1.fX, vVertex1.fY, orxFLOAT_0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+    STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, orxFLOAT_1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
   }
 
   /* Draws trail */
@@ -106,16 +108,50 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
  */
 static void orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  orxU32    i;
   orxVECTOR vMousePos;
 
   /* Gets mouse position */
   orxMouse_GetPosition(&vMousePos);
 
-  /* Adds it to the trail */
-  orxVector_Copy(&savTrailPointList[su32TrailIndex], &vMousePos);
+  /* Updates trail timer */
+  sfTrailTimer -= _pstClockInfo->fDT;
 
-  /* Updates trail index */
-  su32TrailIndex = (su32TrailIndex + 1) % TRAIL_POINT_NUMBER;
+  /* Should add new segment? */
+  if(sfTrailTimer <= orxFLOAT_0)
+  {
+    /* Pushes bounce section */
+    orxConfig_PushSection("Bounce");
+
+    /* Resets trail timer */
+    sfTrailTimer = orxConfig_GetFloat("TrailTimer");
+
+    /* Adds it to the trail */
+    orxVector_Copy(&savTrailPointList[su32TrailIndex], &vMousePos);
+
+    /* Gets its speed */
+    orxConfig_GetVector("TrailSpeed", &savTrailSpeedList[su32TrailIndex]);
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
+    /* Updates trail index */
+    su32TrailIndex = (su32TrailIndex + 1) % TRAIL_POINT_NUMBER;
+  }
+  else
+  {
+    /* Keeps last created point on pos */
+    orxVector_Copy(&savTrailPointList[(su32TrailIndex == 0) ? TRAIL_POINT_NUMBER - 1 : su32TrailIndex - 1], &vMousePos);
+  }
+
+  /* For all segments */
+  for(i = 0; i < TRAIL_POINT_NUMBER; i++)
+  {
+    orxVECTOR vTemp;
+
+    /* Updates its position */
+    orxVector_Add(&savTrailPointList[i], &savTrailPointList[i], orxVector_Mulf(&vTemp, &savTrailSpeedList[i], _pstClockInfo->fDT));
+  }
 }
 
 /** Bounce event handler
@@ -196,8 +232,14 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       /* Gets its payload */
       pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
+      /* Enabled? */
+      if(!orxString_Compare(pstPayload->zParamName, "enabled"))
+      {
+        /* Updates its value */
+        pstPayload->fValue = (sbShaderEnabled != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      }
       /* Phase? */
-      if(!orxString_Compare(pstPayload->zParamName, "phase"))
+      else if(!orxString_Compare(pstPayload->zParamName, "phase"))
       {
         /* Updates its value */
         pstPayload->fValue = sfShaderPhase;
@@ -278,8 +320,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
         /* Updates title string */
         orxConfig_PushSection("Bounce");
-        orxString_NPrint(acBuffer, 1023, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->u32Width, pstPayload->u32Height);
-        acBuffer[1023] = orxCHAR_NULL;
+        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->u32Width, pstPayload->u32Height);
+        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         orxConfig_PopSection();
 
         /* Updates display module config content */
@@ -360,7 +402,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos;
-  orxBOOL   bInViewport;
 
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
@@ -431,44 +472,40 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   }
 
   /* Gets mouse world position */
-  bInViewport = (orxRender_GetWorldPosition(&vMousePos, orxMouse_GetPosition(&vMousePos)) != orxNULL) ? orxTRUE : orxFALSE;
+  orxRender_GetWorldPosition(&vMousePos, orxNULL, orxMouse_GetPosition(&vMousePos));
 
-  /* Is mouse in a viewport? */
-  if(bInViewport != orxFALSE)
+  /* Updates position */
+  vMousePos.fZ += orx2F(0.5f);
+
+  /* Has ball spawner? */
+  if(spoBallSpawner != orxNULL)
   {
-    /* Updates position */
-    vMousePos.fZ += orx2F(0.5f);
+    /* Updates its position */
+    orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
+  }
 
-    /* Has ball spawner? */
-    if(spoBallSpawner != orxNULL)
+  /* Spawning */
+  if(orxInput_IsActive("Spawn"))
+  {
+    /* Spawns one ball */
+    orxSpawner_Spawn(spoBallSpawner, 1);
+  }
+  /* Picking? */
+  else if(orxInput_IsActive("Pick"))
+  {
+    orxOBJECT *pstObject;
+
+    /* Updates mouse position */
+    vMousePos.fZ -= orx2F(0.1f);
+
+    /* Picks object under mouse */
+    pstObject = orxObject_Pick(&vMousePos, orxU32_UNDEFINED);
+
+    /* Found? */
+    if(pstObject)
     {
-      /* Updates its position */
-      orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
-    }
-
-    /* Spawning */
-    if(orxInput_IsActive("Spawn"))
-    {
-      /* Spawns one ball */
-      orxSpawner_Spawn(spoBallSpawner, 1);
-    }
-    /* Picking? */
-    else if(orxInput_IsActive("Pick"))
-    {
-      orxOBJECT *pstObject;
-
-      /* Updates mouse position */
-      vMousePos.fZ -= orx2F(0.1f);
-
-      /* Picks object under mouse */
-      pstObject = orxObject_Pick(&vMousePos);
-
-      /* Found? */
-      if(pstObject)
-      {
-        /* Adds FX */
-        orxObject_AddUniqueFX(pstObject, "Pick");
-      }
+      /* Adds FX */
+      orxObject_AddUniqueFX(pstObject, "Pick");
     }
   }
 
@@ -478,8 +515,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Toggle shader? */
   if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))
   {
-    /* Toggles shader */
-    orxViewport_EnableShader(spstViewport, !orxViewport_IsShaderEnabled(spstViewport));
+    /* Toggles shader status */
+    sbShaderEnabled = !sbShaderEnabled;
   }
 }
 
@@ -487,9 +524,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  */
 static orxSTATUS orxBounce_Init()
 {
-  orxCLOCK   *pstClock;
-  orxU32      i;
-  orxSTATUS   eResult;
+  orxU32    i;
+  orxSTATUS eResult;
 
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");
@@ -504,7 +540,8 @@ static orxSTATUS orxBounce_Init()
   /* Valid? */
   if(spoBallSpawner != orxNULL)
   {
-    orxOBJECT *pstParticleSource;
+    orxOBJECT  *pstParticleSource;
+    orxCLOCK   *pstClock;
 
     /* Creates particle source */
     pstParticleSource = orxObject_CreateFromConfig("ParticleSource");
@@ -528,9 +565,11 @@ static orxSTATUS orxBounce_Init()
       orxMouse_GetPosition(&savTrailPointList[i]);
     }
 
-    /* Creates viewport on screen */
-    spstViewport = orxViewport_CreateFromConfig("BounceViewport");
-    orxViewport_EnableShader(spstViewport, orxFALSE);
+    /* Creates all viewports */
+    for(i = 0; i < (orxU32)orxConfig_GetListCounter("ViewportList"); i++)
+    {
+      orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+    }
 
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
@@ -539,7 +578,7 @@ static orxSTATUS orxBounce_Init()
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
     /* Registers update trail timer */
-    orxClock_AddGlobalTimer(orxBounce_UpdateTrail, orx2F(0.016f), -1, orxNULL);
+    eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
     /* Registers event handler */
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;

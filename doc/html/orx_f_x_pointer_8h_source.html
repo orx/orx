@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -107,7 +114,7 @@ $(document).ready(function(){initNavTree('orx_f_x_pointer_8h_source.html','');})
 <div class="contents">
 <a href="orx_f_x_pointer_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Orx - Portable Game Engine</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2012 Orx-Project</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2013 Orx-Project</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This software is provided &#39;as-is&#39;, without any express or implied</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * warranty. In no event will the authors be held liable for any damages</span></div>
@@ -138,7 +145,7 @@ $(document).ready(function(){initNavTree('orx_f_x_pointer_8h_source.html','');})
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="orx_structure_8h.html">object/orxStructure.h</a>&quot;</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="code" href="group__orx_f_x_pointer.html#ga943a8964c1fdea3a1d4cf8945aad3197">   54</a></span>&#160;<span class="preprocessor">#define orxFXPOINTER_KU32_FX_NUMBER             4</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="code" href="group__orx_f_x_pointer.html#ga943a8964c1fdea3a1d4cf8945aad3197">   54</a></span>&#160;<span class="preprocessor">#define orxFXPOINTER_KU32_FX_NUMBER             8</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
 <div class="line"><a name="l00058"></a><span class="lineno"><a class="code" href="group__orx_f_x_pointer.html#gafd3e68291b2cf947276d3e87fd0f5261">   58</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxFXPOINTER_t                 <a class="code" href="group__orx_f_x_pointer.html#gafd3e68291b2cf947276d3e87fd0f5261">orxFXPOINTER</a>;</div>

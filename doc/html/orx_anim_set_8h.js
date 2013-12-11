@@ -21,6 +21,7 @@ var orx_anim_set_8h =
     [ "orxAnimSet_Delete", "orx_anim_set_8h.html#ga851b79f1feb3ef5b3cc3539f68539072", null ],
     [ "orxAnimSet_DeleteLinkTable", "orx_anim_set_8h.html#ga8c976de776e1c78f4bd0e77145bc8a03", null ],
     [ "orxAnimSet_Exit", "orx_anim_set_8h.html#ga045f2b192cd073a56ccce4fb355e6e52", null ],
+    [ "orxAnimSet_FindNextAnim", "orx_anim_set_8h.html#ga54895fa4b6cc4c2f35d9cc4f2a2c082e", null ],
     [ "orxAnimSet_GetAnim", "orx_anim_set_8h.html#ga5cbf38714f007c4f7bcc4fddd22e8c7e", null ],
     [ "orxAnimSet_GetAnimCounter", "orx_anim_set_8h.html#gac08a6e834b8b55d38efac2313a044745", null ],
     [ "orxAnimSet_GetAnimIDFromName", "orx_anim_set_8h.html#ga9eb60cd5aa0be9e3651db4de47ad89dc", null ],

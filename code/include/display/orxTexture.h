@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,7 +51,9 @@
 
 /** Defines
  */
-#define orxTEXTURE_KZ_SCREEN_NAME         "-=SCREEN=-"
+#define orxTEXTURE_KZ_SCREEN_NAME         "-=Screen=-"
+
+#define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 
 
 /** Event enum
@@ -134,7 +136,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(const orxTEXTURE *_
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture
- * @return      Texture name / orxNULL
+ * @return      Texture name / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture);
 

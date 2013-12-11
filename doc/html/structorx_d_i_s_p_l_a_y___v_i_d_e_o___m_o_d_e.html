@@ -18,6 +18,12 @@
 <script type="text/javascript">
   $(document).ready(function() { searchBox.OnSelectItem(0); });
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script><script src="http://www.mathjax.org/mathjax/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -28,8 +34,9 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">orx
-   &#160;<span id="projectnumber">1.4 pre</span>
+   &#160;<span id="projectnumber">1.x dev</span>
    </div>
+   <div id="projectbrief">Portable Game Engine</div>
   </td>
  </tr>
  </tbody>
@@ -113,6 +120,8 @@ $(document).ready(function(){initNavTree('structorx_d_i_s_p_l_a_y___v_i_d_e_o___
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
+<tr class="memitem:af59ad6b4fe3e07a495e73b4f520f8c77"><td class="memItemLeft" align="right" valign="top">orxBOOL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#af59ad6b4fe3e07a495e73b4f520f8c77">bFullScreen</a></td></tr>
+<tr class="separator:af59ad6b4fe3e07a495e73b4f520f8c77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af65831c9ae33d2482524248b096b0088"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#af65831c9ae33d2482524248b096b0088">u32Depth</a></td></tr>
 <tr class="separator:af65831c9ae33d2482524248b096b0088"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8dd87854b785d2499e35d446cc2e57a"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#ae8dd87854b785d2499e35d446cc2e57a">u32Height</a></td></tr>
@@ -125,8 +134,22 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Video mode structure </p>
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00108">108</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00109">109</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="af59ad6b4fe3e07a495e73b4f520f8c77"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxBOOL orxDISPLAY_VIDEO_MODE::bFullScreen</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00112">112</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="af65831c9ae33d2482524248b096b0088"></a>
 <div class="memitem">
 <div class="memproto">
@@ -137,7 +160,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00110">110</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00111">111</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -151,7 +174,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00110">110</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00111">111</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -165,7 +188,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00110">110</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00111">111</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>
@@ -179,7 +202,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00110">110</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_display_8h_source.html#l00111">111</a> of file <a class="el" href="orx_display_8h_source.html">orxDisplay.h</a>.</p>
 
 </div>
 </div>

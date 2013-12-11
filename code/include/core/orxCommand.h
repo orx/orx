@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -69,7 +69,7 @@ typedef enum __orxCOMMAND_VAR_TYPE_t
  */
 typedef struct __orxCOMMAND_VAR_DEF_t
 {
-  orxSTRING             zName;                        /**< Name : 4 */
+  const orxSTRING       zName;                        /**< Name : 4 */
   orxCOMMAND_VAR_TYPE   eType;                        /**< Type : 8 */
 
 } orxCOMMAND_VAR_DEF;
@@ -99,22 +99,22 @@ typedef void (orxFASTCALL *orxCOMMAND_FUNCTION)(orxU32 _u32ArgNumber, const orxC
 
 /** Command registration helpers
  */
-#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                \
-do                                                                                                                                                          \
-{                                                                                                                                                           \
-  orxCOMMAND_VAR_DEF  stResult;                                                                                                                             \
-  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {__VA_ARGS__};                                                                \
-  orxSTATUS           eStatus;                                                                                                                              \
-  stResult.eType    = RESULT_TYPE;                                                                                                                          \
-  stResult.zName    = RESULT_NAME;                                                                                                                          \
-  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, astParamList, &stResult); \
-  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                  \
+#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                    \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \
+  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{"Dummy", orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \
+  orxSTATUS           eStatus;                                                                                                                                  \
+  stResult.eType    = RESULT_TYPE;                                                                                                                              \
+  stResult.zName    = RESULT_NAME;                                                                                                                              \
+  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult); \
+  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
 } while(orxFALSE)
 
-#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                 \
-do                                                                                                                                                          \
-{                                                                                                                                                           \
-  orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                \
+#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                     \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                    \
 } while(orxFALSE)
 
 
@@ -207,6 +207,15 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const 
 * @return      Command result if found, orxNULL otherwise
 */
 extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);
+
+
+/** Parses numerical arguments, string arguments will be evaluated to vectors or float when possible
+* @param[in]   _u32ArgNumber  Number of arguments to parse
+* @param[in]   _astArgList    List of arguments to parse
+* @param[out]  _astOperandList List of parsed arguments
+* @return orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
 
 
 #endif /* _orxCOMMAND_H_ */

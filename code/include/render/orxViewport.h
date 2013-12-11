@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxViewport
- * 
+ *
  * Viewport module
  * Allows to creates and handle viewports.
  * Viewports are structures associated to cameras and used for rendering.
@@ -48,6 +48,7 @@
 #include "core/orxClock.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
+#include "display/orxDisplay.h"
 #include "display/orxTexture.h"
 
 
@@ -58,6 +59,11 @@
 #define orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT     0x20000000  /**< Right horizontal alignment */
 #define orxVIEWPORT_KU32_FLAG_ALIGN_TOP       0x40000000  /**< Top vertical alignment */
 #define orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM    0x80000000  /**< Bottom vertical alignment */
+
+
+/** Misc defined
+ */
+#define orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER   16
 
 
 /** Internal Viewport structure */
@@ -102,17 +108,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_Delete(orxVIEWPORT *_p
 extern orxDLLAPI void orxFASTCALL             orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
 
 
-/** Sets a viewport texture
+/** Sets a viewport texture list
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _pstTexture     Texture to associate with the viewport
+ * @param[in]   _u32TextureNumber Number of textures to associate with the viewport
+ * @param[in]   _apstTextureList List of textures to associate with the viewport
  */
-extern orxDLLAPI void orxFASTCALL             orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u32TextureNumber, orxTEXTURE **_apstTextureList);
 
-/** Gets a viewport texture
+/** Gets a viewport texture list
  * @param[in]   _pstViewport    Concerned viewport
- * @return      Associated orxTEXTURE / orxNULL
+ * @param[in]   _u32TextureNumber Number of textures to be retrieved
+ * @param[out]  _apstTextureList List of textures associated with the viewport
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxViewport_GetTexture(const orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_GetTextureList(const orxVIEWPORT *_pstViewport, orxU32 _u32TextureNumber, orxTEXTURE **_apstTextureList);
+
+/** Gets a viewport texture counter
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      Number of textures associated with the viewport
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxViewport_GetTextureCounter(const orxVIEWPORT *_pstViewport);
+
 
 
 /** Sets a viewport background color
@@ -201,6 +217,19 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const 
 extern orxDLLAPI const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPORT *_pstViewport);
 
 
+/** Sets a viewport blend mode (only used when has active shaders attached)
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _eBlendMode     Blend mode to set
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetBlendMode(orxVIEWPORT *_pstViewport, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Gets a viewport blend mode
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return orxDISPLAY_BLEND_MODE
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxViewport_GetBlendMode(const orxVIEWPORT *_pstViewport);
+
+
 /** Sets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _fX             X axis position (top left corner)
@@ -264,6 +293,12 @@ extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(const orxVIEWPO
  * @return      Correction ratio value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport);
+
+/** Gets viewport config name
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxViewport_GetName(const orxVIEWPORT *_pstViewport);
 
 #endif /* _orxVIEWPORT_H_ */
 

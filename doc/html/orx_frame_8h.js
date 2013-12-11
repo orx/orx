@@ -19,15 +19,20 @@ var orx_frame_8h =
     [ "orxFrame_Create", "orx_frame_8h.html#ga93be0b12fdc5db08d8ec9e3050bdcae3", null ],
     [ "orxFrame_Delete", "orx_frame_8h.html#ga2da19cebead5fb95d7c1d0bfb4f97a34", null ],
     [ "orxFrame_Exit", "orx_frame_8h.html#gaf0e806d876d6bb7506429850ce567f08", null ],
+    [ "orxFrame_GetChild", "orx_frame_8h.html#ga662a90bb46f78bac43fcff8f6d5332e9", null ],
     [ "orxFrame_GetParent", "orx_frame_8h.html#gaaee7f5ca1f2e80e445e859b0968c6512", null ],
     [ "orxFrame_GetPosition", "orx_frame_8h.html#ga7ed8f5fee4724dfbfa779856ba778752", null ],
     [ "orxFrame_GetRotation", "orx_frame_8h.html#gad2b6e40258a6a518a7390429cb31e5ad", null ],
     [ "orxFrame_GetScale", "orx_frame_8h.html#ga70e670a1cacd89ea1f78f5dbe1fecedb", null ],
+    [ "orxFrame_GetSibling", "orx_frame_8h.html#ga09ad6c14564c00740ab938656a670deb", null ],
     [ "orxFrame_Init", "orx_frame_8h.html#gae4f85427057f0712456f260a0b880f74", null ],
     [ "orxFrame_IsRootChild", "orx_frame_8h.html#ga8982c83b484b6c879311589df6c4fe4b", null ],
     [ "orxFrame_SetParent", "orx_frame_8h.html#ga9adbd9d8601bdd7eef70fbe53c808e25", null ],
     [ "orxFrame_SetPosition", "orx_frame_8h.html#ga8663586bec819ab0e639bbd9601bd001", null ],
-    [ "orxFrame_SetRotation", "orx_frame_8h.html#ga4fc050a4860f728823572393a3fdf7bc", null ],
+    [ "orxFrame_SetRotation", "orx_frame_8h.html#gabdeab621d64afb895d034f6d99708ec9", null ],
     [ "orxFrame_SetScale", "orx_frame_8h.html#ga13722c7c1c5b5170466b72519702ae67", null ],
-    [ "orxFrame_Setup", "orx_frame_8h.html#ga315fa8b686358a68de12231f684b99dd", null ]
+    [ "orxFrame_Setup", "orx_frame_8h.html#ga315fa8b686358a68de12231f684b99dd", null ],
+    [ "orxFrame_TransformPosition", "orx_frame_8h.html#ga85aad91242dc15522f0e5887ff392b5f", null ],
+    [ "orxFrame_TransformRotation", "orx_frame_8h.html#ga0181345a1e59950dc84cce561d2f8e2b", null ],
+    [ "orxFrame_TransformScale", "orx_frame_8h.html#gab9b6ca59726c95193bc1ff7bd0193e36", null ]
 ];

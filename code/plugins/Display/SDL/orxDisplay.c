@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -608,54 +608,8 @@ static orxINLINE void orxDisplay_SDL_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     }
   }
 
-  /* New blend mode? */
-  if(_eBlendMode != sstDisplay.eLastBlendMode)
-  {
-    /* Stores it */
-    sstDisplay.eLastBlendMode = _eBlendMode;
-
-    /* Depending on blend mode */
-    switch(_eBlendMode)
-    {
-      case orxDISPLAY_BLEND_MODE_ALPHA:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_MULTIPLY:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_DST_COLOR, GL_ZERO);
-        glASSERT();
-
-        break;
-      }
-
-      case orxDISPLAY_BLEND_MODE_ADD:
-      {
-        glEnable(GL_BLEND);
-        glASSERT();
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        glASSERT();
-
-        break;
-      }
-
-      default:
-      {
-        glDisable(GL_BLEND);
-        glASSERT();
-
-        break;
-      }
-    }
-  }
+  /* Updates blend mode */
+  orxDisplay_SetBlendMode(_eBlendMode);
 
   /* Applies color */
   glColor4f(_pstBitmap->stColor.vRGB.fR, _pstBitmap->stColor.vRGB.fG, _pstBitmap->stColor.vRGB.fB, _pstBitmap->stColor.fAlpha);
@@ -869,6 +823,73 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
   return eResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* New blend mode? */
+  if(_eBlendMode != sstDisplay.eLastBlendMode)
+  {
+    /* Stores it */
+    sstDisplay.eLastBlendMode = _eBlendMode;
+
+    /* Depending on blend mode */
+    switch(_eBlendMode)
+    {
+      case orxDISPLAY_BLEND_MODE_ALPHA:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_MULTIPLY:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_ADD:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        glASSERT();
+
+        break;
+      }
+
+      case orxDISPLAY_BLEND_MODE_PREMUL:
+      {
+        glEnable(GL_BLEND);
+        glASSERT();
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        glASSERT();
+
+        break;
+      }
+
+      default:
+      {
+        glDisable(GL_BLEND);
+        glASSERT();
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_SDL_Swap()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -961,7 +982,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetBitmapData(orxBITMAP *_pstBitmap, const 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_GetBitmapData(orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
+orxSTATUS orxFASTCALL orxDisplay_SDL_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   orxU32    u32BufferSize;
   orxSTATUS eResult;
@@ -1094,22 +1115,22 @@ orxRGBA orxFASTCALL orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP *_pstDst)
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetDestinationBitmap(orxBITMAP **_apstDst, orxU32 _u32Number)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstDst == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
+  orxASSERT((_apstDst[0] == sstDisplay.pstScreen) && "Can only draw on screen with this version!");
 
   /* Different destination bitmap? */
-  if(_pstDst != sstDisplay.pstDestinationBitmap)
+  if(_apstDst[0] != sstDisplay.pstDestinationBitmap)
   {
     /* Stores it */
-    sstDisplay.pstDestinationBitmap = _pstDst;
+    sstDisplay.pstDestinationBitmap = _apstDst[0];
 
     /* Valid? */
-    if(_pstDst != orxNULL)
+    if(_apstDst[0] != orxNULL)
     {
       /* Inits viewport */
       glViewport(0, 0, (GLsizei)sstDisplay.pstDestinationBitmap->fWidth, (GLsizei)sstDisplay.pstDestinationBitmap->fHeight);
@@ -1444,7 +1465,7 @@ orxU32 orxFASTCALL orxDisplay_SDL_GetVideoModeCounter()
 
 orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxDISPLAY_VIDEO_MODE *pstResult;
+  orxDISPLAY_VIDEO_MODE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1462,18 +1483,27 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
     if((apstModeList != NULL) && (apstModeList != (SDL_Rect **)-1))
     {
       /* Stores info */
-      _pstVideoMode->u32Width   = apstModeList[_u32Index]->w;
-      _pstVideoMode->u32Height  = apstModeList[_u32Index]->h;
-      _pstVideoMode->u32Depth   = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+      _pstVideoMode->u32Width       = apstModeList[_u32Index]->w;
+      _pstVideoMode->u32Height      = apstModeList[_u32Index]->h;
+      _pstVideoMode->u32Depth       = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+      _pstVideoMode->u32RefreshRate = 0;
+      _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN) ? orxTRUE : orxFALSE;
 
       /* Updates result */
       pstResult = _pstVideoMode;
     }
   }
-  else
+  else if(_u32Index != orxU32_UNDEFINED)
   {
+    /* Stores info */
+    _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+    _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+    _pstVideoMode->u32Depth       = sstDisplay.pstScreen->u32Depth;
+    _pstVideoMode->u32RefreshRate = 0;
+    _pstVideoMode->bFullScreen    = orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN) ? orxTRUE : orxFALSE;
+
     /* Updates result */
-    pstResult = orxNULL;
+    pstResult = _pstVideoMode;
   }
 
   /* Done! */
@@ -1482,7 +1512,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_SDL_GetVideoMode(orxU32 _u32Index,
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsVideoModeAvailable(const orxDISPLAY_VIDEO_MODE *_pstVideoMode)
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1578,6 +1608,18 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
   {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  }
+
+  /* Fullscreen? */
+  if(_pstVideoMode->bFullScreen != orxFALSE)
+  {
+    /* Updates window style */
+    orxFLAG_SET(sstDisplay.u32SDLFlags, SDL_FULLSCREEN, 0);
+  }
+  else
+  {
+    /* Updates window style */
+    orxFLAG_SET(sstDisplay.u32SDLFlags, 0, SDL_FULLSCREEN);
   }
 
   /* Pushes display section */
@@ -1765,13 +1807,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
     if(pfnWGLSwapIntervalEXT != NULL)
     {
       /* Updates VSync status */
-      pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? 1 : 0);
+      pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? -1 : 0);
     }
   }
   else
   {
     /* Updates VSync status */
-    pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? 1 : 0);
+    pfnWGLSwapIntervalEXT((_bEnable != orxFALSE) ? -1 : 0);
   }
 
 #elif defined(__orxLINUX__)
@@ -1791,13 +1833,13 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
     if(pfnglXSwapIntervalSGI != NULL)
     {
       /* Updates VSync status */
-      pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? 1 : 0);
+      pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? -1 : 0);
     }
   }
   else
   {
     /* Updates VSync status */
-    pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? 1 : 0);
+    pfnglXSwapIntervalSGI((_bEnable != orxFALSE) ? -1 : 0);
   }
 
 #endif
@@ -1826,7 +1868,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsVSyncEnabled()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1852,9 +1894,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     /* Wasn't already full screen? */
     if(!orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32SDLFlags, SDL_FULLSCREEN, 0);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -1864,9 +1903,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     /* Was full screen? */
     if(orxFLAG_TEST(sstDisplay.u32SDLFlags, SDL_FULLSCREEN))
     {
-      /* Updates window style */
-      orxFLAG_SET(sstDisplay.u32SDLFlags, 0, SDL_FULLSCREEN);
-
       /* Asks for update */
       bUpdate = orxTRUE;
     }
@@ -1878,9 +1914,10 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
     orxDISPLAY_VIDEO_MODE stVideoMode;
 
     /* Inits video mode */
-    stVideoMode.u32Width  = orxF2U(sstDisplay.pstScreen->fWidth);
-    stVideoMode.u32Height = orxF2U(sstDisplay.pstScreen->fHeight);
-    stVideoMode.u32Depth  = sstDisplay.pstScreen->u32Depth;
+    stVideoMode.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+    stVideoMode.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+    stVideoMode.u32Depth    = sstDisplay.pstScreen->u32Depth;
+    stVideoMode.bFullScreen = _bFullScreen;
 
     /* Updates video mode */
     eResult = orxDisplay_SDL_SetVideoMode(&stVideoMode);
@@ -1902,7 +1939,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SetFullScreen(orxBOOL _bFullScreen)
 
 orxBOOL orxFASTCALL orxDisplay_SDL_IsFullScreen()
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2036,7 +2073,7 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_Init()
           if(pstClock != orxNULL)
           {
             /* Registers event update function */
-            eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+            eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER);
           }
 
           /* Inits shader support */
@@ -2638,7 +2675,7 @@ orxBOOL orxFASTCALL orxDisplay_SDL_HasShaderSupport()
   return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+orxHANDLE orxFASTCALL orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -2920,7 +2957,7 @@ orxS32 orxFASTCALL orxDisplay_SDL_GetParameterID(const orxHANDLE _hShader, const
     orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
-    acBuffer[255] = orxCHAR_NULL;
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
@@ -2932,29 +2969,29 @@ orxS32 orxFASTCALL orxDisplay_SDL_GetParameterID(const orxHANDLE _hShader, const
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"%[ld]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -2965,22 +3002,22 @@ orxS32 orxFASTCALL orxDisplay_SDL_GetParameterID(const orxHANDLE _hShader, const
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, 255, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
       glASSERT();
     }
@@ -2993,8 +3030,8 @@ orxS32 orxFASTCALL orxDisplay_SDL_GetParameterID(const orxHANDLE _hShader, const
       orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, 255, "%s[%d]", _zParam, _s32Index);
-      acBuffer[255] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
+      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, acBuffer);
@@ -3148,12 +3185,13 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmap, DISPLAY, SET_DESTINATION_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_ClearBitmap, DISPLAY, CLEAR_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapData, DISPLAY, SET_BITMAP_DATA);

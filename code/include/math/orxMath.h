@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -113,9 +113,9 @@
 /*** Module functions *** */
 
 /** Inits the random seed
- * @param[in]   _s32Seed                        Value to use as seed for random number generation
+ * @param[in]   _u32Seed                        Value to use as seed for random number generation
  */
-extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxS32 _s32Seed);
+extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxU32 _u32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary (inclusive)
@@ -152,6 +152,16 @@ extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetRandomU64(orxU64 _u64Min, orxU6
  */
 extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max);
 
+/** Gets the current random seeds
+ * @param[out]  _au32Seeds[4]                   Current seeds
+ */
+extern orxDLLAPI void orxFASTCALL     orxMath_GetRandomSeeds(orxU32 _au32Seeds[4]);
+
+/** Sets (replaces) the current random seeds
+ * @param[in]   _au32Seeds[4]                   Seeds to set
+ */
+extern orxDLLAPI void orxFASTCALL     orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4]);
+
 
 /*** Inlined functions *** */
 
@@ -161,12 +171,12 @@ extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS6
  */
 static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 {
-  _u32Value -= ((_u32Value >> 1) & 0x55555555);
-  _u32Value = (((_u32Value >> 2) & 0x33333333) + (_u32Value & 0x33333333));
-  _u32Value = (((_u32Value >> 4) + _u32Value) & 0x0F0F0F0F);
-  _u32Value += (_u32Value >> 8);
-  _u32Value += (_u32Value >> 16);
-  return(_u32Value & 0x0000003F);
+  _u32Value  -= (_u32Value >> 1) & 0x55555555;
+  _u32Value   = (_u32Value & 0x33333333) + ((_u32Value >> 2) & 0x33333333);
+  _u32Value   = (((_u32Value + (_u32Value >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+
+  /* Done! */
+  return _u32Value;
 }
 
 /** Gets the count of trailing zeros in an orxU32
@@ -502,7 +512,7 @@ static orxINLINE orxFLOAT             orxMath_Round(orxFLOAT _fOp)
 #ifdef __orxMSVC__
 
   /* Updates result */
-  fResult = (fmodf(_fOp, orxFLOAT_1) >= orx2F(0.5f)) ? ceilf(_fOp) : floorf(_fOp);
+  fResult = floorf(_fOp + orx2F(0.5f));
 
 #else /* __orxMSVC__ */
 

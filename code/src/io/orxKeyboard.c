@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -181,7 +181,7 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
     orxKEYBOARD_DECLARE_KEY_NAME(QUOTE);
     orxKEYBOARD_DECLARE_KEY_NAME(SLASH);
     orxKEYBOARD_DECLARE_KEY_NAME(BACKSLASH);
-    orxKEYBOARD_DECLARE_KEY_NAME(TILDE);
+    orxKEYBOARD_DECLARE_KEY_NAME(BACKQUOTE);
     orxKEYBOARD_DECLARE_KEY_NAME(EQUAL);
     orxKEYBOARD_DECLARE_KEY_NAME(DASH);
 
@@ -212,6 +212,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KE
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadKey, orxKEYBOARD_KEY, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadString, const orxSTRING, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, void, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Show, orxSTATUS, orxBOOL);
 
 
 /* *** Core function info array *** */
@@ -224,6 +225,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, IS_KEY_PRESSED, orxKeyboard_IsKeyPre
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_KEY, orxKeyboard_ReadKey)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_STRING, orxKeyboard_ReadString)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, SHOW, orxKeyboard_Show)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
 
@@ -274,4 +276,13 @@ const orxSTRING orxFASTCALL orxKeyboard_ReadString()
 void orxFASTCALL orxKeyboard_ClearBuffer()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
+}
+
+/** Show/Hide the virtual keyboard
+ * @param[in]   _bShow          Show/hide virtual keyboard
+ * @return orxSTATUS_SUCCESS if supported by platform, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxKeyboard_Show(orxBOOL _bShow)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Show)(_bShow);
 }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2012 Orx-Project
+ * Copyright (c) 2008-2013 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,6 +34,9 @@
 #include "orxKernel.h"
 #include "orxUtils.h"
 
+#ifdef __orxMSVC__
+  #pragma warning(disable : 4276)
+#endif /* __orxMSVC__ */
 
 /** Module registration macro
  */
@@ -76,6 +79,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_PLUGIN, orxPlugin);
   orxMODULE_REGISTER(orxMODULE_ID_PROFILER, orxProfiler);
   orxMODULE_REGISTER(orxMODULE_ID_RENDER, orxRender);
+  orxMODULE_REGISTER(orxMODULE_ID_RESOURCE, orxResource);
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_SHADER, orxShader);
   orxMODULE_REGISTER(orxMODULE_ID_SHADERPOINTER, orxShaderPointer);
@@ -83,6 +87,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SOUNDPOINTER, orxSoundPointer);
   orxMODULE_REGISTER(orxMODULE_ID_SOUNDSYSTEM, orxSoundSystem);
   orxMODULE_REGISTER(orxMODULE_ID_SPAWNER, orxSpawner);
+  orxMODULE_REGISTER(orxMODULE_ID_STRING, orxString);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
   orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
@@ -90,9 +95,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_TIMELINE, orxTimeLine);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 
-  /* Computes all dependencies */
-  orxModule_UpdateDependencies();
-
+  /* Done! */
   return;
 }
 
@@ -133,9 +136,8 @@ typedef struct __orxMODULE_INFO_t
  */
 typedef struct __orxMODULE_STATIC_t
 {
-  orxMODULE_INFO astModuleInfo[orxMODULE_ID_NUMBER];
-  orxU32 u32InitLoopCounter;
-  orxU32 u32Flags;
+  orxMODULE_INFO  astModuleInfo[orxMODULE_ID_NUMBER];
+  orxU32          u32InitLoopCounter;
 
 } orxMODULE_STATIC;
 
@@ -165,13 +167,16 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SET
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
+  /* Clears module info */
+  orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
+
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
   sstModule.astModuleInfo[_eModuleID].pfnInit   = _pfnInit;
   sstModule.astModuleInfo[_eModuleID].pfnExit   = _pfnExit;
 
   /* Updates module status flags */
-  sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_REGISTERED;
+  sstModule.astModuleInfo[_eModuleID].u32StatusFlags = orxMODULE_KU32_STATUS_FLAG_REGISTERED;
 
   /* Done! */
   return;
@@ -207,18 +212,9 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
   return;
 }
 
-/** Updates dependencies for all modules
- */
-void orxFASTCALL orxModule_UpdateDependencies()
-{
-  /* !!! TODO !!! */
-
-  return;
-}
-
 /** Calls a module setup
  */
-void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
+void orxFASTCALL orxModule_Setup(orxMODULE_ID _eModuleID)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -243,6 +239,9 @@ void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
 void orxFASTCALL orxModule_SetupAll()
 {
   orxU32 eID;
+
+  /* Clears static variable */
+  sstModule.u32InitLoopCounter = 0;
 
   /* For all modules */
   for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
