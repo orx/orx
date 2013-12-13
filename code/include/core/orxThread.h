@@ -74,12 +74,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Init();
 extern orxDLLAPI void orxFASTCALL                     orxThread_Exit();
 
 
-/** Creates a new thread
+/** Starts a new thread
  * @param[in]   _pfnRun                               Function to run on the new thread
  * @param[in]   _pContext                             Context that will be transmitted to the function when called
  * @return      Thread ID if successful, orxU32_UNDEFINED otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pContext);
+extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pContext);
 
 /** Joins a thread (blocks & waits until the other thread finishes)
  * @param[in]   _u32ThreadID                          ID of the thread for which to wait

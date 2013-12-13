@@ -47,25 +47,9 @@
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
 
 
-/** Resource operation status enum
- */
-typedef enum __orxRESOURCE_OP_STATUS_t
-{
-  orxRESOURCE_OP_STATUS_READ_SUCCESS = 0,
-  orxRESOURCE_OP_STATUS_READ_FAILURE,
-
-  orxRESOURCE_OP_STATUS_WRITE_SUCCESS,
-  orxRESOURCE_OP_STATUS_WRITE_FAILURE,
-
-  orxRESOURCE_OP_STATUS_NUMBER,
-
-  orxRESOURCE_OP_STATUS_NONE = orxENUM_NONE
-
-} orxRESOURCE_OP_STATUS;
-
 /** Resource asynchronous operation callback function
  */
-typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(const orxHANDLE *_hResource, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_STATUS _eStatus);
+typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext);
 
 
 /** Resource handlers

@@ -290,12 +290,12 @@ void orxFASTCALL orxThread_Exit()
   return;
 }
 
-/** Creates a new thread
+/** Starts a new thread
  * @param[in]   _pfnRun                               Function to run on the new thread
  * @param[in]   _pContext                             Context that will be transmitted to the function when called
  * @return      Thread ID if successful, orxU32_UNDEFINED otherwise
  */
-orxU32 orxFASTCALL orxThread_Create(const orxTHREAD_FUNCTION _pfnRun, void *_pContext)
+orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pContext)
 {
   orxU32 u32Index, u32Result = orxU32_UNDEFINED;
 
