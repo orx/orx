@@ -735,25 +735,18 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Registers request notifier callbacks */
-        eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+        /* Starts request processing thread */
+        sstResource.u32RequestThreadID = orxThread_Start(orxResource_ProcessRequests, orxNULL);
 
         /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
+        if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
         {
-          /* Starts request processing thread */
-          sstResource.u32RequestThreadID = orxThread_Start(orxResource_ProcessRequests, orxNULL);
-
-          /* Success? */
-          if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
-          {
 #ifdef __orxANDROID__
 
-            /* Registers APK type */
-            eResult = orxAndroid_RegisterAPKResource();
+          /* Registers APK type */
+          eResult = orxAndroid_RegisterAPKResource();
 
 #endif /* __orxANDROID__ */
-          }
         }
       }
     }
@@ -763,9 +756,6 @@ orxSTATUS orxFASTCALL orxResource_Init()
     {
       /* Removes Flags */
       sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
-
-      /* Unregisters request notifier callback */
-      orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest);
 
       /* Deletes info bank */
       if(sstResource.pstResourceInfoBank != orxNULL)
@@ -830,9 +820,7 @@ void orxFASTCALL orxResource_Exit()
     orxThread_Join(sstResource.u32RequestThreadID);
     sstResource.u32RequestThreadID = orxU32_UNDEFINED;
 
-    /* Unregisters callbacks */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch);
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest);
+    /* Don't unregister clock callbacks as the clock module has already exited */
 
     /* Has uncached location? */
     if(sstResource.zLastUncachedLocation != orxNULL)
@@ -1291,6 +1279,8 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
       /* Is clock module initialized? */
       if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
       {
+        orxSTATUS eResult;
+
         /* Pushes resource config section */
         orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
@@ -1303,6 +1293,12 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
         /* Pops config section */
         orxConfig_PopSection();
+
+        /* Registers request notification callback */
+        eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+        /* Checks */
+        orxASSERT(eResult != orxSTATUS_FAILURE);
 
         /* Updates flags */
         orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
