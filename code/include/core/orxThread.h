@@ -52,6 +52,10 @@
 #endif /* __orxWINDOWS__ */
 
 
+#define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
+#define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
+
+
 /** Semaphore structure */
 typedef struct __orxTHREAD_SEMAPHORE_t                orxTHREAD_SEMAPHORE;
 

@@ -81,9 +81,6 @@
 #define orxTHREAD_KU32_INFO_FLAG_STOP                 0x10000000  /**< Stop flag */
 #define orxTHREAD_KU32_INFO_MASK_ALL                  0xFFFFFFFF  /**< The module has been initialized */
 
-#define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
-#define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
-
 
 /***************************************************************************
  * Structure declaration                                                   *

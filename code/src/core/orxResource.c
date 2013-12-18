@@ -164,11 +164,6 @@ typedef struct __orxRESOURCE_REQUEST_t
   void                     *pBuffer;                                                  /**< Request buffer */
   orxRESOURCE_OP_FUNCTION   pfnCallback;                                              /**< Request completion callback */
   void                     *pContext;                                                 /**< Request context */
-  union
-  {
-    orxRESOURCE_FUNCTION_READ   pfnRead;                                              /**< Request read operator */
-    orxRESOURCE_FUNCTION_WRITE  pfnWrite;                                             /**< Request write operator */
-  };
   orxRESOURCE_OPEN_INFO    *pstResourceInfo;                                          /**< Request open resource info */
   orxRESOURCE_REQUEST_TYPE  eType;                                                    /**< Request type */
 
@@ -600,10 +595,10 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
     volatile orxRESOURCE_REQUEST *pstRequest;
 
     /* Gets request */
-    pstRequest = &(sstResource.astRequestList[sstResource.u32RequestProcessIndex]);
+    pstRequest = &(sstResource.astRequestList[sstResource.u32RequestOutIndex]);
 
     /* Notifies it */
-    pstRequest->pfnCallback(pstRequest->pstResourceInfo->hResource, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
+    pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
 
     /* Updates request out index */
     orxMEMORY_BARRIER();
@@ -629,7 +624,7 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
       case orxRESOURCE_REQUEST_TYPE_READ:
       {
         /* Services it */
-        pstRequest->s64Size = pstRequest->pfnRead(pstRequest->pstResourceInfo->hResource, pstRequest->s64Size, pstRequest->pBuffer);
+        pstRequest->s64Size = pstRequest->pstResourceInfo->pstTypeInfo->pfnRead(pstRequest->pstResourceInfo->hResource, pstRequest->s64Size, pstRequest->pBuffer);
 
         break;
       }
@@ -637,7 +632,7 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
       case orxRESOURCE_REQUEST_TYPE_WRITE:
       {
         /* Services it */
-        pstRequest->s64Size = pstRequest->pfnWrite(pstRequest->pstResourceInfo->hResource, pstRequest->s64Size, pstRequest->pBuffer);
+        pstRequest->s64Size = pstRequest->pstResourceInfo->pstTypeInfo->pfnWrite(pstRequest->pstResourceInfo->hResource, pstRequest->s64Size, pstRequest->pBuffer);
 
         break;
       }
@@ -1875,6 +1870,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
       volatile orxRESOURCE_REQUEST *pstRequest;
       orxU32                        u32NextRequestIndex;
 
+      /* Checks */
+      orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
       /* Gets next request index */
       u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
 
@@ -1894,7 +1892,6 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
       pstRequest->pBuffer         = _pBuffer;
       pstRequest->pfnCallback     = _pfnCallback;
       pstRequest->pContext        = _pContext;
-      pstRequest->pfnRead         = pstOpenInfo->pstTypeInfo->pfnRead;
       pstRequest->pstResourceInfo = pstOpenInfo;
       pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_READ;
 
@@ -1952,6 +1949,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
         volatile orxRESOURCE_REQUEST *pstRequest;
         orxU32                        u32NextRequestIndex;
 
+        /* Checks */
+        orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
         /* Gets next request index */
         u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
 
@@ -1971,7 +1971,6 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
         pstRequest->pBuffer         = (void *)_pBuffer;
         pstRequest->pfnCallback     = _pfnCallback;
         pstRequest->pContext        = _pContext;
-        pstRequest->pfnWrite        = pstOpenInfo->pstTypeInfo->pfnWrite;
         pstRequest->pstResourceInfo = pstOpenInfo;
         pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_WRITE;
 

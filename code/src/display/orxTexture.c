@@ -860,7 +860,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
     /* Not found? */
     if(pstTexture == orxNULL)
     {
-       /* Updates flags */
+      /* Updates flags */
       orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
 
       /* References bitmap */
