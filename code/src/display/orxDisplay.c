@@ -123,6 +123,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
 
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTempBitmap, orxSTATUS, const orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTempBitmap, const orxBITMAP *);
+
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetDestinationBitmaps, orxSTATUS, orxBITMAP **, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
@@ -191,6 +194,9 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_BITMAP, orxDisplay_DeleteBitma
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, LOAD_BITMAP, orxDisplay_LoadBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_TEMP_BITMAP, orxDisplay_SetTempBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_TEMP_BITMAP, orxDisplay_GetTempBitmap)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_DESTINATION_BITMAPS, orxDisplay_SetDestinationBitmaps)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
@@ -360,6 +366,16 @@ orxU32 orxFASTCALL orxDisplay_GetBitmapID(const orxBITMAP *_pstBitmap)
 orxSTATUS orxFASTCALL orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetTempBitmap(const orxBITMAP *_pstBitmap)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetTempBitmap)(_pstBitmap);
+}
+
+const orxBITMAP *orxFASTCALL orxDisplay_GetTempBitmap()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetTempBitmap)();
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_LoadBitmap(const orxSTRING _zFileName)
