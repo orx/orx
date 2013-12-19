@@ -56,6 +56,7 @@
 #define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x80000000  /**< Relative pivot flag */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_NEED_UPDATE          0x04000000  /**< Need update flag */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
@@ -431,6 +432,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             }
             else
             {
+              /* Updates flags */
+              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_NEED_UPDATE, orxGRAPHIC_KU32_FLAG_NONE);
+
               /* Updates size */
               orxGraphic_UpdateSize(pstResult);
             }
@@ -1151,6 +1155,13 @@ orxVECTOR *orxFASTCALL orxGraphic_GetSize(const orxGRAPHIC *_pstGraphic, orxVECT
   /* Valid 2D or text data? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
   {
+    /* Needs to update */
+    if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NEED_UPDATE))
+    {
+      /* Updates its size */
+      orxGraphic_UpdateSize((orxGRAPHIC *)_pstGraphic);
+    }
+
     /* Gets its size */
     orxVector_Set(_pvSize, _pstGraphic->fWidth, _pstGraphic->fHeight, orxFLOAT_0);
 
@@ -1391,6 +1402,13 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   {
     /* Updates coordinates */
     orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+
+    /* Non null? */
+    if((_pstGraphic->fWidth != orxFLOAT_0) || (_pstGraphic->fHeight != orxFLOAT_0))
+    {
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_NEED_UPDATE);
+    }
   }
   /* Is data a text? */
   else if(orxTEXT(_pstGraphic->pstData) != orxNULL)

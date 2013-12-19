@@ -2841,9 +2841,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapSize(const orxBITMAP *_pstBitmap,
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
-  /* Gets size */
-  *_pfWidth   = _pstBitmap->fWidth;
-  *_pfHeight  = _pstBitmap->fHeight;
+  /* Pending loading? */
+  if((sstDisplay.pstTempBitmap != orxNULL)
+  && (_pstBitmap->uiTexture == sstDisplay.pstTempBitmap->uiTexture)
+  && (_pstBitmap != sstDisplay.pstTempBitmap))
+  {
+    /* Clears size */
+    *_pfWidth   = orxFLOAT_0;
+    *_pfHeight  = orxFLOAT_0;
+  }
+  else
+  {
+    /* Gets size */
+    *_pfWidth   = _pstBitmap->fWidth;
+    *_pfHeight  = _pstBitmap->fHeight;
+  }
 
   /* Done! */
   return eResult;

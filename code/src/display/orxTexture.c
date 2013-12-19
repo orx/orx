@@ -68,8 +68,6 @@
 #define orxTEXTURE_KU32_HOTLOAD_DELAY           orx2F(0.01f)
 #define orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER      10
 
-#define orxTEXTURE_KZ_PIXEL                     "pixel"
-
 #define orxTEXTURE_KZ_DEFAULT_EXTENSION         "png"
 
 
@@ -550,6 +548,9 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                   /* Updates its flag */
                   orxStructure_SetFlags(sstTexture.pstPixel, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
 
+                  /* Sets it as temp bitmap for asynchronous operations */
+                  orxDisplay_SetTempBitmap(pstBitmap);
+
                   /* Inits values */
                   sstTexture.u32ResourceGroupID = orxString_GetID(orxTEXTURE_KZ_RESOURCE_GROUP);
 
@@ -990,6 +991,15 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
   /* Has size? */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {
+    /* No size yet? */
+    if((_pstTexture->fWidth == orxFLOAT_0) && (_pstTexture->fHeight == orxFLOAT_0))
+    {
+      orxTEXTURE *pstTexture = (orxTEXTURE *)_pstTexture;
+
+      /* Retrieves size from bitmap */
+      orxDisplay_GetBitmapSize((orxBITMAP *)pstTexture->hData, &(pstTexture->fWidth), &(pstTexture->fHeight));
+    }
+
     /* Stores values */
     *_pfWidth   = _pstTexture->fWidth;
     *_pfHeight  = _pstTexture->fHeight;
