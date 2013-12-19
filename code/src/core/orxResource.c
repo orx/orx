@@ -2071,6 +2071,66 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
   return s64Result;
 }
 
+/** Gets pending operation counter for a given resource
+ * @param[in] _hResource        Concerned resource
+ * @return Number of pending asynchronous operations for that resource
+ */
+orxU32 orxFASTCALL orxResource_GetPendingOpCounter(const orxHANDLE _hResource)
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
+  {
+    orxRESOURCE_OPEN_INFO *pstOpenInfo;
+
+    /* Gets open info */
+    pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
+
+    /* Updates result */
+    u32Result = pstOpenInfo->u32OpCounter;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets total pending operation counter
+ * @return Number of total pending asynchronous operations
+ */
+orxU32 orxFASTCALL orxResource_GetTotalPendingOpCounter()
+{
+  orxU32 u32InIndex, u32ProcessIndex;
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Gets indices */
+  u32InIndex      = sstResource.u32RequestInIndex;
+  u32ProcessIndex = sstResource.u32RequestProcessIndex;
+
+  /* Update result */
+  u32Result = (u32InIndex >= u32ProcessIndex) ? u32InIndex - u32ProcessIndex : u32InIndex + (orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32ProcessIndex);
+
+  /* Has pending operations? */
+  if(u32Result != 0)
+  {
+    /* Main thread? */
+    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Pumps some request notifications in case caller is waiting in a closed loop */
+      orxResource_NotifyRequest(orxNULL, orxNULL);
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Registers a new resource type
  * @param[in] _pstInfo          Info describing the new resource type and how to handle it
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
