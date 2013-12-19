@@ -139,7 +139,8 @@ typedef struct __orxRESOURCE_OPEN_INFO_t
 {
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxHANDLE                 hResource;                                                /**< Resource handle */
-  volatile orxBOOL          bLocked;                                                  /**< Operation lock */
+  orxTHREAD_SEMAPHORE      *pstSemaphore;                                             /**< Operation semaphore */
+  volatile orxU32           u32OpCounter;                                             /**< Operation counter */
 
 } orxRESOURCE_OPEN_INFO;
 
@@ -149,6 +150,7 @@ typedef enum __orxRESOURCE_REQUEST_TYPE_t
 {
   orxRESOURCE_REQUEST_TYPE_READ = 0,
   orxRESOURCE_REQUEST_TYPE_WRITE,
+  orxRESOURCE_REQUEST_TYPE_CLOSE,
 
   orxRESOURCE_REQUEST_TYPE_NUMBER,
 
@@ -597,8 +599,12 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
     /* Gets request */
     pstRequest = &(sstResource.astRequestList[sstResource.u32RequestOutIndex]);
 
-    /* Notifies it */
-    pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
+    /* Has callback? */
+    if(pstRequest->pfnCallback != orxNULL)
+    {
+      /* Notifies it */
+      pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
+    }
 
     /* Updates request out index */
     orxMEMORY_BARRIER();
@@ -637,14 +643,35 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
         break;
       }
 
+      case orxRESOURCE_REQUEST_TYPE_CLOSE:
+      {
+        /* Services it */
+        pstRequest->pstResourceInfo->pstTypeInfo->pfnClose(pstRequest->pstResourceInfo->hResource);
+
+        /* Deletes semaphore */
+        orxThread_DeleteSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
+
+        /* Frees open info */
+        orxBank_Free(sstResource.pstOpenInfoBank, pstRequest->pstResourceInfo);
+        pstRequest->pstResourceInfo = orxNULL;
+
+        break;
+      }
+
       default:
       {
         break;
       }
     }
 
-    /* Unlocks resource */
-    pstRequest->pstResourceInfo->bLocked = orxFALSE;
+    /* Not closing? */
+    if(pstRequest->eType != orxRESOURCE_REQUEST_TYPE_CLOSE)
+    {
+      /* Decrements operation counter */
+      orxThread_WaitSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
+      pstRequest->pstResourceInfo->u32OpCounter--;
+      orxThread_SignalSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
+    }
 
     /* Updates request process index */
     orxMEMORY_BARRIER();
@@ -810,6 +837,9 @@ void orxFASTCALL orxResource_Exit()
   {
     orxRESOURCE_GROUP      *pstGroup;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
+
+    /* Waits for all pending operations to complete */
+    while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
 
     /* Joins request thread */
     orxThread_Join(sstResource.u32RequestThreadID);
@@ -1692,7 +1722,8 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
 
       /* Inits it */
       pstOpenInfo->pstTypeInfo  = &(pstType->stInfo);
-      pstOpenInfo->bLocked      = orxFALSE;
+      pstOpenInfo->pstSemaphore = orxThread_CreateSemaphore(1);
+      pstOpenInfo->u32OpCounter = 0;
 
       /* Opens it */
       pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + u32TagLength + 1, _bEraseMode);
@@ -1739,14 +1770,54 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
-    /* Waits for pending operation to complete */
-    while(pstOpenInfo->bLocked != orxFALSE);
+    /* Has pending operations? */
+    if(pstOpenInfo->u32OpCounter != 0)
+    {
+      volatile orxRESOURCE_REQUEST *pstRequest;
+      orxU32                        u32NextRequestIndex;
 
-    /* Closes resource */
-    pstOpenInfo->pstTypeInfo->pfnClose(pstOpenInfo->hResource);
+      /* Checks */
+      orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
-    /* Frees open info */
-    orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
+      /* Gets next request index */
+      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+
+      /* Waits for a free slot */
+      while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
+      {
+        /* Manually pumps some request notifications */
+        orxResource_NotifyRequest(orxNULL, orxNULL);
+      }
+
+      /* Gets current request */
+      pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
+
+      /* Inits it */
+      orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
+      pstOpenInfo->u32OpCounter++;
+      orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
+      pstRequest->s64Size         = 0;
+      pstRequest->pBuffer         = orxNULL;
+      pstRequest->pfnCallback     = orxNULL;
+      pstRequest->pContext        = orxNULL;
+      pstRequest->pstResourceInfo = pstOpenInfo;
+      pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_CLOSE;
+
+      /* Commits request */
+      orxMEMORY_BARRIER();
+      sstResource.u32RequestInIndex = u32NextRequestIndex;
+    }
+    else
+    {
+      /* Closes resource */
+      pstOpenInfo->pstTypeInfo->pfnClose(pstOpenInfo->hResource);
+
+      /* Deletes semaphore */
+      orxThread_DeleteSemaphore(pstOpenInfo->pstSemaphore);
+
+      /* Frees open info */
+      orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
+    }
   }
 
   /* Done! */
@@ -1771,6 +1842,9 @@ orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
 
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
+
+    /* Checks */
+    orxASSERT(pstOpenInfo->u32OpCounter == 0);
 
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnGetSize(pstOpenInfo->hResource);
@@ -1802,6 +1876,9 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
+    /* Checks */
+    orxASSERT(pstOpenInfo->u32OpCounter == 0);
+
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnSeek(pstOpenInfo->hResource, _s64Offset, _eWhence);
   }
@@ -1828,6 +1905,9 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
 
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
+
+    /* Checks */
+    orxASSERT(pstOpenInfo->u32OpCounter == 0);
 
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnTell(pstOpenInfo->hResource);
@@ -1861,9 +1941,6 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
-    /* Waits for pending operation to complete */
-    while(pstOpenInfo->bLocked != orxFALSE);
-
     /* Has a callback (asynchronous call) */
     if(_pfnCallback != orxNULL)
     {
@@ -1887,7 +1964,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
       pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
 
       /* Inits it */
-      pstOpenInfo->bLocked        = orxTRUE;
+      orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
+      pstOpenInfo->u32OpCounter++;
+      orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
       pstRequest->s64Size         = _s64Size;
       pstRequest->pBuffer         = _pBuffer;
       pstRequest->pfnCallback     = _pfnCallback;
@@ -1940,9 +2019,6 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
     /* Supports writing? */
     if(pstOpenInfo->pstTypeInfo->pfnWrite != orxNULL)
     {
-      /* Waits for pending operation to complete */
-      while(pstOpenInfo->bLocked != orxFALSE);
-
       /* Has a callback (asynchronous call) */
       if(_pfnCallback != orxNULL)
       {
@@ -1966,7 +2042,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
         pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
 
         /* Inits it */
-        pstOpenInfo->bLocked        = orxTRUE;
+        orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
+        pstOpenInfo->u32OpCounter++;
+        orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
         pstRequest->s64Size         = _s64Size;
         pstRequest->pBuffer         = (void *)_pBuffer;
         pstRequest->pfnCallback     = _pfnCallback;
