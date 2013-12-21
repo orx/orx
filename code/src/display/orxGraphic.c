@@ -1000,79 +1000,91 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   orxASSERT(_pstGraphic->fWidth >= orxFLOAT_0);
   orxASSERT(_pstGraphic->fHeight >= orxFLOAT_0);
 
-  /* Valid? */
-  if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
+  /* Not waiting for an update? */
+  if(!orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NEED_UPDATE))
   {
-    orxFLOAT  fHeight, fWidth;
-
-    /* Gets graphic size */
-    fWidth  = vSize.fX;
-    fHeight = vSize.fY;
-
-    /* Pivot left? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
+    /* Valid size? */
+    if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
     {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = orxFLOAT_0;
+      orxFLOAT  fHeight, fWidth;
+
+      /* Gets graphic size */
+      fWidth  = vSize.fX;
+      fHeight = vSize.fY;
+
+      /* Pivot left? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
+      {
+        /* Updates x position */
+        _pstGraphic->vPivot.fX = orxFLOAT_0;
+      }
+      /* Align right? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
+      {
+        /* Updates x position */
+        _pstGraphic->vPivot.fX = fWidth;
+      }
+      /* Align center */
+      else
+      {
+        /* Updates x position */
+        _pstGraphic->vPivot.fX = orx2F(0.5f) * fWidth;
+      }
+
+      /* Align top? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
+      {
+        /* Updates y position */
+        _pstGraphic->vPivot.fY = orxFLOAT_0;
+      }
+      /* Align bottom? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
+      {
+        /* Updates y position */
+        _pstGraphic->vPivot.fY = fHeight;
+      }
+      /* Align center */
+      else
+      {
+        /* Updates y position */
+        _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
+      }
+
+      /* Truncate? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+      {
+        /* Updates position */
+        orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
+      }
+      /* Round? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+      {
+        /* Updates position */
+        orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
+      }
+
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
-    /* Align right? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
-    {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = fWidth;
-    }
-    /* Align center */
     else
     {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = orx2F(0.5f) * fWidth;
-    }
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid size retrieved from graphic.");
 
-    /* Align top? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = orxFLOAT_0;
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
-    /* Align bottom? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = fHeight;
-    }
-    /* Align center */
-    else
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
-    }
-
-    /* Truncate? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
-    {
-      /* Updates position */
-      orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-    }
-    /* Round? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-    {
-      /* Updates position */
-      orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-    }
-
-    /* Updates status */
-    orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid size retrieved from graphic.");
-
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
   }
 
   /* Done! */

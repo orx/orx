@@ -698,6 +698,7 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
   if(pu8ImageData != NULL)
   {
     GLuint      uiRealWidth, uiRealHeight;
+    orxS32      i;
     orxU8      *pu8ImageBuffer;
     orxBITMAP  *pstBitmap;
 
@@ -782,6 +783,18 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
     /* Restores previous texture */
     glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
     glASSERT();
+
+    /* For all bound bitmaps */
+    for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+    {
+      /* Is deleted bitmap? */
+      if(sstDisplay.apstBoundBitmapList[i] == pstBitmap)
+      {
+        /* Resets it */
+        sstDisplay.apstBoundBitmapList[i] = orxNULL;
+        sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+      }
+    }
 
     /* Frees image buffer */
     if(pu8ImageBuffer != pu8ImageData)
@@ -888,7 +901,7 @@ static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
     {
       /* Resets it */
       sstDisplay.apstBoundBitmapList[i] = orxNULL;
-      sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+      sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
     }
   }
 
@@ -1838,6 +1851,13 @@ void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
   {
     /* Deletes its data */
     orxDisplay_GLFW_DeleteBitmapData(_pstBitmap);
+
+    /* Is temp bitmap? */
+    if(_pstBitmap == sstDisplay.pstTempBitmap)
+    {
+      /* Clears temp bitmap */
+      sstDisplay.pstTempBitmap = orxNULL;
+    }
 
     /* Deletes it */
     orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
@@ -3636,7 +3656,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     sstDisplay.apstBoundBitmapList[i] = orxNULL;
 
     /* Clears its MRU timestamp */
-    sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
+    sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
   }
 
   /* Clears last blend mode */

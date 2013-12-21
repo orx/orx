@@ -2883,8 +2883,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxGRAPHIC *pstGraphic;
         const orxBITMAP *pstTempBitmap = orxNULL;
 
-        /* Has valid body? */
-        if((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY))
+        /* Uses parent scale or has valid body? */
+        if(((bHasParent != orxFALSE) && (bUseParentScale != orxFALSE))
+        || ((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY)))
         {
           /* Backups current bitmap */
           pstTempBitmap = orxDisplay_GetTempBitmap();
