@@ -459,10 +459,24 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
         {
-          orxTEXT *pstText;
+          orxTEXT         *pstText;
+          const orxBITMAP *pstTempBitmap = orxNULL;
+
+          /* Backups current bitmap */
+          pstTempBitmap = orxDisplay_GetTempBitmap();
+
+          /* Removes temp bitmap -> synchronous load operations */
+          orxDisplay_SetTempBitmap(orxNULL);
 
           /* Creates text */
           pstText = orxText_CreateFromConfig(zName);
+
+          /* Did remove temp bitmap? */
+          if(pstTempBitmap != orxNULL)
+          {
+            /* Restores it */
+            orxDisplay_SetTempBitmap(pstTempBitmap);
+          }
 
           /* Valid? */
           if(pstText != orxNULL)
