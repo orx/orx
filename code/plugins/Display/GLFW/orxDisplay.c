@@ -42,7 +42,15 @@
 
 #include "GL/glfw.h"
 #include "GL/glext.h"
-#include "SOIL.h"
+
+#define STBI_NO_STDIO
+#include "stb_image.c"
+#undef STBI_NO_STDIO
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
+
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__
@@ -692,7 +700,7 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
   GLuint          uiWidth, uiHeight, uiBytesPerPixel;
 
   /* Loads image */
-  pu8ImageData = SOIL_load_image_from_memory((unsigned char *)_pBuffer, (int)_s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+  pu8ImageData = stbi_load_from_memory((unsigned char *)_pBuffer, (int)_s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
   /* Valid? */
   if(pu8ImageData != NULL)
@@ -803,7 +811,7 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
     }
 
     /* Deletes surface */
-    SOIL_free_image_data(pu8ImageData);
+    stbi_image_free(pu8ImageData);
   }
   else
   {
@@ -2728,7 +2736,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
     {
       const orxCHAR  *zExtension;
       orxU32          u32Length;
-      int             iFormat;
 
       /* Gets file name's length */
       u32Length = orxString_GetLength(_zFilename);
@@ -2739,30 +2746,27 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
       /* PNG? */
       if(orxString_ICompare(zExtension, "png") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_PNG;
+        /* Saves image to disk */
+        eResult = stbi_write_png(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
       /* DDS? */
       else if(orxString_ICompare(zExtension, "dds") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_DDS;
+        //! TODO
+        eResult = orxSTATUS_FAILURE;
       }
       /* BMP? */
       else if(orxString_ICompare(zExtension, "bmp") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_BMP;
+        /* Saves image to disk */
+        eResult = stbi_write_bmp(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
       /* TGA */
       else
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_TGA;
+        /* Saves image to disk */
+        eResult = stbi_write_tga(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
-
-      /* Saves image to disk */
-      eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {

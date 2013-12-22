@@ -64,7 +64,7 @@
 /** Includes all plugins to embed
  */
 
-/* GLFW, Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
+/* GLFW, Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
 #include "../plugins/Display/GLFW/orxDisplay.c"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
@@ -84,7 +84,7 @@
 
 #ifndef __orxMAC__
 
-/* SDL (no mac support, no rendering to texture, not optimized, deprecated), Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
+/* SDL (no mac support, no rendering to texture, not optimized, deprecated), Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
 //#include "../plugins/Display/SDL/orxDisplay.c"
 //#include "../plugins/Joystick/SDL/orxJoystick.c"
 //#include "../plugins/Keyboard/SDL/orxKeyboard.c"

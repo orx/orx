@@ -64,7 +64,7 @@ LOCAL_SRC_FILES = \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
-                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo
@@ -140,7 +140,7 @@ LOCAL_SRC_FILES = \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
-                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo
@@ -216,7 +216,7 @@ LOCAL_SRC_FILES = \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
-                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo
