@@ -240,6 +240,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultDepth;
   orxU32                    u32DefaultRefreshRate;
   orxS32                    s32ActiveTextureUnit;
+  stbi_io_callbacks         stSTBICallbacks;
   GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxBITMAP                *apstDestinationBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
@@ -694,6 +695,27 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   return;
 }
 
+static int orxDisplay_GLFW_ReadSTBICallback(void *_hResource, char *_pBuffer, int _iSize)
+{
+  /* Reads data */
+  return (int)orxResource_Read((orxHANDLE)_hResource, _iSize, (orxU8 *)_pBuffer, orxNULL, orxNULL);
+}
+
+static void orxDisplay_GLFW_SkipSTBICallback(void *_hResource, unsigned int _uiOffset)
+{
+  /* Seeks offset */
+  orxResource_Seek((orxHANDLE)_hResource, _uiOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
+
+  /* Done! */
+  return;
+}
+
+static int orxDisplay_GLFW_EOFSTBICallback(void *_hResource)
+{
+  /* End of buffer? */
+  return (orxResource_Tell((orxHANDLE)_hResource) == orxResource_GetSize(_hResource)) ? 1 : 0;
+}
+
 static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
 {
   unsigned char  *pu8ImageData;
@@ -837,59 +859,73 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
   /* Success? */
   if(hResource != orxHANDLE_UNDEFINED)
   {
-    orxS64  s64Size;
-    orxU8  *pu8Buffer;
+    int iWidth, iHeight, iComp;
 
-    /* Gets its size */
-    s64Size = orxResource_GetSize(hResource);
-
-    /* Checks */
-    orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
-
-    /* Allocates buffer */
-    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
-
-    /* Success? */
-    if(pu8Buffer != orxNULL)
+    /* Gets its info */
+    if(stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iComp) != 0)
     {
-      /* Loads data from resource */
-      s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, (sstDisplay.pstTempBitmap != orxNULL) ? orxDisplay_GLFW_ReadResourceCallback : orxNULL, (void *)_pstBitmap);
+      orxS64  s64Size;
+      orxU8  *pu8Buffer;
 
-      /* Asynchronous load? */
-      if(s64Size < 0)
+      /* Resets resource cursor */
+      orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+
+      /* Gets its size */
+      s64Size = orxResource_GetSize(hResource);
+
+      /* Checks */
+      orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
+
+      /* Allocates buffer */
+      pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
+
+      /* Success? */
+      if(pu8Buffer != orxNULL)
       {
-        /* Copies temp bitmap info */
-        _pstBitmap->uiTexture       = sstDisplay.pstTempBitmap->uiTexture;
-        _pstBitmap->fWidth          = sstDisplay.pstTempBitmap->fWidth;
-        _pstBitmap->fHeight         = sstDisplay.pstTempBitmap->fHeight;
-        _pstBitmap->u32RealWidth    = sstDisplay.pstTempBitmap->u32RealWidth;
-        _pstBitmap->u32RealHeight   = sstDisplay.pstTempBitmap->u32RealHeight;
-        _pstBitmap->u32Depth        = sstDisplay.pstTempBitmap->u32Depth;
-        _pstBitmap->fRecRealWidth   = sstDisplay.pstTempBitmap->fRecRealWidth;
-        _pstBitmap->fRecRealHeight  = sstDisplay.pstTempBitmap->fRecRealHeight;
-        _pstBitmap->u32DataSize     = sstDisplay.pstTempBitmap->u32DataSize;
-        orxVector_Copy(&(_pstBitmap->stClip.vTL), &(sstDisplay.pstTempBitmap->stClip.vTL));
-        orxVector_Copy(&(_pstBitmap->stClip.vBR), &(sstDisplay.pstTempBitmap->stClip.vBR));
+        /* Loads data from resource */
+        s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, (sstDisplay.pstTempBitmap != orxNULL) ? orxDisplay_GLFW_ReadResourceCallback : orxNULL, (void *)_pstBitmap);
 
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else if(s64Size != 0)
-      {
-        /* Processes data */
-        orxDisplay_GLFW_ReadResourceCallback(hResource, s64Size, (void *)pu8Buffer, (void *)_pstBitmap);
+        /* Asynchronous load? */
+        if(s64Size < 0)
+        {
+          /* Copies temp bitmap info */
+          _pstBitmap->uiTexture       = sstDisplay.pstTempBitmap->uiTexture;
+          _pstBitmap->fWidth          = orxS2F(iWidth);
+          _pstBitmap->fHeight         = orxS2F(iHeight);
+          _pstBitmap->u32RealWidth    = sstDisplay.pstTempBitmap->u32RealWidth;
+          _pstBitmap->u32RealHeight   = sstDisplay.pstTempBitmap->u32RealHeight;
+          _pstBitmap->u32Depth        = sstDisplay.pstTempBitmap->u32Depth;
+          _pstBitmap->fRecRealWidth   = sstDisplay.pstTempBitmap->fRecRealWidth;
+          _pstBitmap->fRecRealHeight  = sstDisplay.pstTempBitmap->fRecRealHeight;
+          _pstBitmap->u32DataSize     = sstDisplay.pstTempBitmap->u32DataSize;
+          orxVector_Copy(&(_pstBitmap->stClip.vTL), &(sstDisplay.pstTempBitmap->stClip.vTL));
+          orxVector_Copy(&(_pstBitmap->stClip.vBR), &(sstDisplay.pstTempBitmap->stClip.vBR));
 
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Frees buffer */
-        orxMemory_Free(pu8Buffer);
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else if(s64Size != 0)
+        {
+          /* Processes data */
+          orxDisplay_GLFW_ReadResourceCallback(hResource, s64Size, (void *)pu8Buffer, (void *)_pstBitmap);
 
-        /* Closes resource */
-        orxResource_Close(hResource);
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Frees buffer */
+          orxMemory_Free(pu8Buffer);
+
+          /* Closes resource */
+          orxResource_Close(hResource);
+        }
       }
+    }
+    else
+    {
+      /* Closes resource */
+      orxResource_Close(hResource);
     }
   }
 
@@ -2865,21 +2901,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapSize(const orxBITMAP *_pstBitmap,
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
-  /* Pending loading? */
-  if((sstDisplay.pstTempBitmap != orxNULL)
-  && (_pstBitmap->uiTexture == sstDisplay.pstTempBitmap->uiTexture)
-  && (_pstBitmap != sstDisplay.pstTempBitmap))
-  {
-    /* Clears size */
-    *_pfWidth   = orxFLOAT_0;
-    *_pfHeight  = orxFLOAT_0;
-  }
-  else
-  {
-    /* Gets size */
-    *_pfWidth   = _pstBitmap->fWidth;
-    *_pfHeight  = _pstBitmap->fHeight;
-  }
+  /* Gets size */
+  *_pfWidth   = _pstBitmap->fWidth;
+  *_pfHeight  = _pstBitmap->fHeight;
 
   /* Done! */
   return eResult;
@@ -3758,6 +3782,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Resets screen depth & refresh rate */
     sstDisplay.u32Depth       = orxU32_UNDEFINED;
     sstDisplay.u32RefreshRate = orxU32_UNDEFINED;
+
+    /* Stores stbi callbacks */
+    sstDisplay.stSTBICallbacks.read = orxDisplay_GLFW_ReadSTBICallback;
+    sstDisplay.stSTBICallbacks.skip = orxDisplay_GLFW_SkipSTBICallback;
+    sstDisplay.stSTBICallbacks.eof  = orxDisplay_GLFW_EOFSTBICallback;
 
     /* For all indices */
     for(i = 0, u16Index = 0; i < orxDISPLAY_KU32_INDEX_BUFFER_SIZE; i += 6, u16Index += 4)

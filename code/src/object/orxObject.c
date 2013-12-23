@@ -2729,9 +2729,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Protects it */
       orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
-      /* Gets body name */
-      zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
-
       /* *** Frame *** */
 
       /* Gets auto scrolling value */
@@ -2881,18 +2878,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       if((zGraphicFileName != orxNULL) && (zGraphicFileName != orxSTRING_EMPTY))
       {
         orxGRAPHIC *pstGraphic;
-        const orxBITMAP *pstTempBitmap = orxNULL;
-
-        /* Uses parent scale or has valid body? */
-        if(((bHasParent != orxFALSE) && (bUseParentScale != orxFALSE))
-        || ((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY)))
-        {
-          /* Backups current bitmap */
-          pstTempBitmap = orxDisplay_GetTempBitmap();
-
-          /* Removes temp bitmap -> synchronous load operations */
-          orxDisplay_SetTempBitmap(orxNULL);
-        }
 
         /* Creates graphic */
         pstGraphic = orxGraphic_CreateFromConfig(zGraphicFileName);
@@ -2909,13 +2894,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates its owner */
             orxStructure_SetOwner(pstGraphic, pstResult);
           }
-        }
-
-        /* Did remove temp bitmap? */
-        if(pstTempBitmap != orxNULL)
-        {
-          /* Restores it */
-          orxDisplay_SetTempBitmap(pstTempBitmap);
         }
       }
 
@@ -3062,6 +3040,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* *** Body *** */
+
+      /* Gets body name */
+      zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
 
       /* Valid? */
       if((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY))

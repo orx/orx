@@ -991,15 +991,6 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
   /* Has size? */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {
-    /* No size yet? */
-    if((_pstTexture->fWidth == orxFLOAT_0) && (_pstTexture->fHeight == orxFLOAT_0))
-    {
-      orxTEXTURE *pstTexture = (orxTEXTURE *)_pstTexture;
-
-      /* Retrieves size from bitmap */
-      orxDisplay_GetBitmapSize((orxBITMAP *)pstTexture->hData, &(pstTexture->fWidth), &(pstTexture->fHeight));
-    }
-
     /* Stores values */
     *_pfWidth   = _pstTexture->fWidth;
     *_pfHeight  = _pstTexture->fHeight;

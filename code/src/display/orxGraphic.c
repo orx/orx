@@ -56,7 +56,6 @@
 #define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x80000000  /**< Relative pivot flag */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
-#define orxGRAPHIC_KU32_FLAG_NEED_UPDATE          0x04000000  /**< Need update flag */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
@@ -432,9 +431,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             }
             else
             {
-              /* Updates flags */
-              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_NEED_UPDATE, orxGRAPHIC_KU32_FLAG_NONE);
-
               /* Updates size */
               orxGraphic_UpdateSize(pstResult);
             }
@@ -459,24 +455,10 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
         {
-          orxTEXT         *pstText;
-          const orxBITMAP *pstTempBitmap = orxNULL;
-
-          /* Backups current bitmap */
-          pstTempBitmap = orxDisplay_GetTempBitmap();
-
-          /* Removes temp bitmap -> synchronous load operations */
-          orxDisplay_SetTempBitmap(orxNULL);
+          orxTEXT *pstText;
 
           /* Creates text */
           pstText = orxText_CreateFromConfig(zName);
-
-          /* Did remove temp bitmap? */
-          if(pstTempBitmap != orxNULL)
-          {
-            /* Restores it */
-            orxDisplay_SetTempBitmap(pstTempBitmap);
-          }
 
           /* Valid? */
           if(pstText != orxNULL)
@@ -1014,91 +996,79 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   orxASSERT(_pstGraphic->fWidth >= orxFLOAT_0);
   orxASSERT(_pstGraphic->fHeight >= orxFLOAT_0);
 
-  /* Not waiting for an update? */
-  if(!orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NEED_UPDATE))
+  /* Valid size? */
+  if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
   {
-    /* Valid size? */
-    if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
+    orxFLOAT  fHeight, fWidth;
+
+    /* Gets graphic size */
+    fWidth  = vSize.fX;
+    fHeight = vSize.fY;
+
+    /* Pivot left? */
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
     {
-      orxFLOAT  fHeight, fWidth;
-
-      /* Gets graphic size */
-      fWidth  = vSize.fX;
-      fHeight = vSize.fY;
-
-      /* Pivot left? */
-      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
-      {
-        /* Updates x position */
-        _pstGraphic->vPivot.fX = orxFLOAT_0;
-      }
-      /* Align right? */
-      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
-      {
-        /* Updates x position */
-        _pstGraphic->vPivot.fX = fWidth;
-      }
-      /* Align center */
-      else
-      {
-        /* Updates x position */
-        _pstGraphic->vPivot.fX = orx2F(0.5f) * fWidth;
-      }
-
-      /* Align top? */
-      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
-      {
-        /* Updates y position */
-        _pstGraphic->vPivot.fY = orxFLOAT_0;
-      }
-      /* Align bottom? */
-      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
-      {
-        /* Updates y position */
-        _pstGraphic->vPivot.fY = fHeight;
-      }
-      /* Align center */
-      else
-      {
-        /* Updates y position */
-        _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
-      }
-
-      /* Truncate? */
-      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
-      {
-        /* Updates position */
-        orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-      }
-      /* Round? */
-      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-      {
-        /* Updates position */
-        orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-      }
-
-      /* Updates status */
-      orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Updates x position */
+      _pstGraphic->vPivot.fX = orxFLOAT_0;
     }
+    /* Align right? */
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
+    {
+      /* Updates x position */
+      _pstGraphic->vPivot.fX = fWidth;
+    }
+    /* Align center */
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid size retrieved from graphic.");
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Updates x position */
+      _pstGraphic->vPivot.fX = orx2F(0.5f) * fWidth;
     }
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+
+    /* Align top? */
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
+    {
+      /* Updates y position */
+      _pstGraphic->vPivot.fY = orxFLOAT_0;
+    }
+    /* Align bottom? */
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
+    {
+      /* Updates y position */
+      _pstGraphic->vPivot.fY = fHeight;
+    }
+    /* Align center */
+    else
+    {
+      /* Updates y position */
+      _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
+    }
+
+    /* Truncate? */
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+    {
+      /* Updates position */
+      orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
+    }
+    /* Round? */
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+    {
+      /* Updates position */
+      orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
+    }
 
     /* Updates status */
     orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid size retrieved from graphic.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -1181,13 +1151,6 @@ orxVECTOR *orxFASTCALL orxGraphic_GetSize(const orxGRAPHIC *_pstGraphic, orxVECT
   /* Valid 2D or text data? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
   {
-    /* Needs to update */
-    if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NEED_UPDATE))
-    {
-      /* Updates its size */
-      orxGraphic_UpdateSize((orxGRAPHIC *)_pstGraphic);
-    }
-
     /* Gets its size */
     orxVector_Set(_pvSize, _pstGraphic->fWidth, _pstGraphic->fHeight, orxFLOAT_0);
 
@@ -1428,13 +1391,6 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   {
     /* Updates coordinates */
     orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
-
-    /* Non null? */
-    if((_pstGraphic->fWidth != orxFLOAT_0) || (_pstGraphic->fHeight != orxFLOAT_0))
-    {
-      /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_NEED_UPDATE);
-    }
   }
   /* Is data a text? */
   else if(orxTEXT(_pstGraphic->pstData) != orxNULL)
