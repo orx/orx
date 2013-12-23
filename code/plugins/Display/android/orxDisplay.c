@@ -35,13 +35,21 @@
 
 #include "orxPluginAPI.h"
 
-#include "SOIL.h"
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include "main/orxAndroid.h"
 
 #include <sys/endian.h>
+
+#define STBI_NO_STDIO
+#include "stb_image.c"
+#undef STBI_NO_STDIO
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
+
 
 /** Module flags
  */
@@ -2434,30 +2442,27 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
       /* PNG? */
       if(orxString_ICompare(zExtension, "png") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_PNG;
+        /* Saves image to disk */
+        eResult = stbi_write_png(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
       /* DDS? */
       else if(orxString_ICompare(zExtension, "dds") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_DDS;
+        //! TODO
+        eResult = orxSTATUS_FAILURE;
       }
       /* BMP? */
       else if(orxString_ICompare(zExtension, "bmp") == 0)
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_BMP;
+        /* Saves image to disk */
+        eResult = stbi_write_bmp(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
       /* TGA */
       else
       {
-        /* Updates format */
-        iFormat = SOIL_SAVE_TYPE_TGA;
+        /* Saves image to disk */
+        eResult = stbi_write_tga(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
-
-      /* Saves image to disk */
-      eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {
@@ -3249,7 +3254,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
           s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxNULL, orxNULL);
 
           /* Loads image */
-          pu8ImageData = SOIL_load_image_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+          pu8ImageData = stbi_load_from_memory(pu8Buffer, (int)s64Size, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
           /* Valid? */
           if(pu8ImageData != NULL)
@@ -3303,7 +3308,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
             }
 
             /* Deletes surface */
-            SOIL_free_image_data(pu8ImageData);
+            stbi_image_free(pu8ImageData);
           }
 
           /* Frees buffer */
