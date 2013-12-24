@@ -1252,12 +1252,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
     /* Saves image to disk */
     eResult = stbi_write_png(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
-  /* DDS? */
-  else if(orxString_ICompare(zExtension, "dds") == 0)
-  {
-    //! TODO
-    eResult = orxSTATUS_FAILURE;
-  }
   /* BMP? */
   else if(orxString_ICompare(zExtension, "bmp") == 0)
   {
