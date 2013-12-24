@@ -705,3 +705,24 @@ orxSTATUS orxFASTCALL orxThread_SignalSemaphore(orxTHREAD_SEMAPHORE *_pstSemapho
   /* Done! */
   return eResult;
 }
+
+/** Runs an asynchronous task and optional follow-ups
+ * @param[in]   _pfnRun                               Asynchronous task to run, executed on a different thread dedicated to tasks
+ * @param[in]   _pfnThen                              Executed (on the main thread) if Run does *not* return orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pfnElse                              Executed (on the main thread) if Run returns orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pContext                             Context that will be transmitted to all the task functions
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pfnRun != orxNULL);
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
