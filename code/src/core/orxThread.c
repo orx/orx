@@ -33,6 +33,7 @@
 
 #include "core/orxThread.h"
 
+#include "core/orxClock.h"
 #include "core/orxSystem.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
@@ -74,12 +75,18 @@
  */
 #define orxTHREAD_KU32_STATIC_FLAG_NONE               0x00000000  /**< No flags have been set */
 #define orxTHREAD_KU32_STATIC_FLAG_READY              0x00000001  /**< Static flag */
+#define orxTHREAD_KU32_STATIC_FLAG_REGISTERED         0x80000000  /**< Registered flag */
 #define orxTHREAD_KU32_STATIC_MASK_ALL                0xFFFFFFFF  /**< The module has been initialized */
 
 #define orxTHREAD_KU32_INFO_FLAG_NONE                 0x00000000  /**< No flags have been set */
 #define orxTHREAD_KU32_INFO_FLAG_INITIALIZED          0x00000001  /**< Initialized flag */
 #define orxTHREAD_KU32_INFO_FLAG_STOP                 0x10000000  /**< Stop flag */
 #define orxTHREAD_KU32_INFO_MASK_ALL                  0xFFFFFFFF  /**< The module has been initialized */
+
+
+/** Misc
+ */
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 64
 
 
 /***************************************************************************
@@ -108,12 +115,30 @@ typedef struct __orxTHREAD_INFO_t
 
 } orxTHREAD_INFO;
 
+/** Task
+ */
+typedef struct __orxTHREAD_TASK_t
+{
+  orxTHREAD_FUNCTION      pfnRun;
+  orxTHREAD_FUNCTION      pfnThen;
+  orxTHREAD_FUNCTION      pfnElse;
+  void                   *pContext;
+  orxSTATUS               eResult;
+
+} orxTHREAD_TASK;
+
 /** Static structure
  */
 typedef struct __orxTHREAD_STATIC_t
 {
+  orxTHREAD_SEMAPHORE*    pstThreadSemaphore;
+  orxTHREAD_SEMAPHORE*    pstTaskSemaphore;
+  orxU32                  u32WorkerID;
+  volatile orxU32         u32TaskInIndex;
+  volatile orxU32         u32TaskProcessIndex;
+  volatile orxU32         u32TaskOutIndex;
   volatile orxTHREAD_INFO astThreadInfoList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
-  orxTHREAD_SEMAPHORE*    pstSemaphore;
+  volatile orxTHREAD_TASK astTaskList[orxTHREAD_KU32_TASK_LIST_SIZE];
 
   orxU32                  u32Flags;
 
@@ -167,6 +192,69 @@ static void *orxThread_Execute(void *_pContext)
   return 0;
 }
 
+static void orxFASTCALL orxThread_NotifyTask(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* While there are processed tasks */
+  while(sstThread.u32TaskOutIndex != sstThread.u32TaskProcessIndex)
+  {
+    volatile orxTHREAD_TASK *pstTask;
+
+    /* Gets Task */
+    pstTask = &(sstThread.astTaskList[sstThread.u32TaskOutIndex]);
+
+    /* Succeeded? */
+    if(pstTask->eResult != orxSTATUS_FAILURE)
+    {
+      /* Has THEN callback? */
+      if(pstTask->pfnThen != orxNULL)
+      {
+        /* Calls it */
+        pstTask->pfnThen(pstTask->pContext);
+      }
+    }
+    else
+    {
+      /* Has ELSE callback? */
+      if(pstTask->pfnElse != orxNULL)
+      {
+        /* Calls it */
+        pstTask->pfnElse(pstTask->pContext);
+      }
+    }
+
+    /* Updates task out index */
+    orxMEMORY_BARRIER();
+    sstThread.u32TaskOutIndex = (sstThread.u32TaskOutIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+  }
+
+  /* Done! */
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* While there are pending requests */
+  while(sstThread.u32TaskProcessIndex != sstThread.u32TaskInIndex)
+  {
+    volatile orxTHREAD_TASK *pstTask;
+
+    /* Gets task */
+    pstTask = &(sstThread.astTaskList[sstThread.u32TaskProcessIndex]);
+
+    /* Runs it */
+    pstTask->eResult = pstTask->pfnRun(pstTask->pContext);
+
+    /* Updates task process index */
+    orxMEMORY_BARRIER();
+    sstThread.u32TaskProcessIndex = (sstThread.u32TaskProcessIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -189,7 +277,10 @@ void orxFASTCALL orxThread_Setup()
  */
 orxSTATUS orxFASTCALL orxThread_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxMath_IsPowerOfTwo(orxTHREAD_KU32_TASK_LIST_SIZE) != orxFALSE);
 
   /* Was not already initialized? */
   if(!(sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY))
@@ -200,11 +291,12 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
 
-    /* Creates semaphore */
-    sstThread.pstSemaphore = orxThread_CreateSemaphore(1);
+    /* Creates semaphores */
+    sstThread.pstThreadSemaphore  = orxThread_CreateSemaphore(1);
+    sstThread.pstTaskSemaphore    = orxThread_CreateSemaphore(1);
 
     /* Success? */
-    if(sstThread.pstSemaphore != orxNULL)
+    if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL))
     {
 #if defined(__orxWINDOWS__)
 
@@ -241,17 +333,53 @@ orxSTATUS orxFASTCALL orxThread_Init()
   #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
 
 #endif /* __orxWINDOWS__ */
+
+      /* Creates worker thread */
+      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxNULL);
+
+      /* Success? */
+      if(sstThread.u32WorkerID != orxU32_UNDEFINED)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't start internal worker thread.");
+
+        /* Deletes semaphores */
+        orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
+        orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
+
+#ifdef __orxWINDOWS__
+
+        /* Asks for small time slices */
+        timeEndPeriod(1);
+
+#endif /* __orxWINDOWS__ */
+
+        /* Updates status */
+        sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
+      }
     }
     else
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't initialize internal semaphore.");
 
+      /* Deletes semaphores */
+      if(sstThread.pstThreadSemaphore != orxNULL)
+      {
+        orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
+      }
+      if(sstThread.pstTaskSemaphore != orxNULL)
+      {
+        orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
+      }
+
       /* Updates status */
       sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -276,8 +404,9 @@ void orxFASTCALL orxThread_Exit()
 
 #endif /* __orxWINDOWS__ */
 
-    /* Deletes semaphore */
-    orxThread_DeleteSemaphore(sstThread.pstSemaphore);
+    /* Deletes semaphores */
+    orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
+    orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
@@ -301,7 +430,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
   orxASSERT(_pfnRun != orxNULL);
 
   /* Waits for semaphore */
-  orxThread_WaitSemaphore(sstThread.pstSemaphore);
+  orxThread_WaitSemaphore(sstThread.pstThreadSemaphore);
 
   /* For all slots */
   for(u32Index = 0; u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER; u32Index++)
@@ -365,7 +494,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
   }
 
   /* Signals semaphore */
-  orxThread_SignalSemaphore(sstThread.pstSemaphore);
+  orxThread_SignalSemaphore(sstThread.pstThreadSemaphore);
 
   /* Done! */
   return u32Result;
@@ -387,7 +516,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
   if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
   {
     /* Waits for semaphore */
-    orxThread_WaitSemaphore(sstThread.pstSemaphore);
+    orxThread_WaitSemaphore(sstThread.pstThreadSemaphore);
 
     /* Updates stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
@@ -416,7 +545,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     orxMEMORY_BARRIER();
 
     /* Signals semaphore */
-    orxThread_SignalSemaphore(sstThread.pstSemaphore);
+    orxThread_SignalSemaphore(sstThread.pstThreadSemaphore);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -715,13 +844,76 @@ orxSTATUS orxFASTCALL orxThread_SignalSemaphore(orxTHREAD_SEMAPHORE *_pstSemapho
  */
 orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
   orxASSERT(_pfnRun != orxNULL);
 
-  //! TODO
+  /* Is notify callback not registered? */
+  if(!orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))
+  {
+    /* Are we on main thread, is clock module initialized and did we register callback? */
+    if((orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    && (orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+    && (orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
+    {
+      /* Updates status */
+      orxFLAG_SET(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED, orxTHREAD_KU32_STATIC_FLAG_NONE);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Valid? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    volatile orxTHREAD_TASK  *pstTask;
+    orxU32                    u32NextTaskIndex;
+
+    /* Waits for semaphore */
+    orxThread_WaitSemaphore(sstThread.pstTaskSemaphore);
+
+    /* Gets next task index */
+    u32NextTaskIndex = (sstThread.u32TaskInIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+
+    /* Waits for a free slot */
+    while(u32NextTaskIndex == sstThread.u32TaskOutIndex)
+    {
+      /* On main thread? */
+      if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+      {
+        /* Manually pumps some task notifications */
+        orxThread_NotifyTask(orxNULL, orxNULL);
+      }
+    }
+    /* Gets current task */
+    pstTask = &(sstThread.astTaskList[sstThread.u32TaskInIndex]);
+
+    /* Inits it */
+    pstTask->pfnRun   = _pfnRun;
+    pstTask->pfnThen  = _pfnThen;
+    pstTask->pfnElse  = _pfnElse;
+    pstTask->pContext = _pContext;
+
+    /* Commits Task */
+    orxMEMORY_BARRIER();
+    sstThread.u32TaskInIndex = u32NextTaskIndex;
+
+    /* Signals semaphore */
+    orxThread_SignalSemaphore(sstThread.pstTaskSemaphore);
+  }
 
   /* Done! */
   return eResult;

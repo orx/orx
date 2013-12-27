@@ -587,6 +587,9 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
 
   /* Pops config section */
   orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
@@ -608,8 +611,11 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
 
     /* Updates request out index */
     orxMEMORY_BARRIER();
-    sstResource.u32RequestOutIndex = (sstResource.u32RequestOutIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+    sstResource.u32RequestOutIndex = (sstResource.u32RequestOutIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
   }
+
+  /* Done! */
+  return;
 }
 
 static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
@@ -675,7 +681,7 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 
     /* Updates request process index */
     orxMEMORY_BARRIER();
-    sstResource.u32RequestProcessIndex = (sstResource.u32RequestProcessIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+    sstResource.u32RequestProcessIndex = (sstResource.u32RequestProcessIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
   }
 
   /* Done! */
@@ -709,6 +715,9 @@ void orxFASTCALL orxResource_Setup()
 orxSTATUS orxFASTCALL orxResource_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxMath_IsPowerOfTwo(orxRESOURCE_KU32_REQUEST_LIST_SIZE) != orxFALSE);
 
   /* Not already Initialized? */
   if(!(sstResource.u32Flags & orxRESOURCE_KU32_STATIC_FLAG_READY))
@@ -1780,7 +1789,7 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
       orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
       /* Gets next request index */
-      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
       /* Waits for a free slot */
       while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
@@ -1951,7 +1960,7 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
       orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
       /* Gets next request index */
-      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
       /* Waits for a free slot */
       while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
@@ -2029,7 +2038,7 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
         orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
         /* Gets next request index */
-        u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) % orxRESOURCE_KU32_REQUEST_LIST_SIZE;
+        u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
         /* Waits for a free slot */
         while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
