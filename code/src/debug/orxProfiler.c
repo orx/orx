@@ -88,8 +88,9 @@ typedef struct __orxPROFILER_MARKER_t
 {
   orxPROFILER_MARKER_INFO stInfo;
   orxDOUBLE               dTimeStamp;
-  orxS32                  s32ParentID;
   orxSTRING               zName;
+  orxS32                  s32ParentID;
+  orxU32                  u32NameID;
   orxU32                  u32Flags;
 
 } orxPROFILER_MARKER;
@@ -224,16 +225,20 @@ void orxFASTCALL orxProfiler_Exit()
 orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
 {
   orxS32 s32MarkerID;
+  orxU32 u32NameID;
 
   /* Checks */
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
 
+  /* Gets name ID */
+  u32NameID = orxString_ToCRC(_zName);
+
   /* For all markers */
   for(s32MarkerID = 0; s32MarkerID < sstProfiler.s32MarkerCounter; s32MarkerID++)
   {
     /* Matches? */
-    if(!orxString_Compare(_zName, sstProfiler.astMarkerList[s32MarkerID].zName))
+    if(u32NameID == sstProfiler.astMarkerList[s32MarkerID].u32NameID)
     {
       /* Stops */
       break;
@@ -250,8 +255,9 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       sstProfiler.s32MarkerCounter++;
 
       /* Inits it */
-      sstProfiler.astMarkerList[s32MarkerID].s32ParentID  = orxPROFILER_KS32_MARKER_ID_NONE;
       sstProfiler.astMarkerList[s32MarkerID].zName        = orxString_Duplicate(_zName);
+      sstProfiler.astMarkerList[s32MarkerID].s32ParentID  = orxPROFILER_KS32_MARKER_ID_NONE;
+      sstProfiler.astMarkerList[s32MarkerID].u32NameID    = u32NameID;
       sstProfiler.astMarkerList[s32MarkerID].u32Flags     = orxPROFILER_KU32_FLAG_UNIQUE;
 
       /* Stamps result */
