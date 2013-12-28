@@ -796,13 +796,13 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   return pstResult;
 }
 
-/** Adds an entry in the current section
+/** Sets an entry in the current section (adds it if need be)
  * @param[in] _zKey             Entry key
  * @param[in] _zValue           Entry value
  * @param[in] _bBlockMode       Block mode (ie. ignore special characters)?
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
+static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2870,7 +2870,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 #endif /* __orxDEBUG__ */
 
               /* Adds/replaces entry */
-              orxConfig_AddEntry(pcLineStart, pcValueStart, bBlockMode);
+              orxConfig_SetEntry(pcLineStart, pcValueStart, bBlockMode);
 
               /* Updates pointers */
               pcKeyEnd = pcValueStart = orxNULL;
@@ -4832,7 +4832,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
   orxString_Print(zValue, "%d", _s32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4860,7 +4860,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   orxString_Print(zValue, "%u", _u32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4888,7 +4888,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
   orxString_Print(zValue, "%lld", _s64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4916,7 +4916,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
   orxString_Print(zValue, "%llu", _u64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4944,7 +4944,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   orxString_Print(zValue, "%g", _fValue);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4966,7 +4966,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, _zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -4988,7 +4988,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringBlock(const orxSTRING _zKey, const orxS
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, _zValue, orxTRUE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxTRUE);
 
   /* Done! */
   return eResult;
@@ -5009,7 +5009,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5038,7 +5038,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR
   orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5471,7 +5471,7 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
       }
 
       /* Adds/replaces new entry */
-      eResult = orxConfig_AddEntry(_zKey, acBuffer, orxFALSE);
+      eResult = orxConfig_SetEntry(_zKey, acBuffer, orxFALSE);
     }
   }
   else
