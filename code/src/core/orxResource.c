@@ -139,7 +139,6 @@ typedef struct __orxRESOURCE_OPEN_INFO_t
 {
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxHANDLE                 hResource;                                                /**< Resource handle */
-  orxTHREAD_SEMAPHORE      *pstSemaphore;                                             /**< Operation semaphore */
   volatile orxU32           u32OpCounter;                                             /**< Operation counter */
 
 } orxRESOURCE_OPEN_INFO;
@@ -609,6 +608,12 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
       pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
     }
 
+    /* Decrements operation counter */
+    if(pstRequest->pstResourceInfo != orxNULL)
+    {
+      pstRequest->pstResourceInfo->u32OpCounter--;
+    }
+
     /* Updates request out index */
     orxMEMORY_BARRIER();
     sstResource.u32RequestOutIndex = (sstResource.u32RequestOutIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
@@ -654,9 +659,6 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
         /* Services it */
         pstRequest->pstResourceInfo->pstTypeInfo->pfnClose(pstRequest->pstResourceInfo->hResource);
 
-        /* Deletes semaphore */
-        orxThread_DeleteSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
-
         /* Frees open info */
         orxBank_Free(sstResource.pstOpenInfoBank, pstRequest->pstResourceInfo);
         pstRequest->pstResourceInfo = orxNULL;
@@ -670,15 +672,6 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
       }
     }
 
-    /* Not closing? */
-    if(pstRequest->eType != orxRESOURCE_REQUEST_TYPE_CLOSE)
-    {
-      /* Decrements operation counter */
-      orxThread_WaitSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
-      pstRequest->pstResourceInfo->u32OpCounter--;
-      orxThread_SignalSemaphore(pstRequest->pstResourceInfo->pstSemaphore);
-    }
-
     /* Updates request process index */
     orxMEMORY_BARRIER();
     sstResource.u32RequestProcessIndex = (sstResource.u32RequestProcessIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
@@ -687,6 +680,42 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
   /* Done! */
   return eResult;
 }
+
+static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext, orxRESOURCE_OPEN_INFO *_pstResourceInfo)
+{
+  volatile orxRESOURCE_REQUEST *pstRequest;
+  orxU32                        u32NextRequestIndex;
+
+  /* Checks */
+  orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
+  /* Gets next request index */
+  u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
+
+  /* Waits for a free slot */
+  while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
+  {
+    /* Manually pumps some request notifications */
+    orxResource_NotifyRequest(orxNULL, orxNULL);
+  }
+
+  /* Gets current request */
+  pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
+
+  /* Inits it */
+  _pstResourceInfo->u32OpCounter++;
+  pstRequest->s64Size         = _s64Size;
+  pstRequest->pBuffer         = _pBuffer;
+  pstRequest->pfnCallback     = _pfnCallback;
+  pstRequest->pContext        = _pContext;
+  pstRequest->pstResourceInfo = _pstResourceInfo;
+  pstRequest->eType           = _eType;
+
+  /* Commits request */
+  orxMEMORY_BARRIER();
+  sstResource.u32RequestInIndex = u32NextRequestIndex;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1731,7 +1760,6 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
 
       /* Inits it */
       pstOpenInfo->pstTypeInfo  = &(pstType->stInfo);
-      pstOpenInfo->pstSemaphore = orxThread_CreateSemaphore(1);
       pstOpenInfo->u32OpCounter = 0;
 
       /* Opens it */
@@ -1782,47 +1810,13 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
     /* Has pending operations? */
     if(pstOpenInfo->u32OpCounter != 0)
     {
-      volatile orxRESOURCE_REQUEST *pstRequest;
-      orxU32                        u32NextRequestIndex;
-
-      /* Checks */
-      orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
-
-      /* Gets next request index */
-      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
-
-      /* Waits for a free slot */
-      while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
-      {
-        /* Manually pumps some request notifications */
-        orxResource_NotifyRequest(orxNULL, orxNULL);
-      }
-
-      /* Gets current request */
-      pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
-
-      /* Inits it */
-      orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
-      pstOpenInfo->u32OpCounter++;
-      orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
-      pstRequest->s64Size         = 0;
-      pstRequest->pBuffer         = orxNULL;
-      pstRequest->pfnCallback     = orxNULL;
-      pstRequest->pContext        = orxNULL;
-      pstRequest->pstResourceInfo = pstOpenInfo;
-      pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_CLOSE;
-
-      /* Commits request */
-      orxMEMORY_BARRIER();
-      sstResource.u32RequestInIndex = u32NextRequestIndex;
+      /* Adds request */
+      orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_CLOSE, 0, orxNULL, orxNULL, orxNULL, pstOpenInfo);
     }
     else
     {
       /* Closes resource */
       pstOpenInfo->pstTypeInfo->pfnClose(pstOpenInfo->hResource);
-
-      /* Deletes semaphore */
-      orxThread_DeleteSemaphore(pstOpenInfo->pstSemaphore);
 
       /* Frees open info */
       orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
@@ -1953,39 +1947,8 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
     /* Has a callback (asynchronous call) */
     if(_pfnCallback != orxNULL)
     {
-      volatile orxRESOURCE_REQUEST *pstRequest;
-      orxU32                        u32NextRequestIndex;
-
-      /* Checks */
-      orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
-
-      /* Gets next request index */
-      u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
-
-      /* Waits for a free slot */
-      while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
-      {
-        /* Manually pumps some request notifications */
-        orxResource_NotifyRequest(orxNULL, orxNULL);
-      }
-
-      /* Gets current request */
-      pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
-
-      /* Inits it */
-      orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
-      pstOpenInfo->u32OpCounter++;
-      orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
-      pstRequest->s64Size         = _s64Size;
-      pstRequest->pBuffer         = _pBuffer;
-      pstRequest->pfnCallback     = _pfnCallback;
-      pstRequest->pContext        = _pContext;
-      pstRequest->pstResourceInfo = pstOpenInfo;
-      pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_READ;
-
-      /* Commits request */
-      orxMEMORY_BARRIER();
-      sstResource.u32RequestInIndex = u32NextRequestIndex;
+      /* Adds request */
+      orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_READ, _s64Size, _pBuffer, _pfnCallback, _pContext, pstOpenInfo);
 
       /* Updates result */
       s64Result = -1;
@@ -2031,39 +1994,8 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
       /* Has a callback (asynchronous call) */
       if(_pfnCallback != orxNULL)
       {
-        volatile orxRESOURCE_REQUEST *pstRequest;
-        orxU32                        u32NextRequestIndex;
-
-        /* Checks */
-        orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
-
-        /* Gets next request index */
-        u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
-
-        /* Waits for a free slot */
-        while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
-        {
-          /* Manually pumps some request notifications */
-          orxResource_NotifyRequest(orxNULL, orxNULL);
-        }
-
-        /* Gets current request */
-        pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
-
-        /* Inits it */
-        orxThread_WaitSemaphore(pstOpenInfo->pstSemaphore);
-        pstOpenInfo->u32OpCounter++;
-        orxThread_SignalSemaphore(pstOpenInfo->pstSemaphore);
-        pstRequest->s64Size         = _s64Size;
-        pstRequest->pBuffer         = (void *)_pBuffer;
-        pstRequest->pfnCallback     = _pfnCallback;
-        pstRequest->pContext        = _pContext;
-        pstRequest->pstResourceInfo = pstOpenInfo;
-        pstRequest->eType           = orxRESOURCE_REQUEST_TYPE_WRITE;
-
-        /* Commits request */
-        orxMEMORY_BARRIER();
-        sstResource.u32RequestInIndex = u32NextRequestIndex;
+        /* Adds request */
+        orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_WRITE, _s64Size, (void *)_pBuffer, _pfnCallback, _pContext, pstOpenInfo);
 
         /* Updates result */
         s64Result = -1;
