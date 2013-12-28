@@ -2363,14 +2363,47 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
     /* Screen capture? */
     if(_pstBitmap == sstDisplay.pstScreen)
     {
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxTRUE);
+
+      /* Creates texture for screen backup */
+      glGenTextures(1, &(sstDisplay.pstScreen->uiTexture));
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, sstDisplay.pstScreen->uiTexture);
+      glASSERT();
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sstDisplay.pstScreen->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+
       /* Copies screen content */
       glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, (GLint)(orxF2U(_pstBitmap->fHeight) - _pstBitmap->u32RealHeight), (GLsizei)orxF2U(_pstBitmap->fWidth), (GLsizei)_pstBitmap->u32RealHeight);
       glASSERT();
-    }
 
-    /* Copies bitmap data */
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-    glASSERT();
+      /* Copies bitmap data */
+      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, sstDisplay.pstScreen->u32DataSize, orxFALSE);
+
+      /* Deletes screen backup texture */
+      glDeleteTextures(1, &(sstDisplay.pstScreen->uiTexture));
+      glASSERT();
+      sstDisplay.pstScreen->uiTexture = 0;
+    }
+    else
+    {
+      /* Copies bitmap data */
+      glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+    }
 
     /* Restores previous texture */
     glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
