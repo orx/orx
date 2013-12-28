@@ -173,6 +173,17 @@ struct __orxBITMAP_t
   const orxSTRING           zLocation;
 };
 
+/** Internal bitmap save info structure
+ */
+typedef struct __orxDISPLAY_SAVE_INFO_t
+{
+  orxU8  *pu8ImageData;
+  orxU32  u32Width;
+  orxU32  u32Height;
+  orxU32  u32FilenameID;
+
+} orxDISPLAY_SAVE_INFO;
+
 /** Internal texture info structure
  */
 typedef struct __orxDISPLAY_TEXTURE_INFO_t
@@ -847,6 +858,57 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
   /* Closes resource */
   orxResource_Close(_hResource);
 }
+
+
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmapData(void *_pContext)
+{
+  orxDISPLAY_SAVE_INFO *pstInfo;
+  const orxCHAR        *zExtension;
+  const orxSTRING       zFilename;
+  orxU32                u32Length;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets save info */
+  pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
+
+  /* Gets filename */
+  zFilename = orxString_GetFromID(pstInfo->u32FilenameID);
+
+  /* Gets file name's length */
+  u32Length = orxString_GetLength(zFilename);
+
+  /* Gets extension */
+  zExtension = (u32Length > 3) ? zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+  /* PNG? */
+  if(orxString_ICompare(zExtension, "png") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_png(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* BMP? */
+  else if(orxString_ICompare(zExtension, "bmp") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_bmp(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* TGA */
+  else
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_tga(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+
+  /* Deletes data */
+  orxMemory_Free(pstInfo->pu8ImageData);
+
+  /* Deletes save info */
+  orxMemory_Free(pstInfo);
+
+  /* Done! */
+  return eResult;
+}
+
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitmap)
 {
@@ -2778,7 +2840,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
 {
   orxU32          u32BufferSize;
   orxU8          *pu8ImageData;
-  orxSTATUS       eResult;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -2794,50 +2856,40 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   /* Valid? */
   if(pu8ImageData != orxNULL)
   {
+    orxDISPLAY_SAVE_INFO *pstInfo = orxNULL;
+
     /* Gets bitmap data */
     if(orxDisplay_GLFW_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      const orxCHAR  *zExtension;
-      orxU32          u32Length;
+      /* Allocates save info */
+      pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
 
-      /* Gets file name's length */
-      u32Length = orxString_GetLength(_zFilename);
+      /* Valid? */
+      if(pstInfo != orxNULL)
+      {
+        /* Inits it */
+        pstInfo->pu8ImageData   = pu8ImageData;
+        pstInfo->u32FilenameID  = orxString_GetID(_zFilename);
+        pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
+        pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
 
-      /* Gets extension */
-      zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
-
-      /* PNG? */
-      if(orxString_ICompare(zExtension, "png") == 0)
-      {
-        /* Saves image to disk */
-        eResult = stbi_write_png(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      }
-      /* BMP? */
-      else if(orxString_ICompare(zExtension, "bmp") == 0)
-      {
-        /* Saves image to disk */
-        eResult = stbi_write_bmp(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-      }
-      /* TGA */
-      else
-      {
-        /* Saves image to disk */
-        eResult = stbi_write_tga(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        /* Runs asynchronous task */
+        eResult = orxThread_RunTask(orxDisplay_GLFW_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
       }
     }
-    else
+
+    /* Failure? */
+    if(eResult == orxSTATUS_FAILURE)
     {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+      /* Frees save info */
+      if(pstInfo != orxNULL)
+      {
+        orxMemory_Free(pstInfo);
+      }
 
-    /* Frees buffer */
-    orxMemory_Free(pu8ImageData);
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+      /* Frees buffer */
+      orxMemory_Free(pu8ImageData);
+    }
   }
 
   /* Done! */
