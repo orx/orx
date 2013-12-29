@@ -1471,7 +1471,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
  * @param[in] _zName            Name of the resource
  * @return Location string if found, orxNULL otherwise
  */
-const orxSTRING orxFASTCALL orxResource_GetLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)
+const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)
 {
   const orxSTRING zResult = orxNULL;
 

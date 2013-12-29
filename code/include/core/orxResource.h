@@ -182,7 +182,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_Locate(con
  * @param[in] _zName            Name of the resource
  * @return Location string if found, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_LocateInStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
 
 /** Gets the resource path from a location
  * @param[in] _zLocation        Location of the concerned resource
