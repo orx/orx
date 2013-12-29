@@ -796,7 +796,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Starts request processing thread */
-        sstResource.u32RequestThreadID = orxThread_Start(orxResource_ProcessRequests, orxNULL);
+        sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxNULL);
 
         /* Success? */
         if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)

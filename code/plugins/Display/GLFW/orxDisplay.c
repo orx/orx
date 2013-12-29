@@ -2907,7 +2907,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
         pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
 
         /* Runs asynchronous task */
-        eResult = orxThread_RunTask(orxDisplay_GLFW_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
+        eResult = orxThread_RunTask(&orxDisplay_GLFW_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
       }
     }
 

@@ -335,7 +335,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
 #endif /* __orxWINDOWS__ */
 
       /* Creates worker thread */
-      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxNULL);
+      sstThread.u32WorkerID = orxThread_Start(&orxThread_Work, orxNULL);
 
       /* Success? */
       if(sstThread.u32WorkerID != orxU32_UNDEFINED)
