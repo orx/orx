@@ -125,6 +125,10 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
     } sndfile;
   };
 
+#ifdef __orxDEBUG__
+  orxU32              u32NameID;
+#endif /* __orxDEBUG__ */
+
 } orxSOUNDSYSTEM_DATA;
 
 /** Internal sample structure
@@ -134,10 +138,6 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
   volatile ALuint     uiBuffer;
   orxFLOAT            fDuration;
   orxSOUNDSYSTEM_DATA stData;
-
-#ifdef __orxDEBUG__
-  orxU32              u32NameID;
-#endif /* __orxDEBUG__ */
 };
 
 /** Internal sound structure
@@ -367,87 +367,63 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_OpenRecordingFile()
   return eResult;
 }
 
-static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
+static orxINLINE orxSTATUS orxSoundSystem_OpenAL_OpenFile(orxSOUNDSYSTEM_DATA *_pstData)
 {
-  const orxSTRING zResourceLocation;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT(_zFilename != orxNULL);
-  orxASSERT(_pstData != orxNULL);
-
-  /* Locates resource */
-  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
+  /* Opens file with vorbis */
+  _pstData->vorbis.pstFile = stb_vorbis_open_file(_pstData->hResource, FALSE, NULL, NULL);
 
   /* Success? */
-  if(zResourceLocation != orxNULL)
+  if(_pstData->vorbis.pstFile != NULL)
   {
-    orxHANDLE hResource;
+    stb_vorbis_info stFileInfo;
 
-    /* Opens it */
-    hResource = orxResource_Open(zResourceLocation, orxFALSE);
+    /* Gets file info */
+    stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+
+    /* Stores info */
+    _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+    _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+    _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+
+    /* Updates status */
+    _pstData->bVorbis                 = orxTRUE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    SF_INFO stFileInfo;
+
+    /* Gets back at the beginning of resource */
+    orxResource_Seek(_pstData->hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+
+    /* Opens file with sndfile */
+    _pstData->sndfile.pstFile = sf_open_virtual(&(sstSoundSystem.stVirtualIO), SFM_READ, &stFileInfo, (void *)_pstData->hResource);
 
     /* Success? */
-    if(hResource != orxHANDLE_UNDEFINED)
+    if(_pstData->sndfile.pstFile != NULL)
     {
-      /* Opens file with vorbis */
-      _pstData->vorbis.pstFile = stb_vorbis_open_file(hResource, FALSE, NULL, NULL);
+      /* Stores info */
+      _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+      _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
+      _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
 
-      /* Success? */
-      if(_pstData->vorbis.pstFile != NULL)
-      {
-        stb_vorbis_info stFileInfo;
+      /* Updates status */
+      _pstData->bVorbis                 = orxFALSE;
 
-        /* Gets file info */
-        stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Closes resource */
+      orxResource_Close(_pstData->hResource);
 
-        /* Stores info */
-        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-        _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
-
-        /* Stores resource */
-        _pstData->hResource               = hResource;
-
-        /* Updates status */
-        _pstData->bVorbis                 = orxTRUE;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        SF_INFO stFileInfo;
-
-        /* Gets back at the beginning of resource */
-        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
-
-        /* Opens file with sndfile */
-        _pstData->sndfile.pstFile = sf_open_virtual(&(sstSoundSystem.stVirtualIO), SFM_READ, &stFileInfo, (void *)hResource);
-
-        /* Success? */
-        if(_pstData->sndfile.pstFile != NULL)
-        {
-          /* Stores info */
-          _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-          _pstData->stInfo.u32FrameNumber   = (orxU32)stFileInfo.frames;
-          _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.samplerate;
-
-          /* Stores resource */
-          _pstData->hResource               = hResource;
-
-          /* Updates status */
-          _pstData->bVorbis                 = orxFALSE;
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
-        }
-        else
-        {
-          /* Closes resource */
-          orxResource_Close(hResource);
-        }
-      }
+      /* Removes data */
+      _pstData->hResource = orxNULL;
     }
   }
 
@@ -578,102 +554,134 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
   /* Checks */
   orxASSERT(_pstSound != orxNULL);
 
-  /* Not stopped? */
-  if(_pstSound->bStop == orxFALSE)
+  /* Valid? */
+  if(_pstSound->fDuration > orxFLOAT_0)
   {
-    ALint   iBufferNumber = 0;
-    ALuint *puiBufferList;
-
-    /* Gets number of queued buffers */
-    alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iBufferNumber);
-    alASSERT();
-
-    /* None found? */
-    if(iBufferNumber == 0)
+    /* Not stopped? */
+    if(_pstSound->bStop == orxFALSE)
     {
-      /* Uses initial buffer list */
-      puiBufferList = _pstSound->auiBufferList;
+      ALint   iBufferNumber = 0;
+      ALuint *puiBufferList;
 
-      /* Updates buffer number */
-      iBufferNumber = sstSoundSystem.s32StreamBufferNumber;
-    }
-    else
-    {
-      /* Gets number of processed buffers */
-      iBufferNumber = 0;
-      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
+      /* Gets number of queued buffers */
+      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iBufferNumber);
       alASSERT();
 
-      /* Found any? */
+      /* None found? */
+      if(iBufferNumber == 0)
+      {
+        /* Uses initial buffer list */
+        puiBufferList = _pstSound->auiBufferList;
+
+        /* Updates buffer number */
+        iBufferNumber = sstSoundSystem.s32StreamBufferNumber;
+      }
+      else
+      {
+        /* Gets number of processed buffers */
+        iBufferNumber = 0;
+        alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
+        alASSERT();
+
+        /* Found any? */
+        if(iBufferNumber > 0)
+        {
+          /* Uses local list */
+          puiBufferList = sstSoundSystem.auiWorkBufferList;
+
+          /* Unqueues them all */
+          alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iBufferNumber, sstSoundSystem.s32StreamBufferNumber), puiBufferList);
+          alASSERT();
+        }
+      }
+
+      /* Needs processing? */
       if(iBufferNumber > 0)
       {
-        /* Uses local list */
-        puiBufferList = sstSoundSystem.auiWorkBufferList;
+        orxU32                 u32BufferFrameNumber, u32FrameNumber, i;
+        orxSOUND_EVENT_PAYLOAD stPayload;
 
-        /* Unqueues them all */
-        alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iBufferNumber, sstSoundSystem.s32StreamBufferNumber), puiBufferList);
-        alASSERT();
-      }
-    }
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
-    /* Needs processing? */
-    if(iBufferNumber > 0)
-    {
-      orxU32                 u32BufferFrameNumber, u32FrameNumber, i;
-      orxSOUND_EVENT_PAYLOAD stPayload;
+        /* Stores recording name */
+        stPayload.zSoundName = _pstSound->zReference;
 
-      /* Clears payload */
-      orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+        /* Stores stream info */
+        stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stData.stInfo.u32SampleRate;
+        stPayload.stStream.stInfo.u32ChannelNumber  = _pstSound->stData.stInfo.u32ChannelNumber;
 
-      /* Stores recording name */
-      stPayload.zSoundName = _pstSound->zReference;
+        /* Stores time stamp */
+        stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
 
-      /* Stores stream info */
-      stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stData.stInfo.u32SampleRate;
-      stPayload.stStream.stInfo.u32ChannelNumber  = _pstSound->stData.stInfo.u32ChannelNumber;
+        /* Gets buffer's frame number */
+        u32BufferFrameNumber = sstSoundSystem.s32StreamBufferSize / _pstSound->stData.stInfo.u32ChannelNumber;
 
-      /* Stores time stamp */
-      stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
-
-      /* Gets buffer's frame number */
-      u32BufferFrameNumber = sstSoundSystem.s32StreamBufferSize / _pstSound->stData.stInfo.u32ChannelNumber;
-
-      /* For all processed buffers */
-      for(i = 0, u32FrameNumber = u32BufferFrameNumber; i < (orxU32)iBufferNumber; i++)
-      {
-        orxBOOL bEOF = orxFALSE;
-
-        /* Fills buffer */
-        u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as16StreamBuffer);
-
-        /* Inits packet */
-        stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.stInfo.u32ChannelNumber;
-        stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
-        stPayload.stStream.stPacket.bDiscard        = orxFALSE;
-        stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
-
-        /* Should proceed? */
-        if(stPayload.stStream.stPacket.bDiscard == orxFALSE)
+        /* For all processed buffers */
+        for(i = 0, u32FrameNumber = u32BufferFrameNumber; i < (orxU32)iBufferNumber; i++)
         {
-          /* Success? */
-          if(u32FrameNumber > 0)
+          orxBOOL bEOF = orxFALSE;
+
+          /* Fills buffer */
+          u32FrameNumber = orxSoundSystem_OpenAL_Read(&(_pstSound->stData), u32BufferFrameNumber, sstSoundSystem.as16StreamBuffer);
+
+          /* Inits packet */
+          stPayload.stStream.stPacket.u32SampleNumber = u32FrameNumber * _pstSound->stData.stInfo.u32ChannelNumber;
+          stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
+          stPayload.stStream.stPacket.bDiscard        = orxFALSE;
+          stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
+
+          /* Should proceed? */
+          if(stPayload.stStream.stPacket.bDiscard == orxFALSE)
           {
-            /* Transfers its data */
-            alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * sizeof(orxS16)), (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
-            alASSERT();
-
-            /* Queues it */
-            alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
-            alASSERT();
-
-            /* End of file? */
-            if(u32FrameNumber < u32BufferFrameNumber)
+            /* Success? */
+            if(u32FrameNumber > 0)
             {
+              /* Transfers its data */
+              alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * sizeof(orxS16)), (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
+              alASSERT();
+
+              /* Queues it */
+              alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+              alASSERT();
+
+              /* End of file? */
+              if(u32FrameNumber < u32BufferFrameNumber)
+              {
+                /* Updates status */
+                bEOF = orxTRUE;
+              }
+            }
+            else
+            {
+              /* Clears its data */
+              alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, 0, (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
+              alASSERT();
+
+              /* Queues it */
+              alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+              alASSERT();
+
               /* Updates status */
               bEOF = orxTRUE;
+            }
+
+            /* Ends of file? */
+            if(bEOF != orxFALSE)
+            {
+              /* Rewinds file */
+              orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
+
+              /* Not looping? */
+              if(_pstSound->bLoop == orxFALSE)
+              {
+                /* Stops */
+                _pstSound->bStop = orxTRUE;
+                break;
+              }
             }
           }
           else
@@ -685,41 +693,29 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
             /* Queues it */
             alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
             alASSERT();
-
-            /* Updates status */
-            bEOF = orxTRUE;
-          }
-
-          /* Ends of file? */
-          if(bEOF != orxFALSE)
-          {
-            /* Rewinds file */
-            orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
-
-            /* Not looping? */
-            if(_pstSound->bLoop == orxFALSE)
-            {
-              /* Stops */
-              _pstSound->bStop = orxTRUE;
-              break;
-            }
           }
         }
-        else
-        {
-          /* Clears its data */
-          alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, 0, (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
-          alASSERT();
+      }
 
-          /* Queues it */
-          alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
+      /* Should continue */
+      if(_pstSound->bStop == orxFALSE)
+      {
+        ALint iState;
+
+        /* Gets actual state */
+        alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
+        alASSERT();
+
+        /* Stopped? */
+        if((iState == AL_STOPPED) || (iState == AL_INITIAL))
+        {
+          /* Resumes play */
+          alSourcePlay(_pstSound->uiSource);
           alASSERT();
         }
       }
     }
-
-    /* Should continue */
-    if(_pstSound->bStop == orxFALSE)
+    else
     {
       ALint iState;
 
@@ -730,44 +726,28 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
       /* Stopped? */
       if((iState == AL_STOPPED) || (iState == AL_INITIAL))
       {
-        /* Resumes play */
-        alSourcePlay(_pstSound->uiSource);
+        ALint iQueuedBufferNumber = 0, iProcessedBufferNumber;
+
+        /* Gets queued & processed buffer numbers */
+        alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iQueuedBufferNumber);
         alASSERT();
-      }
-    }
-  }
-  else
-  {
-    ALint iState;
-
-    /* Gets actual state */
-    alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
-    alASSERT();
-
-    /* Stopped? */
-    if((iState == AL_STOPPED) || (iState == AL_INITIAL))
-    {
-      ALint iQueuedBufferNumber = 0, iProcessedBufferNumber;
-
-      /* Gets queued & processed buffer numbers */
-      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_QUEUED, &iQueuedBufferNumber);
-      alASSERT();
-      alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iProcessedBufferNumber);
-      alASSERT();
-
-      /* Checks */
-      orxASSERT(iProcessedBufferNumber <= iQueuedBufferNumber);
-      orxASSERT(iQueuedBufferNumber <= sstSoundSystem.s32StreamBufferNumber);
-
-      /* Found any? */
-      if(iQueuedBufferNumber > 0)
-      {
-        /* Updates sound packet ID */
-        _pstSound->s32PacketID -= (orxS32)(iQueuedBufferNumber - iProcessedBufferNumber);
-
-        /* Unqueues them */
-        alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iQueuedBufferNumber, sstSoundSystem.s32StreamBufferNumber), sstSoundSystem.auiWorkBufferList);
+        alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iProcessedBufferNumber);
         alASSERT();
+
+        /* Checks */
+        orxASSERT(iProcessedBufferNumber <= iQueuedBufferNumber);
+        orxASSERT(iQueuedBufferNumber <= sstSoundSystem.s32StreamBufferNumber);
+
+        /* Found any? */
+        if(iQueuedBufferNumber > 0)
+        {
+          /* Updates sound packet ID */
+          _pstSound->s32PacketID -= (orxS32)(iQueuedBufferNumber - iProcessedBufferNumber);
+
+          /* Unqueues them */
+          alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iQueuedBufferNumber, sstSoundSystem.s32StreamBufferNumber), sstSoundSystem.auiWorkBufferList);
+          alASSERT();
+        }
       }
     }
   }
@@ -901,44 +881,95 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_CreateStreamTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Opens file */
+  if(orxSoundSystem_OpenAL_OpenFile(&(pstSound->stData)) != orxSTATUS_FAILURE)
+  {
+    /* Stores duration */
+    pstSound->fDuration = orxU2F(pstSound->stData.stInfo.u32FrameNumber) / orx2F(pstSound->stData.stInfo.u32SampleRate);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Clears duration */
+    pstSound->fDuration = orxFLOAT_0;
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: invalid data.", orxString_GetFromID(pstSound->stData.u32NameID));
+  }
+
+  /* Adds it to the list */
+  orxMEMORY_BARRIER();
+  orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstSound->stNode));
+
+  /* Done! */
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContext)
 {
   orxSOUNDSYSTEM_SAMPLE  *pstSample;
-  void                   *pBuffer;
   ALuint                  uiBuffer = 0;
-  orxU32                  u32BufferSize;
   orxSTATUS               eResult = orxSTATUS_FAILURE;
 
   /* Gets sample */
   pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pContext;
 
-  /* Gets buffer size */
-  u32BufferSize = pstSample->stData.stInfo.u32FrameNumber * pstSample->stData.stInfo.u32ChannelNumber * sizeof(orxS16);
-
   /* Generates an OpenAL buffer */
   alGenBuffers(1, &uiBuffer);
   alASSERT();
 
-  /* Allocates buffer */
-  if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_TEMP)) != orxNULL)
+  /* Gets info from data */
+  if(orxSoundSystem_OpenAL_OpenFile(&(pstSample->stData)) != orxSTATUS_FAILURE)
   {
-    orxU32 u32ReadFrameNumber;
+    void   *pBuffer;
+    orxU32  u32BufferSize;
 
-    /* Reads data */
-    u32ReadFrameNumber = orxSoundSystem_OpenAL_Read(&(pstSample->stData), pstSample->stData.stInfo.u32FrameNumber, pBuffer);
+    /* Gets buffer size */
+    u32BufferSize = pstSample->stData.stInfo.u32FrameNumber * pstSample->stData.stInfo.u32ChannelNumber * sizeof(orxS16);
 
-    /* Success? */
-    if(u32ReadFrameNumber == pstSample->stData.stInfo.u32FrameNumber)
+    /* Allocates buffer */
+    if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_TEMP)) != orxNULL)
     {
-      /* Transfers the data */
-      alBufferData(uiBuffer, (pstSample->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)pstSample->stData.stInfo.u32SampleRate);
-      alASSERT();
+      orxU32 u32ReadFrameNumber;
 
-      /* Stores duration */
-      pstSample->fDuration = orxU2F(pstSample->stData.stInfo.u32FrameNumber) / orx2F(pstSample->stData.stInfo.u32SampleRate);
+      /* Reads data */
+      u32ReadFrameNumber = orxSoundSystem_OpenAL_Read(&(pstSample->stData), pstSample->stData.stInfo.u32FrameNumber, pBuffer);
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Success? */
+      if(u32ReadFrameNumber == pstSample->stData.stInfo.u32FrameNumber)
+      {
+        /* Transfers the data */
+        alBufferData(uiBuffer, (pstSample->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)pstSample->stData.stInfo.u32SampleRate);
+        alASSERT();
+
+        /* Stores duration */
+        pstSample->fDuration = orxU2F(pstSample->stData.stInfo.u32FrameNumber) / orx2F(pstSample->stData.stInfo.u32SampleRate);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Clears sample info */
+        pstSample->stData.stInfo.u32FrameNumber = 0;
+        pstSample->fDuration                    = orxFLOAT_0;
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't read all data from file.", orxString_GetFromID(pstSample->stData.u32NameID));
+      }
+
+      /* Frees buffer */
+      orxMemory_Free(pBuffer);
     }
     else
     {
@@ -947,11 +978,11 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
       pstSample->fDuration                    = orxFLOAT_0;
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't read data from file.", orxString_GetFromID(pstSample->u32NameID));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate memory for data.", orxString_GetFromID(pstSample->stData.u32NameID));
     }
 
-    /* Frees buffer */
-    orxMemory_Free(pBuffer);
+    /* Closes file */
+    orxSoundSystem_OpenAL_CloseFile(&(pstSample->stData));
   }
   else
   {
@@ -959,12 +990,13 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
     pstSample->stData.stInfo.u32FrameNumber = 0;
     pstSample->fDuration                    = orxFLOAT_0;
 
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate memory for data.", orxString_GetFromID(pstSample->u32NameID));
-  }
+    /* Closes resource */
+    orxResource_Close(pstSample->stData.hResource);
+    pstSample->stData.hResource = orxNULL;
 
-  /* Closes file */
-  orxSoundSystem_OpenAL_CloseFile(&(pstSample->stData));
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid data.", orxString_GetFromID(pstSample->stData.u32NameID));
+  }
 
   /* Stores OpenAL buffer */
   orxMEMORY_BARRIER();
@@ -1323,7 +1355,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
 
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTRING _zFilename)
 {
-  orxSOUNDSYSTEM_SAMPLE*pstResult = NULL;
+  orxSOUNDSYSTEM_SAMPLE *pstResult = NULL;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1335,19 +1367,59 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
   /* Valid? */
   if(pstResult != orxNULL)
   {
+    const orxSTRING zResourceLocation;
+    orxSTATUS       eResult = orxSTATUS_FAILURE;
+
     /* Clears data */
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SAMPLE));
 
-    /* Opens file */
-    if(orxSoundSystem_OpenAL_OpenFile(_zFilename, &(pstResult->stData)) != orxSTATUS_FAILURE)
+    /* Locates resource */
+    zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
+
+    /* Success? */
+    if(zResourceLocation != orxNULL)
     {
+      orxHANDLE hResource;
+
+      /* Opens it */
+      hResource = orxResource_Open(zResourceLocation, orxFALSE);
+
+      /* Success? */
+      if(hResource != orxHANDLE_UNDEFINED)
+      {
 #ifdef __orxDEBUG__
-      /* Stores name ID */
-      pstResult->u32NameID = orxString_GetID(_zFilename);
+        /* Stores name ID */
+        pstResult->stData.u32NameID = orxString_GetID(_zFilename);
 #endif /* __orxDEBUG__ */
 
-      /* Runs sample load task */
-      orxThread_RunTask(&orxSoundSystem_OpenAL_LoadSampleTask, orxNULL, orxNULL, pstResult);
+        /* Stores resource */
+        pstResult->stData.hResource = hResource;
+
+        /* Runs sample load task */
+        orxThread_RunTask(&orxSoundSystem_OpenAL_LoadSampleTask, orxNULL, orxNULL, pstResult);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't open resource [%s].", _zFilename, zResourceLocation);
+
+        /* Frees sample */
+        orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't locate resource.", _zFilename);
+
+      /* Frees sample */
+      orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
     }
   }
 
@@ -1519,10 +1591,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
 
       /* Updates status */
       pstResult->bIsStream  = orxTRUE;
-      pstResult->bDelete    = orxFALSE;
-      pstResult->bLoop      = orxFALSE;
       pstResult->bStop      = orxTRUE;
-      pstResult->bPause     = orxFALSE;
       pstResult->zReference = _zReference;
       pstResult->s32PacketID= 0;
 
@@ -1555,41 +1624,67 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
   /* Valid? */
   if(pstResult != orxNULL)
   {
+    const orxSTRING zResourceLocation;
+    orxSTATUS       eResult = orxSTATUS_FAILURE;
+
     /* Clears it */
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
-    /* Generates openAL source */
-    alGenSources(1, &(pstResult->uiSource));
-    alASSERT();
+    /* Locates resource */
+    zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
-    /* Opens file */
-    if(orxSoundSystem_OpenAL_OpenFile(_zFilename, &(pstResult->stData)) != orxSTATUS_FAILURE)
+    /* Success? */
+    if(zResourceLocation != orxNULL)
     {
-      /* Generates all openAL buffers */
-      alGenBuffers(sstSoundSystem.s32StreamBufferNumber, pstResult->auiBufferList);
-      alASSERT();
+      orxHANDLE hResource;
 
-      /* Stores duration */
-      pstResult->fDuration = orxU2F(pstResult->stData.stInfo.u32FrameNumber) / orx2F(pstResult->stData.stInfo.u32SampleRate);
+      /* Opens it */
+      hResource = orxResource_Open(zResourceLocation, orxFALSE);
 
-      /* Updates status */
-      pstResult->bIsStream  = orxTRUE;
-      pstResult->bDelete    = orxFALSE;
-      pstResult->bLoop      = orxFALSE;
-      pstResult->bStop      = orxTRUE;
-      pstResult->bPause     = orxFALSE;
-      pstResult->zReference = _zReference;
-      pstResult->s32PacketID= 0;
+      /* Success? */
+      if(hResource != orxHANDLE_UNDEFINED)
+      {
+#ifdef __orxDEBUG__
+        /* Stores name ID */
+        pstResult->stData.u32NameID = orxString_GetID(_zFilename);
+#endif /* __orxDEBUG__ */
 
-      /* Adds it to the list */
-      orxMEMORY_BARRIER();
-      orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));
+        /* Stores resource */
+        pstResult->stData.hResource = hResource;
+
+        /* Updates status */
+        pstResult->bIsStream  = orxTRUE;
+        pstResult->bStop      = orxTRUE;
+        pstResult->zReference = _zReference;
+        pstResult->s32PacketID= 0;
+
+        /* Generates openAL source */
+        alGenSources(1, &(pstResult->uiSource));
+        alASSERT();
+
+        /* Generates all openAL buffers */
+        alGenBuffers(sstSoundSystem.s32StreamBufferNumber, pstResult->auiBufferList);
+        alASSERT();
+
+        /* Runs stream create task */
+        orxThread_RunTask(&orxSoundSystem_OpenAL_CreateStreamTask, orxNULL, orxNULL, pstResult);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't open resource [%s].", _zFilename, zResourceLocation);
+
+        /* Deletes sound */
+        orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
     }
     else
     {
-      /* Deletes openAL source */
-      alDeleteSources(1, &(pstResult->uiSource));
-      alASSERT();
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't locate resource.", _zFilename);
 
       /* Deletes sound */
       orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
