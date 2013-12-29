@@ -33,6 +33,7 @@
 #include "orxInclude.h"
 
 #include "core/orxEvent.h"
+#include "core/orxThread.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
@@ -115,7 +116,9 @@ void orxFASTCALL orxEvent_Setup()
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_THREAD);
 
+  /* Done! */
   return;
 }
 
@@ -367,8 +370,12 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
   {
     orxEVENT_HANDLER_INFO *pstInfo;
 
-    /* Updates event send counter */
-    sstEvent.s32EventSendCounter++;
+    /* Main thread? */
+    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Updates event send counter */
+      sstEvent.s32EventSendCounter++;
+    }
 
     /* For all handlers */
     for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
@@ -385,8 +392,12 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
       }
     }
 
-    /* Updates event send counter */
-    sstEvent.s32EventSendCounter--;
+    /* Main thread? */
+    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Updates event send counter */
+      sstEvent.s32EventSendCounter--;
+    }
   }
 
   /* Done! */
