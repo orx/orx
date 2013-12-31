@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="07_FX"
-	ProjectGUID="{C674E061-1F08-AB46-AAED-D3E40539ADAB}"
+	ProjectGUID="{67367D85-86BF-644F-9EBD-40B623D6FEF6}"
 	RootNamespace="07_FX"
 	Keyword="Win32Proj"
 	>
@@ -42,7 +42,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxDEBUG__"
-				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -53,7 +52,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\07_FX.pdb"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -71,7 +70,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\07_FX.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"

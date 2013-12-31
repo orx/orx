@@ -13,47 +13,47 @@
   <Project Name="11_Spawner" Path="11_Spawner.project" Active="No" />
   <Project Name="12_Lighting" Path="12_Lighting.project" Active="No" />
   <BuildMatrix>
-    <WorkspaceConfiguration Name="debug" Selected="yes">
-      <Project Name="01_Object" ConfigName="debug"/>
-      <Project Name="02_Clock" ConfigName="debug"/>
-      <Project Name="03_Frame" ConfigName="debug"/>
-      <Project Name="04_Anim" ConfigName="debug"/>
-      <Project Name="05_Viewport" ConfigName="debug"/>
-      <Project Name="06_Sound" ConfigName="debug"/>
-      <Project Name="07_FX" ConfigName="debug"/>
-      <Project Name="08_Physics" ConfigName="debug"/>
-      <Project Name="09_Scrolling" ConfigName="debug"/>
-      <Project Name="10_Locale" ConfigName="debug"/>
-      <Project Name="11_Spawner" ConfigName="debug"/>
-      <Project Name="12_Lighting" ConfigName="debug"/>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="01_Object" ConfigName="Debug"/>
+      <Project Name="02_Clock" ConfigName="Debug"/>
+      <Project Name="03_Frame" ConfigName="Debug"/>
+      <Project Name="04_Anim" ConfigName="Debug"/>
+      <Project Name="05_Viewport" ConfigName="Debug"/>
+      <Project Name="06_Sound" ConfigName="Debug"/>
+      <Project Name="07_FX" ConfigName="Debug"/>
+      <Project Name="08_Physics" ConfigName="Debug"/>
+      <Project Name="09_Scrolling" ConfigName="Debug"/>
+      <Project Name="10_Locale" ConfigName="Debug"/>
+      <Project Name="11_Spawner" ConfigName="Debug"/>
+      <Project Name="12_Lighting" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile" Selected="yes">
-      <Project Name="01_Object" ConfigName="profile"/>
-      <Project Name="02_Clock" ConfigName="profile"/>
-      <Project Name="03_Frame" ConfigName="profile"/>
-      <Project Name="04_Anim" ConfigName="profile"/>
-      <Project Name="05_Viewport" ConfigName="profile"/>
-      <Project Name="06_Sound" ConfigName="profile"/>
-      <Project Name="07_FX" ConfigName="profile"/>
-      <Project Name="08_Physics" ConfigName="profile"/>
-      <Project Name="09_Scrolling" ConfigName="profile"/>
-      <Project Name="10_Locale" ConfigName="profile"/>
-      <Project Name="11_Spawner" ConfigName="profile"/>
-      <Project Name="12_Lighting" ConfigName="profile"/>
+    <WorkspaceConfiguration Name="Profile" Selected="yes">
+      <Project Name="01_Object" ConfigName="Profile"/>
+      <Project Name="02_Clock" ConfigName="Profile"/>
+      <Project Name="03_Frame" ConfigName="Profile"/>
+      <Project Name="04_Anim" ConfigName="Profile"/>
+      <Project Name="05_Viewport" ConfigName="Profile"/>
+      <Project Name="06_Sound" ConfigName="Profile"/>
+      <Project Name="07_FX" ConfigName="Profile"/>
+      <Project Name="08_Physics" ConfigName="Profile"/>
+      <Project Name="09_Scrolling" ConfigName="Profile"/>
+      <Project Name="10_Locale" ConfigName="Profile"/>
+      <Project Name="11_Spawner" ConfigName="Profile"/>
+      <Project Name="12_Lighting" ConfigName="Profile"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release" Selected="yes">
-      <Project Name="01_Object" ConfigName="release"/>
-      <Project Name="02_Clock" ConfigName="release"/>
-      <Project Name="03_Frame" ConfigName="release"/>
-      <Project Name="04_Anim" ConfigName="release"/>
-      <Project Name="05_Viewport" ConfigName="release"/>
-      <Project Name="06_Sound" ConfigName="release"/>
-      <Project Name="07_FX" ConfigName="release"/>
-      <Project Name="08_Physics" ConfigName="release"/>
-      <Project Name="09_Scrolling" ConfigName="release"/>
-      <Project Name="10_Locale" ConfigName="release"/>
-      <Project Name="11_Spawner" ConfigName="release"/>
-      <Project Name="12_Lighting" ConfigName="release"/>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="01_Object" ConfigName="Release"/>
+      <Project Name="02_Clock" ConfigName="Release"/>
+      <Project Name="03_Frame" ConfigName="Release"/>
+      <Project Name="04_Anim" ConfigName="Release"/>
+      <Project Name="05_Viewport" ConfigName="Release"/>
+      <Project Name="06_Sound" ConfigName="Release"/>
+      <Project Name="07_FX" ConfigName="Release"/>
+      <Project Name="08_Physics" ConfigName="Release"/>
+      <Project Name="09_Scrolling" ConfigName="Release"/>
+      <Project Name="10_Locale" ConfigName="Release"/>
+      <Project Name="11_Spawner" ConfigName="Release"/>
+      <Project Name="12_Lighting" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

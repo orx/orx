@@ -23,6 +23,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
 				</Linker>
 				<ExtraCommands>
@@ -48,6 +49,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
 				</Linker>
 				<ExtraCommands>
@@ -72,6 +74,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
 				</Linker>
 				<ExtraCommands>

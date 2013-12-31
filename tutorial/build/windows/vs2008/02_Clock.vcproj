@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="02_Clock"
-	ProjectGUID="{9F72F684-D3ED-BA4B-8856-8C3E984116A2}"
+	ProjectGUID="{C27AD774-DFAE-804E-AA31-B763A76268E0}"
 	RootNamespace="02_Clock"
 	Keyword="Win32Proj"
 	>
@@ -42,7 +42,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxDEBUG__"
-				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -53,7 +52,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\02_Clock.pdb"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -71,7 +70,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\02_Clock.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"

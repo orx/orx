@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="10_Locale"
-	ProjectGUID="{C531DD43-8994-0240-B667-EA7785D917C0}"
+	ProjectGUID="{55CF7A44-0C21-B04D-ACF8-638B73E15FEB}"
 	RootNamespace="10_Locale"
 	Keyword="Win32Proj"
 	>
@@ -42,7 +42,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxDEBUG__"
-				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -53,7 +52,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\10_Locale.pdb"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -70,7 +69,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\10_Locale.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
