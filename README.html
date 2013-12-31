@@ -14,7 +14,7 @@
     <div class="container">
       <div id="markup">
         <article id="content" class="markdown-body">
-          <h1>Orx - Portable Game Engine (Version 1.5rc0)</h1>
+          <h1>Orx - Portable Game Engine (Version 1.5)</h1>
 <p>Email iarwain [at] orx-project.org to contact the author; or, better,
 check <a href="http://orx-project.org">orx's homepage</a> for the most up-to-date contact information.</p>
 <p>This engine is licensed under the very permissive <a href="http://en.wikipedia.org/wiki/Zlib_License">zlib license</a>,
@@ -22,7 +22,7 @@ see the <a href="LICENSE">LICENSE</a> file for details.</p>
 <h2>Summary</h2>
 <p>Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.</p>
-<p>This is the first release candidate for orx v1.5rc0. If you find any bugs,
+<p>This is the first release candidate for orx v1.5. If you find any bugs,
 please report them on the <a href="http://forum.orx-project.org">forum</a>, in the "Bug report - Feature request" board,
 or via orx's <a href="https://bitbucket.org/orx/orx/issues?status=new&amp;status=open">issue page/tracker</a>.</p>
 <p>The current features of orx engine are:</p>
@@ -68,7 +68,7 @@ and they might be less accurate/somewhat outdated.</p>
 <li>MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile),<br>
   version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support)</li>
 <li>iOS (iPhone/iPod Touch/iPad, simulator &amp; device with xcode)</li>
-<li>Android (NDK build files, no simulator support)</li>
+<li>Android (NDK build files, simulator &amp; device)</li>
 </ul>
 <h2>Versions</h2>
 <p>Those are not revision versions but link/run versions.
@@ -107,35 +107,35 @@ Everything compiles out-of-the-box for the hardware platforms cited above.</p>
 <p>You can download all the packages from <a href="http://orx.sf.net">sourceforge</a> or <a href="https://bitbucket.org/orx/orx/downloads">bitbucket</a>.
 Here is a list with a small description for each package.</p>
 <ul>
-<li>orx-doc-1.5rc0.zip: orx's API doxygen documentation</li>
-<li>orx-src-1.5rc0.zip: orx's source code including build projects for<ul>
+<li>orx-doc-1.5.zip: orx's API doxygen documentation</li>
+<li>orx-src-1.5.zip: orx's source code including build projects for<ul>
 <li>codelite (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
 <li>codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
 <li>GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
 <li>vs2008 &amp; vs2010 (Windows Visual Studio, all versions)</li>
 <li>xcode (3.2+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)</li>
 <li>ndk build files for Android (static embedded versions)
-NB: You'll need orx-extern-1.5rc0.zip (orx plugins' external dependencies) if you intend to compile orx yourself.</li>
+NB: You'll need orx-extern-1.5.zip (orx plugins' external dependencies) if you intend to compile orx yourself.</li>
 </ul>
 </li>
-<li>orx-extern-1.5rc0.zip: orx's external dependencies. You will <em>only NEED</em> these if you
-  use orx-src-1.5rc0.zip and you plan on compiling orx yourself. They are not needed otherwise.
+<li>orx-extern-1.5.zip: orx's external dependencies. You will <em>only NEED</em> these if you
+  use orx-src-1.5.zip and you plan on compiling orx yourself. They are not needed otherwise.
   The external libraries are usually modified versions of the original ones.<br>
 <strong>VERY IMPORTANT</strong>: If you want to compile orx yourself, you'll need these versions and not the official ones.</li>
-<li>orx-dev-linux32-1.5rc0.tar.bz2      : dynamic embedded binaries for Linux (x86), release/profile/debug + tutorials + tools.</li>
-<li>orx-dev-linux64-1.5rc0.tar.bz2      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tutorials + tools.</li>
-<li>orx-dev-mac-1.5rc0.zip              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tutorials + tools.</li>
-<li>orx-dev-mingw-1.5rc0.zip            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tutorials + tools.</li>
-<li>orx-dev-vs2008-1.5rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release/profile/debug + tutorials + tools.</li>
-<li>orx-dev-vs2010-1.5rc0.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release/profile/debug + tutorials + tools.</li>
-<li>orx-full-ios-1.5rc0.zip             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
-<li>orx-full-android-1.5rc0.zip         : static embedded binaries for Android, release/profile/debug + doc + source + NDK files.</li>
-<li>orx-tutorial-linux32-1.5rc0.tar.bz2 : tutorials for Linux (x86)</li>
-<li>orx-tutorial-linux64-1.5rc0.tar.bz2 : tutorials for Linux (x86-64)</li>
-<li>orx-tutorial-mac-1.5rc0.zip         : tutorials for MacOS X (x86/x86-64)</li>
-<li>orx-tutorial-mingw-1.5rc0.zip       : tutorials for Windows (mingw)</li>
-<li>orx-tutorial-vs2008-1.5rc0.zip      : tutorials for Windows (Visual Studio 2008)</li>
-<li>orx-tutorial-vs2010-1.5rc0.zip      : tutorials for Windows (Visual Studio 2010)</li>
+<li>orx-dev-linux32-1.5.tar.bz2      : dynamic embedded binaries for Linux (x86), release/profile/debug + tutorials + tools.</li>
+<li>orx-dev-linux64-1.5.tar.bz2      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tutorials + tools.</li>
+<li>orx-dev-mac-1.5.zip              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tutorials + tools.</li>
+<li>orx-dev-mingw-1.5.zip            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tutorials + tools.</li>
+<li>orx-dev-vs2008-1.5.zip           : dynamic embedded binaries for Windows (Visual Studio 2008), release/profile/debug + tutorials + tools.</li>
+<li>orx-dev-vs2010-1.5.zip           : dynamic embedded binaries for Windows (Visual Studio 2010), release/profile/debug + tutorials + tools.</li>
+<li>orx-full-ios-1.5.zip             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
+<li>orx-full-android-1.5.zip         : static embedded binaries for Android, release/profile/debug (device) + doc + source + NDK files.</li>
+<li>orx-tutorial-linux32-1.5.tar.bz2 : tutorials for Linux (x86)</li>
+<li>orx-tutorial-linux64-1.5.tar.bz2 : tutorials for Linux (x86-64)</li>
+<li>orx-tutorial-mac-1.5.zip         : tutorials for MacOS X (x86/x86-64)</li>
+<li>orx-tutorial-mingw-1.5.zip       : tutorials for Windows (mingw)</li>
+<li>orx-tutorial-vs2008-1.5.zip      : tutorials for Windows (Visual Studio 2008)</li>
+<li>orx-tutorial-vs2010-1.5.zip      : tutorials for Windows (Visual Studio 2010)</li>
 </ul>
 <p>All the <code>*-dev-*</code> packages above include:</p>
 <ul>
