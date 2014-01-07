@@ -110,6 +110,7 @@ var searchData=
   ['orxevent_5ftype_5ftexture',['orxEVENT_TYPE_TEXTURE',['../group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a714cfbf6f8d48e92dfc8215baf29c46a',1,'orxEvent.h']]],
   ['orxevent_5ftype_5ftimeline',['orxEVENT_TYPE_TIMELINE',['../group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a3ca8f5d8375a2f12794d2fd1fd2fd0f5',1,'orxEvent.h']]],
   ['orxevent_5ftype_5fuser_5fdefined',['orxEVENT_TYPE_USER_DEFINED',['../group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8af2e660591f643abe7403c5898ba88928',1,'orxEvent.h']]],
+  ['orxevent_5ftype_5fviewport',['orxEVENT_TYPE_VIEWPORT',['../group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aada1929d75c2a6af273873ee8a4021b7',1,'orxEvent.h']]],
   ['orxframe_5fspace_5fglobal',['orxFRAME_SPACE_GLOBAL',['../group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7afed364b31da98d46831bc4820c906f3d',1,'orxFrame.h']]],
   ['orxframe_5fspace_5flocal',['orxFRAME_SPACE_LOCAL',['../group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7af690c225877c9e176f6c93ce0a8af5dd',1,'orxFrame.h']]],
   ['orxframe_5fspace_5fnone',['orxFRAME_SPACE_NONE',['../group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7a9b375c1d5f0e71ba458ea07880280983',1,'orxFrame.h']]],
@@ -719,5 +720,8 @@ var searchData=
   ['orxtimeline_5fevent_5ftrack_5fremove',['orxTIMELINE_EVENT_TRACK_REMOVE',['../group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca3f1baa91523a96aa07ace142f2ee3aac',1,'orxTimeLine.h']]],
   ['orxtimeline_5fevent_5ftrack_5fstart',['orxTIMELINE_EVENT_TRACK_START',['../group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca97915a3d3756ad6d9efd9ae47de20b61',1,'orxTimeLine.h']]],
   ['orxtimeline_5fevent_5ftrack_5fstop',['orxTIMELINE_EVENT_TRACK_STOP',['../group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca08e16a0fb420305e17b91f48153a45be',1,'orxTimeLine.h']]],
-  ['orxtimeline_5fevent_5ftrigger',['orxTIMELINE_EVENT_TRIGGER',['../group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca0c35c1244764d2c56aaaa1f8297605d7',1,'orxTimeLine.h']]]
+  ['orxtimeline_5fevent_5ftrigger',['orxTIMELINE_EVENT_TRIGGER',['../group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca0c35c1244764d2c56aaaa1f8297605d7',1,'orxTimeLine.h']]],
+  ['orxviewport_5fevent_5fnone',['orxVIEWPORT_EVENT_NONE',['../group__orx_viewport.html#ggac676aca97feb0f2591e9b7b1fa793c7ba8573373444ac5da0d67fffc3b74bf246',1,'orxViewport.h']]],
+  ['orxviewport_5fevent_5fnumber',['orxVIEWPORT_EVENT_NUMBER',['../group__orx_viewport.html#ggac676aca97feb0f2591e9b7b1fa793c7ba74c9313f6ff6171ff0b77272f2a97b96',1,'orxViewport.h']]],
+  ['orxviewport_5fevent_5fresize',['orxVIEWPORT_EVENT_RESIZE',['../group__orx_viewport.html#ggac676aca97feb0f2591e9b7b1fa793c7baa536f4976ca84b5b26514f7ca9433159',1,'orxViewport.h']]]
 ];

@@ -1,5 +1,11 @@
 var NAVTREEINDEX17 =
 {
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a8e208331d1bf571cd3a823103fd75fe9":[3,0,0,11,0,2,0,42],
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a92bed8869928b756ca47acc76f3489ef":[3,0,0,11,0,2,0,38],
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9541393c1e5c303dfa6702737be60915":[3,0,0,11,0,2,0,44],
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9deb266a63c47237ca614ca8908c45e9":[3,0,0,11,0,2,0,0],
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9e032ed77785bf4e0ea6f6d09d33fadb":[3,0,0,11,0,2,0,8],
+"orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9fa24ad95450f6fddd8cd9466d9eb75c":[3,0,0,11,0,2,0,40],
 "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa051f0b588936a78d6d8b8e889d39043":[3,0,0,11,0,2,0,26],
 "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa35d79123513b6e51b89287f7b514395":[3,0,0,11,0,2,0,36],
 "orx_plugin___display_8h.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa692fa753cd4b971738b434058bade1f":[3,0,0,11,0,2,0,35],
@@ -243,11 +249,5 @@ var NAVTREEINDEX17 =
 "orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a5b35556b2c49059077d86b0574947cd4":[3,0,0,12,1,12,6],
 "orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a7e64d645ce7f8ba974770de15c7e33fc":[3,0,0,12,1,12,0],
 "orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a93d3c87196f358847d4d5ea86d2dde22":[3,0,0,12,1,12,3],
-"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a948a1d2297366c025b8b63bc21b7ce03":[3,0,0,12,1,12,2],
-"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684aafbb9fce1a87994b6b3d7aa3e5eee644":[3,0,0,12,1,12,5],
-"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684ad82fbd8aba731e5f39fcc64572649b31":[3,0,0,12,1,12,1],
-"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684ae287264fd0bac7d65d9f0f3d2f14846e":[3,0,0,12,1,12,7],
-"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684afb0536b016d6a68246a974d4a25853a7":[3,0,0,12,1,12,4],
-"orx_render_8h_source.html":[3,0,0,12,1],
-"orx_resource_8h.html":[3,0,0,2,6]
+"orx_render_8h.html#ggaf2df6db5cb046f3e29a234036b54c684a948a1d2297366c025b8b63bc21b7ce03":[3,0,0,12,1,12,2]
 };
