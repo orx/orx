@@ -461,8 +461,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Should render history? */
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
   {
-    orxDISPLAY_VERTEX astVertexList[2 * orxPROFILER_KU32_HISTORY_LENGTH];
-    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH];
+    orxDISPLAY_VERTEX astVertexList[2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1)];
+    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH - 1], dFrameRecDuration = orxDOUBLE_0;
     orxBOOL           bFirst;
 
     /* Inits color */
@@ -470,7 +470,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     orxColor_FromRGBToHSV(&stColor, &stColor);
 
     /* For all vertices */
-    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
     {
       /* Inits both vertices */
       astVertexList[2 * i].fX     =
@@ -497,15 +497,36 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* First marker? */
           if(bFirst != orxFALSE)
           {
+            orxDOUBLE dAccDuration = orxDOUBLE_0, dDurationSampleNumber = orxDOUBLE_0;
+
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
+              orxDOUBLE dDuration;
+
               /* Selects it */
               orxProfiler_SelectQueryFrame(i);
 
               /* Stores its frame start time */
               adStartTimeList[i] = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
+
+              /* Gets frame duration */
+              dDuration = orxProfiler_GetResetTime();
+
+              /* Valid? */
+              if(dDuration != orxDOUBLE_0)
+              {
+                /* Updates accumulators */
+                dAccDuration           += dDuration;
+                dDurationSampleNumber  += orxDOUBLE_1;
+              }
             }
+
+            /* Gets averaged frame reciprocal duration */
+            dFrameRecDuration = orx2D(dDurationSampleNumber) / dAccDuration;
+
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0);
 
             /* Clears first status */
             bFirst = orxFALSE;
@@ -522,13 +543,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
 
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
-              orxDOUBLE dFrameRecDuration;
-
-              /* Gets frame reciprocal duration */
-              dFrameRecDuration = 1.0 / orxProfiler_GetResetTime();
-
               /* Selects it */
               orxProfiler_SelectQueryFrame(i);
 
@@ -555,8 +571,11 @@ static orxINLINE void orxRender_Home_RenderProfiler()
               }
             }
 
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0);
+
             /* Draws it */
-            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * orxPROFILER_KU32_HISTORY_LENGTH, astVertexList);
+            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
           }
         }
       }
@@ -2287,7 +2306,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
           else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME))
           {
             /* Not first frame? */
-            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH)
+            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH - 2)
             {
               /* Updates it */
               sstRender.u32SelectedFrame++;
