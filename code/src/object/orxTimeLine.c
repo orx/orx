@@ -91,6 +91,7 @@
 #define orxTIMELINE_KU32_TRACK_NUMBER                 8
 
 #define orxTIMELINE_KZ_CONFIG_LOOP                    "Loop"
+#define orxTIMELINE_KZ_CONFIG_IMMEDIATE               "Immediate"
 #define orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 
 
@@ -221,8 +222,9 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
         }
         else
         {
-          /* Not keep in cache nor loop? */
+          /* Not keep in cache, immediate nor loop? */
           if((orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
+          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_IMMEDIATE, zKey) != 0)
           && (orxString_Compare(orxTIMELINE_KZ_CONFIG_LOOP, zKey) != 0))
           {
             /* Logs message */
@@ -517,8 +519,12 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
     /* Cleans its flags */
     orxStructure_SetFlags(pstTimeLine, orxTIMELINE_KU32_FLAG_NONE, orxTIMELINE_KU32_FLAG_DIRTY);
 
-    /* Computes its new time cursor */
-    pstTimeLine->fTime += _pstClockInfo->fDT;
+    /* Has clock info? */
+    if(_pstClockInfo != orxNULL)
+    {
+      /* Computes its new time cursor */
+      pstTimeLine->fTime += _pstClockInfo->fDT;
+    }
 
     /* For all tracks */
     for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
@@ -989,6 +995,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     if(pstTrack != orxNULL)
     {
       orxTIMELINE_EVENT_PAYLOAD stPayload;
+      orxBOOL                   bImmediate;
       orxU32                    u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
 
       /* Pushes its config section */
@@ -1000,6 +1007,9 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
         /* Updates flags */
         u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_LOOP;
       }
+
+      /* Gets immediate status */
+      bImmediate = orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_IMMEDIATE);
 
       /* Pops config section */
       orxConfig_PopSection();
@@ -1020,6 +1030,13 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
 
       /* Updates timeline flags */
       orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY, orxTIMELINE_KU32_FLAG_NONE);
+
+      /* Is immediate? */
+      if(bImmediate != orxFALSE)
+      {
+        /* Updates it */
+        orxTimeLine_Update(orxSTRUCTURE(_pstTimeLine), _pstTimeLine->pstOwner, orxNULL);
+      }
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
