@@ -120,6 +120,7 @@ orxSTATUS orxAndroid_RegisterAPKResource();
 void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
+jobject orxAndroid_GetApplicationContext();
 
 #if defined(__cplusplus)
 }

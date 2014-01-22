@@ -78,6 +78,7 @@ typedef struct __orxANDROID_STATIC_t {
         jmethodID midGetRotation;
 	jmethodID midSetWindowFormat;
         jmethodID midGetActivity;
+        jmethodID midGetApplicationContext;
 
         // AssetManager
         AAssetManager *poAssetManager;
@@ -210,7 +211,6 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     LOGI("orxAndroid_Init()");
 
     jclass objClass;
-    jmethodID midGetActivity;
     jobject jActivity;
 
     Android_JNI_SetupThread();
@@ -219,12 +219,15 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     objClass = mEnv->FindClass("android/support/v4/app/Fragment");
     sstAndroid.midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
 
+    objClass = mEnv->FindClass("android/content/Context");
+    sstAndroid.midGetApplicationContext = mEnv->GetMethodID(objClass, "getApplicationContext", "()Landroid/content/Context;");
+
     jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
 
-    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat) {
+    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat || !sstAndroid.midGetActivity || !sstAndroid.midGetApplicationContext) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
 
@@ -528,6 +531,14 @@ extern "C" jobject orxAndroid_GetActivity()
   JNIEnv *env = Android_JNI_GetEnv();
   jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
   return jActivity;
+}
+
+extern "C" jobject orxAndroid_GetApplicationContext()
+{
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  jobject jApplicationContext = env->CallObjectMethod(jActivity, sstAndroid.midGetApplicationContext);
+  return jApplicationContext;
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
