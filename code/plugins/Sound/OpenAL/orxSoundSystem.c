@@ -706,12 +706,26 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
         alASSERT();
 
-        /* Stopped? */
-        if((iState == AL_STOPPED) || (iState == AL_INITIAL))
+        /* Should pause? */
+        if(_pstSound->bPause != orxFALSE)
         {
-          /* Resumes play */
-          alSourcePlay(_pstSound->uiSource);
-          alASSERT();
+          /* Not paused? */
+          if(iState != AL_PAUSED)
+          {
+            /* Pauses source */
+            alSourcePause(_pstSound->uiSource);
+            alASSERT();
+          }
+        }
+        else
+        {
+          /* Stopped? */
+          if((iState == AL_STOPPED) || (iState == AL_INITIAL) || (iState == AL_PAUSED))
+          {
+            /* Resumes play */
+            alSourcePlay(_pstSound->uiSource);
+            alASSERT();
+          }
         }
       }
     }
@@ -722,6 +736,21 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
       /* Gets actual state */
       alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
       alASSERT();
+
+      /* Should stop */
+      if((iState == AL_PLAYING) || (iState == AL_PAUSED))
+      {
+        /* Stops source */
+        alSourceStop(_pstSound->uiSource);
+        alASSERT();
+
+        /* Rewinds file */
+        orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
+
+        /* Gets actual state */
+        alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
+        alASSERT();
+      }
 
       /* Stopped? */
       if((iState == AL_STOPPED) || (iState == AL_INITIAL))
@@ -1751,10 +1780,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound
 
     /* Updates status */
     _pstSound->bPause = orxFALSE;
-
-    /* Plays source */
-    alSourcePlay(_pstSound->uiSource);
-    alASSERT();
   }
   else
   {
@@ -1789,10 +1814,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Pause(orxSOUNDSYSTEM_SOUND *_pstSoun
   {
     /* Updates status */
     _pstSound->bPause = orxTRUE;
-
-    /* Pauses source */
-    alSourcePause(_pstSound->uiSource);
-    alASSERT();
   }
   else
   {
@@ -1825,13 +1846,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound
   /* Is a stream? */
   if(_pstSound->bIsStream != orxFALSE)
   {
-    /* Stops source */
-    alSourceStop(_pstSound->uiSource);
-    alASSERT();
-
-    /* Rewinds file */
-    orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
-
     /* Updates status */
     _pstSound->bStop  = orxTRUE;
     _pstSound->bPause = orxFALSE;
