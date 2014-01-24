@@ -202,6 +202,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxS16                 *as16StreamBuffer;   /**< Stream buffer */
   orxS16                 *as16RecordingBuffer;/**< Recording buffer */
   ALuint                 *auiWorkBufferList;  /**< Buffer list */
+  orxTHREAD_SEMAPHORE    *pstStreamSemaphore; /**< Stream semaphore */
   SF_VIRTUAL_IO           stVirtualIO;        /**< Virtual IO interface for libsndfile */
 
 } orxSOUNDSYSTEM_STATIC;
@@ -549,6 +550,36 @@ static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData
   return;
 }
 
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_FreeSound(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Deletes sound */
+  orxBank_Free(sstSoundSystem.pstSoundBank, pstSound);
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_FreeSample(void *_pContext)
+{
+  orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sample */
+  pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pContext;
+
+  /* Deletes sample  */
+  orxBank_Free(sstSoundSystem.pstSampleBank, pstSample);
+
+  /* Done! */
+  return eResult;
+}
+
 static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
@@ -888,10 +919,12 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
       pstNode = orxLinkList_GetNext(pstNode);
 
       /* Removes it from list */
+      orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
       orxLinkList_Remove(&(pstSound->stNode));
+      orxThread_SignalSemaphore(sstSoundSystem.pstStreamSemaphore);
 
-      /* Deletes sound */
-      orxBank_Free(sstSoundSystem.pstSoundBank, pstSound);
+      /* Postpones sound deletion from bank on main thread */
+      orxThread_RunTask(orxNULL, orxSoundSystem_OpenAL_FreeSound, orxNULL, pstSound);
     }
     else
     {
@@ -937,8 +970,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_CreateStreamTask(void *_pCont
   }
 
   /* Adds it to the list */
-  orxMEMORY_BARRIER();
+  orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
   orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstSound->stNode));
+  orxThread_SignalSemaphore(sstSoundSystem.pstStreamSemaphore);
 
   /* Done! */
   return eResult;
@@ -1051,6 +1085,38 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LinkSampleTask(void *_pContex
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_DeleteSampleTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sample */
+  pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pContext;
+
+  /* Deletes openAL buffer */
+  alDeleteBuffers(1, (const ALuint *)&(pstSample->uiBuffer));
+  alASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_DeleteTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Deletes its source */
+  alDeleteSources(1, &(pstSound->uiSource));
+  alASSERT();
+
+  /* Done! */
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_PlayTask(void *_pContext)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
@@ -1109,105 +1175,134 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
-    /* Sets virtual IO interface */
-    sstSoundSystem.stVirtualIO.get_filelen  = orxSoundSystem_OpenAL_Resource_GetSize;
-    sstSoundSystem.stVirtualIO.seek         = orxSoundSystem_OpenAL_Resource_Seek;
-    sstSoundSystem.stVirtualIO.read         = orxSoundSystem_OpenAL_Resource_Read;
-    sstSoundSystem.stVirtualIO.write        = NULL;
-    sstSoundSystem.stVirtualIO.tell         = orxSoundSystem_OpenAL_Resource_Tell;
+    /* Creates semaphore */
+    sstSoundSystem.pstStreamSemaphore = orxThread_CreateSemaphore(1);
 
-    /* Pushes config section */
-    orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
-
-    /* Opens device */
-    sstSoundSystem.poDevice = alcOpenDevice(NULL);
-
-    /* Valid? */
-    if(sstSoundSystem.poDevice != NULL)
+    /* Success? */
+    if(sstSoundSystem.pstStreamSemaphore != orxNULL)
     {
-      /* Creates associated context */
-      sstSoundSystem.poContext = alcCreateContext(sstSoundSystem.poDevice, NULL);
+      /* Sets virtual IO interface */
+      sstSoundSystem.stVirtualIO.get_filelen  = orxSoundSystem_OpenAL_Resource_GetSize;
+      sstSoundSystem.stVirtualIO.seek         = orxSoundSystem_OpenAL_Resource_Seek;
+      sstSoundSystem.stVirtualIO.read         = orxSoundSystem_OpenAL_Resource_Read;
+      sstSoundSystem.stVirtualIO.write        = NULL;
+      sstSoundSystem.stVirtualIO.tell         = orxSoundSystem_OpenAL_Resource_Tell;
 
-      /* Has stream buffer size? */
-      if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) != orxFALSE)
-      {
-        /* Stores it */
-        sstSoundSystem.s32StreamBufferSize = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) & 0xFFFFFFFC;
-      }
-      else
-      {
-        /* Uses default one */
-        sstSoundSystem.s32StreamBufferSize = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE;
-      }
+      /* Pushes config section */
+      orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
 
-      /* Has stream buffer number? */
-      if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER) != orxFALSE)
-      {
-        /* Gets stream number */
-        sstSoundSystem.s32StreamBufferNumber = orxMAX(2, orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER));
-      }
-      else
-      {
-        /* Uses default ont */
-        sstSoundSystem.s32StreamBufferNumber = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER;
-      }
+      /* Opens device */
+      sstSoundSystem.poDevice = alcOpenDevice(NULL);
 
       /* Valid? */
-      if(sstSoundSystem.poContext != NULL)
+      if(sstSoundSystem.poDevice != NULL)
       {
-        /* Creates banks */
-        sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-        sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        /* Creates associated context */
+        sstSoundSystem.poContext = alcCreateContext(sstSoundSystem.poDevice, NULL);
+
+        /* Has stream buffer size? */
+        if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) != orxFALSE)
+        {
+          /* Stores it */
+          sstSoundSystem.s32StreamBufferSize = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) & 0xFFFFFFFC;
+        }
+        else
+        {
+          /* Uses default one */
+          sstSoundSystem.s32StreamBufferSize = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE;
+        }
+
+        /* Has stream buffer number? */
+        if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER) != orxFALSE)
+        {
+          /* Gets stream number */
+          sstSoundSystem.s32StreamBufferNumber = orxMAX(2, orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER));
+        }
+        else
+        {
+          /* Uses default ont */
+          sstSoundSystem.s32StreamBufferNumber = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER;
+        }
 
         /* Valid? */
-        if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
+        if(sstSoundSystem.poContext != NULL)
         {
-          /* Adds streaming thread */
-          sstSoundSystem.u32StreamingThread = orxThread_Start(&orxSoundSystem_OpenAL_UpdateStreaming, orxNULL);
+          /* Creates banks */
+          sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-          /* Success? */
-          if(sstSoundSystem.u32StreamingThread != orxU32_UNDEFINED)
+          /* Valid? */
+          if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
           {
-            ALfloat   afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
-            orxFLOAT  fRatio;
+            /* Adds streaming thread */
+            sstSoundSystem.u32StreamingThread = orxThread_Start(&orxSoundSystem_OpenAL_UpdateStreaming, orxNULL);
 
-            /* Selects it */
-            alcMakeContextCurrent(sstSoundSystem.poContext);
-
-            /* Sets 2D listener target */
-            alListenerfv(AL_ORIENTATION, afOrientation);
-            alASSERT();
-
-            /* Allocates stream buffers */
-            sstSoundSystem.as16StreamBuffer     = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
-            sstSoundSystem.as16RecordingBuffer  = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
-
-            /* Allocates working buffer list */
-            sstSoundSystem.auiWorkBufferList    = (ALuint *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxMEMORY_TYPE_AUDIO);
-
-            /* Gets dimension ratio */
-            fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
-
-            /* Valid? */
-            if(fRatio > orxFLOAT_0)
+            /* Success? */
+            if(sstSoundSystem.u32StreamingThread != orxU32_UNDEFINED)
             {
-              /* Stores it */
-              sstSoundSystem.fDimensionRatio = fRatio;
+              ALfloat   afOrientation[] = {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f};
+              orxFLOAT  fRatio;
+
+              /* Selects it */
+              alcMakeContextCurrent(sstSoundSystem.poContext);
+
+              /* Sets 2D listener target */
+              alListenerfv(AL_ORIENTATION, afOrientation);
+              alASSERT();
+
+              /* Allocates stream buffers */
+              sstSoundSystem.as16StreamBuffer     = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
+              sstSoundSystem.as16RecordingBuffer  = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
+
+              /* Allocates working buffer list */
+              sstSoundSystem.auiWorkBufferList    = (ALuint *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxMEMORY_TYPE_AUDIO);
+
+              /* Gets dimension ratio */
+              fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
+
+              /* Valid? */
+              if(fRatio > orxFLOAT_0)
+              {
+                /* Stores it */
+                sstSoundSystem.fDimensionRatio = fRatio;
+              }
+              else
+              {
+                /* Stores default one */
+                sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+              }
+
+              /* Stores reciprocal dimenstion ratio */
+              sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
+
+              /* Updates status */
+              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
             }
             else
             {
-              /* Stores default one */
-              sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+              /* Deletes banks */
+              if(sstSoundSystem.pstSampleBank != orxNULL)
+              {
+                orxBank_Delete(sstSoundSystem.pstSampleBank);
+                sstSoundSystem.pstSampleBank = orxNULL;
+              }
+              if(sstSoundSystem.pstSoundBank != orxNULL)
+              {
+                orxBank_Delete(sstSoundSystem.pstSoundBank);
+                sstSoundSystem.pstSoundBank = orxNULL;
+              }
+
+              /* Destroys openAL context */
+              alcDestroyContext(sstSoundSystem.poContext);
+              sstSoundSystem.poContext = NULL;
+
+              /* Closes openAL device */
+              alcCloseDevice(sstSoundSystem.poDevice);
+              sstSoundSystem.poDevice = NULL;
             }
-
-            /* Stores reciprocal dimenstion ratio */
-            sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
-
-            /* Updates status */
-            orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
-
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
           }
           else
           {
@@ -1234,37 +1329,15 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         }
         else
         {
-          /* Deletes banks */
-          if(sstSoundSystem.pstSampleBank != orxNULL)
-          {
-            orxBank_Delete(sstSoundSystem.pstSampleBank);
-            sstSoundSystem.pstSampleBank = orxNULL;
-          }
-          if(sstSoundSystem.pstSoundBank != orxNULL)
-          {
-            orxBank_Delete(sstSoundSystem.pstSoundBank);
-            sstSoundSystem.pstSoundBank = orxNULL;
-          }
-
-          /* Destroys openAL context */
-          alcDestroyContext(sstSoundSystem.poContext);
-          sstSoundSystem.poContext = NULL;
-
           /* Closes openAL device */
           alcCloseDevice(sstSoundSystem.poDevice);
           sstSoundSystem.poDevice = NULL;
         }
       }
-      else
-      {
-        /* Closes openAL device */
-        alcCloseDevice(sstSoundSystem.poDevice);
-        sstSoundSystem.poDevice = NULL;
-      }
-    }
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
   }
 
   /* Done! */
@@ -1281,6 +1354,9 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
 
     /* Stops any recording */
     orxSoundSystem_StopRecording();
+
+    /* Deletes semaphore */
+    orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
 
     /* Deletes working buffer list */
     orxMemory_Free(sstSoundSystem.auiWorkBufferList);
@@ -1462,15 +1538,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_DeleteSample(orxSOUNDSYSTEM_SAMPLE *
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSample != orxNULL);
 
-  /* Waits for pending load to complete */
-  while(_pstSample->uiBuffer == 0);
-
-  /* Deletes openAL buffer */
-  alDeleteBuffers(1, (const ALuint *)&(_pstSample->uiBuffer));
-  alASSERT();
-
-  /* Deletes sample */
-  orxBank_Free(sstSoundSystem.pstSampleBank, _pstSample);
+  /* Runs delete sample task */
+  orxThread_RunTask(&orxSoundSystem_OpenAL_DeleteSampleTask, &orxSoundSystem_OpenAL_FreeSample, &orxSoundSystem_OpenAL_FreeSample, _pstSample);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -1625,8 +1694,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
       pstResult->s32PacketID= 0;
 
       /* Adds it to the list */
-      orxMEMORY_BARRIER();
+      orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
       orxLinkList_AddEnd(&(sstSoundSystem.stStreamList), &(pstResult->stNode));
+      orxThread_SignalSemaphore(sstSoundSystem.pstStreamSemaphore);
     }
     else
     {
@@ -1748,12 +1818,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Delete(orxSOUNDSYSTEM_SOUND *_pstSou
   }
   else
   {
-    /* Deletes source */
-    alDeleteSources(1, &(_pstSound->uiSource));
-    alASSERT();
-
-    /* Deletes sound */
-    orxBank_Free(sstSoundSystem.pstSoundBank, _pstSound);
+    /* Runs delete task */
+    orxThread_RunTask(&orxSoundSystem_OpenAL_DeleteTask, &orxSoundSystem_OpenAL_FreeSound, &orxSoundSystem_OpenAL_FreeSound, _pstSound);
   }
 
   /* Done! */
