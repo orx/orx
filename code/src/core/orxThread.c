@@ -244,7 +244,7 @@ static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
     pstTask = &(sstThread.astTaskList[sstThread.u32TaskProcessIndex]);
 
     /* Runs it */
-    pstTask->eResult = pstTask->pfnRun(pstTask->pContext);
+    pstTask->eResult = (pstTask->pfnRun != orxNULL) ? pstTask->pfnRun(pstTask->pContext) : orxSTATUS_SUCCESS;
 
     /* Updates task process index */
     orxMEMORY_BARRIER();
@@ -848,7 +848,6 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pfnRun != orxNULL);
 
   /* Is notify callback not registered? */
   if(!orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))

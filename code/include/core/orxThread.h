@@ -132,7 +132,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SignalSemaphore(
 
 
 /** Runs an asynchronous task and optional follow-ups
- * @param[in]   _pfnRun                               Asynchronous task to run, executed on a different thread dedicated to tasks
+ * @param[in]   _pfnRun                               Asynchronous task to run, executed on a different thread dedicated to tasks, if orxNULL defaults to an empty task that always succeed
  * @param[in]   _pfnThen                              Executed (on the main thread) if Run does *not* return orxSTATUS_FAILURE, can be orxNULL
  * @param[in]   _pfnElse                              Executed (on the main thread) if Run returns orxSTATUS_FAILURE, can be orxNULL
  * @param[in]   _pContext                             Context that will be transmitted to all the task functions
