@@ -12,6 +12,8 @@ public class OrxDemo extends OrxActivity {
     private VersionedOnWindowFocusChanged mOnWindowFocusChanged;
 
     static {
+    	// load openal-soft module first.
+    	System.loadLibrary("openal-soft");
 		// load your native module here.
 		System.loadLibrary("orxTest");
 	}
