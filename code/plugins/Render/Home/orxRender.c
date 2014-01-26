@@ -1377,7 +1377,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
       }
     }
 
-    /* Shoulds render? */
+    /* Should render? */
     if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE) && (pstBitmap != orxNULL))
     {
       /* Valid scale? */
