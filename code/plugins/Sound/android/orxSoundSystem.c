@@ -587,6 +587,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
     /* Set OpenAL Android Context */
     OpenAL_SetContext(orxAndroid_GetApplicationContext());
 
+#ifdef __orxDEBUG__
+    putenv("ALSOFT_LOGLEVEL=3");
+#endif
+
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
