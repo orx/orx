@@ -4,12 +4,11 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-
+import android.view.View.OnSystemUiVisibilityChangeListener;
 import org.orx.lib.OrxActivity;
 
 public class OrxDemo extends OrxActivity {
     private View mDecorView;
-    private VersionedOnWindowFocusChanged mOnWindowFocusChanged;
 
     static {
     	// load openal-soft module first.
@@ -18,22 +17,45 @@ public class OrxDemo extends OrxActivity {
 		System.loadLibrary("orxTest");
 	}
 
-    @Override
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDecorView = getWindow().getDecorView();
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mOnWindowFocusChanged = new KitKatOnWindowFocusChanged();
-        } else {
-            mOnWindowFocusChanged = new PreKitKatOnWindowFocusChanged();
+            mDecorView.setOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener() {
+				
+				@Override
+				public void onSystemUiVisibilityChange(int visibility) {
+					if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+						mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+		                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+		                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+		                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+		                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+		                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+					}
+				}
+			});
         }
     }
 
-    @Override
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+	@Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        mOnWindowFocusChanged.onWindowFocusChanged(hasFocus, mDecorView);
+        
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        	if (hasFocus) {
+                mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
+        }
     }
 
     @Override
@@ -53,32 +75,5 @@ public class OrxDemo extends OrxActivity {
 		 */
 		return 0;
 	}
-
-    public interface VersionedOnWindowFocusChanged {
-        public void onWindowFocusChanged(boolean hasFocus, View decorView);
-    }
-
-    private static class PreKitKatOnWindowFocusChanged implements VersionedOnWindowFocusChanged {
-
-        @Override
-        public void onWindowFocusChanged(boolean hasFocus, View decorView) {
-            // nothing to do
-        }
-    }
-
-    private static class KitKatOnWindowFocusChanged implements VersionedOnWindowFocusChanged {
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        public void onWindowFocusChanged(boolean hasFocus, View decorView) {
-            if (hasFocus) {
-                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            }
-        }
-    }
 }
 
