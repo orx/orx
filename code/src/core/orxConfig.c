@@ -650,9 +650,10 @@ static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
 
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
+ * @param[in] _pstOrigin        Origin section for in-section forwarding
  * @return                      orxCONFIG_VALUE / orxNULL
  */
-static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, orxCONFIG_SECTION *_pstOrigin)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCONFIG_VALUE  *pstResult = orxNULL;
@@ -681,25 +682,55 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
       /* Found? */
       if(s32SeparatorIndex >= 0)
       {
-        /* Cuts the name */
-        *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
+        orxU32 u32NewKeyID;
 
-        /* Selects parent section */
-        orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
+        /* Gets new key */
+        u32NewKeyID = orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
 
-        /* Gets its inherited value */
-        pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1));
+        /* Same section? */
+        if(s32SeparatorIndex == 1)
+        {
+          /* Checks */
+          orxASSERT(u32NewKeyID != _u32KeyID);
 
-        /* Restores the name */
-        *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
+          /* Is origin different from current? */
+          if(_pstOrigin != sstConfig.pstCurrentSection)
+          {
+            /* Restores it */
+            sstConfig.pstCurrentSection = _pstOrigin;
+          }
+
+          /* Gets its inherited value */
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+        }
+        else
+        {
+          /* Cuts the name */
+          *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
+
+          /* Checks */
+          orxASSERT((u32NewKeyID != _u32KeyID) || (orxString_ToCRC(pstEntry->stValue.zValue + 1) != pstPreviousSection->u32ID));
+
+          /* Selects parent section */
+          orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
+
+          /* Gets its inherited value */
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+
+          /* Restores the name */
+          *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
+        }
       }
       else
       {
+        /* Checks */
+        orxASSERT(orxString_ToCRC(pstEntry->stValue.zValue + 1) != pstPreviousSection->u32ID);
+
         /* Selects parent section */
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
       }
 
       /* Restores current section */
@@ -756,7 +787,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID)
         sstConfig.pstCurrentSection = pstSection;
 
         /* Gets inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
 
         /* Restores current section */
         sstConfig.pstCurrentSection = pstPreviousSection;
@@ -786,7 +817,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   if((_zKey != orxSTRING_EMPTY) && (_zKey != orxNULL))
   {
     /* Gets value */
-    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey));
+    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey), sstConfig.pstCurrentSection);
   }
 
   /* Profiles */
@@ -4506,7 +4537,7 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   else
   {
     /* Updates result */
-    bResult = (orxConfig_GetValueFromKey(u32KeyID) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
