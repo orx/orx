@@ -1072,7 +1072,7 @@ orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxST
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_FLOAT;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1149,7 +1149,7 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TEXTURE;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1227,7 +1227,7 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_VECTOR;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1302,7 +1302,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = 0;
 
       /* Adds it to list */

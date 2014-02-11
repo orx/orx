@@ -282,7 +282,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
 
               /* Stores event */
               pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
-              pstResult->astEventList[u32EventIndex].zEventText = orxString_GetFromID(orxString_GetID(orxConfig_GetListString(zKey, i)));
+              pstResult->astEventList[u32EventIndex].zEventText = orxString_Store(orxConfig_GetListString(zKey, i));
             }
 
             /* Clears time entry */

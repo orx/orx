@@ -1576,6 +1576,12 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxString_GetID(const 
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxU32 _u32ID);
 
+/** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
+ * @param[in]   _zString        Concerned string
+ * @return      Stored orxSTRING
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const orxSTRING _zString);
+
 #ifdef __orxMSVC__
 
   #pragma warning(default : 4996)

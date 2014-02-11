@@ -914,7 +914,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
        pstEvent = &(_pstAnim->astEventList[u32Counter]);
 
        /* Stores key info */
-       pstEvent->zName       = orxString_GetFromID(orxString_GetID(_zEventName));
+       pstEvent->zName       = orxString_Store(_zEventName);
        pstEvent->fTimeStamp  = _fTimeStamp;
        pstEvent->fValue      = _fValue;
 
