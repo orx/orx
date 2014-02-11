@@ -492,7 +492,7 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
     else
     {
       /* Stores value */
-      _pstValue->zValue = (orxSTRING)orxString_GetFromID(orxString_GetID(acBuffer));
+      _pstValue->zValue = (orxSTRING)orxString_Store(acBuffer);
 
       /* Computes working value */
       orxConfig_ComputeWorkingValue(_pstValue);
@@ -521,7 +521,7 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
     *pcOutput = orxCHAR_NULL;
 
     /* Stores value */
-    _pstValue->zValue = (orxSTRING)orxString_GetFromID(orxString_GetID(acBuffer));
+    _pstValue->zValue = (orxSTRING)orxString_Store(acBuffer);
 
     /* Block mode, no list nor random allowed */
     _pstValue->u16Flags       = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;

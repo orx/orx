@@ -2281,8 +2281,6 @@ void orxFASTCALL orxCommand_Exit()
   /* Initialized? */
   if(sstCommand.u32Flags & orxCOMMAND_KU32_STATIC_FLAG_READY)
   {
-    orxU32 i;
-
     /* Unregisters commands */
     orxCommand_UnregisterCommands();
 

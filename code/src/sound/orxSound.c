@@ -892,7 +892,7 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
       pstResult->pstData = orxSoundSystem_CreateStream(_u32ChannelNumber, _u32SampleRate, _zName);
 
       /* Stores its reference */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(_zName));
+      pstResult->zReference = orxString_Store(_zName);
 
       /* Updates its status */
       orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_FLAG_NONE);
@@ -926,7 +926,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
       if(orxSound_ProcessConfigData(pstResult, orxFALSE) == orxSTATUS_FAILURE)
@@ -1213,7 +1213,7 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
       if(_pstSound->pstData != orxNULL)
       {
         /* Stores its reference */
-        _pstSound->zReference = orxString_GetFromID(orxString_GetID(_zSampleName));
+        _pstSound->zReference = orxString_Store(_zSampleName);
 
         /* Updates its status */
         orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE, orxSOUND_KU32_FLAG_NONE);

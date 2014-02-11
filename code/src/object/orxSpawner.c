@@ -788,7 +788,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
       if(orxSpawner_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)

@@ -607,7 +607,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference key */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
       if(orxText_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
@@ -790,7 +790,7 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
-    _pstText->zString = orxString_GetFromID(orxString_GetID(_zString));
+    _pstText->zString = orxString_Store(_zString);
   }
 
   /* Updates text size */

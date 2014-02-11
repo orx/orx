@@ -279,3 +279,42 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
   /* Done! */
   return zResult;
 }
+
+/** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
+ * @param[in]   _zString        Concerned string
+ * @return      Stored orxSTRING
+ */
+const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
+{
+  orxU32          u32ID;
+  const orxSTRING zResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_Store");
+
+  /* Checks */
+  orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+
+  /* Gets its ID */
+  u32ID = orxString_ToCRC(_zString);
+
+  /* Gets stored string */
+  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32ID);
+
+  /* Not already stored? */
+  if(zResult == orxNULL)
+  {
+    /* Updates result */
+    zResult = orxString_Duplicate(_zString);
+
+    /* Adds it to table */
+    orxHashTable_Add(sstString.pstIDTable, u32ID, (orxSTRING)zResult);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return zResult;
+}

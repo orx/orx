@@ -2114,7 +2114,7 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
       /* Inits it */
       orxMemory_Zero(&(pstType->stNode), sizeof(orxLINKLIST_NODE));
       orxMemory_Copy(&(pstType->stInfo), _pstInfo, sizeof(orxRESOURCE_TYPE_INFO));
-      pstType->stInfo.zTag = orxString_GetFromID(orxString_GetID(_pstInfo->zTag));
+      pstType->stInfo.zTag = orxString_Store(_pstInfo->zTag);
 
       /* Checks */
       orxASSERT(pstType->stInfo.zTag != orxNULL);
