@@ -74,6 +74,8 @@
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
 #define orxCOMMAND_KU32_RESULT_BUFFER_SIZE            256
 
+#define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
+
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
@@ -90,6 +92,7 @@
 typedef struct __orxCOMMAND_STACK_ENTRY_t
 {
   orxCOMMAND_VAR            stValue;                                                  /**< Value : 28 */
+  orxCHAR                   acBuffer[orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE];        /**< Buffer: 284 */
 
 } orxCOMMAND_STACK_ENTRY;
 
@@ -676,13 +679,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   }
                 }
 
-                /* Was a string value? */
-                if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
-                {
-                  /* Deletes it */
-                  orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
-                }
-
                 /* Deletes stack entry */
                 orxBank_Free(sstCommand.pstResultBank, pstEntry);
               }
@@ -938,14 +934,19 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       /* Is a string value? */
       if(_pstResult->eType == orxCOMMAND_VAR_TYPE_STRING)
       {
+        /* Checks */
+        orxASSERT(orxString_GetLength(_pstResult->zValue) < orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE);
+
         /* Duplicates it */
-        pstEntry->stValue.eType = orxCOMMAND_VAR_TYPE_STRING;
-        pstEntry->stValue.zValue = orxString_Duplicate(_pstResult->zValue);
+        pstEntry->stValue.eType   = orxCOMMAND_VAR_TYPE_STRING;
+        pstEntry->stValue.zValue  = pstEntry->acBuffer;
+        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1);
+        pstEntry->acBuffer[orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1] = orxCHAR_NULL;
       }
       else
       {
         /* Stores value */
-        orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_STACK_ENTRY));
+        orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_VAR));
       }
 
       /* Updates push counter */
@@ -2284,22 +2285,6 @@ void orxFASTCALL orxCommand_Exit()
 
     /* Unregisters commands */
     orxCommand_UnregisterCommands();
-
-    /* For all entries in the result stack */
-    for(i = 0; i < orxBank_GetCounter(sstCommand.pstResultBank); i++)
-    {
-      orxCOMMAND_STACK_ENTRY *pstEntry;
-
-      /* Gets it */
-      pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, i);
-
-      /* Is a string value? */
-      if(pstEntry->stValue.eType == orxCOMMAND_VAR_TYPE_STRING)
-      {
-        /* Deletes it */
-        orxString_Delete((orxCHAR *)pstEntry->stValue.zValue);
-      }
-    }
 
     /* Clears trie */
     orxTree_Clean(&(sstCommand.stCommandTrie));
