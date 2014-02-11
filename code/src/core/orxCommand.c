@@ -1269,6 +1269,36 @@ void orxFASTCALL orxCommand_CommandIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR
   return;
 }
 
+/* Command: Repeat */
+void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxS32  s32Counter;
+  orxCHAR acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];
+
+  /* Disables marker operations */
+  orxProfiler_EnableMarkerOperations(orxFALSE);
+
+  /* Gets counter */
+  s32Counter = _astArgList[0].s32Value;
+
+  /* Copies command */
+  orxString_NCopy(acBuffer, _astArgList[1].zValue, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1);
+  acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1] = orxCHAR_NULL;
+
+  /* For all iterations */
+  while(s32Counter--)
+  {
+    /* Evaluates first command */
+    orxCommand_Evaluate(acBuffer, _pstResult);
+  }
+
+  /* Re-enables marker operations */
+  orxProfiler_EnableMarkerOperations(orxTRUE);
+
+  /* Done! */
+  return;
+}
+
 /* Command: Not */
 void orxFASTCALL orxCommand_CommandNot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -1808,6 +1838,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Help */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command = \"\"", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Echo */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Echo, "Echo", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Parameter", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: ListCommands */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = \"\"", orxCOMMAND_VAR_TYPE_STRING});
 
@@ -1822,12 +1855,12 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Command", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: EvaluateIf */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, EvaluateIf, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Command", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Command = <void>", orxCOMMAND_VAR_TYPE_STRING});
-
-  /* Command: Echo */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Echo, "Echo", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Parameter", orxCOMMAND_VAR_TYPE_STRING});
-
   /* Command: If */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, If, "Select?", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Result", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Result = <void>", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: Repeat */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Repeat, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Iterations", orxCOMMAND_VAR_TYPE_S32}, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: Not */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Not, "Not", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: And */
@@ -1877,6 +1910,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Eval", "Command.Evaluate", orxNULL);
   /* Alias: EvalIf */
   orxCommand_AddAlias("EvalIf", "Command.EvaluateIf", orxNULL);
+
+  /* Alias: Repeat */
+  orxCommand_AddAlias("Repeat", "Command.Repeat", orxNULL);
 
   /* Alias: Logic.If */
   orxCommand_AddAlias("Logic.If", "Command.If", orxNULL);
@@ -1967,6 +2003,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Eval");
   /* Alias: EvalIf */
   orxCommand_RemoveAlias("EvalIf");
+
+  /* Alias: Repeat */
+  orxCommand_RemoveAlias("Repeat");
 
   /* Alias: Logic.If */
   orxCommand_RemoveAlias("Logic.If");
@@ -2061,9 +2100,12 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Evaluate);
   /* Command: EvaluateIf */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, EvaluateIf);
-
   /* Command: If */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, If);
+
+  /* Command: Repeat */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Repeat);
+
   /* Command: Not */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Not);
   /* Command: And */
