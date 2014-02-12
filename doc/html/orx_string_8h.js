@@ -37,6 +37,7 @@ var orx_string_8h =
     [ "orxString_Setup", "orx_string_8h.html#ga6329fe45c8dee73454f8f6dfa10f1437", null ],
     [ "orxString_SkipPath", "orx_string_8h.html#gaece5f2c89893b93ba77d21a85149017d", null ],
     [ "orxString_SkipWhiteSpaces", "orx_string_8h.html#ga9005ced07cec12a8ee12cb4cee3213c8", null ],
+    [ "orxString_Store", "orx_string_8h.html#ga94c86ba15a4ce44d29de9a37b113f55d", null ],
     [ "orxString_ToBool", "orx_string_8h.html#ga675eb3b066ac037e9815c565c4ddbe1c", null ],
     [ "orxString_ToCRC", "orx_string_8h.html#gadc2711d674628689d58be645d319ea92", null ],
     [ "orxString_ToFloat", "orx_string_8h.html#ga62381e5a5af1f8243953b3c586ec4875", null ],
