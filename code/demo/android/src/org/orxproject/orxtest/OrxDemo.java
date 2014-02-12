@@ -21,6 +21,10 @@ public class OrxDemo extends OrxActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // call setContentView() here if you need a custom layout.
+        // The custom layout needs to include a SurfaceView with @+id/orxSurfaceView.
+        
         mDecorView = getWindow().getDecorView();
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -57,23 +61,5 @@ public class OrxDemo extends OrxActivity {
             }
         }
     }
-
-    @Override
-	protected int getLayoutId() {
-		/*
-		 * Override this if you want to use a custom layout
-		 * return the layout id
-		 */
-		return 0;
-	}
-
-	@Override
-	protected int getSurfaceViewId() {
-		/*
-		 * Override this if you want to use a custom layout
-		 * return the OrxGLSurfaceView id
-		 */
-		return 0;
-	}
 }
 
