@@ -505,7 +505,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
               orxDOUBLE dDuration;
 
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, orxTHREAD_KU32_MAIN_THREAD_ID);
 
               /* Stores its frame start time */
               adStartTimeList[i] = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
@@ -526,7 +526,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             dFrameRecDuration = orx2D(dDurationSampleNumber) / dAccDuration;
 
             /* Resets query frame */
-            orxProfiler_SelectQueryFrame(0);
+            orxProfiler_SelectQueryFrame(0, orxTHREAD_KU32_MAIN_THREAD_ID);
 
             /* Clears first status */
             bFirst = orxFALSE;
@@ -546,7 +546,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, orxTHREAD_KU32_MAIN_THREAD_ID);
 
               /* Landscape? */
               if(bLandscape != orxFALSE)
@@ -572,7 +572,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             }
 
             /* Resets query frame */
-            orxProfiler_SelectQueryFrame(0);
+            orxProfiler_SelectQueryFrame(0, orxTHREAD_KU32_MAIN_THREAD_ID);
 
             /* Draws it */
             orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
@@ -583,7 +583,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Resets frame selection */
-  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame);
+  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, orxTHREAD_KU32_MAIN_THREAD_ID);
 
   /* Inits color */
   orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
