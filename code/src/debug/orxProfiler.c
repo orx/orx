@@ -388,8 +388,9 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
   orxASSERT(orxProfiler_IsMarkerIDValid(_s32MarkerID) != orxFALSE);
 
-  /* Not paused and are operations enabled? */
-  if(orxFLAG_GET(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_PAUSED | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS) == orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS)
+  /* Not paused and are operations enabled on main thread? */
+  if((orxFLAG_GET(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_PAUSED | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS) == orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS)
+  || (orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID))
   {
     orxS32                    s32ID;
     orxPROFILER_MARKER_DATA  *pstData;
@@ -510,8 +511,9 @@ void orxFASTCALL orxProfiler_PopMarker()
   /* Checks */
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
 
-  /* Not paused and are operations enabled? */
-  if(orxFLAG_GET(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_PAUSED | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS) == orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS)
+  /* Not paused and are operations enabled on main thread? */
+  if((orxFLAG_GET(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_PAUSED | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS) == orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS)
+  || (orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID))
   {
     orxPROFILER_MARKER_DATA *pstData;
 
@@ -939,13 +941,13 @@ orxSTATUS orxFASTCALL orxProfiler_SelectQueryFrame(orxU32 _u32QueryFrame, orxU32
       /* Computes index */
       sstProfiler.u32HistoryQueryIndex = ((sstProfiler.u32HistoryIndex + orxPROFILER_KU32_HISTORY_LENGTH - 1) - _u32QueryFrame) % orxPROFILER_KU32_HISTORY_LENGTH;
 
-      /* Stores thread ID */
-      sstProfiler.u32QueryDataIndex = _u32ThreadID;
-
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
     }
   }
+
+  /* Stores thread ID */
+  sstProfiler.u32QueryDataIndex = _u32ThreadID;
 
   /* Done! */
   return eResult;

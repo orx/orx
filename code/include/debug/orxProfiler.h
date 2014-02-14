@@ -61,29 +61,21 @@
   #define orxPROFILER_PUSH_MARKER(NAME)                             \
   do                                                                \
   {                                                                 \
-    if((orxModule_IsInitialized(orxMODULE_ID_THREAD) == orxFALSE)   \
-    || (orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID))   \
+    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
+                                                                    \
+    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)      \
     {                                                               \
-      static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;\
-                                                                    \
-      if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)    \
-      {                                                             \
-        s32ProfilerID = orxProfiler_GetIDFromName(NAME);            \
-      }                                                             \
-                                                                    \
-      orxProfiler_PushMarker(s32ProfilerID);                        \
+      s32ProfilerID = orxProfiler_GetIDFromName(NAME);              \
     }                                                               \
+                                                                    \
+    orxProfiler_PushMarker(s32ProfilerID);                          \
   } while(orxFALSE)
 
 
   #define orxPROFILER_POP_MARKER()                                  \
   do                                                                \
   {                                                                 \
-    if((orxModule_IsInitialized(orxMODULE_ID_THREAD) == orxFALSE)   \
-    || (orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID))   \
-    {                                                               \
-      orxProfiler_PopMarker();                                      \
-    }                                                               \
+    orxProfiler_PopMarker();                                        \
   } while(orxFALSE)
 
   #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)
