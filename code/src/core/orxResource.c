@@ -627,6 +627,9 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_ProcessRequests");
+
   /* While there are pending requests */
   while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex)
   {
@@ -676,6 +679,9 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
     orxMEMORY_BARRIER();
     sstResource.u32RequestProcessIndex = (sstResource.u32RequestProcessIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;

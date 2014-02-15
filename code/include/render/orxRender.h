@@ -72,6 +72,8 @@
 #define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfilerNextFrame"
 #define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfilerPreviousDepth"
 #define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfilerNextDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD "ProfilerPreviousThread"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD     "ProfilerNextThread"
 
 
 /** Event enum
