@@ -2336,8 +2336,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
           /* Is profiler history rendered? */
           if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
           {
-            orxS32 s32ThreadDelta = 0;
-
             /* Previous profiler depth? */
             if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH))
             {

@@ -1473,7 +1473,6 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
   if(pstResult != orxNULL)
   {
     const orxSTRING zResourceLocation;
-    orxSTATUS       eResult = orxSTATUS_FAILURE;
 
     /* Clears data */
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SAMPLE));
@@ -1724,7 +1723,6 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
   if(pstResult != orxNULL)
   {
     const orxSTRING zResourceLocation;
-    orxSTATUS       eResult = orxSTATUS_FAILURE;
 
     /* Clears it */
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
