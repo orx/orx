@@ -36,7 +36,6 @@
 #include "core/orxClock.h"
 #include "core/orxSystem.h"
 #include "debug/orxDebug.h"
-#include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "utils/orxString.h"
 
@@ -236,9 +235,6 @@ static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxThread_Work");
-
   /* While there are pending requests */
   while(sstThread.u32TaskProcessIndex != sstThread.u32TaskInIndex)
   {
@@ -254,9 +250,6 @@ static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
     orxMEMORY_BARRIER();
     sstThread.u32TaskProcessIndex = (sstThread.u32TaskProcessIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
