@@ -271,9 +271,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
-      /* Joins all threads */
-      orxThread_JoinAll();
-
       /* Exits from engine */
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
@@ -358,9 +355,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
       /* Removes event handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Joins all threads */
-      orxThread_JoinAll();
 
       /* Exits from engine */
       orxModule_Exit(orxMODULE_ID_MAIN);

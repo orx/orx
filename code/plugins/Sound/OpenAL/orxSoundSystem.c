@@ -894,7 +894,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
   /* For all streams nodes */
   for(pstNode = orxLinkList_GetFirst(&(sstSoundSystem.stStreamList));
       pstNode != orxNULL;
-      )
+     )
   {
     orxSOUNDSYSTEM_SOUND *pstSound;
 
@@ -938,6 +938,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
+
+  /* Sleeps before next update */
+  orxSystem_Delay(orx2F(0.001f));
 
   /* Done! */
   return eResult;
@@ -1302,6 +1305,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
               /* Closes openAL device */
               alcCloseDevice(sstSoundSystem.poDevice);
               sstSoundSystem.poDevice = NULL;
+
+              /* Deletes semaphore */
+              orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
             }
           }
           else
@@ -1325,6 +1331,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
             /* Closes openAL device */
             alcCloseDevice(sstSoundSystem.poDevice);
             sstSoundSystem.poDevice = NULL;
+
+            /* Deletes semaphore */
+            orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
           }
         }
         else
@@ -1332,7 +1341,15 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
           /* Closes openAL device */
           alcCloseDevice(sstSoundSystem.poDevice);
           sstSoundSystem.poDevice = NULL;
+
+          /* Deletes semaphore */
+          orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
         }
+      }
+      else
+      {
+        /* Deletes semaphore */
+        orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
       }
 
       /* Pops config section */

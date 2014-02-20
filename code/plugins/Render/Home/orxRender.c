@@ -35,19 +35,6 @@
 #include "orxPluginAPI.h"
 
 
-#ifdef __orxMSVC__
-
-  #include "malloc.h"
-
-#endif /* __orxMSVC__ */
-
-#if defined(__orxGCC__) && defined(__orxWINDOWS__)
-
-  #define alloca __builtin_alloca
-
-#endif /* __orxGCC__ && __orxWINDOWS__ */
-
-
 /** Module flags
  */
 #define orxRENDER_KU32_STATIC_FLAG_NONE             0x00000000 /**< No flags */
@@ -105,6 +92,8 @@
 
 #define orxRENDER_KF_INPUT_RESET_FIRST_DELAY        orx2F(0.25f)
 #define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.02f)
+
+#define orxRENDER_KU32_MAX_MARKER_DEPTH             16
 
 
 /***************************************************************************
@@ -354,7 +343,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   const orxCHARACTER_MAP *pstMap;
   orxFLOAT                fMarkerWidth;
   orxCHAR                 acLabel[64];
-  orxDOUBLE              *adDepthBlockEndTime;
+  orxDOUBLE               adDepthBlockEndTime[orxRENDER_KU32_MAX_MARKER_DEPTH];
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
@@ -411,9 +400,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     }
   }
 
-  /* Allocates & inits array for storing block ends at each depth */
-  adDepthBlockEndTime = (orxDOUBLE *)alloca(sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
-  orxMemory_Zero(adDepthBlockEndTime, sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
+  /* Inits array for storing block ends at each depth */
+  orxMemory_Zero(adDepthBlockEndTime, orxRENDER_KU32_MAX_MARKER_DEPTH * sizeof(orxDOUBLE));
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
@@ -688,6 +676,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         /* Updates start time */
         dFrameStartTime = dStartTime;
       }
+
+      /* Checks */
+      orxASSERT(u32Depth < orxRENDER_KU32_MAX_MARKER_DEPTH);
 
       /* Adjusts start time to prevent block overlap at this level */
       dStartTime = orxMAX(dStartTime, adDepthBlockEndTime[u32Depth]);

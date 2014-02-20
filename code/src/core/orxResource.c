@@ -178,8 +178,11 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstTypeBank;                                              /**< Type info bank */
   orxBANK                  *pstResourceInfoBank;                                      /**< Resource info bank */
   orxBANK                  *pstOpenInfoBank;                                          /**< Open resource table size */
+  orxTHREAD_SEMAPHORE*      pstRequestSemaphore;                                      /**< Request semaphore */
+  orxTHREAD_SEMAPHORE*      pstWorkerSemaphore;                                       /**< Worker semaphore */
   orxLINKLIST               stTypeList;                                               /**< Type list */
   orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
+  volatile orxSTATUS        eThreadResult;                                            /**< Thread result */
   orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   volatile orxRESOURCE_REQUEST astRequestList[orxRESOURCE_KU32_REQUEST_LIST_SIZE];    /**< Request list */
   volatile orxU32           u32RequestInIndex;                                        /**< Request in index */
@@ -625,7 +628,10 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
 
 static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
+
+  /* Waits for worker semaphore */
+  orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxResource_ProcessRequests");
@@ -683,6 +689,9 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
+  /* Updates result */
+  eResult = sstResource.eThreadResult;
+
   /* Done! */
   return eResult;
 }
@@ -695,14 +704,21 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   /* Checks */
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
+  /* Waits for semaphore */
+  orxThread_WaitSemaphore(sstResource.pstRequestSemaphore);
+
   /* Gets next request index */
   u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
   /* Waits for a free slot */
   while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
   {
-    /* Manually pumps some request notifications */
-    orxResource_NotifyRequest(orxNULL, orxNULL);
+    /* Main thread? */
+    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Manually pumps some request notifications */
+      orxResource_NotifyRequest(orxNULL, orxNULL);
+    }
   }
 
   /* Gets current request */
@@ -720,6 +736,12 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   /* Commits request */
   orxMEMORY_BARRIER();
   sstResource.u32RequestInIndex = u32NextRequestIndex;
+
+  /* Signals semaphore */
+  orxThread_SignalSemaphore(sstResource.pstRequestSemaphore);
+
+  /* Signals worker semaphore */
+  orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
 }
 
 
@@ -760,59 +782,73 @@ orxSTATUS orxFASTCALL orxResource_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstResource, sizeof(orxRESOURCE_STATIC));
 
-    /* Inits request thread ID */
-    sstResource.u32RequestThreadID = orxU32_UNDEFINED;
+    /* Creates semaphores */
+    sstResource.pstRequestSemaphore = orxThread_CreateSemaphore(1);
+    sstResource.pstWorkerSemaphore  = orxThread_CreateSemaphore(1);
 
-    /* Creates resource info bank */
-    sstResource.pstResourceInfoBank = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Creates open resource info bank */
-    sstResource.pstOpenInfoBank     = orxBank_Create(orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE, sizeof(orxRESOURCE_OPEN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Creates group bank */
-    sstResource.pstGroupBank        = orxBank_Create(orxRESOURCE_KU32_GROUP_BANK_SIZE, sizeof(orxRESOURCE_GROUP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Creates type info bank */
-    sstResource.pstTypeBank         = orxBank_Create(orxRESOURCE_KU32_TYPE_BANK_SIZE, sizeof(orxRESOURCE_TYPE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Success? */
-    if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeBank != orxNULL))
+    /* Valid? */
+    if((sstResource.pstRequestSemaphore != orxNULL) && (sstResource.pstWorkerSemaphore != orxNULL))
     {
-      orxRESOURCE_TYPE_INFO stTypeInfo;
+      /* Inits request thread ID */
+      sstResource.u32RequestThreadID = orxU32_UNDEFINED;
 
-      /* Inits flags */
-      sstResource.u32Flags = orxRESOURCE_KU32_STATIC_FLAG_READY;
+      /* Creates resource info bank */
+      sstResource.pstResourceInfoBank = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Inits file type */
-      stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_FILE;
-      stTypeInfo.pfnLocate  = orxResource_File_Locate;
-      stTypeInfo.pfnGetTime = orxResource_File_GetTime;
-      stTypeInfo.pfnOpen    = orxResource_File_Open;
-      stTypeInfo.pfnClose   = orxResource_File_Close;
-      stTypeInfo.pfnGetSize = orxResource_File_GetSize;
-      stTypeInfo.pfnSeek    = orxResource_File_Seek;
-      stTypeInfo.pfnTell    = orxResource_File_Tell;
-      stTypeInfo.pfnRead    = orxResource_File_Read;
-      stTypeInfo.pfnWrite   = orxResource_File_Write;
+      /* Creates open resource info bank */
+      sstResource.pstOpenInfoBank     = orxBank_Create(orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE, sizeof(orxRESOURCE_OPEN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Registers it */
-      eResult = orxResource_RegisterType(&stTypeInfo);
+      /* Creates group bank */
+      sstResource.pstGroupBank        = orxBank_Create(orxRESOURCE_KU32_GROUP_BANK_SIZE, sizeof(orxRESOURCE_GROUP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Creates type info bank */
+      sstResource.pstTypeBank         = orxBank_Create(orxRESOURCE_KU32_TYPE_BANK_SIZE, sizeof(orxRESOURCE_TYPE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
+      if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeBank != orxNULL))
       {
-        /* Starts request processing thread */
-        sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxNULL);
+        orxRESOURCE_TYPE_INFO stTypeInfo;
+
+        /* Inits flags */
+        sstResource.u32Flags = orxRESOURCE_KU32_STATIC_FLAG_READY;
+
+        /* Inits file type */
+        stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_FILE;
+        stTypeInfo.pfnLocate  = orxResource_File_Locate;
+        stTypeInfo.pfnGetTime = orxResource_File_GetTime;
+        stTypeInfo.pfnOpen    = orxResource_File_Open;
+        stTypeInfo.pfnClose   = orxResource_File_Close;
+        stTypeInfo.pfnGetSize = orxResource_File_GetSize;
+        stTypeInfo.pfnSeek    = orxResource_File_Seek;
+        stTypeInfo.pfnTell    = orxResource_File_Tell;
+        stTypeInfo.pfnRead    = orxResource_File_Read;
+        stTypeInfo.pfnWrite   = orxResource_File_Write;
+
+        /* Registers it */
+        eResult = orxResource_RegisterType(&stTypeInfo);
 
         /* Success? */
-        if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+        if(eResult != orxSTATUS_FAILURE)
         {
+          /* Inits thread result */
+          sstResource.eThreadResult = orxSTATUS_SUCCESS;
+
+          /* Waits for worker semaphore */
+          orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
+
+          /* Starts request processing thread */
+          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxNULL);
+
+          /* Success? */
+          if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+          {
 #ifdef __orxANDROID__
 
-          /* Registers APK type */
-          eResult = orxAndroid_RegisterAPKResource();
+            /* Registers APK type */
+            eResult = orxAndroid_RegisterAPKResource();
 
 #endif /* __orxANDROID__ */
+          }
         }
       }
     }
@@ -822,6 +858,16 @@ orxSTATUS orxFASTCALL orxResource_Init()
     {
       /* Removes Flags */
       sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
+
+      /* Deletes semaphores */
+      if(sstResource.pstRequestSemaphore != orxNULL)
+      {
+        orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
+      }
+      if(sstResource.pstWorkerSemaphore != orxNULL)
+      {
+        orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
+      }
 
       /* Deletes info bank */
       if(sstResource.pstResourceInfoBank != orxNULL)
@@ -885,9 +931,20 @@ void orxFASTCALL orxResource_Exit()
     /* Waits for all pending operations to complete */
     while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
 
+    /* Updates worker result */
+    sstResource.eThreadResult = orxSTATUS_FAILURE;
+    orxMEMORY_BARRIER();
+
+    /* Signals worker semaphore */
+    orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
+
     /* Joins request thread */
     orxThread_Join(sstResource.u32RequestThreadID);
     sstResource.u32RequestThreadID = orxU32_UNDEFINED;
+
+    /* Delete semaphores */
+    orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
+    orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
 
     /* Don't unregister clock callbacks as the clock module has already exited */
 

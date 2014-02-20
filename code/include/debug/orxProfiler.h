@@ -55,7 +55,7 @@
 
 /** Profiler macros
  */
-//! TODO: Support per-thread profiling info (currently only allowing profiling for main thread)
+//! TODO: Use Thread Local Storage (TLS) for markers
 #ifdef __orxPROFILER__
 
   #define orxPROFILER_PUSH_MARKER(NAME)                             \

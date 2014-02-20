@@ -133,6 +133,7 @@ typedef struct __orxTHREAD_STATIC_t
 {
   orxTHREAD_SEMAPHORE*    pstThreadSemaphore;
   orxTHREAD_SEMAPHORE*    pstTaskSemaphore;
+  orxTHREAD_SEMAPHORE*    pstWorkerSemaphore;
   orxU32                  u32WorkerID;
   volatile orxU32         u32TaskInIndex;
   volatile orxU32         u32TaskProcessIndex;
@@ -235,6 +236,9 @@ static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Waits for worker semaphore */
+  orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
+
   /* While there are pending requests */
   while(sstThread.u32TaskProcessIndex != sstThread.u32TaskInIndex)
   {
@@ -294,9 +298,10 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Creates semaphores */
     sstThread.pstThreadSemaphore  = orxThread_CreateSemaphore(1);
     sstThread.pstTaskSemaphore    = orxThread_CreateSemaphore(1);
+    sstThread.pstWorkerSemaphore  = orxThread_CreateSemaphore(1);
 
     /* Success? */
-    if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL))
+    if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
     {
 #if defined(__orxWINDOWS__)
 
@@ -340,6 +345,9 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* Success? */
       if(sstThread.u32WorkerID != orxU32_UNDEFINED)
       {
+        /* Waits for worker semaphore */
+        orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -351,6 +359,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
         /* Deletes semaphores */
         orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
         orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
+        orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
 
 #ifdef __orxWINDOWS__
 
@@ -377,6 +386,10 @@ orxSTATUS orxFASTCALL orxThread_Init()
       {
         orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
       }
+      if(sstThread.pstWorkerSemaphore != orxNULL)
+      {
+        orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
+      }
 
       /* Updates status */
       sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -394,6 +407,13 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    /* Updates worker thread stop flag */
+    orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+    orxMEMORY_BARRIER();
+
+    /* Signals worker semaphore */
+    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
+
     /* Joins all remaining threads */
     orxThread_JoinAll();
 
@@ -407,6 +427,7 @@ void orxFASTCALL orxThread_Exit()
     /* Deletes semaphores */
     orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
     orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
+    orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
@@ -912,6 +933,11 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
 
     /* Signals semaphore */
     orxThread_SignalSemaphore(sstThread.pstTaskSemaphore);
+
+    /* Signals worker semaphore */
+    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
+    /* Signals worker semaphore */
+    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
   }
 
   /* Done! */
