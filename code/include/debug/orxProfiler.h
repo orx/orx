@@ -55,27 +55,26 @@
 
 /** Profiler macros
  */
-//! TODO: Use Thread Local Storage (TLS) for markers
 #ifdef __orxPROFILER__
 
-  #define orxPROFILER_PUSH_MARKER(NAME)                             \
-  do                                                                \
-  {                                                                 \
-    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
-                                                                    \
-    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)      \
-    {                                                               \
-      s32ProfilerID = orxProfiler_GetIDFromName(NAME);              \
-    }                                                               \
-                                                                    \
-    orxProfiler_PushMarker(s32ProfilerID);                          \
+  #define orxPROFILER_PUSH_MARKER(NAME)                                       \
+  do                                                                          \
+  {                                                                           \
+    static orxTHREAD orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
+                                                                              \
+    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)                \
+    {                                                                         \
+      s32ProfilerID = orxProfiler_GetIDFromName(NAME);                        \
+    }                                                                         \
+                                                                              \
+    orxProfiler_PushMarker(s32ProfilerID);                                    \
   } while(orxFALSE)
 
 
-  #define orxPROFILER_POP_MARKER()                                  \
-  do                                                                \
-  {                                                                 \
-    orxProfiler_PopMarker();                                        \
+  #define orxPROFILER_POP_MARKER()                                            \
+  do                                                                          \
+  {                                                                           \
+    orxProfiler_PopMarker();                                                  \
   } while(orxFALSE)
 
   #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)

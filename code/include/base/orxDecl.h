@@ -250,22 +250,34 @@
   #define orxNULL               (0)
 
   /* *** Compiler specific *** */
-  /** The function intend to be inlined. */
   #if defined(__orxFREEBASIC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE
 
   #elif defined(__orxGCC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         inline
+
+    /** Thread Local Storage */
+    #define orxTHREAD         __thread
 
   #elif defined(__orxLLVM__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         inline
+
+    /** Thread Local Storage */
+    #define orxTHREAD         __thread
 
   #elif defined(__orxMSVC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         __inline
+
+    /** Thread Local Storage */
+    #define orxTHREAD         __declspec(thread)
 
   #endif
 
@@ -306,16 +318,20 @@
     /** The symbol will be imported (exe compilation) */
     #define orxDLLIMPORT
 
-    /** The function is intended to be inlined */
     #ifdef __orxFREEBASIC__
 
+      /** The function intend to be inlined. */
       #define orxINLINE
 
     #else /* __orxFREEBASIC__ */
 
+      /** The function intend to be inlined. */
       #define orxINLINE         inline
 
     #endif /* __orxFREEBASIC__ */
+
+    /** Thread Local Storage */
+    #define orxTHREAD         __thread
 
     /** The null address */
     #define orxNULL             (0)

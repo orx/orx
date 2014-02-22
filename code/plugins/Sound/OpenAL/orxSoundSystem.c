@@ -52,6 +52,12 @@
 
 #endif /* __orxMSVC__ */
 
+#if defined(__orxGCC__) && defined(__orxWINDOWS__)
+
+  #define alloca __builtin_alloca
+
+#endif /* __orxGCC__ && __orxWINDOWS__ */
+
 #include "stb_vorbis.c"
 #include "sndfile.h"
 
