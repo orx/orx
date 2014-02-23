@@ -943,3 +943,24 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
   /* Done! */
   return eResult;
 }
+
+/** Gets number of pending asynchronous tasks
+ * @return      Number of pending asynchronous tasks
+ */
+orxU32 orxFASTCALL orxThread_GetTaskCounter()
+{
+  orxU32 u32TaskInIndex, u32TaskOutIndex, u32Result;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+
+  /* Gets indices */
+  u32TaskInIndex  = sstThread.u32TaskInIndex;
+  u32TaskOutIndex = sstThread.u32TaskOutIndex;
+
+  /* Updates result */
+  u32Result = (u32TaskInIndex >= u32TaskOutIndex) ? u32TaskInIndex - u32TaskOutIndex : u32TaskInIndex + orxTHREAD_KU32_TASK_LIST_SIZE - u32TaskOutIndex;
+
+  /* Done! */
+  return u32Result;
+}
