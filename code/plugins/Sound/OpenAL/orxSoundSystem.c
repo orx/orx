@@ -79,6 +79,7 @@
 #define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
 #define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   44100
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
+#define orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME       orx2F(0.001f)
 
 #ifdef __orxDEBUG__
 
@@ -946,7 +947,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
   orxPROFILER_POP_MARKER();
 
   /* Sleeps before next update */
-  orxSystem_Delay(orx2F(0.001f));
+  orxSystem_Delay(orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME);
 
   /* Done! */
   return eResult;
@@ -1377,6 +1378,9 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
 
     /* Stops any recording */
     orxSoundSystem_StopRecording();
+
+    /* Waits for all tasks to be finished */
+    while(orxThread_GetTaskCounter() != 0);
 
     /* Deletes semaphore */
     orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);

@@ -140,7 +140,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SignalSemaphore(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext);
 
-/** Gets number of pending asynchronous tasks
+/** Gets number of pending asynchronous tasks awaiting full completion (might pump task notifications if called from main thread)
  * @return      Number of pending asynchronous tasks
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetTaskCounter();
