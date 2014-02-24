@@ -11,14 +11,12 @@ public class OrxDemo extends OrxActivity {
     private View mDecorView;
 
     static {
-    	// load openal-soft module first.
-    	System.loadLibrary("openal-soft");
-		// load your native module here.
-		System.loadLibrary("orxTest");
-	}
+	// load your native module here.
+	System.loadLibrary("orxTest");
+    }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-	@Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -46,7 +44,7 @@ public class OrxDemo extends OrxActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-	@Override
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         

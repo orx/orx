@@ -3,8 +3,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE := orx
 LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborx.a
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt
-LOCAL_SHARED_LIBRARIES := OpenAL-prebuilt 
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt OpenAL-prebuilt
 
 TARGET_PLATFORM = android-9
 
@@ -17,8 +16,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := orxd
 LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborxd.a
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt
-LOCAL_SHARED_LIBRARIES := OpenAL-prebuilt 
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt OpenAL-prebuilt
 
 TARGET_PLATFORM = android-9
 
@@ -31,8 +29,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := orxp
 LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborxp.a
-LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt
-LOCAL_SHARED_LIBRARIES := OpenAL-prebuilt 
+LOCAL_STATIC_LIBRARIES := SOIL-prebuilt Box2D-prebuilt Tremolo-prebuilt OpenAL-prebuilt
 
 TARGET_PLATFORM = android-9
 

@@ -569,14 +569,6 @@ static void orxFASTCALL orxSoundSystem_Android_UpdateStreaming(const orxCLOCK_IN
   orxPROFILER_POP_MARKER();
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-void OpenAL_SetContext(jobject context);
-#ifdef __cplusplus
-}
-#endif
-
 orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -584,9 +576,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
   /* Was already initialized? */
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
-    /* Set OpenAL Android Context */
-    OpenAL_SetContext(orxAndroid_GetApplicationContext());
-
 #ifdef __orxDEBUG__
     putenv("ALSOFT_LOGLEVEL=3");
 #endif
