@@ -936,8 +936,6 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
 
     /* Signals worker semaphore */
     orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
-    /* Signals worker semaphore */
-    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
   }
 
   /* Done! */
