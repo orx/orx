@@ -502,9 +502,18 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
 #endif /* __orxMSVC__ */
 
-      /* Gets owner's GUID */
-      acGUID[19]    = orxCHAR_NULL;
-      s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
+      /* Is GUID valid? */
+      if(_u64GUID != orxU64_UNDEFINED)
+      {
+        /* Gets owner's GUID */
+        acGUID[19]    = orxCHAR_NULL;
+        s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
+      }
+      else
+      {
+        /* No GUID */
+        s32GUIDLength = 0;
+      }
 
       /* Adds input to the buffer list */
       azBufferList[s32BufferCounter++] = pcCommandEnd + 1;
@@ -543,11 +552,20 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
           {
             case orxCOMMAND_KC_GUID_MARKER:
             {
-              /* Replaces it with GUID */
-              orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+              /* Has valid GUID? */
+              if(s32GUIDLength != 0)
+              {
+                /* Replaces it with GUID */
+                orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
 
-              /* Updates pointer */
-              pcDst += s32GUIDLength;
+                /* Updates pointer */
+                pcDst += s32GUIDLength;
+              }
+              else
+              {
+                /* Copies character */
+                *pcDst++ = *pcSrc;
+              }
 
               break;
             }
