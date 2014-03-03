@@ -6407,7 +6407,7 @@ const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject)
 
 /** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstBoundingBox Bounding box result
+ * @param[out]  _pstBoundingBox Bounding box result
  * @return      Bounding box / orxNULL
  */
 orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox)
