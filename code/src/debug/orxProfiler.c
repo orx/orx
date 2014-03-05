@@ -213,8 +213,7 @@ static orxINLINE void orxProfiler_ResetData(orxPROFILER_MARKER_DATA *_pstData)
     pstInfo->u32Depth           = 0;
 
     /* Resets marker */
-    _pstData->astMarkerList[i].dTimeStamp   = orxDOUBLE_0;
-    _pstData->astMarkerList[i].s32ParentID  = orxPROFILER_KS32_MARKER_ID_NONE;
+    _pstData->astMarkerList[i].dTimeStamp = orxDOUBLE_0;
     orxFLAG_SET(_pstData->astMarkerList[i].u32Flags, orxPROFILER_KU32_FLAG_NONE, orxPROFILER_KU32_FLAG_PUSHED|orxPROFILER_KU32_FLAG_INIT);
   }
 
