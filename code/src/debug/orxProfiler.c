@@ -153,7 +153,7 @@ static orxINLINE orxPROFILER_MARKER_DATA *orxProfiler_GetMarkerData(orxU32 _u32I
   if((pstResult == orxNULL) && (_bReadOnly == orxFALSE))
   {
     /* Allocates it */
-    pstResult = (orxPROFILER_MARKER_DATA *)orxMemory_Allocate(sizeof(orxPROFILER_MARKER_DATA), orxMEMORY_TYPE_MAIN);
+    pstResult = (orxPROFILER_MARKER_DATA *)orxMemory_Allocate(sizeof(orxPROFILER_MARKER_DATA), orxMEMORY_TYPE_DEBUG);
 
     /* Checks */
     orxASSERT(pstResult != orxNULL);

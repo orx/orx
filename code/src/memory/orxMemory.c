@@ -424,6 +424,7 @@ const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
     orxMEMORY_DECLARE_TYPE_NAME(PHYSICS);
     orxMEMORY_DECLARE_TYPE_NAME(SYSTEM);
     orxMEMORY_DECLARE_TYPE_NAME(TEMP);
+    orxMEMORY_DECLARE_TYPE_NAME(DEBUG);
     default:
     {
       /* Logs message */
