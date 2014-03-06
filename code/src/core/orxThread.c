@@ -39,6 +39,11 @@
 #include "memory/orxMemory.h"
 #include "utils/orxString.h"
 
+#ifdef __orxANDROID__
+
+  #include "main/orxAndroid.h"
+
+#endif
 
 #ifdef __orxWINDOWS__
 
@@ -178,6 +183,12 @@ static void *orxThread_Execute(void *_pContext)
   orxMEMORY_BARRIER();
 
 #endif /* __orxWINDOWS__ */
+
+#ifdef __orxANDROID__
+
+  orxAndroid_JNI_SetupThread();
+
+#endif /* __orxANDROID__ */
 
   do
   {
