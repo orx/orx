@@ -681,7 +681,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
   pu8ImageData = (unsigned char*)_pBuffer;
   /* Skip header */
   pu8ImageData = (unsigned char*)(pu8ImageData + sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
-  u32DataSize = _s64Size - (sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
+  u32DataSize = *((orxU32*)pu8ImageData);
   u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
 
   /* Valid? */
@@ -693,7 +693,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     orxBITMAP  *pstBitmap;
 
     /* Uses image buffer */
-    pu8ImageBuffer = pu8ImageData;
+    pu8ImageBuffer = pu8ImageData + sizeof(u32DataSize);
 
     /* Gets real size */
     uiRealWidth   = uiWidth;
@@ -710,7 +710,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     pstBitmap->u32Depth       = 32;
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-    pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+    pstBitmap->u32DataSize    = u32DataSizeRounded;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -722,8 +722,17 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     glASSERT();
     glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
     glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+
     /* Compressed? */
-    if(bCompressed != orxFALSE)
+    if(bCompressed == orxTRUE)
     {
       /* Loads compressed data */
       glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, u32DataSize, pu8ImageBuffer);
@@ -733,14 +742,6 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       /* Loads data */
       glTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, stHeader->glFormat, stHeader->glType, pu8ImageBuffer);
     }
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
     glASSERT();
 
     /* Restores previous texture */
@@ -2974,14 +2975,16 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
         pstResult->zLocation  = zResourceName;
 
         /* Loads its data */
-        if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL
-                && orxDisplay_Android_LoadKTXBitmapData(pstResult) == orxSTATUS_FAILURE)
+        if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL)
         {
-          /* Deletes it */
-          orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
+          if(orxDisplay_Android_LoadKTXBitmapData(pstResult) == orxSTATUS_FAILURE)
+          {
+            /* Deletes it */
+            orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
 
-          /* Updates result */
-          pstResult = orxNULL;
+            /* Updates result */
+            pstResult = orxNULL;
+          }
         }
         else if(orxDisplay_Android_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
         {
