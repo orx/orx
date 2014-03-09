@@ -42,6 +42,7 @@
 #ifdef __orxWINDOWS__
 
   #include <io.h>
+  #include <Shlobj.h>
 
   #ifdef __orxMSVC__
 
@@ -61,14 +62,22 @@
   #include <dirent.h>
   #include <fnmatch.h>
   #include <unistd.h>
+  #include <stdlib.h>
+  #include <stdio.h>
+  #include <pwd.h>
 
 #endif /* __orxWINDOWS__ */
 
 
 /** Module flags
  */
-#define orxFILE_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxFILE_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxFILE_KU32_STATIC_FLAG_NONE           0x00000000  /**< No flags have been set */
+#define orxFILE_KU32_STATIC_FLAG_READY          0x00000001  /**< The module has been initialized */
+
+
+/** Misc
+ */
+#define orxFILE_KU32_HOME_DIRECTORY_MAX_LENGTH  512         /**< Max home directory length */
 
 
 /***************************************************************************
@@ -86,7 +95,8 @@ struct __orxFILE_t
  */
 typedef struct __orxFILE_STATIC_t
 {
-  orxU32 u32Flags;
+  orxCHAR acHomeDirectory[orxFILE_KU32_HOME_DIRECTORY_MAX_LENGTH];
+  orxU32  u32Flags;
 
 } orxFILE_STATIC;
 
@@ -243,6 +253,95 @@ void orxFASTCALL orxFile_Exit()
   }
 
   return;
+}
+
+/** Gets current user's home/application directory (without trailing separator)
+ * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
+ * @return Current user's home/application directory
+ */
+const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderName)
+{
+  orxS32 s32Index = -1;
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+#if defined(__orxWINDOWS__)
+
+  char acPath[MAX_PATH];
+
+  /* Gets application folder */
+  if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, acPath)))
+  {
+    /* For all characters */
+    for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
+    {
+      /* Copies it + replace windows separators by linux ones */
+      sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+
+      /* End of string? */
+      if(acPath[s32Index] == orxCHAR_NULL)
+      {
+        /* Stops */
+        break;
+      }
+    }
+  }
+
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxRASPBERRY_PI__)
+
+  {
+    const orxCHAR *zHome;
+
+    /* Gets environment HOME variable */
+    zHome = (orxCHAR *)getenv("HOME");
+
+    /* Valid? */
+    if(zHome != orxNULL)
+    {
+      /* Prints home directory */
+      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", zHome);
+    }
+    else
+    {
+      struct *pstPasswd;
+
+      /* Gets current user's passwd */
+      pstPasswd = getpwuid(getuid());
+
+      /* Valid? */
+      if(pstPasswd != orxNULL)
+      {
+        /* Prints home directory */
+        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", pstPasswd->pw_dir);
+      }
+    }
+  }
+
+#elif defined(__orxIOS__)
+
+  /* Prints documents directory */
+  s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "../Documents");
+
+#endif
+
+  /* Success? */
+  if(s32Index >= 0)
+  {
+    /* Should add folder name? */
+    if((_zFolderName != orxNULL) && (*_zFolderName != orxCHAR_NULL))
+    {
+      /* Appends folder name */
+      s32Index += orxString_NPrint(sstFile.acHomeDirectory + s32Index, sizeof(sstFile.acHomeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
+    }
+
+    /* Updates result */
+    zResult = sstFile.acHomeDirectory;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
