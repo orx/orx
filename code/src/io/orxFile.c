@@ -79,6 +79,20 @@
  */
 #define orxFILE_KU32_HOME_DIRECTORY_MAX_LENGTH  512         /**< Max home directory length */
 
+#if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
+
+#define orxFILE_KZ_APPLICATION_FOLDER           ".local" orxCHAR_DIRECTORY_SEPARATOR_LINUX "share"
+
+#elif defined(__orxMAC__)
+
+#define orxFILE_KZ_APPLICATION_FOLDER           "Library" orxCHAR_DIRECTORY_SEPARATOR_LINUX "Application Support"
+
+#elif defined(__orxIOS__)
+
+#define orxFILE_KZ_APPLICATION_FOLDER           ".." orxCHAR_DIRECTORY_SEPARATOR_LINUX "Documents"
+
+#endif
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -255,11 +269,95 @@ void orxFASTCALL orxFile_Exit()
   return;
 }
 
-/** Gets current user's home/application directory (without trailing separator)
+/** Gets current user's home directory (without trailing separator)
  * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's home/application directory
+ * @return Current user's home directory
  */
 const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderName)
+{
+  orxS32 s32Index = -1;
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+#if defined(__orxWINDOWS__)
+
+  char acPath[MAX_PATH];
+
+  /* Gets application folder */
+  if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, acPath)))
+  {
+    /* For all characters */
+    for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
+    {
+      /* Copies it + replace windows separators by linux ones */
+      sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+
+      /* End of string? */
+      if(acPath[s32Index] == orxCHAR_NULL)
+      {
+        /* Stops */
+        break;
+      }
+    }
+  }
+
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxRASPBERRY_PI__)
+
+  {
+    const orxCHAR *zHome;
+
+    /* Gets environment HOME variable */
+    zHome = (orxCHAR *)getenv("HOME");
+
+    /* Valid? */
+    if(zHome != orxNULL)
+    {
+      /* Prints home directory */
+      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", zHome);
+    }
+    else
+    {
+      struct passwd *pstPasswd;
+
+      /* Gets current user's passwd */
+      pstPasswd = getpwuid(getuid());
+
+      /* Valid? */
+      if(pstPasswd != orxNULL)
+      {
+        /* Prints home directory */
+        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", pstPasswd->pw_dir);
+      }
+    }
+  }
+
+#endif
+
+  /* Success? */
+  if(s32Index >= 0)
+  {
+    /* Should add folder name? */
+    if((_zFolderName != orxNULL) && (*_zFolderName != orxCHAR_NULL))
+    {
+      /* Appends folder name */
+      s32Index += orxString_NPrint(sstFile.acHomeDirectory + s32Index, sizeof(sstFile.acHomeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
+    }
+
+    /* Updates result */
+    zResult = sstFile.acHomeDirectory;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets current user's application directory, for saving purposes (without trailing separator)
+ * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
+ * @return Current user's application directory
+ */
+const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFolderName)
 {
   orxS32 s32Index = -1;
   const orxSTRING zResult = orxSTRING_EMPTY;
@@ -301,11 +399,11 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", zHome);
+      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
     }
     else
     {
-      struct *pstPasswd;
+      struct passwd *pstPasswd;
 
       /* Gets current user's passwd */
       pstPasswd = getpwuid(getuid());
@@ -314,7 +412,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", pstPasswd->pw_dir);
+        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
       }
     }
   }
@@ -322,7 +420,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "../Documents");
+  s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
 
 #endif
 

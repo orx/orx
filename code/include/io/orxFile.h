@@ -88,11 +88,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Init();
  */
 extern orxDLLAPI void orxFASTCALL           orxFile_Exit();
 
-/** Gets current user's home/application directory (without trailing separator)
+/** Gets current user's home directory (without trailing separator)
  * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's home/application directory
+ * @return Current user's home directory
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderName);
+
+/** Gets current user's application directory, for saving purposes (without trailing separator)
+ * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
+ * @return Current user's application directory
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFolderName);
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
  * @param[in] _zFileName           Full File's name to test
