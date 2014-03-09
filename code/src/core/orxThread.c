@@ -39,12 +39,6 @@
 #include "memory/orxMemory.h"
 #include "utils/orxString.h"
 
-#ifdef __orxANDROID__
-
-  #include "main/orxAndroid.h"
-
-#endif
-
 #ifdef __orxWINDOWS__
 
   #include <process.h>
@@ -62,18 +56,13 @@
 
   #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
 
+  #ifdef __orxANDROID__
+
+    #include "main/orxAndroid.h"
+
+  #endif /* __orxANDROID__ */
+
 #endif /* __orxWINDOWS__ */
-
-
-#if defined(__orxX86_64__) || defined(__orxPPC64__)
-
-  #define orxTHREAD_CAST_HELPER   (orxU64)
-
-#else /* __orxX86_64__ || __orxPPC64__ */
-
-  #define orxTHREAD_CAST_HELPER
-
-#endif /* __orxX86_64__ || __orxPPC64__ */
 
 
 /** Module flags
@@ -174,7 +163,7 @@ static void *orxThread_Execute(void *_pContext)
   orxSTATUS                 eResult;
 
   /* Gets thread's info */
-  pstInfo = &(sstThread.astThreadInfoList[(orxU32) orxTHREAD_CAST_HELPER _pContext]);
+  pstInfo = (orxTHREAD_INFO *)_pContext;
 
 #ifdef __orxWINDOWS__
 
@@ -186,6 +175,7 @@ static void *orxThread_Execute(void *_pContext)
 
 #ifdef __orxANDROID__
 
+  /* Notifies the Java framework */
   orxAndroid_JNI_SetupThread();
 
 #endif /* __orxANDROID__ */
@@ -198,6 +188,7 @@ static void *orxThread_Execute(void *_pContext)
     /* Yields */
     orxThread_Yield();
   }
+  /* While stop hasn't been requested */
   while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
 
   /* Done! */
@@ -493,7 +484,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
 #ifdef __orxWINDOWS__
 
     /* Creates thread */
-    pstInfo->hThread = (HANDLE)_beginthreadex(NULL, 0, orxThread_Execute, (void *)u32Index, 0, NULL);
+    pstInfo->hThread = (HANDLE)_beginthreadex(NULL, 0, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index], 0, NULL);
 
     /* Success? */
     if(pstInfo->hThread != NULL)
@@ -506,7 +497,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
 #else /* __orxWINDOWS__ */
 
     /* Creates thread */
-    if(pthread_create((pthread_t *)&(pstInfo->hThread), NULL, orxThread_Execute, (void *) orxTHREAD_CAST_HELPER u32Index) == 0)
+    if(pthread_create((pthread_t *)&(pstInfo->hThread), NULL, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index]) == 0)
     {
       /* Updates result */
       u32Result = u32Index;
