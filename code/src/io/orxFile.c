@@ -81,15 +81,15 @@
 
 #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
 
-#define orxFILE_KZ_APPLICATION_FOLDER           ".local" orxCHAR_DIRECTORY_SEPARATOR_LINUX "share"
+#define orxFILE_KZ_APPLICATION_FOLDER           ".local/share"
 
 #elif defined(__orxMAC__)
 
-#define orxFILE_KZ_APPLICATION_FOLDER           "Library" orxCHAR_DIRECTORY_SEPARATOR_LINUX "Application Support"
+#define orxFILE_KZ_APPLICATION_FOLDER           "Library/Application Support"
 
 #elif defined(__orxIOS__)
 
-#define orxFILE_KZ_APPLICATION_FOLDER           ".." orxCHAR_DIRECTORY_SEPARATOR_LINUX "Documents"
+#define orxFILE_KZ_APPLICATION_FOLDER           "../Documents"
 
 #endif
 
