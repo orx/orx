@@ -2530,7 +2530,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
         s32Index = s32NextIndex)
     {
       /* Enforces native directory separator */
-	  *((orxSTRING)_zBaseName + s32NextIndex) = orxCHAR_DIRECTORY_SEPARATOR;
+      *((orxSTRING)_zBaseName + s32NextIndex) = orxCHAR_DIRECTORY_SEPARATOR;
     }
 
     /* Found? */

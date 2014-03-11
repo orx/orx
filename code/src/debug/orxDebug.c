@@ -393,30 +393,20 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Log FUNCTION, FILE & LINE? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
     {
-      const orxCHAR *pc, *pcFile;
+      const orxSTRING zFile;
 
       /* Skips complete path */
-      for(pc = _zFile, pcFile = _zFile;
-          (*pc != orxCHAR_NULL) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF);
-          pc++)
-      {
-        if((*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS))
-        {
-          if((*(pc + 1) != orxCHAR_NULL) && (*(pc + 1) != orxCHAR_CR) && (*(pc + 1) != orxCHAR_LF))
-          {
-            pcFile = pc + 1;
-          }
-        }
-      }
+      zFile = orxString_SkipPath(_zFile);
+
 #ifdef __orxMSVC__
 
       /* Writes info */
-      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", pcFile, _zFunction, _u32Line);
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", zFile, _zFunction, _u32Line);
 
 #else /* __orxMSVC__ */
 
       /* Writes info */
-      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", pcFile, _zFunction, (unsigned int)_u32Line);
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", zFile, _zFunction, (unsigned int)_u32Line);
 
 #endif /* __orxMSVC__ */
     }

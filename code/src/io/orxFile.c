@@ -482,50 +482,39 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
   /* Valid? */
   if(s32Handle >= 0)
   {
-    orxS32 s32LastSeparator, i;
+    const orxSTRING zFileName;
 
-    /* Gets last directory separator */
-    for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, 0);
-        i >= 0;
-        s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, i + 1));
-
-    /* Not found? */
-    if(s32LastSeparator < 0)
-    {
-      /* Gets last directory separator */
-      for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, 0);
-          i >= 0;
-          s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, i + 1));
-    }
+    /* Gets base file name */
+    zFileName = orxString_SkipPath(_zSearchPattern);
 
     /* Has directory? */
-    if(s32LastSeparator >= 0)
+    if(zFileName != _zSearchPattern)
     {
-      orxU32 u32Index;
+      orxU32 u32Length;
 
       /* Updates path & full name base */
-      u32Index = orxMIN(s32LastSeparator + 1, sizeof(_pstFileInfo->zPath) - 1);
-      orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
-      _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
+      u32Length = orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
+      orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
+      _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
       orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
       /* Stores pattern */
-      u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, sizeof(_pstFileInfo->zPattern) - 1);
-      orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
-      _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+      u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
+      orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
+      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
     }
     else
     {
-      orxU32 u32Index;
+      orxU32 u32Length;
 
       /* Clears vars */
       _pstFileInfo->zPath[0]      = orxCHAR_NULL;
       _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Index = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
-      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
-      _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+      u32Length = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
+      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
+      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
     }
 
     /* Tranfers file info */
@@ -540,51 +529,39 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
 
 #else /* __orxWINDOWS__ */
 
-  /* Stores seach pattern */
-  orxS32 s32LastSeparator, i;
+  const orxSTRING zFileName;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFileInfo != orxNULL);
 
-  /* Gets last directory separator */
-  for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, 0);
-      i >= 0;
-      s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_LINUX, i + 1));
-
-  /* Not found? */
-  if(s32LastSeparator < 0)
-  {
-    /* Gets last directory separator */
-    for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, 0);
-        i >= 0;
-        s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, i + 1));
-  }
+  /* Gets base file name */
+  zFileName = orxString_SkipPath(_zSearchPattern);
 
   /* Has directory? */
-  if(s32LastSeparator >= 0)
+  if(zFileName != _zSearchPattern)
   {
-    orxU32 u32Index;
+    orxU32 u32Length;
 
     /* Updates path & full name base */
-    u32Index = orxMIN((orxU32)(s32LastSeparator + 1), sizeof(_pstFileInfo->zPath) - 1);
-    orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Index);
-    _pstFileInfo->zPath[u32Index] = orxCHAR_NULL;
+    u32Length = orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
+    orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
+    _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
     orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
     /* Stores pattern */
-    u32Index = orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator - 1, sizeof(_pstFileInfo->zPattern) - 1);
-    orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator] + 1, u32Index);
-    _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+    u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
+    orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
+    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
   }
   else
   {
-    orxU32 u32Index;
+    orxU32 u32Length;
 
     /* Stores pattern */
-    u32Index = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
-    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Index);
-    _pstFileInfo->zPattern[u32Index] = orxCHAR_NULL;
+    u32Length = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
+    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
+    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
 
     /* Clears vars */
     orxString_Print(_pstFileInfo->zPath, "./");
