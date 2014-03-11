@@ -284,22 +284,24 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
 
 #if defined(__orxWINDOWS__)
 
-  char acPath[MAX_PATH];
-
-  /* Gets application folder */
-  if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, acPath)))
   {
-    /* For all characters */
-    for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
-    {
-      /* Copies it + replace windows separators by linux ones */
-      sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+    char acPath[MAX_PATH];
 
-      /* End of string? */
-      if(acPath[s32Index] == orxCHAR_NULL)
+    /* Gets application folder */
+    if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, acPath)))
+    {
+      /* For all characters */
+      for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
-        /* Stops */
-        break;
+        /* Copies it + replace windows separators by linux ones */
+        sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+
+        /* End of string? */
+        if(acPath[s32Index] == orxCHAR_NULL)
+        {
+          /* Stops */
+          break;
+        }
       }
     }
   }
@@ -368,22 +370,24 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
 
 #if defined(__orxWINDOWS__)
 
-  char acPath[MAX_PATH];
-
-  /* Gets application folder */
-  if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, acPath)))
   {
-    /* For all characters */
-    for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
-    {
-      /* Copies it + replace windows separators by linux ones */
-      sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+    char acPath[MAX_PATH];
 
-      /* End of string? */
-      if(acPath[s32Index] == orxCHAR_NULL)
+    /* Gets application folder */
+    if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, acPath)))
+    {
+      /* For all characters */
+      for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
-        /* Stops */
-        break;
+        /* Copies it + replace windows separators by linux ones */
+        sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+
+        /* End of string? */
+        if(acPath[s32Index] == orxCHAR_NULL)
+        {
+          /* Stops */
+          break;
+        }
       }
     }
   }

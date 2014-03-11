@@ -616,39 +616,43 @@ orxU32 orxFASTCALL orxThread_GetCurrent()
 
 #ifdef __orxWINDOWS__
 
-  orxU32 u32ThreadID;
-
-  /* Gets current thread ID */
-  u32ThreadID = GetCurrentThreadId();
-
-  /* For all threads */
-  for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
   {
-    /* Matches? */
-    if(sstThread.astThreadInfoList[i].u32ThreadID == u32ThreadID)
+    orxU32 u32ThreadID;
+
+    /* Gets current thread ID */
+    u32ThreadID = GetCurrentThreadId();
+
+    /* For all threads */
+    for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
     {
-      /* Updates result */
-      u32Result = i;
-      break;
+      /* Matches? */
+      if(sstThread.astThreadInfoList[i].u32ThreadID == u32ThreadID)
+      {
+        /* Updates result */
+        u32Result = i;
+        break;
+      }
     }
   }
 
 #else /* __orxWINDOWS__ */
 
-  pthread_t hThread;
-
-  /* Gets current thread */
-  hThread = pthread_self();
-
-  /* For all threads */
-  for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
   {
-    /* Matches? */
-    if(sstThread.astThreadInfoList[i].hThread == hThread)
+    pthread_t hThread;
+
+    /* Gets current thread */
+    hThread = pthread_self();
+
+    /* For all threads */
+    for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
     {
-      /* Updates result */
-      u32Result = i;
-      break;
+      /* Matches? */
+      if(sstThread.astThreadInfoList[i].hThread == hThread)
+      {
+        /* Updates result */
+        u32Result = i;
+        break;
+      }
     }
   }
 
