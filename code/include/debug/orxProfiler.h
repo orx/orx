@@ -57,24 +57,24 @@
  */
 #ifdef __orxPROFILER__
 
-  #define orxPROFILER_PUSH_MARKER(NAME)                                       \
-  do                                                                          \
-  {                                                                           \
-    static orxTHREAD orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
-                                                                              \
-    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)                \
-    {                                                                         \
-      s32ProfilerID = orxProfiler_GetIDFromName(NAME);                        \
-    }                                                                         \
-                                                                              \
-    orxProfiler_PushMarker(s32ProfilerID);                                    \
+  #define orxPROFILER_PUSH_MARKER(NAME)                             \
+  do                                                                \
+  {                                                                 \
+    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
+                                                                    \
+    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)      \
+    {                                                               \
+      s32ProfilerID = orxProfiler_GetIDFromName(NAME);              \
+    }                                                               \
+                                                                    \
+    orxProfiler_PushMarker(s32ProfilerID);                          \
   } while(orxFALSE)
 
 
-  #define orxPROFILER_POP_MARKER()                                            \
-  do                                                                          \
-  {                                                                           \
-    orxProfiler_PopMarker();                                                  \
+  #define orxPROFILER_POP_MARKER()                                  \
+  do                                                                \
+  {                                                                 \
+    orxProfiler_PopMarker();                                        \
   } while(orxFALSE)
 
   #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)
@@ -169,7 +169,7 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetResetTime();
 extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMaxResetTime();
 
 
-/** Gets the number of registered markers
+/** Gets the number of registered markers used on the queried thread
  * @return Number of registered markers
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCounter();

@@ -260,24 +260,15 @@
     /** The function intend to be inlined. */
     #define orxINLINE         inline
 
-    /** Thread Local Storage */
-    #define orxTHREAD         __thread
-
   #elif defined(__orxLLVM__)
 
     /** The function intend to be inlined. */
     #define orxINLINE         inline
 
-    /** Thread Local Storage */
-    #define orxTHREAD         __thread
-
   #elif defined(__orxMSVC__)
 
     /** The function intend to be inlined. */
     #define orxINLINE         __inline
-
-    /** Thread Local Storage */
-    #define orxTHREAD         __declspec(thread)
 
   #endif
 
@@ -329,9 +320,6 @@
       #define orxINLINE         inline
 
     #endif /* __orxFREEBASIC__ */
-
-    /** Thread Local Storage */
-    #define orxTHREAD         __thread
 
     /** The null address */
     #define orxNULL             (0)

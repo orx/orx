@@ -148,6 +148,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
                                 | ((_pstData->attrib & _A_HIDDEN) ? orxFILE_KU32_FLAG_INFO_HIDDEN : 0)
                                 | ((_pstData->attrib & _A_SUBDIR) ? orxFILE_KU32_FLAG_INFO_DIR : 0);
 
+  /* Done! */
   return;
 }
 
