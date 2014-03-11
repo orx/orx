@@ -142,11 +142,11 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
-  _pstFileInfo->u32Flags      = (_pstData->attrib == 0)
+  _pstFileInfo->u32Flags      = ((_pstData->attrib & (_A_RDONLY|_A_HIDDEN|_A_SUBDIR)) == 0)
                                 ? orxFILE_KU32_FLAG_INFO_NORMAL
-                                : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_RDONLY : 0)
+                                : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_READONLY : 0)
                                 | ((_pstData->attrib & _A_HIDDEN) ? orxFILE_KU32_FLAG_INFO_HIDDEN : 0)
-                                | ((_pstData->attrib & _A_SUBDIR) ? orxFILE_KU32_FLAG_INFO_DIR : 0);
+                                | ((_pstData->attrib & _A_SUBDIR) ? orxFILE_KU32_FLAG_INFO_DIRECTORY : 0);
 
   /* Done! */
   return;
@@ -183,7 +183,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   }
   else if(access(_pstFileInfo->zFullName, R_OK) == 0)
   {
-    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_RDONLY;
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_READONLY;
   }
 
   /* Hidden ? */
@@ -195,7 +195,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   /* Dir ? */
   if(stStat.st_mode & S_IFDIR)
   {
-    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_DIR;
+    _pstFileInfo->u32Flags |= orxFILE_KU32_FLAG_INFO_DIRECTORY;
   }
 
   /* Normal file ? */
@@ -530,6 +530,7 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
 #else /* __orxWINDOWS__ */
 
   const orxSTRING zFileName;
+  DIR            *pDir;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -569,7 +570,7 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
   }
 
   /* Open directory */
-  DIR *pDir = opendir(_pstFileInfo->zPath);
+  pDir = opendir(_pstFileInfo->zPath);
 
   /* Valid ? */
   if(pDir != orxNULL)
@@ -630,15 +631,15 @@ orxBOOL orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
 
   /* Reads directory */
 
-  /* loop on entries until the pattern match */
-  while((!bResult)
+  /* Loops over entries until the pattern matches */
+  while((bResult == orxFALSE)
      && (pstDirEnt = readdir((DIR*)_pstFileInfo->hInternal)))
   {
     /* Gets file info */
     orxFile_GetInfoFromData(pstDirEnt, _pstFileInfo);
 
     /* Match ? */
-    bResult = (fnmatch(_pstFileInfo->zPattern, _pstFileInfo->zName, 0) == 0);
+    bResult = (fnmatch(_pstFileInfo->zPattern, _pstFileInfo->zName, 0) == 0) ? orxTRUE : orxFALSE;
   }
 
 #endif /* __orxWINDOWS__ */

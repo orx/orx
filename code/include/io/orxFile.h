@@ -47,22 +47,22 @@
 
 
 #define orxFILE_KU32_FLAG_INFO_NORMAL       0x00000001  /**< normal file */
-#define orxFILE_KU32_FLAG_INFO_RDONLY       0x00000002  /**< read-only file */
+#define orxFILE_KU32_FLAG_INFO_READONLY     0x00000002  /**< read-only file */
 #define orxFILE_KU32_FLAG_INFO_HIDDEN       0x00000004  /**< hidden file */
-#define orxFILE_KU32_FLAG_INFO_DIR          0x00000008  /**< directory */
+#define orxFILE_KU32_FLAG_INFO_DIRECTORY    0x00000008  /**< directory */
 
-#define orxFILE_KU32_FLAG_OPEN_READ         0x00000001  /**< opened for read */
-#define orxFILE_KU32_FLAG_OPEN_WRITE        0x00000002  /**< opened for write */
-#define orxFILE_KU32_FLAG_OPEN_APPEND       0x00000004  /**< descriptor positioned at the end of file */
-#define orxFILE_KU32_FLAG_OPEN_BINARY       0x00000008  /**< binary file accessing */
+#define orxFILE_KU32_FLAG_OPEN_READ         0x10000000  /**< opened for read */
+#define orxFILE_KU32_FLAG_OPEN_WRITE        0x20000000  /**< opened for write */
+#define orxFILE_KU32_FLAG_OPEN_APPEND       0x40000000  /**< descriptor positioned at the end of file */
+#define orxFILE_KU32_FLAG_OPEN_BINARY       0x80000000  /**< binary file accessing */
 
 
-/** Store datas about the current file. */
+/** File info structure */
 typedef struct __orxFILE_INFO_t
 {
   orxS64    s64Size;                                    /**< File's size (in bytes) */
   orxS64    s64TimeStamp;                               /**< Timestamp of the last modification */
-  orxU32    u32Flags;                                   /**< File attributes (see list of availables flags) */
+  orxU32    u32Flags;                                   /**< File attributes (cf. list of available flags) */
   orxHANDLE hInternal;                                  /**< Internal use handle */
   orxCHAR   zName[256];                                 /**< File's name */
   orxCHAR   zPattern[256];                              /**< Search pattern */
