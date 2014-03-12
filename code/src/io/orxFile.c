@@ -46,6 +46,8 @@
 
   #ifdef __orxMSVC__
 
+    #include <direct.h>
+
     #pragma warning(disable : 4311 4312 4996)
 
   #endif /* __orxMSVC__ */
@@ -77,7 +79,7 @@
 
 /** Misc
  */
-#define orxFILE_KU32_HOME_DIRECTORY_MAX_LENGTH  512         /**< Max home directory length */
+#define orxFILE_KU32_BUFFER_SIZE                512         /**< Buffer size */
 
 #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
 
@@ -109,7 +111,7 @@ struct __orxFILE_t
  */
 typedef struct __orxFILE_STATIC_t
 {
-  orxCHAR acHomeDirectory[orxFILE_KU32_HOME_DIRECTORY_MAX_LENGTH];
+  orxCHAR acWorkeDirectory[orxFILE_KU32_BUFFER_SIZE];
   orxU32  u32Flags;
 
 } orxFILE_STATIC;
@@ -271,8 +273,8 @@ void orxFASTCALL orxFile_Exit()
 }
 
 /** Gets current user's home directory (without trailing separator)
- * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's home directory
+ * @param[in] _zFolderName                  Folder name to append to the home directory, orxNULL for none
+ * @return Current user's home directory, use it immediately or copy it as will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
 const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderName)
 {
@@ -294,7 +296,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
       for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
         /* Copies it + replace windows separators by linux ones */
-        sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+        sstFile.acWorkeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
 
         /* End of string? */
         if(acPath[s32Index] == orxCHAR_NULL)
@@ -318,7 +320,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", zHome);
+      s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", zHome);
     }
     else
     {
@@ -331,7 +333,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", pstPasswd->pw_dir);
+        s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", pstPasswd->pw_dir);
       }
     }
   }
@@ -345,22 +347,22 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderNam
     if((_zFolderName != orxNULL) && (*_zFolderName != orxCHAR_NULL))
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acHomeDirectory + s32Index, sizeof(sstFile.acHomeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
+      s32Index += orxString_NPrint(sstFile.acWorkeDirectory + s32Index, sizeof(sstFile.acWorkeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
     }
 
     /* Updates result */
-    zResult = sstFile.acHomeDirectory;
+    zResult = sstFile.acWorkeDirectory;
   }
 
   /* Done! */
   return zResult;
 }
 
-/** Gets current user's application directory, for saving purposes (without trailing separator)
- * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's application directory
+/** Gets current user's application save directory (without trailing separator)
+ * @param[in] _zFolderName                  Folder name to append to the application save directory, orxNULL for none
+ * @return Current user's application save directory, use it immediately or copy it as it will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
-const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFolderName)
+const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING _zFolderName)
 {
   orxS32 s32Index = -1;
   const orxSTRING zResult = orxSTRING_EMPTY;
@@ -380,7 +382,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
       for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
         /* Copies it + replace windows separators by linux ones */
-        sstFile.acHomeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+        sstFile.acWorkeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
 
         /* End of string? */
         if(acPath[s32Index] == orxCHAR_NULL)
@@ -404,7 +406,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+      s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
     }
     else
     {
@@ -417,7 +419,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+        s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
       }
     }
   }
@@ -425,7 +427,12 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acHomeDirectory, sizeof(sstFile.acHomeDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
+  s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
+
+#elif defined(__orxANDROID__)
+
+  /* Prints internal storage directory */
+  s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", orxAndroid_GetInternalStoragePath());
 
 #endif
 
@@ -436,11 +443,11 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFo
     if((_zFolderName != orxNULL) && (*_zFolderName != orxCHAR_NULL))
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acHomeDirectory + s32Index, sizeof(sstFile.acHomeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
+      s32Index += orxString_NPrint(sstFile.acWorkeDirectory + s32Index, sizeof(sstFile.acWorkeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zFolderName);
     }
 
     /* Updates result */
-    zResult = sstFile.acHomeDirectory;
+    zResult = sstFile.acWorkeDirectory;
   }
 
   /* Done! */
@@ -478,6 +485,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zSearchPattern != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Opens the search */
@@ -698,6 +706,7 @@ orxSTATUS orxFASTCALL orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFileName != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Looks for the first file */
@@ -708,6 +717,93 @@ orxSTATUS orxFASTCALL orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *
 
     /* Closes the find request */
     orxFile_FindClose(_pstFileInfo);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a file or an empty directory
+ * @param[in] _zFileName            Concerned file / directory
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFile_Remove(const orxSTRING _zFileName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFileName != orxNULL);
+
+  /* Tries to remove it as a file */
+  if(remove(_zFileName) == 0)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Tries to remove it as a directory */
+#ifdef __orxWINDOWS__
+    if(_rmdir(_zFileName) == 0)
+#else /* __orxWINDOWS__ */
+    if(rmdir(_zFileName) == 0)
+#endif /* __orxWINDOWS__ */
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Makes a directory, works recursively if needed
+ * @param[in] _zName                Name of the directory to make
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
+{
+  const orxCHAR  *pcSrc;
+  orxCHAR        *pcDst;
+  orxCHAR         acBuffer[orxFILE_KU32_BUFFER_SIZE];
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* For all characters */
+  for(pcSrc = _zName, pcDst = acBuffer; (*pcSrc != orxCHAR_NULL) && ((pcDst - acBuffer) < orxFILE_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++)
+  {
+    /* Is a directory separator? */
+    if((*pcSrc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pcSrc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS))
+    {
+      /* Ends buffer */
+      *pcDst = orxCHAR_NULL;
+
+      /* Makes intermediate directory */
+      mkdir(acBuffer);
+
+      /* Stores separator */
+      *pcDst = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+    }
+    else
+    {
+      /* Copies character */
+      *pcDst = *pcSrc;
+    }
+  }
+
+  /* Success? */
+  if(*pcSrc == orxCHAR_NULL)
+  {
+    /* Ends buffer */
+    *pcDst = orxCHAR_NULL;
+
+    /* Makes final directory */
+    eResult = (mkdir(acBuffer) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
 
   /* Done! */

@@ -89,16 +89,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Init();
 extern orxDLLAPI void orxFASTCALL           orxFile_Exit();
 
 /** Gets current user's home directory (without trailing separator)
- * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's home directory
+ * @param[in] _zFolderName                  Folder name to append to the home directory, orxNULL for none
+ * @return Current user's home directory, use it immediately or copy it as will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zFolderName);
 
-/** Gets current user's application directory, for saving purposes (without trailing separator)
- * @param[in] _zFolderName                  Folder name to append to the home/application directory, orxNULL for none
- * @return Current user's application directory
+/** Gets current user's application save directory (without trailing separator)
+ * @param[in] _zFolderName                  Folder name to append to the application save directory, orxNULL for none
+ * @return Current user's application save directory, use it immediately or copy it as it will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFolderName);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING _zFolderName);
 
 /** Checks if a file/directory exists
  * @param[in] _zFileName           Concerned file/directory
@@ -130,6 +130,18 @@ extern orxDLLAPI void orxFASTCALL           orxFile_FindClose(orxFILE_INFO *_pst
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo);
+
+/** Removes a file or an empty directory
+ * @param[in] _zFileName            Concerned file / directory
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Remove(const orxSTRING _zFileName);
+
+/** Makes a directory, works recursively if needed
+ * @param[in] _zName                Name of the directory to make
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_MakeDirectory(const orxSTRING _zName);
 
 /** Opens a file for later read or write operation
  * @param[in] _zFileName           Full file's path to open
