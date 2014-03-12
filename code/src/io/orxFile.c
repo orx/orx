@@ -784,7 +784,11 @@ orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
       *pcDst = orxCHAR_NULL;
 
       /* Makes intermediate directory */
+#ifdef __orxWINDOWS__
       mkdir(acBuffer);
+#else /* __orxWINDOWS__ */
+      mkdir(acBuffer, S_IRWXU | S_IRWXG | S_IRWXO);
+#endif /* __orxWINDOWS__ */
 
       /* Stores separator */
       *pcDst = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
@@ -803,7 +807,11 @@ orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
     *pcDst = orxCHAR_NULL;
 
     /* Makes final directory */
+#ifdef __orxWINDOWS__
     eResult = (mkdir(acBuffer) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+#else /* __orxWINDOWS__ */
+    eResult = (mkdir(acBuffer, S_IRWXU | S_IRWXG | S_IRWXO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+#endif /* __orxWINDOWS__ */
   }
 
   /* Done! */
