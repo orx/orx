@@ -1496,6 +1496,9 @@ static orxINLINE orxS32 orxCDECL                          orxString_Print(orxSTR
   s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
   va_end(stArgs);
 
+  /* Clamps result */
+  s32Result = orxMAX(s32Result, 0);
+
   /* Done! */
   return s32Result;
 }
@@ -1519,6 +1522,18 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   va_start(stArgs, _zSrcString);
   s32Result = vsnprintf(_zDstString, (size_t)_u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
+
+#ifdef __orxMSVC__
+  /* Overflow? */
+  if(s32Result <= 0)
+  {
+    /* Updates result */
+    s32Result = _u32CharNumber;
+  }
+#endif /* __orxWINDOWS__ */
+
+  /* Clamps result */
+  s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);
 
   /* Done! */
   return s32Result;

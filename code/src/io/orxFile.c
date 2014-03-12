@@ -946,7 +946,32 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     }
   }
 
-  /* Open the file */
+  /* Write mode? */
+  if(_u32OpenFlags & (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND))
+  {
+    const orxSTRING zBaseName;
+
+    /* Gets file base name */
+    zBaseName = orxString_SkipPath(_zFileName);
+
+    /* Has intermediate directories? */
+    if(zBaseName > _zFileName)
+    {
+      orxCHAR acBuffer[orxFILE_KU32_BUFFER_SIZE];
+
+      /* Is local buffer big enough? */
+      if(zBaseName - _zFileName - 1 < sizeof(acBuffer) - 1)
+      {
+        /* Copies path locally */
+        acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", zBaseName - _zFileName - 1, _zFileName)] = orxCHAR_NULL;
+
+        /* Makes sure path exists */
+        orxFile_MakeDirectory(acBuffer);
+      }
+    }
+  }
+
+  /* Opens the file */
   return(orxFILE *)fopen(_zFileName, acMode);
 }
 
