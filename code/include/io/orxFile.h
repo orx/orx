@@ -100,46 +100,46 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxS
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetApplicationDirectory(const orxSTRING _zFolderName);
 
-/** Returns orxTRUE if a file exists, else orxFALSE.
- * @param[in] _zFileName           Full File's name to test
- * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
+/** Checks if a file/directory exists
+ * @param[in] _zFileName           Concerned file/directory
+ * @return orxFALSE if _zFileName doesn't exist, orxTRUE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_Exists(const orxSTRING _zFileName);
 
-/** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
- * @param[in] _zSearchPattern      Pattern to find
- * @param[out] _pstFileInfo        Informations about the first file found
- * @return orxTRUE if a file has been found, else orxFALSE
+/** Starts a new file search: finds the first file/directory that will match to the given pattern (ex: /bin/foo*)
+ * @param[in] _zSearchPattern      Pattern used for file/directory search
+ * @param[out] _pstFileInfo        Information about the first file found
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo);
 
-/** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
- * @param[in,out] _pstFileInfo    (IN/OUT) Informations about the found file
- * @return orxTRUE, if the next file has been found, else returns orxFALSE
+/** Continues a file search: finds the next occurrence of a pattern, the search has to be started with orxFile_FindFirst
+ * @param[in,out] _pstFileInfo      Information about the last found file/directory
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxFile_FindNext(orxFILE_INFO *_pstFileInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_FindNext(orxFILE_INFO *_pstFileInfo);
 
-/** Closes a search (free the memory allocated for this search).
- * @param[in] _pstFileInfo         Informations returned during search
+/** Closes a search (frees the memory allocated for this search)
+ * @param[in] _pstFileInfo         Information returned during search
  */
 extern orxDLLAPI void orxFASTCALL           orxFile_FindClose(orxFILE_INFO *_pstFileInfo);
 
-/** Retrieves information about a file
- * @param[in] _zFileName            Files used to get information
- * @param[out] _pstFileInfo         Returned file's information
- * @return Returns the status of the operation
+/** Retrieves a file/directory information
+ * @param[in] _zFileName            Concerned file/directory name
+ * @param[out] _pstFileInfo         Information of the file/directory
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo);
 
 /** Opens a file for later read or write operation
  * @param[in] _zFileName           Full file's path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
- * @return a File pointer (or orxNULL if an error has occured)
+ * @return a File pointer (or orxNULL if an error has occurred)
  */
 extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFlags);
 
 /** Reads data from a file
- * @param[out] _pReadData          Pointer where will be stored datas
+ * @param[out] _pReadData          Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
@@ -147,8 +147,8 @@ extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileN
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
-/** writes data to a file
- * @param[in] _pDataToWrite        Pointer where will be stored datas
+/** Writes data to a file
+ * @param[in] _pDataToWrite        Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer on the file descriptor
@@ -160,7 +160,7 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWr
  * @param[in] _pstFile              Concerned file
  * @param[in] _s64Position          Position (from start) where to set the indicator
  * @param[in] _eWhence              Starting point for the offset computation (start, current position or end)
- * @return Absolute cursor positionif succesful, -1 otherwise
+ * @return Absolute cursor position if successful, -1 otherwise
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_OFFSET_WHENCE _eWhence);
 

@@ -125,8 +125,8 @@ extern orxDLLAPI void orxFASTCALL                         orxMemory_Exit();
 
 /** Allocates a portion of memory in the system and returns a pointer on it
  * @param[in]  _u32Size  Size of the memory to allocate
- * @param[in]  _eMemType Memory zone where datas will be allocated
- * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
+ * @param[in]  _eMemType Memory zone where data will be allocated
+ * @return  returns a pointer on the memory allocated, or orxNULL if an error has occurred
  */
 extern orxDLLAPI void *orxFASTCALL                        orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 

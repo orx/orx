@@ -3729,7 +3729,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     }
   }
 
-  /* Succesful? */
+  /* Successful? */
   if(eResult != orxSTATUS_FAILURE)
   {
     /* Pushes display section */

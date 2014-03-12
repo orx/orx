@@ -157,7 +157,7 @@ static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
 /** Help callback (for -h or --help)
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
  */
 static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
@@ -531,7 +531,7 @@ void orxFASTCALL orxParam_Exit()
 }
 
 /** Register a new parameter
- * @param[in] _pstParam Informations about the option to register
+ * @param[in] _pstParam Information about the option to register
  * @return Returns the status of the registration
  */
 orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)

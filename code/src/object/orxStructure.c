@@ -435,7 +435,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           }
         }
 
-        /* Succesful? */
+        /* Successful? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Cleans whole structure */

@@ -61,7 +61,7 @@ Demo's code is found in /dev-ios/demo/iOS/orxTest.mm and is very short.
 Demo's config files can be found in `/dev-ios/demo/iOS/config`.
 
 Fiddling with both demo's code and config is probably a good place to start understanding how orx works.  
-[The wiki](http://wiki.orx-project.org) also contains useful informations as well as some more generic tutorials.
+[The wiki](http://wiki.orx-project.org) also contains useful information as well as some more generic tutorials.
 
 When starting your own new project, you can either modify the demo project file (that also compiles orx) or use
 the precompiled libraries found in `liborx-fat-sdk4.2.zip` along with the include files found in `/dev-ios/include`.

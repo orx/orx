@@ -755,7 +755,7 @@ static orxINLINE void orxPlugin_DeleteAll()
 /** Processes command line parameters
  * @param[in] _u32ParamCount  Number of extra parameters read for this option
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
  */
 static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
