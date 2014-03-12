@@ -58,6 +58,7 @@
 #define orxRESOURCE_KU32_STATIC_FLAG_READY            0x00000001                      /**< Ready flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED    0x00000002                      /**< Config loaded flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET        0x00000004                      /**< Watch set flag */
+#define orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET       0x00000008                      /**< Notify set flag */
 
 #define orxRESOURCE_KU32_STATIC_MASK_ALL              0xFFFFFFFF                      /**< All mask */
 
@@ -1391,6 +1392,25 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
 
+  /* Isn't request notification callback set? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET))
+  {
+    /* Is clock module initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+    {
+      orxSTATUS eResult;
+
+      /* Registers request notification callback */
+      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+      /* Checks */
+      orxASSERT(eResult != orxSTATUS_FAILURE);
+
+      /* Updates flags */
+      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+    }
+  }
+
   /* Isn't config already loaded? */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
   {
@@ -1405,8 +1425,6 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
       /* Is clock module initialized? */
       if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
       {
-        orxSTATUS eResult;
-
         /* Pushes resource config section */
         orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
@@ -1419,12 +1437,6 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
 
         /* Pops config section */
         orxConfig_PopSection();
-
-        /* Registers request notification callback */
-        eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
-
-        /* Checks */
-        orxASSERT(eResult != orxSTATUS_FAILURE);
 
         /* Updates flags */
         orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
@@ -1542,6 +1554,25 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
+
+  /* Isn't request notification callback set? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET))
+  {
+    /* Is clock module initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+    {
+      orxSTATUS eResult;
+
+      /* Registers request notification callback */
+      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+      /* Checks */
+      orxASSERT(eResult != orxSTATUS_FAILURE);
+
+      /* Updates flags */
+      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+    }
+  }
 
   /* Isn't config already loaded? */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
