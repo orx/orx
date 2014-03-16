@@ -557,7 +557,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     orxU32 u32Length;
 
     /* Updates path & full name base */
-    u32Length = orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
+    u32Length = orxMIN((orxU32)(zFileName - _zSearchPattern), sizeof(_pstFileInfo->zPath) - 1);
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
     _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
     orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
@@ -968,7 +968,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
       orxCHAR acBuffer[orxFILE_KU32_BUFFER_SIZE];
 
       /* Is local buffer big enough? */
-      if(zBaseName - _zFileName - 1 < sizeof(acBuffer) - 1)
+      if((orxU32)(zBaseName - _zFileName - 1) < sizeof(acBuffer) - 1)
       {
         /* Copies path locally */
         acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", zBaseName - _zFileName - 1, _zFileName)] = orxCHAR_NULL;
