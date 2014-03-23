@@ -720,8 +720,8 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   stParams.pfnParser  = orxParam_Help;
   stParams.zShortName = "h";
   stParams.zLongName  = "help";
-  stParams.zShortDesc = "Display this help. You can use extra parameter to display complete description (-h <param>).";
-  stParams.zLongDesc  = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed.";
+  stParams.zShortDesc = "Prints this help. A parameter can be specified to print its complete description (-h <param>).";
+  stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
   /* Register */
   eResult = orxParam_Register(&stParams);

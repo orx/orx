@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{067FC73C-A5BE-344C-B446-5A3F7BE2DDDA}</ProjectGuid>
+    <ProjectGuid>{DD96EE75-9EF2-5248-98B8-E18814C57546}</ProjectGuid>
     <RootNamespace>orxFontGen</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -48,28 +48,34 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj\Debug\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">orxfontgen</TargetName>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">..\..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">obj\Profile\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">orxfontgen</TargetName>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">false</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">false</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj\Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">orxfontgen</TargetName>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <IntDir>obj\Debug\</IntDir>
+    <TargetName>orxfontgen</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <IntDir>obj\Profile\</IntDir>
+    <TargetName>orxfontgen</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\bin\</OutDir>
+    <IntDir>obj\Release\</IntDir>
+    <TargetName>orxfontgen</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxDEBUG__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -86,21 +92,21 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxDEBUG__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>orxd.lib;SOIL.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>orxd.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\SOIL\lib\msvs2010;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxPROFILER__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
@@ -118,23 +124,23 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxPROFILER__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>orxp.lib;SOIL.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>orxp.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\SOIL\lib\msvs2010;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
@@ -152,16 +158,16 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\SOIL\include;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>orx.lib;SOIL.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>orx.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\SOIL\lib\msvs2010;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>

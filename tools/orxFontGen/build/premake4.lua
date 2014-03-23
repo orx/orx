@@ -120,7 +120,7 @@ solution "orxFontGen"
     {
         "../include",
         "../../../code/include",
-        "../../../extern/SOIL/include",
+        "../../../extern/stb_image",
         "../../../extern/freetype-2.4.1/include"
     }
 
@@ -176,14 +176,12 @@ solution "orxFontGen"
     configuration {"linux", "x32"}
         libdirs
         {
-            "../../../extern/SOIL/lib/linux",
             "../../../extern/freetype-2.4.1/lib/linux",
         }
 
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../../extern/SOIL/lib/linux64",
             "../../../extern/freetype-2.4.1/lib/linux64"
         }
 
@@ -197,7 +195,6 @@ solution "orxFontGen"
     configuration {"macosx"}
         libdirs
         {
-            "../../../extern/SOIL/lib/mac",
             "../../../extern/freetype-2.4.1/lib/mac"
         }
         buildoptions
@@ -227,21 +224,18 @@ solution "orxFontGen"
     configuration {"vs2008"}
         libdirs
         {
-            "../../../extern/SOIL/lib/msvs2008",
             "../../../extern/freetype-2.4.1/lib/vc2008"
         }
 
     configuration {"vs2010"}
         libdirs
         {
-            "../../../extern/SOIL/lib/msvs2010",
             "../../../extern/freetype-2.4.1/lib/vc2010"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
         libdirs
         {
-            "../../../extern/SOIL/lib/mingw",
             "../../../extern/freetype-2.4.1/lib/mingw"
         }
 
@@ -256,7 +250,6 @@ project "orxFontGen"
     targetname ("orxfontgen")
     links
     {
-        "SOIL",
         "freetype"
     }
 

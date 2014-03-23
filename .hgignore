@@ -42,3 +42,6 @@ tutorial/bin/**.so
 tutorial/bin/**.lib
 tutorial/build/**.htm
 *.sublime-workspace
+extern/openal-soft/build
+code/bin
+BuildLog.htm

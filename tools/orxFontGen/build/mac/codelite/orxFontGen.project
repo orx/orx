@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="orxFontGen">
-  <VirtualDirectory Name="src">
-    <File Name="../../../src/orxFontGen.c"/>
+  <VirtualDirectory Name="orxFontGen">
+    <VirtualDirectory Name="src">
+      <File Name="../../../src/orxFontGen.c"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
-    <Configuration Name="Debug|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Debug_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxSTATIC__"/>
@@ -17,14 +19,13 @@
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orxd" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -44,12 +45,12 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Profile|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Profile_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxPROFILER__"/>
         <Preprocessor Value="__orxSTATIC__"/>
@@ -57,14 +58,13 @@
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orxp" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -84,26 +84,25 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Release|x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Release_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orx" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -123,12 +122,12 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Debug|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Debug_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxSTATIC__"/>
@@ -136,14 +135,13 @@
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orxd" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -163,12 +161,12 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Profile|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Profile_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxPROFILER__"/>
         <Preprocessor Value="__orxSTATIC__"/>
@@ -176,14 +174,13 @@
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orxp" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -203,26 +200,25 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Release|x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Release_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
-        <IncludePath Value="../../../../../extern/SOIL/include"/>
+        <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
       <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/dynamic" />
-        <LibraryPath Value="../../../../../extern/SOIL/lib/mac" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
+        <LibraryPath Value="." />
         <Library Value="orx" />
-        <Library Value="SOIL" />
         <Library Value="freetype" />
-        <Library Value="Foundation.framework" />
-        <Library Value="AppKit.framework" />
-        <Library Value="OpenGL.framework" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="OpenGL" />
         <Library Value="z" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -243,16 +239,16 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies name="Debug|x64">
+  <Dependencies name="Debug_x64">
   </Dependencies>
-  <Dependencies name="Profile|x64">
+  <Dependencies name="Profile_x64">
   </Dependencies>
-  <Dependencies name="Release|x64">
+  <Dependencies name="Release_x64">
   </Dependencies>
-  <Dependencies name="Debug|x32">
+  <Dependencies name="Debug_x32">
   </Dependencies>
-  <Dependencies name="Profile|x32">
+  <Dependencies name="Profile_x32">
   </Dependencies>
-  <Dependencies name="Release|x32">
+  <Dependencies name="Release_x32">
   </Dependencies>
 </CodeLite_Project>

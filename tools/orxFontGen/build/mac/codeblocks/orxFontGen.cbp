@@ -25,7 +25,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -36,14 +36,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
@@ -71,7 +70,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -82,14 +81,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
@@ -116,7 +114,7 @@
 					<Add option="-Wno-write-strings" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -127,14 +125,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
@@ -161,7 +158,7 @@
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -172,14 +169,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
@@ -208,7 +204,7 @@
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -219,14 +215,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>
@@ -254,7 +249,7 @@
 					<Add option="-mfix-and-continue" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -265,14 +260,13 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
-					<Add directory="../../../../../extern/SOIL/lib/mac" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
-					<Add library="OpenGL.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
 					<Add library="z" />
 				</Linker>
 				<ExtraCommands>

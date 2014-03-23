@@ -32,7 +32,9 @@
 
 #include "orx.h"
 
-#include "SOIL.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -101,7 +103,7 @@ typedef struct __orxFONTGEN_STATIC_t
  * Static variables                                                        *
  ***************************************************************************/
 
-/** static data
+/** Static data
  */
 static orxFONTGEN_STATIC sstFontGen;
 
@@ -522,8 +524,20 @@ static void orxFASTCALL Setup()
 
 static orxSTATUS orxFASTCALL Init()
 {
-  orxPARAM  stParams;
-  orxSTATUS eResult;
+#define orxFONTGEN_DECLARE_PARAM(SN, LN, SD, LD, FN) {orxPARAM_KU32_FLAG_STOP_ON_ERROR, SN, LN, SD, LD, &FN},
+
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxPARAM  astParamList[] =
+  {
+    orxFONTGEN_DECLARE_PARAM("o", "output", "Font output name", "Font base output name: .png will be added to the image and .ini will be added to the config file", ProcessOutputParams)
+    orxFONTGEN_DECLARE_PARAM("s", "size", "Size (height) of characters", "Height to use for characters defined with this font", ProcessSizeParams)
+    orxFONTGEN_DECLARE_PARAM("p", "padding", "Character padding", "Extra padding added to all characters on both dimensions (width and height)", ProcessPaddingParams)
+    orxFONTGEN_DECLARE_PARAM("f", "font", "Input font file", "TrueType font (usually .ttf) used to generate all the required glyphs", ProcessFontParams)
+    orxFONTGEN_DECLARE_PARAM("t", "textlist", "List of input text files", "List of text files containing all the characters that will be displayed using this font", ProcessInputParams)
+    orxFONTGEN_DECLARE_PARAM("m", "monospace", "Monospaced font", "Will output a monospace (ie. fixed-width) font", ProcessMonospaceParams)
+    orxFONTGEN_DECLARE_PARAM("a", "advance", "Use glyph advance values for non-monospace fonts", "In non-monospace mode only: the font's original glyph advance values will be used instead of packing glyphs as efficiently as possible", ProcessAdvanceParams)
+  };
 
   // Clears static controller
   orxMemory_Zero(&sstFontGen, sizeof(orxFONTGEN_STATIC));
@@ -534,114 +548,27 @@ static orxSTATUS orxFASTCALL Init()
   // Creates glyph bank
   sstFontGen.pstGlyphBank = orxBank_Create(orxFONTGEN_KU32_CHARACTER_TABLE_SIZE, sizeof(orxFONTGEN_GLYPH), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-  // Asks for command line output file parameter
-  stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-  stParams.zShortName = "o";
-  stParams.zLongName  = "output";
-  stParams.zShortDesc = "Output name";
-  stParams.zLongDesc  = "Name to use for output font: .png will be added for the texture and .ini will be added to the config file";
-  stParams.pfnParser  = ProcessOutputParams;
-
-  // Registers params
-  eResult = orxParam_Register(&stParams);
-
-  // Success?
-  if(eResult != orxSTATUS_FAILURE)
+  // For all params but last
+  for(i = 0; (i < (sizeof(astParamList) / sizeof(astParamList[0])) - 1) && (eResult != orxSTATUS_FAILURE); i++)
   {
-    // Asks for command line size parameter
-    stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-    stParams.zShortName = "s";
-    stParams.zLongName  = "size";
-    stParams.zShortDesc = "Size (height) of characters";
-    stParams.zLongDesc  = "Height to use for characters defined with this font, as only monospaced font are supported the width will depend directly on it";
-    stParams.pfnParser  = ProcessSizeParams;
+    // Registers param
+    eResult = orxParam_Register(&astParamList[i]);
+  }
 
-    // Registers params
-    eResult = orxParam_Register(&stParams);
+  // Not in monospace mode?
+  if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+  {
+    // Logs message
+    orxLOG("[MODE]    Output mode set to non-monospace.");
 
-    // Valid?
-    if(eResult != orxSTATUS_FAILURE)
+    // Registers last param
+    eResult = orxParam_Register(&astParamList[(sizeof(astParamList) / sizeof(astParamList[0])) - 1]);
+
+    // Not using original advance values?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
     {
-      // Asks for command line padding parameter
-      stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-      stParams.zShortName = "p";
-      stParams.zLongName  = "padding";
-      stParams.zShortDesc = "Character padding";
-      stParams.zLongDesc  = "Extra padding added to all characters on both dimensions (width and height)";
-      stParams.pfnParser  = ProcessPaddingParams;
-
-      // Registers params
-      eResult = orxParam_Register(&stParams);
-
-      // Success?
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        // Asks for command line decrypt parameter
-        stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParams.zShortName = "f";
-        stParams.zLongName  = "font";
-        stParams.zShortDesc = "Input font file";
-        stParams.zLongDesc  = "Truetype font (usually .ttf) used to generate all the required glyphs. Only monospaced fonts are truely supported. Other fonts should produce visually correct glyphs but the end result text will differ in spacing.";
-        stParams.pfnParser  = ProcessFontParams;
-
-        // Registers params
-        eResult = orxParam_Register(&stParams);
-
-        // Success?
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          // Asks for command line input file parameter
-          stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-          stParams.zShortName = "t";
-          stParams.zLongName  = "textlist";
-          stParams.zShortDesc = "List of input text files";
-          stParams.zLongDesc  = "List of text files containing all the texts that will be displayed using this font";
-          stParams.pfnParser  = ProcessInputParams;
-
-          // Registers params
-          eResult = orxParam_Register(&stParams);
-
-          // Success?
-          if(eResult != orxSTATUS_FAILURE)
-          {
-            // Asks for command line monospaced parameter
-            stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-            stParams.zShortName = "m";
-            stParams.zLongName  = "monospace";
-            stParams.zShortDesc = "Monospaced font";
-            stParams.zLongDesc  = "Should output a monospaced (ie. fixed-width) font";
-            stParams.pfnParser  = ProcessMonospaceParams;
-
-            // Registers params
-            eResult = orxParam_Register(&stParams);
-
-            // Not monospaced?
-            if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
-            {
-              // Logs message
-              orxLOG("[MODE]    Output mode set to non-monospace.");
-
-              // Asks for command line advance parameter
-              stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-              stParams.zShortName = "a";
-              stParams.zLongName  = "advance";
-              stParams.zShortDesc = "Use glyph advance values for non-monospace fonts";
-              stParams.zLongDesc  = "In non-monospace mode only: the font's original glyph advance values will be used instead of packing glyphs as much as possible";
-              stParams.pfnParser  = ProcessAdvanceParams;
-
-              // Registers params
-              eResult = orxParam_Register(&stParams);
-
-              // Not using original advance values?
-              if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
-              {
-                // Logs message
-                orxLOG("[PACKING] Characters will be packed.");
-              }
-            }
-          }
-        }
-      }
+      // Logs message
+      orxLOG("[PACKING] Characters will be packed.");
     }
   }
 
@@ -1097,7 +1024,7 @@ static void Run()
         orxConfig_PopSection();
 
         // Saves texture
-        SOIL_save_image(acBuffer, SOIL_SAVE_TYPE_PNG, s32Width, s32Height, sizeof(orxRGBA), pu8ImageBuffer);
+        stbi_write_png(acBuffer, s32Width, s32Height, sizeof(orxRGBA), pu8ImageBuffer, 0);
 
         // Logs message
         orxLOG("[PROCESS] %d glyphs generated in '%s'.", u32Counter, acBuffer);
