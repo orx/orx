@@ -27,6 +27,7 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxd" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -57,6 +58,7 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxp" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -86,6 +88,7 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orx" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -113,6 +116,7 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxd" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -143,6 +147,7 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxp" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -172,6 +177,7 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orx" />
 					<Add library="dl" />
 					<Add library="m" />

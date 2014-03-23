@@ -65,6 +65,18 @@
 #define orxFONTGEN_KZ_UTF8_BOM                      "\xEF\xBB\xBF"
 #define orxFONTGEN_KU32_UTF8_BOM_LENGTH             3
 
+#define orxFONTGEN_KZ_LOG_TAG_LENGTH                "10"
+
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+
+  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG("%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", ##__VA_ARGS__)
+
+#else // __orxGCC__ || __orxLLVM__
+
+  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG("%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", __VA_ARGS__)
+
+#endif //__orxGCC__ || __orxLLVM__
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -223,7 +235,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 else
                 {
                   // Logs message
-                  orxLOG("[LOAD]    Character '0x%X': couldn't add to table, skipping.", u32CharacterCodePoint);
+                  orxFONTGEN_LOG(LOAD, "Character '0x%X': couldn't add to table, skipping.", u32CharacterCodePoint);
                 }
               }
               else
@@ -232,7 +244,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 orxHashTable_Add(sstFontGen.pstCharacterTable, u32CharacterCodePoint, (void *)sstFontGen.pstCharacterTable);
 
                 // Logs message
-                orxLOG("[LOAD]    Character '0x%X': glyph not found in font, skipping.", u32CharacterCodePoint);
+                orxFONTGEN_LOG(LOAD, "Character '0x%X': glyph not found in font, skipping.", u32CharacterCodePoint);
               }
             }
           }
@@ -247,7 +259,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
             else
             {
               // Logs message
-              orxLOG("[LOAD]    Invalid character code point '0x%X', skipping.", u32CharacterCodePoint);
+              orxFONTGEN_LOG(LOAD, "Invalid character code point '0x%X', skipping.", u32CharacterCodePoint);
             }
           }
         }
@@ -270,7 +282,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
     }
 
     // Logs message
-    orxLOG("[LOAD]    '%s': added %d characters.", _zFileName, u32Counter);
+    orxFONTGEN_LOG(LOAD, "'%s': added %d characters.", _zFileName, u32Counter);
 
     // Updates result
     eResult = orxSTATUS_SUCCESS;
@@ -300,7 +312,7 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
       if(ParseTextFile(_azParams[i]) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxLOG("[LOAD]    '%s': SUCCESS.", _azParams[i]);
+        orxFONTGEN_LOG(LOAD, "'%s': SUCCESS.", _azParams[i]);
 
         // Updates result
         eResult = orxSTATUS_SUCCESS;
@@ -308,14 +320,14 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
       else
       {
         // Logs message
-        orxLOG("[LOAD]    '%s': FAILURE, skipping.", _azParams[i]);
+        orxFONTGEN_LOG(LOAD, "'%s': FAILURE, skipping.", _azParams[i]);
       }
     }
   }
   else
   {
     // Logs message
-    orxLOG("[INPUT]   No valid file list found, aborting");
+    orxFONTGEN_LOG(INPUT, "No valid file list found, aborting");
   }
 
   // Done!
@@ -333,7 +345,7 @@ static orxSTATUS orxFASTCALL ProcessOutputParams(orxU32 _u32ParamCount, const or
     sstFontGen.zFontName = orxString_Duplicate(_azParams[1]);
 
     // Logs message
-    orxLOG("[OUTPUT]  Using output font name '%s'.", sstFontGen.zFontName);
+    orxFONTGEN_LOG(OUTPUT, "Using output font name '%s'.", sstFontGen.zFontName);
   }
   else
   {
@@ -341,7 +353,7 @@ static orxSTATUS orxFASTCALL ProcessOutputParams(orxU32 _u32ParamCount, const or
     sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
 
     // Logs message
-    orxLOG("[OUTPUT]  No valid output found, using default '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
+    orxFONTGEN_LOG(OUTPUT, "No valid output found, using default '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
   }
 
   // Done!
@@ -367,18 +379,18 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
       orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
       // Logs message
-      orxLOG("[SIZE]    Character size set to '%g'.", fSize);
+      orxFONTGEN_LOG(SIZE, "Character size set to '%g'.", fSize);
     }
     else
     {
       // Logs message
-      orxLOG("[SIZE]    Invalid character size found in '%s', aborting.", _azParams[1]);
+      orxFONTGEN_LOG(SIZE, "Invalid character size found in '%s', aborting.", _azParams[1]);
     }
   }
   else
   {
     // Logs message
-    orxLOG("[SIZE]    No character size found, aborting.");
+    orxFONTGEN_LOG(SIZE, "No character size found, aborting.");
 
     // Updates result
     eResult = orxSTATUS_FAILURE;
@@ -404,12 +416,12 @@ static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const o
       sstFontGen.fPadding = orx2F(2.0f) * fPadding;
 
       // Logs message
-      orxLOG("[PADDING] Character padding set to '%g'.", fPadding);
+      orxFONTGEN_LOG(PADDING, "Character padding set to '%g'.", fPadding);
     }
     else
     {
       // Logs message
-      orxLOG("[PADDING] Invalid character padding found in '%s', aborting.", _azParams[1]);
+      orxFONTGEN_LOG(PADDING, "Invalid character padding found in '%s', aborting.", _azParams[1]);
     }
   }
   else
@@ -461,18 +473,18 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
       orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_FONT, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
       // Logs message
-      orxLOG("[FONT]    Using font '%s'.", _azParams[1]);
+      orxFONTGEN_LOG(FONT, "Using font '%s'.", _azParams[1]);
     }
     else
     {
       // Logs message
-      orxLOG("[FONT]    Couldn't load font '%s'.", _azParams[1]);
+      orxFONTGEN_LOG(FONT, "Couldn't load font '%s'.", _azParams[1]);
     }
   }
   else
   {
     // Logs message
-    orxLOG("[FONT]    No font specified, aborting.");
+    orxFONTGEN_LOG(FONT, "No font specified, aborting.");
   }
 
   // Done!
@@ -490,7 +502,7 @@ static orxSTATUS orxFASTCALL ProcessMonospaceParams(orxU32 _u32ParamCount, const
     orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
     // Logs message
-    orxLOG("[MODE]    Output mode set to monospace.");
+    orxFONTGEN_LOG(MODE, "Output mode set to monospace.");
   }
 
   // Done!
@@ -508,7 +520,7 @@ static orxSTATUS orxFASTCALL ProcessAdvanceParams(orxU32 _u32ParamCount, const o
     orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
     // Logs message
-    orxLOG("[PACKING] Using original glyph advance values.");
+    orxFONTGEN_LOG(PACKING, "Using original glyph advance values.");
   }
 
   // Done!
@@ -559,7 +571,7 @@ static orxSTATUS orxFASTCALL Init()
   if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
   {
     // Logs message
-    orxLOG("[MODE]    Output mode set to non-monospace.");
+    orxFONTGEN_LOG(MODE, "Output mode set to non-monospace.");
 
     // Registers last param
     eResult = orxParam_Register(&astParamList[(sizeof(astParamList) / sizeof(astParamList[0])) - 1]);
@@ -568,7 +580,7 @@ static orxSTATUS orxFASTCALL Init()
     if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
     {
       // Logs message
-      orxLOG("[PACKING] Characters will be packed.");
+      orxFONTGEN_LOG(PACKING, "Characters will be packed.");
     }
   }
 
@@ -650,7 +662,7 @@ static void Run()
         sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
 
         // Logs message
-        orxLOG("[OUTPUT]  No output name specified, defaulting to '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
+        orxFONTGEN_LOG(OUTPUT, "No output name specified, defaulting to '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
       }
 
       // Is not monospaced?
@@ -800,7 +812,7 @@ static void Run()
       if(s32MaxAscend + s32MaxDescend + 1 > orxF2S(sstFontGen.vCharacterSize.fY))
       {
         // Logs message
-        orxLOG("[PROCESS] Some characters will be cropped (height=%d/%d).", s32MaxAscend + s32MaxDescend + 1, orxF2S(sstFontGen.vCharacterSize.fY));
+        orxFONTGEN_LOG(PROCESS, "Some characters will be cropped (height=%d/%d).", s32MaxAscend + s32MaxDescend + 1, orxF2S(sstFontGen.vCharacterSize.fY));
       }
 
       // Gets baseline (using scaled ascender)
@@ -811,16 +823,16 @@ static void Run()
       || (s32BaseLine + s32MaxDescend + 1) > orxF2S(sstFontGen.vCharacterSize.fY))
       {
         // Logs messages
-        orxLOG("[PROCESS] Adjusting baseline to %d (%+d).", s32MaxAscend, s32MaxAscend - s32BaseLine);
+        orxFONTGEN_LOG(PROCESS, "Adjusting baseline to %d (%+d).", s32MaxAscend, s32MaxAscend - s32BaseLine);
 
         // Adjusts value
         s32BaseLine = s32MaxAscend;
       }
 
       // Logs messages
-      orxLOG("[PROCESS] Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX + sstFontGen.fPadding, sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
-      orxLOG("[PROCESS] Calculated character spacing: %4g x %g.", sstFontGen.vCharacterSpacing.fX, sstFontGen.vCharacterSpacing.fY);
-      orxLOG("[PROCESS] Calculated texture size:      %4d x %d.", s32Width, s32Height);
+      orxFONTGEN_LOG(PROCESS, "Calculated character size:    %4g x %g.", sstFontGen.vCharacterSize.fX + sstFontGen.fPadding, sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
+      orxFONTGEN_LOG(PROCESS, "Calculated character spacing: %4g x %g.", sstFontGen.vCharacterSpacing.fX, sstFontGen.vCharacterSpacing.fY);
+      orxFONTGEN_LOG(PROCESS, "Calculated texture size:      %4d x %d.", s32Width, s32Height);
 
       // Allocates image buffer
       pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(s32Width * s32Height * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
@@ -940,7 +952,7 @@ static void Run()
                 *(pc + u32Offset) = orxCHAR_NULL;
 
                 // Logs message
-                orxLOG("[PROCESS] Cropping %d rows from character '%s'.", s32DeltaHeight, pc);
+                orxFONTGEN_LOG(PROCESS, "Cropping %d rows from character '%s'.", s32DeltaHeight, pc);
               }
 
               // For all rows
@@ -971,7 +983,7 @@ static void Run()
           else
           {
             // Logs message
-            orxLOG("[PROCESS] Too many characters defined for a single font, stopping.");
+            orxFONTGEN_LOG(PROCESS, "Too many characters defined for a single font, stopping.");
 
             break;
           }
@@ -1027,7 +1039,7 @@ static void Run()
         stbi_write_png(acBuffer, s32Width, s32Height, sizeof(orxRGBA), pu8ImageBuffer, 0);
 
         // Logs message
-        orxLOG("[PROCESS] %d glyphs generated in '%s'.", u32Counter, acBuffer);
+        orxFONTGEN_LOG(PROCESS, "%d glyphs generated in '%s'.", u32Counter, acBuffer);
 
         // Gets config file name
         orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.ini", sstFontGen.zFontName);
@@ -1036,12 +1048,12 @@ static void Run()
         if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)
         {
           // Logs message
-          orxLOG("[SAVE]    '%s': SUCCESS.", acBuffer);
+          orxFONTGEN_LOG(SAVE, "'%s': SUCCESS.", acBuffer);
         }
         else
         {
           // Logs message
-          orxLOG("[SAVE]    '%s': FAILURE.", acBuffer);
+          orxFONTGEN_LOG(SAVE, "'%s': FAILURE.", acBuffer);
         }
 
         // Frees image buffer
@@ -1050,13 +1062,13 @@ static void Run()
       else
       {
         // Logs message
-        orxLOG("[PROCESS] Couldn't allocate memory for bitmap (%d x %d), aborting.", s32Width, s32Height);
+        orxFONTGEN_LOG(PROCESS, "Couldn't allocate memory for bitmap (%d x %d), aborting.", s32Width, s32Height);
       }
     }
     else
     {
       // Logs message
-      orxLOG("[PROCESS] No characters to output, aborting.");
+      orxFONTGEN_LOG(PROCESS, "No characters to output, aborting.");
     }
   }
   else
@@ -1065,13 +1077,13 @@ static void Run()
     if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE))
     {
       // Logs message
-      orxLOG("[SIZE]    No character size found, aborting.");
+      orxFONTGEN_LOG(SIZE, "No character size found, aborting.");
     }
     // No font?
     else if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_FONT))
     {
       // Logs message
-      orxLOG("[FONT]    No font specified, aborting.");
+      orxFONTGEN_LOG(FONT, "No font specified, aborting.");
     }
   }
 }

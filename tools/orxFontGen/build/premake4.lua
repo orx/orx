@@ -221,6 +221,9 @@ solution "orxFontGen"
 
 -- Windows
 
+    configuration {"windows", "vs*", "*Debug*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
+
     configuration {"vs2008"}
         libdirs
         {

@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DD96EE75-9EF2-5248-98B8-E18814C57546}</ProjectGuid>
+    <ProjectGuid>{2290F7A8-BC09-2440-B8AF-611CBAE129F3}</ProjectGuid>
     <RootNamespace>orxFontGen</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -101,6 +101,7 @@
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">

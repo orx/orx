@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="orxFontGen"
-	ProjectGUID="{3FF8DB37-5BB8-F84A-A074-1C11089152DD}"
+	ProjectGUID="{07875861-51C2-4846-81BA-BB3242057FE8}"
 	RootNamespace="orxFontGen"
 	Keyword="Win32Proj"
 	>
@@ -69,6 +69,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:LIBCMT"
 				AdditionalDependencies="orxd.lib freetype.lib winmm.lib OpenGL32.lib"
 				OutputFile="$(OutDir)\orxfontgen.exe"
 				LinkIncremental="2"

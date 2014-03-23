@@ -237,6 +237,9 @@ project "orxCrypt"
 
 -- Windows
 
+    configuration {"windows", "vs*", "*Debug*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
+
     configuration {"windows"}
         links
         {

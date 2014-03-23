@@ -48,6 +48,18 @@
  */
 #define orxCRYPT_KZ_DEFAULT_OUTPUT                "orxcrypt.out"
 
+#define orxCRYPT_KZ_LOG_TAG_LENGTH                "10"
+
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+
+  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG("%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", ##__VA_ARGS__)
+
+#else // __orxGCC__ || __orxLLVM__
+
+  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG("%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", __VA_ARGS__)
+
+#endif //__orxGCC__ || __orxLLVM__
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -158,12 +170,12 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
         if(eResult != orxSTATUS_FAILURE)
         {
           // Logs message
-          orxLOG("[LOAD] %s: SUCCESS", _azParams[i]);
+          orxCRYPT_LOG(LOAD, "%s: SUCCESS", _azParams[i]);
         }
         else
         {
           // Logs message
-          orxLOG("[LOAD] %s: FAILURE, aborting.", _azParams[i]);
+          orxCRYPT_LOG(LOAD, "%s: FAILURE, aborting.", _azParams[i]);
 
           break;
         }
@@ -184,18 +196,18 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
           sstCrypt.zInputFile = orxString_Duplicate(_azParams[1]);
 
           // Logs message
-          orxLOG("[LOAD] %s: SUCCESS", _azParams[1]);
+          orxCRYPT_LOG(LOAD, "%s: SUCCESS", _azParams[1]);
         }
         else
         {
           // Logs message
-          orxLOG("[LOAD] %s: FAILURE, aborting.", _azParams[1]);
+          orxCRYPT_LOG(LOAD, "%s: FAILURE, aborting.", _azParams[1]);
         }
       }
       else
       {
         // Logs message
-        orxLOG("[LOAD] More than 1 input file provided in non-merge mode, aborting.");
+        orxCRYPT_LOG(LOAD, "More than 1 input file provided in non-merge mode, aborting.");
       }
     }
 
@@ -209,7 +221,7 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
   else
   {
     // Logs message
-    orxLOG("[INPUT] No valid file list found, aborting");
+    orxCRYPT_LOG(INPUT, "No valid file list found, aborting");
   }
 
   // Done!
@@ -229,7 +241,7 @@ static orxSTATUS orxFASTCALL ProcessOutputParams(orxU32 _u32ParamCount, const or
   else
   {
     // Logs message
-    orxLOG("[OUTPUT] No valid output found, using default");
+    orxCRYPT_LOG(OUTPUT, "No valid output found, using default");
   }
 
   // Done!
@@ -260,7 +272,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       else
       {
         // Logs message
-        orxLOG("[KEY] If you want to use a key containing spaces, it *NEEDS* to be provided in a config file as value for Param.key, aborting");
+        orxCRYPT_LOG(KEY, "If you want to use a key containing spaces, it *NEEDS* to be provided in a config file as value for Param.key, aborting");
       }
 
       // Pops to previous section
@@ -279,7 +291,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       if(orxConfig_SetEncryptionKey(zKey) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxLOG("[KEY] Key set to '%s'", zKey);
+        orxCRYPT_LOG(KEY, "Key set to '%s'", zKey);
 
         // Updates result
         eResult = orxSTATUS_SUCCESS;
@@ -287,14 +299,14 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       else
       {
         // Logs message
-        orxLOG("[KEY] Couldn't set '%s' as encryption key, aborting", zKey);
+        orxCRYPT_LOG(KEY, "Couldn't set '%s' as encryption key, aborting", zKey);
       }
     }
   }
   else
   {
     // Logs message
-    orxLOG("[KEY] No valid key found, using default");
+    orxCRYPT_LOG(KEY, "No valid key found, using default");
 
     // Updates result
     eResult = orxSTATUS_SUCCESS;
@@ -359,8 +371,18 @@ static void orxFASTCALL Setup()
 
 static orxSTATUS orxFASTCALL Init()
 {
-  orxPARAM  stParams;
-  orxSTATUS eResult;
+#define orxCRYPT_DECLARE_PARAM(SN, LN, SD, LD, FN) {orxPARAM_KU32_FLAG_STOP_ON_ERROR, SN, LN, SD, LD, &FN},
+
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxPARAM  astParamList[] =
+  {
+    orxCRYPT_DECLARE_PARAM("k", "key", "Key for decoding/encoding", "Key used for decoding/encoding provided config files", ProcessKeyParams)
+    orxCRYPT_DECLARE_PARAM("m", "merge", "merge mode", "If this switch is provided, the inclusions (@@file@@) found in the source file will be processed and all their contents will be merged in a single file", ProcessMergeParams)
+    orxCRYPT_DECLARE_PARAM("f", "filelist", "Input file list", "List of root config files to decode/encode, only 1 input file is allowed in non-merge mode", ProcessInputParams)
+    orxCRYPT_DECLARE_PARAM("o", "output", "Output file", "Single output file where decoded/encoded config info will be saved", ProcessOutputParams)
+    orxCRYPT_DECLARE_PARAM("d", "decrypt", "decrypt mode", "If this switch is provided, the saved file will *NOT* be encrypted, otherwise it will, by default", ProcessDecryptParams)
+  };
 
   // Clears static controller
   orxMemory_Zero(&sstCrypt, sizeof(orxCRYPT_STATIC));
@@ -368,75 +390,11 @@ static orxSTATUS orxFASTCALL Init()
   // Defaults to encryption mode
   orxFLAG_SET(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_USE_ENCRYPTION, orxCRYPT_KU32_STATIC_MASK_ALL);
 
-  // Asks for command line key parameter
-  stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-  stParams.zShortName = "k";
-  stParams.zLongName  = "key";
-  stParams.zShortDesc = "Key for decoding/encoding";
-  stParams.zLongDesc  = "Key used for decoding/encoding provided config files";
-  stParams.pfnParser  = ProcessKeyParams;
-
-  // Registers params
-  eResult = orxParam_Register(&stParams);
-
-  // Success?
-  if(eResult != orxSTATUS_FAILURE)
+  // For all params
+  for(i = 0; (i < sizeof(astParamList) / sizeof(astParamList[0])) && (eResult != orxSTATUS_FAILURE); i++)
   {
-    // Asks for command line merge parameter
-    stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-    stParams.zShortName = "m";
-    stParams.zLongName  = "merge";
-    stParams.zShortDesc = "merge mode";
-    stParams.zLongDesc  = "If this switch is provided, the inclusions (@@file@@) found in the source file will be processed and all their contents will be merged in a single file";
-    stParams.pfnParser  = ProcessMergeParams;
-
-    // Registers params
-    eResult = orxParam_Register(&stParams);
-
-    // Success?
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      // Asks for command line input file parameter
-      stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-      stParams.zShortName = "f";
-      stParams.zLongName  = "filelist";
-      stParams.zShortDesc = "Input file list";
-      stParams.zLongDesc  = "List of root config files to decode/encode, only 1 input file is allowed in non-merge mode";
-      stParams.pfnParser  = ProcessInputParams;
-
-      // Registers params
-      eResult = orxParam_Register(&stParams);
-
-      // Success?
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        // Asks for command line output file parameter
-        stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParams.zShortName = "o";
-        stParams.zLongName  = "output";
-        stParams.zShortDesc = "Output file";
-        stParams.zLongDesc  = "Single output file where decoded/encoded config info will be saved";
-        stParams.pfnParser  = ProcessOutputParams;
-
-        // Registers params
-        eResult = orxParam_Register(&stParams);
-
-        // Success?
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          // Asks for command line decrypt parameter
-          stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-          stParams.zShortName = "d";
-          stParams.zLongName  = "decrypt";
-          stParams.zShortDesc = "decrypt mode";
-          stParams.zLongDesc  = "If this switch is provided, the saved file will *NOT* be encrypted, otherwise it will, by default";
-          stParams.pfnParser  = ProcessDecryptParams;
-
-          // Registers params
-          eResult = orxParam_Register(&stParams);
-        }
-      }
-    }
+    // Registers param
+    eResult = orxParam_Register(&astParamList[i]);
   }
 
   // Done!
@@ -481,12 +439,12 @@ static void Run()
       if(orxConfig_Save(zOutputFile, bEncrypt, SaveFilter) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxLOG("[SAVE] %s: SUCCESS (MERGED)%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
+        orxCRYPT_LOG(SAVE, "%s: SUCCESS (MERGED)%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
       }
       else
       {
         // Logs message
-        orxLOG("[SAVE] %s: FAILURE, aborting.", zOutputFile);
+        orxCRYPT_LOG(SAVE, "%s: FAILURE, aborting.", zOutputFile);
       }
     }
     else
@@ -495,19 +453,19 @@ static void Run()
       if(orxConfig_CopyFile(zOutputFile, sstCrypt.zInputFile, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxLOG("[SAVE] %s: SUCCESS%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
+        orxCRYPT_LOG(SAVE, "%s: SUCCESS%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
       }
       else
       {
         // Logs message
-        orxLOG("[SAVE] %s: FAILURE, aborting", zOutputFile);
+        orxCRYPT_LOG(SAVE, "%s: FAILURE, aborting", zOutputFile);
       }
     }
   }
   else
   {
     // Logs message
-    orxLOG("[PROCESS] No files loaded, can't process");
+    orxCRYPT_LOG(PROCESS, "No files loaded, can't process");
   }
 }
 
