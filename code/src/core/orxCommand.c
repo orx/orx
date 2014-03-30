@@ -1049,6 +1049,32 @@ void orxFASTCALL orxCommand_CommandHelp(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: Exit
+ */
+void orxFASTCALL orxCommand_CommandExit(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* No argument? */
+  if(_u32ArgNumber == 0)
+  {
+    /* Updates result */
+    _pstResult->zValue = "Exiting.";
+  }
+  else
+  {
+    /* Prints value */
+    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "Exiting: %s.", _astArgList[0].zValue);
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+
+  /* Sends close event */
+  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+
+  /* Done! */
+  return;
+}
+
 /** Command: Echo
  */
 void orxFASTCALL orxCommand_CommandEcho(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1855,20 +1881,23 @@ void orxFASTCALL orxCommand_CommandGetStringFromID(orxU32 _u32ArgNumber, const o
 static orxINLINE void orxCommand_RegisterCommands()
 {
   /* Command: Help */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command = \"\"", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Help, "Help", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Command = <void>", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: Exit */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Exit, "Exit", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Message = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Echo */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Echo, "Echo", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Parameter", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: ListCommands */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = \"\"", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddAlias */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, AddAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Command/Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Arguments", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, AddAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Command/Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Arguments = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveAlias */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, RemoveAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Alias", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ListAliases */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = \"\"", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Evaluate */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Command", orxCOMMAND_VAR_TYPE_STRING});
@@ -1922,7 +1951,12 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
 
-  /* Alias: Help */
+  /* Alias: Exit */
+  orxCommand_AddAlias("Exit", "Command.Exit", orxNULL);
+  /* Alias: Quit */
+  orxCommand_AddAlias("Quit", "Command.Exit", orxNULL);
+
+  /* Alias: Echo */
   orxCommand_AddAlias("Echo", "Command.Echo", orxNULL);
 
   /* Alias: Eval */
@@ -2015,6 +2049,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Help */
   orxCommand_RemoveAlias("Help");
 
+  /* Alias: Exit */
+  orxCommand_RemoveAlias("Exit");
+  /* Alias: Quit */
+  orxCommand_RemoveAlias("Quit");
+
   /* Alias: Echo */
   orxCommand_RemoveAlias("Echo");
 
@@ -2101,6 +2140,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
+
+  /* Command: Exit */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Exit);
 
   /* Command: Echo */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Echo);
