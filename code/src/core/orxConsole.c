@@ -682,7 +682,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         else
         {
           /* Logs failure */
-           orxConsole_Log(": Invalid command!");
+          orxConsole_Log(": Invalid command!");
         }
 
         /* Updates input index */
