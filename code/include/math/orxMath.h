@@ -299,30 +299,6 @@ static orxINLINE orxFLOAT             orxMath_SmootherStep(orxFLOAT _fMin, orxFL
 
 /*** Trigonometric function ***/
 
-/** Gets a cosine
- * @param[in]   _fOp                            Input radian angle value
- * @return      Cosine of the given angle
- */
-static orxINLINE orxFLOAT    orxMath_Cos(orxFLOAT _fOp)
-{
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
-
-  /* Updates result */
-  fResult = cosf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = cosf(_fOp);
-
-#endif /* __orxMSVC__ */
-
-  /* Done! */
-  return fResult;
-}
-
 /** Gets a sine
  * @param[in]   _fOp                            Input radian angle value
  * @return      Sine of the given angle
@@ -331,17 +307,23 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = sinf(_fOp);
 
-#else /* __orxMSVC__ */
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a cosine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Cosine of the given angle
+ */
+static orxINLINE orxFLOAT             orxMath_Cos(orxFLOAT _fOp)
+{
+  register orxFLOAT fResult;
 
   /* Updates result */
-  fResult = sinf(_fOp);
-
-#endif /* __orxMSVC__ */
+  fResult = cosf(_fOp);
 
   /* Done! */
   return fResult;
@@ -355,17 +337,8 @@ static orxINLINE orxFLOAT             orxMath_Tan(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = tanf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = tanf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -379,17 +352,8 @@ static orxINLINE orxFLOAT             orxMath_ACos(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = acosf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = acosf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -403,17 +367,8 @@ static orxINLINE orxFLOAT             orxMath_ASin(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = asinf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = asinf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -428,17 +383,8 @@ static orxINLINE orxFLOAT             orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = atan2f(_fOp1, _fOp2);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = atan2f(_fOp1, _fOp2);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -470,17 +416,8 @@ static orxINLINE orxFLOAT             orxMath_Floor(orxFLOAT _fOp)
 {
   register orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
   /* Updates result */
   fResult = floorf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = floor(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
