@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="11_Spawner"
-	ProjectGUID="{6CDFC2AB-2F05-6447-9C27-4DF1D87AC42C}"
+	ProjectGUID="{09BFC199-5742-DE42-9C90-CA3449094304}"
 	RootNamespace="11_Spawner"
 	Keyword="Win32Proj"
 	>

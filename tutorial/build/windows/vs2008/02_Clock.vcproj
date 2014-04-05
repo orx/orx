@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="02_Clock"
-	ProjectGUID="{C27AD774-DFAE-804E-AA31-B763A76268E0}"
+	ProjectGUID="{F50B6662-7B13-D943-A304-25405DD4B467}"
 	RootNamespace="02_Clock"
 	Keyword="Win32Proj"
 	>
