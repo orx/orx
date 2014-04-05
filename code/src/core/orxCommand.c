@@ -276,9 +276,8 @@ static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _
     orxCOMMAND_TRIE_NODE *pstChild, *pstPrevious;
 
     /* Is an upper case ASCII character? */
-    if((orxString_IsCharacterASCII(u32CharacterCodePoint) != orxFALSE)
-    && (u32CharacterCodePoint >= 'A')
-    && (u32CharacterCodePoint <= 'Z'))
+    if((u32CharacterCodePoint <= 'Z')
+    && (u32CharacterCodePoint >= 'A'))
     {
       /* Gets its lower case version */
       u32CharacterCodePoint |= 0x20;
