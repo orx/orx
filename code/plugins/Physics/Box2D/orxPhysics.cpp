@@ -756,12 +756,8 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       orxFRAME   *pstFrame;
       orxVECTOR   vSpeed;
 
-      /* Isn't body already active? */
-      if(poBody->IsActive() == false)
-      {
-        /* Activates it */
-        poBody->SetActive(true);
-      }
+      /* Enforces its activation state */
+      poBody->SetActive(true);
 
       /* Gets owner's frame */
       pstFrame = orxOBJECT_GET_STRUCTURE(pstOwner, FRAME);
@@ -775,7 +771,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
         orxVECTOR vPos, vScale;
         orxFRAME *pstParentFrame;
 
-        /* Updates body's position & rotation*/
+        /* Updates body position & rotation */
         orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
         orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
 

@@ -708,7 +708,7 @@ orxSTATUS orxFASTCALL orxTimeLine_Init()
     if(sstTimeLine.pstTrackTable != orxNULL)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(TIMELINE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTimeLine_Update);
+      eResult = orxSTRUCTURE_REGISTER(TIMELINE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxTimeLine_Update);
     }
     else
     {

@@ -626,7 +626,7 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSpawner_Update);
+      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSpawner_Update);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)
