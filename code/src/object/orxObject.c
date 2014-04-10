@@ -6751,36 +6751,6 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
       /* Adds sound from config */
       eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
     }
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      orxCLOCK *pstClock;
-
-      /* Gets associated clock */
-      pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-      /* Valid? */
-      if(pstClock != orxNULL)
-      {
-        const orxCLOCK_INFO *pstClockInfo;
-
-        /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(pstClock);
-
-        /* Has a modified DT? */
-        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-        {
-          orxSOUND *pstSound;
-
-          /* Gets last added sound */
-          pstSound = orxSoundPointer_GetLastAddedSound(pstSoundPointer);
-
-          /* Applies new frequency */
-          orxSound_SetPitch(pstSound, orxSound_GetPitch(pstSound) * pstClockInfo->fModValue);
-        }
-      }
-    }
   }
 
   /* Done! */
