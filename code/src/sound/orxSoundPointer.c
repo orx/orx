@@ -77,8 +77,8 @@
  */
 typedef struct __orxSOUNDPOINTER_HOLDER_t
 {
-  orxSOUND *pstSound;                                                       /**< Sound reference : 4 */
-  orxU32    u32Flags;                                                       /**< Flags : 8 */
+  orxSOUND *pstSound;                                                       /**< Sound reference : 4/8 */
+  orxU32    u32Flags;                                                       /**< Flags : 8/12 */
 
 } orxSOUNDPOINTER_HOLDER;
 
@@ -89,8 +89,7 @@ struct __orxSOUNDPOINTER_t
   orxSTRUCTURE            stStructure;                                      /**< Public structure, first structure member : 32 */
   orxSOUNDPOINTER_HOLDER  astSoundList[orxSOUNDPOINTER_KU32_SOUND_NUMBER];  /**< Sound list : 48 */
   orxU32                  u32LastAddedIndex;                                /**< Last added sound index : 52 */
-  orxFLOAT                fTimeMultiplier;                                  /**< Current time multiplier : 56 */
-  const orxSTRUCTURE     *pstOwner;                                         /**< Owner structure : 60 */
+  const orxSTRUCTURE     *pstOwner;                                         /**< Owner structure : 56 */
 };
 
 /** Static structure
@@ -237,9 +236,8 @@ static orxINLINE void orxSoundPointer_DeleteAll()
  */
 static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxSOUNDPOINTER *pstSoundPointer;
-  orxOBJECT    *pstObject;
-  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundPointer_Update");
@@ -249,35 +247,13 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
   orxSTRUCTURE_ASSERT(_pstStructure);
   orxSTRUCTURE_ASSERT(_pstCaller);
 
-  /* Gets SoundPointer */
+  /* Gets sound pointer */
   pstSoundPointer = orxSOUNDPOINTER(_pstStructure);
-
-  /* Gets calling object */
-  pstObject = orxOBJECT(_pstCaller);
 
   /* Is enabled? */
   if(orxSoundPointer_IsEnabled(pstSoundPointer) != orxFALSE)
   {
-    orxU32    i;
-    orxFLOAT  fFrequencyCoef;
-
-    /* Has a multiply modifier? */
-    if(_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-    {
-      /* Gets frequency coef */
-      fFrequencyCoef = (_pstClockInfo->fModValue != pstSoundPointer->fTimeMultiplier) ? _pstClockInfo->fModValue / pstSoundPointer->fTimeMultiplier : orxFLOAT_1;
-
-      /* Stores multiplier */
-      pstSoundPointer->fTimeMultiplier = _pstClockInfo->fModValue;
-    }
-    else
-    {
-      /* Reverts frequency coef */
-      fFrequencyCoef = (pstSoundPointer->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / pstSoundPointer->fTimeMultiplier : orxFLOAT_1;
-
-      /* Stores multiplier */
-      pstSoundPointer->fTimeMultiplier = orxFLOAT_1;
-    }
+    orxU32 i;
 
     /* For all Sounds */
     for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
@@ -298,13 +274,8 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
         }
         else
         {
-          orxVECTOR vPosition;
-
-          /* Updates its position */
-          orxSound_SetPosition(pstSound, orxObject_GetWorldPosition(pstObject, &vPosition));
-
-          /* Updates its pitch */
-          orxSound_SetPitch(pstSound, orxSound_GetPitch(pstSound) * fFrequencyCoef);
+          /* Delegates update to the sound */
+          orxStructure_Update(pstSound, _pstCaller, _pstClockInfo);
         }
       }
     }
@@ -357,7 +328,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSoundPointer_Update);
+      eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSoundPointer_Update);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)
@@ -442,9 +413,6 @@ orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create(const orxSTRUCTURE *_pstOwne
   {
     /* Clears last added sound index */
     pstResult->u32LastAddedIndex = orxU32_UNDEFINED;
-
-    /* Clears time multiplier */
-    pstResult->fTimeMultiplier = orxFLOAT_1;
 
     /* Stores owner */
     pstResult->pstOwner = _pstOwner;
@@ -631,7 +599,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer
   {
     orxSOUND *pstSound;
 
-    /* Gets sound */
+    /* Gets it */
     pstSound = _pstSoundPointer->astSoundList[i].pstSound;
 
     /* Valid? */

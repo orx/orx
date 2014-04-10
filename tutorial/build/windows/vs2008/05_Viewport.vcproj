@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="05_Viewport"
-	ProjectGUID="{77ABEEB3-541E-3447-B221-7E640319676F}"
+	ProjectGUID="{AEB63660-4390-884C-AA7A-24AB64E5D7B3}"
 	RootNamespace="05_Viewport"
 	Keyword="Win32Proj"
 	>

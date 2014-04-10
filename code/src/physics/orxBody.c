@@ -2744,7 +2744,7 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
       /* Global space? */
       if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
       {
-        /* Computes diff vector & rotation */
+        /* Computes diff position & rotation */
         orxVector_Set(&vDiff, vPosition.fX - _pstBody->vPreviousPosition.fX, vPosition.fY - _pstBody->vPreviousPosition.fY, orxFLOAT_0);
         fDiff = orxFrame_GetRotation(pstFrame, eFrameSpace) - _pstBody->fPreviousRotation;
       }
