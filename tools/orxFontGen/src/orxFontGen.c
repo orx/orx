@@ -876,8 +876,8 @@ static void Run()
         orxLOG("[PROCESS] Some characters will be cropped (height=%d/%d).", s32MaxAscend + s32MaxDescend + 1, orxF2S(sstFontGen.vCharacterSize.fY));
       }
 
-      // Gets baseline (using scaled ascender)
-      s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->ascender)));
+      // Gets baseline (using ascender)
+      s32BaseLine = sstFontGen.pstFontFace->ascender >> 6;
 
       // Is baseline incorrect?
       if((s32BaseLine < s32MaxAscend)
