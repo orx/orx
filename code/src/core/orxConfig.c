@@ -2129,23 +2129,6 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
-/** Command: GetListCounter
- */
-void orxFASTCALL orxConfig_CommandGetListCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
-
-  /* Updates result */
-  _pstResult->s32Value = orxConfig_GetListCounter(_astArgList[1].zValue);
-
-  /* Pops section */
-  orxConfig_PopSection();
-
-  /* Done! */
-  return;
-}
-
 /** Command: SetValue
  */
 void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2155,6 +2138,72 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
 
   /* Updates result */
   _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRawValue
+ */
+void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCONFIG_ENTRY *pstEntry;
+
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_astArgList[1].zValue));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Not in block mode? */
+    if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+    {
+      /* Restores string */
+      orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
+
+      /* Prints it */
+      orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%s", pstEntry->stValue.zValue);
+
+      /* Updates result */
+      _pstResult->zValue = sstConfig.acCommandBuffer;
+
+      /* Computes working value */
+      orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->zValue = pstEntry->stValue.zValue;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Pops section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetListCounter
+ */
+void orxFASTCALL orxConfig_CommandGetListCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes section */
+  orxConfig_PushSection(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->s32Value = orxConfig_GetListCounter(_astArgList[1].zValue);
 
   /* Pops section */
   orxConfig_PopSection();
@@ -2191,9 +2240,11 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: HasValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 2, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Index = -1", orxCOMMAND_VAR_TYPE_S32}, {"RawValue = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 2, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Index = -1", orxCOMMAND_VAR_TYPE_S32}, {"Verbatim = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetRawValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetRawValue, "RawValue", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetListCounter */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCounter, "Counter", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 
@@ -2208,6 +2259,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Set", "Config.SetValue", orxNULL);
   /* Alias: Get */
   orxCommand_AddAlias("Get", "Config.GetValue", orxNULL);
+  /* Alias: GetRaw */
+  orxCommand_AddAlias("GetRaw", "Config.GetRawValue", orxNULL);
 }
 
 /** Unregisters all the config commands
@@ -2225,6 +2278,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCommand_RemoveAlias("Set");
   /* Alias: Get */
   orxCommand_RemoveAlias("Get");
+  /* Alias: GetRaw */
+  orxCommand_RemoveAlias("GetRaw");
 
   /* Command: Load */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Load);
@@ -2252,6 +2307,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetValue);
   /* Command: SetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetValue);
+  /* Command: GetRawValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetRawValue);
   /* Command: GetListCounter */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetListCounter);
 }
