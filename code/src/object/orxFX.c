@@ -655,7 +655,14 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       /* Is defined? */
       if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
       {
-        orxFLOAT fStartTime, fEndTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
+        orxFLOAT fStartTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
+
+/* Some versions of GCC have an optimization bug on fEndTime which leads to a bogus value when reaching the end of a slot */
+#if defined(__orxGCC__)
+        volatile orxFLOAT fEndTime;
+#else /* __orxGCC__  */
+        orxFLOAT fEndTime;
+#endif /* __orxGCC__ */
 
         /* Gets corrected start and end time */
         fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime);
