@@ -2693,7 +2693,7 @@ void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
     orxFRAME       *pstFrame;
     orxOBJECT      *pstOwner;
 
-    /* Gets ower */
+    /* Gets owner */
     pstOwner = orxOBJECT(_pstBody->pstOwner);
 
     /* Gets its frame */
