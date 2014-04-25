@@ -465,13 +465,6 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(con
  */
 extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
-
-/** Applies physics simulation result to the Body
- * @param[in]   _pstBody                      Concerned body
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI void orxFASTCALL             orxBody_ApplySimulationResult(orxBODY *_pstBody);
-
 #endif /* _orxBODY_H_ */
 
 /** @} */
