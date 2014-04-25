@@ -150,7 +150,6 @@ var searchData=
   ['orxbody_5faddpartfromconfig',['orxBody_AddPartFromConfig',['../group__orx_body.html#ga8ee9bc06c7b342b0731a1a1103f33a4c',1,'orxBody.h']]],
   ['orxbody_5fapplyforce',['orxBody_ApplyForce',['../group__orx_body.html#ga9675ea578c56e7919a3e25723d8f21ca',1,'orxBody.h']]],
   ['orxbody_5fapplyimpulse',['orxBody_ApplyImpulse',['../group__orx_body.html#ga7a075916bcbb81b9390f4bc51f864157',1,'orxBody.h']]],
-  ['orxbody_5fapplysimulationresult',['orxBody_ApplySimulationResult',['../group__orx_body.html#ga54b4d240a38ad14190ba9ef512850b21',1,'orxBody.h']]],
   ['orxbody_5fapplytorque',['orxBody_ApplyTorque',['../group__orx_body.html#gac9e9fc12ae83e59561e8c3962d46178c',1,'orxBody.h']]],
   ['orxbody_5fcreate',['orxBody_Create',['../group__orx_body.html#ga9feaac31cf40a5c99969365cc5961b9a',1,'orxBody.h']]],
   ['orxbody_5fcreatefromconfig',['orxBody_CreateFromConfig',['../group__orx_body.html#ga6e08ae4f4f01b18826a36fa8b6c10f76',1,'orxBody.h']]],

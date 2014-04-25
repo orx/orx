@@ -9,7 +9,6 @@ var orx_body_8h =
     [ "orxBody_AddPartFromConfig", "orx_body_8h.html#ga8ee9bc06c7b342b0731a1a1103f33a4c", null ],
     [ "orxBody_ApplyForce", "orx_body_8h.html#ga9675ea578c56e7919a3e25723d8f21ca", null ],
     [ "orxBody_ApplyImpulse", "orx_body_8h.html#ga7a075916bcbb81b9390f4bc51f864157", null ],
-    [ "orxBody_ApplySimulationResult", "orx_body_8h.html#ga54b4d240a38ad14190ba9ef512850b21", null ],
     [ "orxBody_ApplyTorque", "orx_body_8h.html#gac9e9fc12ae83e59561e8c3962d46178c", null ],
     [ "orxBody_Create", "orx_body_8h.html#ga9feaac31cf40a5c99969365cc5961b9a", null ],
     [ "orxBody_CreateFromConfig", "orx_body_8h.html#ga6e08ae4f4f01b18826a36fa8b6c10f76", null ],
