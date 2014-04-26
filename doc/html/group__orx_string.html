@@ -191,6 +191,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gaece5f2c89893b93ba77d21a85149017d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9005ced07cec12a8ee12cb4cee3213c8"><td class="memItemLeft" align="right" valign="top">static orxINLINE const orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a> (const orxSTRING _zString)</td></tr>
 <tr class="separator:ga9005ced07cec12a8ee12cb4cee3213c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga94c86ba15a4ce44d29de9a37b113f55d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga94c86ba15a4ce44d29de9a37b113f55d">orxString_Store</a> (const orxSTRING _zString)</td></tr>
+<tr class="separator:ga94c86ba15a4ce44d29de9a37b113f55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga675eb3b066ac037e9815c565c4ddbe1c"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">orxString_ToBool</a> (const orxSTRING _zString, orxBOOL *_pbOutValue, const orxSTRING *_pzRemaining)</td></tr>
 <tr class="separator:ga675eb3b066ac037e9815c565c4ddbe1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadc2711d674628689d58be645d319ea92"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gadc2711d674628689d58be645d319ea92">orxString_ToCRC</a> (const orxSTRING _zString)</td></tr>
@@ -579,7 +582,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Extension if exists, orxSTRING_EMPTY otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01531">1531</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01546">1546</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1170,7 +1173,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of written characters </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01509">1509</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01512">1512</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1545,6 +1548,30 @@ Variables</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Sub string located after all leading white spaces </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00142">142</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga94c86ba15a4ce44d29de9a37b113f55d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxString_Store </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString)) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>Concerned string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Stored orxSTRING </dd></dl>
 
 </div>
 </div>
