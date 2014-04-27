@@ -323,7 +323,8 @@ project "orx"
             "Xrandr",
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
