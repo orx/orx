@@ -265,7 +265,8 @@ project "orxFontGen"
             "dl",
             "m",
             "z",
-            "rt"
+            "rt",
+            "pthread"
         }
 
 
@@ -277,7 +278,8 @@ project "orxFontGen"
             "Foundation.framework",
             "AppKit.framework",
             "OpenGL.framework",
-            "z"
+            "z",
+            "pthread"
         }
 
 

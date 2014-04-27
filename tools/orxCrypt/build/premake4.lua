@@ -221,7 +221,8 @@ project "orxCrypt"
         {
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
 
 
@@ -231,7 +232,8 @@ project "orxCrypt"
         links
         {
             "Foundation.framework",
-            "AppKit.framework"
+            "AppKit.framework",
+            "pthread"
         }
 
 
