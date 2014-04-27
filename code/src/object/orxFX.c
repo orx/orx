@@ -1158,11 +1158,11 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                     orxVector_Mul(&vEndValue, &vEndValue, orxObject_GetScale(_pstObject, &vScale));
                   }
 
-                  /* Updates global position value */
+                  /* Updates global value */
                   orxVector_Add(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), &vEndValue);
                 }
 
-                /* Updates translation status */
+                /* Updates status */
                 abUpdateList[eFXType] = orxTRUE;
 
                 break;
