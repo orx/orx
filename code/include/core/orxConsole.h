@@ -54,6 +54,8 @@
 #define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
 #define orxCONSOLE_KZ_INPUT_DELETE                    "Delete"                        /**< Delete input */
+#define orxCONSOLE_KZ_INPUT_DELETE_AFTER              "DeleteAfter"                   /**< Delete after input */
+#define orxCONSOLE_KZ_INPUT_TOGGLE_MODE               "ToggleMode"                    /**< Toggle mode input */
 #define orxCONSOLE_KZ_INPUT_ENTER                     "Enter"                         /**< Enter input */
 #define orxCONSOLE_KZ_INPUT_PREVIOUS                  "Previous"                      /**< Previous input */
 #define orxCONSOLE_KZ_INPUT_NEXT                      "Next"                          /**< Next input */
@@ -86,6 +88,12 @@ extern orxDLLAPI void orxFASTCALL                     orxConsole_Enable(orxBOOL 
  * @return orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsEnabled();
+
+
+/** Is the console input in insert mode?
+ * @return orxTRUE if insert mode, orxFALSE otherwise (overwrite mode)
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsInsertMode();
 
 
 /** Sets the console toggle

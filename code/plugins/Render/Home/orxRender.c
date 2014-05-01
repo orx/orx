@@ -1090,7 +1090,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight;
   orxU32                  u32CursorIndex, i;
-  orxCHAR                 cBackup;
+  orxCHAR                 acBackup[2];
   orxFLOAT                fCharacterHeight;
   orxCOLOR                stColor;
   const orxFONT          *pstFont;
@@ -1184,29 +1184,51 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
   zText               = orxConsole_GetInput(&u32CursorIndex);
-  cBackup             = zText[u32CursorIndex];
+  acBackup[0]         = zText[u32CursorIndex];
+  acBackup[1]         = (u32CursorIndex < 255) ? zText[u32CursorIndex + 1] : orxCHAR_NULL;
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR);
 
-  /* Has room for cursor? */
-  if(u32CursorIndex < 255)
+  /* Has room for cursor & should display it? */
+  if((u32CursorIndex < 255) && (orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK)))
   {
-    /* Should display it? */
-    if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK))
+    /* Is in insert mode? */
+    if(orxConsole_IsInsertMode() != orxFALSE)
     {
-      ((orxCHAR*)zText)[u32CursorIndex] = '_';
+      /* Displays full input, including auto-completion */
       orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-      ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+
+      /* Overrides characters at cursor position */
+      ((orxCHAR*)zText)[u32CursorIndex] = '_';
     }
+    else
+    {
+      /* Overrides characters at cursor position */
+      ((orxCHAR*)zText)[u32CursorIndex] = '#';
+
+      /* Displays full input, including auto-completion */
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    }
+
+    /* Truncates to base input + cursor */
+    ((orxCHAR*)zText)[u32CursorIndex + 1] = orxCHAR_NULL;
+  }
+  else
+  {
+    /* Displays full input, including auto-completion */
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+    /* Truncates to base input */
+    ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   }
 
-  /* Displays full input, including auto-completion */
-  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-
   /* Displays base input (ie. validated part) */
-  ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_INPUT_COLOR);
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+  ((orxCHAR*)zText)[u32CursorIndex] = acBackup[0];
+  if(u32CursorIndex < 255)
+  {
+    ((orxCHAR*)zText)[u32CursorIndex + 1] = acBackup[1];
+  }
 
   /* While there are log lines to display */
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
