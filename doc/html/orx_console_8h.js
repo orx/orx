@@ -2,6 +2,7 @@ var orx_console_8h =
 [
     [ "orxCONSOLE_KZ_INPUT_AUTOCOMPLETE", "orx_console_8h.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE", "orx_console_8h.html#gaffdbd164c84f06647c8e0c79b49e7023", null ],
+    [ "orxCONSOLE_KZ_INPUT_DELETE_AFTER", "orx_console_8h.html#ga0d48acf8c6d88562437d4c81a519475d", null ],
     [ "orxCONSOLE_KZ_INPUT_END", "orx_console_8h.html#ga7cf90b1814c4ab1ce2b31f56325c9b79", null ],
     [ "orxCONSOLE_KZ_INPUT_ENTER", "orx_console_8h.html#gaa7fe6035175d80d28aaf5bb02e0afbe1", null ],
     [ "orxCONSOLE_KZ_INPUT_LEFT", "orx_console_8h.html#ga2613d6eeaf63099c8447ad92ecdccf1e", null ],
@@ -11,6 +12,7 @@ var orx_console_8h =
     [ "orxCONSOLE_KZ_INPUT_SET", "orx_console_8h.html#ga4d5c257aca0b99f7e7c92d0b72ce8197", null ],
     [ "orxCONSOLE_KZ_INPUT_START", "orx_console_8h.html#ga29d52437b05553a053b434165d5bbeab", null ],
     [ "orxCONSOLE_KZ_INPUT_TOGGLE", "orx_console_8h.html#ga332e8d61d04138184aaf878193623431", null ],
+    [ "orxCONSOLE_KZ_INPUT_TOGGLE_MODE", "orx_console_8h.html#ga6b17221c7bb5dfb6f9da6402b008b082", null ],
     [ "orxConsole_Enable", "orx_console_8h.html#gad3bae40e302c140330f2c9b84bce62b9", null ],
     [ "orxConsole_Exit", "orx_console_8h.html#ga131e4e88f33df218f1651e1a9c7f7c6b", null ],
     [ "orxConsole_GetFont", "orx_console_8h.html#gaf8426d4d9c05745a70ff23b3308364e5", null ],
@@ -19,6 +21,7 @@ var orx_console_8h =
     [ "orxConsole_GetTrailLogLine", "orx_console_8h.html#ga859acfa690023effb99b31a616a45031", null ],
     [ "orxConsole_Init", "orx_console_8h.html#ga6e843897f872e5d1760fd46ad3536777", null ],
     [ "orxConsole_IsEnabled", "orx_console_8h.html#ga325e941005ce33c772edc9f9232340f8", null ],
+    [ "orxConsole_IsInsertMode", "orx_console_8h.html#ga340e1c258504c95b07015483d1d412a3", null ],
     [ "orxConsole_Log", "orx_console_8h.html#gae38e4c990bc8bd3caa6724690a1b83ee", null ],
     [ "orxConsole_SetFont", "orx_console_8h.html#ga112f1868a022f4f279c86aad0ee9361c", null ],
     [ "orxConsole_SetLogLineLength", "orx_console_8h.html#gacd3c960e8277577e152b9fe22e8ae210", null ],

@@ -298,6 +298,7 @@ var searchData=
   ['orxconsole_5fgettraillogline',['orxConsole_GetTrailLogLine',['../group__orx_console.html#ga859acfa690023effb99b31a616a45031',1,'orxConsole.h']]],
   ['orxconsole_5finit',['orxConsole_Init',['../group__orx_console.html#ga6e843897f872e5d1760fd46ad3536777',1,'orxConsole.h']]],
   ['orxconsole_5fisenabled',['orxConsole_IsEnabled',['../group__orx_console.html#ga325e941005ce33c772edc9f9232340f8',1,'orxConsole.h']]],
+  ['orxconsole_5fisinsertmode',['orxConsole_IsInsertMode',['../group__orx_console.html#ga340e1c258504c95b07015483d1d412a3',1,'orxConsole.h']]],
   ['orxconsole_5flog',['orxConsole_Log',['../group__orx_console.html#gae38e4c990bc8bd3caa6724690a1b83ee',1,'orxConsole.h']]],
   ['orxconsole_5fsetfont',['orxConsole_SetFont',['../group__orx_console.html#ga112f1868a022f4f279c86aad0ee9361c',1,'orxConsole.h']]],
   ['orxconsole_5fsetloglinelength',['orxConsole_SetLogLineLength',['../group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210',1,'orxConsole.h']]],
