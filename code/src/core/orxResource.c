@@ -929,6 +929,9 @@ void orxFASTCALL orxResource_Exit()
     orxRESOURCE_GROUP      *pstGroup;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
 
+    /* Makes sure resource thread is enabled */
+    orxThread_Enable(orxTHREAD_GET_FLAG_FROM_ID(sstResource.u32RequestThreadID), orxTHREAD_KU32_FLAG_NONE);
+
     /* Waits for all pending operations to complete */
     while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
 
@@ -1901,8 +1904,8 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
     /* Gets open info */
     pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
 
-    /* Has pending operations? */
-    if(pstOpenInfo->u32OpCounter != 0)
+    /* Has pending operations (and thread hasn't been terminated)? */
+    if((pstOpenInfo->u32OpCounter != 0) && (sstResource.u32RequestThreadID != orxU32_UNDEFINED))
     {
       /* Adds request */
       orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_CLOSE, 0, orxNULL, orxNULL, orxNULL, pstOpenInfo);

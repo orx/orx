@@ -55,6 +55,10 @@
 #define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
 #define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
 
+#define orxTHREAD_KU32_FLAG_NONE                      0           /**< Flag none (for orxThread_Enable) */
+#define orxTHREAD_KU32_MASK_ALL                       (((1 << orxTHREAD_KU32_MAX_THREAD_NUMBER) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
+#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1 << ID)   /**< Gets thread flag from ID */
+
 
 /** Semaphore structure */
 typedef struct __orxTHREAD_SEMAPHORE_t                orxTHREAD_SEMAPHORE;
@@ -95,6 +99,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Join(orxU32 _u32
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_JoinAll();
+
+/** Enables / disables threads
+ * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)
+ * @param[in]   _u32DisableThreads  Mask of threads to disable (1 << ThreadID)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32DisableThreads);
 
 /** Gets current thread ID
  * @return      Current thread ID

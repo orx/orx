@@ -75,6 +75,7 @@
 #define orxTHREAD_KU32_INFO_FLAG_NONE                 0x00000000  /**< No flags have been set */
 #define orxTHREAD_KU32_INFO_FLAG_INITIALIZED          0x00000001  /**< Initialized flag */
 #define orxTHREAD_KU32_INFO_FLAG_STOP                 0x10000000  /**< Stop flag */
+#define orxTHREAD_KU32_INFO_FLAG_ENABLED              0x20000000  /**< Enabled flag */
 #define orxTHREAD_KU32_INFO_MASK_ALL                  0xFFFFFFFF  /**< The module has been initialized */
 
 
@@ -104,6 +105,7 @@ typedef struct __orxTHREAD_INFO_t
 
   orxTHREAD_FUNCTION      pfnRun;
   void                   *pContext;
+  orxTHREAD_SEMAPHORE    *pstEnableSemaphore;
   orxU32                  u32ParentID;
   orxU32                  u32Flags;
 
@@ -125,9 +127,9 @@ typedef struct __orxTHREAD_TASK_t
  */
 typedef struct __orxTHREAD_STATIC_t
 {
-  orxTHREAD_SEMAPHORE*    pstThreadSemaphore;
-  orxTHREAD_SEMAPHORE*    pstTaskSemaphore;
-  orxTHREAD_SEMAPHORE*    pstWorkerSemaphore;
+  orxTHREAD_SEMAPHORE    *pstThreadSemaphore;
+  orxTHREAD_SEMAPHORE    *pstTaskSemaphore;
+  orxTHREAD_SEMAPHORE    *pstWorkerSemaphore;
   orxU32                  u32WorkerID;
   volatile orxU32         u32TaskInIndex;
   volatile orxU32         u32TaskProcessIndex;
@@ -187,6 +189,12 @@ static void *orxThread_Execute(void *_pContext)
 
     /* Yields */
     orxThread_Yield();
+
+    /* Waits for its enable semaphore */
+    orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+
+    /* Signals its enable semaphore */
+    orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
   }
   /* While stop hasn't been requested */
   while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
@@ -413,6 +421,9 @@ void orxFASTCALL orxThread_Exit()
     orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
     orxMEMORY_BARRIER();
 
+    /* Re-enables all threads */
+    orxThread_Enable(orxTHREAD_KU32_MASK_ALL, orxTHREAD_KU32_FLAG_NONE);
+
     /* Signals worker semaphore */
     orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
 
@@ -474,45 +485,56 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
     /* Gets its info */
     pstInfo = &(sstThread.astThreadInfoList[u32Index]);
 
-    /* Inits its info */
-    pstInfo->pfnRun       = _pfnRun;
-    pstInfo->pContext     = _pContext;
-    pstInfo->u32ParentID  = orxThread_GetCurrent();
-    pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
-    orxMEMORY_BARRIER();
+    /* Creates its semaphore */
+    pstInfo->pstEnableSemaphore = orxThread_CreateSemaphore(1);
+
+    /* Valid? */
+    if(pstInfo->pstEnableSemaphore != orxNULL)
+    {
+      /* Inits its info */
+      pstInfo->pfnRun       = _pfnRun;
+      pstInfo->pContext     = _pContext;
+      pstInfo->u32ParentID  = orxThread_GetCurrent();
+      pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED | orxTHREAD_KU32_INFO_FLAG_ENABLED;
+      orxMEMORY_BARRIER();
 
 #ifdef __orxWINDOWS__
 
-    /* Creates thread */
-    pstInfo->hThread = (HANDLE)_beginthreadex(NULL, 0, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index], 0, NULL);
+      /* Creates thread */
+      pstInfo->hThread = (HANDLE)_beginthreadex(NULL, 0, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index], 0, NULL);
 
-    /* Success? */
-    if(pstInfo->hThread != NULL)
-    {
-      /* Updates result */
-      u32Result = u32Index;
-    }
-    else
+      /* Success? */
+      if(pstInfo->hThread != NULL)
+      {
+        /* Updates result */
+        u32Result = u32Index;
+      }
+      else
 
 #else /* __orxWINDOWS__ */
 
-    /* Creates thread */
-    if(pthread_create((pthread_t *)&(pstInfo->hThread), NULL, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index]) == 0)
-    {
-      /* Updates result */
-      u32Result = u32Index;
-    }
-    else
+      /* Creates thread */
+      if(pthread_create((pthread_t *)&(pstInfo->hThread), NULL, orxThread_Execute, (void *)&sstThread.astThreadInfoList[u32Index]) == 0)
+      {
+        /* Updates result */
+        u32Result = u32Index;
+      }
+      else
 
 #endif /* __orxWINDOWS__ */
 
-    {
-      /* Clears its info */
-      pstInfo->hThread      = 0;
-      pstInfo->pfnRun       = orxNULL;
-      pstInfo->pContext     = orxNULL;
-      pstInfo->u32ParentID  = 0;
-      pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_NONE;
+      {
+        /* Deletes its semaphore */
+        orxThread_DeleteSemaphore(pstInfo->pstEnableSemaphore);
+        pstInfo->pstEnableSemaphore = orxNULL;
+
+        /* Clears its info */
+        pstInfo->hThread      = 0;
+        pstInfo->pfnRun       = orxNULL;
+        pstInfo->pContext     = orxNULL;
+        pstInfo->u32ParentID  = 0;
+        pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_NONE;
+      }
     }
   }
 
@@ -544,6 +566,16 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     /* Updates stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
 
+    /* Not main thread and was disabled? */
+    if((_u32ThreadID != orxTHREAD_KU32_MAIN_THREAD_ID) && (!orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED)))
+    {
+      /* Updates its status */
+      orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED, orxTHREAD_KU32_INFO_FLAG_NONE);
+
+      /* Signals its enable semaphore */
+      orxThread_SignalSemaphore(sstThread.astThreadInfoList[_u32ThreadID].pstEnableSemaphore);
+    }
+
 #ifdef __orxWINDOWS__
 
     /* Waits for thread */
@@ -558,6 +590,10 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     pthread_join(sstThread.astThreadInfoList[_u32ThreadID].hThread, NULL);
 
 #endif /* __orxWINDOWS__ */
+
+    /* Deletes its semaphore */
+    orxThread_DeleteSemaphore(sstThread.astThreadInfoList[_u32ThreadID].pstEnableSemaphore);
+    sstThread.astThreadInfoList[_u32ThreadID].pstEnableSemaphore = orxNULL;
 
     /* Clears thread info */
     sstThread.astThreadInfoList[_u32ThreadID].hThread     = 0;
@@ -599,6 +635,67 @@ orxSTATUS orxFASTCALL orxThread_JoinAll()
       orxThread_Join(u32Index);
     }
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Enables / disables threads
+ * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)
+ * @param[in]   _u32DisableThreads  Mask of threads to disable (1 << ThreadID)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32DisableThreads)
+{
+  orxU32    u32Index, u32Flag;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+  orxASSERT(!orxFLAG_TEST(_u32EnableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
+  orxASSERT(!orxFLAG_TEST(_u32DisableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
+
+  /* Waits for thread semaphore */
+  orxThread_WaitSemaphore(sstThread.pstThreadSemaphore);
+
+  /* For all threads */
+  for(u32Index = 0, u32Flag = 1; (u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER) && (eResult != orxSTATUS_FAILURE); u32Index++, u32Flag <<= 1)
+  {
+    /* Is thread initialized? */
+    if(orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
+    {
+      /* Enable? */
+      if(orxFLAG_TEST(_u32EnableThreads, u32Flag))
+      {
+        /* Wasn't enabled? */
+        if(!orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED))
+        {
+          /* Signals its semaphore */
+          eResult = orxThread_SignalSemaphore(sstThread.astThreadInfoList[u32Index].pstEnableSemaphore);
+
+          /* Updates its status */
+          orxFLAG_SET(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED, orxTHREAD_KU32_INFO_FLAG_NONE);
+        }
+      }
+      /* Disable? */
+      else if(orxFLAG_TEST(_u32DisableThreads, u32Flag))
+      {
+        /* Was enabled? */
+        if(orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED))
+        {
+          /* Waits for its semaphore */
+          eResult = orxThread_WaitSemaphore(sstThread.astThreadInfoList[u32Index].pstEnableSemaphore);
+
+          /* Updates its status */
+          orxFLAG_SET(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_NONE, orxTHREAD_KU32_INFO_FLAG_ENABLED);
+        }
+      }
+    }
+  }
+  orxMEMORY_BARRIER();
+
+  /* Signals thread semaphore */
+  orxThread_SignalSemaphore(sstThread.pstThreadSemaphore);
 
   /* Done! */
   return eResult;
