@@ -1158,6 +1158,7 @@ var searchData=
   ['orxtexture_5funlinkbitmap',['orxTexture_UnlinkBitmap',['../group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a',1,'orxTexture.h']]],
   ['orxthread_5fcreatesemaphore',['orxThread_CreateSemaphore',['../group__orx_thread.html#ga482e0f9ff5876f6e9a85575a83486f05',1,'orxThread.h']]],
   ['orxthread_5fdeletesemaphore',['orxThread_DeleteSemaphore',['../group__orx_thread.html#ga59b6f7828c4c1f23acf433003e276506',1,'orxThread.h']]],
+  ['orxthread_5fenable',['orxThread_Enable',['../group__orx_thread.html#ga01cb3684e738f61dfcc6e9d11e871bd2',1,'orxThread.h']]],
   ['orxthread_5fexit',['orxThread_Exit',['../group__orx_thread.html#ga08f05de19f0556af86bd25c242deac7e',1,'orxThread.h']]],
   ['orxthread_5fgetcurrent',['orxThread_GetCurrent',['../group__orx_thread.html#gad6cda87fc56339a6ddebbcdc7dbed54c',1,'orxThread.h']]],
   ['orxthread_5fgettaskcounter',['orxThread_GetTaskCounter',['../group__orx_thread.html#ga548739aa3308c7e9fe677a2ace23a940',1,'orxThread.h']]],
