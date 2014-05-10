@@ -2629,78 +2629,96 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_apstBitmapList != orxNULL)
 
-  /* Too many destinations? */
-  if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)
+  /* Has framebuffer support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
   {
-    /* Outputs logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can only attach the first <%d> bitmaps as destinations, out of the <%d> requested.", sstDisplay.iDrawBufferNumber, _u32Number);
-
-    /* Updates bitmap counter */
-    u32Number = (orxU32)sstDisplay.iDrawBufferNumber;
-  }
-  else
-  {
-    /* Gets bitmap counter */
-    u32Number = _u32Number;
-  }
-
-  /* For all bitmaps */
-  for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
-  {
-    orxBITMAP *pstBitmap;
-
-    /* Gets bitmap */
-    pstBitmap = _apstBitmapList[i];
-
-    /* Different destination bitmap? */
-    if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+    /* Too many destinations? */
+    if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)
     {
-      /* Draws remaining items */
-      orxDisplay_GLFW_DrawArrays();
+      /* Outputs logs */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can only attach the first <%d> bitmaps as destinations, out of the <%d> requested.", sstDisplay.iDrawBufferNumber, _u32Number);
 
-      /* Has framebuffer support? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
+      /* Updates bitmap counter */
+      u32Number = (orxU32)sstDisplay.iDrawBufferNumber;
+    }
+    else
+    {
+      /* Gets bitmap counter */
+      u32Number = _u32Number;
+    }
+
+    /* Has destinations? */
+    if(u32Number != 0)
+    {
+      orxBOOL bDraw;
+
+      /* Updates draw status */
+      bDraw = ((_apstBitmapList[0] != sstDisplay.apstDestinationBitmapList[0]) || (u32Number != sstDisplay.u32DestinationBitmapCounter)) ? orxTRUE : orxFALSE;
+
+      /* Not screen? */
+      if((_apstBitmapList[0] != orxNULL) && (_apstBitmapList[0] != sstDisplay.pstScreen))
       {
-        /* Screen? */
-        if(pstBitmap == sstDisplay.pstScreen)
+        orxFLOAT fWidth, fHeight;
+
+        /* Checks */
+        orxASSERT(_apstBitmapList[0] != orxNULL);
+
+        /* Gets first destination width & height */
+        fWidth  = _apstBitmapList[0]->fWidth;
+        fHeight = _apstBitmapList[0]->fHeight;
+
+        /* For all other destination bitmaps */
+        for(i = 1; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+        {
+          orxBITMAP *pstBitmap;
+
+          /* Gets it */
+          pstBitmap = _apstBitmapList[i];
+
+          /* Checks */
+          orxASSERT(pstBitmap != orxNULL);
+          orxASSERT((pstBitmap != sstDisplay.pstScreen) && "Can only use screen as bitmap destination by itself.");
+
+          /* Valid? */
+          if(pstBitmap != orxNULL)
+          {
+            /* Same size? */
+            if((pstBitmap->fWidth == fWidth) && (pstBitmap->fHeight == fHeight))
+            {
+              /* Different than previous? */
+              if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+              {
+                /* Updates draw status */
+                bDraw = orxTRUE;
+              }
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap destinations as they have different dimensions: (%f, %f) != (%f, %f).", pstBitmap->fWidth, pstBitmap->fHeight, fWidth, fHeight);
+
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+
+              break;
+            }
+          }
+        }
+      }
+      else
+      {
+        /* Has destination? */
+        if(_apstBitmapList[0] != orxNULL)
         {
           /* Checks */
-          orxASSERT((i == 0) && (_u32Number == 1) && "Can only use screen as bitmap destination by itself.");
+          orxASSERT((_u32Number == 1) && "Can only use screen as bitmap destination by itself.");
 
-          /* Binds default frame buffer */
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-          glASSERT();
-
-          /* Updates result */
-          eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-          glASSERT();
-
-          /* Requests pending commands flush */
-          bFlush = orxTRUE;
-        }
-        /* Valid texture? */
-        else if(pstBitmap != orxNULL)
-        {
-          /* Wasn't linked to the texture FBO? */
-          if((bBound == orxFALSE)
-          && ((sstDisplay.apstDestinationBitmapList[i] == sstDisplay.pstScreen)
-           || (sstDisplay.apstDestinationBitmapList[i] == orxNULL)))
+          /* Multiple destinations? */
+          if(_u32Number != 1)
           {
-            /* Binds frame buffer */
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
-            glASSERT();
-
-            /* Updates bind status */
-            bBound = orxTRUE;
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
           }
-
-          /* Links texture to it */
-          glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
-          glASSERT();
-
-          /* Updates result */
-          eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-          glASSERT();
         }
         else
         {
@@ -2708,40 +2726,124 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           eResult = orxSTATUS_FAILURE;
         }
       }
-      else
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Not screen? */
-        if((pstBitmap != sstDisplay.pstScreen) || (i != 0))
+        /* Should draw? */
+        if(bDraw != orxFALSE)
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap <0x%X> as destination bitmap: only screen can be used as frame buffer isn't supported by this hardware.", pstBitmap);
-
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
+          /* Draws remaining items */
+          orxDisplay_GLFW_DrawArrays();
         }
-      }
 
-      /* Stores new destination bitmap */
-      sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
+        /* For all destination bitmaps */
+        for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+        {
+          orxBITMAP *pstBitmap;
+
+          /* Gets it */
+          pstBitmap = _apstBitmapList[i];
+
+          /* Different destination bitmap? */
+          if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+          {
+            /* Screen? */
+            if(pstBitmap == sstDisplay.pstScreen)
+            {
+              /* Binds default frame buffer */
+              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+              glASSERT();
+
+              /* Requests pending commands flush */
+              bFlush = orxTRUE;
+            }
+            /* Valid texture? */
+            else if(pstBitmap != orxNULL)
+            {
+              /* Wasn't linked to the texture FBO? */
+              if((bBound == orxFALSE)
+              && ((sstDisplay.apstDestinationBitmapList[i] == sstDisplay.pstScreen)
+               || (sstDisplay.apstDestinationBitmapList[i] == orxNULL)))
+              {
+                /* Binds frame buffer */
+                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
+                glASSERT();
+              }
+
+              /* Updates bind status */
+              bBound = orxTRUE;
+
+              /* Links texture to it */
+              glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
+              glASSERT();
+            }
+            else
+            {
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+            }
+          }
+
+          /* Stores new destination bitmap */
+          sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
+        }
+
+        /* For all previous destinations */
+        for(j = i; j < sstDisplay.u32DestinationBitmapCounter; j++)
+        {
+          /* Clears it */
+          sstDisplay.apstDestinationBitmapList[j] = orxNULL;
+
+          /* Bound new textures? */
+          if(bBound != orxFALSE)
+          {
+            /* Removes bound texture */
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + j, GL_TEXTURE_2D, 0, 0);
+            glASSERT();
+          }
+        }
+
+        /* Updates counter */
+        sstDisplay.u32DestinationBitmapCounter = i;
+
+        /* Updates result */
+        eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        glASSERT();
+
+        orxASSERT(eResult != orxSTATUS_FAILURE);
+      }
     }
   }
-
-  /* Not the same number of destinations? */
-  if(i != sstDisplay.u32DestinationBitmapCounter)
+  else
   {
-    /* Draws remaining items */
-    orxDisplay_GLFW_DrawArrays();
-  }
+    /* Single destination as screen? */
+    if((_u32Number == 1) && (_apstBitmapList[0] == sstDisplay.pstScreen))
+    {
+      /* Binds default frame buffer */
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      glASSERT();
 
-  /* For all previous destinations */
-  for(j = i; j < sstDisplay.u32DestinationBitmapCounter; j++)
-  {
-    /* Clears it */
-    sstDisplay.apstDestinationBitmapList[j] = orxNULL;
-  }
+      /* Stores screen bitmap */
+      sstDisplay.apstDestinationBitmapList[0] = sstDisplay.pstScreen;
 
-  /* Updates counter */
-  sstDisplay.u32DestinationBitmapCounter = i;
+      /* Updates result */
+      eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      glASSERT();
+    }
+    else
+    {
+      /* Has destinations? */
+      if(_u32Number != 0)
+      {
+        /* Outputs logs */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can only attach screen as destination as there's no framebuffer support on this machine.");
+
+        /* Updates status */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
 
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
