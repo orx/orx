@@ -111,7 +111,7 @@ struct __orxFILE_t
  */
 typedef struct __orxFILE_STATIC_t
 {
-  orxCHAR acWorkeDirectory[orxFILE_KU32_BUFFER_SIZE];
+  orxCHAR acWorkDirectory[orxFILE_KU32_BUFFER_SIZE];
   orxU32  u32Flags;
 
 } orxFILE_STATIC;
@@ -296,7 +296,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
       for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
         /* Copies it + replace windows separators by linux ones */
-        sstFile.acWorkeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+        sstFile.acWorkDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
 
         /* End of string? */
         if(acPath[s32Index] == orxCHAR_NULL)
@@ -320,7 +320,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", zHome);
+      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", zHome);
     }
     else
     {
@@ -333,7 +333,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", pstPasswd->pw_dir);
+        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", pstPasswd->pw_dir);
       }
     }
   }
@@ -347,11 +347,11 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acWorkeDirectory + s32Index, sizeof(sstFile.acWorkeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
     }
 
     /* Updates result */
-    zResult = sstFile.acWorkeDirectory;
+    zResult = sstFile.acWorkDirectory;
   }
 
   /* Done! */
@@ -382,7 +382,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
       for(s32Index = 0; s32Index < MAX_PATH; s32Index++)
       {
         /* Copies it + replace windows separators by linux ones */
-        sstFile.acWorkeDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+        sstFile.acWorkDirectory[s32Index] = (acPath[s32Index] != orxCHAR_DIRECTORY_SEPARATOR_WINDOWS) ? acPath[s32Index] : orxCHAR_DIRECTORY_SEPARATOR_LINUX;
 
         /* End of string? */
         if(acPath[s32Index] == orxCHAR_NULL)
@@ -406,7 +406,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
     }
     else
     {
@@ -419,7 +419,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
       }
     }
   }
@@ -427,12 +427,12 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
 
 #elif defined(__orxANDROID__)
 
   /* Prints internal storage directory */
-  s32Index = orxString_NPrint(sstFile.acWorkeDirectory, sizeof(sstFile.acWorkeDirectory) - 1, "%s", orxAndroid_GetInternalStoragePath());
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxAndroid_GetInternalStoragePath());
 
 #endif
 
@@ -443,11 +443,11 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acWorkeDirectory + s32Index, sizeof(sstFile.acWorkeDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
     }
 
     /* Updates result */
-    zResult = sstFile.acWorkeDirectory;
+    zResult = sstFile.acWorkDirectory;
   }
 
   /* Done! */
