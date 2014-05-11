@@ -2620,8 +2620,8 @@ orxRGBA orxFASTCALL orxDisplay_GLFW_GetBitmapColor(const orxBITMAP *_pstBitmap)
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
-  orxU32    i, j, u32Number;
-  orxBOOL   bBound = orxFALSE, bFlush = orxFALSE;
+  orxU32    i, u32Number;
+  orxBOOL   bFlush = orxFALSE, bUseFrameBuffer = orxFALSE;
   GLdouble  dOrthoRight, dOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2704,6 +2704,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
             }
           }
         }
+
+        /* Updates status */
+        bUseFrameBuffer = orxTRUE;
       }
       else
       {
@@ -2737,6 +2740,33 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           orxDisplay_GLFW_DrawArrays();
         }
 
+        /* Using framebuffer? */
+        if(bUseFrameBuffer != orxFALSE)
+        {
+          /* Binds frame buffer */
+          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
+          glASSERT();
+
+          /* Updates draw buffers */
+          glDrawBuffersARB((GLsizei)u32Number, sstDisplay.aeDrawBufferList);
+          glASSERT();
+        }
+
+        /* For all previous destinations */
+        for(i = u32Number; i < (orxU32)sstDisplay.iDrawBufferNumber; i++)
+        {
+          /* Clears it */
+          sstDisplay.apstDestinationBitmapList[i] = orxNULL;
+
+          /* Using framebuffer? */
+          if(bUseFrameBuffer != orxFALSE)
+          {
+            /* Removes previous bound texture */
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, 0, 0);
+            glASSERT();
+          }
+        }
+
         /* For all destination bitmaps */
         for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
         {
@@ -2745,11 +2775,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           /* Gets it */
           pstBitmap = _apstBitmapList[i];
 
-          /* Different destination bitmap? */
-          if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+          /* Screen? */
+          if(pstBitmap == sstDisplay.pstScreen)
           {
-            /* Screen? */
-            if(pstBitmap == sstDisplay.pstScreen)
+            /* Different destination bitmap? */
+            if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
             {
               /* Binds default frame buffer */
               glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -2758,50 +2788,22 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
               /* Requests pending commands flush */
               bFlush = orxTRUE;
             }
-            /* Valid texture? */
-            else if(pstBitmap != orxNULL)
-            {
-              /* Wasn't linked to the texture FBO? */
-              if((bBound == orxFALSE)
-              && ((sstDisplay.apstDestinationBitmapList[i] == sstDisplay.pstScreen)
-               || (sstDisplay.apstDestinationBitmapList[i] == orxNULL)))
-              {
-                /* Binds frame buffer */
-                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
-                glASSERT();
-              }
-
-              /* Updates bind status */
-              bBound = orxTRUE;
-
-              /* Links texture to it */
-              glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
-              glASSERT();
-            }
-            else
-            {
-              /* Updates result */
-              eResult = orxSTATUS_FAILURE;
-            }
+          }
+          /* Valid texture? */
+          else if(pstBitmap != orxNULL)
+          {
+            /* Links texture to it */
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
+            glASSERT();
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
           }
 
           /* Stores new destination bitmap */
           sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
-        }
-
-        /* For all previous destinations */
-        for(j = i; j < sstDisplay.u32DestinationBitmapCounter; j++)
-        {
-          /* Clears it */
-          sstDisplay.apstDestinationBitmapList[j] = orxNULL;
-
-          /* Bound new textures? */
-          if(bBound != orxFALSE)
-          {
-            /* Removes bound texture */
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + j, GL_TEXTURE_2D, 0, 0);
-            glASSERT();
-          }
         }
 
         /* Updates counter */
@@ -2810,8 +2812,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
         /* Updates result */
         eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
         glASSERT();
-
-        orxASSERT(eResult != orxSTATUS_FAILURE);
       }
     }
   }
