@@ -2733,6 +2733,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        orxU32 j;
+
         /* Should draw? */
         if(bDraw != orxFALSE)
         {
@@ -2746,29 +2748,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           /* Binds frame buffer */
           glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
           glASSERT();
-
-          /* Updates draw buffers */
-          glDrawBuffersARB((GLsizei)u32Number, sstDisplay.aeDrawBufferList);
-          glASSERT();
-        }
-
-        /* For all previous destinations */
-        for(i = u32Number; i < (orxU32)sstDisplay.iDrawBufferNumber; i++)
-        {
-          /* Clears it */
-          sstDisplay.apstDestinationBitmapList[i] = orxNULL;
-
-          /* Using framebuffer? */
-          if(bUseFrameBuffer != orxFALSE)
-          {
-            /* Removes previous bound texture */
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, 0, 0);
-            glASSERT();
-          }
         }
 
         /* For all destination bitmaps */
-        for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+        for(i = 0; i < u32Number; i++)
         {
           orxBITMAP *pstBitmap;
 
@@ -2800,6 +2783,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
           {
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
+
+            break;
           }
 
           /* Stores new destination bitmap */
@@ -2808,6 +2793,33 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
 
         /* Updates counter */
         sstDisplay.u32DestinationBitmapCounter = i;
+
+        /* Using framebuffer? */
+        if(bUseFrameBuffer != orxFALSE)
+        {
+          /* For all previous destinations */
+          for(j = i; j < (orxU32)sstDisplay.iDrawBufferNumber; j++)
+          {
+            /* Removes previous bound texture */
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + j, GL_TEXTURE_2D, 0, 0);
+            glASSERT();
+          }
+
+          /* Supports more than a single draw buffer? */
+          if((sstDisplay.iDrawBufferNumber > 1) && (i != 0))
+          {
+            /* Updates draw buffers */
+            glDrawBuffersARB((GLsizei)i, sstDisplay.aeDrawBufferList);
+            glASSERT();
+          }
+        }
+
+        /* For all previous destinations */
+        for(j = i; j < (orxU32)sstDisplay.iDrawBufferNumber; j++)
+        {
+          /* Clears it */
+          sstDisplay.apstDestinationBitmapList[j] = orxNULL;
+        }
 
         /* Updates result */
         eResult = (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -2866,14 +2878,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     }
     else
     {
-      /* Supports more than a single draw buffer? */
-      if(sstDisplay.iDrawBufferNumber > 1)
-      {
-        /* Updates draw buffers */
-        glDrawBuffersARB((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
-        glASSERT();
-      }
-
       /* Updates viewport info */
       iX      = 0;
       iY      = 0;
