@@ -350,7 +350,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
 #endif /* __orxWINDOWS__ */
 
       /* Creates worker thread */
-      sstThread.u32WorkerID = orxThread_Start(&orxThread_Work, orxNULL);
+      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxNULL);
 
       /* Success? */
       if(sstThread.u32WorkerID != orxU32_UNDEFINED)
@@ -800,7 +800,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
   {
     orxCHAR acBuffer[256];
@@ -824,7 +824,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     }
   }
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
 
   /* Allocates semaphore */
   pstResult = (orxTHREAD_SEMAPHORE *)orxMemory_Allocate(sizeof(sem_t), orxMEMORY_TYPE_SYSTEM);
@@ -843,7 +843,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     }
   }
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -870,12 +870,12 @@ orxSTATUS orxFASTCALL orxThread_DeleteSemaphore(orxTHREAD_SEMAPHORE *_pstSemapho
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
   /* Closes it */
   eResult = (sem_close((sem_t *)_pstSemaphore) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
-  #else /* __orxMAC__ */
+  #else /* __orxMAC__ || __orxIOS__ */
 
   /* Destroys semaphore */
   eResult = (sem_destroy((sem_t *)_pstSemaphore) != -1) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -883,7 +883,7 @@ orxSTATUS orxFASTCALL orxThread_DeleteSemaphore(orxTHREAD_SEMAPHORE *_pstSemapho
   /* Frees it */
   orxMemory_Free(_pstSemaphore);
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
