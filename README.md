@@ -5,7 +5,7 @@ Email iarwain [at] orx-project.org to contact the author; or, better,
 check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
 
 This engine is licensed under the very permissive [zlib license](http://en.wikipedia.org/wiki/Zlib_License),
-see the [LICENSE](LICENSE) file for details.
+see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for details.
 
 
 Summary
@@ -47,7 +47,8 @@ The current features of orx engine are:
 - plugin system
 - screenshot capture tool (supports bmp, png, jpg, tga and dds)
 
-See the [doc/html](doc/html) directory for the doxygen documentation of orx's API.
+See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
+The documentation for the latest release version is [available here](http://orx-project.org/orx/doc/html) at orx's homepage.
 
 You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
 (ie. how to use the config system) on [orx's wiki](http://wiki.orx-project.org).  
