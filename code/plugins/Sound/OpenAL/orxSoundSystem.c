@@ -133,7 +133,7 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
   };
 
 #ifdef __orxDEBUG__
-  orxU32              u32NameID;
+  const orxSTRING     zName;
 #endif /* __orxDEBUG__ */
 
 } orxSOUNDSYSTEM_DATA;
@@ -976,7 +976,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_CreateStreamTask(void *_pCont
     pstSound->fDuration = orxFLOAT_0;
 
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: invalid data.", orxString_GetFromID(pstSound->stData.u32NameID));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: invalid data.", pstSound->stData.zName);
   }
 
   /* Adds it to the list */
@@ -1038,7 +1038,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
         pstSample->fDuration                    = orxFLOAT_0;
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't read all data from file.", orxString_GetFromID(pstSample->stData.u32NameID));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't read all data from file.", pstSample->stData.zName);
       }
 
       /* Frees buffer */
@@ -1051,7 +1051,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
       pstSample->fDuration                    = orxFLOAT_0;
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate memory for data.", orxString_GetFromID(pstSample->stData.u32NameID));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate memory for data.", pstSample->stData.zName);
     }
 
     /* Closes file */
@@ -1068,7 +1068,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
     pstSample->stData.hResource = orxNULL;
 
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid data.", orxString_GetFromID(pstSample->stData.u32NameID));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid data.", pstSample->stData.zName);
   }
 
   /* Stores OpenAL buffer */
@@ -1461,6 +1461,11 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
         pstResult->stData.stInfo.u32FrameNumber    = _u32FrameNumber;
         pstResult->stData.stInfo.u32SampleRate     = _u32SampleRate;
 
+#ifdef __orxDEBUG__
+        /* Clears name */
+        pstResult->stData.zName                     = orxSTRING_EMPTY;
+#endif /* __orxDEBUG__ */
+
         /* Stores duration */
         pstResult->fDuration = orxU2F(_u32FrameNumber) / orx2F(_u32SampleRate);
 
@@ -1519,8 +1524,8 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTR
       if(hResource != orxHANDLE_UNDEFINED)
       {
 #ifdef __orxDEBUG__
-        /* Stores name ID */
-        pstResult->stData.u32NameID = orxString_GetID(_zFilename);
+        /* Stores name */
+        pstResult->stData.zName = orxString_Store(_zFilename);
 #endif /* __orxDEBUG__ */
 
         /* Stores resource */
@@ -1710,6 +1715,11 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
       pstResult->stData.stInfo.u32FrameNumber   = sstSoundSystem.s32StreamBufferSize / _u32ChannelNumber;
       pstResult->stData.stInfo.u32SampleRate    = _u32SampleRate;
 
+#ifdef __orxDEBUG__
+      /* Clears name */
+      pstResult->stData.zName                   = orxSTRING_EMPTY;
+#endif /* __orxDEBUG__ */
+
       /* Stores duration */
       pstResult->fDuration = orx2F(-1.0f);
 
@@ -1769,8 +1779,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
       if(hResource != orxHANDLE_UNDEFINED)
       {
 #ifdef __orxDEBUG__
-        /* Stores name ID */
-        pstResult->stData.u32NameID = orxString_GetID(_zFilename);
+        /* Stores name */
+        pstResult->stData.zName = orxString_Store(_zFilename);
 #endif /* __orxDEBUG__ */
 
         /* Stores resource */
