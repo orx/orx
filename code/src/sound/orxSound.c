@@ -348,7 +348,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(orxString_ICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
         {
           /* Creates empty stream */
-          _pstSound->pstData = orxSoundSystem_CreateStream(orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE, orxSOUND_KZ_CONFIG_EMPTY_STREAM);
+          _pstSound->pstData = orxSoundSystem_CreateStream(orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE, _pstSound->zReference);
         }
         else
         {
