@@ -80,6 +80,7 @@
 #define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   44100
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME       orx2F(0.001f)
+#define orxSOUNDSYSTEM_KZ_THREAD_NAME                     "Sound Streaming"
 
 #ifdef __orxDEBUG__
 
@@ -1245,7 +1246,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
           if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
           {
             /* Adds streaming thread */
-            sstSoundSystem.u32StreamingThread = orxThread_Start(&orxSoundSystem_OpenAL_UpdateStreaming, orxNULL);
+            sstSoundSystem.u32StreamingThread = orxThread_Start(&orxSoundSystem_OpenAL_UpdateStreaming, orxSOUNDSYSTEM_KZ_THREAD_NAME, orxNULL);
 
             /* Success? */
             if(sstSoundSystem.u32StreamingThread != orxU32_UNDEFINED)

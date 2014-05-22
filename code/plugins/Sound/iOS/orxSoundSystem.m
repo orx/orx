@@ -56,6 +56,7 @@
 #define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
 #define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   44100
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
+#define orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME       orx2F(0.001f)
 
 #ifdef __orxDEBUG__
 
@@ -100,8 +101,8 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
   {
     struct
     {
-      stb_vorbis     *pstFile;
       orxHANDLE       hResource;
+      stb_vorbis     *pstFile;
     } vorbis;
 
     struct
@@ -110,15 +111,19 @@ typedef struct __orxSOUNDSYSTEM_DATA_t
     } extaudio;
   };
 
+#ifdef __orxDEBUG__
+  orxU32              u32NameID;
+#endif /* __orxDEBUG__ */
+
 } orxSOUNDSYSTEM_DATA;
 
 /** Internal sample structure
  */
 struct __orxSOUNDSYSTEM_SAMPLE_t
 {
-  ALuint              uiBuffer;
+  volatile ALuint     uiBuffer;
   orxFLOAT            fDuration;
-  orxSOUNDSYSTEM_INFO stInfo;
+  orxSOUNDSYSTEM_DATA stData;
 };
 
 /** Internal sound structure
@@ -141,6 +146,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
     struct
     {
       orxLINKLIST_NODE        stNode;
+      orxBOOL                 bDelete;
       orxBOOL                 bLoop;
       orxBOOL                 bStop;
       orxBOOL                 bPause;
@@ -164,6 +170,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxBANK                *pstSoundBank;       /**< Sound bank */
   orxFLOAT                fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT                fRecDimensionRatio; /**< Reciprocal dimension ratio */
+  orxU32                  u32StreamingThread; /**< Streaming thread */
   orxU32                  u32Flags;           /**< Status flags */
   ExtAudioFileRef         poRecordingFile;    /**< Recording file */
   orxLINKLIST             stStreamList;       /**< Stream list */
@@ -173,6 +180,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxS16                 *as16StreamBuffer;   /**< Stream buffer */
   orxS16                 *as16RecordingBuffer;/**< Recording buffer */
   ALuint                 *auiWorkBufferList;  /**< Buffer list */
+  orxTHREAD_SEMAPHORE    *pstStreamSemaphore; /**< Stream semaphore */
 
 } orxSOUNDSYSTEM_STATIC;
 
@@ -302,148 +310,119 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
   return eResult;
 }
 
-static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(const orxSTRING _zFilename, orxSOUNDSYSTEM_DATA *_pstData)
+static orxINLINE orxSTATUS orxSoundSystem_iOS_OpenFile(orxSOUNDSYSTEM_DATA *_pstData)
 {
-  const orxSTRING zResourceLocation;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Checks */
-  orxASSERT(_zFilename != orxNULL);
-  orxASSERT(_pstData != orxNULL);
-
-  /* Gets resource name */
-  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
+  /* Opens file with vorbis */
+  _pstData->vorbis.pstFile = stb_vorbis_open_file(_pstData->hResource, FALSE, NULL, NULL);
 
   /* Success? */
-  if(zResourceLocation != orxNULL)
+  if(_pstData->vorbis.pstFile != NULL)
   {
-    orxHANDLE hResource;
+    stb_vorbis_info stFileInfo;
 
-    /* Opens resource */
-    hResource = orxResource_Open(zResourceLocation, orxFALSE);
+    /* Gets file info */
+    stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
 
-    /* Success? */
-    if(hResource != orxHANDLE_UNDEFINED)
+    /* Stores info */
+    _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
+    _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
+    _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
+
+    /* Updates status */
+    _pstData->bVorbis                 = orxTRUE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    NSString *poName;
+    NSURL    *poURL;
+
+    /* Gets NSString */
+    poName = [NSString stringWithCString:orxResource_GetPath(zResourceLocation) encoding:NSUTF8StringEncoding];
+
+    /* Gets associated URL */
+    poURL = [NSURL fileURLWithPath:poName];
+
+    /* Opens file */
+    if(ExtAudioFileOpenURL((CFURLRef)poURL, &(_pstData->extaudio.oFileRef)) == 0)
     {
-      /* Opens file with vorbis */
-      _pstData->vorbis.pstFile = stb_vorbis_open_file(hResource, FALSE, NULL, NULL);
+      AudioStreamBasicDescription stFileInfo;
+      UInt32                      u32InfoSize;
 
-      /* Success? */
-      if(_pstData->vorbis.pstFile != NULL)
+      /* Gets file info size  */
+      u32InfoSize = sizeof(AudioStreamBasicDescription);
+
+      /* Clears file info */
+      orxMemory_Zero(&stFileInfo, u32InfoSize);
+
+      /* Gets file info */
+      if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileDataFormat, &u32InfoSize, &stFileInfo) == 0)
       {
-        stb_vorbis_info stFileInfo;
-
-        /* Gets file info */
-        stFileInfo = stb_vorbis_get_info(_pstData->vorbis.pstFile);
-
-        /* Stores info */
-        _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.channels;
-        _pstData->stInfo.u32FrameNumber   = (orxU32)stb_vorbis_stream_length_in_samples(_pstData->vorbis.pstFile);
-        _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.sample_rate;
-        _pstData->vorbis.hResource        = hResource;
-
-        /* Updates status */
-        _pstData->bVorbis                 = orxTRUE;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Closes resource */
-        orxResource_Close(hResource);
-      }
-    }
-
-    /* Not a valid ogg vorbis? */
-    if(eResult == orxSTATUS_FAILURE)
-    {
-      NSString *poName;
-      NSURL    *poURL;
-
-      /* Gets NSString */
-      poName = [NSString stringWithCString:orxResource_GetPath(zResourceLocation) encoding:NSUTF8StringEncoding];
-
-      /* Gets associated URL */
-      poURL = [NSURL fileURLWithPath:poName];
-
-      /* Opens file */
-      if(ExtAudioFileOpenURL((CFURLRef)poURL, &(_pstData->extaudio.oFileRef)) == 0)
-      {
-        AudioStreamBasicDescription stFileInfo;
-        UInt32                      u32InfoSize;
-
-        /* Gets file info size  */
-        u32InfoSize = sizeof(AudioStreamBasicDescription);
-
-        /* Clears file info */
-        orxMemory_Zero(&stFileInfo, u32InfoSize);
-
-        /* Gets file info */
-        if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileDataFormat, &u32InfoSize, &stFileInfo) == 0)
+        /* Valid number of channels */
+        if(stFileInfo.mChannelsPerFrame <= 2)
         {
-          /* Valid number of channels */
-          if(stFileInfo.mChannelsPerFrame <= 2)
+          /* Updates file info for 16bit PCM data */
+          stFileInfo.mFormatID        = kAudioFormatLinearPCM;
+          stFileInfo.mBytesPerPacket  = 2 * stFileInfo.mChannelsPerFrame;
+          stFileInfo.mFramesPerPacket = 1;
+          stFileInfo.mBytesPerFrame   = 2 * stFileInfo.mChannelsPerFrame;
+          stFileInfo.mBitsPerChannel  = 16;
+          stFileInfo.mFormatFlags     = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+
+          /* Applies it */
+          if(ExtAudioFileSetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_ClientDataFormat, u32InfoSize, &stFileInfo) == 0)
           {
-            /* Updates file info for 16bit PCM data */
-            stFileInfo.mFormatID        = kAudioFormatLinearPCM;
-            stFileInfo.mBytesPerPacket  = 2 * stFileInfo.mChannelsPerFrame;
-            stFileInfo.mFramesPerPacket = 1;
-            stFileInfo.mBytesPerFrame   = 2 * stFileInfo.mChannelsPerFrame;
-            stFileInfo.mBitsPerChannel  = 16;
-            stFileInfo.mFormatFlags     = kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger;
+            SInt64 s64FrameNumber;
 
-            /* Applies it */
-            if(ExtAudioFileSetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_ClientDataFormat, u32InfoSize, &stFileInfo) == 0)
+            /* Gets frame number size */
+            u32InfoSize = sizeof(SInt64);
+
+            /* Get the frame number */
+            if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileLengthFrames, &u32InfoSize, &s64FrameNumber) == 0)
             {
-              SInt64 s64FrameNumber;
+              /* Stores info */
+              _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.mChannelsPerFrame;
+              _pstData->stInfo.u32FrameNumber   = (orxU32)s64FrameNumber;
+              _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.mSampleRate;
 
-              /* Gets frame number size */
-              u32InfoSize = sizeof(SInt64);
+              /* Updates status */
+              _pstData->bVorbis                 = orxFALSE;
 
-              /* Get the frame number */
-              if(ExtAudioFileGetProperty(_pstData->extaudio.oFileRef, kExtAudioFileProperty_FileLengthFrames, &u32InfoSize, &s64FrameNumber) == 0)
-              {
-                /* Stores info */
-                _pstData->stInfo.u32ChannelNumber = (orxU32)stFileInfo.mChannelsPerFrame;
-                _pstData->stInfo.u32FrameNumber   = (orxU32)s64FrameNumber;
-                _pstData->stInfo.u32SampleRate    = (orxU32)stFileInfo.mSampleRate;
-
-                /* Updates status */
-                _pstData->bVorbis                 = orxFALSE;
-
-                /* Updates result */
-                eResult = orxSTATUS_SUCCESS;
-              }
-              else
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't get file size.", _zFilename);
-              }
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
             }
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't convert to 16bit PCM.", _zFilename);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't get file size.", _zFilename);
             }
           }
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: too many channels.", _zFilename);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't convert to 16bit PCM.", _zFilename);
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid format.", _zFilename);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: too many channels.", _zFilename);
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't find/load the file.", _zFilename);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: invalid format.", _zFilename);
       }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't find/load the file.", _zFilename);
     }
   }
 

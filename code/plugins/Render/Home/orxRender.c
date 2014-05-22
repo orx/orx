@@ -602,7 +602,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=%sThread%s%.0u=-     Frame [%.2f|%.2fms]", (sstRender.u32SelectedThread == orxTHREAD_KU32_MAIN_THREAD_ID) ? "Main " : orxSTRING_EMPTY, (sstRender.u32SelectedThread == orxTHREAD_KU32_MAIN_THREAD_ID) ? orxSTRING_EMPTY : " #", (sstRender.u32SelectedThread == orxTHREAD_KU32_MAIN_THREAD_ID) ? 0 : sstRender.u32SelectedThread, orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
+  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=%s Thread=-  Frame[%.2f|%.2fms]", (sstRender.u32SelectedThread == orxTHREAD_KU32_MAIN_THREAD_ID) ? "Main" : orxThread_GetName(sstRender.u32SelectedThread), orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);

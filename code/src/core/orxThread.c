@@ -83,6 +83,8 @@
  */
 #define orxTHREAD_KU32_TASK_LIST_SIZE                 64
 
+#define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -106,6 +108,7 @@ typedef struct __orxTHREAD_INFO_t
   orxTHREAD_FUNCTION      pfnRun;
   void                   *pContext;
   orxTHREAD_SEMAPHORE    *pstEnableSemaphore;
+  orxSTRING               zName;
   orxU32                  u32ParentID;
   orxU32                  u32Flags;
 
@@ -350,7 +353,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
 #endif /* __orxWINDOWS__ */
 
       /* Creates worker thread */
-      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxNULL);
+      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxTHREAD_KZ_THREAD_NAME_WORKER, orxNULL);
 
       /* Success? */
       if(sstThread.u32WorkerID != orxU32_UNDEFINED)
@@ -452,10 +455,11 @@ void orxFASTCALL orxThread_Exit()
 
 /** Starts a new thread
  * @param[in]   _pfnRun                               Function to run on the new thread
+ * @param[in]   _zName                                Thread's name
  * @param[in]   _pContext                             Context that will be transmitted to the function when called
  * @return      Thread ID if successful, orxU32_UNDEFINED otherwise
  */
-orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pContext)
+orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxSTRING _zName, void *_pContext)
 {
   orxU32 u32Index, u32Result = orxU32_UNDEFINED;
 
@@ -494,6 +498,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pCon
       /* Inits its info */
       pstInfo->pfnRun       = _pfnRun;
       pstInfo->pContext     = _pContext;
+      pstInfo->zName        = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : (orxSTRING)orxSTRING_EMPTY;
       pstInfo->u32ParentID  = orxThread_GetCurrent();
       pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED | orxTHREAD_KU32_INFO_FLAG_ENABLED;
       orxMEMORY_BARRIER();
@@ -600,6 +605,11 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     sstThread.astThreadInfoList[_u32ThreadID].u32ParentID = 0;
     sstThread.astThreadInfoList[_u32ThreadID].pfnRun      = orxNULL;
     sstThread.astThreadInfoList[_u32ThreadID].pContext    = orxNULL;
+    if(sstThread.astThreadInfoList[_u32ThreadID].zName != orxSTRING_EMPTY)
+    {
+      orxString_Delete(sstThread.astThreadInfoList[_u32ThreadID].zName);
+    }
+    sstThread.astThreadInfoList[_u32ThreadID].zName       = orxNULL;
     sstThread.astThreadInfoList[_u32ThreadID].u32Flags    = orxTHREAD_KU32_INFO_FLAG_NONE;
     orxMEMORY_BARRIER();
 
@@ -638,6 +648,29 @@ orxSTATUS orxFASTCALL orxThread_JoinAll()
 
   /* Done! */
   return eResult;
+}
+
+/** Gets a thread name
+ * @param[in]   _u32ThreadID                          ID of the concerned thread
+ * @return      Thread name
+ */
+const orxSTRING orxFASTCALL orxThread_GetName(orxU32 _u32ThreadID)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
+
+  /* Is initialized? */
+  if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
+  {
+    /* Updates result */
+    zResult = sstThread.astThreadInfoList[_u32ThreadID].zName;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Enables / disables threads

@@ -84,10 +84,11 @@ extern orxDLLAPI void orxFASTCALL                     orxThread_Exit();
 
 /** Starts a new thread
  * @param[in]   _pfnRun                               Function to run on the new thread
+ * @param[in]   _zName                                Thread's name
  * @param[in]   _pContext                             Context that will be transmitted to the function when called
  * @return      Thread ID if successful, orxU32_UNDEFINED otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, void *_pContext);
+extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxSTRING _zName, void *_pContext);
 
 /** Joins a thread (blocks & waits until the other thread finishes)
  * @param[in]   _u32ThreadID                          ID of the thread for which to wait
@@ -99,6 +100,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Join(orxU32 _u32
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_JoinAll();
+
+/** Gets a thread name
+ * @param[in]   _u32ThreadID                          ID of the concerned thread
+ * @return      Thread name
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxThread_GetName(orxU32 _u32ThreadID);
 
 /** Enables / disables threads
  * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)

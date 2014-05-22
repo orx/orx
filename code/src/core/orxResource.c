@@ -89,6 +89,8 @@
 
 #define orxRESOURCE_KU32_REQUEST_LIST_SIZE            128                             /**< Request list size */
 
+#define orxRESOURCE_KZ_THREAD_NAME                    "Resource"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -838,7 +840,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
           orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
 
           /* Starts request processing thread */
-          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxNULL);
+          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
 
           /* Success? */
           if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)

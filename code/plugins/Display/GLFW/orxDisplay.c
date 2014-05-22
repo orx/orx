@@ -823,6 +823,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
   GLuint                uiBytesPerPixel;
   orxSTATUS             eResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_DecompressBitmap");
+
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
 
@@ -904,6 +907,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
