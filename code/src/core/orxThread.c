@@ -83,6 +83,7 @@
  */
 #define orxTHREAD_KU32_TASK_LIST_SIZE                 64
 
+#define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
 
 
@@ -108,7 +109,7 @@ typedef struct __orxTHREAD_INFO_t
   orxTHREAD_FUNCTION      pfnRun;
   void                   *pContext;
   orxTHREAD_SEMAPHORE    *pstEnableSemaphore;
-  orxSTRING               zName;
+  const orxSTRING         zName;
   orxU32                  u32ParentID;
   orxU32                  u32Flags;
 
@@ -321,6 +322,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread      = GetCurrentThread();
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32ThreadID  = GetCurrentThreadId();
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName        = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
       /* Sets thread CPU affinity to remain on the same core */
@@ -498,7 +500,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
       /* Inits its info */
       pstInfo->pfnRun       = _pfnRun;
       pstInfo->pContext     = _pContext;
-      pstInfo->zName        = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : (orxSTRING)orxSTRING_EMPTY;
+      pstInfo->zName        = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : orxSTRING_EMPTY;
       pstInfo->u32ParentID  = orxThread_GetCurrent();
       pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED | orxTHREAD_KU32_INFO_FLAG_ENABLED;
       orxMEMORY_BARRIER();
@@ -561,6 +563,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
   orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
+  orxASSERT(_u32ThreadID != orxTHREAD_KU32_MAIN_THREAD_ID);
 
   /* Is initialized? */
   if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
@@ -571,8 +574,8 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     /* Updates stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
 
-    /* Not main thread and was disabled? */
-    if((_u32ThreadID != orxTHREAD_KU32_MAIN_THREAD_ID) && (!orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED)))
+    /* Was disabled? */
+    if(!orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED))
     {
       /* Updates its status */
       orxFLAG_SET(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED, orxTHREAD_KU32_INFO_FLAG_NONE);
@@ -607,7 +610,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
     sstThread.astThreadInfoList[_u32ThreadID].pContext    = orxNULL;
     if(sstThread.astThreadInfoList[_u32ThreadID].zName != orxSTRING_EMPTY)
     {
-      orxString_Delete(sstThread.astThreadInfoList[_u32ThreadID].zName);
+      orxString_Delete((orxSTRING)sstThread.astThreadInfoList[_u32ThreadID].zName);
     }
     sstThread.astThreadInfoList[_u32ThreadID].zName       = orxNULL;
     sstThread.astThreadInfoList[_u32ThreadID].u32Flags    = orxTHREAD_KU32_INFO_FLAG_NONE;
