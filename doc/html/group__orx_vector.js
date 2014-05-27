@@ -19,6 +19,7 @@ var group__orx_vector =
     [ "orxVector_2DRotate", "group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185", null ],
     [ "orxVector_Add", "group__orx_vector.html#gabe4db2c5e46746a1d83d1682e1620176", null ],
     [ "orxVector_AreEqual", "group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f", null ],
+    [ "orxVector_Bezier", "group__orx_vector.html#gacea978095ea5328f2348d8ebada2c458", null ],
     [ "orxVector_CatmullRom", "group__orx_vector.html#gad6425e055fe1166db59ba2ee56e0ba64", null ],
     [ "orxVector_Clamp", "group__orx_vector.html#gabd8aced1e15230cefe84887104c3e50d", null ],
     [ "orxVector_Copy", "group__orx_vector.html#ga8412bc334ebe4bda4593b25309d5f022", null ],

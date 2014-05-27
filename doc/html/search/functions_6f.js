@@ -1200,6 +1200,7 @@ var searchData=
   ['orxvector_5f2drotate',['orxVector_2DRotate',['../group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185',1,'orxVector.h']]],
   ['orxvector_5fadd',['orxVector_Add',['../group__orx_vector.html#gabe4db2c5e46746a1d83d1682e1620176',1,'orxVector.h']]],
   ['orxvector_5fareequal',['orxVector_AreEqual',['../group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f',1,'orxVector.h']]],
+  ['orxvector_5fbezier',['orxVector_Bezier',['../group__orx_vector.html#gacea978095ea5328f2348d8ebada2c458',1,'orxVector.h']]],
   ['orxvector_5fcatmullrom',['orxVector_CatmullRom',['../group__orx_vector.html#gad6425e055fe1166db59ba2ee56e0ba64',1,'orxVector.h']]],
   ['orxvector_5fclamp',['orxVector_Clamp',['../group__orx_vector.html#gabd8aced1e15230cefe84887104c3e50d',1,'orxVector.h']]],
   ['orxvector_5fcopy',['orxVector_Copy',['../group__orx_vector.html#ga8412bc334ebe4bda4593b25309d5f022',1,'orxVector.h']]],
