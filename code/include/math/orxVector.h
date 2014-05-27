@@ -845,6 +845,17 @@ static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, c
 
 /* *** Vector functions *** */
 
+/** Computes an interpolated point on a cubic Bezier curve segment for a given parameter
+ * @param[out]  _pvRes                      Vector where to store result
+ * @param[in]   _pvPoint1                   First point for this curve segment
+ * @param[in]   _pvPoint2                   First control point for this curve segment
+ * @param[in]   _pvPoint3                   Second control point for this curve segment
+ * @param[in]   _pvPoint4                   Last point for this curve segment
+ * @param[in]   _fT                         Interpolation parameter in [0.0, 1.0]
+ * @return      Interpolated point on the cubic Bezier curve segment
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_Bezier(orxVECTOR *_pvRes, const orxVECTOR *_pvPoint1, const orxVECTOR *_pvPoint2, const orxVECTOR *_pvPoint3, const orxVECTOR *_pvPoint4, orxFLOAT _fT);
+
 /** Computes an interpolated point on a Catmull-Rom curve segment for a given parameter
  * @param[out]  _pvRes                      Vector where to store result
  * @param[in]   _pvPoint1                   First control point for this curve segment
