@@ -874,6 +874,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
   GLuint                uiBytesPerPixel;
   orxSTATUS             eResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_DecompressBitmap");
+
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
 
@@ -918,6 +921,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -2629,8 +2635,8 @@ orxRGBA orxFASTCALL orxDisplay_Android_GetBitmapColor(const orxBITMAP *_pstBitma
 
 orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
-  orxU32    i, j, u32Number;
-  orxBOOL   bBound = orxFALSE, bFlush = orxFALSE;
+  orxU32    i, u32Number;
+  orxBOOL   bFlush = orxFALSE, bUseFrameBuffer = orxFALSE;
   orxFLOAT  fOrthoRight, fOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2653,88 +2659,185 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
     u32Number = _u32Number;
   }
 
-  /* For all bitmaps */
-  for(i = 0; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+  /* Has destinations? */
+  if(u32Number != 0)
   {
-    orxBITMAP *pstBitmap;
+    orxBOOL bDraw;
 
-    /* Gets bitmap */
-    pstBitmap = _apstBitmapList[i];
+    /* Updates draw status */
+    bDraw = ((_apstBitmapList[0] != sstDisplay.apstDestinationBitmapList[0]) || (u32Number != sstDisplay.u32DestinationBitmapCounter)) ? orxTRUE : orxFALSE;
 
-    /* Different destination bitmap? */
-    if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+    /* Not screen? */
+    if((_apstBitmapList[0] != orxNULL) && (_apstBitmapList[0] != sstDisplay.pstScreen))
     {
-      /* Draws remaining items */
-      orxDisplay_Android_DrawArrays();
+      orxFLOAT fWidth, fHeight;
 
-      /* Screen? */
-      if(pstBitmap == sstDisplay.pstScreen)
+      /* Checks */
+      orxASSERT(_apstBitmapList[0] != orxNULL);
+
+      /* Gets first destination width & height */
+      fWidth  = _apstBitmapList[0]->fWidth;
+      fHeight = _apstBitmapList[0]->fHeight;
+
+      /* For all other destination bitmaps */
+      for(i = 1; (i < u32Number) && (eResult != orxSTATUS_FAILURE); i++)
+      {
+        orxBITMAP *pstBitmap;
+
+        /* Gets it */
+        pstBitmap = _apstBitmapList[i];
+
+        /* Checks */
+        orxASSERT(pstBitmap != orxNULL);
+        orxASSERT((pstBitmap != sstDisplay.pstScreen) && "Can only use screen as bitmap destination by itself.");
+
+        /* Valid? */
+        if(pstBitmap != orxNULL)
+        {
+          /* Same size? */
+          if((pstBitmap->fWidth == fWidth) && (pstBitmap->fHeight == fHeight))
+          {
+            /* Different than previous? */
+            if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+            {
+              /* Updates draw status */
+              bDraw = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap destinations as they have different dimensions: (%f, %f) != (%f, %f).", pstBitmap->fWidth, pstBitmap->fHeight, fWidth, fHeight);
+
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+
+            break;
+          }
+        }
+      }
+
+      /* Updates status */
+      bUseFrameBuffer = orxTRUE;
+    }
+    else
+    {
+      /* Has destination? */
+      if(_apstBitmapList[0] != orxNULL)
       {
         /* Checks */
-        orxASSERT((i == 0) && (_u32Number == 1) && "Can only use screen as bitmap destination by itself.");
+        orxASSERT((_u32Number == 1) && "Can only use screen as bitmap destination by itself.");
 
-        /* Binds default frame buffer */
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glASSERT();
-
-        /* Updates result */
-        eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-        glASSERT();
-
-        /* Requests pending commands flush */
-        bFlush = orxTRUE;
-      }
-      /* Valid texture? */
-      else if(pstBitmap != orxNULL)
-      {
-        /* Wasn't linked to the texture FBO? */
-        if((bBound == orxFALSE)
-        && ((sstDisplay.apstDestinationBitmapList[i] == sstDisplay.pstScreen)
-         || (sstDisplay.apstDestinationBitmapList[i] == orxNULL)))
+        /* Multiple destinations? */
+        if(_u32Number != 1)
         {
-          /* Binds frame buffer */
-          glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
-          glASSERT();
-
-          /* Updates bind status */
-          bBound = orxTRUE;
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
         }
-
-        /* Links texture to it */
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
-        glASSERT();
-
-        /* Updates result */
-        eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-        glASSERT();
       }
       else
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
       }
+    }
 
-      /* Stores new destination bitmap */
-      sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      orxU32 j;
+
+      /* Should draw? */
+      if(bDraw != orxFALSE)
+      {
+        /* Draws remaining items */
+        orxDisplay_Android_DrawArrays();
+      }
+
+      /* Using framebuffer? */
+      if(bUseFrameBuffer != orxFALSE)
+      {
+        /* Binds frame buffer */
+        glBindFramebuffer(GL_FRAMEBUFFER, sstDisplay.uiFrameBuffer);
+        glASSERT();
+      }
+
+      /* For all destination bitmaps */
+      for(i = 0; i < u32Number; i++)
+      {
+        orxBITMAP *pstBitmap;
+
+        /* Gets it */
+        pstBitmap = _apstBitmapList[i];
+
+        /* Screen? */
+        if(pstBitmap == sstDisplay.pstScreen)
+        {
+          /* Different destination bitmap? */
+          if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
+          {
+            /* Binds default frame buffer */
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glASSERT();
+
+            /* Requests pending commands flush */
+            bFlush = orxTRUE;
+          }
+        }
+        /* Valid texture? */
+        else if(pstBitmap != orxNULL)
+        {
+          /* Links texture to it */
+          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, pstBitmap->uiTexture, 0);
+          glASSERT();
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+
+          break;
+        }
+
+        /* Stores new destination bitmap */
+        sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
+      }
+
+      /* Updates counter */
+      sstDisplay.u32DestinationBitmapCounter = i;
+
+      /* Using framebuffer? */
+      if(bUseFrameBuffer != orxFALSE)
+      {
+        /* For all previous destinations */
+        for(j = i; j < (orxU32)sstDisplay.iDrawBufferNumber; j++)
+        {
+          /* Removes previous bound texture */
+          glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + j, GL_TEXTURE_2D, 0, 0);
+          glASSERT();
+        }
+
+        /* Supports more than a single draw buffer? */
+        if((sstDisplay.iDrawBufferNumber > 1) && (i != 0))
+        {
+          /* Updates draw buffers */
+          glDrawBuffers((GLsizei)i, sstDisplay.aeDrawBufferList);
+          glASSERT();
+        }
+      }
+
+      /* For all previous destinations */
+      for(j = i; j < (orxU32)sstDisplay.iDrawBufferNumber; j++)
+      {
+        /* Clears it */
+        sstDisplay.apstDestinationBitmapList[j] = orxNULL;
+      }
+
+      /* Updates result */
+      eResult = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      glASSERT();
     }
   }
-
-  /* Not the same number of destinations? */
-  if(i != sstDisplay.u32DestinationBitmapCounter)
-  {
-    /* Draws remaining items */
-    orxDisplay_Android_DrawArrays();
-  }
-
-  /* For all previous destinations */
-  for(j = i; j < sstDisplay.u32DestinationBitmapCounter; j++)
-  {
-    /* Clears it */
-    sstDisplay.apstDestinationBitmapList[j] = orxNULL;
-  }
-
-  /* Updates counter */
-  sstDisplay.u32DestinationBitmapCounter = i;
 
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
