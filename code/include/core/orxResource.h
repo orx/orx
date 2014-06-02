@@ -215,6 +215,12 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_Open(const
  */
 extern orxDLLAPI void orxFASTCALL                         orxResource_Close(orxHANDLE _hResource);
 
+/** Gets the literal location of a resource
+ * @param[in] _hResource        Concerned resource
+ * @return Literal location string
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocation(orxHANDLE _hResource);
+
 /** Gets the size, in bytes, of a resource
  * @param[in] _hResource        Concerned resource
  * @return Size of the resource, in bytes

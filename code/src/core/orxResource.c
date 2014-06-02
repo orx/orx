@@ -132,7 +132,6 @@ typedef struct __orxRESOURCE_INFO_t
   orxSTRING                 zLocation;                                                /**< Resource literal location */
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxS64                    s64Time;                                                  /**< Resource modification time */
-  orxU32                    u32NameID;                                                /**< Resource name ID */
 
 } orxRESOURCE_INFO;
 
@@ -142,6 +141,7 @@ typedef struct __orxRESOURCE_OPEN_INFO_t
 {
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxHANDLE                 hResource;                                                /**< Resource handle */
+  orxSTRING                 zLocation;                                                /**< Resource location */
   volatile orxU32           u32OpCounter;                                             /**< Operation counter */
 
 } orxRESOURCE_OPEN_INFO;
@@ -671,6 +671,9 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
         /* Services it */
         pstRequest->pstResourceInfo->pstTypeInfo->pfnClose(pstRequest->pstResourceInfo->hResource);
 
+        /* Deletes location */
+        orxString_Delete(pstRequest->pstResourceInfo->zLocation);
+
         /* Frees open info */
         orxBank_Free(sstResource.pstOpenInfoBank, pstRequest->pstResourceInfo);
         pstRequest->pstResourceInfo = orxNULL;
@@ -745,6 +748,61 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
 
   /* Signals worker semaphore */
   orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
+}
+
+static void orxResource_UpdatePostInit()
+{
+  /* Isn't request notification callback set? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET))
+  {
+    /* Is clock module initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+    {
+      orxSTATUS eResult;
+
+      /* Registers request notification callback */
+      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+      /* Checks */
+      orxASSERT(eResult != orxSTATUS_FAILURE);
+
+      /* Updates flags */
+      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+    }
+  }
+
+  /* Isn't config already loaded? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
+  {
+    /* Reloads storage */
+    orxResource_ReloadStorage();
+  }
+  else
+  {
+    /* Doesn't have watch */
+    if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
+    {
+      /* Is clock module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+      {
+        /* Pushes resource config section */
+        orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+        /* Has watch list? */
+        if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
+        {
+          /* Registers watch callbacks */
+          orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Updates flags */
+        orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
+      }
+    }
+  }
 }
 
 
@@ -1397,57 +1455,8 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
 
-  /* Isn't request notification callback set? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET))
-  {
-    /* Is clock module initialized? */
-    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-    {
-      orxSTATUS eResult;
-
-      /* Registers request notification callback */
-      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
-
-      /* Checks */
-      orxASSERT(eResult != orxSTATUS_FAILURE);
-
-      /* Updates flags */
-      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-    }
-  }
-
-  /* Isn't config already loaded? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
-  {
-    /* Reloads storage */
-    orxResource_ReloadStorage();
-  }
-  else
-  {
-    /* Doesn't have watch */
-    if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
-    {
-      /* Is clock module initialized? */
-      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-      {
-        /* Pushes resource config section */
-        orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
-
-        /* Has watch list? */
-        if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
-        {
-          /* Registers watch callbacks */
-          orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
-        }
-
-        /* Pops config section */
-        orxConfig_PopSection();
-
-        /* Updates flags */
-        orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-      }
-    }
-  }
+  /* Updates post-init */
+  orxResource_UpdatePostInit();
 
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
@@ -1560,31 +1569,8 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
 
-  /* Isn't request notification callback set? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET))
-  {
-    /* Is clock module initialized? */
-    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-    {
-      orxSTATUS eResult;
-
-      /* Registers request notification callback */
-      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
-
-      /* Checks */
-      orxASSERT(eResult != orxSTATUS_FAILURE);
-
-      /* Updates flags */
-      orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
-    }
-  }
-
-  /* Isn't config already loaded? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
-  {
-    /* Reloads storage */
-    orxResource_ReloadStorage();
-  }
+  /* Updates post-init */
+  orxResource_UpdatePostInit();
 
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
@@ -1869,6 +1855,9 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
       {
         /* Updates result */
         hResult = (orxHANDLE)pstOpenInfo;
+
+        /* Stores location */
+        pstOpenInfo->zLocation = orxString_Duplicate(_zLocation);
       }
       else
       {
@@ -1917,6 +1906,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
       /* Closes resource */
       pstOpenInfo->pstTypeInfo->pfnClose(pstOpenInfo->hResource);
 
+      /* Deletes location */
+      orxString_Delete(pstOpenInfo->zLocation);
+
       /* Frees open info */
       orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
     }
@@ -1924,6 +1916,33 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
 
   /* Done! */
   return;
+}
+
+/** Gets the literal location of a resource
+ * @param[in] _hResource        Concerned resource
+ * @return Literal location string
+ */
+const orxSTRING orxFASTCALL orxResource_GetLocation(orxHANDLE _hResource)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
+  {
+    orxRESOURCE_OPEN_INFO *pstOpenInfo;
+
+    /* Gets open info */
+    pstOpenInfo = (orxRESOURCE_OPEN_INFO *)_hResource;
+
+    /* Updates result */
+    zResult = pstOpenInfo->zLocation;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Gets the size, in bytes, of a resource
