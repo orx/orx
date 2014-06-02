@@ -24,6 +24,7 @@ var orx_resource_8h =
     [ "orxResource_Exit", "orx_resource_8h.html#gaf3389231bc1f977bbf51c943ee8f8cce", null ],
     [ "orxResource_GetGroup", "orx_resource_8h.html#gaf70cf038b10873bb96b6e5e18930d95d", null ],
     [ "orxResource_GetGroupCounter", "orx_resource_8h.html#gac52d43702eed0d52efc4da779c8f8f6c", null ],
+    [ "orxResource_GetLocation", "orx_resource_8h.html#ga3a7f9786c66d41b83f3ce5409d8bc510", null ],
     [ "orxResource_GetPath", "orx_resource_8h.html#ga31ca51910d18dd1a9a47efbe3c0adb66", null ],
     [ "orxResource_GetPendingOpCounter", "orx_resource_8h.html#ga9adcd80b622498107596bab46dc34246", null ],
     [ "orxResource_GetSize", "orx_resource_8h.html#gadfccb6c1430c35c86489c4b6f54be41c", null ],

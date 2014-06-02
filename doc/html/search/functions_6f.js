@@ -861,6 +861,7 @@ var searchData=
   ['orxresource_5fexit',['orxResource_Exit',['../group__orx_resource.html#gaf3389231bc1f977bbf51c943ee8f8cce',1,'orxResource.h']]],
   ['orxresource_5fgetgroup',['orxResource_GetGroup',['../group__orx_resource.html#gaf70cf038b10873bb96b6e5e18930d95d',1,'orxResource.h']]],
   ['orxresource_5fgetgroupcounter',['orxResource_GetGroupCounter',['../group__orx_resource.html#gac52d43702eed0d52efc4da779c8f8f6c',1,'orxResource.h']]],
+  ['orxresource_5fgetlocation',['orxResource_GetLocation',['../group__orx_resource.html#ga3a7f9786c66d41b83f3ce5409d8bc510',1,'orxResource.h']]],
   ['orxresource_5fgetpath',['orxResource_GetPath',['../group__orx_resource.html#ga31ca51910d18dd1a9a47efbe3c0adb66',1,'orxResource.h']]],
   ['orxresource_5fgetpendingopcounter',['orxResource_GetPendingOpCounter',['../group__orx_resource.html#ga9adcd80b622498107596bab46dc34246',1,'orxResource.h']]],
   ['orxresource_5fgetsize',['orxResource_GetSize',['../group__orx_resource.html#gadfccb6c1430c35c86489c4b6f54be41c',1,'orxResource.h']]],
