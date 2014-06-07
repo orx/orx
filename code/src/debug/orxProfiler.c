@@ -385,6 +385,9 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
 
+  /* Waits for semaphore */
+  orxThread_WaitSemaphore(sstProfiler.pstSemaphore);
+
   /* Gets name ID */
   u32NameID = orxString_ToCRC(_zName);
 
@@ -402,9 +405,6 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
   /* Not found? */
   if(s32MarkerID >= sstProfiler.s32MarkerCounter)
   {
-    /* Waits for semaphore */
-    orxThread_WaitSemaphore(sstProfiler.pstSemaphore);
-
     /* Has free marker IDs? */
     if(sstProfiler.s32MarkerCounter < orxPROFILER_KU32_MAX_MARKER_NUMBER)
     {
@@ -426,15 +426,15 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       /* Updates marker ID */
       s32MarkerID = orxPROFILER_KS32_MARKER_ID_NONE;
     }
-
-    /* Signals semaphore */
-    orxThread_SignalSemaphore(sstProfiler.pstSemaphore);
   }
   else
   {
     /* Stamps result */
     s32MarkerID |= sstProfiler.s32WaterStamp;
   }
+
+  /* Signals semaphore */
+  orxThread_SignalSemaphore(sstProfiler.pstSemaphore);
 
   /* Done! */
   return s32MarkerID;
