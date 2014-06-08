@@ -2381,7 +2381,7 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
   orxASSERT(_pfnFunction != orxNULL);
   orxASSERT(_u32RequiredParamNumber <= 0xFFFF);
   orxASSERT(_u32OptionalParamNumber <= 0xFFFF);
-  orxASSERT(_astParamList != orxNULL);
+  orxASSERT((_astParamList != orxNULL) || ((_u32RequiredParamNumber == 0) && (_u32OptionalParamNumber == 0)));
   orxASSERT(_pstResult != orxNULL);
 
   /* Valid? */
