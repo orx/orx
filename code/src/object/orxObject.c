@@ -7502,9 +7502,6 @@ orxBOOL orxFASTCALL orxObject_HasColor(const orxOBJECT *_pstObject)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't check has color.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     bResult = orxFALSE;
   }

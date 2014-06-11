@@ -2351,30 +2351,39 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
-  /* For all groups */
-  for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-      pstGroup != orxNULL;
-      pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+  /* Doesn't have a watch set? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
   {
-    orxHANDLE         hIterator;
-    orxU32            u32Key;
-    orxRESOURCE_INFO *pstResourceInfo;
-
-    /* For all cached resources */
-    for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
-        hIterator != orxHANDLE_UNDEFINED;
-        hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+    /* For all groups */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        pstGroup != orxNULL;
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
     {
-      /* Deletes its location */
-      orxMemory_Free(pstResourceInfo->zLocation);
+      orxHANDLE         hIterator;
+      orxU32            u32Key;
+      orxRESOURCE_INFO *pstResourceInfo;
+
+      /* For all cached resources */
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+      {
+        /* Deletes its location */
+        orxMemory_Free(pstResourceInfo->zLocation);
+      }
+
+      /* Clears cache table */
+      orxHashTable_Clear(pstGroup->pstCacheTable);
     }
 
-    /* Clears cache table */
-    orxHashTable_Clear(pstGroup->pstCacheTable);
+    /* Clears info bank */
+    orxBank_Clear(sstResource.pstResourceInfoBank);
   }
-
-  /* Clears info bank */
-  orxBank_Clear(sstResource.pstResourceInfoBank);
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Resource cache can't be cleared: the resource watch feature is currently active.");
+  }
 
   /* Done! */
   return eResult;
