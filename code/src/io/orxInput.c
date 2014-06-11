@@ -884,7 +884,8 @@ static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryNam
       pstResult->u32Status  = orxINPUT_KU32_ENTRY_FLAG_NONE;
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
-        pstResult->astBindingList[i].eType = orxINPUT_TYPE_NONE;
+        pstResult->astBindingList[i].eID    = orxENUM_NONE;
+        pstResult->astBindingList[i].eType  = orxINPUT_TYPE_NONE;
       }
     }
   }

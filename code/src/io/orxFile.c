@@ -404,6 +404,16 @@ orxBOOL orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE_I
 
     /* Retrieves info */
     bResult = orxFile_FindNext(_pstFileInfo);
+
+    /* Failure? */
+    if(eResult == orxSTATUS_FAILURE)
+    {
+      /* Closes directory */
+      closedir(pDir);
+
+      /* Clears handle */
+      _pstFileInfo->hInternal = 0;
+    }
   }
 
 #endif /* __orxWINDOWS__ */
