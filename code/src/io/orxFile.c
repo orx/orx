@@ -594,7 +594,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     eResult = orxFile_FindNext(_pstFileInfo);
 
     /* Failure? */
-    if(bResult == orxSTATUS_FAILURE)
+    if(bResult == orxFALSE)
     {
       /* Closes directory */
       closedir(pDir);
