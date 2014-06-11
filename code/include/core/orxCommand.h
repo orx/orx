@@ -107,7 +107,7 @@ do                                                                              
   orxSTATUS           eStatus;                                                                                                                                  \
   stResult.eType    = RESULT_TYPE;                                                                                                                              \
   stResult.zName    = RESULT_NAME;                                                                                                                              \
-  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult); \
+  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, &orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult);\
   orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
 } while(orxFALSE)
 

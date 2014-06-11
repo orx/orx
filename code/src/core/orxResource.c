@@ -132,6 +132,8 @@ typedef struct __orxRESOURCE_INFO_t
   orxSTRING                 zLocation;                                                /**< Resource literal location */
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxS64                    s64Time;                                                  /**< Resource modification time */
+  orxU32                    u32GroupID;                                               /**< Group ID */
+  orxU32                    u32NameID;                                                /**< Name ID */
 
 } orxRESOURCE_INFO;
 
@@ -153,6 +155,7 @@ typedef enum __orxRESOURCE_REQUEST_TYPE_t
   orxRESOURCE_REQUEST_TYPE_READ = 0,
   orxRESOURCE_REQUEST_TYPE_WRITE,
   orxRESOURCE_REQUEST_TYPE_CLOSE,
+  orxRESOURCE_REQUEST_TYPE_GET_TIME,
 
   orxRESOURCE_REQUEST_TYPE_NUMBER,
 
@@ -448,157 +451,11 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxU32 _u32GroupID)
   return pstResult;
 }
 
-static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
-{
-  static orxS32             ss32GroupIndex = 0;
-  orxS32                    s32ListCounter;
-  orxU32                    u32WatchCounter = 0;
-  orxBOOL                   bAbort = orxFALSE;
-  orxRESOURCE_EVENT_PAYLOAD stPayload;
-
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxResource_Watch");
-
-  /* Clears payload */
-  orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
-
-  /* Pushes config section */
-  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
-
-  /* For all watched groups */
-  for(s32ListCounter = orxConfig_GetListCounter(orxRESOURCE_KZ_CONFIG_WATCH_LIST); ss32GroupIndex < s32ListCounter; ss32GroupIndex++)
-  {
-    orxRESOURCE_GROUP  *pstGroup;
-    orxU32              u32GroupID;
-    static orxU32       su32LastGroupID = 0;
-
-    /* Gets its ID */
-    u32GroupID = orxString_ToCRC(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
-
-    /* Looks for it in registered groups */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
-
-    /* Found? */
-    if(pstGroup != orxNULL)
-    {
-      static orxHANDLE  hIterator;
-      orxU32            u32Key;
-      orxRESOURCE_INFO *pstResourceInfo;
-
-      /* Inits payload group */
-      stPayload.u32GroupID = u32GroupID;
-
-      /* New group? */
-      if(u32GroupID != su32LastGroupID)
-      {
-        /* Resets iterator */
-        hIterator = orxHANDLE_UNDEFINED;
-
-        /* Stores group ID */
-        su32LastGroupID = u32GroupID;
-      }
-
-      /* For all its cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo);
-          hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
-      {
-        /* Does its type support time? */
-        if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
-        {
-          orxS64 s64Time;
-          orxU32 u32PathOffset;
-
-          /* Gets path offset */
-          u32PathOffset = orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
-
-          /* Gets its modification time */
-          s64Time = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + u32PathOffset);
-
-          /* Has been modified since last access? */
-          if(s64Time != pstResourceInfo->s64Time)
-          {
-            /* Not first inspection? */
-            if(pstResourceInfo->s64Time != orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED)
-            {
-              /* Inits rest of payload */
-              stPayload.s64Time     = s64Time;
-              stPayload.zLocation   = pstResourceInfo->zLocation;
-              stPayload.zPath       = pstResourceInfo->zLocation + u32PathOffset;
-              stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
-              stPayload.u32NameID   = u32Key;
-
-              /* Removed? */
-              if(s64Time == 0)
-              {
-                /* Sends event */
-                orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, orxNULL, orxNULL, &stPayload);
-              }
-              else
-              {
-                /* Added? */
-                if(pstResourceInfo->s64Time == 0)
-                {
-                  /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, orxNULL, orxNULL, &stPayload);
-                }
-                /* Updated */
-                else
-                {
-                  /* Sends event */
-                  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
-                }
-              }
-            }
-
-            /* Stores its new modification time */
-            pstResourceInfo->s64Time = s64Time;
-          }
-
-          /* Updates watch counter */
-          u32WatchCounter++;
-
-          /* Reached limit? */
-          if(u32WatchCounter >= orxRESOURCE_KU32_WATCH_ITERATION_LIMIT)
-          {
-            /* Aborts */
-            bAbort = orxTRUE;
-
-            break;
-          }
-        }
-      }
-
-      /* Abort? */
-      if(bAbort != orxFALSE)
-      {
-        /* Stops */
-        break;
-      }
-    }
-  }
-
-  /* Watched all resources? */
-  if(ss32GroupIndex >= s32ListCounter)
-  {
-    /* Reset */
-    ss32GroupIndex = 0;
-  }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
-
-  /* Pops config section */
-  orxConfig_PopSection();
-
-  /* Done! */
-  return;
-}
-
 static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_NotifyRequest");
+
   /* While there are processed requests */
   while(sstResource.u32RequestOutIndex != sstResource.u32RequestProcessIndex)
   {
@@ -624,6 +481,9 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
     orxMEMORY_BARRIER();
     sstResource.u32RequestOutIndex = (sstResource.u32RequestOutIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -681,6 +541,19 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
         break;
       }
 
+      case orxRESOURCE_REQUEST_TYPE_GET_TIME:
+      {
+        orxRESOURCE_INFO *pstResourceInfo;
+
+        /* Gets resource info */
+        pstResourceInfo = (orxRESOURCE_INFO *)pstRequest->pContext;
+
+        /* Gets its modification time (cheating for the storage) */
+        pstRequest->s64Size = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1);
+
+        break;
+      }
+
       default:
       {
         break;
@@ -731,7 +604,10 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
 
   /* Inits it */
-  _pstResourceInfo->u32OpCounter++;
+  if(_pstResourceInfo != orxNULL)
+  {
+    _pstResourceInfo->u32OpCounter++;
+  }
   pstRequest->s64Size         = _s64Size;
   pstRequest->pBuffer         = _pBuffer;
   pstRequest->pfnCallback     = _pfnCallback;
@@ -748,6 +624,159 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
 
   /* Signals worker semaphore */
   orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
+}
+
+static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
+{
+  orxRESOURCE_INFO *pstResourceInfo;
+
+  /* Gets resource info */
+  pstResourceInfo = (orxRESOURCE_INFO *)_pContext;
+
+  /* Has been modified since last access (using cheat storage)? */
+  if(_s64Size != pstResourceInfo->s64Time)
+  {
+    /* Not first inspection? */
+    if(pstResourceInfo->s64Time != orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED)
+    {
+      orxRESOURCE_EVENT_PAYLOAD stPayload;
+
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
+
+      /* Inits payload */
+      stPayload.s64Time     = _s64Size;
+      stPayload.zLocation   = pstResourceInfo->zLocation;
+      stPayload.zPath       = pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
+      stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
+      stPayload.u32GroupID  = pstResourceInfo->u32GroupID;
+      stPayload.u32NameID   = pstResourceInfo->u32NameID;
+
+      /* Removed? */
+      if(_s64Size == 0)
+      {
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, orxNULL, orxNULL, &stPayload);
+      }
+      else
+      {
+        /* Added? */
+        if(pstResourceInfo->s64Time == 0)
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, orxNULL, orxNULL, &stPayload);
+        }
+        /* Updated */
+        else
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
+        }
+      }
+    }
+
+    /* Stores its new modification time */
+    pstResourceInfo->s64Time = _s64Size;
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  static orxS32 ss32GroupIndex = 0;
+  orxS32        s32ListCounter;
+  orxU32        u32WatchCounter = 0;
+  orxBOOL       bAbort = orxFALSE;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Watch");
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+  /* For all watched groups */
+  for(s32ListCounter = orxConfig_GetListCounter(orxRESOURCE_KZ_CONFIG_WATCH_LIST); ss32GroupIndex < s32ListCounter; ss32GroupIndex++)
+  {
+    orxRESOURCE_GROUP  *pstGroup;
+    orxU32              u32GroupID;
+    static orxU32       su32LastGroupID = 0;
+
+    /* Gets its ID */
+    u32GroupID = orxString_ToCRC(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
+
+    /* Looks for it in registered groups */
+    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+        (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+
+    /* Found? */
+    if(pstGroup != orxNULL)
+    {
+      static orxHANDLE  hIterator;
+      orxU32            u32Key;
+      orxRESOURCE_INFO *pstResourceInfo;
+
+      /* New group? */
+      if(u32GroupID != su32LastGroupID)
+      {
+        /* Resets iterator */
+        hIterator = orxHANDLE_UNDEFINED;
+
+        /* Stores group ID */
+        su32LastGroupID = u32GroupID;
+      }
+
+      /* For all its cached resources */
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+      {
+        /* Does its type support time? */
+        if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
+        {
+          /* Adds request */
+          orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_GET_TIME, 0, orxNULL, &orxResource_NotifyChange, pstResourceInfo, orxNULL);
+
+          /* Updates watch counter */
+          u32WatchCounter++;
+
+          /* Reached limit? */
+          if(u32WatchCounter >= orxRESOURCE_KU32_WATCH_ITERATION_LIMIT)
+          {
+            /* Aborts */
+            bAbort = orxTRUE;
+
+            break;
+          }
+        }
+      }
+
+      /* Abort? */
+      if(bAbort != orxFALSE)
+      {
+        /* Stops */
+        break;
+      }
+    }
+  }
+
+  /* Watched all resources? */
+  if(ss32GroupIndex >= s32ListCounter)
+  {
+    /* Reset */
+    ss32GroupIndex = 0;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 static void orxResource_UpdatePostInit()
@@ -1535,6 +1564,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
               pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_MAIN);
               orxASSERT(pstResourceInfo->zLocation != orxNULL);
               orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
+              pstResourceInfo->u32GroupID   = u32GroupID;
+              pstResourceInfo->u32NameID    = u32Key;
+              orxMEMORY_BARRIER();
 
               /* Adds it to cache */
               orxHashTable_Add(pstGroup->pstCacheTable, u32Key, pstResourceInfo);
