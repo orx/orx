@@ -292,13 +292,13 @@ static orxS64 orxFASTCALL orxResource_File_GetSize(orxHANDLE _hResource)
   return s64Result;
 }
 
-static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zPath)
+static orxS64 orxFASTCALL orxResource_File_GetTime(const orxSTRING _zLocation)
 {
   orxFILE_INFO  stFileInfo;
   orxS64        s64Result;
 
   /* Gets file info */
-  if(orxFile_GetInfo(_zPath, &stFileInfo) != orxSTATUS_FAILURE)
+  if(orxFile_GetInfo(_zLocation, &stFileInfo) != orxSTATUS_FAILURE)
   {
     /* Updates result */
     s64Result = stFileInfo.s64TimeStamp;
