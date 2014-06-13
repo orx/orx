@@ -384,6 +384,13 @@
 /** Structure macros */
 #define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))
 
+
+/** Array macros */
+#define orxARRAY_GET_ITEM_COUNT(ARRAY)  (sizeof(ARRAY) / sizeof(ARRAY[0]))
+
+
+/** Flag macros */
+
 /** Tests all flags
  * @param[in] X Flag container
  * @param[in] F Flags to test
