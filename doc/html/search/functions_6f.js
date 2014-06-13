@@ -1075,6 +1075,7 @@ var searchData=
   ['orxstring_5fntocrc',['orxString_NToCRC',['../group__orx_string.html#ga69005bd58eba44a2443b8ab4b2b90af4',1,'orxString.h']]],
   ['orxstring_5fprint',['orxString_Print',['../group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2',1,'orxString.h']]],
   ['orxstring_5fprintutf8character',['orxString_PrintUTF8Character',['../group__orx_string.html#ga73609453472017913e3e329ce2c12ff4',1,'orxString.h']]],
+  ['orxstring_5fscan',['orxString_Scan',['../group__orx_string.html#gaf22eda222d006b02dca2f6a5d777ac15',1,'orxString.h']]],
   ['orxstring_5fsearchchar',['orxString_SearchChar',['../group__orx_string.html#gadb936702b689b61973806a33ca5b4726',1,'orxString.h']]],
   ['orxstring_5fsearchcharindex',['orxString_SearchCharIndex',['../group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e',1,'orxString.h']]],
   ['orxstring_5fsearchstring',['orxString_SearchString',['../group__orx_string.html#gae870359d87657efb5f6456dd92be1266',1,'orxString.h']]],
