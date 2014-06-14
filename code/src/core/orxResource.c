@@ -579,6 +579,7 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
 {
   volatile orxRESOURCE_REQUEST *pstRequest;
   orxU32                        u32NextRequestIndex;
+  orxBOOL                       bAdd = orxTRUE;
 
   /* Checks */
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
@@ -589,8 +590,31 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   /* Gets next request index */
   u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
-  /* Not a time request? */
-  if(_eType != orxRESOURCE_REQUEST_TYPE_GET_TIME)
+  /* Time request? */
+  if(_eType == orxRESOURCE_REQUEST_TYPE_GET_TIME)
+  {
+    orxU32 u32InIndex, u32ProcessIndex, u32FreeSlots;
+
+    /* Gets indices */
+    u32InIndex      = sstResource.u32RequestInIndex;
+    u32ProcessIndex = sstResource.u32RequestProcessIndex;
+
+    /* Gets number of free slots */
+    u32FreeSlots = (u32InIndex >= u32ProcessIndex) ? orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32InIndex + u32ProcessIndex : u32ProcessIndex - u32InIndex;
+
+    /* More than a quarter of the slots are free? */
+    if(u32FreeSlots >= orxRESOURCE_KU32_REQUEST_LIST_SIZE / 4)
+    {
+      /* Process addition */
+      bAdd = orxTRUE;
+    }
+    else
+    {
+      /* Drops request */
+      bAdd = orxFALSE;
+    }
+  }
+  else
   {
     /* Waits for a free slot */
     while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
@@ -602,32 +626,39 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
         orxResource_NotifyRequest(orxNULL, orxNULL);
       }
     }
+
+    /* Process addition */
+    bAdd = orxTRUE;
   }
 
-  /* Gets current request */
-  pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
-
-  /* Inits it */
-  if(_pstResourceInfo != orxNULL)
+  /* Should add request? */
+  if(bAdd != orxFALSE)
   {
-    _pstResourceInfo->u32OpCounter++;
-  }
-  pstRequest->s64Size         = _s64Size;
-  pstRequest->pBuffer         = _pBuffer;
-  pstRequest->pfnCallback     = _pfnCallback;
-  pstRequest->pContext        = _pContext;
-  pstRequest->pstResourceInfo = _pstResourceInfo;
-  pstRequest->eType           = _eType;
+    /* Gets current request */
+    pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
 
-  /* Commits request */
-  orxMEMORY_BARRIER();
-  sstResource.u32RequestInIndex = u32NextRequestIndex;
+    /* Inits it */
+    if(_pstResourceInfo != orxNULL)
+    {
+      _pstResourceInfo->u32OpCounter++;
+    }
+    pstRequest->s64Size         = _s64Size;
+    pstRequest->pBuffer         = _pBuffer;
+    pstRequest->pfnCallback     = _pfnCallback;
+    pstRequest->pContext        = _pContext;
+    pstRequest->pstResourceInfo = _pstResourceInfo;
+    pstRequest->eType           = _eType;
+
+    /* Commits request */
+    orxMEMORY_BARRIER();
+    sstResource.u32RequestInIndex = u32NextRequestIndex;
+
+    /* Signals worker semaphore */
+    orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
+  }
 
   /* Signals semaphore */
   orxThread_SignalSemaphore(sstResource.pstRequestSemaphore);
-
-  /* Signals worker semaphore */
-  orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
 }
 
 static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
