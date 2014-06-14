@@ -101,10 +101,9 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
 {
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
-  const orxSTRING               zPath;                    /**< Resource path : 16 / 24 */
-  const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 20 / 32 */
-  orxU32                        u32GroupID;               /**< Group ID : 24 / 36 */
-  orxU32                        u32NameID;                /**< Name ID : 28 / 40 */
+  const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 16 / 24 */
+  orxU32                        u32GroupID;               /**< Group ID : 20 / 28 */
+  orxU32                        u32NameID;                /**< Name ID : 24 / 32 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 

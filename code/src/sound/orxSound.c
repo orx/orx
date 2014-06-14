@@ -475,13 +475,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
         /* Has reference? */
         if((pstSound->zReference != orxNULL) && (pstSound->zReference != orxSTRING_EMPTY))
         {
-          const orxSTRING zOrigin;
-
-          /* Gets its origin */
-          zOrigin = orxConfig_GetOrigin(pstSound->zReference);
-
           /* Matches? */
-          if(orxString_Compare(zOrigin, pstPayload->zPath) == 0)
+          if(orxConfig_GetOriginID(pstSound->zReference) == pstPayload->u32NameID)
           {
             orxSOUND_STATUS eStatus;
 

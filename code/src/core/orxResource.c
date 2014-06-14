@@ -682,7 +682,6 @@ static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s
       /* Inits payload */
       stPayload.s64Time     = _s64Size;
       stPayload.zLocation   = pstResourceInfo->zLocation;
-      stPayload.zPath       = pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1;
       stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
       stPayload.u32GroupID  = pstResourceInfo->u32GroupID;
       stPayload.u32NameID   = pstResourceInfo->u32NameID;
