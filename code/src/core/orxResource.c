@@ -73,7 +73,7 @@
 #define orxRESOURCE_KU32_GROUP_BANK_SIZE              8                               /**< Group bank size */
 #define orxRESOURCE_KU32_TYPE_BANK_SIZE               8                               /**< Type bank size */
 
-#define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          8                               /**< Open resource info bank size */
+#define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          16                              /**< Open resource info bank size */
 
 #define orxRESOURCE_KU32_WATCH_ITERATION_LIMIT        2                               /**< Watch iteration limit */
 #define orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED     -1                              /**< Watch time uninitialized */
@@ -87,7 +87,7 @@
 #define orxRESOURCE_KZ_CONFIG_SECTION                 "Resource"                      /**< Config section name */
 #define orxRESOURCE_KZ_CONFIG_WATCH_LIST              "WatchList"                     /**< Config watch list */
 
-#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            128                             /**< Request list size */
+#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            512                             /**< Request list size */
 
 #define orxRESOURCE_KZ_THREAD_NAME                    "Resource"
 
@@ -589,14 +589,18 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   /* Gets next request index */
   u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
-  /* Waits for a free slot */
-  while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
+  /* Not a time request? */
+  if(_eType != orxRESOURCE_REQUEST_TYPE_GET_TIME)
   {
-    /* Main thread? */
-    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+    /* Waits for a free slot */
+    while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
     {
-      /* Manually pumps some request notifications */
-      orxResource_NotifyRequest(orxNULL, orxNULL);
+      /* Main thread? */
+      if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
+      {
+        /* Manually pumps some request notifications */
+        orxResource_NotifyRequest(orxNULL, orxNULL);
+      }
     }
   }
 
