@@ -197,7 +197,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #ifdef __orxANDROID__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #include "main/orxAndroid.h"
 

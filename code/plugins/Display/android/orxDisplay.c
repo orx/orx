@@ -1867,9 +1867,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   orxDisplay_Android_DrawArrays();
 
   eglWaitNative(EGL_CORE_NATIVE_ENGINE);
+  eglASSERT();
   eglWaitGL();
+  eglASSERT();
 
   eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+  eglASSERT();
 
   /* Waits for GPU work to be done */
   glFinish();

@@ -114,7 +114,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     typedef void *                orxHANDLE;
 
@@ -229,7 +229,7 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '\\'
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '/'
 

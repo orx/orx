@@ -58,6 +58,17 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/android/orxSoundSystem.c"
 
+/* Android? */
+#elif defined(__orxANDROID_NATIVE__)
+
+#include "../plugins/Display/android/orxDisplay.c"
+#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+#include "../plugins/Mouse/Dummy/orxMouse.c"
+#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/android/orxSoundSystem.c"
+
 /* Others */
 #else
 

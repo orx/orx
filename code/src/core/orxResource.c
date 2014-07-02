@@ -624,7 +624,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-#ifdef __orxANDROID__
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
         /* Registers APK type */
         eResult = orxAndroid_RegisterAPKResource();

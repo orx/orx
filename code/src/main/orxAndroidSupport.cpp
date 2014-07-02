@@ -533,14 +533,6 @@ extern "C" jobject orxAndroid_GetActivity()
   return jActivity;
 }
 
-extern "C" jobject orxAndroid_GetApplicationContext()
-{
-  JNIEnv *env = Android_JNI_GetEnv();
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-  jobject jApplicationContext = env->CallObjectMethod(jActivity, sstAndroid.midGetApplicationContext);
-  return jApplicationContext;
-}
-
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
   if (!sstAndroid.s_AndroidInternalFilesPath)

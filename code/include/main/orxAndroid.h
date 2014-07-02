@@ -42,8 +42,6 @@
 #ifndef _orxANDROID_H_
 #define _orxANDROID_H_
 
-#ifdef __orxANDROID__
-
 #include <jni.h>
 #include <pthread.h>
 #include <stdlib.h>
@@ -54,6 +52,8 @@
 extern "C"
 {
 #endif
+
+#ifdef __orxANDROID__
 
 enum {
     /**
@@ -80,6 +80,8 @@ enum {
     APP_CMD_FOCUS_LOST,
     APP_CMD_FOCUS_GAINED
 };
+
+#endif /*__orxANDROID__*/
 
 typedef struct __orxANDROID_TOUCH_EVENT_t {
         orxU32   u32ID;
@@ -120,7 +122,6 @@ orxSTATUS orxAndroid_RegisterAPKResource();
 void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
-jobject orxAndroid_GetApplicationContext();
 
 #if defined(__cplusplus)
 }
@@ -134,8 +135,6 @@ jobject orxAndroid_GetApplicationContext();
 #define orxANDROID_EVENT_SURFACE_DESTROYED   0
 #define orxANDROID_EVENT_SURFACE_CREATED     1
 #define orxANDROID_EVENT_SURFACE_CHANGED     2
-
-#endif /* __orxANDROID__ */
 
 #endif /* _orxANDROID_H_ */
 
