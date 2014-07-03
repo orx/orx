@@ -117,9 +117,79 @@ extern "C" jobject orxAndroid_GetActivity()
   return sstAndroid.app_->activity->clazz;
 }
 
+extern "C" const char * orxAndroid_GetInternalStoragePath()
+{
+  if (!sstAndroid.s_AndroidInternalFilesPath)
+  {
+    jmethodID mid;
+    jobject fileObject;
+    jstring pathString;
+    const char *path;
+    jobject jActivity;
+
+    JNIEnv *env = Android_JNI_GetEnv();
+
+    jActivity = sstAndroid.app_->activity->clazz;
+    // fileObj = context.getFilesDir();
+    mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
+    fileObject = env->CallObjectMethod(jActivity, mid);
+
+    if (!fileObject)
+    {
+      LOGE("Couldn't get internal directory");
+      return NULL;
+    }
+
+    // path = fileObject.getAbsolutePath();
+    mid = env->GetMethodID(env->GetObjectClass(fileObject), "getAbsolutePath", "()Ljava/lang/String;");
+    pathString = (jstring)env->CallObjectMethod(fileObject, mid);
+    env->DeleteLocalRef(fileObject);
+
+    path = env->GetStringUTFChars(pathString, NULL);
+    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    env->ReleaseStringUTFChars(pathString, path);
+    env->DeleteLocalRef(pathString);
+  }
+
+  return sstAndroid.s_AndroidInternalFilesPath;
+}
+
+extern "C" orxU32 orxAndroid_JNI_GetRotation()
+{
+    JNIEnv *env = Android_JNI_GetEnv();
+    jclass contextClass, windowManagerClass, displayClass;
+    jfieldID field;
+    jstring WINDOW_SERVICE;
+    jmethodID getSystemService, getDefaultDisplay, getRotation;
+    jobject context, windowManager, defaultDisplay;
+    int rotation;
+
+    context = orxAndroid_GetActivity();
+    contextClass = env->FindClass("android/content/Context");
+    field = env->GetStaticFieldID(contextClass, "WINDOW_SERVICE", "Ljava/lang/String;");
+    WINDOW_SERVICE = (jstring) env->GetStaticObjectField(contextClass, field);
+    getSystemService = env->GetMethodID(contextClass, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+    env->DeleteLocalRef(contextClass);
+
+    windowManager = env->CallObjectMethod(context, getSystemService,  WINDOW_SERVICE);
+    windowManagerClass = env->FindClass("android/view/WindowManager");
+    getDefaultDisplay = env->GetMethodID(windowManagerClass, "getDefaultDisplay", "()Landroid/view/Display;");
+    env->DeleteLocalRef(windowManagerClass);
+    env->DeleteLocalRef(WINDOW_SERVICE);
+
+    defaultDisplay = env->CallObjectMethod(windowManager, getDefaultDisplay);
+    displayClass = env->FindClass("android/view/Display");
+    getRotation = env->GetMethodID(displayClass, "getRotation", "()I");
+    rotation = env->CallIntMethod(defaultDisplay, getRotation);
+    env->DeleteLocalRef(windowManager);
+    env->DeleteLocalRef(defaultDisplay);
+    env->DeleteLocalRef(displayClass);
+
+    return rotation;
+}
+
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
-
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION )
     {
         orxSYSTEM_EVENT_PAYLOAD stPayload;
@@ -259,6 +329,11 @@ extern "C" void orxAndroid_PumpEvents()
         if( source != NULL )
             source->process( sstAndroid.app_, source );
 
+        if (id == LOOPER_ID_USER)
+        {
+            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE);
+        }
+
         // Check if we are exiting.
         if( sstAndroid.app_->destroyRequested != 0 )
         {
@@ -296,6 +371,11 @@ void android_main( android_app* state )
     /* Run the application code! */
     int status;
     status = main(0, orxNULL);
+
+    if (sstAndroid.s_AndroidInternalFilesPath)
+    {
+        free(sstAndroid.s_AndroidInternalFilesPath);
+    }
 }
 
 

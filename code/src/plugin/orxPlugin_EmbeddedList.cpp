@@ -62,7 +62,7 @@
 #elif defined(__orxANDROID_NATIVE__)
 
 #include "../plugins/Display/android/orxDisplay.c"
-#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Joystick/android/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Mouse/android/orxMouse.c"
 #include "../plugins/Physics/Box2D/orxPhysics.cpp"

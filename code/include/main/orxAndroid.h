@@ -48,6 +48,12 @@
 
 #include <android/native_window.h>
 
+#ifdef __orxANDROID_NATIVE__
+
+#include <android_native_app_glue.h>
+
+#endif
+
 #if defined(__cplusplus)
 extern "C"
 {
