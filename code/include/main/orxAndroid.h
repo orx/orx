@@ -81,8 +81,6 @@ enum {
     APP_CMD_FOCUS_GAINED
 };
 
-#endif /*__orxANDROID__*/
-
 typedef struct __orxANDROID_TOUCH_EVENT_t {
         orxU32   u32ID;
         orxFLOAT fX;
@@ -90,6 +88,8 @@ typedef struct __orxANDROID_TOUCH_EVENT_t {
         orxU32   u32Action;
 
 } orxANDROID_TOUCH_EVENT;
+
+#endif /*__orxANDROID__*/
 
 typedef struct __orxANDROID_KEY_EVENT_t {
        orxU32 u32Action;
