@@ -278,7 +278,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* __orxIOS__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">  #ifdef __orxANDROID__</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span></div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="orx_android_8h.html">main/orxAndroid.h</a>&quot;</span></div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
@@ -323,7 +323,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            bStop == <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            bStop = ((sbStopByEvent != <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>) || (eMainStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>) || (eClockStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;          orxAndroid_PumpEvents();</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;          <a class="code" href="group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367">orxAndroid_PumpEvents</a>();</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;          <span class="comment">/* Sends frame start event */</span></div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;          <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea72a6496ab2b209fdc3ad19f501c5d840">orxSYSTEM_EVENT_GAME_LOOP_START</a>, orxNULL, orxNULL, &amp;stPayload);</div>
