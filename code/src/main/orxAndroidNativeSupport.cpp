@@ -28,6 +28,10 @@ struct android_app;
 typedef struct __orxANDROID_STATIC_t {
         char *s_AndroidInternalFilesPath;
         orxBOOL bPaused;
+
+        int32_t lastWidth;
+        int32_t lastHeight;
+
         android_app* app_;
 } orxANDROID_STATIC;
 
@@ -271,17 +275,6 @@ void handleCmd( struct android_app* app, int32_t cmd )
 
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
         break;
-    case APP_CMD_WINDOW_RESIZED:
-        LOGI("APP_CMD_WINDOW_RESIZED");
-
-        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-
-        // TODO
-        stSurfaceChangedEvent.u32Width = 0;
-        stSurfaceChangedEvent.u32Height = 0;
-
-        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
-        break;
     case APP_CMD_INIT_WINDOW:
         LOGI("APP_CMD_INIT_WINDOW");
 
@@ -338,6 +331,26 @@ extern "C" void orxAndroid_PumpEvents()
         if( sstAndroid.app_->destroyRequested != 0 )
         {
             return;
+        }
+    }
+
+    // Check if window size changed
+    if( sstAndroid.app_->window != NULL )
+    {
+        int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
+        int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
+
+        if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
+        {
+            orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+
+            stSurfaceChangedEvent.u32Width = newWidth;
+            stSurfaceChangedEvent.u32Height = newHeight;
+
+            orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+
+            sstAndroid.lastWidth = newWidth;
+            sstAndroid.lastHeight = newHeight;
         }
     }
 }
