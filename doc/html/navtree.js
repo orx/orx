@@ -49,8 +49,8 @@ var NAVTREEINDEX =
 "orx_profiler_8h.html#gab3ace5c68d5db2b8a1f4e25b7bac34ab",
 "orx_sound_system_8h.html#gab4b9b6aee2d873bccbbf8ec4f0417431",
 "orx_system_8h.html#gga064bb4565c24e8324d940ff70964afeea8705dc38b87b107c4a8a4889e833214b",
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a216ada0c54b28e1ef4c13f0ba4d68fc7",
-"structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a6a28752c37ee3c0e791dc440519701c8"
+"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a22d34fd46b0587af40d4cd8886dad79d",
+"structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#af4cbe6f6dd6c6df41caf8babfe32a1a5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
