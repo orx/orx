@@ -2,6 +2,7 @@
 
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <android/input.h>
 
 #ifdef __orxDEBUG__
 
@@ -28,6 +29,10 @@ struct android_app;
 typedef struct __orxANDROID_STATIC_t {
         char *s_AndroidInternalFilesPath;
         orxBOOL bPaused;
+
+        int32_t lastWidth;
+        int32_t lastHeight;
+
         android_app* app_;
 } orxANDROID_STATIC;
 
@@ -190,7 +195,11 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
 
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
-    if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION )
+    int32_t type = AInputEvent_getType(event);
+
+    switch(type)
+    {
+    case AINPUT_EVENT_TYPE_MOTION:
     {
         orxSYSTEM_EVENT_PAYLOAD stPayload;
 
@@ -247,6 +256,37 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
 
         return 1;
     }
+
+    case AINPUT_EVENT_TYPE_KEY:
+    {
+        orxANDROID_KEY_EVENT stKeyEvent;
+        int32_t action = AKeyEvent_getAction(event);
+
+        /* Inits event's payload */
+        orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
+        stKeyEvent.u32KeyCode = AKeyEvent_getKeyCode(event);
+        // TODO stKeyEvent.u32Unicode = unicode;
+
+        if(action != AKEY_EVENT_ACTION_MULTIPLE)
+        {
+            orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD,
+                       action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
+                       orxNULL, orxNULL, &stKeyEvent);
+        }
+        else
+        {
+            // TODO
+        }
+
+        if(stKeyEvent.u32KeyCode == AKEYCODE_VOLUME_UP || stKeyEvent.u32KeyCode == AKEYCODE_VOLUME_DOWN)
+            return 0;
+
+        return 1;
+    }
+
+    default:
+        break;
+    }
     return 0;
 }
 
@@ -270,17 +310,6 @@ void handleCmd( struct android_app* app, int32_t cmd )
         LOGI("APP_CMD_TERM_WINDOW");
 
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
-        break;
-    case APP_CMD_WINDOW_RESIZED:
-        LOGI("APP_CMD_WINDOW_RESIZED");
-
-        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-
-        // TODO
-        stSurfaceChangedEvent.u32Width = 0;
-        stSurfaceChangedEvent.u32Height = 0;
-
-        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
         break;
     case APP_CMD_INIT_WINDOW:
         LOGI("APP_CMD_INIT_WINDOW");
@@ -340,6 +369,26 @@ extern "C" void orxAndroid_PumpEvents()
             return;
         }
     }
+
+    // Check if window size changed
+    if( sstAndroid.app_->window != NULL )
+    {
+        int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
+        int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
+
+        if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
+        {
+            orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+
+            stSurfaceChangedEvent.u32Width = newWidth;
+            stSurfaceChangedEvent.u32Height = newHeight;
+
+            orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+
+            sstAndroid.lastWidth = newWidth;
+            sstAndroid.lastHeight = newHeight;
+        }
+    }
 }
 
 /* Main function to call */
@@ -375,6 +424,32 @@ void android_main( android_app* state )
     if (sstAndroid.s_AndroidInternalFilesPath)
     {
         free(sstAndroid.s_AndroidInternalFilesPath);
+    }
+
+    if(state->destroyRequested == 0)
+    {
+        ANativeActivity_finish(state->activity);
+
+        // pumps final events
+        int id;
+        int events;
+        android_poll_source* source;
+
+        state->onAppCmd = NULL;
+        state->onInputEvent = NULL;
+
+        while( (id = ALooper_pollAll(-1, NULL, &events, (void**) &source )) >= 0 )
+        {
+            // Process this event.
+            if( source != NULL )
+                source->process( state, source );
+
+            // Check if we are exiting.
+            if( state->destroyRequested != 0 )
+            {
+                return;
+            }
+        }
     }
 }
 

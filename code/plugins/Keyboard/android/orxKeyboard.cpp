@@ -65,7 +65,9 @@ typedef struct __orxKEYBOARD_STATIC_t
   orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
   orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
   orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
+#ifdef __orxANDROID__
   jmethodID         midShowKeyboard;
+#endif
 } orxKEYBOARD_STATIC;
 
 
@@ -246,9 +248,12 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
         sstKeyboard.abKeyPressed[i] = orxFALSE;
       }
 
+#ifdef __orxANDROID__
       JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
       jclass objClass = env->FindClass("org/orx/lib/OrxActivity");
       sstKeyboard.midShowKeyboard = env->GetMethodID(objClass, "showKeyboard","(Z)V");
+      env->DeleteLocalRef(objClass);
+#endif
 
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
@@ -366,9 +371,12 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 
 extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Show(orxBOOL _bShow)
 {
+#ifdef __orxANDROID__
   JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
   jobject jActivity = orxAndroid_GetActivity();
-  env->CallVoidMethod(jActivity, sstKeyboard.midShowKeyboard, _bShow == orxTRUE ? JNI_TRUE : JNI_FALSE);  
+  env->CallVoidMethod(jActivity, sstKeyboard.midShowKeyboard, _bShow == orxTRUE ? JNI_TRUE : JNI_FALSE);
+  env->DeleteLocalRef(jActivity);
+#endif
 
   /* Done */
   return orxSTATUS_SUCCESS;
