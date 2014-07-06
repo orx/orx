@@ -382,7 +382,20 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
   orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pstTexture = orxTEXTURE(orxStructure_Get(_astArgList[0].u64Value));
+  pstTexture = orxTexture_FindByName(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstTexture == orxNULL)
+  {
+    orxU64 u64ID;
+
+    /* Is argument an ID? */
+    if(orxString_ToU64(_astArgList[0].zValue, &u64ID, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Gets texture */
+      pstTexture = orxTEXTURE(orxStructure_Get(u64ID));
+    }
+  }
 
   /* Success? */
   if(pstTexture != orxNULL)
@@ -442,7 +455,7 @@ static orxINLINE void orxTexture_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Save */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture", orxCOMMAND_VAR_TYPE_U64}, {"File = Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture|Name", orxCOMMAND_VAR_TYPE_STRING}, {"File = Name.png", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the texture commands
