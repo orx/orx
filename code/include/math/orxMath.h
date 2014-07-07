@@ -307,12 +307,12 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxMAC__) && defined(__orxGCC__)
+#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
 
   /* Updates result */
   fResult = sinf(_fOp);
 
-#else /* __orxMAC__ && __orxGCC__ */
+#else /* __orxGCC__ && !__orxWINDOWS__ */
 
   /* This implementation comes from Nicolas Capens' work: http://forum.devmaster.net/t/fast-and-accurate-sine-cosine/9648/96 */
 
@@ -334,7 +334,7 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
   /* Refines result */
   fResult = fResult * (fQ + fP * fabsf(fResult));
 
-#endif /* __orxMAC__ && __orxGCC__ */
+#endif /* __orxGCC__ && !__orxWINDOWS__ */
 
   /* Done! */
   return fResult;
@@ -348,17 +348,17 @@ static orxINLINE orxFLOAT             orxMath_Cos(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxMAC__) && defined(__orxGCC__)
+#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
 
   /* Updates result */
   fResult = cosf(_fOp);
 
-#else /* __orxMAC__ && __orxGCC__ */
+#else /* __orxGCC__ && !__orxWINDOWS__ */
 
   /* Updates result */
   fResult = orxMath_Sin(_fOp + orxMATH_KF_PI_BY_2);
 
-#endif /* __orxMAC__ && __orxGCC__ */
+#endif /* __orxGCC__ && !__orxWINDOWS__ */
 
   /* Done! */
   return fResult;
