@@ -200,7 +200,7 @@ solution "orx"
         }
         buildoptions
         {
-            "-Wno-unused-function",
+            "-Wno-unused-function"
         }
 
     configuration {"linux", "x64"}
@@ -212,7 +212,7 @@ solution "orx"
         }
         buildoptions
         {
-            "-Wno-unused-function",
+            "-Wno-unused-function"
         }
 
 
@@ -444,7 +444,7 @@ project "orxLIB"
         defines {"_GNU_SOURCE"}
 
     configuration {"linux", "*Static*"}
-        buildoptions {"-fPIC"}
+        buildoptions {"-fPIC", "-fno-rtti"}
 
     if _OPTIONS["split-platforms"] then
         configuration {"linux", "*Dynamic*", "x32"}
