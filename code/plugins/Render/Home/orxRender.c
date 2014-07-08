@@ -64,10 +64,12 @@
 #define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
 #define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(24.0f)
 #define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
+#define orxRENDER_KF_PROFILER_BAR_HIGH_L            orx2F(0.7f)
+#define orxRENDER_KF_PROFILER_BAR_LOW_L             orx2F(0.3f)
 #define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT       orx2F(1.0f)
 #define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH    orx2F(800.0f)
-#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.2f)
+#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.4f)
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE       orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE     orx2F(0.8f/3.0f)
 #define orxRENDER_KC_PROFILER_DEPTH_MARKER          '*'
@@ -526,12 +528,17 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* Desired depth? */
           if(orxProfiler_GetUniqueMarkerDepth(s32MarkerID) == sstRender.u32SelectedMarkerDepth)
           {
-            orxCOLOR  stBarColor;
-            orxRGBA   stRGBA;
+            orxCOLOR  stBarColor, stTempColor;
+            orxRGBA   stLowRGBA, stHighRGBA;
 
-            /* Gets associated color */
-            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
-            stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
+            /* Gets associated colors */
+            stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
+            stBarColor.vHSL.fH  = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+            stBarColor.vHSL.fS  = orxFLOAT_1;
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_LOW_L;
+            stLowRGBA           = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_HIGH_L;
+            stHighRGBA          = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
 
             /* For all past frames */
             for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
@@ -544,21 +551,21 @@ static orxINLINE void orxRender_Home_RenderProfiler()
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
               else
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fX     = fScreenWidth - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fX     = astVertexList[2 * i].fX - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
             }
 
