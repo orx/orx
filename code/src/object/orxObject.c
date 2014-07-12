@@ -245,35 +245,26 @@ void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_
  */
 void orxFASTCALL orxObject_CommandFindNext(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  const orxSTRING zName;
-
-  /* Get name */
-  zName = _astArgList[0].zValue;
+  orxOBJECT *pstPrevious, *pstObject;
 
   /* Updates result */
   _pstResult->u64Value = orxU64_UNDEFINED;
 
-  /* Valid? */
-  if((zName != orxNULL) && (*zName != orxCHAR_NULL))
+  /* Gets previous object */
+  pstPrevious = (_u32ArgNumber > 1) ? orxOBJECT(orxStructure_Get(_astArgList[1].u64Value)) : orxNULL;
+
+  /* For all next objects */
+  for(pstObject = (pstPrevious != orxNULL) ? orxOBJECT(orxStructure_GetNext(pstPrevious)) : orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+      pstObject != orxNULL;
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
   {
-    orxOBJECT *pstPrevious, *pstObject;
-
-    /* Gets previous object */
-    pstPrevious = (_u32ArgNumber > 1) ? orxOBJECT(orxStructure_Get(_astArgList[1].u64Value)) : orxNULL;
-
-    /* For all next objects */
-    for(pstObject = (pstPrevious != orxNULL) ? orxOBJECT(orxStructure_GetNext(pstPrevious)) : orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-        pstObject != orxNULL;
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    /* Correct name? */
+    if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == '*') || (orxString_Compare(_astArgList[0].zValue, orxObject_GetName(pstObject)) == 0))
     {
-      /* Correct name? */
-      if(orxString_Compare(zName, orxObject_GetName(pstObject)) == 0)
-      {
-        /* Updates result */
-        _pstResult->u64Value = orxStructure_GetGUID(pstObject);
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstObject);
 
-        break;
-      }
+      break;
     }
   }
 
@@ -1948,7 +1939,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Delete, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: FindNext */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Name", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <none>", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <none>", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: GetID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetID, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
