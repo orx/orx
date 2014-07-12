@@ -217,6 +217,14 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const o
 */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
 
+/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+* @param[out]  _zDstString    Destination string
+* @param[in]   _u32Size       String available size
+* @param[in]   _pstVar        Variable to print
+* @return Number of written characters (excluding trailing orxCHAR_NULL)
+*/
+extern orxDLLAPI orxU32 orxFASTCALL                   orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar);
+
 
 #endif /* _orxCOMMAND_H_ */
 

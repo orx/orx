@@ -588,7 +588,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Depending on type */
                 switch(pstEntry->stValue.eType)
                 {
-                  default:
                   case orxCOMMAND_VAR_TYPE_STRING:
                   {
                     /* Updates pointer */
@@ -623,58 +622,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     break;
                   }
 
-                  case orxCOMMAND_VAR_TYPE_FLOAT:
+                  default:
                   {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%g", pstEntry->stValue.fValue);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_S32:
-                  {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%d", pstEntry->stValue.s32Value);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_U32:
-                  {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%u", pstEntry->stValue.u32Value);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_S64:
-                  {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%lld", pstEntry->stValue.s64Value);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_U64:
-                  {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "0x%016llX", pstEntry->stValue.u64Value);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_BOOL:
-                  {
-                    /* Stores it */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%s", (pstEntry->stValue.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
-
-                    break;
-                  }
-
-                  case orxCOMMAND_VAR_TYPE_VECTOR:
-                  {
-                    /* Gets literal value */
-                    orxString_NPrint(acValue, sizeof(acValue) - 1, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, pstEntry->stValue.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, pstEntry->stValue.vValue.fZ, orxSTRING_KC_VECTOR_END);
+                    orxCommand_PrintVar(acValue, sizeof(acValue) - 1, &(pstEntry->stValue));
 
                     break;
                   }
@@ -3134,6 +3084,105 @@ orxSTATUS orxFASTCALL orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, c
 
   /* Done! */
   return eResult;
+}
+
+/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+* @param[out]  _zDstString    Destination string
+* @param[in]   _u32Size       String available size
+* @param[in]   _pstVar        Variable to print
+* @return Number of written characters (excluding trailing orxCHAR_NULL)
+*/
+orxU32 orxFASTCALL orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar)
+{
+  orxU32 u32Result;
+
+  /* Depending on type */
+  switch(_pstVar->eType)
+  {
+    case orxCOMMAND_VAR_TYPE_STRING:
+    {
+      /* Updates pointer */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%s", _pstVar->zValue);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_FLOAT:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%g", _pstVar->fValue);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_S32:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%d", _pstVar->s32Value);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_U32:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%u", _pstVar->u32Value);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_S64:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%lld", _pstVar->s64Value);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_U64:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "0x%016llX", _pstVar->u64Value);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_BOOL:
+    {
+      /* Stores it */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%s", (_pstVar->bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_VECTOR:
+    {
+      /* Gets literal value */
+      u32Result = orxString_NPrint(_zDstString, _u32Size, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, _pstVar->vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstVar->vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstVar->vValue.fZ, orxSTRING_KC_VECTOR_END);
+
+      break;
+    }
+
+    case orxCOMMAND_VAR_TYPE_NONE:
+    {
+      /* Ends string */
+      _zDstString[0]  = orxCHAR_NULL;
+      u32Result     = 0;
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates result */
+      u32Result = 0;
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }
 
 #ifdef __orxMSVC__
