@@ -36,6 +36,7 @@ var searchData=
   ['orxcommand_5fvar_5ftype_5ffloat',['orxCOMMAND_VAR_TYPE_FLOAT',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495',1,'orxCommand.h']]],
   ['orxcommand_5fvar_5ftype_5fnone',['orxCOMMAND_VAR_TYPE_NONE',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769',1,'orxCommand.h']]],
   ['orxcommand_5fvar_5ftype_5fnumber',['orxCOMMAND_VAR_TYPE_NUMBER',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a',1,'orxCommand.h']]],
+  ['orxcommand_5fvar_5ftype_5fnumeric',['orxCOMMAND_VAR_TYPE_NUMERIC',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38',1,'orxCommand.h']]],
   ['orxcommand_5fvar_5ftype_5fs32',['orxCOMMAND_VAR_TYPE_S32',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b',1,'orxCommand.h']]],
   ['orxcommand_5fvar_5ftype_5fs64',['orxCOMMAND_VAR_TYPE_S64',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d',1,'orxCommand.h']]],
   ['orxcommand_5fvar_5ftype_5fstring',['orxCOMMAND_VAR_TYPE_STRING',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9',1,'orxCommand.h']]],
