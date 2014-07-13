@@ -2816,7 +2816,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
   if(pstBaseNode != orxNULL)
   {
     orxCOMMAND_TRIE_NODE *pstPreviousNode;
-    const orxCOMMAND     *pstNextCommand;
+    const orxCOMMAND     *pstNextCommand = orxNULL;
     const orxSTRING       zCommandName;
 
     /* Has previous command? */
