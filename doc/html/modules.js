@@ -2,7 +2,7 @@ var modules =
 [
     [ "Orx", "group___orx.html", "group___orx" ],
     [ "OrxAABox", "group__orx_a_a_box.html", "group__orx_a_a_box" ],
-    [ "OrxAndroid", "group__orx_android.html", null ],
+    [ "OrxAndroid", "group__orx_android.html", "group__orx_android" ],
     [ "OrxAnim", "group__orx_anim.html", "group__orx_anim" ],
     [ "OrxAnimPointer", "group__orx_anim_pointer.html", "group__orx_anim_pointer" ],
     [ "OrxAnimSet", "group__orx_anim_set.html", "group__orx_anim_set" ],

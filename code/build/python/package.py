@@ -21,6 +21,7 @@ platformlist = [
     'tutolinux64',
     'ios',
     'android',
+    'android-native',
     'doxygen',
     'src',
     'extern'
@@ -145,6 +146,14 @@ androidfileinfolist = devfileinfolist + [
     {'src': 'build/android/obj/local/x86/liborx*.a',                    'dst': 'lib/static/android/x86'}
 ]
 
+androidnativefileinfolist = devfileinfolist + [
+    {'src': 'build/android-native/*.sh',                                'dst': None},
+    {'src': 'build/android-native/*.properties',                        'dst': None},
+    {'src': 'build/android-native/obj/local/armeabi/liborx*.a',         'dst': 'lib/static/android-native/armeabi'},
+    {'src': 'build/android-native/obj/local/armeabi-v7a/liborx*.a',     'dst': 'lib/static/android-native/armeabi-v7a'},
+    {'src': 'build/android-native/obj/local/x86/liborx*.a',             'dst': 'lib/static/android-native/x86'}
+]
+
 # List of folder info
 docfolderinfolist = [
     {'src': '../doc/html',                                              'dst': None}
@@ -205,6 +214,26 @@ androidfolderinfolist = docfolderinfolist + [
     {'src': '../extern/SOIL/lib/android',                               'dst': None},
     {'src': '../extern/Tremolo/lib/android',                            'dst': None},
     {'src': 'demo/android',                                             'dst': None},
+    {'src': 'plugins/Display/android',                                  'dst': None},
+    {'src': 'plugins/Joystick/android',                                 'dst': None},
+    {'src': 'plugins/Keyboard/android',                                 'dst': None},
+    {'src': 'plugins/Mouse/android',                                    'dst': None},
+    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Render/Home',                                      'dst': None},
+    {'src': 'plugins/Sound/android',                                    'dst': None},
+    {'src': 'include',                                                  'dst': None},
+    {'src': 'src',                                                      'dst': None}
+]
+
+androidnativefolderinfolist = docfolderinfolist + [
+    {'src': 'build/android-native/jni',                                 'dst': None},
+    {'src': 'lib/static/android-native',                                'dst': None},
+    {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
+    {'src': '../extern/dlmalloc',                                       'dst': None},
+    {'src': '../extern/openal-soft/lib/android',                        'dst': None},
+    {'src': '../extern/SOIL/lib/android',                               'dst': None},
+    {'src': '../extern/Tremolo/lib/android',                            'dst': None},
+    {'src': 'demo/android-native',                                      'dst': None},
     {'src': 'plugins/Display/android',                                  'dst': None},
     {'src': 'plugins/Joystick/android',                                 'dst': None},
     {'src': 'plugins/Keyboard/android',                                 'dst': None},
@@ -358,6 +387,14 @@ platforminfolist = {
         'folderinfolist':   androidfolderinfolist
     },
 
+    'android-native': {
+        'foldername':       'dev-android-native',
+        'filename':         'full-android-native',
+        'format':           'zip',
+        'fileinfolist':     androidnativefileinfolist,
+        'folderinfolist':   androidnativefolderinfolist
+    },
+    
     'doxygen': {
         'foldername':       'doc',
         'filename':         'doc',
