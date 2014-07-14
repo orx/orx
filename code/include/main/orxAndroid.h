@@ -131,6 +131,10 @@ void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
+#ifdef __orxANDROID_NATIVE__
+ANativeActivity* orxAndroid_GetNativeActivity();
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

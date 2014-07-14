@@ -122,6 +122,11 @@ extern "C" jobject orxAndroid_GetActivity()
   return sstAndroid.app_->activity->clazz;
 }
 
+extern "C" ANativeActivity* orxAndroid_GetNativeActivity()
+{
+  return sstAndroid.app_->activity;
+}
+
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
   if (!sstAndroid.s_AndroidInternalFilesPath)
