@@ -5091,7 +5091,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%g", _fValue);
+  orxString_Print(zValue, "%f", _fValue);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
