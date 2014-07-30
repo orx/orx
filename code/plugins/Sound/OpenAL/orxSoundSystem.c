@@ -52,12 +52,6 @@
 
 #endif /* __orxMSVC__ */
 
-#if defined(__orxGCC__) && defined(__orxWINDOWS__)
-
-  #define alloca __builtin_alloca
-
-#endif /* __orxGCC__ && __orxWINDOWS__ */
-
 #include "stb_vorbis.c"
 #include "sndfile.h"
 
@@ -736,7 +730,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         }
       }
 
-      /* Should continue */
+      /* Should continue? */
       if(_pstSound->bStop == orxFALSE)
       {
         ALint iState;
@@ -882,10 +876,10 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
 
     /* Updates packet's timestamp */
     sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -1464,7 +1458,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
 
 #ifdef __orxDEBUG__
         /* Clears name */
-        pstResult->stData.zName                     = orxSTRING_EMPTY;
+        pstResult->stData.zName                    = orxSTRING_EMPTY;
 #endif /* __orxDEBUG__ */
 
         /* Stores duration */
