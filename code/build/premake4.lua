@@ -444,6 +444,9 @@ project "orxLIB"
         }
         defines {"_GNU_SOURCE"}
 
+    configuration {"linux", "*Static*"}
+        buildoptions {"-fPIC"}
+
     if _OPTIONS["split-platforms"] then
         configuration {"linux", "*Dynamic*", "x32"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.so " .. copybase .. "/bin/x32"}
