@@ -600,15 +600,6 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
 
       /* Clears handle */
       _pstFileInfo->hInternal = 0;
-
-    /* Failure? */
-    if(bResult == orxFALSE)
-    {
-      /* Closes directory */
-      closedir(pDir);
-
-      /* Clears handle */
-      _pstFileInfo->hInternal = 0;
     }
   }
 
