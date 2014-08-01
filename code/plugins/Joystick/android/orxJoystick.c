@@ -208,7 +208,11 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
         ALooper* looper = ALooper_forThread();
         sstJoystick.sensorManager = ASensorManager_getInstance();
         sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+#ifdef __orxANDROID__
         sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
+#else
+        sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+#endif
 
         orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
@@ -242,6 +246,7 @@ void orxFASTCALL orxJoystick_Android_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler);
     orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_EventHandler);
 
+    disableSensorManager();
     /* destroy event queue */
     ASensorManager_destroyEventQueue(sstJoystick.sensorManager, sstJoystick.sensorEventQueue);
 

@@ -40,6 +40,7 @@
 #include "core/orxResource.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
+#include "object/orxObject.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -110,6 +111,7 @@ struct __orxSOUND_t
   const orxSTRING       zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
   orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 32 */
 };
 
 /** Static structure
@@ -403,36 +405,36 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
       /* Has pitch? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_PITCH) != orxFALSE)
       {
-        /* Updates volume */
-        orxSoundSystem_SetPitch(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_PITCH));
+        /* Updates pitch (updating internal shadowing for time-stretching purpose) */
+        orxSound_SetPitch(_pstSound, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_PITCH));
       }
       else
       {
-        /* Updates volume */
-        orxSoundSystem_SetPitch(_pstSound->pstData, orxFLOAT_1);
+        /* Updates pitch (updating internal shadowing for time-stretching purpose) */
+        orxSound_SetPitch(_pstSound, orxFLOAT_1);
       }
 
       /* Has attenuation? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_ATTENUATION) != orxFALSE)
       {
-        /* Updates volume */
+        /* Updates attenuation */
         orxSoundSystem_SetAttenuation(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ATTENUATION));
       }
       else
       {
-        /* Updates volume */
+        /* Updates attenuation */
         orxSoundSystem_SetAttenuation(_pstSound->pstData, orxFLOAT_1);
       }
 
       /* Has reference distance? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE) != orxFALSE)
       {
-        /* Updates volume */
+        /* Updates distance */
         orxSoundSystem_SetReferenceDistance(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE));
       }
       else
       {
-        /* Updates volume */
+        /* Updates distance */
         orxSoundSystem_SetReferenceDistance(_pstSound->pstData, orxFLOAT_1);
       }
 
@@ -702,6 +704,51 @@ static orxINLINE void orxSound_DeleteAll()
   return;
 }
 
+/** Updates the SoundPointer (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+ * @param[in]   _pstCaller                    Structure of the caller
+ * @param[in]   _pstClockInfo                 Clock info used for time updates
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxVECTOR   vPosition;
+  orxFLOAT    fPitchCoef;
+  orxSOUND   *pstSound;
+  orxOBJECT  *pstObject;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSound_Update");
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstStructure);
+  orxSTRUCTURE_ASSERT(_pstCaller);
+  orxASSERT(orxOBJECT(_pstCaller) != orxNULL);
+
+  /* Gets calling object */
+  pstObject = orxOBJECT(_pstCaller);
+
+  /* Gets pitch coef */
+  fPitchCoef = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
+
+  /* Gets sound */
+  pstSound = orxSOUND(_pstStructure);
+
+  /* Updates its position */
+  orxSoundSystem_SetPosition(pstSound->pstData, orxObject_GetWorldPosition(pstObject, &vPosition));
+
+  /* Updates its pitch */
+  orxSoundSystem_SetPitch(pstSound->pstData, pstSound->fPitch * fPitchCoef);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -753,7 +800,7 @@ orxSTATUS orxFASTCALL orxSound_Init()
       if(sstSound.pstSampleBank != orxNULL)
       {
         /* Registers structure type */
-        eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+        eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSound_Update);
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
@@ -1504,6 +1551,13 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
   {
     /* Sets its pitch */
     eResult = orxSoundSystem_SetPitch(_pstSound->pstData, _fPitch);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Stores it */
+      _pstSound->fPitch = _fPitch;
+    }
   }
   else
   {
@@ -1676,7 +1730,7 @@ orxFLOAT orxFASTCALL orxSound_GetPitch(const orxSOUND *_pstSound)
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    fResult = orxSoundSystem_GetPitch(_pstSound->pstData);
+    fResult = _pstSound->fPitch;
   }
   else
   {

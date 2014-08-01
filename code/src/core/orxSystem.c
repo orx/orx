@@ -313,7 +313,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 
   {
 
-    #if !defined(__orxANDROID__)
+    #if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
     struct timeval stCurrentTime;
 

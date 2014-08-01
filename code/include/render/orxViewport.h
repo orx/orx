@@ -70,6 +70,19 @@
 typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
 
+/** Event enum
+ */
+typedef enum __orxVIEWPORT_EVENT_t
+{
+  orxVIEWPORT_EVENT_RESIZE = 0,              /**< Event sent when a viewport has been resized */
+
+  orxVIEWPORT_EVENT_NUMBER,
+
+  orxVIEWPORT_EVENT_NONE = orxENUM_NONE
+
+} orxVIEWPORT_EVENT;
+
+
 /** Viewport module setup
  */
 extern orxDLLAPI void orxFASTCALL             orxViewport_Setup();

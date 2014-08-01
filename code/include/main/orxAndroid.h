@@ -42,18 +42,24 @@
 #ifndef _orxANDROID_H_
 #define _orxANDROID_H_
 
-#ifdef __orxANDROID__
-
 #include <jni.h>
 #include <pthread.h>
 #include <stdlib.h>
 
 #include <android/native_window.h>
 
+#ifdef __orxANDROID_NATIVE__
+
+#include <android_native_app_glue.h>
+
+#endif
+
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
+
+#ifdef __orxANDROID__
 
 enum {
     /**
@@ -89,8 +95,12 @@ typedef struct __orxANDROID_TOUCH_EVENT_t {
 
 } orxANDROID_TOUCH_EVENT;
 
+#endif /*__orxANDROID__*/
+
 typedef struct __orxANDROID_KEY_EVENT_t {
+#ifdef __orxANDROID__
        orxU32 u32Action;
+#endif
        orxU32 u32KeyCode;
        orxU32 u32Unicode;
 
@@ -122,6 +132,10 @@ void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
+#ifdef __orxANDROID_NATIVE__
+ANativeActivity* orxAndroid_GetNativeActivity();
+#endif
+
 #if defined(__cplusplus)
 }
 #endif
@@ -134,8 +148,6 @@ jobject orxAndroid_GetActivity();
 #define orxANDROID_EVENT_SURFACE_DESTROYED   0
 #define orxANDROID_EVENT_SURFACE_CREATED     1
 #define orxANDROID_EVENT_SURFACE_CHANGED     2
-
-#endif /* __orxANDROID__ */
 
 #endif /* _orxANDROID_H_ */
 

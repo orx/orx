@@ -35,7 +35,7 @@
 
 #include <stdlib.h>
 
-#if defined(__orxANDROID__)
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   #include <jni.h>
   #include <android/log.h>
@@ -233,7 +233,7 @@ void orxFASTCALL _orxDebug_Exit()
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
-#if !defined(__orxANDROID__)
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
     /* Closes files */
     if(sstDebug.pstLogFile != orxNULL)
@@ -265,7 +265,7 @@ void orxFASTCALL _orxDebug_Exit()
 void orxFASTCALL _orxDebug_Break()
 {
   /* Windows / Linux / Mac / iOS / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Compiler specific */
 
@@ -275,7 +275,7 @@ void orxFASTCALL _orxDebug_Break()
 
       __builtin_trap();
 
-    #elif defined(__orxANDROID__)
+    #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
       __builtin_trap();
 
@@ -301,7 +301,7 @@ void orxFASTCALL _orxDebug_Break()
 
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   return;
 }
@@ -437,7 +437,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       if(_eLevel == orxDEBUG_LEVEL_LOG)
       {
 
-#if !defined(__orxANDROID__)
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_ANDROID__)
 
         /* Needs to open the file? */
         if(sstDebug.pstLogFile == orxNULL)
@@ -453,7 +453,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       else
       {
 
-#if !defined(__orxANDROID__)
+#if !defined(__orxANDROID__) && !defined(__orxANDROID_ANDROID__)
 
         /* Needs to open the file? */
         if(sstDebug.pstDebugFile == orxNULL)
@@ -478,7 +478,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Terminal Display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
     {
-#if defined(__orxANDROID__)
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #define  LOG_TAG    "orxDebug"
 #define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)

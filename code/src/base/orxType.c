@@ -42,7 +42,7 @@ const orxSTRING    orxSTRING_FALSE    = "false";
 
 const orxSTRING    orxSTRING_EOL      = "\r\n";
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 const orxSTRING    orxSTRING_EOL      = "\n";
 
@@ -55,7 +55,7 @@ const orxSTRING    orxSTRING_EOL      = "\n";
 
 const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR          = "\\";
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR          = "/";
 

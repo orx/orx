@@ -46,6 +46,7 @@
 
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY     0x00000001 /**< Ready flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING 0x00000002 /**< Recording flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED    0x00000004 /**< Paused flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
 
@@ -183,6 +184,31 @@ static ov_callbacks sstOggVorbis_Callbacks;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+typedef void (ALC_APIENTRY*LPALCDEVICEPAUSESOFT)(ALCdevice *device);
+typedef void (ALC_APIENTRY*LPALCDEVICERESUMESOFT)(ALCdevice *device);
+
+static LPALCDEVICEPAUSESOFT        alcDevicePauseSOFT              = NULL;
+static LPALCDEVICERESUMESOFT       alcDeviceResumeSOFT             = NULL;
+
+static orxSTATUS orxFASTCALL orxSoundSystem_Android_EventHandler(const orxEVENT *_pstEvent)
+{
+  if(_pstEvent->eID == orxSYSTEM_EVENT_BACKGROUND && !orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED))
+  {
+    alcDevicePauseSOFT(sstSoundSystem.poDevice);
+
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+  }
+
+  if(_pstEvent->eID == orxSYSTEM_EVENT_FOREGROUND && orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED))
+  {
+    alcDeviceResumeSOFT(sstSoundSystem.poDevice);
+
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED);
+  }
+
+  return orxSTATUS_SUCCESS;
+}
 
 static size_t read_func(void* ptr, size_t size, size_t nmemb, void* datasource)
 {
@@ -869,6 +895,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
   /* Was already initialized? */
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
+#ifdef __orxDEBUG__
+    putenv("ALSOFT_LOGLEVEL=3");
+#endif
+
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
@@ -976,6 +1006,12 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
               /* Updates status */
               orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
+            alcDevicePauseSOFT = (LPALCDEVICEPAUSESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDevicePauseSOFT");
+            alcDeviceResumeSOFT = (LPALCDEVICERESUMESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDeviceResumeSOFT");
+
+            /* Add event handler */
+            orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
+
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
             }
@@ -1072,6 +1108,9 @@ void orxFASTCALL orxSoundSystem_Android_Exit()
 
     /* Deletes semaphore */
     orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);
+
+    /* Remove event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
 
     /* Deletes working buffer list */
     orxMemory_Free(sstSoundSystem.auiWorkBufferList);
@@ -1708,7 +1747,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetVolume(orxSOUNDSYSTEM_SOUND *_ps
 
 orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1724,7 +1763,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pst
 
 orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);

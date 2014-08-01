@@ -33,9 +33,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -70,9 +71,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -106,9 +108,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -142,9 +145,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -180,9 +184,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -217,9 +222,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />

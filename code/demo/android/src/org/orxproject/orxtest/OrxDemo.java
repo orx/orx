@@ -4,72 +4,53 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-
+import android.view.View.OnSystemUiVisibilityChangeListener;
 import org.orx.lib.OrxActivity;
 
 public class OrxDemo extends OrxActivity {
     private View mDecorView;
-    private VersionedOnWindowFocusChanged mOnWindowFocusChanged;
 
     static {
-		// load your native module here.
-		System.loadLibrary("orxTest");
-	}
+	// load your native module here.
+	System.loadLibrary("orxTest");
+    }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // call setContentView() here if you need a custom layout.
+        // The custom layout needs to include a SurfaceView with @+id/orxSurfaceView.
+        
         mDecorView = getWindow().getDecorView();
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mOnWindowFocusChanged = new KitKatOnWindowFocusChanged();
-        } else {
-            mOnWindowFocusChanged = new PreKitKatOnWindowFocusChanged();
+            mDecorView.setOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener() {
+				
+				@Override
+				public void onSystemUiVisibilityChange(int visibility) {
+					if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+						mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+		                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+		                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+		                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+		                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+		                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+					}
+				}
+			});
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        mOnWindowFocusChanged.onWindowFocusChanged(hasFocus, mDecorView);
-    }
-
-    @Override
-	protected int getLayoutId() {
-		/*
-		 * Override this if you want to use a custom layout
-		 * return the layout id
-		 */
-		return 0;
-	}
-
-	@Override
-	protected int getSurfaceViewId() {
-		/*
-		 * Override this if you want to use a custom layout
-		 * return the OrxGLSurfaceView id
-		 */
-		return 0;
-	}
-
-    public interface VersionedOnWindowFocusChanged {
-        public void onWindowFocusChanged(boolean hasFocus, View decorView);
-    }
-
-    private static class PreKitKatOnWindowFocusChanged implements VersionedOnWindowFocusChanged {
-
-        @Override
-        public void onWindowFocusChanged(boolean hasFocus, View decorView) {
-            // nothing to do
-        }
-    }
-
-    private static class KitKatOnWindowFocusChanged implements VersionedOnWindowFocusChanged {
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        public void onWindowFocusChanged(boolean hasFocus, View decorView) {
-            if (hasFocus) {
-                decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        	if (hasFocus) {
+                mDecorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

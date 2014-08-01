@@ -54,12 +54,11 @@
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxANDROID__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    #include <jni.h>
     #include "main/orxAndroid.h"
 
-  #endif /* __orxANDROID__ */
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   #include <dirent.h>
   #include <fnmatch.h>
@@ -241,14 +240,14 @@ orxSTATUS orxFASTCALL orxFile_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
 
-#ifdef __orxANDROID__
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     if(chdir(orxAndroid_GetInternalStoragePath()) != 0)
     {
       orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", orxAndroid_GetInternalStoragePath());
     }
 
-#endif /* __orxANDROID__ */
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -429,7 +428,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
   /* Prints documents directory */
   s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
 
-#elif defined(__orxANDROID__)
+#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Prints internal storage directory */
   s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxAndroid_GetInternalStoragePath());
@@ -595,6 +594,15 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
 
     /* Failure? */
     if(eResult == orxSTATUS_FAILURE)
+    {
+      /* Closes directory */
+      closedir(pDir);
+
+      /* Clears handle */
+      _pstFileInfo->hInternal = 0;
+
+    /* Failure? */
+    if(bResult == orxFALSE)
     {
       /* Closes directory */
       closedir(pDir);

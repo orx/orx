@@ -30,6 +30,14 @@ code/build/codelite/*
 code/demo/android/bin
 code/demo/android/libs
 code/demo/android/obj
+code/demo/android-native/.idea
+code/demo/android-native/.gradle
+code/demo/android-native/**.iml
+code/demo/android-native/build
+code/demo/android-native/local.properties
+code/demo/android-native/app/build
+code/demo/android-native/app/src/obj
+code/demo/android-native/app/src/libs
 code/lib/*
 extern/android/bin/*
 extern/android/gen/*

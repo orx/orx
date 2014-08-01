@@ -440,9 +440,8 @@ static void orxAndroid_Display_DestroySurface()
 static void orxAndroid_Display_CreateContext()
 {
   EGLBoolean result;
-  int32_t width, height;
 
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Starting up OpenGL ES");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Context");
 
   sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
   eglASSERT();
@@ -460,15 +459,6 @@ static void orxAndroid_Display_CreateContext()
   sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
   eglASSERT();
   orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
-
-  orxAndroid_Display_CreateSurface();
-
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &width);
-  eglASSERT();
-  sstDisplay.u32SurfaceWidth = (orxU32)width;
-  eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &height);
-  eglASSERT();
-  sstDisplay.u32SurfaceHeight = (orxU32)height;
 }
 
 static orxINLINE orxBOOL initGLESConfig()
@@ -2423,9 +2413,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   orxDisplay_Android_DrawArrays();
 
   eglWaitNative(EGL_CORE_NATIVE_ENGINE);
+  eglASSERT();
   eglWaitGL();
+  eglASSERT();
 
   eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+  eglASSERT();
 
   /* Waits for GPU work to be done */
   glFinish();
@@ -2905,7 +2898,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       sstDisplay.fLastOrthoBottom = fOrthoBottom;
 
       /* Inits projection matrix */
-      (fOrthoBottom >= orxFLOAT_0) ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1) : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+      (fOrthoBottom >= orxFLOAT_0)
+      ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+      : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
       /* Passes it to shader */
       glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
@@ -3609,6 +3604,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxDISPLAY_EVENT_PAYLOAD stPayload;
         const orxSTRING zGlRenderer;
         const orxSTRING zGlVersion;
+        int32_t width, height;
 
         /* Pushes display section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -3628,6 +3624,16 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         // Create OpenGL ES Context
         orxAndroid_Display_CreateContext();
+
+        // Create OpenGL ES Surface
+        orxAndroid_Display_CreateSurface();
+
+        eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &width);
+        eglASSERT();
+        sstDisplay.u32SurfaceWidth = (orxU32)width;
+        eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &height);
+        eglASSERT();
+        sstDisplay.u32SurfaceHeight = (orxU32)height;
 
         zGlRenderer = (const orxSTRING) glGetString(GL_RENDERER);
         glASSERT();

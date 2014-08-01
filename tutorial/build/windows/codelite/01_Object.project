@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="01_Object">
-  <VirtualDirectory Name="src">
-    <File Name="../../../src/01_Object.c"/>
+  <VirtualDirectory Name="01_Object">
+    <VirtualDirectory Name="src">
+      <File Name="../../../src/01_Object.c"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
-    <Configuration Name="debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/01_Object.exe" IntermediateDirectory="$(ConfigurationName)" Command="./01_Object.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-fno-exceptions">
         <IncludePath Value="../../../include"/>
@@ -14,6 +16,7 @@
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
         <Library Value="orxd" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -33,7 +36,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Profile" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/01_Object.exe" IntermediateDirectory="$(ConfigurationName)" Command="./01_Object.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-fno-exceptions;-fno-rtti">
         <IncludePath Value="../../../include"/>
@@ -43,6 +46,7 @@
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
         <Library Value="orxp" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -62,7 +66,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/01_Object.exe" IntermediateDirectory="$(ConfigurationName)" Command="./01_Object.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-fno-exceptions;-fno-rtti">
         <IncludePath Value="../../../include"/>
@@ -71,6 +75,7 @@
       <Linker Required="yes" Options="">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
         <Library Value="orx" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>

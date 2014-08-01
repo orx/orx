@@ -5599,44 +5599,8 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, const orxVECTOR 
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxVECTOR         vModifiedSpeed;
-    orxCLOCK         *pstClock;
-    const orxVECTOR  *pvSpeed;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Gets modified speed */
-        orxVector_Mulf(&vModifiedSpeed, _pvSpeed, pstClockInfo->fModValue);
-
-        /* Uses it */
-        pvSpeed = &vModifiedSpeed;
-      }
-      else
-      {
-        /* Uses default speed */
-        pvSpeed = _pvSpeed;
-      }
-    }
-    else
-    {
-      /* Uses default speed */
-      pvSpeed = _pvSpeed;
-    }
-
     /* Updates its speed */
-    eResult = orxBody_SetSpeed(pstBody, pvSpeed);
+    eResult = orxBody_SetSpeed(pstBody, _pvSpeed);
   }
   else
   {
@@ -5696,33 +5660,8 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxFLOAT  fVelocity;
-    orxCLOCK *pstClock;
-
-    /* Uses default velocity */
-    fVelocity = _fVelocity;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Has an associated clock? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Updates its velocity */
-        fVelocity *= pstClockInfo->fModValue;
-      }
-    }
-
     /* Updates its angular velocity */
-    eResult = orxBody_SetAngularVelocity(pstBody, fVelocity);
+    eResult = orxBody_SetAngularVelocity(pstBody, _fVelocity);
   }
   else
   {
@@ -5757,44 +5696,8 @@ orxSTATUS orxFASTCALL orxObject_SetCustomGravity(orxOBJECT *_pstObject, const or
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxVECTOR         vModifiedGravity;
-    const orxVECTOR  *pvGravity;
-    orxCLOCK         *pstClock;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Gets modified gravity */
-        orxVector_Mulf(&vModifiedGravity, (_pvCustomGravity != orxNULL) ? _pvCustomGravity : orxPhysics_GetGravity(&vModifiedGravity), pstClockInfo->fModValue);
-
-        /* Uses it */
-        pvGravity = &vModifiedGravity;
-      }
-      else
-      {
-        /* Uses default gravity */
-        pvGravity = _pvCustomGravity;
-      }
-    }
-    else
-    {
-      /* Uses default gravity */
-      pvGravity = _pvCustomGravity;
-    }
-
     /* Updates its custom gravity */
-    eResult = orxBody_SetCustomGravity(pstBody, pvGravity);
+    eResult = orxBody_SetCustomGravity(pstBody, _pvCustomGravity);
   }
   else
   {
@@ -5827,29 +5730,8 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(const orxOBJECT *_pstObject, orxVECTOR
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxCLOCK *pstClock;
-
     /* Gets its speed */
     pvResult = orxBody_GetSpeed(pstBody, _pvSpeed);
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Updates result */
-        orxVector_Divf(pvResult, pvResult, pstClockInfo->fModValue);
-      }
-    }
   }
   else
   {
@@ -5911,29 +5793,8 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(const orxOBJECT *_pstObject)
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxCLOCK *pstClock;
-
     /* Gets its angular velocity */
     fResult = orxBody_GetAngularVelocity(pstBody);
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Updates result */
-        fResult /= pstClockInfo->fModValue;
-      }
-    }
   }
   else
   {
@@ -5966,30 +5827,8 @@ orxVECTOR *orxFASTCALL orxObject_GetCustomGravity(const orxOBJECT *_pstObject, o
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxCLOCK *pstClock;
-
     /* Updates result */
     pvResult = orxBody_GetCustomGravity(pstBody, _pvCustomGravity);
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Updates result */
-        orxVector_Divf(_pvCustomGravity, (pvResult != orxNULL) ? pvResult : orxPhysics_GetGravity(_pvCustomGravity), pstClockInfo->fModValue);
-        pvResult = _pvCustomGravity;
-      }
-    }
   }
   else
   {
@@ -6093,33 +5932,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxFLOAT  fTorque;
-    orxCLOCK *pstClock;
-
-    /* Uses default torque */
-    fTorque = _fTorque;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Updates its velocity */
-        fTorque *= pstClockInfo->fModValue;
-      }
-    }
-
     /* Applies torque */
-    eResult = orxBody_ApplyTorque(pstBody, fTorque);
+    eResult = orxBody_ApplyTorque(pstBody, _fTorque);
   }
   else
   {
@@ -6156,44 +5970,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTO
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxVECTOR         vModifiedForce;
-    const orxVECTOR  *pvForce;
-    orxCLOCK         *pstClock;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Gets modified force */
-        orxVector_Mulf(&vModifiedForce, _pvForce, pstClockInfo->fModValue);
-
-        /* Uses it */
-        pvForce = &vModifiedForce;
-      }
-      else
-      {
-        /* Uses default force */
-        pvForce = _pvForce;
-      }
-    }
-    else
-    {
-      /* Uses default force */
-      pvForce = _pvForce;
-    }
-
     /* Applies force */
-    eResult = orxBody_ApplyForce(pstBody, pvForce, _pvPoint);
+    eResult = orxBody_ApplyForce(pstBody, _pvForce, _pvPoint);
   }
   else
   {
@@ -6230,44 +6008,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVEC
   /* Valid? */
   if(pstBody != orxNULL)
   {
-    orxVECTOR         vModifiedImpulse;
-    const orxVECTOR  *pvImpulse;
-    orxCLOCK         *pstClock;
-
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
-    {
-      const orxCLOCK_INFO *pstClockInfo;
-
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
-
-      /* Has a modified DT? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-      {
-        /* Gets modified impulse */
-        orxVector_Mulf(&vModifiedImpulse, _pvImpulse, pstClockInfo->fModValue);
-
-        /* Uses it */
-        pvImpulse = &vModifiedImpulse;
-      }
-      else
-      {
-        /* Uses default impulse */
-        pvImpulse = _pvImpulse;
-      }
-    }
-    else
-    {
-      /* Uses default impulse */
-      pvImpulse = _pvImpulse;
-    }
-
     /* Applies impulse */
-    eResult = orxBody_ApplyImpulse(pstBody, pvImpulse, _pvPoint);
+    eResult = orxBody_ApplyImpulse(pstBody, _pvImpulse, _pvPoint);
   }
   else
   {
@@ -6741,36 +6483,6 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
     {
       /* Adds sound from config */
       eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
-    }
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      orxCLOCK *pstClock;
-
-      /* Gets associated clock */
-      pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-      /* Valid? */
-      if(pstClock != orxNULL)
-      {
-        const orxCLOCK_INFO *pstClockInfo;
-
-        /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(pstClock);
-
-        /* Has a modified DT? */
-        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-        {
-          orxSOUND *pstSound;
-
-          /* Gets last added sound */
-          pstSound = orxSoundPointer_GetLastAddedSound(pstSoundPointer);
-
-          /* Applies new frequency */
-          orxSound_SetPitch(pstSound, orxSound_GetPitch(pstSound) * pstClockInfo->fModValue);
-        }
-      }
     }
   }
 

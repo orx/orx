@@ -48,7 +48,7 @@
 #pragma GCC visibility pop
 
 /* Android? */
-#elif defined(__orxANDROID__)
+#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #include "../plugins/Display/android/orxDisplay.c"
 #include "../plugins/Joystick/android/orxJoystick.c"

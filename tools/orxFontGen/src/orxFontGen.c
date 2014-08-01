@@ -687,7 +687,7 @@ static void Run()
           if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
           {
             // Gets character width
-            s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+            s32CharacterWidth = sstFontGen.pstFontFace->glyph->advance.x >> 6;
           }
           else
           {
@@ -734,7 +734,7 @@ static void Run()
             s32MaxAscend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
           }
 
-          // Is descened bigger than any previous?
+          // Is descend bigger than any previous?
           if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
           {
             // Stores it
@@ -745,7 +745,7 @@ static void Run()
           if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
           {
             // Gets character width
-            s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+            s32CharacterWidth = sstFontGen.pstFontFace->glyph->advance.x >> 6;
           }
           else
           {
@@ -756,7 +756,7 @@ static void Run()
             if(s32CharacterWidth == 0)
             {
               // Uses its advance value
-              s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+              s32CharacterWidth = sstFontGen.pstFontFace->glyph->advance.x >> 6;
             }
           }
 
@@ -799,7 +799,7 @@ static void Run()
             s32MaxAscend = sstFontGen.pstFontFace->glyph->bitmap_top;
           }
 
-          // Is descened bigger than any previous?
+          // Is descend bigger than any previous?
           if(sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1 > s32MaxDescend)
           {
             // Stores it
@@ -815,8 +815,8 @@ static void Run()
         orxFONTGEN_LOG(PROCESS, "Some characters will be cropped (height=%d/%d).", s32MaxAscend + s32MaxDescend + 1, orxF2S(sstFontGen.vCharacterSize.fY));
       }
 
-      // Gets baseline (using scaled ascender)
-      s32BaseLine = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->ascender)));
+      // Gets baseline (using ascender)
+      s32BaseLine = sstFontGen.pstFontFace->ascender >> 6;
 
       // Is baseline incorrect?
       if((s32BaseLine < s32MaxAscend)
@@ -886,7 +886,7 @@ static void Run()
               if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
               {
                 // Gets character width
-                s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+                s32CharacterWidth = sstFontGen.pstFontFace->glyph->advance.x >> 6;
               }
               else
               {
@@ -897,7 +897,7 @@ static void Run()
                 if(s32CharacterWidth == 0)
                 {
                   // Uses its advance value
-                  s32CharacterWidth = orxF2S(orxMath_Ceil(sstFontGen.fFontScale * orxS2F(sstFontGen.pstFontFace->glyph->advance.x)));
+                  s32CharacterWidth = sstFontGen.pstFontFace->glyph->advance.x >> 6;
                 }
               }
 

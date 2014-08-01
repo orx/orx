@@ -1,6 +1,26 @@
 Orx - Portable Game Engine  (Version 1.5rc0)
 =========================================
 
+orx 1.5
+-----
+* IMPORTANT: Fixed screen saving in GLFW display plugin (affected screenshot feature as well)
+* IMPORTANT: Added flip & animation support for text objects
+* IMPORTANT: Added config property AutoResize to Viewport
+* IMPORTANT: Added config property BackgroundAlpha to Viewport
+* IMPORTANT: orxOBJECT_EVENT_ENABLE/_DISABLE are now only sent if there's an actual change of status
+* IMPORTANT: Added virtual keyboard support for Android + orxKeyboard_Show()
+
+* Improved orxFontGen's font generation when used in compressed/filtered textures
+* Android: a few refactoring & fixes
+* Added orxOBJECT_EVENT_PAUSE/_UNPAUSE events
+* Added random seeds accessors (useful for backup & restore purposes in replays, for example)
+* Added orxString_IsCharacterAlphaNumeric()
+* Added orxAnimSet_FindNextAnim() to peek at next anim in queue
+* Added orxBody_GetJointReactionForce()/orxBody_GetJointReactionTorque()
+* Fixed a bug in hotreload of timeline tracks
+* Fixed rare bug in orxObject_GetChild()/orxObject_GetSibling()
+* Misx fixes, optimizations and additions
+
 orx 1.5rc0
 -----
 * IMPORTANT: Added Resource module

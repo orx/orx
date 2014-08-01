@@ -719,6 +719,108 @@ static orxSTATUS orxFASTCALL orxPhysics_Box2D_EventHandler(const orxEVENT *_pstE
 
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
+/** Applies physics simulation result to the body
+ * @param[in]   _pstBody                      Concerned body
+ */
+static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBody)
+{
+  b2Body         *poBody;
+  orxOBJECT      *pstObject;
+  orxBODY        *pstBody;
+  orxFRAME       *pstFrame;
+  orxFRAME_SPACE  eFrameSpace;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxPhysics_ApplySimResult");
+
+  /* Gets physics body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets associated body */
+  pstBody = orxBODY(poBody->GetUserData());
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxBody_GetOwner(pstBody));
+
+  /* Gets its frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+  /* Gets its frame space */
+  eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
+
+  /* Is enabled? */
+  if(orxObject_IsEnabled(pstObject) != orxFALSE)
+  {
+    orxVECTOR   vSpeed, vOldPos, vNewPos;
+    orxCLOCK   *pstClock;
+    orxFLOAT    fCoef = orxFLOAT_1;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(pstClock);
+
+      /* Has multiplier? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Uses it */
+        fCoef = (pstClockInfo->fModValue != orxFLOAT_0) ? orxFLOAT_1 / pstClockInfo->fModValue : orxFLOAT_0;
+      }
+    }
+
+    /* Gets resulting speed */
+    orxPhysics_GetSpeed(_pstBody, &vSpeed);
+
+    /* Global space? */
+    if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
+    {
+      orxVECTOR vScale;
+      orxFRAME *pstParentFrame;
+
+      /* Gets parent frame */
+      pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+      /* Updates speed according to parent scale & rotation */
+      orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+      orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+    }
+
+    /* Updates its speed & angular velocity */
+    orxBody_SetSpeed(pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
+    orxBody_SetAngularVelocity(pstBody, fCoef * orxPhysics_GetAngularVelocity(_pstBody));
+
+    /* Updates rotation */
+    orxFrame_SetRotation(pstFrame, eFrameSpace, orxPhysics_GetRotation(_pstBody));
+
+    /* Updates position */
+    orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
+    orxPhysics_GetPosition(_pstBody, &vNewPos);
+    vNewPos.fZ = vOldPos.fZ;
+    orxFrame_SetPosition(pstFrame, eFrameSpace, &vNewPos);
+  }
+  else
+  {
+    orxVECTOR vPosition;
+
+    /* Enforces its body properties */
+    orxPhysics_SetRotation(_pstBody, orxFrame_GetRotation(pstFrame, eFrameSpace));
+    orxPhysics_SetAngularVelocity(_pstBody, orxFLOAT_0);
+    orxPhysics_SetPosition(_pstBody, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
+    orxPhysics_SetSpeed(_pstBody, &orxVECTOR_0);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
 
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
@@ -741,30 +843,47 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       poBody != NULL;
       poBody = poBody->GetNext())
   {
-    orxOBJECT  *pstOwner;
+    orxOBJECT  *pstObject;
     orxBODY    *pstBody;
 
     /* Gets associated body */
     pstBody = orxBODY(poBody->GetUserData());
 
-    /* Gets owner */
-    pstOwner = orxOBJECT(orxBody_GetOwner(pstBody));
+    /* Gets owner object */
+    pstObject = orxOBJECT(orxBody_GetOwner(pstBody));
 
     /* Is enabled? */
-    if(orxObject_IsEnabled(pstOwner) != orxFALSE)
+    if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
       orxFRAME   *pstFrame;
-      orxVECTOR   vSpeed;
+      orxVECTOR   vSpeed, vGravity;
+      orxCLOCK   *pstClock;
+      orxFLOAT    fCoef = orxFLOAT_1;
 
-      /* Isn't body already active? */
-      if(poBody->IsActive() == false)
+      /* Gets its clock */
+      pstClock = orxObject_GetClock(pstObject);
+
+      /* Valid */
+      if(pstClock != orxNULL)
       {
-        /* Activates it */
-        poBody->SetActive(true);
+        const orxCLOCK_INFO *pstClockInfo;
+
+        /* Gets its info */
+        pstClockInfo = orxClock_GetInfo(pstClock);
+
+        /* Has multiplier? */
+        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+        {
+          /* Uses it */
+          fCoef = pstClockInfo->fModValue;
+        }
       }
 
+      /* Enforces its activation state */
+      poBody->SetActive(true);
+
       /* Gets owner's frame */
-      pstFrame = orxOBJECT_GET_STRUCTURE(pstOwner, FRAME);
+      pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
       /* Gets its body speed */
       orxBody_GetSpeed(pstBody, &vSpeed);
@@ -775,20 +894,31 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
         orxVECTOR vPos, vScale;
         orxFRAME *pstParentFrame;
 
-        /* Updates body's position & rotation*/
-        orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
-        orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+        /* Updates body position & rotation */
+        orxPhysics_SetPosition((orxPHYSICS_BODY *)poBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
+        orxPhysics_SetRotation((orxPHYSICS_BODY *)poBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
 
         /* Gets parent frame */
         pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
 
-        /* Updates its speed with parent scale & rotation */
+        /* Updates speed according to parent scale & rotation */
         orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
         orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
       }
 
-      /* Applies speed */
-      orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, &vSpeed);
+      /* Applies speed & angular velocity */
+      orxPhysics_SetSpeed((orxPHYSICS_BODY *)poBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
+      orxPhysics_SetAngularVelocity((orxPHYSICS_BODY *)poBody, fCoef * orxBody_GetAngularVelocity(pstBody));
+
+      /* No custom gravity */
+      if(orxBody_GetCustomGravity(pstBody, &vGravity) == orxNULL)
+      {
+        /* Uses world gravity */
+        orxPhysics_GetGravity(&vGravity);
+      }
+
+      /* Applies modified gravity */
+      orxPhysics_SetCustomGravity((orxPHYSICS_BODY *)poBody, orxVector_Mulf(&vGravity, &vGravity, fCoef * fCoef));
     }
     else
     {
@@ -831,13 +961,8 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       if((poBody->GetType() != b2_staticBody)
       && (poBody->IsAwake() != false))
       {
-        orxBODY *pstBody;
-
-        /* Gets associated body */
-        pstBody = orxBODY(poBody->GetUserData());
-
         /* Applies simulation result */
-        orxBody_ApplySimulationResult(pstBody);
+        orxPhysics_ApplySimulationResult((orxPHYSICS_BODY *)poBody);
       }
     }
 
@@ -2134,8 +2259,10 @@ extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularDamping(const orxPHYS
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
 {
-  b2Body   *poBody;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  b2Body     *poBody;
+  orxOBJECT  *pstObject;
+  float32     fTorque = (float32)_fTorque;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -2144,11 +2271,39 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxBody_GetOwner(orxBODY(poBody->GetUserData())));
+
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(pstClock);
+
+      /* Has multiplier? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates torque */
+        fTorque *= (float32)pstClockInfo->fModValue;
+      }
+    }
+  }
+
   /* Wakes up */
   poBody->SetAwake(true);
 
   /* Applies torque */
-  poBody->ApplyTorque(_fTorque);
+  poBody->ApplyTorque(fTorque);
 
   /* Done! */
   return eResult;
@@ -2156,23 +2311,49 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
 {
-  b2Body   *poBody;
-  b2Vec2    vForce, vPoint;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  b2Body     *poBody;
+  orxOBJECT  *pstObject;
+  b2Vec2      vForce, vPoint;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pvForce != orxNULL);
 
+  /* Sets force */
+  vForce.Set(_pvForce->fX, _pvForce->fY);
+
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxBody_GetOwner(orxBODY(poBody->GetUserData())));
 
-  /* Sets force */
-  vForce.Set(_pvForce->fX, _pvForce->fY);
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(pstClock);
+
+      /* Has multiplier? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates force */
+        vForce *= (float32)(pstClockInfo->fModValue * pstClockInfo->fModValue);
+      }
+    }
+  }
 
   /* Has point? */
   if(_pvPoint != orxNULL)
@@ -2185,6 +2366,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_p
     /* Gets world mass center */
     vPoint = poBody->GetWorldCenter();
   }
+
+  /* Wakes up */
+  poBody->SetAwake(true);
 
   /* Applies force */
   poBody->ApplyForce(vForce, vPoint);
@@ -2195,20 +2379,49 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_p
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
 {
-  b2Body   *poBody;
-  b2Vec2    vImpulse, vPoint;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  b2Body     *poBody;
+  orxOBJECT  *pstObject;
+  b2Vec2      vImpulse, vPoint;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pvImpulse != orxNULL);
 
+  /* Sets impulse */
+  vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
+
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
-  /* Wakes up */
-  poBody->SetAwake(true);
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxBody_GetOwner(orxBODY(poBody->GetUserData())));
+
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      const orxCLOCK_INFO *pstClockInfo;
+
+      /* Gets its info */
+      pstClockInfo = orxClock_GetInfo(pstClock);
+
+      /* Has multiplier? */
+      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      {
+        /* Updates impulse */
+        vImpulse *= (float32)pstClockInfo->fModValue;
+      }
+    }
+  }
 
   /* Has point? */
   if(_pvPoint != orxNULL)
@@ -2222,8 +2435,8 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *
     vPoint = poBody->GetWorldCenter();
   }
 
-  /* Sets impulse */
-  vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
+  /* Wakes up */
+  poBody->SetAwake(true);
 
   /* Applies force */
   poBody->ApplyLinearImpulse(vImpulse, vPoint);

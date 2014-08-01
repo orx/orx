@@ -179,6 +179,9 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
             pstViewport->fWidth   = orxMath_Round(pstViewport->fWidth * fWidthRatio);
             pstViewport->fY       = orxMath_Round(pstViewport->fY * fHeightRatio);
             pstViewport->fHeight  = orxMath_Round(pstViewport->fHeight * fHeightRatio);
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
           }
           /* Auto-resize? */
           else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE))
@@ -237,6 +240,9 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
                 }
               }
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
             }
           }
         }
