@@ -7,6 +7,11 @@ var orx_viewport_8h =
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_TOP", "orx_viewport_8h.html#ga62aa2bbe77727231dcd39d60cb6c9d63", null ],
     [ "orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER", "orx_viewport_8h.html#gab13349a38f8c432cce7f247abe4f20c6", null ],
     [ "orxVIEWPORT", "orx_viewport_8h.html#ga75b5cb6cbb6a2156cf382a50c65ee71a", null ],
+    [ "orxVIEWPORT_EVENT", "orx_viewport_8h.html#gac676aca97feb0f2591e9b7b1fa793c7b", [
+      [ "orxVIEWPORT_EVENT_RESIZE", "orx_viewport_8h.html#ggac676aca97feb0f2591e9b7b1fa793c7baa536f4976ca84b5b26514f7ca9433159", null ],
+      [ "orxVIEWPORT_EVENT_NUMBER", "orx_viewport_8h.html#ggac676aca97feb0f2591e9b7b1fa793c7ba74c9313f6ff6171ff0b77272f2a97b96", null ],
+      [ "orxVIEWPORT_EVENT_NONE", "orx_viewport_8h.html#ggac676aca97feb0f2591e9b7b1fa793c7ba8573373444ac5da0d67fffc3b74bf246", null ]
+    ] ],
     [ "orxViewport_AddShader", "orx_viewport_8h.html#gafae98230b6e33fb16c5827b48db78b4b", null ],
     [ "orxViewport_ClearBackgroundColor", "orx_viewport_8h.html#ga4d1f31dfcb2b9b1ea8efd000ea57c0e4", null ],
     [ "orxViewport_Create", "orx_viewport_8h.html#ga5e2bebce9f2662722c43b68914bb8c54", null ],
