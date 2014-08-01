@@ -155,7 +155,8 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp"
+        "../src/main/orxAndroidSupport.cpp",
+        "../src/main/orxAndroidNativeSupport.cpp"
     }
 
     flags
@@ -443,9 +444,6 @@ project "orxLIB"
         }
         defines {"_GNU_SOURCE"}
 
-    configuration {"linux", "*Static*"}
-        buildoptions {"-fPIC", "-fno-rtti"}
-
     if _OPTIONS["split-platforms"] then
         configuration {"linux", "*Dynamic*", "x32"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.so " .. copybase .. "/bin/x32"}
@@ -487,9 +485,6 @@ project "orxLIB"
     configuration {"macosx", "*Release*"}
         linkoptions {"-install_name @executable_path/liborx.dylib"}
 
-    configuration {"macosx"}
-        buildoptions {"-fno-rtti"}
-
     if _OPTIONS["split-platforms"] then
         configuration {"macosx", "*Dynamic*", "x32"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
@@ -526,9 +521,6 @@ project "orxLIB"
 
     configuration {"windows", "*Dynamic*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
-
-    configuration {"windows", "codeblocks or codelite or gmake"}
-        buildoptions {"-fno-rtti"}
 
 
 --
