@@ -39,7 +39,6 @@ LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
 include $(PREBUILT_STATIC_LIBRARY)
 
-$(call import-module,../extern/SOIL/lib/android)
 $(call import-module,../extern/Box2D_2.1.3/lib/android)
 $(call import-module,../extern/openal-soft/lib/android)
 $(call import-module,../extern/Tremolo/lib/android)
