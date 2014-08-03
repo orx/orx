@@ -127,7 +127,7 @@ void   orxAndroid_JNI_SetWindowFormat(orxU32 format);
   */
 orxSTATUS orxAndroid_RegisterAPKResource();
 
-int orxAndroid_JNI_SetupThread();
+void orxAndroid_JNI_SetupThread();
 void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();

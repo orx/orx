@@ -56,11 +56,11 @@
 
   #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
 
-  #ifdef __orxANDROID__
+  #if defined (__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     #include "main/orxAndroid.h"
 
-  #endif /* __orxANDROID__ */
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -179,12 +179,12 @@ static void *orxThread_Execute(void *_pContext)
 
 #endif /* __orxWINDOWS__ */
 
-#ifdef __orxANDROID__
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Notifies the Java framework */
   orxAndroid_JNI_SetupThread();
 
-#endif /* __orxANDROID__ */
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
   do
   {

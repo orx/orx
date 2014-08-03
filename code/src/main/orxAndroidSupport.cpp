@@ -148,7 +148,7 @@ static void Android_JNI_ThreadDestroyed(void* value) {
     }
 }
 
-int orxAndroid_JNI_SetupThread(void) {
+void orxAndroid_JNI_SetupThread(void) {
     /* From http://developer.android.com/guide/practices/jni.html
      * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
      * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
@@ -160,7 +160,6 @@ int orxAndroid_JNI_SetupThread(void) {
      */
     JNIEnv *env = Android_JNI_GetEnv();
     pthread_setspecific(mThreadKey, (void*) env);
-    return 1;
 }
 
 // Library init
