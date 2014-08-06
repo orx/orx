@@ -3073,9 +3073,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxU32          u32BufferSize;
-  orxU8          *pu8ImageData;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
+  orxU32    u32BufferSize;
+  orxU8    *pu8ImageData;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);

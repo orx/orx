@@ -33,8 +33,16 @@
 
 
 #include "orxPluginAPI.h"
+
+#define STBI_NO_STDIO
+#include "stb_image.c"
+#undef STBI_NO_STDIO
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
+
 #import <QuartzCore/QuartzCore.h>
-#include <CoreFoundation/CFByteOrder.h>
 
 
 /** Module flags
@@ -180,11 +188,38 @@ struct __orxBITMAP_t
   orxBOOL                   bSmoothing;
   orxFLOAT                  fWidth, fHeight;
   orxAABOX                  stClip;
-  orxU32                    u32RealWidth, u32RealHeight;
+  orxU32                    u32RealWidth, u32RealHeight, u32Depth;
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
+  const orxSTRING           zLocation;
 };
+
+/** Internal bitmap save info structure
+ */
+typedef struct __orxDISPLAY_SAVE_INFO_t
+{
+  orxU8  *pu8ImageData;
+  orxU32  u32Width;
+  orxU32  u32Height;
+  orxU32  u32FilenameID;
+
+} orxDISPLAY_SAVE_INFO;
+
+/** Internal bitmap load info structure
+ */
+typedef struct __orxDISPLAY_LOAD_INFO_t
+{
+  orxU8      *pu8ImageBuffer;
+  orxU8      *pu8ImageSource;
+  orxS64      s64Size;
+  orxBITMAP  *pstBitmap;
+  GLuint      uiWidth;
+  GLuint      uiHeight;
+  GLuint      uiRealWidth;
+  GLuint      uiRealHeight;
+
+} orxDISPLAY_LOAD_INFO;
 
 /** Internal texture info structure
  */
@@ -246,6 +281,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxLINKLIST               stActiveShaderList;
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
+  const orxBITMAP          *pstTempBitmap;
   orxBITMAP                *pstDestinationBitmap;
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
@@ -264,6 +300,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxView                  *poView;
   orxU32                    u32Flags;
   orxS32                    s32ActiveTextureUnit;
+  stbi_io_callbacks         stSTBICallbacks;
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDOUBLE                 adMRUBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
@@ -1279,6 +1316,430 @@ static orxDISPLAY_PROJ_MATRIX *orxDisplay_iOS_OrthoProjMatrix(orxDISPLAY_PROJ_MA
 
   /* Done! */
   return pmResult;
+}
+
+static int orxDisplay_iOS_ReadSTBICallback(void *_hResource, char *_pBuffer, int _iSize)
+{
+  /* Reads data */
+  return (int)orxResource_Read((orxHANDLE)_hResource, _iSize, (orxU8 *)_pBuffer, orxNULL, orxNULL);
+}
+
+static void orxDisplay_iOS_SkipSTBICallback(void *_hResource, unsigned int _uiOffset)
+{
+  /* Seeks offset */
+  orxResource_Seek((orxHANDLE)_hResource, _uiOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
+
+  /* Done! */
+  return;
+}
+
+static int orxDisplay_iOS_EOFSTBICallback(void *_hResource)
+{
+  /* End of buffer? */
+  return (orxResource_Tell((orxHANDLE)_hResource) == orxResource_GetSize(_hResource)) ? 1 : 0;
+}
+
+static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmapCallback(void *_pContext)
+{
+  orxDISPLAY_LOAD_INFO *pstInfo;
+  orxU32                i;
+  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+
+  /* Gets load info */
+  pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
+
+  /* Inits bitmap */
+  pstInfo->pstBitmap->fWidth         = orxU2F(pstInfo->uiWidth);
+  pstInfo->pstBitmap->fHeight        = orxU2F(pstInfo->uiHeight);
+  pstInfo->pstBitmap->u32RealWidth   = (orxU32)pstInfo->uiRealWidth;
+  pstInfo->pstBitmap->u32RealHeight  = (orxU32)pstInfo->uiRealHeight;
+  pstInfo->pstBitmap->u32Depth       = 32;
+  pstInfo->pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealWidth);
+  pstInfo->pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealHeight);
+  pstInfo->pstBitmap->u32DataSize    = pstInfo->pstBitmap->u32RealWidth * pstInfo->pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+  orxVector_Copy(&(pstInfo->pstBitmap->stClip.vTL), &orxVECTOR_0);
+  orxVector_Set(&(pstInfo->pstBitmap->stClip.vBR), pstInfo->pstBitmap->fWidth, pstInfo->pstBitmap->fHeight, orxFLOAT_0);
+
+  /* Tracks video memory */
+  orxMEMORY_TRACK(VIDEO, pstInfo->pstBitmap->u32DataSize, orxTRUE);
+
+  /* Creates new texture */
+  glGenTextures(1, &(pstInfo->pstBitmap->uiTexture));
+  glASSERT();
+  glBindTexture(GL_TEXTURE_2D, pstInfo->pstBitmap->uiTexture);
+  glASSERT();
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pstInfo->pu8ImageBuffer);
+  glASSERT();
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glASSERT();
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glASSERT();
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+  glASSERT();
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+  glASSERT();
+
+  /* Restores previous texture */
+  glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+  glASSERT();
+
+  /* For all bound bitmaps */
+  for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Is deleted bitmap? */
+    if(sstDisplay.apstBoundBitmapList[i] == pstInfo->pstBitmap)
+    {
+      /* Resets it */
+      sstDisplay.apstBoundBitmapList[i] = orxNULL;
+      sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+    }
+  }
+
+  /* Frees image buffer */
+  if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
+  {
+    orxMemory_Free(pstInfo->pu8ImageBuffer);
+  }
+  pstInfo->pu8ImageBuffer = orxNULL;
+
+  /* Frees source */
+  stbi_image_free(pstInfo->pu8ImageSource);
+  pstInfo->pu8ImageSource = orxNULL;
+
+  /* Frees load info */
+  orxMemory_Free(pstInfo);
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
+{
+  orxDISPLAY_LOAD_INFO *pstInfo;
+  unsigned char        *pu8ImageData;
+  GLuint                uiBytesPerPixel;
+  orxSTATUS             eResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxDisplay_DecompressBitmap");
+
+  /* Gets load info */
+  pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
+
+  /* Loads image */
+  pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+
+  /* Valid? */
+  if(pu8ImageData != NULL)
+  {
+    /* Has NPOT texture support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+    {
+      /* Uses image buffer */
+      pstInfo->pu8ImageBuffer = pu8ImageData;
+
+      /* Gets real size */
+      pstInfo->uiRealWidth  = pstInfo->uiWidth;
+      pstInfo->uiRealHeight = pstInfo->uiHeight;
+    }
+    else
+    {
+      GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
+
+      /* Gets real size */
+      pstInfo->uiRealWidth  = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiWidth);
+      pstInfo->uiRealHeight = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiHeight);
+
+      /* Allocates buffer */
+      pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+      /* Checks */
+      orxASSERT(pstInfo->pu8ImageBuffer != orxNULL);
+
+      /* Gets line sizes */
+      uiLineSize      = pstInfo->uiWidth * 4 * sizeof(orxU8);
+      uiRealLineSize  = pstInfo->uiRealWidth * 4 * sizeof(orxU8);
+
+      /* Clears padding */
+      orxMemory_Zero(pstInfo->pu8ImageBuffer, uiRealLineSize * (pstInfo->uiRealHeight - pstInfo->uiHeight));
+
+      /* For all lines */
+      for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
+          i < pstInfo->uiHeight;
+          i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
+      {
+        /* Copies data */
+        orxMemory_Copy(pstInfo->pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+        /* Adds padding */
+        orxMemory_Zero(pstInfo->pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+      }
+    }
+
+    /* Frees original source from resource */
+    orxMemory_Free(pstInfo->pu8ImageSource);
+
+    /* Stores uncompressed data as new source */
+    pstInfo->pu8ImageSource = pu8ImageData;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Asynchronous call? */
+    if(orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
+    }
+
+    /* Frees original source from resource */
+    orxMemory_Free(pstInfo->pu8ImageSource);
+    pstInfo->pu8ImageSource = orxNULL;
+
+    /* Frees load info */
+    orxMemory_Free(pstInfo);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+static void orxFASTCALL orxDisplay_iOS_ReadResourceCallback(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
+{
+  orxDISPLAY_LOAD_INFO *pstInfo;
+
+  /* Allocates load info */
+  pstInfo = (orxDISPLAY_LOAD_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_LOAD_INFO), orxMEMORY_TYPE_TEMP);
+
+  /* Checks */
+  orxASSERT(pstInfo != orxNULL);
+
+  /* Inits it */
+  orxMemory_Zero(pstInfo, sizeof(orxDISPLAY_LOAD_INFO));
+  pstInfo->pu8ImageSource = (orxU8 *)_pBuffer;
+  pstInfo->s64Size        = _s64Size;
+  pstInfo->pstBitmap      = (orxBITMAP *)_pContext;
+
+  /* Asynchronous? */
+  if(sstDisplay.pstTempBitmap != orxNULL)
+  {
+    /* Runs asynchronous task */
+    if(orxThread_RunTask(&orxDisplay_iOS_DecompressBitmap, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
+    {
+      /* Frees load info */
+      orxMemory_Free(pstInfo);
+    }
+  }
+  else
+  {
+    /* Decompresses bitmap */
+    if(orxDisplay_iOS_DecompressBitmap(pstInfo) != orxSTATUS_FAILURE)
+    {
+      /* Upload texture */
+      orxDisplay_iOS_DecompressBitmapCallback(pstInfo);
+    }
+  }
+
+  /* Closes resource */
+  orxResource_Close(_hResource);
+}
+
+
+static orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmapData(void *_pContext)
+{
+  orxDISPLAY_SAVE_INFO *pstInfo;
+  const orxCHAR        *zExtension;
+  const orxSTRING       zFilename;
+  orxU32                u32Length;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets save info */
+  pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
+
+  /* Gets filename */
+  zFilename = orxString_GetFromID(pstInfo->u32FilenameID);
+
+  /* Gets file name's length */
+  u32Length = orxString_GetLength(zFilename);
+
+  /* Gets extension */
+  zExtension = (u32Length > 3) ? zFilename + u32Length - 3 : orxSTRING_EMPTY;
+
+  /* PNG? */
+  if(orxString_ICompare(zExtension, "png") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_png(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* BMP? */
+  else if(orxString_ICompare(zExtension, "bmp") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_bmp(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* TGA */
+  else
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_tga(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+
+  /* Deletes data */
+  orxMemory_Free(pstInfo->pu8ImageData);
+
+  /* Deletes save info */
+  orxMemory_Free(pstInfo);
+
+  /* Done! */
+  return eResult;
+}
+
+
+static orxSTATUS orxFASTCALL orxDisplay_iOS_LoadBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxHANDLE hResource;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Opens resource */
+  hResource = orxResource_Open(_pstBitmap->zLocation, orxFALSE);
+
+  /* Success? */
+  if(hResource != orxHANDLE_UNDEFINED)
+  {
+    orxS64  s64Size;
+    orxU8  *pu8Buffer;
+
+    /* Gets its size */
+    s64Size = orxResource_GetSize(hResource);
+
+    /* Checks */
+    orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
+
+    /* Allocates buffer */
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
+
+    /* Success? */
+    if(pu8Buffer != orxNULL)
+    {
+      /* Asynchronous? */
+      if(sstDisplay.pstTempBitmap != orxNULL)
+      {
+        int iWidth, iHeight, iComp;
+
+        /* Gets its info */
+        if(stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iComp) != 0)
+        {
+          /* Resets resource cursor */
+          orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+
+          /* Loads data from resource */
+          s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxDisplay_iOS_ReadResourceCallback, (void *)_pstBitmap);
+
+          /* Successful asynchronous call? */
+          if(s64Size < 0)
+          {
+            /* Inits bitmap info using temp */
+            _pstBitmap->uiTexture       = sstDisplay.pstTempBitmap->uiTexture;
+            _pstBitmap->fWidth          = orxS2F(iWidth);
+            _pstBitmap->fHeight         = orxS2F(iHeight);
+            _pstBitmap->u32RealWidth    = sstDisplay.pstTempBitmap->u32RealWidth;
+            _pstBitmap->u32RealHeight   = sstDisplay.pstTempBitmap->u32RealHeight;
+            _pstBitmap->u32Depth        = sstDisplay.pstTempBitmap->u32Depth;
+            _pstBitmap->fRecRealWidth   = sstDisplay.pstTempBitmap->fRecRealWidth;
+            _pstBitmap->fRecRealHeight  = sstDisplay.pstTempBitmap->fRecRealHeight;
+            _pstBitmap->u32DataSize     = sstDisplay.pstTempBitmap->u32DataSize;
+            orxVector_Copy(&(_pstBitmap->stClip.vTL), &(sstDisplay.pstTempBitmap->stClip.vTL));
+            orxVector_Copy(&(_pstBitmap->stClip.vBR), &(sstDisplay.pstTempBitmap->stClip.vBR));
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
+          }
+          else
+          {
+            /* Frees buffer */
+            orxMemory_Free(pu8Buffer);
+
+            /* Closes resource */
+            orxResource_Close(hResource);
+          }
+        }
+        else
+        {
+          /* Frees buffer */
+          orxMemory_Free(pu8Buffer);
+
+          /* Closes resource */
+          orxResource_Close(hResource);
+        }
+      }
+      else
+      {
+        /* Loads data from resource */
+        s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxNULL, orxNULL);
+
+        /* Success? */
+        if(s64Size != 0)
+        {
+          /* Processes data */
+          orxDisplay_iOS_ReadResourceCallback(hResource, s64Size, (void *)pu8Buffer, (void *)_pstBitmap);
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Frees buffer */
+          orxMemory_Free(pu8Buffer);
+
+          /* Closes resource */
+          orxResource_Close(hResource);
+        }
+      }
+    }
+    else
+    {
+      /* Closes resource */
+      orxResource_Close(hResource);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static void orxFASTCALL orxDisplay_iOS_DeleteBitmapData(orxBITMAP *_pstBitmap)
+{
+  orxS32 i;
+
+  /* For all bound bitmaps */
+  for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  {
+    /* Is deleted bitmap? */
+    if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
+    {
+      /* Resets it */
+      sstDisplay.apstBoundBitmapList[i] = orxNULL;
+      sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+    }
+  }
+
+  /* Tracks video memory */
+  orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
+
+  /* Deletes its texture */
+  glDeleteTextures(1, &(_pstBitmap->uiTexture));
+  glASSERT();
+
+  /* Done! */
+  return;
 }
 
 static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_pstShader)
@@ -2468,26 +2929,15 @@ void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    orxS32 i;
+    /* Delete its data */
+    orxDisplay_iOS_DeleteBitmapData(_pstBitmap);
 
-    /* For all bound bitmaps */
-    for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+    /* Is temp bitmap? */
+    if(_pstBitmap == sstDisplay.pstTempBitmap)
     {
-      /* Is deleted bitmap? */
-      if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)
-      {
-        /* Resets it */
-        sstDisplay.apstBoundBitmapList[i] = orxNULL;
-        sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
-      }
+      /* Clears temp bitmap */
+      sstDisplay.pstTempBitmap = orxNULL;
     }
-
-    /* Tracks video memory */
-    orxMEMORY_TRACK(VIDEO, _pstBitmap->u32DataSize, orxFALSE);
-
-    /* Deletes its texture */
-    glDeleteTextures(1, &(_pstBitmap->uiTexture));
-    glASSERT();
 
     /* Deletes it */
     orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
@@ -3229,141 +3679,57 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
-  orxBOOL         bPNG = orxFALSE;
-  orxU32          u32Length;
-  const orxCHAR  *zExtension;
-  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+  orxU32    u32BufferSize;
+  orxU8    *pu8ImageData;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Gets file name's length */
-  u32Length = orxString_GetLength(_zFilename);
+  /* Gets buffer size */
+  u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
-  /* Gets extension */
-  zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
+  /* Allocates buffer */
+  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
 
-  /* DDS? */
-  if(orxString_ICompare(zExtension, "png") == 0)
+  /* Valid? */
+  if(pu8ImageData != orxNULL)
   {
-    /* Updates status */
-    bPNG = orxTRUE;
-  }
-  /* BMP? */
-  else if(orxString_ICompare(zExtension, "jpg") == 0)
-  {
-    /* Updates status */
-    bPNG = orxFALSE;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: only PNG and JPG formats are supported.", _zFilename);
+    orxDISPLAY_SAVE_INFO *pstInfo = orxNULL;
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Success? */
-  if(eResult != orxSTATUS_FAILURE)
-  {
-    orxU8  *pu8ImageData, *au8ImageBuffer;
-    orxU32  u32BufferSize;
-
-    /* Gets buffer size */
-    u32BufferSize = _pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(GLubyte);
-
-    /* Allocates both buffers */
-    pu8ImageData    = (GLubyte *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
-    au8ImageBuffer  = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
-
-    /* Valid? */
-    if((pu8ImageData != orxNULL) && (au8ImageBuffer != orxNULL))
+    /* Gets bitmap data */
+    if(orxDisplay_iOS_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      /* Gets bitmap data */
-      if(orxDisplay_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
+      /* Allocates save info */
+      pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
+
+      /* Valid? */
+      if(pstInfo != orxNULL)
       {
-        CGDataProviderRef oProvider;
-        CGColorSpaceRef   oColorSpace;
-        CGContextRef      oContext;
-        CGImageRef        oImage;
+        /* Inits it */
+        pstInfo->pu8ImageData   = pu8ImageData;
+        pstInfo->u32FilenameID  = orxString_GetID(_zFilename);
+        pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
+        pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
 
-        /* Creates data provider */
-        oProvider = CGDataProviderCreateWithData(NULL, pu8ImageData, u32BufferSize, NULL);
-
-        /* Creates a device color space */
-        oColorSpace = CGColorSpaceCreateDeviceRGB();
-
-        /* Gets image reference */
-        oImage = CGImageCreate(_pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 32, 4 * _pstBitmap->u32RealWidth, oColorSpace, kCGBitmapByteOrderDefault, oProvider, nil, NO, kCGRenderingIntentDefault);
-
-        /* Creates graphic context */
-        oContext = CGBitmapContextCreate(au8ImageBuffer, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, 8, 4 * _pstBitmap->u32RealWidth, CGImageGetColorSpace(oImage), kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-
-        /* Valid? */
-        if(oContext)
-        {
-          UIImage *poImage;
-
-          /* Draws image */
-          CGContextDrawImage(oContext, CGRectMake(0.0f, 0.0f, _pstBitmap->fWidth, _pstBitmap->fHeight), oImage);
-
-          /* Gets UIImage */
-          poImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(oContext)];
-
-          /* PNG? */
-          if(bPNG != orxFALSE)
-          {
-            /* Updates result */
-            eResult = [UIImagePNGRepresentation(poImage) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-          }
-          else
-          {
-            /* Updates result */
-            eResult = [UIImageJPEGRepresentation(poImage, 1.0f) writeToFile:[NSString stringWithCString:_zFilename encoding:NSASCIIStringEncoding] atomically:YES] != NO ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-          }
-
-          /* Deletes context */
-          CGContextRelease(oContext);
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: couldn't grab bitmap data.", _zFilename);
-
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
-        }
-
-        /* Deletes image */
-        CGImageRelease(oImage);
-
-        /* Deletes color space */
-        CGColorSpaceRelease(oColorSpace);
-
-        /* Deletes provider */
-        CGDataProviderRelease(oProvider);
+        /* Runs asynchronous task */
+        eResult = orxThread_RunTask(&orxDisplay_iOS_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
       }
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't save bitmap to <%s>: couldn't allocate memory buffers.", _zFilename);
 
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
-
-    /* Deletes buffers */
-    if(pu8ImageData != orxNULL)
+    /* Failure? */
+    if(eResult == orxSTATUS_FAILURE)
     {
+      /* Frees save info */
+      if(pstInfo != orxNULL)
+      {
+        orxMemory_Free(pstInfo);
+      }
+
+      /* Frees buffer */
       orxMemory_Free(pu8ImageData);
-    }
-    if(au8ImageBuffer != orxNULL)
-    {
-      orxMemory_Free(au8ImageBuffer);
     }
   }
 
@@ -3377,9 +3743,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetTempBitmap(const orxBITMAP *_pstBitmap)
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
 
-  //! TODO
+  /* Stores it */
+  sstDisplay.pstTempBitmap = _pstBitmap;
 
   /* Done! */
   return eResult;
@@ -3392,7 +3758,8 @@ const orxBITMAP *orxFASTCALL orxDisplay_iOS_GetTempBitmap()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Updates result */
+  pstResult = sstDisplay.pstTempBitmap;
 
   /* Done! */
   return pstResult;
@@ -3877,6 +4244,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
+
+    /* Stores stbi callbacks */
+    sstDisplay.stSTBICallbacks.read = orxDisplay_iOS_ReadSTBICallback;
+    sstDisplay.stSTBICallbacks.skip = orxDisplay_iOS_SkipSTBICallback;
+    sstDisplay.stSTBICallbacks.eof  = orxDisplay_iOS_EOFSTBICallback;
 
     /* Registers update function */
     eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
