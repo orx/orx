@@ -1350,6 +1350,11 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_GetPVRTCInfo(orxHANDLE _hResource, i
       /* Updates result */
       eResult = orxTRUE;
     }
+    else
+    {
+      /* Resets resource cursor */
+      orxResource_Seek(_hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+    }
   }
 
   /* Done! */
@@ -3699,7 +3704,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetTempBitmap(const orxBITMAP *_pstBitmap)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Stores it */
-  //! TODO sstDisplay.pstTempBitmap = _pstBitmap;
+  sstDisplay.pstTempBitmap = _pstBitmap;
 
   /* Done! */
   return eResult;
