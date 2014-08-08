@@ -789,7 +789,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
   /* For all bound bitmaps */
   for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
   {
-    /* Is deleted bitmap? */
+    /* Is decompressed bitmap? */
     if(sstDisplay.apstBoundBitmapList[i] == pstInfo->pstBitmap)
     {
       /* Resets it */
@@ -3161,17 +3161,17 @@ const orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetTempBitmap()
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
 {
-  const orxSTRING zResourceName;
+  const orxSTRING zResourceLocation;
   orxBITMAP      *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Gets resource name */
-  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+  /* Locates resource */
+  zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
 
   /* Success? */
-  if(zResourceName != orxNULL)
+  if(zResourceLocation != orxNULL)
   {
     /* Allocates bitmap */
     pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -3181,7 +3181,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
     {
       /* Inits it */
       pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
-      pstResult->zLocation  = zResourceName;
+      pstResult->zLocation  = zResourceLocation;
 
       /* Loads its data */
       if(orxDisplay_GLFW_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
