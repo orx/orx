@@ -203,6 +203,14 @@ static orxINLINE orxPROFILER_MARKER_DATA *orxProfiler_GetCurrentMarkerData()
   /* Gets current thread ID */
   u32ThreadID = orxThread_GetCurrent();
 
+#ifdef __orxIOS__
+  /* iOS hack: consider unknown threads (will resign/became active) as main thread */
+  if(u32ThreadID == orxU32_UNDEFINED)
+  {
+    u32ThreadID = orxTHREAD_KU32_MAIN_THREAD_ID;
+  }
+#endif /* __orxIOS__ */
+
   /* Gets its marker data */
   pstResult = orxProfiler_GetMarkerData(u32ThreadID, orxFALSE);
 
