@@ -2177,7 +2177,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSou
 
 orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -2193,7 +2193,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSoun
 
 orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -2461,7 +2461,7 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_iOS_GetStatus(const orxSOUNDSYS
 
 orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetGlobalVolume(orxFLOAT _fVolume)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
