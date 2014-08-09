@@ -12,7 +12,7 @@ var orx_android_8h =
     [ "orxAndroid_GetJNIEnv", "orx_android_8h.html#gaf51bfa3c5118859198b0cd74a5003809", null ],
     [ "orxAndroid_GetNativeWindow", "orx_android_8h.html#ga2655223eb8e84adf8378018f210c1604", null ],
     [ "orxAndroid_JNI_GetRotation", "orx_android_8h.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
-    [ "orxAndroid_JNI_SetupThread", "orx_android_8h.html#ga988431a75253fadd5b22f0d60d9aa52a", null ],
+    [ "orxAndroid_JNI_SetupThread", "orx_android_8h.html#ga99cdd2f5977ceed457f9c88b36c1a30d", null ],
     [ "orxAndroid_JNI_SetWindowFormat", "orx_android_8h.html#ga6394da07beb42d0901d9dc505eb74f07", null ],
     [ "orxAndroid_PumpEvents", "orx_android_8h.html#ga1bf1fe44b654536f595f07e2bf7bb367", null ],
     [ "orxAndroid_RegisterAPKResource", "orx_android_8h.html#ga0ffbfef2cd5b023b55038e0044ce7564", null ]
