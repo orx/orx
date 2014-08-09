@@ -305,7 +305,7 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor">  #endif</span></div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* !__orxWINDOWS__ &amp;&amp; !__orxMAC__ &amp;&amp; !__orxLINUX__ &amp;&amp; !__orxIOS__ &amp;&amp; !__orxANDROID__ &amp;&amp; !__orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* !__orxWINDOWS__ &amp;&amp; !__orxMAC__ &amp;&amp; !__orxLINUX__ &amp;&amp; !__orxIOS__ &amp;&amp; !__orxANDROID__ &amp;&amp; !__orxANDROID_NATIVE__ &amp;&amp; !__orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
 <div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
@@ -375,7 +375,7 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* __orxWINDOWS__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="comment">/* Linux / Mac / iOS */</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="comment">/* Linux / Mac / iOS / Android */</span></div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;<span class="preprocessor">  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span></div>
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)</span></div>
@@ -386,7 +386,7 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="preprocessor">      #define orxCDECL</span></div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">    #else </span><span class="comment">/* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">    #else </span><span class="comment">/* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="preprocessor">      #ifdef __orxFREEBASIC__</span></div>
 <div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;<span class="preprocessor"></span></div>
@@ -402,7 +402,7 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="preprocessor">      #define orxCDECL          __attribute__ ((cdecl))</span></div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="preprocessor">    #define orxDLLEXPORT        __attribute__ ((visibility(&quot;default&quot;)))</span></div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="preprocessor"></span></div>
@@ -428,9 +428,9 @@ $(document).ready(function(){initNavTree('orx_decl_8h_source.html','');});
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;      <span class="comment">/* always use static on iOS, Android and Raspberry */</span></div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;<span class="preprocessor">      #define __orxSTATIC__</span></div>
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxWINDOWS__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="preprocessor"></span></div>
