@@ -80,7 +80,7 @@ typedef enum __orxSOUND_EVENT_t
 {
   orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
   orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
-  orxSOUND_EVENT_PACKET,                      /**< Event sent when a sound packet is streamed */
+  orxSOUND_EVENT_PACKET,                      /**< Event sent when a sound packet is streamed. IMPORTANT: this event can be sent from a worker thread, do not call any orx API when handling it */
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
   orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */

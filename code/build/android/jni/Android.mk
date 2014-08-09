@@ -34,6 +34,7 @@ ORX_SRC_FILES := \
 	core/orxEvent.c           \
 	core/orxResource.c        \
 	core/orxSystem.c          \
+	core/orxThread.c          \
 	core/orxClock.c           \
 	core/orxLocale.c          \
 	main/orxParam.c           \
@@ -60,7 +61,7 @@ ORX_SRC_FILES := \
 
 ORX_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/dlmalloc \
-                    $(LOCAL_PATH)/../../extern/SOIL/include \
+                    $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/Box2D_2.1.3/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \
                     $(LOCAL_PATH)/../../extern/Tremolo

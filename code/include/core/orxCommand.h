@@ -57,6 +57,7 @@ typedef enum __orxCOMMAND_VAR_TYPE_t
   orxCOMMAND_VAR_TYPE_U64,
   orxCOMMAND_VAR_TYPE_BOOL,
   orxCOMMAND_VAR_TYPE_VECTOR,
+  orxCOMMAND_VAR_TYPE_NUMERIC,
 
   orxCOMMAND_VAR_TYPE_NUMBER,
 
@@ -107,7 +108,7 @@ do                                                                              
   orxSTATUS           eStatus;                                                                                                                                  \
   stResult.eType    = RESULT_TYPE;                                                                                                                              \
   stResult.zName    = RESULT_NAME;                                                                                                                              \
-  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult); \
+  eStatus           = orxCommand_Register(#MODULE"."#COMMAND, &orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult);\
   orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
 } while(orxFALSE)
 
@@ -216,6 +217,14 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const o
 * @return orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise
 */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
+
+/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+* @param[out]  _zDstString    Destination string
+* @param[in]   _u32Size       String available size
+* @param[in]   _pstVar        Variable to print
+* @return Number of written characters (excluding trailing orxCHAR_NULL)
+*/
+extern orxDLLAPI orxU32 orxFASTCALL                   orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar);
 
 
 #endif /* _orxCOMMAND_H_ */

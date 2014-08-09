@@ -54,6 +54,7 @@ var modules =
     [ "OrxSystem", "group__orx_system.html", "group__orx_system" ],
     [ "OrxText", "group__orx_text.html", "group__orx_text" ],
     [ "OrxTexture", "group__orx_texture.html", "group__orx_texture" ],
+    [ "OrxThread", "group__orx_thread.html", "group__orx_thread" ],
     [ "OrxTimeLine", "group__orx_time_line.html", "group__orx_time_line" ],
     [ "OrxTree", "group__orx_tree.html", "group__orx_tree" ],
     [ "OrxType", "group__orx_type.html", "group__orx_type" ],

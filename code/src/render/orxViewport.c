@@ -521,9 +521,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
           {
             orxTEXTURE *pstTexture;
+            orxBOOL     bDisplayLevelEnabled;
+
+            /* Gets display debug level state */
+            bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+
+            /* Deactivates display debug level */
+            orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
             /* Creates texture from file */
             pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+            /* Restores display debug level state */
+            orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
 
             /* Not found? */
             if(pstTexture == orxNULL)
@@ -660,9 +670,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         {
           orxTEXTURE *pstTexture;
           orxU32      u32OwnerFlags = 0;
+          orxBOOL     bDisplayLevelEnabled;
+
+          /* Gets display debug level state */
+          bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+
+          /* Deactivates display debug level */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates texture from file */
           pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+          /* Restores display debug level state */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
 
           /* Not found? */
           if(pstTexture == orxNULL)

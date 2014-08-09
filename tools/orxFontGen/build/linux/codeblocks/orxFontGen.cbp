@@ -21,7 +21,7 @@
 					<Add option="-D__orxSTATIC__" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -29,10 +29,9 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -58,7 +57,7 @@
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -66,10 +65,9 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -94,7 +92,7 @@
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -102,10 +100,9 @@
 					<Add option="-L/usr/lib32" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -128,7 +125,7 @@
 					<Add option="-D__orxSTATIC__" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -136,10 +133,9 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux64" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux64" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -165,7 +161,7 @@
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -173,10 +169,9 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux64" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux64" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -201,7 +196,7 @@
 					<Add option="-fschedule-insns" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
@@ -209,10 +204,9 @@
 					<Add option="-L/usr/lib64" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/linux64" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/linux64" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="dl" />
 					<Add library="m" />

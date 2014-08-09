@@ -2,23 +2,23 @@
 <CodeLite_Workspace Name="orxCrypt" Database="./orxCrypt.tags">
   <Project Name="orxCrypt" Path="orxCrypt.project" Active="Yes" />
   <BuildMatrix>
-    <WorkspaceConfiguration Name="debug32" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="debug32"/>
+    <WorkspaceConfiguration Name="Debug_x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Debug_x32"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile32" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="profile32"/>
+    <WorkspaceConfiguration Name="Profile_x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Profile_x32"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release32" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="release32"/>
+    <WorkspaceConfiguration Name="Release_x32" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Release_x32"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="debug64" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="debug64"/>
+    <WorkspaceConfiguration Name="Debug_x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Debug_x64"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile64" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="profile64"/>
+    <WorkspaceConfiguration Name="Profile_x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Profile_x64"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release64" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="release64"/>
+    <WorkspaceConfiguration Name="Release_x64" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Release_x64"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

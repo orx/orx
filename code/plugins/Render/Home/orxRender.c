@@ -35,19 +35,6 @@
 #include "orxPluginAPI.h"
 
 
-#ifdef __orxMSVC__
-
-  #include "malloc.h"
-
-#endif /* __orxMSVC__ */
-
-#if defined(__orxGCC__) && defined(__orxWINDOWS__)
-
-  #define alloca __builtin_alloca
-
-#endif /* __orxGCC__ && __orxWINDOWS__ */
-
-
 /** Module flags
  */
 #define orxRENDER_KU32_STATIC_FLAG_NONE             0x00000000 /**< No flags */
@@ -77,10 +64,12 @@
 #define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
 #define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(24.0f)
 #define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
+#define orxRENDER_KF_PROFILER_BAR_HIGH_L            orx2F(0.7f)
+#define orxRENDER_KF_PROFILER_BAR_LOW_L             orx2F(0.3f)
 #define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT       orx2F(1.0f)
 #define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH    orx2F(800.0f)
-#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.2f)
+#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.4f)
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE       orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE     orx2F(0.8f/3.0f)
 #define orxRENDER_KC_PROFILER_DEPTH_MARKER          '*'
@@ -100,9 +89,13 @@
 #define orxRENDER_KE_KEY_PROFILER_NEXT_FRAME        orxKEYBOARD_KEY_RIGHT
 #define orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH    orxKEYBOARD_KEY_UP
 #define orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH        orxKEYBOARD_KEY_DOWN
+#define orxRENDER_KE_KEY_PROFILER_PREVIOUS_THREAD   orxKEYBOARD_KEY_PAGEUP
+#define orxRENDER_KE_KEY_PROFILER_NEXT_THREAD       orxKEYBOARD_KEY_PAGEDOWN
 
 #define orxRENDER_KF_INPUT_RESET_FIRST_DELAY        orx2F(0.25f)
 #define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.02f)
+
+#define orxRENDER_KU32_MAX_MARKER_DEPTH             16
 
 
 /***************************************************************************
@@ -134,6 +127,7 @@ typedef struct __orxRENDER_STATIC_t
   orxFLOAT      fDefaultConsoleOffset;              /**< Default console offset */
   orxFLOAT      fConsoleOffset;                     /**< Console offset */
   orxU32        u32SelectedFrame;                   /**< Selected frame */
+  orxU32        u32SelectedThread;                  /**< Selected thread */
   orxU32        u32SelectedMarkerDepth;             /**< Selected marker depth */
   orxU32        u32MaxMarkerDepth;                  /**< Maximum marker depth */
 
@@ -351,7 +345,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   const orxCHARACTER_MAP *pstMap;
   orxFLOAT                fMarkerWidth;
   orxCHAR                 acLabel[64];
-  orxDOUBLE              *adDepthBlockEndTime;
+  orxDOUBLE               adDepthBlockEndTime[orxRENDER_KU32_MAX_MARKER_DEPTH];
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
@@ -375,7 +369,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile("pixel");
+  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -408,9 +402,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     }
   }
 
-  /* Allocates & inits array for storing block ends at each depth */
-  adDepthBlockEndTime = (orxDOUBLE *)alloca(sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
-  orxMemory_Zero(adDepthBlockEndTime, sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
+  /* Inits array for storing block ends at each depth */
+  orxMemory_Zero(adDepthBlockEndTime, orxRENDER_KU32_MAX_MARKER_DEPTH * sizeof(orxDOUBLE));
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
@@ -461,8 +454,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Should render history? */
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
   {
-    orxDISPLAY_VERTEX astVertexList[2 * orxPROFILER_KU32_HISTORY_LENGTH];
-    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH];
+    orxDISPLAY_VERTEX astVertexList[2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1)];
+    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH - 1], dFrameRecDuration = orxDOUBLE_0;
     orxBOOL           bFirst;
 
     /* Inits color */
@@ -470,7 +463,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     orxColor_FromRGBToHSV(&stColor, &stColor);
 
     /* For all vertices */
-    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
     {
       /* Inits both vertices */
       astVertexList[2 * i].fX     =
@@ -497,15 +490,36 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* First marker? */
           if(bFirst != orxFALSE)
           {
+            orxDOUBLE dAccDuration = orxDOUBLE_0, dDurationSampleNumber = orxDOUBLE_0;
+
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
+              orxDOUBLE dDuration;
+
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, sstRender.u32SelectedThread);
 
               /* Stores its frame start time */
               adStartTimeList[i] = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
+
+              /* Gets frame duration */
+              dDuration = orxProfiler_GetResetTime();
+
+              /* Valid? */
+              if(dDuration != orxDOUBLE_0)
+              {
+                /* Updates accumulators */
+                dAccDuration           += dDuration;
+                dDurationSampleNumber  += orxDOUBLE_1;
+              }
             }
+
+            /* Gets averaged frame reciprocal duration */
+            dFrameRecDuration = orx2D(dDurationSampleNumber) / dAccDuration;
+
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
 
             /* Clears first status */
             bFirst = orxFALSE;
@@ -514,49 +528,52 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* Desired depth? */
           if(orxProfiler_GetUniqueMarkerDepth(s32MarkerID) == sstRender.u32SelectedMarkerDepth)
           {
-            orxCOLOR  stBarColor;
-            orxRGBA   stRGBA;
+            orxCOLOR  stBarColor, stTempColor;
+            orxRGBA   stLowRGBA, stHighRGBA;
 
-            /* Gets associated color */
-            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
-            stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
+            /* Gets associated colors */
+            stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
+            stBarColor.vHSL.fH  = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+            stBarColor.vHSL.fS  = orxFLOAT_1;
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_LOW_L;
+            stLowRGBA           = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_HIGH_L;
+            stHighRGBA          = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
 
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
-              orxDOUBLE dFrameRecDuration;
-
-              /* Gets frame reciprocal duration */
-              dFrameRecDuration = 1.0 / orxProfiler_GetResetTime();
-
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, sstRender.u32SelectedThread);
 
               /* Landscape? */
               if(bLandscape != orxFALSE)
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
               else
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fX     = fScreenWidth - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fX     = astVertexList[2 * i].fX - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
             }
 
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
+
             /* Draws it */
-            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * orxPROFILER_KU32_HISTORY_LENGTH, astVertexList);
+            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
           }
         }
       }
@@ -564,7 +581,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Resets frame selection */
-  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame);
+  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
 
   /* Inits color */
   orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
@@ -592,7 +609,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=orxPROFILER=-     Frame [%.2f|%.2fms]", orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
+  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=%s Thread=-  Frame[%.2f|%.2fms]", orxThread_GetName(sstRender.u32SelectedThread), orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
@@ -666,6 +683,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         /* Updates start time */
         dFrameStartTime = dStartTime;
       }
+
+      /* Checks */
+      orxASSERT(u32Depth < orxRENDER_KU32_MAX_MARKER_DEPTH);
 
       /* Adjusts start time to prevent block overlap at this level */
       dStartTime = orxMAX(dStartTime, adDepthBlockEndTime[u32Depth]);
@@ -1116,7 +1136,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   fCharacterHeight = orxFont_GetCharacterHeight(pstFont);
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile("pixel");
+  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1380,7 +1400,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
       }
     }
 
-    /* Shoulds render? */
+    /* Should render? */
     if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE) && (pstBitmap != orxNULL))
     {
       /* Valid scale? */
@@ -2285,6 +2305,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         /* Input on? */
         if(_pstEvent->eID == orxINPUT_EVENT_ON)
         {
+          orxS32                  s32ThreadDelta = 0;
           orxINPUT_EVENT_PAYLOAD *pstPayload;
 
           /* Gets payload */
@@ -2309,7 +2330,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
           else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME))
           {
             /* Not first frame? */
-            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH)
+            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH - 2)
             {
               /* Updates it */
               sstRender.u32SelectedFrame++;
@@ -2355,6 +2376,40 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
                 sstRender.u32SelectedMarkerDepth++;
               }
             }
+          }
+
+          /* Previous thread? */
+          if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD))
+          {
+            /* Updates thread delta */
+            s32ThreadDelta = -1;
+          }
+          /* Next profiler depth? */
+          else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD))
+          {
+            /* Updates thread delta */
+            s32ThreadDelta = 1;
+          }
+
+          /* Should update selected thread? */
+          if(s32ThreadDelta != 0)
+          {
+            do
+            {
+              /* Previous? */
+              if(s32ThreadDelta < 0)
+              {
+                /* Updates selected thread */
+                sstRender.u32SelectedThread = (sstRender.u32SelectedThread == 0) ? orxTHREAD_KU32_MAX_THREAD_NUMBER - 1 : sstRender.u32SelectedThread - 1;
+              }
+              /* Next */
+              else
+              {
+                /* Updates selected thread */
+                sstRender.u32SelectedThread = (sstRender.u32SelectedThread == orxTHREAD_KU32_MAX_THREAD_NUMBER - 1) ? 0 : sstRender.u32SelectedThread + 1;
+              }
+            }
+            while(orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread) == orxSTATUS_FAILURE);
           }
         }
       }
@@ -2746,6 +2801,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_FRAME);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_THREAD);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_THREAD);
 
             /* Restores previous set */
             orxInput_SelectSet(zPreviousSet);
@@ -2774,6 +2831,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
 
             /* Inits selected frame */
             sstRender.u32SelectedFrame = 0;
+
+            /* Inits selected thread */
+            sstRender.u32SelectedThread = orxTHREAD_KU32_MAIN_THREAD_ID;
 
             /* Inits Flags */
             sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_REGISTERED;

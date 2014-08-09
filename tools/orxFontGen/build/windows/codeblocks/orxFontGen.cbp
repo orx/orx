@@ -20,16 +20,15 @@
 					<Add option="-D__orxSTATIC__" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/mingw" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mingw" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="winmm" />
 					<Add library="OpenGL32" />
@@ -51,16 +50,15 @@
 					<Add option="-D__orxSTATIC__" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/mingw" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mingw" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="winmm" />
 					<Add library="OpenGL32" />
@@ -81,16 +79,15 @@
 					<Add option="-D__orxSTATIC__" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../code/include" />
-					<Add directory="../../../../../extern/SOIL/include" />
+					<Add directory="../../../../../extern/stb_image" />
 					<Add directory="../../../../../extern/freetype-2.4.1/include" />
 				</Compiler>
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
-					<Add directory="../../../../../extern/SOIL/lib/mingw" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mingw" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="SOIL" />
 					<Add library="freetype" />
 					<Add library="winmm" />
 					<Add library="OpenGL32" />

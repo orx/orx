@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Project Name="orxCrypt">
-  <VirtualDirectory Name="src">
-    <File Name="../../../src/orxCrypt.c"/>
+  <VirtualDirectory Name="orxCrypt">
+    <VirtualDirectory Name="src">
+      <File Name="../../../src/orxCrypt.c"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
-    <Configuration Name="debug32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Debug_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions">
         <IncludePath Value="../../../include"/>
@@ -15,6 +17,7 @@
       <Linker Required="yes" Options="-m32;-L/usr/lib32">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orxd" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -34,7 +37,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="profile32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Profile_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
         <IncludePath Value="../../../include"/>
@@ -45,6 +48,7 @@
       <Linker Required="yes" Options="-m32;-L/usr/lib32">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orxp" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -64,7 +68,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="release32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Release_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-fschedule-insns">
         <IncludePath Value="../../../include"/>
@@ -74,6 +78,7 @@
       <Linker Required="yes" Options="-m32;-L/usr/lib32">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orx" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -93,7 +98,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="debug64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Debug_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions">
         <IncludePath Value="../../../include"/>
@@ -104,6 +109,7 @@
       <Linker Required="yes" Options="-m64;-L/usr/lib64">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orxd" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -123,7 +129,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="profile64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Profile_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-fschedule-insns">
         <IncludePath Value="../../../include"/>
@@ -134,6 +140,7 @@
       <Linker Required="yes" Options="-m64;-L/usr/lib64">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orxp" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -153,7 +160,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="release64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Release_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-fschedule-insns">
         <IncludePath Value="../../../include"/>
@@ -163,6 +170,7 @@
       <Linker Required="yes" Options="-m64;-L/usr/lib64">
         <LibraryPath Value="../../../lib" />
         <LibraryPath Value="../../../../../code/lib/static" />
+        <LibraryPath Value="." />
         <Library Value="orx" />
         <Library Value="dl" />
         <Library Value="m" />
@@ -183,16 +191,16 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies name="Debug|x32">
+  <Dependencies name="Debug_x32">
   </Dependencies>
-  <Dependencies name="Profile|x32">
+  <Dependencies name="Profile_x32">
   </Dependencies>
-  <Dependencies name="Release|x32">
+  <Dependencies name="Release_x32">
   </Dependencies>
-  <Dependencies name="Debug|x64">
+  <Dependencies name="Debug_x64">
   </Dependencies>
-  <Dependencies name="Profile|x64">
+  <Dependencies name="Profile_x64">
   </Dependencies>
-  <Dependencies name="Release|x64">
+  <Dependencies name="Release_x64">
   </Dependencies>
 </CodeLite_Project>

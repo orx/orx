@@ -24,6 +24,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxd" />
 					<Add library="winmm" />
 				</Linker>
@@ -48,6 +49,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orxp" />
 					<Add library="winmm" />
 				</Linker>
@@ -71,6 +73,7 @@
 				<Linker>
 					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/static" />
+					<Add directory="." />
 					<Add library="orx" />
 					<Add library="winmm" />
 				</Linker>

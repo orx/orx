@@ -28,6 +28,6 @@ var group__orx_profiler =
     [ "orxProfiler_PushMarker", "group__orx_profiler.html#ga7ab4f2f459d8abdd543f989fef2da971", null ],
     [ "orxProfiler_ResetAllMarkers", "group__orx_profiler.html#ga324b7b0136fbda66d63b7dd715c5728b", null ],
     [ "orxProfiler_ResetAllMaxima", "group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11", null ],
-    [ "orxProfiler_SelectQueryFrame", "group__orx_profiler.html#ga44ddc46885e13981d10165f99d030607", null ],
+    [ "orxProfiler_SelectQueryFrame", "group__orx_profiler.html#gadf7a291120263ee0c05cb67fea1d3ee6", null ],
     [ "orxProfiler_Setup", "group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb", null ]
 ];

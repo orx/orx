@@ -1,14 +1,17 @@
 var group__orx_memory =
 [
+    [ "orxMEMORY_BARRIER", "group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a", null ],
     [ "orxMEMORY_TRACK", "group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649", null ],
     [ "orxMEMORY_TYPE", "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0", [
       [ "orxMEMORY_TYPE_MAIN", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4", null ],
-      [ "orxMEMORY_TYPE_VIDEO", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88", null ],
-      [ "orxMEMORY_TYPE_CONFIG", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3", null ],
-      [ "orxMEMORY_TYPE_TEXT", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72", null ],
       [ "orxMEMORY_TYPE_AUDIO", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59", null ],
+      [ "orxMEMORY_TYPE_CONFIG", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3", null ],
+      [ "orxMEMORY_TYPE_DEBUG", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0af84f6e280ff65869d193f326903a0a90", null ],
       [ "orxMEMORY_TYPE_PHYSICS", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01", null ],
+      [ "orxMEMORY_TYPE_SYSTEM", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a135a5bc6becccf205d044cc93e6469a4", null ],
       [ "orxMEMORY_TYPE_TEMP", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5", null ],
+      [ "orxMEMORY_TYPE_TEXT", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72", null ],
+      [ "orxMEMORY_TYPE_VIDEO", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88", null ],
       [ "orxMEMORY_TYPE_NUMBER", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5", null ],
       [ "orxMEMORY_TYPE_NONE", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325", null ]
     ] ],

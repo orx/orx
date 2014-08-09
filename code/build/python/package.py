@@ -178,7 +178,7 @@ externfolderinfolist = [
     {'src': '../extern/libsndfile-1.0.22',                              'dst': None},
     {'src': '../extern/openal-soft',                                    'dst': None},
     {'src': '../extern/premake',                                        'dst': None},
-    {'src': '../extern/SOIL',                                           'dst': None},
+    {'src': '../extern/stb_image',                                      'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None}
 ]
 
@@ -209,7 +209,6 @@ androidfolderinfolist = docfolderinfolist + [
     {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/openal-soft/lib/android',                        'dst': None},
-    {'src': '../extern/SOIL/lib/android',                               'dst': None},
     {'src': '../extern/Tremolo/lib/android',                            'dst': None},
     {'src': 'demo/android',                                             'dst': None},
     {'src': 'plugins/Display/android',                                  'dst': None},

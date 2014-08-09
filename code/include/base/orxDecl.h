@@ -208,7 +208,7 @@
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxRASPBERRY_PI__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxANDROID_NATIVE__ && !__orxRASPBERRY_PI__ */
 
 
 #ifdef __cplusplus
@@ -237,32 +237,6 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  #ifdef NO_WIN32_LEAN_AND_MEAN
-
-    #undef WIN32_LEAN_AND_MEAN
-
-  #else /* NO_WIN32_LEAN_AND_MEAN */
-
-    #ifndef WIN32_LEAN_AND_MEAN
-
-      #define WIN32_LEAN_AND_MEAN
-      #define DEFINED_WIN32_LEAN_AND_MEAN
-
-    #endif /* !WIN32_LEAN_AND_MEAN */
-
-  #endif /* NO_WIN32_LEAN_AND_MEAN */
-
-  #include <windows.h>
-
-  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
-
-    #undef WIN32_LEAN_AND_MEAN
-    #undef DEFINED_WIN32_LEAN_AND_MEAN
-
-  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
-
-  #undef NO_WIN32_LEAN_AND_MEAN
-
   #ifdef __orxFREEBASIC__
 
     #define orxFASTCALL         __stdcall
@@ -287,28 +261,31 @@
   #define orxNULL               (0)
 
   /* *** Compiler specific *** */
-  /** The function intend to be inlined. */
   #if defined(__orxFREEBASIC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE
 
   #elif defined(__orxGCC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         inline
 
   #elif defined(__orxLLVM__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         inline
 
   #elif defined(__orxMSVC__)
 
+    /** The function intend to be inlined. */
     #define orxINLINE         __inline
 
   #endif
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iOS */
+  /* Linux / Mac / iOS / Android */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
@@ -319,7 +296,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -335,7 +312,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -343,13 +320,14 @@
     /** The symbol will be imported (exe compilation) */
     #define orxDLLIMPORT
 
-    /** The function is intended to be inlined */
     #ifdef __orxFREEBASIC__
 
+      /** The function intend to be inlined. */
       #define orxINLINE
 
     #else /* __orxFREEBASIC__ */
 
+      /** The function intend to be inlined. */
       #define orxINLINE         inline
 
     #endif /* __orxFREEBASIC__ */
@@ -365,9 +343,9 @@
       /* always use static on iOS, Android and Raspberry */
       #define __orxSTATIC__
 
-    #endif /* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -406,27 +384,6 @@
 #endif
 
 
-/** Memory barrier macros */
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
-  #define orxMEMORY_BARRIER()           __sync_synchronize()
-  #define orxHAS_MEMORY_BARRIER
-
-#elif defined(__orxMSVC__)
-
-  #define orxMEMORY_BARRIER()           MemoryBarrier()
-  #define orxHAS_MEMORY_BARRIER
-
-#else
-
-  #define orxMEMORY_BARRIER()
-  #undef orxHAS_MEMORY_BARRIER
-
-  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.
-
-#endif
-
-
 /** Memory alignment macros */
 #define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) & (~((size_t)(BLOCK_SIZE) - 1)))
 
@@ -437,6 +394,13 @@
 
 /** Structure macros */
 #define orxSTRUCT_GET_FROM_FIELD(TYPE, FIELD, POINTER)   ((TYPE *)((orxU8 *)(POINTER) - offsetof(TYPE, FIELD)))
+
+
+/** Array macros */
+#define orxARRAY_GET_ITEM_COUNT(ARRAY)  (sizeof(ARRAY) / sizeof(ARRAY[0]))
+
+
+/** Flag macros */
 
 /** Tests all flags
  * @param[in] X Flag container

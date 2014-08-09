@@ -179,6 +179,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga5ffe64ef217d7745c6b0c3af518083f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga73609453472017913e3e329ce2c12ff4"><td class="memItemLeft" align="right" valign="top">static orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">orxString_PrintUTF8Character</a> (orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)</td></tr>
 <tr class="separator:ga73609453472017913e3e329ce2c12ff4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf22eda222d006b02dca2f6a5d777ac15"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32 orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gaf22eda222d006b02dca2f6a5d777ac15">orxString_Scan</a> (const orxSTRING _zString, const orxSTRING _zFormat,...)</td></tr>
+<tr class="separator:gaf22eda222d006b02dca2f6a5d777ac15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadb936702b689b61973806a33ca5b4726"><td class="memItemLeft" align="right" valign="top">static orxINLINE const orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gadb936702b689b61973806a33ca5b4726">orxString_SearchChar</a> (const orxSTRING _zString, orxCHAR _cChar)</td></tr>
 <tr class="separator:gadb936702b689b61973806a33ca5b4726"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2e2cf12bf81d850b5362844bb240d28e"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e">orxString_SearchCharIndex</a> (const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)</td></tr>
@@ -582,7 +584,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Extension if exists, orxSTRING_EMPTY otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01531">1531</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01599">1599</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1173,7 +1175,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of written characters </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01509">1509</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01512">1512</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1322,6 +1324,57 @@ Variables</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00292">292</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaf22eda222d006b02dca2f6a5d777ac15"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxS32 orxCDECL orxString_Scan </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zFormat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Scans a formated string from a memory buffer </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String to scan </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zFormat</td><td>Format string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of scanned items </dd></dl>
+
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01547">1547</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>

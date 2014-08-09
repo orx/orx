@@ -24,15 +24,15 @@ ifeq ($(config),debug64)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxDEBUG__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorxd -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -48,15 +48,15 @@ ifeq ($(config),profile64)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxPROFILER__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorxp -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -72,15 +72,15 @@ ifeq ($(config),release64)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m64 -L/usr/lib64 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorx -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -96,15 +96,15 @@ ifeq ($(config),debug32)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxDEBUG__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxd -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorxd -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -120,15 +120,15 @@ ifeq ($(config),profile32)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxPROFILER__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorxp -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorxp -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -144,15 +144,15 @@ ifeq ($(config),release32)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen
   DEFINES   += -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/SOIL/include -I../../../../../extern/freetype-2.4.1/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/SOIL/lib/mac -L../../../../../extern/freetype-2.4.1/lib/mac -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
-  LIBS      += -lorx -lSOIL -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -gdwarf-2 -Wno-write-strings -mfix-and-continue
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/dynamic -L../../../../../extern/freetype-2.4.1/lib/mac -L. -m32 -L/usr/lib32 -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6 -dead_strip
+  LIBS      += -lorx -lfreetype -framework Foundation -framework AppKit -framework OpenGL -lz
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -221,17 +221,12 @@ prelink:
 ifneq (,$(PCH))
 $(GCH): $(PCH)
 	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	-$(SILENT) cp $< $(OBJDIR)
-else
-	$(SILENT) xcopy /D /Y /Q "$(subst /,\,$<)" "$(subst /,\,$(OBJDIR))" 1>nul
-endif
-	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.gch=%.d) -c "$<"
+	$(SILENT) $(CC) -x c-header $(ALL_CFLAGS) -MMD -MP $(DEFINES) $(INCLUDES) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
 endif
 
 $(OBJDIR)/orxFontGen.o: ../../../src/orxFontGen.c
 	@echo $(notdir $<)
-	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
 ifneq (,$(PCH))

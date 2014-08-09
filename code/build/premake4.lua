@@ -147,7 +147,7 @@ solution "orx"
         "../../extern/dlmalloc",
         "../../extern/glfw-2.7/include",
         "../../extern/Box2D_2.1.3/include",
-        "../../extern/SOIL/include",
+        "../../extern/stb_image",
         "../../extern/openal-soft/include",
         "../../extern/libsndfile-1.0.22/include",
         "../../extern/stb_vorbis"
@@ -155,7 +155,8 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp"
+        "../src/main/orxAndroidSupport.cpp",
+        "../src/main/orxAndroidNativeSupport.cpp"
     }
 
     flags
@@ -195,26 +196,24 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-2.7/lib/linux",
-            "../../extern/SOIL/lib/linux",
             "../../extern/libsndfile-1.0.22/lib/linux",
             "../../extern/Box2D_2.1.3/lib/linux"
         }
         buildoptions
         {
-            "-Wno-unused-function",
+            "-Wno-unused-function"
         }
 
     configuration {"linux", "x64"}
         libdirs
         {
             "../../extern/glfw-2.7/lib/linux64",
-            "../../extern/SOIL/lib/linux64",
             "../../extern/libsndfile-1.0.22/lib/linux64",
             "../../extern/Box2D_2.1.3/lib/linux64"
         }
         buildoptions
         {
-            "-Wno-unused-function",
+            "-Wno-unused-function"
         }
 
 
@@ -224,7 +223,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-2.7/lib/mac",
-            "../../extern/SOIL/lib/mac",
             "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/Box2D_2.1.3/lib/mac"
         }
@@ -253,7 +251,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-2.7/lib/vc2008",
-            "../../extern/SOIL/lib/msvs2008",
             "../../extern/openal-soft/lib/vc2008",
             "../../extern/libsndfile-1.0.22/lib/vc2008",
             "../../extern/Box2D_2.1.3/lib/msvs2008"
@@ -263,7 +260,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-2.7/lib/vc2010",
-            "../../extern/SOIL/lib/msvs2010",
             "../../extern/openal-soft/lib/vc2010",
             "../../extern/libsndfile-1.0.22/lib/vc2010",
             "../../extern/Box2D_2.1.3/lib/msvs2010"
@@ -273,7 +269,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-2.7/lib/mingw",
-            "../../extern/SOIL/lib/mingw",
             "../../extern/openal-soft/lib/mingw",
             "../../extern/libsndfile-1.0.22/lib/mingw",
             "../../extern/Box2D_2.1.3/lib/mingw"
@@ -324,17 +319,14 @@ project "orx"
             "glfw",
             "openal",
             "sndfile",
-            "SOIL",
             "GL",
             "X11",
             "Xrandr",
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
-
-    configuration {"linux", "x64", "*Static*"}
-        links {"pthread"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -350,8 +342,8 @@ project "orx"
             "IOKit.framework",
             "AppKit.framework",
             "glfw",
-            "SOIL",
             "sndfile",
+            "pthread",
             "OpenAL.framework",
             "OpenGL.framework"
         }
@@ -367,7 +359,6 @@ project "orx"
         {
             "glfw",
             "openal32",
-            "SOIL",
             "winmm",
             "sndfile"
         }
@@ -443,14 +434,15 @@ project "orxLIB"
             "glfw",
             "openal",
             "sndfile",
-            "SOIL",
             "GL",
             "X11",
             "Xrandr",
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
+        defines {"_GNU_SOURCE"}
 
     configuration {"linux", "*Static*"}
         buildoptions {"-fPIC"}
@@ -481,8 +473,8 @@ project "orxLIB"
             "IOKit.framework",
             "AppKit.framework",
             "glfw",
-            "SOIL",
             "sndfile",
+            "pthread",
             "OpenAL.framework",
             "OpenGL.framework"
         }
@@ -520,7 +512,6 @@ project "orxLIB"
         {
             "glfw",
             "openal32",
-            "SOIL",
             "winmm",
             "sndfile"
         }

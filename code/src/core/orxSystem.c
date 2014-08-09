@@ -29,8 +29,6 @@
  *
  */
 
-#define NO_WIN32_LEAN_AND_MEAN
-
 #include "core/orxSystem.h"
 
 #include "debug/orxDebug.h"
@@ -41,14 +39,14 @@
 
 #ifndef __orxWINDOWS__
 
-#if defined(__orxMAC__) || defined(__orxIOS__)
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
-#include <mach/mach_time.h>
+    #include <mach/mach_time.h>
 
-#endif /* __orxMAC__ || __orxIOS__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
-#include <unistd.h>
-#include <sys/time.h>
+  #include <unistd.h>
+  #include <sys/time.h>
 
 #endif /* !__orxWINDOWS__ */
 
@@ -118,6 +116,7 @@ void orxFASTCALL orxSystem_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_MEMORY);
 
+  /* Done! */
   return;
 }
 
@@ -157,12 +156,6 @@ orxSTATUS orxFASTCALL orxSystem_Init()
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
 
 #ifdef __orxWINDOWS__
-
-    /* Sets thread CPU affinity to remain on the same core */
-    SetThreadAffinityMask(GetCurrentThread(), 1);
-
-    /* Asks for small time slices */
-    timeBeginPeriod(1);
 
     /* Should use high performance timer? */
     if(QueryPerformanceFrequency(&s64Frequency))
@@ -224,17 +217,11 @@ void orxFASTCALL orxSystem_Exit()
   /* Checks */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
-#ifdef __orxWINDOWS__
-
-     /* Resets time slices */
-     timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
-
     /* Cleans static controller */
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
@@ -338,7 +325,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
     }
     else
 
-    #endif /* !__orxANDROID__ */
+    #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 
     {
       /* Logs message */
@@ -378,5 +365,6 @@ void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 
 #endif /* __orxWINDOWS__ */
 
+  /* Done! */
   return;
 }

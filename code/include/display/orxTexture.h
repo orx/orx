@@ -55,6 +55,8 @@
 
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 
+#define orxTEXTURE_KZ_PIXEL               "pixel"
+
 
 /** Event enum
  */

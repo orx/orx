@@ -36,6 +36,8 @@
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
+#include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -259,6 +261,131 @@ static orxINLINE orxU32 orxFX_FindEmptySlotIndex(const orxFX *_pstFX)
   return u32Result;
 }
 
+/** Processes config data
+ */
+static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Has reference? */
+  if((_pstFX->zReference != orxNULL)
+  && (*(_pstFX->zReference) != orxCHAR_NULL))
+  {
+    orxU32 u32SlotCounter, i;
+
+    /* Pushes its config section */
+    orxConfig_PushSection(_pstFX->zReference);
+
+    /* Gets number of declared slots */
+    u32SlotCounter = orxConfig_GetListCounter(orxFX_KZ_CONFIG_SLOT_LIST);
+
+    /* Too many slots? */
+    if(u32SlotCounter > orxFX_KU32_SLOT_NUMBER)
+    {
+      /* For all exceeding slots */
+      for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCounter; i++)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Too many slots for this FX, can't add slot <%s>.", _pstFX->zReference, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
+      }
+
+      /* Updates slot counter */
+      u32SlotCounter = orxFX_KU32_SLOT_NUMBER;
+    }
+
+    /* For all slots */
+    for(i = 0; i < u32SlotCounter; i++)
+    {
+      const orxSTRING zSlotName;
+
+      /* Gets its name */
+      zSlotName = orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i);
+
+      /* Valid? */
+      if((zSlotName != orxNULL) && (zSlotName != orxSTRING_EMPTY))
+      {
+        /* Adds slot from config */
+        orxFX_AddSlotFromConfig(_pstFX, zSlotName);
+      }
+      else
+      {
+        /* Stops */
+        break;
+      }
+    }
+
+    /* Should loop? */
+    if(orxConfig_GetBool(orxFX_KZ_CONFIG_LOOP) != orxFALSE)
+    {
+      /* Updates flags */
+      orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_LOOP, orxFX_KU32_FLAG_NONE);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      orxFX *pstFX;
+
+      /* For all FXs */
+      for(pstFX = orxFX(orxStructure_GetFirst(orxSTRUCTURE_ID_FX));
+          pstFX != orxNULL;
+          pstFX = orxFX(orxStructure_GetNext(pstFX)))
+      {
+        /* Has reference? */
+        if((pstFX->zReference != orxNULL) && (pstFX->zReference != orxSTRING_EMPTY))
+        {
+          /* Matches? */
+          if(orxConfig_GetOriginID(pstFX->zReference) == pstPayload->u32NameID)
+          {
+            orxU32 i;
+
+            /* For all slots */
+            for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
+            {
+              /* Clears it */
+              orxFLAG_SET(pstFX->astFXSlotList[i].u32Flags, orxFX_SLOT_KU32_FLAG_NONE, orxFX_SLOT_KU32_FLAG_DEFINED);
+            }
+
+            /* Clears status */
+            orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP);
+
+            /* Re-processes its data */
+            orxFX_ProcessData(pstFX);
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all the FXs
  */
 static orxINLINE void orxFX_DeleteAll()
@@ -323,6 +450,9 @@ orxSTATUS orxFASTCALL orxFX_Init()
     {
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(FX, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Adds event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
     }
     else
     {
@@ -365,6 +495,9 @@ void orxFASTCALL orxFX_Exit()
   /* Initialized? */
   if(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
+
     /* Deletes FX list */
     orxFX_DeleteAll();
 
@@ -455,69 +588,35 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        orxU32 i;
-
         /* Adds it to reference table */
         if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxU32 u32SlotCounter;
-
           /* Stores its reference */
           pstResult->zReference = orxConfig_GetCurrentSection();
 
-          /* Protects it */
-          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
-          /* Gets number of declared slots */
-          u32SlotCounter = orxConfig_GetListCounter(orxFX_KZ_CONFIG_SLOT_LIST);
-
-          /* Too many slots? */
-          if(u32SlotCounter > orxFX_KU32_SLOT_NUMBER)
+          /* Processes its data */
+          if(orxFX_ProcessData(pstResult) != orxSTATUS_FAILURE)
           {
-            /* For all exceeding slots */
-            for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCounter; i++)
+            /* Protects it */
+            orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
+            /* Should keep it in cache? */
+            if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
             {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Too many slots for this FX, can't add slot <%s>.", _zConfigID, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
-            }
-
-            /* Updates slot counter */
-            u32SlotCounter = orxFX_KU32_SLOT_NUMBER;
-          }
-
-          /* For all slots */
-          for(i = 0; i < u32SlotCounter; i++)
-          {
-            const orxSTRING zSlotName;
-
-            /* Gets its name */
-            zSlotName = orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i);
-
-            /* Valid? */
-            if((zSlotName != orxNULL) && (zSlotName != orxSTRING_EMPTY))
-            {
-              /* Adds slot from config */
-              orxFX_AddSlotFromConfig(pstResult, zSlotName);
-            }
-            else
-            {
-              /* Stops */
-              break;
+              /* Increases its reference counter to keep it in cache table */
+              orxStructure_IncreaseCounter(pstResult);
             }
           }
-
-          /* Should loop? */
-          if(orxConfig_GetBool(orxFX_KZ_CONFIG_LOOP) != orxFALSE)
+          else
           {
-            /* Updates flags */
-            orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_LOOP, orxFX_KU32_FLAG_NONE);
-          }
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't create FX <%s>: invalid content.", _zConfigID);
 
-          /* Should keep it in cache? */
-          if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
-          {
-            /* Increases its reference counter to keep it in cache table */
-            orxStructure_IncreaseCounter(pstResult);
+            /* Deletes it */
+            orxFX_Delete(pstResult);
+
+            /* Updates result */
+            pstResult = orxNULL;
           }
         }
         else
@@ -1158,11 +1257,11 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                     orxVector_Mul(&vEndValue, &vEndValue, orxObject_GetScale(_pstObject, &vScale));
                   }
 
-                  /* Updates global position value */
+                  /* Updates global value */
                   orxVector_Add(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), &vEndValue);
                 }
 
-                /* Updates translation status */
+                /* Updates status */
                 abUpdateList[eFXType] = orxTRUE;
 
                 break;

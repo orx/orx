@@ -80,14 +80,15 @@ var NAVTREEINDEX0 =
 "group__orx_a_a_box.html#gafa88474a3959f2f4674edead0e641570":[1,1,1],
 "group__orx_android.html":[1,2],
 "group__orx_android.html#ga0cc518bbc6da8cb86d21aa071da39db3":[1,2,5],
-"group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564":[1,2,16],
+"group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564":[1,2,17],
 "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d":[1,2,13],
-"group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367":[1,2,15],
+"group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367":[1,2,16],
 "group__orx_android.html#ga20a0d5ce4493d08bbd5a8e726c602ec0":[1,2,9],
 "group__orx_android.html#ga2571fc956eb158bdd227cc4477fd5e6c":[1,2,7],
 "group__orx_android.html#ga2655223eb8e84adf8378018f210c1604":[1,2,12],
 "group__orx_android.html#ga550ffc6e6dad9a71a4a746d72c35709a":[1,2,2],
-"group__orx_android.html#ga6394da07beb42d0901d9dc505eb74f07":[1,2,14],
+"group__orx_android.html#ga6394da07beb42d0901d9dc505eb74f07":[1,2,15],
+"group__orx_android.html#ga99cdd2f5977ceed457f9c88b36c1a30d":[1,2,14],
 "group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff":[1,2,4],
 "group__orx_android.html#gaca0657d8a701bf22499cd348acce246d":[1,2,3],
 "group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81":[1,2,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "group__orx_body.html#ga83862d9c67e8209199c3f3381f028ae5":[1,7,59],
 "group__orx_body.html#ga83cd91ef853c0ab57c34bc1417445196":[1,7,44],
 "group__orx_body.html#ga8ee9bc06c7b342b0731a1a1103f33a4c":[1,7,6],
-"group__orx_body.html#ga9382982502a79dd94490893ac1326b00":[1,7,23],
-"group__orx_body.html#ga94e258979b219f6edced5cc742c79d5f":[1,7,28]
+"group__orx_body.html#ga9382982502a79dd94490893ac1326b00":[1,7,23]
 };

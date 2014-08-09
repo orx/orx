@@ -38,6 +38,7 @@ var searchData=
   ['orxresource_5ffunction_5fseek',['orxRESOURCE_FUNCTION_SEEK',['../group__orx_resource.html#ga00b4469e95f77dd256bb08a8464ff158',1,'orxResource.h']]],
   ['orxresource_5ffunction_5ftell',['orxRESOURCE_FUNCTION_TELL',['../group__orx_resource.html#ga4ad4377c2af029158e647b9c7b84543d',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fwrite',['orxRESOURCE_FUNCTION_WRITE',['../group__orx_resource.html#ga948a63dd429cab823a250654fc7f88eb',1,'orxResource.h']]],
+  ['orxresource_5fop_5ffunction',['orxRESOURCE_OP_FUNCTION',['../group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41',1,'orxResource.h']]],
   ['orxshader',['orxSHADER',['../group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51',1,'orxShader.h']]],
   ['orxshaderpointer',['orxSHADERPOINTER',['../group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211',1,'orxShaderPointer.h']]],
   ['orxsound',['orxSOUND',['../group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87',1,'orxSound.h']]],
@@ -48,6 +49,8 @@ var searchData=
   ['orxstructure_5fupdate_5ffunction',['orxSTRUCTURE_UPDATE_FUNCTION',['../group__orx_structure.html#ga2a40e7c406b268ad4478963ddf00032e',1,'orxStructure.h']]],
   ['orxtext',['orxTEXT',['../group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d',1,'orxText.h']]],
   ['orxtexture',['orxTEXTURE',['../group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a',1,'orxTexture.h']]],
+  ['orxthread_5ffunction',['orxTHREAD_FUNCTION',['../group__orx_thread.html#ga5856905451ce04149e4e31b67fb87feb',1,'orxThread.h']]],
+  ['orxthread_5fsemaphore',['orxTHREAD_SEMAPHORE',['../group__orx_thread.html#ga2cd157a0a33f4ac0308d3141e7730a9e',1,'orxThread.h']]],
   ['orxtimeline',['orxTIMELINE',['../group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32',1,'orxTimeLine.h']]],
   ['orxviewport',['orxVIEWPORT',['../group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a',1,'orxViewport.h']]]
 ];

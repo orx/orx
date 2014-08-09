@@ -996,7 +996,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   orxASSERT(_pstGraphic->fWidth >= orxFLOAT_0);
   orxASSERT(_pstGraphic->fHeight >= orxFLOAT_0);
 
-  /* Valid? */
+  /* Valid size? */
   if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
   {
     orxFLOAT  fHeight, fWidth;

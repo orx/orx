@@ -33,8 +33,8 @@
 /**
  * @addtogroup orxSystem
  *
- * Module file
- * Code that handles modules and their dependencies
+ * System file
+ * Code that handles system events and timers
  *
  * @{
  */

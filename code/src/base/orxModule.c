@@ -92,6 +92,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
   orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
+  orxMODULE_REGISTER(orxMODULE_ID_THREAD, orxThread);
   orxMODULE_REGISTER(orxMODULE_ID_TIMELINE, orxTimeLine);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 

@@ -145,7 +145,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">orxCOMMAND_VAR_TYPE_BOOL</a>, 
 <a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">orxCOMMAND_VAR_TYPE_VECTOR</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">orxCOMMAND_VAR_TYPE_NUMBER</a>, 
+&#160;&#160;<a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38">orxCOMMAND_VAR_TYPE_NUMERIC</a>, 
+<a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">orxCOMMAND_VAR_TYPE_NUMBER</a>, 
 <a class="el" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">orxCOMMAND_VAR_TYPE_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
@@ -177,6 +178,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga2d0c16347e4fb4075ed39b0c561be3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafc5ae72195e0e034dc9bf5052d9ac5cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb">orxCommand_ParseNumericalArguments</a> (orxU32 _u32ArgNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astOperandList)</td></tr>
 <tr class="separator:gafc5ae72195e0e034dc9bf5052d9ac5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69e97bd9e7a140f3e47df3b11b2c0cc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga69e97bd9e7a140f3e47df3b11b2c0cc7">orxCommand_PrintVar</a> (orxSTRING _zDstString, orxU32 _u32Size, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstVar)</td></tr>
+<tr class="separator:ga69e97bd9e7a140f3e47df3b11b2c0cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaabb6d028ab52dffb1c9bbfe3e75b9601"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a> (const orxSTRING _zCommand, const <a class="el" href="group__orx_command.html#ga246d757413efb9d5cb7fcf58f369f1f1">orxCOMMAND_FUNCTION</a> _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_astParamList, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">orxCOMMAND_VAR_DEF</a> *_pstResult)</td></tr>
 <tr class="separator:gaabb6d028ab52dffb1c9bbfe3e75b9601"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa10f6ec80ec202751165294ee369bf51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51">orxCommand_RemoveAlias</a> (const orxSTRING _zAlias)</td></tr>
@@ -249,12 +252,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="line"><a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">  orxSTATUS</a>           eStatus;                                                                                                                                  \</div>
 <div class="line">  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
 <div class="line">  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
-<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult); \</div>
+<div class="line">  eStatus           = <a class="code" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">orxCommand_Register</a>(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND, &amp;orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult);\</div>
 <div class="line">  orxASSERT(eStatus != <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>);                                                                                                                      \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment --><p>Command registration helpers </p>
 
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00102">102</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00103">103</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +289,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <div class="line">  orxCommand_Unregister(#MODULE<span class="stringliteral">&quot;.&quot;</span>#COMMAND);                                                                                                                    \</div>
 <div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 </div><!-- fragment -->
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00114">114</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00115">115</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
@@ -302,7 +305,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Command function type </p>
 
-<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00097">97</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_command_8h_source.html#l00098">98</a> of file <a class="el" href="orx_command_8h_source.html">orxCommand.h</a>.</p>
 
 </div>
 </div>
@@ -333,6 +336,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td valign="top"><em><a class="anchor" id="gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d"></a>orxCOMMAND_VAR_TYPE_BOOL</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec"></a>orxCOMMAND_VAR_TYPE_VECTOR</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38"></a>orxCOMMAND_VAR_TYPE_NUMERIC</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a"></a>orxCOMMAND_VAR_TYPE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
@@ -659,6 +664,48 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if all numerical arguments have been correctly interpreted, orxSTATUS_FAILURE otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga69e97bd9e7a140f3e47df3b11b2c0cc7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxCommand_PrintVar </td>
+          <td>(</td>
+          <td class="paramtype">orxSTRING&#160;</td>
+          <td class="paramname"><em>_zDstString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *&#160;</td>
+          <td class="paramname"><em>_pstVar</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Prints a variable to a buffer, according to its type (and ignoring any bloc/special character) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">_zDstString</td><td>Destination string </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>String available size </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstVar</td><td>Variable to print </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of written characters (excluding trailing orxCHAR_NULL) </dd></dl>
 
 </div>
 </div>

@@ -403,6 +403,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 {
   orxVECTOR vMousePos;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("Bounce_Update");
+
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
     /* Starts recording with default settings */
@@ -518,6 +521,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Toggles shader status */
     sbShaderEnabled = !sbShaderEnabled;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 }
 
 /** Inits the bounce demo

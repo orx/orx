@@ -12,6 +12,7 @@ var orx_command_8h =
       [ "orxCOMMAND_VAR_TYPE_U64", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad", null ],
       [ "orxCOMMAND_VAR_TYPE_BOOL", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d", null ],
       [ "orxCOMMAND_VAR_TYPE_VECTOR", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec", null ],
+      [ "orxCOMMAND_VAR_TYPE_NUMERIC", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38", null ],
       [ "orxCOMMAND_VAR_TYPE_NUMBER", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a", null ],
       [ "orxCOMMAND_VAR_TYPE_NONE", "orx_command_8h.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769", null ]
     ] ],
@@ -25,6 +26,7 @@ var orx_command_8h =
     [ "orxCommand_IsAlias", "orx_command_8h.html#gaaeb95264c698906fdaf3f54ba91011b3", null ],
     [ "orxCommand_IsRegistered", "orx_command_8h.html#ga2d0c16347e4fb4075ed39b0c561be3e6", null ],
     [ "orxCommand_ParseNumericalArguments", "orx_command_8h.html#gafc5ae72195e0e034dc9bf5052d9ac5cb", null ],
+    [ "orxCommand_PrintVar", "orx_command_8h.html#ga69e97bd9e7a140f3e47df3b11b2c0cc7", null ],
     [ "orxCommand_Register", "orx_command_8h.html#gaabb6d028ab52dffb1c9bbfe3e75b9601", null ],
     [ "orxCommand_RemoveAlias", "orx_command_8h.html#gaa10f6ec80ec202751165294ee369bf51", null ],
     [ "orxCommand_Setup", "orx_command_8h.html#ga74927728d29562dce492a1c305a470ad", null ],

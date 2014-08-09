@@ -34,7 +34,7 @@
 
 /**
  * @addtogroup orxDebug
- * 
+ *
  * Debug module
  * Module used to output debug info and assert code
  *

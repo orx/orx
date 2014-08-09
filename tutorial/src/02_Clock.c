@@ -82,7 +82,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
    */
   pstObject = orxOBJECT(_pstContext);
 
-  /* Rotates it according to ellapsed time (complete rotation every 2 seconds) */
+  /* Rotates it according to elapsed time (complete rotation every 2 seconds) */
   orxObject_SetRotation(pstObject, orxMATH_KF_PI * _pstClockInfo->fTime);
 }
 

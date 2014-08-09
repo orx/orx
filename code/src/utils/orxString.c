@@ -226,7 +226,8 @@ void orxFASTCALL orxString_Exit()
  */
 orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
 {
-  orxU32 u32Result = 0;
+  const orxSTRING zStoredString;
+  orxU32          u32Result = 0;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_GetID");
@@ -239,11 +240,22 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
   u32Result = orxString_ToCRC(_zString);
 
   /* Not already stored? */
-  if(orxHashTable_Get(sstString.pstIDTable, u32Result) == orxNULL)
+  if((zStoredString = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32Result)) == orxNULL)
   {
     /* Adds it */
     orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
   }
+#ifdef __orxDEBUG__
+  else
+  {
+    /* Different strings? */
+    if(orxString_Compare(_zString, zStoredString) != 0)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: string ID collision detected between <%s> and <%s>: please rename one of them or you might end up with undefined result.", zStoredString, _zString);
+    }
+  }
+#endif /* __orxDEBUG__ */
 
   /* Profiles */
   orxPROFILER_POP_MARKER();

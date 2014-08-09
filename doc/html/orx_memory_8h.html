@@ -122,6 +122,8 @@ $(document).ready(function(){initNavTree('orx_memory_8h.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga7240bc33642336c84068c3f70adb967a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a">orxMEMORY_BARRIER</a>()</td></tr>
+<tr class="separator:ga7240bc33642336c84068c3f70adb967a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649">orxMEMORY_TRACK</a>(TYPE, SIZE, ALLOCATE)</td></tr>
 <tr class="separator:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -129,16 +131,18 @@ Macros</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:gab389ac47cdad29f66eb25d37f09179b0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> { <br/>
 &#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4">orxMEMORY_TYPE_MAIN</a> = 0, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88">orxMEMORY_TYPE_VIDEO</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">orxMEMORY_TYPE_AUDIO</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3">orxMEMORY_TYPE_CONFIG</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0af84f6e280ff65869d193f326903a0a90">orxMEMORY_TYPE_DEBUG</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01">orxMEMORY_TYPE_PHYSICS</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a135a5bc6becccf205d044cc93e6469a4">orxMEMORY_TYPE_SYSTEM</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72">orxMEMORY_TYPE_TEXT</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">orxMEMORY_TYPE_AUDIO</a>, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01">orxMEMORY_TYPE_PHYSICS</a>, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>, 
+&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88">orxMEMORY_TYPE_VIDEO</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">orxMEMORY_TYPE_NUMBER</a>, 
-<br/>
-&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
 <tr class="separator:gab389ac47cdad29f66eb25d37f09179b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,7 +178,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><dl class="section date"><dt>Date</dt><dd>02/04/2005 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'bes'+'te'+'l@a'+'rc'+'all'+'ia'+'ns.'+'or'+'g'; return false;">beste<span style="display: none;">.nosp@m.</span>l@ar<span style="display: none;">.nosp@m.</span>calli<span style="display: none;">.nosp@m.</span>ans.<span style="display: none;">.nosp@m.</span>org</a></dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000033">Todo:</a></b></dt><dd><ul>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000034">Todo:</a></b></dt><dd><ul>
 <li>Manage memory alignment</li>
 <li>Allow to specify memory starting address &amp; maximum size for each memory type </li>
 </ul>

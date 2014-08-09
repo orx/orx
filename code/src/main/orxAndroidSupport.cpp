@@ -148,7 +148,7 @@ static void Android_JNI_ThreadDestroyed(void* value) {
     }
 }
 
-int Android_JNI_SetupThread(void) {
+void orxAndroid_JNI_SetupThread(void) {
     /* From http://developer.android.com/guide/practices/jni.html
      * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
      * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
@@ -160,7 +160,6 @@ int Android_JNI_SetupThread(void) {
      */
     JNIEnv *env = Android_JNI_GetEnv();
     pthread_setspecific(mThreadKey, (void*) env);
-    return 1;
 }
 
 // Library init
@@ -181,7 +180,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
     }
     else {
-        Android_JNI_SetupThread();
+        orxAndroid_JNI_SetupThread();
     }
 
     return JNI_VERSION_1_4;
@@ -213,7 +212,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     jclass objClass;
     jobject jActivity;
 
-    Android_JNI_SetupThread();
+    orxAndroid_JNI_SetupThread();
 
     sstAndroid.mFragment = mEnv->NewGlobalRef(jFragment);
     objClass = mEnv->FindClass("android/support/v4/app/Fragment");

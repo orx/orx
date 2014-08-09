@@ -20,6 +20,7 @@ var group__orx_android =
     [ "orxAndroid_GetJNIEnv", "group__orx_android.html#gaf51bfa3c5118859198b0cd74a5003809", null ],
     [ "orxAndroid_GetNativeWindow", "group__orx_android.html#ga2655223eb8e84adf8378018f210c1604", null ],
     [ "orxAndroid_JNI_GetRotation", "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
+    [ "orxAndroid_JNI_SetupThread", "group__orx_android.html#ga99cdd2f5977ceed457f9c88b36c1a30d", null ],
     [ "orxAndroid_JNI_SetWindowFormat", "group__orx_android.html#ga6394da07beb42d0901d9dc505eb74f07", null ],
     [ "orxAndroid_PumpEvents", "group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367", null ],
     [ "orxAndroid_RegisterAPKResource", "group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564", null ]

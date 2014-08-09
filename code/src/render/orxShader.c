@@ -1359,8 +1359,8 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxST
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))
@@ -1432,8 +1432,8 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orx
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))
@@ -1505,8 +1505,8 @@ orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxS
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))

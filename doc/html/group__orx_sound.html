@@ -288,7 +288,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Event sent when a sound stops </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775ab9e5a0d40cc74ecc80e52b53db575244"></a>orxSOUND_EVENT_PACKET</em>&nbsp;</td><td>
-<p>Event sent when a sound packet is streamed </p>
+<p>Event sent when a sound packet is streamed. IMPORTANT: this event can be sent from a worker thread, do not call any orx API when handling it </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef"></a>orxSOUND_EVENT_RECORDING_START</em>&nbsp;</td><td>
 <p>Event sent when recording starts </p>
