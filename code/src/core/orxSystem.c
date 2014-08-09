@@ -325,7 +325,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
     }
     else
 
-    #endif /* !__orxANDROID__ */
+    #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 
     {
       /* Logs message */

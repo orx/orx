@@ -208,7 +208,7 @@
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxRASPBERRY_PI__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxANDROID_NATIVE__ && !__orxRASPBERRY_PI__ */
 
 
 #ifdef __cplusplus
@@ -285,7 +285,7 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iOS */
+  /* Linux / Mac / iOS / Android */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxRASPBERRY_PI__)
@@ -296,7 +296,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
       #ifdef __orxFREEBASIC__
 
@@ -312,7 +312,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -343,9 +343,9 @@
       /* always use static on iOS, Android and Raspberry */
       #define __orxSTATIC__
 
-    #endif /* __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+    #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxRASPBERRY_PI__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxRASPBERRY_PI__ */
 
 #endif /* __orxWINDOWS__ */
 

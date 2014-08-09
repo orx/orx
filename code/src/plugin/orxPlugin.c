@@ -46,7 +46,7 @@
 
   #include <dlfcn.h>
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 
 /** Platform dependent type & function defines

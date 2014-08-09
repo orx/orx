@@ -52,7 +52,7 @@
 
 #include <android_native_app_glue.h>
 
-#endif
+#endif /* __orxANDROID_NATIVE__ */
 
 #if defined(__cplusplus)
 extern "C"
@@ -134,11 +134,11 @@ jobject orxAndroid_GetActivity();
 
 #ifdef __orxANDROID_NATIVE__
 ANativeActivity* orxAndroid_GetNativeActivity();
-#endif
+#endif /* __orxANDROID_NATIVE__ */
 
 #if defined(__cplusplus)
 }
-#endif
+#endif /* __orxANDROID__ */
 
 #define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
 #define orxANDROID_EVENT_KEYBOARD_DOWN       0

@@ -59,7 +59,7 @@
 #include "../plugins/Sound/android/orxSoundSystem.c"
 
 /* Others */
-#else
+#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Includes all plugins to embed
  */
@@ -93,8 +93,8 @@
 //#include "../plugins/Render/Home/orxRender.c"
 //#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
-#endif /* __orxMAC__ */
+#endif /* !__orxMAC__ */
 
-#endif
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxEMBEDDED__ */
