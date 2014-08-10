@@ -196,14 +196,14 @@ static orxSTATUS orxFASTCALL orxSoundSystem_Android_EventHandler(const orxEVENT 
   if(_pstEvent->eID == orxSYSTEM_EVENT_BACKGROUND && !orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED))
   {
     alcDevicePauseSOFT(sstSoundSystem.poDevice);
-
+    orxThread_Enable(orxTHREAD_KU32_FLAG_NONE, orxTHREAD_GET_FLAG_FROM_ID(sstSoundSystem.u32StreamingThread));
     orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
   }
 
   if(_pstEvent->eID == orxSYSTEM_EVENT_FOREGROUND && orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED))
   {
     alcDeviceResumeSOFT(sstSoundSystem.poDevice);
-
+    orxThread_Enable(orxTHREAD_GET_FLAG_FROM_ID(sstSoundSystem.u32StreamingThread), orxTHREAD_KU32_FLAG_NONE);
     orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_PAUSED);
   }
 
@@ -1097,6 +1097,9 @@ void orxFASTCALL orxSoundSystem_Android_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Makes sure streaming thread is enabled */
+    orxThread_Enable(orxTHREAD_GET_FLAG_FROM_ID(sstSoundSystem.u32StreamingThread), orxTHREAD_KU32_FLAG_NONE);
+
     /* Joins streaming thread */
     orxThread_Join(sstSoundSystem.u32StreamingThread);
 
