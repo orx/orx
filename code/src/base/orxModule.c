@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -92,6 +92,7 @@ void orxFASTCALL orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
   orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
+  orxMODULE_REGISTER(orxMODULE_ID_THREAD, orxThread);
   orxMODULE_REGISTER(orxMODULE_ID_TIMELINE, orxTimeLine);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 

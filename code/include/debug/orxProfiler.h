@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,6 +46,8 @@
 
 #include "orxInclude.h"
 
+#include "core/orxThread.h"
+
 
 /* *** Uncomment the line below to enable orx profiling in non debug builds *** */
 //#define __orxPROFILER__
@@ -55,21 +57,25 @@
  */
 #ifdef __orxPROFILER__
 
-  #define orxPROFILER_PUSH_MARKER(NAME)                           \
-  do                                                              \
-  {                                                               \
-    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;\
-                                                                  \
-    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)    \
-    {                                                             \
-      s32ProfilerID = orxProfiler_GetIDFromName(NAME);            \
-    }                                                             \
-                                                                  \
-    orxProfiler_PushMarker(s32ProfilerID);                        \
+  #define orxPROFILER_PUSH_MARKER(NAME)                             \
+  do                                                                \
+  {                                                                 \
+    static orxS32 s32ProfilerID = orxPROFILER_KS32_MARKER_ID_NONE;  \
+                                                                    \
+    if(orxProfiler_IsMarkerIDValid(s32ProfilerID) == orxFALSE)      \
+    {                                                               \
+      s32ProfilerID = orxProfiler_GetIDFromName(NAME);              \
+    }                                                               \
+                                                                    \
+    orxProfiler_PushMarker(s32ProfilerID);                          \
   } while(orxFALSE)
 
 
-  #define orxPROFILER_POP_MARKER()                orxProfiler_PopMarker();
+  #define orxPROFILER_POP_MARKER()                                  \
+  do                                                                \
+  {                                                                 \
+    orxProfiler_PopMarker();                                        \
+  } while(orxFALSE)
 
   #define orxPROFILER_KU32_HISTORY_LENGTH         (3 * 60)
 
@@ -79,7 +85,7 @@
 
   #define orxPROFILER_POP_MARKER()
 
-  #define orxPROFILER_KU32_HISTORY_LENGTH         1
+  #define orxPROFILER_KU32_HISTORY_LENGTH         2
 
 #endif /* __orxPROFILER__ */
 
@@ -163,7 +169,7 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetResetTime();
 extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMaxResetTime();
 
 
-/** Gets the number of registered markers
+/** Gets the number of registered markers used on the queried thread
  * @return Number of registered markers
  */
 extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCounter();
@@ -184,9 +190,10 @@ extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetNextSortedMarke
 
 /** Selects the query frame for all GetMarker* functions below, in number of frame elapsed from the last one
  * @param[in] _u32QueryFrame    Query frame, in number of frame elapsed since the last one (ie. 0 -> last frame, 1 -> frame before last, ...)
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILRE
+ * @param[in] _u32ThreadID      Concerned thread ID, if no data is found for this thread, orxSTATUS_FAILURE is returned
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxProfiler_SelectQueryFrame(orxU32 _u32QueryFrame);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxProfiler_SelectQueryFrame(orxU32 _u32QueryFrame, orxU32 _u32ThreadID);
 
 
 /** Gets the marker's cumulated time

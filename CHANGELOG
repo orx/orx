@@ -1,6 +1,56 @@
 Orx - Portable Game Engine  (Version 1.5rc0)
 =========================================
 
+orx 1.6rc0
+-----
+* IMPORTANT: Added Multi-threading support
+* IMPORTANT: MinGW32 build is now using gcc 4.8.1 instead of gcc 4.6.2
+* IMPORTANT: Textures and sounds will be loaded asynchronously on all platforms, by default
+* IMPORTANT: Added orxThread_RunTask() to run asynchronous tasks
+* IMPORTANT: Orx's API (beside orxThread module) is *NOT* thread safe (don't use it inside tasks)
+* IMPORTANT: Added orxFile_GetApplicationSaveDirectory() (and orxFile_GetHomeDirectory())
+* IMPORTANT: Android native version is back!
+* IMPORTANT: Added immediate command evaluation in config, using % as line prefix
+
+* Added support for insert/overwrite modes in console
+* Profiler display supports multi-threading: PageUp/PageDown to navigate between threads
+* Added support for Bezier curves (orxVector_Bezier())
+* Added orxVIEWPORT_EVENT_RESIZE
+* Added nameless key inheritance (@.MyKey) to config
+* Added orxDisplay_SetTempBitmap() to control temporary bitmap used for objects while their texture is being loaded
+* Rewrote object<->body<->physics communication with cleaner&better parenting/time-stretching support
+* Added 'Immediate' config property to timeline tracks
+* Fixed a bug in orxFontGen regarding advance scaling and ascender
+* Updated OpenAL-Soft
+* OpenAL-Soft's thread is paused on Android when application is in the background
+* orxFile_Open() will now create missing intermediate directories when used with a write mode
+* Added orxFile_Remove() and orxFile_MakeDirectory()
+* Removed SOIL dependency (use stb_image & co instead)
+* Command Texture.Save can now either take a Texture (ID) or a name as argument
+* Command Object.FindNext can now accept the character * as first argument to consider all objects
+* Added a bunch of new commands
+* Misc fixes, optimizations and additions
+
+orx 1.5
+-----
+* IMPORTANT: Fixed screen saving in GLFW display plugin (affected screenshot feature as well)
+* IMPORTANT: Added flip & animation support for text objects
+* IMPORTANT: Added config property AutoResize to Viewport
+* IMPORTANT: Added config property BackgroundAlpha to Viewport
+* IMPORTANT: orxOBJECT_EVENT_ENABLE/_DISABLE are now only sent if there's an actual change of status
+* IMPORTANT: Added virtual keyboard support for Android + orxKeyboard_Show()
+
+* Improved orxFontGen's font generation when used in compressed/filtered textures
+* Android: a few refactoring & fixes
+* Added orxOBJECT_EVENT_PAUSE/_UNPAUSE events
+* Added random seeds accessors (useful for backup & restore purposes in replays, for example)
+* Added orxString_IsCharacterAlphaNumeric()
+* Added orxAnimSet_FindNextAnim() to peek at next anim in queue
+* Added orxBody_GetJointReactionForce()/orxBody_GetJointReactionTorque()
+* Fixed a bug in hotreload of timeline tracks
+* Fixed rare bug in orxObject_GetChild()/orxObject_GetSibling()
+* Misx fixes, optimizations and additions
+
 orx 1.5rc0
 -----
 * IMPORTANT: Added Resource module

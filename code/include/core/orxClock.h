@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -112,7 +112,7 @@ typedef struct __orxCLOCK_INFO_t
   orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 8 */
   orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 12 */
   orxFLOAT          fModValue;                        /**< Clock mod value : 16 */
-  orxFLOAT          fDT;                              /**< Clock DT (time ellapsed between 2 clock calls in seconds) : 20 */
+  orxFLOAT          fDT;                              /**< Clock DT (time elapsed between 2 clock calls in seconds) : 20 */
   orxFLOAT          fTime;                            /**< Clock time : 24 */
 
 } orxCLOCK_INFO;

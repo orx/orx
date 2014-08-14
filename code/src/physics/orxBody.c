@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,6 +47,7 @@
 #define orxBODY_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
+#define orxBODY_KU32_FLAG_HAS_GRAVITY         0x00000002  /**< Has custom gravity flag */
 
 #define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< User all ID mask */
 
@@ -185,17 +186,16 @@ struct __orxBODY_JOINT_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 32 */
-  orxVECTOR               vSpeed;                                     /**< Speed : 28 */
-  orxVECTOR               vScale;                                     /**< Scale : 40 */
-  orxVECTOR               vPreviousPosition;                          /**< Previous position : 52 */
-  orxFLOAT                fPreviousRotation;                          /**< Previous rotation : 56 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 60 */
-  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 64 */
-  orxFLOAT                fTimeMultiplier;                            /**< Current time multiplier : 68 */
-  orxU32                  u32DefFlags;                                /**< Definition flags : 72 */
-  orxLINKLIST             stPartList;                                 /**< Part list : 84 */
-  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 96 */
-  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 108 */
+  orxVECTOR               vSpeed;                                     /**< Speed : 44 */
+  orxVECTOR               vGravity;                                   /**< Custom gravity : 56 */
+  orxVECTOR               vScale;                                     /**< Scale : 68 */
+  orxFLOAT                fAngularVelocity;                           /**< Angular velocity : 72 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 76 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 80 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 84 */
+  orxLINKLIST             stPartList;                                 /**< Part list : 96 */
+  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 108 */
+  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 120 */
 };
 
 /** Static structure
@@ -443,9 +443,6 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
 
       /* Stores its definition flags */
       pstBody->u32DefFlags = _pstBodyDef->u32Flags;
-
-      /* Clears its time multiplier */
-      pstBody->fTimeMultiplier = orxFLOAT_1;
 
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
@@ -1710,6 +1707,62 @@ orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoin
   return eResult;
 }
 
+/** Gets the reaction force on the attached body at the joint anchor
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[out]  _pvForce                              Reaction force
+ * @return      Reaction force in Newtons
+ */
+orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    /* Updates result */
+    pvResult = orxPhysics_GetJointReactionForce(_pstBodyJoint->pstData, _pvForce);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets the reaction torque on the attached body
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @return      Reaction torque
+ */
+orxFLOAT orxFASTCALL orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstBodyJoint != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxPhysics_GetJointReactionTorque(_pstBodyJoint->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set
@@ -1729,7 +1782,6 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, const orxVECTOR *_p
   {
     /* Updates its position */
     eResult = orxPhysics_SetPosition(_pstBody->pstData, _pvPosition);
-    orxVector_Copy(&(_pstBody->vPreviousPosition), _pvPosition);
   }
   else
   {
@@ -1762,7 +1814,6 @@ orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation
   {
     /* Updates its position */
     eResult = orxPhysics_SetRotation(_pstBody->pstData, _fRotation);
-    _pstBody->fPreviousRotation = _fRotation;
   }
   else
   {
@@ -1959,8 +2010,11 @@ orxSTATUS orxFASTCALL orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fV
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Updates its position */
-    eResult = orxPhysics_SetAngularVelocity(_pstBody->pstData, _fVelocity);
+    /* Stores it */
+    _pstBody->fAngularVelocity = _fVelocity;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -1991,8 +2045,26 @@ orxSTATUS orxFASTCALL orxBody_SetCustomGravity(orxBODY *_pstBody, const orxVECTO
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Updates its position */
-    eResult = orxPhysics_SetCustomGravity(_pstBody->pstData, _pvCustomGravity);
+    /* Has gravity? */
+    if(_pvCustomGravity != orxNULL)
+    {
+      /* Stores it */
+      orxVector_Copy(&(_pstBody->vGravity), _pvCustomGravity);
+
+      /* Updates flags */
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_HAS_GRAVITY, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      /* Clears gravity */
+      orxVector_Copy(&(_pstBody->vGravity), &orxVECTOR_0);
+
+      /* Updates flags */
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_HAS_GRAVITY);
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -2154,7 +2226,7 @@ orxFLOAT orxFASTCALL orxBody_GetAngularVelocity(const orxBODY *_pstBody)
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
     /* Updates result */
-    fResult = orxPhysics_GetAngularVelocity(_pstBody->pstData);
+    fResult = _pstBody->fAngularVelocity;
   }
   else
   {
@@ -2183,8 +2255,17 @@ orxVECTOR *orxFASTCALL orxBody_GetCustomGravity(const orxBODY *_pstBody, orxVECT
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    /* Updates result */
-    pvResult = orxPhysics_GetCustomGravity(_pstBody->pstData, _pvCustomGravity);
+    /* Has gravity? */
+    if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_GRAVITY))
+    {
+      /* Updates result */
+      pvResult = orxVector_Copy(_pvCustomGravity, &(_pstBody->vGravity));
+    }
+    else
+    {
+      /* Updates result */
+      pvResult = orxNULL;
+    }
   }
   else
   {
@@ -2615,163 +2696,4 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR 
 
   /* Done! */
   return pstResult;
-}
-
-/** Applies physics simulation result to the Body
- * @param[in]   _pstBody                      Concerned body
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-void orxFASTCALL orxBody_ApplySimulationResult(orxBODY *_pstBody)
-{
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxBody_ApplySimResult");
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstBody);
-
-  /* Has data? */
-  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
-  {
-    orxFRAME_SPACE  eFrameSpace;
-    orxFRAME       *pstFrame;
-    orxOBJECT      *pstOwner;
-
-    /* Gets ower */
-    pstOwner = orxOBJECT(_pstBody->pstOwner);
-
-    /* Gets its frame */
-    pstFrame = orxOBJECT_GET_STRUCTURE(pstOwner, FRAME);
-
-    /* Gets its frame space */
-    eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
-
-    /* Owner enabled? */
-    if(orxObject_IsEnabled(pstOwner) != orxFALSE)
-    {
-      orxVECTOR             vPosition, vSpeed, vDiff;
-      orxFLOAT              fZBackup, fRotation, fDiff;
-      orxFLOAT              fSpeedCoef;
-      const orxCLOCK_INFO  *pstClockInfo;
-      orxCLOCK             *pstClock;
-
-      /* Gets owner clock */
-      pstClock = orxObject_GetClock(pstOwner);
-
-      /* Gets corresponding clock info */
-      pstClockInfo = (pstClock != orxNULL) ? orxClock_GetInfo(pstClock) : orxNULL;
-
-      /* Has a multiply modifier? */
-      if((pstClockInfo != orxNULL) && (pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY))
-      {
-        /* Gets speed coef */
-        fSpeedCoef = (pstClockInfo->fModValue != _pstBody->fTimeMultiplier) ? pstClockInfo->fModValue / _pstBody->fTimeMultiplier : orxFLOAT_1;
-
-        /* Stores multiplier */
-        _pstBody->fTimeMultiplier = pstClockInfo->fModValue;
-      }
-      else
-      {
-        /* Reverts speed coef */
-        fSpeedCoef = (_pstBody->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / _pstBody->fTimeMultiplier : orxFLOAT_1;
-
-        /* Stores multiplier */
-        _pstBody->fTimeMultiplier = orxFLOAT_1;
-      }
-
-      /* Gets current position */
-      orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition);
-
-      /* Backups its Z */
-      fZBackup = vPosition.fZ;
-
-      /* Global space? */
-      if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
-      {
-        /* Computes diff vector & rotation */
-        orxVector_Set(&vDiff, vPosition.fX - _pstBody->vPreviousPosition.fX, vPosition.fY - _pstBody->vPreviousPosition.fY, orxFLOAT_0);
-        fDiff = orxFrame_GetRotation(pstFrame, eFrameSpace) - _pstBody->fPreviousRotation;
-      }
-
-      /* Gets body up-to-date position */
-      orxPhysics_GetPosition(_pstBody->pstData, &vPosition);
-
-      /* Restores Z */
-      vPosition.fZ = fZBackup;
-
-      /* Gets body up-to-date rotation */
-      fRotation = orxPhysics_GetRotation(_pstBody->pstData);
-
-      /* Gets body up-to-date speed */
-      orxPhysics_GetSpeed(_pstBody->pstData, &vSpeed);
-
-      /* Global space? */
-      if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
-      {
-        orxVECTOR vScale;
-        orxFRAME *pstParentFrame;
-
-        /* Updates position & rotation with diffs */
-        orxVector_Add(&vPosition, &vPosition, &vDiff);
-        fRotation += fDiff;
-
-        /* Stores them */
-        orxPhysics_SetPosition(_pstBody->pstData, &vPosition);
-        orxPhysics_SetRotation(_pstBody->pstData, fRotation);
-        orxVector_Copy(&(_pstBody->vPreviousPosition), &vPosition);
-        _pstBody->fPreviousRotation = fRotation;
-
-        /* Gets parent frame */
-        pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
-
-        /* Updates speed with parent scale & rotation */
-        orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
-        orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
-      }
-
-      /* Updates position */
-      orxFrame_SetPosition(pstFrame, eFrameSpace, &vPosition);
-
-      /* Updates rotation */
-      orxFrame_SetRotation(pstFrame, eFrameSpace, fRotation);
-
-      /* Updates its angular velocity */
-      orxPhysics_SetAngularVelocity(_pstBody->pstData, orxPhysics_GetAngularVelocity(_pstBody->pstData) * fSpeedCoef);
-
-      /* Updates its speed */
-      orxBody_SetSpeed(_pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fSpeedCoef));
-
-      /* Has speed coef */
-      if(fSpeedCoef != orxFLOAT_1)
-      {
-        orxVECTOR vGravity;
-
-        /* No custom gravity */
-        if(orxBody_GetCustomGravity(_pstBody, &vGravity) == orxNULL)
-        {
-          /* Uses world gravity */
-          orxPhysics_GetGravity(&vGravity);
-        }
-
-        /* Applies modified gravity */
-        orxBody_SetCustomGravity(_pstBody, orxVector_Mulf(&vGravity, &vGravity, fSpeedCoef));
-      }
-    }
-    else
-    {
-      orxVECTOR vPosition;
-
-      /* Enforces its body properties */
-      orxPhysics_SetRotation(_pstBody->pstData, orxFrame_GetRotation(pstFrame, eFrameSpace));
-      orxPhysics_SetAngularVelocity(_pstBody->pstData, orxFLOAT_0);
-      orxPhysics_SetPosition(_pstBody->pstData, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
-      orxPhysics_SetSpeed(_pstBody->pstData, &orxVECTOR_0);
-    }
-  }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
-
-  /* Done! */
-  return;
 }

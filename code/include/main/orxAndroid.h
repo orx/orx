@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -42,18 +42,24 @@
 #ifndef _orxANDROID_H_
 #define _orxANDROID_H_
 
-#ifdef __orxANDROID__
-
 #include <jni.h>
 #include <pthread.h>
 #include <stdlib.h>
 
 #include <android/native_window.h>
 
+#ifdef __orxANDROID_NATIVE__
+
+#include <android_native_app_glue.h>
+
+#endif /* __orxANDROID_NATIVE__ */
+
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
+
+#ifdef __orxANDROID__
 
 enum {
     /**
@@ -74,8 +80,11 @@ enum {
     APP_CMD_PAUSE,
     APP_CMD_RESUME,
     APP_CMD_SURFACE_DESTROYED,
-    APP_CMD_SURFACE_READY,
-    APP_CMD_QUIT
+    APP_CMD_SURFACE_CREATED,
+    APP_CMD_SURFACE_CHANGED,
+    APP_CMD_QUIT,
+    APP_CMD_FOCUS_LOST,
+    APP_CMD_FOCUS_GAINED
 };
 
 typedef struct __orxANDROID_TOUCH_EVENT_t {
@@ -86,11 +95,22 @@ typedef struct __orxANDROID_TOUCH_EVENT_t {
 
 } orxANDROID_TOUCH_EVENT;
 
+#endif /*__orxANDROID__*/
+
 typedef struct __orxANDROID_KEY_EVENT_t {
+#ifdef __orxANDROID__
        orxU32 u32Action;
+#endif
        orxU32 u32KeyCode;
+       orxU32 u32Unicode;
 
 } orxANDROID_KEY_EVENT;
+
+typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
+        orxU32   u32Width;
+        orxU32   u32Height;
+
+} orxANDROID_SURFACE_CHANGED_EVENT;
 
 ANativeWindow * orxAndroid_GetNativeWindow();
 
@@ -107,19 +127,27 @@ void   orxAndroid_JNI_SetWindowFormat(orxU32 format);
   */
 orxSTATUS orxAndroid_RegisterAPKResource();
 
+void orxAndroid_JNI_SetupThread();
 void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
+#ifdef __orxANDROID_NATIVE__
+ANativeActivity* orxAndroid_GetNativeActivity();
+#endif /* __orxANDROID_NATIVE__ */
+
 #if defined(__cplusplus)
 }
-#endif
-
-#define orxANDROID_EVENT_KEYBOARD       0
-#define orxANDROID_EVENT_KEYBOARD_DOWN  0
-#define orxANDROID_EVENT_KEYBOARD_UP    1
-
 #endif /* __orxANDROID__ */
+
+#define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
+#define orxANDROID_EVENT_KEYBOARD_DOWN       0
+#define orxANDROID_EVENT_KEYBOARD_UP         1
+
+#define orxANDROID_EVENT_TYPE_SURFACE        (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 1)
+#define orxANDROID_EVENT_SURFACE_DESTROYED   0
+#define orxANDROID_EVENT_SURFACE_CREATED     1
+#define orxANDROID_EVENT_SURFACE_CHANGED     2
 
 #endif /* _orxANDROID_H_ */
 

@@ -113,6 +113,8 @@ $(document).ready(function(){initNavTree('group__orx_memory.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga7240bc33642336c84068c3f70adb967a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a">orxMEMORY_BARRIER</a>()</td></tr>
+<tr class="separator:ga7240bc33642336c84068c3f70adb967a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649">orxMEMORY_TRACK</a>(TYPE, SIZE, ALLOCATE)</td></tr>
 <tr class="separator:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -120,16 +122,18 @@ Macros</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:gab389ac47cdad29f66eb25d37f09179b0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> { <br/>
 &#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4">orxMEMORY_TYPE_MAIN</a> = 0, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88">orxMEMORY_TYPE_VIDEO</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">orxMEMORY_TYPE_AUDIO</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3">orxMEMORY_TYPE_CONFIG</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0af84f6e280ff65869d193f326903a0a90">orxMEMORY_TYPE_DEBUG</a>, 
+<br/>
+&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01">orxMEMORY_TYPE_PHYSICS</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a135a5bc6becccf205d044cc93e6469a4">orxMEMORY_TYPE_SYSTEM</a>, 
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72">orxMEMORY_TYPE_TEXT</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59">orxMEMORY_TYPE_AUDIO</a>, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01">orxMEMORY_TYPE_PHYSICS</a>, 
-<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5">orxMEMORY_TYPE_TEMP</a>, 
+&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88">orxMEMORY_TYPE_VIDEO</a>, 
 <a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5">orxMEMORY_TYPE_NUMBER</a>, 
-<br/>
-&#160;&#160;<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE
+<a class="el" href="group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325">orxMEMORY_TYPE_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
 <tr class="separator:gab389ac47cdad29f66eb25d37f09179b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,6 +169,24 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Memory module Module that handles all low level allocation/free requests </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga7240bc33642336c84068c3f70adb967a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxMEMORY_BARRIER</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Memory barrier macros </p>
+
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00077">77</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="gafe7c2f7c245a3e8f8e489cd9d1053649"></a>
 <div class="memitem">
 <div class="memproto">
@@ -194,8 +216,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Memory tracking macros </p>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00055">55</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00088">88</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -209,27 +232,34 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Memory type </p>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4"></a>orxMEMORY_TYPE_MAIN</em>&nbsp;</td><td>
 <p>Main memory type </p>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88"></a>orxMEMORY_TYPE_VIDEO</em>&nbsp;</td><td>
-<p>Video memory type </p>
+<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59"></a>orxMEMORY_TYPE_AUDIO</em>&nbsp;</td><td>
+<p>Audio memory type </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0aa75c1255b909acaa51327a0f93b252c3"></a>orxMEMORY_TYPE_CONFIG</em>&nbsp;</td><td>
 <p>Config memory </p>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72"></a>orxMEMORY_TYPE_TEXT</em>&nbsp;</td><td>
-<p>Text memory </p>
-</td></tr>
-<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0ab621a9850f634daa34a67b4aedf60e59"></a>orxMEMORY_TYPE_AUDIO</em>&nbsp;</td><td>
-<p>Audio memory type </p>
+<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0af84f6e280ff65869d193f326903a0a90"></a>orxMEMORY_TYPE_DEBUG</em>&nbsp;</td><td>
+<p>Debug memory </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a04d0c825a1facc4ed6e8e4ae06276c01"></a>orxMEMORY_TYPE_PHYSICS</em>&nbsp;</td><td>
 <p>Physics memory type </p>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a135a5bc6becccf205d044cc93e6469a4"></a>orxMEMORY_TYPE_SYSTEM</em>&nbsp;</td><td>
+<p>System memory type </p>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0ac0650fc6fca71618d079d610490b19e5"></a>orxMEMORY_TYPE_TEMP</em>&nbsp;</td><td>
 <p>Temporary / scratch memory </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a4311298bc9e80de8fa2b68a907444f72"></a>orxMEMORY_TYPE_TEXT</em>&nbsp;</td><td>
+<p>Text memory </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88"></a>orxMEMORY_TYPE_VIDEO</em>&nbsp;</td><td>
+<p>Video memory type </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="ggab389ac47cdad29f66eb25d37f09179b0ac1823f6cfbbe124205e200408e1445b5"></a>orxMEMORY_TYPE_NUMBER</em>&nbsp;</td><td>
 <p>Number of memory type </p>
@@ -241,7 +271,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00059">59</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00094">94</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -273,11 +303,11 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the memory to allocate </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eMemType</td><td>Memory zone where datas will be allocated </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eMemType</td><td>Memory zone where data will be allocated </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on the memory allocated, or orxNULL if an error has occured </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer on the memory allocated, or orxNULL if an error has occurred </dd></dl>
 
 </div>
 </div>

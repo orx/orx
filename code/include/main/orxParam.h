@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,7 +57,7 @@
 /** Callback definition (called when a parameter has been found
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
  */
 typedef orxSTATUS (orxFASTCALL *orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, const orxSTRING _azParams[]);
 
@@ -101,7 +101,7 @@ extern orxDLLAPI void orxFASTCALL       orxParam_Exit();
 
 
 /** Registers a new parameter
- * @param[in] _pstParam Informations about the option to register
+ * @param[in] _pstParam Information about the option to register
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(const orxPARAM *_pstParam);

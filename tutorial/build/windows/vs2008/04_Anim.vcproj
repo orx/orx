@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="04_Anim"
-	ProjectGUID="{27CB099C-6E45-1944-9EE5-105010FC6482}"
+	ProjectGUID="{6185BF40-345F-3245-86F8-93266DB349A3}"
 	RootNamespace="04_Anim"
 	Keyword="Win32Proj"
 	>
@@ -42,7 +42,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxDEBUG__"
-				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -53,7 +52,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\04_Anim.pdb"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -71,7 +70,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\04_Anim.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"

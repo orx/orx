@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -914,7 +914,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
        pstEvent = &(_pstAnim->astEventList[u32Counter]);
 
        /* Stores key info */
-       pstEvent->zName       = orxString_GetFromID(orxString_GetID(_zEventName));
+       pstEvent->zName       = orxString_Store(_zEventName);
        pstEvent->fTimeStamp  = _fTimeStamp;
        pstEvent->fValue      = _fValue;
 

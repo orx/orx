@@ -2,14 +2,14 @@
 <CodeLite_Workspace Name="orxCrypt" Database="./orxCrypt.tags">
   <Project Name="orxCrypt" Path="orxCrypt.project" Active="Yes" />
   <BuildMatrix>
-    <WorkspaceConfiguration Name="debug" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="debug"/>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="profile" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="profile"/>
+    <WorkspaceConfiguration Name="Profile" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Profile"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="release" Selected="yes">
-      <Project Name="orxCrypt" ConfigName="release"/>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="orxCrypt" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

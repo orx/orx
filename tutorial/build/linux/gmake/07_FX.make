@@ -25,14 +25,14 @@ ifeq ($(config),debug32)
   TARGET     = $(TARGETDIR)/07_FX
   DEFINES   += -D__orxDEBUG__
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m32
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorxd -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -47,14 +47,14 @@ ifeq ($(config),profile32)
   TARGET     = $(TARGETDIR)/07_FX
   DEFINES   += -D__orxPROFILER__
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorxp -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -67,16 +67,16 @@ ifeq ($(config),release32)
   OBJDIR     = obj/x32/Release/07_FX
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/07_FX
-  DEFINES   += 
+  DEFINES   +=
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m32 -fschedule-insns
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m32 -L/usr/lib32 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorx -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -91,14 +91,14 @@ ifeq ($(config),debug64)
   TARGET     = $(TARGETDIR)/07_FX
   DEFINES   += -D__orxDEBUG__
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -m64
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorxd -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -113,14 +113,14 @@ ifeq ($(config),profile64)
   TARGET     = $(TARGETDIR)/07_FX
   DEFINES   += -D__orxPROFILER__
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorxp -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -133,16 +133,16 @@ ifeq ($(config),release64)
   OBJDIR     = obj/x64/Release/07_FX
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/07_FX
-  DEFINES   += 
+  DEFINES   +=
   INCLUDES  += -I../../../include -I../../../../code/include
-  CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
-  CFLAGS    += $(CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
-  CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
-  LDFLAGS   += -L../../../lib -L../../../../code/lib/dynamic -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
-  RESFLAGS  += $(DEFINES) $(INCLUDES) 
+  ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2 -m64 -fschedule-insns
+  ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
+  ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../code/lib/dynamic -L. -m64 -L/usr/lib64 -Wl,-rpath ./ -Wl,--export-dynamic
   LIBS      += -lorx -ldl -lm -lrt
-  LDDEPS    += 
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(LIBS) $(LDFLAGS)
+  LDDEPS    +=
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -209,17 +209,12 @@ prelink:
 ifneq (,$(PCH))
 $(GCH): $(PCH)
 	@echo $(notdir $<)
-ifeq (posix,$(SHELLTYPE))
-	-$(SILENT) cp $< $(OBJDIR)
-else
-	$(SILENT) xcopy /D /Y /Q "$(subst /,\,$<)" "$(subst /,\,$(OBJDIR))" 1>nul
-endif
-	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.gch=%.d) -c "$<"
+	$(SILENT) $(CC) -x c-header $(ALL_CFLAGS) -MMD -MP $(DEFINES) $(INCLUDES) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
 endif
 
 $(OBJDIR)/07_FX.o: ../../../src/07_FX.c
 	@echo $(notdir $<)
-	$(SILENT) $(CC) $(CFLAGS) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
 ifneq (,$(PCH))

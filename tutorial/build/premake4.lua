@@ -138,6 +138,9 @@ solution "Tutorial"
         "FloatFast",
         "NoNativeWChar",
         "NoExceptions",
+        "NoIncrementalLink",
+        "NoEditAndContinue",
+        "NoMinimalRebuild",
         "Symbols",
         "StaticRuntime"
     }
@@ -316,6 +319,8 @@ project "10_Locale"
 
     files {"../src/10_Locale.cpp"}
 
+    configuration {"windows", "vs*"}
+        buildoptions {"/EHsc"}
 
 --
 -- Project: 11_Spawner

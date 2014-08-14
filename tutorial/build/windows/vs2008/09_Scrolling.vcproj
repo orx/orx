@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="09_Scrolling"
-	ProjectGUID="{BB5B8A69-59D7-B749-A2EB-A9F392C94597}"
+	ProjectGUID="{DD99CB2B-E217-A445-9A36-EFC2F265F0EF}"
 	RootNamespace="09_Scrolling"
 	Keyword="Win32Proj"
 	>
@@ -42,7 +42,6 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\include;..\..\..\..\code\include"
 				PreprocessorDefinitions="__orxDEBUG__"
-				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -53,7 +52,7 @@
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				ProgramDataBaseFileName="$(OutDir)\09_Scrolling.pdb"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -71,7 +70,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="orxd.lib"
 				OutputFile="$(OutDir)\09_Scrolling.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\lib;..\..\..\..\code\lib\dynamic"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"

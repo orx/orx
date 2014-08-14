@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -99,6 +99,9 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_t
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_MOTOR,
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MOTOR_SPEED,
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MAX_MOTOR_TORQUE,
+
+  orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_FORCE,
+  orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_TORQUE,
 
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_RAYCAST,
 

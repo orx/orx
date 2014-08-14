@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('orx_android_8h_source.html','');});
 <div class="contents">
 <a href="orx_android_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Orx - Portable Game Engine</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2013 Orx-Project</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2014 Orx-Project</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This software is provided &#39;as-is&#39;, without any express or implied</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * warranty. In no event will the authors be held liable for any damages</span></div>
@@ -139,74 +139,102 @@ $(document).ready(function(){initNavTree('orx_android_8h_source.html','');});
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#ifndef _orxANDROID_H_</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define _orxANDROID_H_</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#ifdef __orxANDROID__</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;jni.h&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;jni.h&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;android/native_window.h&gt;</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &lt;android/native_window.h&gt;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    LOOPER_ID_MAIN = 1,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    LOOPER_ID_SENSOR = 2,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    LOOPER_ID_KEY_EVENT = 3,</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    LOOPER_ID_TOUCH_EVENT = 4,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    LOOPER_ID_USER = 5</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    APP_CMD_PAUSE,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    APP_CMD_RESUME,</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    APP_CMD_SURFACE_DESTROYED,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    APP_CMD_SURFACE_READY,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    APP_CMD_QUIT</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxANDROID_TOUCH_EVENT_t {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        orxU32   u32ID;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        orxFLOAT fX;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        orxFLOAT fY;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        orxU32   u32Action;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;} orxANDROID_TOUCH_EVENT;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxANDROID_KEY_EVENT_t {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;       orxU32 u32Action;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;       orxU32 u32KeyCode;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;} orxANDROID_KEY_EVENT;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;ANativeWindow * orxAndroid_GetNativeWindow();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> * orxAndroid_GetInternalStoragePath();</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;orxU32 orxAndroid_JNI_GetRotation();</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordtype">void</span>   orxAndroid_JNI_SetWindowFormat(orxU32 format);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxAndroid_RegisterAPKResource();</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keywordtype">void</span> orxAndroid_PumpEvents();</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keywordtype">void</span> *orxAndroid_GetJNIEnv();</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;jobject orxAndroid_GetActivity();</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#define orxANDROID_EVENT_KEYBOARD       0</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_KEYBOARD_DOWN  0</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_KEYBOARD_UP    1</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxANDROID__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxANDROID_H_ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#ifdef __orxANDROID_NATIVE__</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;android_native_app_glue.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxANDROID_NATIVE__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor"></span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;{</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#ifdef __orxANDROID__</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    LOOPER_ID_MAIN = 1,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    LOOPER_ID_SENSOR = 2,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    LOOPER_ID_KEY_EVENT = 3,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    LOOPER_ID_TOUCH_EVENT = 4,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    LOOPER_ID_USER = 5</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;};</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    APP_CMD_PAUSE,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    APP_CMD_RESUME,</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    APP_CMD_SURFACE_DESTROYED,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    APP_CMD_SURFACE_CREATED,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    APP_CMD_SURFACE_CHANGED,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    APP_CMD_QUIT,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    APP_CMD_FOCUS_LOST,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    APP_CMD_FOCUS_GAINED</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxANDROID_TOUCH_EVENT_t {</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        orxU32   u32ID;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        orxFLOAT fX;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        orxFLOAT fY;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        orxU32   u32Action;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;} orxANDROID_TOUCH_EVENT;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*__orxANDROID__*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html">  100</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxANDROID_KEY_EVENT_t {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#ifdef __orxANDROID__</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor"></span>       orxU32 u32Action;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a673c71415d15ff8ff7e2ab6bb5ea72e6">  104</a></span>&#160;<span class="preprocessor"></span>       orxU32 <a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a673c71415d15ff8ff7e2ab6bb5ea72e6">u32KeyCode</a>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a7bc3e0ae280a1a1e3f9f8640fca4d463">  105</a></span>&#160;       orxU32 <a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a7bc3e0ae280a1a1e3f9f8640fca4d463">u32Unicode</a>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;} <a class="code" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html">orxANDROID_KEY_EVENT</a>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html">  109</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>__orxANDROID_SURFACE_CHANGED_EVENT_t {</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#ad5eb0e190c36a0f14343f2412e83bfab">  110</a></span>&#160;        orxU32   <a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#ad5eb0e190c36a0f14343f2412e83bfab">u32Width</a>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#a69518db6a92b5448e2c44a7cd3ce7961">  111</a></span>&#160;        orxU32   <a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#a69518db6a92b5448e2c44a7cd3ce7961">u32Height</a>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;} <a class="code" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html">orxANDROID_SURFACE_CHANGED_EVENT</a>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;ANativeWindow * <a class="code" href="group__orx_android.html#ga2655223eb8e84adf8378018f210c1604">orxAndroid_GetNativeWindow</a>();</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code" href="group__orx_android.html#gae61fe62bd38977850791da3eb9522237">orxAndroid_GetInternalStoragePath</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;orxU32 <a class="code" href="group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d">orxAndroid_JNI_GetRotation</a>();</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">void</span>   <a class="code" href="group__orx_android.html#ga6394da07beb42d0901d9dc505eb74f07">orxAndroid_JNI_SetWindowFormat</a>(orxU32 format);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564">orxAndroid_RegisterAPKResource</a>();</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__orx_android.html#ga99cdd2f5977ceed457f9c88b36c1a30d">orxAndroid_JNI_SetupThread</a>();</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367">orxAndroid_PumpEvents</a>();</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="keywordtype">void</span> *<a class="code" href="group__orx_android.html#gaf51bfa3c5118859198b0cd74a5003809">orxAndroid_GetJNIEnv</a>();</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;jobject <a class="code" href="group__orx_android.html#ga20a0d5ce4493d08bbd5a8e726c602ec0">orxAndroid_GetActivity</a>();</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#ifdef __orxANDROID_NATIVE__</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor"></span>ANativeActivity* orxAndroid_GetNativeActivity();</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxANDROID_NATIVE__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="preprocessor">#if defined(__cplusplus)</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxANDROID__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00143"></a><span class="lineno"><a class="code" href="group__orx_android.html#ga2571fc956eb158bdd227cc4477fd5e6c">  143</a></span>&#160;<span class="preprocessor">#define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="code" href="group__orx_android.html#ga550ffc6e6dad9a71a4a746d72c35709a">  144</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_KEYBOARD_DOWN       0</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="code" href="group__orx_android.html#gaca0657d8a701bf22499cd348acce246d">  145</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_KEYBOARD_UP         1</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00147"></a><span class="lineno"><a class="code" href="group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81">  147</a></span>&#160;<span class="preprocessor">#define orxANDROID_EVENT_TYPE_SURFACE        (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 1)</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno"><a class="code" href="group__orx_android.html#gaf58cbf6efdf1f84d0d307885a44158d2">  148</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_SURFACE_DESTROYED   0</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="code" href="group__orx_android.html#ga0cc518bbc6da8cb86d21aa071da39db3">  149</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_SURFACE_CREATED     1</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno"><a class="code" href="group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff">  150</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define orxANDROID_EVENT_SURFACE_CHANGED     2</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxANDROID_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

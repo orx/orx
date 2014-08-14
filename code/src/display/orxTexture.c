@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -67,8 +67,6 @@
 
 #define orxTEXTURE_KU32_HOTLOAD_DELAY           orx2F(0.01f)
 #define orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER      10
-
-#define orxTEXTURE_KZ_PIXEL                     "pixel"
 
 #define orxTEXTURE_KZ_DEFAULT_EXTENSION         "png"
 
@@ -384,7 +382,20 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
   orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pstTexture = orxTEXTURE(orxStructure_Get(_astArgList[0].u64Value));
+  pstTexture = orxTexture_FindByName(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstTexture == orxNULL)
+  {
+    orxU64 u64ID;
+
+    /* Is argument an ID? */
+    if(orxString_ToU64(_astArgList[0].zValue, &u64ID, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Gets texture */
+      pstTexture = orxTEXTURE(orxStructure_Get(u64ID));
+    }
+  }
 
   /* Success? */
   if(pstTexture != orxNULL)
@@ -444,7 +455,7 @@ static orxINLINE void orxTexture_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Save */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture", orxCOMMAND_VAR_TYPE_U64}, {"File = Name", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture|Name", orxCOMMAND_VAR_TYPE_STRING}, {"File = Name.png", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the texture commands
@@ -549,6 +560,9 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                 {
                   /* Updates its flag */
                   orxStructure_SetFlags(sstTexture.pstPixel, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+
+                  /* Sets it as temp bitmap for asynchronous operations */
+                  orxDisplay_SetTempBitmap(pstBitmap);
 
                   /* Inits values */
                   sstTexture.u32ResourceGroupID = orxString_GetID(orxTEXTURE_KZ_RESOURCE_GROUP);
@@ -860,7 +874,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
     /* Not found? */
     if(pstTexture == orxNULL)
     {
-       /* Updates flags */
+      /* Updates flags */
       orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
 
       /* References bitmap */

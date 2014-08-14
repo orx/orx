@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -228,7 +228,20 @@ static orxINLINE orxU32                                   orxString_GetLength(co
  */
 static orxINLINE orxBOOL                                  orxString_IsCharacterASCII(orxU32 _u32CharacterCodePoint)
 {
+  /* Done! */
   return((_u32CharacterCodePoint < 0x80) ? orxTRUE : orxFALSE);
+}
+
+/** Tells if a character is alpha-numeric from its ID
+ * @param[in] _u32CharacterCodePoint    Concerned character code
+ * @return                              orxTRUE is it's a non-extended ASCII alpha-numerical character, orxFALSE otherwise
+ */
+static orxINLINE orxBOOL                                  orxString_IsCharacterAlphaNumeric(orxU32 _u32CharacterCodePoint)
+{
+  /* Done! */
+  return (((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
+       || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
+       || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
 }
 
 /** Gets the UTF-8 encoding length of given character
@@ -1478,10 +1491,13 @@ static orxINLINE orxS32 orxCDECL                          orxString_Print(orxSTR
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
 
-  /* Gets variable arguments & print the string */
+  /* Gets variable arguments & prints the string */
   va_start(stArgs, _zSrcString);
   s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
   va_end(stArgs);
+
+  /* Clamps result */
+  s32Result = orxMAX(s32Result, 0);
 
   /* Done! */
   return s32Result;
@@ -1502,10 +1518,75 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
 
-  /* Gets variable arguments & print the string */
+  /* Gets variable arguments & prints the string */
   va_start(stArgs, _zSrcString);
   s32Result = vsnprintf(_zDstString, (size_t)_u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
+
+#ifdef __orxMSVC__
+  /* Overflow? */
+  if(s32Result <= 0)
+  {
+    /* Updates result */
+    s32Result = _u32CharNumber;
+  }
+#endif /* __orxWINDOWS__ */
+
+  /* Clamps result */
+  s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Scans a formated string from a memory buffer
+ * @param[in]  _zString  String to scan
+ * @param[in]  _zFormat  Format string
+ * @return The number of scanned items
+ */
+static orxINLINE orxS32 orxCDECL                          orxString_Scan(const orxSTRING _zString, const orxSTRING _zFormat, ...)
+{
+  va_list stArgs;
+  orxS32  s32Result;
+
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+#ifdef __orxMSVC__
+
+  /* Ugly workaround the missing vsscanf in MSVC up to version 2013 */
+  {
+    void   *p[16];
+    orxS32  i;
+
+    /* Starts variable list */
+    va_start(stArgs, _zFormat);
+
+    /* For all potential parameters */
+    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(p); i++)
+    {
+      /* Gets its address */
+      p[i] = va_arg(stArgs, void *);
+    }
+
+    /* Scans the string */
+    s32Result = sscanf(_zString, _zFormat, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
+
+    /* Ends variable list */
+    va_end(stArgs);
+  }
+
+#else /* __orxMSVC__ */
+
+  /* Gets variable arguments & scans the string */
+  va_start(stArgs, _zFormat);
+  s32Result = vsscanf(_zString, _zFormat, stArgs);
+  va_end(stArgs);
+
+#endif /* __orxMSVC__ */
+
+  /* Clamps result */
+  s32Result = orxMAX(s32Result, 0);
 
   /* Done! */
   return s32Result;
@@ -1562,6 +1643,13 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxString_GetID(const 
  * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxU32 _u32ID);
+
+/** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
+ * @param[in]   _zString        Concerned string
+ * @return      Stored orxSTRING
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const orxSTRING _zString);
+
 
 #ifdef __orxMSVC__
 

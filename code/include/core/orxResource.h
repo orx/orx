@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,6 +45,11 @@
 
 
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
+
+
+/** Resource asynchronous operation callback function
+ */
+typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext);
 
 
 /** Resource handlers
@@ -96,10 +101,9 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
 {
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
-  const orxSTRING               zPath;                    /**< Resource path : 16 / 24 */
-  const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 20 / 32 */
-  orxU32                        u32GroupID;               /**< Group ID : 24 / 36 */
-  orxU32                        u32NameID;                /**< Name ID : 28 / 40 */
+  const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 16 / 24 */
+  orxU32                        u32GroupID;               /**< Group ID : 20 / 28 */
+  orxU32                        u32NameID;                /**< Name ID : 24 / 32 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 
@@ -177,7 +181,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_Locate(con
  * @param[in] _zName            Name of the resource
  * @return Location string if found, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocation(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_LocateInStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName);
 
 /** Gets the resource path from a location
  * @param[in] _zLocation        Location of the concerned resource
@@ -210,6 +214,12 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_Open(const
  */
 extern orxDLLAPI void orxFASTCALL                         orxResource_Close(orxHANDLE _hResource);
 
+/** Gets the literal location of a resource
+ * @param[in] _hResource        Concerned resource
+ * @return Literal location string
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetLocation(orxHANDLE _hResource);
+
 /** Gets the size, in bytes, of a resource
  * @param[in] _hResource        Concerned resource
  * @return Size of the resource, in bytes
@@ -234,17 +244,33 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Tell(orxHA
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to read (in bytes)
  * @param[out] _pBuffer         Buffer that will be filled by the read data
- * @return Size of the read data, in bytes
+ * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
+ * @param[in] _pContext         Context that will be transmitted to the callback when called
+ * @return Size of the read data, in bytes or -1 for successful asynchronous call
  */
-extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext);
 
 /** Writes data to a resource
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to write (in bytes)
  * @param[out] _pBuffer         Buffer that will be written
- * @return Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support
+ * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
+ * @param[in] _pContext         Context that will be transmitted to the callback when called
+ * @return Size of the written data, in bytes, 0 if nothing could be written/no write support for this resource type or -1 for successful asynchronous call
  */
-extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer);
+extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext);
+
+
+/** Gets pending operation counter for a given resource
+ * @param[in] _hResource        Concerned resource
+ * @return Number of pending asynchronous operations for that resource
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetPendingOpCounter(const orxHANDLE _hResource);
+
+/** Gets total pending operation counter
+ * @return Number of total pending asynchronous operations
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPendingOpCounter();
 
 
 /** Registers a new resource type

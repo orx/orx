@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-//#define DEBUG_ANDROID_SUPPORT
+// #define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -71,12 +71,14 @@
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        // Main activity
-        jobject mActivity;
+        // Hosting Fragment
+        jobject mFragment;
 
         // method signatures
         jmethodID midGetRotation;
 	jmethodID midSetWindowFormat;
+        jmethodID midGetActivity;
+        jmethodID midGetApplicationContext;
 
         // AssetManager
         AAssetManager *poAssetManager;
@@ -89,9 +91,14 @@ typedef struct __orxANDROID_STATIC_t {
         int pipeTouchEvent[2];
         int pipeKeyEvent[2];
 
-        orxBOOL bSurfaceReady;
         orxBOOL bPaused;
         orxBOOL bDestroyRequested;
+
+        ANativeWindow* pendingWindow;
+        ANativeWindow* window;
+
+        orxU32 u32SurfaceWidth;
+        orxU32 u32SurfaceHeight;
 
 } orxANDROID_STATIC;
 
@@ -104,15 +111,10 @@ typedef struct __orxANDROID_STATIC_t {
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t mThreadKey;
 static JavaVM* mJavaVM;
-static ANativeWindow* pendingWindow;
-static ANativeWindow* window;
 
 /*******************************************************************************
                                Globals
 *******************************************************************************/
-
-// TODO move this to Joystick plugin
-ASensorEventQueue* sensorEventQueue;
 
 static JNIEnv* Android_JNI_GetEnv() {
     /* From http://developer.android.com/guide/practices/jni.html
@@ -146,7 +148,7 @@ static void Android_JNI_ThreadDestroyed(void* value) {
     }
 }
 
-int Android_JNI_SetupThread(void) {
+void orxAndroid_JNI_SetupThread(void) {
     /* From http://developer.android.com/guide/practices/jni.html
      * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
      * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
@@ -158,7 +160,6 @@ int Android_JNI_SetupThread(void) {
      */
     JNIEnv *env = Android_JNI_GetEnv();
     pthread_setspecific(mThreadKey, (void*) env);
-    return 1;
 }
 
 // Library init
@@ -179,7 +180,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
     }
     else {
-        Android_JNI_SetupThread();
+        orxAndroid_JNI_SetupThread();
     }
 
     return JNI_VERSION_1_4;
@@ -196,38 +197,53 @@ int8_t app_read_cmd() {
 }
 
 static void app_write_cmd(int8_t cmd) {
-    if (write(sstAndroid.pipeCmd[1], &cmd, sizeof(cmd)) != sizeof(cmd)) {
-        LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
+    if(sstAndroid.pipeCmd[1] != -1) {
+        if (write(sstAndroid.pipeCmd[1], &cmd, sizeof(cmd)) != sizeof(cmd)) {
+            LOGE("Failure writing android_app cmd: %s\n", strerror(errno));
+        }
     }
 }
 
 // Called before main() to initialize JNI bindings
-static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
+static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 {
     LOGI("orxAndroid_Init()");
 
-    Android_JNI_SetupThread();
+    jclass objClass;
+    jobject jActivity;
 
-    sstAndroid.mActivity = mEnv->NewGlobalRef(thiz);
+    orxAndroid_JNI_SetupThread();
 
-    jclass objClass = mEnv->GetObjectClass(thiz);
+    sstAndroid.mFragment = mEnv->NewGlobalRef(jFragment);
+    objClass = mEnv->FindClass("android/support/v4/app/Fragment");
+    sstAndroid.midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
+    mEnv->DeleteLocalRef(objClass);
+
+    objClass = mEnv->FindClass("android/content/Context");
+    sstAndroid.midGetApplicationContext = mEnv->GetMethodID(objClass, "getApplicationContext", "()Landroid/content/Context;");
+    mEnv->DeleteLocalRef(objClass);
+
+    jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+    objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
 
-    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat) {
+    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat || !sstAndroid.midGetActivity || !sstAndroid.midGetApplicationContext) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
 
     // setup AssetManager
     jmethodID midGetAssets = mEnv->GetMethodID(objClass, "getAssets", "()Landroid/content/res/AssetManager;");
-    jobject jAssetManager = mEnv->CallObjectMethod(thiz, midGetAssets);
+    jobject jAssetManager = mEnv->CallObjectMethod(jActivity, midGetAssets);
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
+    mEnv->DeleteLocalRef(objClass);
+    mEnv->DeleteLocalRef(jActivity);
+    mEnv->DeleteLocalRef(jAssetManager);
 
-    sstAndroid.bSurfaceReady = orxFALSE;
     sstAndroid.bPaused = orxFALSE;
     sstAndroid.bDestroyRequested = orxFALSE;
-    window = orxNULL;
+    sstAndroid.window = orxNULL;
 
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
@@ -240,10 +256,16 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject thiz)
 
 static void orxAndroid_Exit(JNIEnv* env)
 {
-  env->DeleteGlobalRef(sstAndroid.mActivity);
+  env->DeleteGlobalRef(sstAndroid.mFragment);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
   free(sstAndroid.s_AndroidInternalFilesPath);
+
+  if(sstAndroid.window != orxNULL)
+  {
+    ANativeWindow_release(sstAndroid.window);
+    sstAndroid.window = orxNULL;
+  }
 
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeCmd[0]);
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0]);
@@ -251,21 +273,29 @@ static void orxAndroid_Exit(JNIEnv* env)
 
   close(sstAndroid.pipeCmd[0]);
   close(sstAndroid.pipeCmd[1]);
+  sstAndroid.pipeCmd[0] = -1;
+  sstAndroid.pipeCmd[1] = -1;
+
   close(sstAndroid.pipeTouchEvent[0]);
   close(sstAndroid.pipeTouchEvent[1]);
+  sstAndroid.pipeTouchEvent[0] = -1;
+  sstAndroid.pipeTouchEvent[1] = -1;
+
   close(sstAndroid.pipeKeyEvent[0]);
   close(sstAndroid.pipeKeyEvent[1]);
+  sstAndroid.pipeKeyEvent[0] = -1;
+  sstAndroid.pipeKeyEvent[1] = -1;
 }
 
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, jobject thiz)
 {
     LOGI("nativeCreate()");
 
     /* Cleans static controller */
-    orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
+    memset(&sstAndroid, 0, sizeof(orxANDROID_STATIC));
 
     // setup looper for commandes
     if (pipe(sstAndroid.pipeCmd)) {
@@ -287,10 +317,10 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeCreate(JNIEnv *env, jobject t
 }
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject thiz, jobject fragment)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
-    orxAndroid_Init(env, thiz);
+    orxAndroid_Init(env, fragment);
 
     /* Run the application code! */
     int status;
@@ -302,79 +332,112 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeInit(JNIEnv* env, jobject thi
 }
 
 // Keydown
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyDown(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode, jint unicode)
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
   stKeyEvent.u32Action = 0;
   stKeyEvent.u32KeyCode = keycode;
-  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+  stKeyEvent.u32Unicode = unicode;
+
+  if(sstAndroid.pipeKeyEvent[1] != -1)
   {
-    LOGE("Failure writing keycode: %s\n", strerror(errno));
+    if(write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+    {
+      LOGE("Failure writing keycode: %s\n", strerror(errno));
+    }
   }
 }
 
 // Keyup
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeKeyUp(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
   stKeyEvent.u32Action = 1;
   stKeyEvent.u32KeyCode = keycode;
-  if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+
+  if(sstAndroid.pipeKeyEvent[1] != -1)
   {
-    LOGE("Failure writing keycode: %s\n", strerror(errno));
+    if (write(sstAndroid.pipeKeyEvent[1], &stKeyEvent, sizeof(stKeyEvent)) != sizeof(stKeyEvent))
+    {
+      LOGE("Failure writing keycode: %s\n", strerror(errno));
+    }
   }
 }
 
 // Touch
-extern "C" void Java_org_orx_lib_OrxActivity_onNativeTouch(
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch(
                                     JNIEnv* env, jobject thiz,
                                     jint touch_device_id_in, jint pointer_finger_id_in,
                                     jint action, jfloat x, jfloat y, jfloat p)
 {
-  orxANDROID_TOUCH_EVENT stTouchEvent;
+    orxANDROID_TOUCH_EVENT stTouchEvent;
 
-  stTouchEvent.u32ID = pointer_finger_id_in;
-  stTouchEvent.u32Action = action;
-  stTouchEvent.fX = x;
-  stTouchEvent.fY = y;
+    stTouchEvent.u32ID = pointer_finger_id_in;
+    stTouchEvent.u32Action = action;
+    stTouchEvent.fX = x;
+    stTouchEvent.fY = y;
 
-  if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
-  {
-    LOGE("Failure writing touch event: %s\n", strerror(errno));
-  }
+    if(sstAndroid.pipeTouchEvent[1] != -1)
+    {
+        if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
+        {
+            LOGE("Failure writing touch event: %s\n", strerror(errno));
+        }
+    }
 }
 
 // Quit
-extern "C" void Java_org_orx_lib_OrxActivity_nativeQuit(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
 {    
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void Java_org_orx_lib_OrxActivity_nativePause(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnPause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void Java_org_orx_lib_OrxActivity_nativeResume(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
 
 // SurfaceDestroyed
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceDestroyed(JNIEnv* env, jobject thiz)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeSurfaceChanged(JNIEnv* env, jobject thiz, jobject surface)
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
 {
-  pendingWindow = ANativeWindow_fromSurface(env, surface);
-  app_write_cmd(APP_CMD_SURFACE_READY);
+  sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
+  app_write_cmd(APP_CMD_SURFACE_CREATED);
+}
+
+// SurfaceChanged
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jint width, jint height)
+{
+  sstAndroid.u32SurfaceWidth = width;
+  sstAndroid.u32SurfaceHeight = height;
+  app_write_cmd(APP_CMD_SURFACE_CHANGED);
+}
+
+// Focus gained / lost
+extern "C" void Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv* env, jobject thiz, jboolean hasFocus)
+{
+  if(hasFocus == JNI_TRUE)
+  {
+    app_write_cmd(APP_CMD_FOCUS_GAINED);
+  }
+  else
+  {
+    app_write_cmd(APP_CMD_FOCUS_LOST);
+  }
 }
 
 class LocalReferenceHolder
@@ -421,78 +484,103 @@ int LocalReferenceHolder::s_active;
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
+  int ident;
+  int events;
+
   LOGI("orxAndroid_GetNativeWindow()");
-  while(window == orxNULL) {
-    // no window received yet
+
+  while(sstAndroid.window == orxNULL)
+  {
     LOGI("no window received yet");
-    orxAndroid_PumpEvents();
+
+    ident=ALooper_pollAll(-1, NULL, &events, NULL);
+
+    if(ident == LOOPER_ID_MAIN)
+    {
+      int8_t cmd = app_read_cmd();
+
+      if(cmd == APP_CMD_SURFACE_CREATED)
+      {
+        LOGI("APP_CMD_SURFACE_CREATED");
+        sstAndroid.window = sstAndroid.pendingWindow;
+      }
+    }
   }
 
-  return window;
+  return sstAndroid.window;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
-    JNIEnv *env = Android_JNI_GetEnv();
-    
-    jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
-    return rotation;
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
+  env->DeleteLocalRef(jActivity);
+  return rotation;
 }
 
 extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
 {
-    JNIEnv *env = Android_JNI_GetEnv();
-    env->CallVoidMethod(sstAndroid.mActivity, sstAndroid.midSetWindowFormat, format);
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  env->CallVoidMethod(jActivity, sstAndroid.midSetWindowFormat, format);
+  env->DeleteLocalRef(jActivity);
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
 {
-    return Android_JNI_GetEnv();
+  return Android_JNI_GetEnv();
 }
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-  return sstAndroid.mActivity;
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  return jActivity;
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-    if (!sstAndroid.s_AndroidInternalFilesPath) {
-        LocalReferenceHolder refs(__FUNCTION__);
-        jmethodID mid;
-        jobject fileObject;
-        jstring pathString;
-        const char *path;
+  if (!sstAndroid.s_AndroidInternalFilesPath)
+  {
+    LocalReferenceHolder refs(__FUNCTION__);
+    jmethodID mid;
+    jobject fileObject;
+    jstring pathString;
+    const char *path;
+    jobject jActivity;
 
-        JNIEnv *env = Android_JNI_GetEnv();
-        if (!refs.init(env)) {
-            return NULL;
-        }
-
-        // fileObj = context.getFilesDir();
-        mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity),
-                "getFilesDir", "()Ljava/io/File;");
-        fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
-        if (!fileObject) {
-            LOGE("Couldn't get internal directory");
-            return NULL;
-        }
-
-        // path = fileObject.getAbsolutePath();
-        mid = env->GetMethodID(env->GetObjectClass(fileObject),
-                "getAbsolutePath", "()Ljava/lang/String;");
-        pathString = (jstring)env->CallObjectMethod(fileObject, mid);
-
-        path = env->GetStringUTFChars(pathString, NULL);
-        sstAndroid.s_AndroidInternalFilesPath = strdup(path);
-        env->ReleaseStringUTFChars(pathString, path);
+    JNIEnv *env = Android_JNI_GetEnv();
+    if (!refs.init(env))
+    {
+      return NULL;
     }
-    return sstAndroid.s_AndroidInternalFilesPath;
+
+    jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+    // fileObj = context.getFilesDir();
+    mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
+    fileObject = env->CallObjectMethod(jActivity, mid);
+    if (!fileObject)
+    {
+      LOGE("Couldn't get internal directory");
+      return NULL;
+    }
+
+    // path = fileObject.getAbsolutePath();
+    mid = env->GetMethodID(env->GetObjectClass(fileObject), "getAbsolutePath", "()Ljava/lang/String;");
+    pathString = (jstring)env->CallObjectMethod(fileObject, mid);
+
+    path = env->GetStringUTFChars(pathString, NULL);
+    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    env->ReleaseStringUTFChars(pathString, path);
+  }
+
+  return sstAndroid.s_AndroidInternalFilesPath;
 }
 
 static inline orxBOOL isInteractible()
 {
-  return (sstAndroid.bSurfaceReady == orxTRUE && sstAndroid.bPaused == orxFALSE);
+  return (sstAndroid.window != orxNULL && sstAndroid.bPaused == orxFALSE);
 }
 
 extern "C" void orxAndroid_PumpEvents()
@@ -518,44 +606,47 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
-        sstAndroid.bSurfaceReady = orxFALSE;
-        ANativeWindow_release(window);
-        window = orxNULL;
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
+        if(sstAndroid.window != orxNULL)
+        {
+          ANativeWindow_release(sstAndroid.window);
+          sstAndroid.window = orxNULL;
+        }
       }
-      if(cmd == APP_CMD_SURFACE_READY) {
-        LOGI("APP_CMD_SURFACE_READY");
-        window = pendingWindow;
-        sstAndroid.bSurfaceReady = orxTRUE;
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+      if(cmd == APP_CMD_SURFACE_CHANGED) {
+        LOGI("APP_CMD_SURFACE_CHANGED");
+        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+
+        stSurfaceChangedEvent.u32Width = sstAndroid.u32SurfaceWidth;
+        stSurfaceChangedEvent.u32Height = sstAndroid.u32SurfaceHeight;
+
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+      }
+      if(cmd == APP_CMD_SURFACE_CREATED) {
+        LOGI("APP_CMD_SURFACE_CREATED");
+        sstAndroid.window = sstAndroid.pendingWindow;
+
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_QUIT) {
         LOGI("APP_CMD_QUIT");
         sstAndroid.bDestroyRequested = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
       }
+      if(cmd == APP_CMD_FOCUS_GAINED) {
+        LOGI("APP_CMD_FOCUS_GAINED");
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+      }
+      if(cmd == APP_CMD_FOCUS_LOST) {
+        LOGI("APP_CMD_FOCUS_LOST");
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+      }
     }
 
     if(ident == LOOPER_ID_SENSOR)
     {
-      orxSYSTEM_EVENT_PAYLOAD stAccelPayload;
-      ASensorEvent event;
-
-      while (ASensorEventQueue_getEvents(sensorEventQueue, &event, 1) > 0)
-      {
-        orxMemory_Zero(&stAccelPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-        stAccelPayload.stAccelerometer.dTime = orxFLOAT_0;
-  
-        /* Set acceleration vector */
-        orxVector_Set(&stAccelPayload.stAccelerometer.vAcceleration,
-            orx2F(event.acceleration.x),
-            orx2F(event.acceleration.y),
-            orx2F(event.acceleration.z));
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stAccelPayload);
-      }
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE);
     }
 
     if(ident == LOOPER_ID_KEY_EVENT)
@@ -564,7 +655,7 @@ extern "C" void orxAndroid_PumpEvents()
 
       if (read(sstAndroid.pipeKeyEvent[0], &stKeyEvent, sizeof(stKeyEvent)) == sizeof(stKeyEvent))
       {
-        orxEVENT_SEND((orxEVENT_TYPE)orxEVENT_TYPE_FIRST_RESERVED + orxANDROID_EVENT_KEYBOARD,
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD,
                        stKeyEvent.u32Action == 0 ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
                        orxNULL, orxNULL, &stKeyEvent);
       } else {

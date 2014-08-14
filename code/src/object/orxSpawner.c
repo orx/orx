@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -626,7 +626,7 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSpawner_Update);
+      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSpawner_Update);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)
@@ -788,7 +788,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
       if(orxSpawner_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)

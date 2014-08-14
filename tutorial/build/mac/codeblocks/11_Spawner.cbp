@@ -33,9 +33,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 			<Target title="Profile|x64">
@@ -67,9 +68,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 			<Target title="Release|x64">
@@ -100,9 +102,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 			<Target title="Debug|x32">
@@ -133,9 +136,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 			<Target title="Profile|x32">
@@ -168,9 +172,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 			<Target title="Release|x32">
@@ -202,9 +207,10 @@
 					<Add option="-dead_strip" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
-					<Add library="Foundation.framework" />
-					<Add library="AppKit.framework" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
 				</Linker>
 			</Target>
 		</Build>

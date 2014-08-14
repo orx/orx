@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,6 +47,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
+#include "display/orxDisplay.h"
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "render/orxViewport.h"
@@ -71,6 +72,8 @@
 #define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfilerNextFrame"
 #define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfilerPreviousDepth"
 #define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfilerNextDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD "ProfilerPreviousThread"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD     "ProfilerNextThread"
 
 
 /** Event enum
@@ -94,7 +97,7 @@ typedef enum __orxRENDER_EVENT_t
  */
 typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
 {
-  orxFRAME *pstRenderFrame;              /**< Frame position where object is rendered : 4 / 8 */
+  orxDISPLAY_TRANSFORM *pstTransform;     /**< Object display transform : 4 / 8 */
 
 } orxRENDER_EVENT_OBJECT_PAYLOAD;
 

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -152,6 +152,16 @@ extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetRandomU64(orxU64 _u64Min, orxU6
  */
 extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max);
 
+/** Gets the current random seeds
+ * @param[out]  _au32Seeds[4]                   Current seeds
+ */
+extern orxDLLAPI void orxFASTCALL     orxMath_GetRandomSeeds(orxU32 _au32Seeds[4]);
+
+/** Sets (replaces) the current random seeds
+ * @param[in]   _au32Seeds[4]                   Seeds to set
+ */
+extern orxDLLAPI void orxFASTCALL     orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4]);
+
 
 /*** Inlined functions *** */
 
@@ -289,49 +299,66 @@ static orxINLINE orxFLOAT             orxMath_SmootherStep(orxFLOAT _fMin, orxFL
 
 /*** Trigonometric function ***/
 
-/** Gets a cosine
- * @param[in]   _fOp                            Input radian angle value
- * @return      Cosine of the given angle
- */
-static orxINLINE orxFLOAT    orxMath_Cos(orxFLOAT _fOp)
-{
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
-
-  /* Updates result */
-  fResult = cosf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = cosf(_fOp);
-
-#endif /* __orxMSVC__ */
-
-  /* Done! */
-  return fResult;
-}
-
 /** Gets a sine
  * @param[in]   _fOp                            Input radian angle value
  * @return      Sine of the given angle
  */
 static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
-  /* Updates result */
-  fResult = sinf(_fOp);
-
-#else /* __orxMSVC__ */
+#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
 
   /* Updates result */
   fResult = sinf(_fOp);
 
-#endif /* __orxMSVC__ */
+#else /* __orxGCC__ && !__orxWINDOWS__ */
+
+  /* This implementation comes from Nicolas Capens' work: http://forum.devmaster.net/t/fast-and-accurate-sine-cosine/9648/96 */
+
+  /* This variable needs to be volatile otherwise gcc will aggressively optimize it away during the circular clamp trick */
+  volatile orxFLOAT fTemp;
+  orxFLOAT          fOp;
+  const orxFLOAT    fP = 3.6f, fQ = 3.1f;
+
+  /* Brings operand to a normalized [-1, 1] range */
+  fOp = _fOp * (orxFLOAT_1 / orxMATH_KF_PI);
+
+  /* Applies circular clamp trick based on IEEE754 float representation */
+  fTemp = (fOp + orx2F(25165824.0f));
+  fOp = fOp - (fTemp - orx2F(25165824.0f));
+
+  /* Gets parabola approximation */
+  fResult = fOp - fOp * fabsf(fOp);
+
+  /* Refines result */
+  fResult = fResult * (fQ + fP * fabsf(fResult));
+
+#endif /* __orxGCC__ && !__orxWINDOWS__ */
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a cosine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Cosine of the given angle
+ */
+static orxINLINE orxFLOAT             orxMath_Cos(orxFLOAT _fOp)
+{
+  orxFLOAT fResult;
+
+#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
+
+  /* Updates result */
+  fResult = cosf(_fOp);
+
+#else /* __orxGCC__ && !__orxWINDOWS__ */
+
+  /* Updates result */
+  fResult = orxMath_Sin(_fOp + orxMATH_KF_PI_BY_2);
+
+#endif /* __orxGCC__ && !__orxWINDOWS__ */
 
   /* Done! */
   return fResult;
@@ -343,19 +370,10 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_Tan(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = tanf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = tanf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -367,19 +385,10 @@ static orxINLINE orxFLOAT             orxMath_Tan(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_ACos(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = acosf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = acosf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -391,19 +400,10 @@ static orxINLINE orxFLOAT             orxMath_ACos(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_ASin(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = asinf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = asinf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -416,19 +416,10 @@ static orxINLINE orxFLOAT             orxMath_ASin(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = atan2f(_fOp1, _fOp2);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = atan2f(_fOp1, _fOp2);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -443,7 +434,7 @@ static orxINLINE orxFLOAT             orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp
  */
 static orxINLINE orxFLOAT             orxMath_Sqrt(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = sqrtf(_fOp);
@@ -458,19 +449,10 @@ static orxINLINE orxFLOAT             orxMath_Sqrt(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_Floor(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
-
-#ifdef __orxMSVC__
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = floorf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = floor(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -482,7 +464,7 @@ static orxINLINE orxFLOAT             orxMath_Floor(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_Ceil(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = ceilf(_fOp);
@@ -497,7 +479,7 @@ static orxINLINE orxFLOAT             orxMath_Ceil(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_Round(orxFLOAT _fOp)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
 #ifdef __orxMSVC__
 
@@ -522,7 +504,7 @@ static orxINLINE orxFLOAT             orxMath_Round(orxFLOAT _fOp)
  */
 static orxINLINE orxFLOAT             orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = fmodf(_fOp1, _fOp2);
@@ -538,7 +520,7 @@ static orxINLINE orxFLOAT             orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2
  */
 static orxINLINE orxFLOAT             orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
 {
-  register orxFLOAT fResult;
+  orxFLOAT fResult;
 
   /* Updates result */
   fResult = powf(_fOp, _fExp);
@@ -553,8 +535,13 @@ static orxINLINE orxFLOAT             orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
  */
 static orxINLINE orxFLOAT             orxMath_Abs(orxFLOAT _fOp)
 {
+  orxFLOAT fResult;
+
+  /* Updates result */
+  fResult = fabsf(_fOp);
+
   /* Done! */
-  return fabsf(_fOp);
+  return fResult;
 }
 
 #endif /* _orxMATH_H_ */

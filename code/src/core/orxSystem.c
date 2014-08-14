@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,7 +29,6 @@
  *
  */
 
-
 #include "core/orxSystem.h"
 
 #include "debug/orxDebug.h"
@@ -38,22 +37,18 @@
 
 #include <time.h>
 
-#ifdef __orxWINDOWS__
+#ifndef __orxWINDOWS__
 
-#include <windows.h>
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
-#else /* __orxWINDOWS__ */
+    #include <mach/mach_time.h>
 
-#if defined(__orxMAC__) || defined(__orxIOS__)
+  #endif /* __orxMAC__ || __orxIOS__ */
 
-#include <mach/mach_time.h>
+  #include <unistd.h>
+  #include <sys/time.h>
 
-#endif /* __orxMAC__ || __orxIOS__ */
-
-#include <unistd.h>
-#include <sys/time.h>
-
-#endif /* __orxWINDOWS__ */
+#endif /* !__orxWINDOWS__ */
 
 
 /** Module flags
@@ -121,6 +116,7 @@ void orxFASTCALL orxSystem_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_MEMORY);
 
+  /* Done! */
   return;
 }
 
@@ -160,12 +156,6 @@ orxSTATUS orxFASTCALL orxSystem_Init()
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
 
 #ifdef __orxWINDOWS__
-
-    /* Sets thread CPU affinity to remain on the same core */
-    SetThreadAffinityMask(GetCurrentThread(), 1);
-
-    /* Asks for small time slices */
-    timeBeginPeriod(1);
 
     /* Should use high performance timer? */
     if(QueryPerformanceFrequency(&s64Frequency))
@@ -227,22 +217,16 @@ void orxFASTCALL orxSystem_Exit()
   /* Checks */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
-#ifdef __orxWINDOWS__
-
-     /* Resets time slices */
-     timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
-
     /* Cleans static controller */
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
-/** Gets App Elapsed time.
- * @return Returns the amount of seconds elapsed from the application start.
+/** Gets current time (elapsed from the beginning of the application, in seconds)
+ * @return Current time
  */
 orxDOUBLE orxFASTCALL orxSystem_GetTime()
 {
@@ -258,8 +242,8 @@ orxDOUBLE orxFASTCALL orxSystem_GetTime()
   return(dCurrentTime - sstSystem.dStartTime);
 }
 
-/** Gets real time
- * @return Returns the amount of seconds elapsed since reference time
+/** Gets real time (in seconds)
+ * @return Returns the amount of seconds elapsed since reference time (epoch)
  */
 orxU64 orxFASTCALL orxSystem_GetRealTime()
 {
@@ -276,6 +260,9 @@ orxU64 orxFASTCALL orxSystem_GetRealTime()
   return u64Result;
 }
 
+/** Gets current internal system time (in seconds)
+ * @return Current internal system time
+ */
 orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 {
   orxDOUBLE dResult;
@@ -326,7 +313,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 
   {
 
-    #if !defined(__orxANDROID__)
+    #if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
 
     struct timeval stCurrentTime;
 
@@ -338,7 +325,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
     }
     else
 
-    #endif /* !__orxANDROID__ */
+    #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
 
     {
       /* Logs message */
@@ -357,8 +344,8 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
   return dResult;
 }
 
-/** Delays the program for given number of seconds.
- * @param[in] _fSeconds Number of seconds to wait.
+/** Delay the program for given number of seconds
+ * @param[in] _fSeconds             Number of seconds to wait
  */
 void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 {
@@ -378,5 +365,6 @@ void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 
 #endif /* __orxWINDOWS__ */
 
+  /* Done! */
   return;
 }

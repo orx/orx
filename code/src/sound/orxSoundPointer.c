@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -64,6 +64,7 @@
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE       0x00000000  /**< No flags */
 
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL   0x10000000  /**< Internal flag */
+#define orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE 0x00000001  /**< Auto-pause flag */
 
 #define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
@@ -76,8 +77,8 @@
  */
 typedef struct __orxSOUNDPOINTER_HOLDER_t
 {
-  orxSOUND *pstSound;                                                       /**< Sound reference : 4 */
-  orxU32    u32Flags;                                                       /**< Flags : 8 */
+  orxSOUND *pstSound;                                                       /**< Sound reference : 4/8 */
+  orxU32    u32Flags;                                                       /**< Flags : 8/12 */
 
 } orxSOUNDPOINTER_HOLDER;
 
@@ -88,8 +89,7 @@ struct __orxSOUNDPOINTER_t
   orxSTRUCTURE            stStructure;                                      /**< Public structure, first structure member : 32 */
   orxSOUNDPOINTER_HOLDER  astSoundList[orxSOUNDPOINTER_KU32_SOUND_NUMBER];  /**< Sound list : 48 */
   orxU32                  u32LastAddedIndex;                                /**< Last added sound index : 52 */
-  orxFLOAT                fTimeMultiplier;                                  /**< Current time multiplier : 56 */
-  const orxSTRUCTURE     *pstOwner;                                         /**< Owner structure : 60 */
+  const orxSTRUCTURE     *pstOwner;                                         /**< Owner structure : 56 */
 };
 
 /** Static structure
@@ -114,6 +114,97 @@ static orxSOUNDPOINTER_STATIC sstSoundPointer;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxSoundPointer_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Pause / disable */
+    case orxOBJECT_EVENT_PAUSE:
+    case orxOBJECT_EVENT_DISABLE:
+    {
+      orxSOUNDPOINTER *pstSoundPointer;
+
+      /* Gets sound pointer */
+      pstSoundPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), SOUNDPOINTER);
+
+      /* Valid? */
+      if(pstSoundPointer != orxNULL)
+      {
+        orxU32 i;
+
+        /* For all Sounds */
+        for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+        {
+          /* Valid? */
+          if(pstSoundPointer->astSoundList[i].pstSound != orxNULL)
+          {
+            /* Is playing? */
+            if(orxSound_GetStatus(pstSoundPointer->astSoundList[i].pstSound) == orxSOUND_STATUS_PLAY)
+            {
+              /* Pauses it */
+              orxSound_Pause(pstSoundPointer->astSoundList[i].pstSound);
+
+              /* Updates its status */
+              orxFLAG_SET(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE);
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    /* Unpause / enable */
+    case orxOBJECT_EVENT_UNPAUSE:
+    case orxOBJECT_EVENT_ENABLE:
+    {
+      orxSOUNDPOINTER *pstSoundPointer;
+
+      /* Gets sound pointer */
+      pstSoundPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), SOUNDPOINTER);
+
+      /* Valid? */
+      if(pstSoundPointer != orxNULL)
+      {
+        orxU32 i;
+
+        /* For all Sounds */
+        for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+        {
+          /* Valid? */
+          if(pstSoundPointer->astSoundList[i].pstSound != orxNULL)
+          {
+            /* Is auto-paused? */
+            if(orxFLAG_TEST(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE))
+            {
+              /* Resumes it */
+              orxSound_Play(pstSoundPointer->astSoundList[i].pstSound);
+
+              /* Updates its status */
+              orxFLAG_SET(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE);
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all the SoundPointers
  */
 static orxINLINE void orxSoundPointer_DeleteAll()
@@ -133,6 +224,7 @@ static orxINLINE void orxSoundPointer_DeleteAll()
     pstSoundPointer = orxSOUNDPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUNDPOINTER));
   }
 
+  /* Done! */
   return;
 }
 
@@ -144,9 +236,8 @@ static orxINLINE void orxSoundPointer_DeleteAll()
  */
 static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxSOUNDPOINTER *pstSoundPointer;
-  orxOBJECT    *pstObject;
-  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundPointer_Update");
@@ -156,35 +247,13 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
   orxSTRUCTURE_ASSERT(_pstStructure);
   orxSTRUCTURE_ASSERT(_pstCaller);
 
-  /* Gets SoundPointer */
+  /* Gets sound pointer */
   pstSoundPointer = orxSOUNDPOINTER(_pstStructure);
-
-  /* Gets calling object */
-  pstObject = orxOBJECT(_pstCaller);
 
   /* Is enabled? */
   if(orxSoundPointer_IsEnabled(pstSoundPointer) != orxFALSE)
   {
-    orxU32    i;
-    orxFLOAT  fFrequencyCoef;
-
-    /* Has a multiply modifier? */
-    if(_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
-    {
-      /* Gets frequency coef */
-      fFrequencyCoef = (_pstClockInfo->fModValue != pstSoundPointer->fTimeMultiplier) ? _pstClockInfo->fModValue / pstSoundPointer->fTimeMultiplier : orxFLOAT_1;
-
-      /* Stores multiplier */
-      pstSoundPointer->fTimeMultiplier = _pstClockInfo->fModValue;
-    }
-    else
-    {
-      /* Reverts frequency coef */
-      fFrequencyCoef = (pstSoundPointer->fTimeMultiplier != orxFLOAT_1) ? orxFLOAT_1 / pstSoundPointer->fTimeMultiplier : orxFLOAT_1;
-
-      /* Stores multiplier */
-      pstSoundPointer->fTimeMultiplier = orxFLOAT_1;
-    }
+    orxU32 i;
 
     /* For all Sounds */
     for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
@@ -205,13 +274,8 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
         }
         else
         {
-          orxVECTOR vPosition;
-
-          /* Updates its position */
-          orxSound_SetPosition(pstSound, orxObject_GetWorldPosition(pstObject, &vPosition));
-
-          /* Updates its pitch */
-          orxSound_SetPitch(pstSound, orxSound_GetPitch(pstSound) * fFrequencyCoef);
+          /* Delegates update to the sound */
+          orxStructure_Update(pstSound, _pstCaller, _pstClockInfo);
         }
       }
     }
@@ -240,6 +304,7 @@ void orxFASTCALL orxSoundPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_SOUND);
 
+  /* Done! */
   return;
 }
 
@@ -256,19 +321,34 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundPointer, sizeof(orxSOUNDPOINTER_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSoundPointer_Update);
+    /* Adds event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxSoundPointer_EventHandler);
 
-    /* Initialized? */
+    /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Inits Flags */
-      sstSoundPointer.u32Flags = orxSOUNDPOINTER_KU32_STATIC_FLAG_READY;
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSoundPointer_Update);
+
+      /* Initialized? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Inits Flags */
+        sstSoundPointer.u32Flags = orxSOUNDPOINTER_KU32_STATIC_FLAG_READY;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSoundPointer_EventHandler);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to register structure for Sound Pointer module.");
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to register structure for Sound Pointer module.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to add event handler.");
     }
   }
   else
@@ -291,6 +371,9 @@ void orxFASTCALL orxSoundPointer_Exit()
   /* Initialized? */
   if(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSoundPointer_EventHandler);
+
     /* Deletes SoundPointer list */
     orxSoundPointer_DeleteAll();
 
@@ -306,6 +389,7 @@ void orxFASTCALL orxSoundPointer_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to exit Sound Pointer module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -329,9 +413,6 @@ orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create(const orxSTRUCTURE *_pstOwne
   {
     /* Clears last added sound index */
     pstResult->u32LastAddedIndex = orxU32_UNDEFINED;
-
-    /* Clears time multiplier */
-    pstResult->fTimeMultiplier = orxFLOAT_1;
 
     /* Stores owner */
     pstResult->pstOwner = _pstOwner;
@@ -447,6 +528,7 @@ void orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBO
     orxStructure_SetFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_NONE, orxSOUNDPOINTER_KU32_FLAG_ENABLED);
   }
 
+  /* Done! */
   return;
 }
 
@@ -517,7 +599,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer
   {
     orxSOUND *pstSound;
 
-    /* Gets sound */
+    /* Gets it */
     pstSound = _pstSoundPointer->astSoundList[i].pstSound;
 
     /* Valid? */

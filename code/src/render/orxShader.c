@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1072,7 +1072,7 @@ orxSTATUS orxFASTCALL orxShader_AddFloatParam(orxSHADER *_pstShader, const orxST
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_FLOAT;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1149,7 +1149,7 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TEXTURE;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1227,7 +1227,7 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_VECTOR;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = _u32ArraySize;
 
       /* Adds it to list */
@@ -1302,7 +1302,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
 
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
-      pstParam->zName         = orxString_GetFromID(orxString_GetID(_zName));
+      pstParam->zName         = orxString_Store(_zName);
       pstParam->u32ArraySize  = 0;
 
       /* Adds it to list */
@@ -1359,8 +1359,8 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxST
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))
@@ -1432,8 +1432,8 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orx
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))
@@ -1505,8 +1505,8 @@ orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxS
 
   /* For all defined parameters? */
   for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(&(_pstShader->stParamList));
-     pstParam != orxNULL;
-     pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+      pstParam != orxNULL;
+      pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
   {
     /* Found? */
     if(!orxString_Compare(_zName, pstParam->zName))

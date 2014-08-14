@@ -221,7 +221,8 @@ project "orxCrypt"
         {
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread"
         }
 
 
@@ -231,11 +232,15 @@ project "orxCrypt"
         links
         {
             "Foundation.framework",
-            "AppKit.framework"
+            "AppKit.framework",
+            "pthread"
         }
 
 
 -- Windows
+
+    configuration {"windows", "vs*", "*Debug*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
     configuration {"windows"}
         links

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,6 +36,8 @@
 
 #define USE_DL_PREFIX
 #define USE_BUILTIN_FFS 1
+#define USE_LOCKS 1
+#undef _GNU_SOURCE
 #include "malloc.c"
 
 
@@ -191,6 +193,7 @@ void orxFASTCALL orxMemory_Setup()
 {
   /* Adds module dependencies */
 
+  /* Done! */
   return;
 }
 
@@ -241,8 +244,8 @@ void orxFASTCALL orxMemory_Exit()
 
 /** Allocates a portion of memory in the system and returns a pointer on it
  * @param[in] _u32Size    size of the memory to allocate
- * @param[in] _eMemType   Memory zone where datas will be allocated
- * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
+ * @param[in] _eMemType   Memory zone where data will be allocated
+ * @return  returns a pointer on the memory allocated, or orxNULL if an error has occurred
  */
 void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
@@ -419,7 +422,9 @@ const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
     orxMEMORY_DECLARE_TYPE_NAME(TEXT);
     orxMEMORY_DECLARE_TYPE_NAME(AUDIO);
     orxMEMORY_DECLARE_TYPE_NAME(PHYSICS);
+    orxMEMORY_DECLARE_TYPE_NAME(SYSTEM);
     orxMEMORY_DECLARE_TYPE_NAME(TEMP);
+    orxMEMORY_DECLARE_TYPE_NAME(DEBUG);
     default:
     {
       /* Logs message */

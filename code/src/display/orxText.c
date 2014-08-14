@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -130,7 +130,7 @@ static orxINLINE const orxSTRING orxText_GetLocalKey(const orxTEXT *_pstText, co
     if(zString != orxNULL)
     {
       /* Begins with locale marker? */
-      if(*zString == orxTEXT_KC_LOCALE_MARKER)
+      if((*zString == orxTEXT_KC_LOCALE_MARKER) && (*(zString + 1) != orxTEXT_KC_LOCALE_MARKER))
       {
         /* Updates result */
         zResult = zString + 1;
@@ -161,7 +161,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zName == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Gets its locale value */
-    zName = orxLocale_GetString(zName + 1);
+    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
   }
 
   /* Valid? */
@@ -215,7 +215,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zString == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Stores its locale value */
-    eResult = orxText_SetString(_pstText, orxLocale_GetString(zString + 1));
+    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1));
   }
   else
   {
@@ -607,7 +607,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference key */
-      pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
       if(orxText_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
@@ -790,7 +790,7 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
-    _pstText->zString = orxString_GetFromID(orxString_GetID(_zString));
+    _pstText->zString = orxString_Store(_zString);
   }
 
   /* Updates text size */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -226,7 +226,8 @@ void orxFASTCALL orxString_Exit()
  */
 orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
 {
-  orxU32 u32Result = 0;
+  const orxSTRING zStoredString;
+  orxU32          u32Result = 0;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_GetID");
@@ -239,11 +240,22 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
   u32Result = orxString_ToCRC(_zString);
 
   /* Not already stored? */
-  if(orxHashTable_Get(sstString.pstIDTable, u32Result) == orxNULL)
+  if((zStoredString = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32Result)) == orxNULL)
   {
     /* Adds it */
     orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
   }
+#ifdef __orxDEBUG__
+  else
+  {
+    /* Different strings? */
+    if(orxString_Compare(_zString, zStoredString) != 0)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: string ID collision detected between <%s> and <%s>: please rename one of them or you might end up with undefined result.", zStoredString, _zString);
+    }
+  }
+#endif /* __orxDEBUG__ */
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -271,6 +283,45 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
   {
     /* Updates result */
     zResult = orxSTRING_EMPTY;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return zResult;
+}
+
+/** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
+ * @param[in]   _zString        Concerned string
+ * @return      Stored orxSTRING
+ */
+const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
+{
+  orxU32          u32ID;
+  const orxSTRING zResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxString_Store");
+
+  /* Checks */
+  orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zString != orxNULL);
+
+  /* Gets its ID */
+  u32ID = orxString_ToCRC(_zString);
+
+  /* Gets stored string */
+  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32ID);
+
+  /* Not already stored? */
+  if(zResult == orxNULL)
+  {
+    /* Updates result */
+    zResult = orxString_Duplicate(_zString);
+
+    /* Adds it to table */
+    orxHashTable_Add(sstString.pstIDTable, u32ID, (orxSTRING)zResult);
   }
 
   /* Profiles */

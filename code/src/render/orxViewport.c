@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,7 +56,8 @@
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
-#define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /** < Uses screen size */
+#define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
+#define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
@@ -77,9 +78,11 @@
 #define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE     "RelativeSize"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
+#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA  "BackgroundAlpha"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 #define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
+#define orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE       "AutoResize"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
 #define orxVIEWPORT_KZ_RIGHT                    "right"
@@ -172,13 +175,16 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
           if(pstViewport->u32TextureCounter == 0)
           {
             /* Updates relative position & dimension */
-            pstViewport->fX      *= fWidthRatio;
-            pstViewport->fWidth  *= fWidthRatio;
-            pstViewport->fY      *= fHeightRatio;
-            pstViewport->fHeight *= fHeightRatio;
+            pstViewport->fX       = orxMath_Round(pstViewport->fX * fWidthRatio);
+            pstViewport->fWidth   = orxMath_Round(pstViewport->fWidth * fWidthRatio);
+            pstViewport->fY       = orxMath_Round(pstViewport->fY * fHeightRatio);
+            pstViewport->fHeight  = orxMath_Round(pstViewport->fHeight * fHeightRatio);
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
           }
-          /* Uses screen size? */
-          else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE))
+          /* Auto-resize? */
+          else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE))
           {
             /* Has owned textures? */
             if(pstViewport->u32TextureOwnerFlags != 0)
@@ -186,10 +192,10 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
               orxU32 i;
 
               /* Updates relative position & dimension */
-              pstViewport->fX      *= fWidthRatio;
-              pstViewport->fWidth  *= fWidthRatio;
-              pstViewport->fY      *= fHeightRatio;
-              pstViewport->fHeight *= fHeightRatio;
+              pstViewport->fX       = orxMath_Round(pstViewport->fX * fWidthRatio);
+              pstViewport->fWidth   = orxMath_Round(pstViewport->fWidth * fWidthRatio);
+              pstViewport->fY       = orxMath_Round(pstViewport->fY * fHeightRatio);
+              pstViewport->fHeight  = orxMath_Round(pstViewport->fHeight * fHeightRatio);
 
               /* For all textures */
               for(i = 0; i < pstViewport->u32TextureCounter; i++)
@@ -198,6 +204,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                 if(pstViewport->u32TextureOwnerFlags & (1 << i))
                 {
                   orxBITMAP  *pstBitmap;
+                  orxFLOAT    fWidth, fHeight;
                   orxCHAR     acBuffer[256];
 
                   /* Gets its name */
@@ -207,14 +214,21 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   /* Gets its linked bitmap */
                   pstBitmap = orxTexture_GetBitmap(pstViewport->apstTextureList[i]);
 
+                  /* Gets its size */
+                  orxDisplay_GetBitmapSize(pstBitmap, &fWidth, &fHeight);
+
                   /* Unlinks it */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
 
                   /* Deletes it */
                   orxDisplay_DeleteBitmap(pstBitmap);
 
+                  /* Updates size */
+                  fWidth  = orxMath_Round(fWidth * fWidthRatio);
+                  fHeight = orxMath_Round(fHeight * fHeightRatio);
+
                   /* Re-creates it as the right size */
-                  pstBitmap = orxDisplay_CreateBitmap(pstPayload->u32Width, pstPayload->u32Height);
+                  pstBitmap = orxDisplay_CreateBitmap(orxF2U(fWidth), orxF2U(fHeight));
 
                   /* Checks */
                   orxASSERT(pstBitmap != orxNULL);
@@ -226,6 +240,9 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
                 }
               }
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
             }
           }
         }
@@ -475,6 +492,14 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
       }
 
+      /* Auto resize */
+      if((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
+      || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE, orxVIEWPORT_KU32_FLAG_NONE);
+      }
+
       /* *** Textures *** */
 
       /* Has texture list? */
@@ -496,9 +521,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
           {
             orxTEXTURE *pstTexture;
+            orxBOOL     bDisplayLevelEnabled;
+
+            /* Gets display debug level state */
+            bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+
+            /* Deactivates display debug level */
+            orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
             /* Creates texture from file */
             pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+            /* Restores display debug level state */
+            orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
 
             /* Not found? */
             if(pstTexture == orxNULL)
@@ -635,9 +670,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         {
           orxTEXTURE *pstTexture;
           orxU32      u32OwnerFlags = 0;
+          orxBOOL     bDisplayLevelEnabled;
+
+          /* Gets display debug level state */
+          bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+
+          /* Deactivates display debug level */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates texture from file */
           pstTexture = orxTexture_CreateFromFile(zTextureName);
+
+          /* Restores display debug level state */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
 
           /* Not found? */
           if(pstTexture == orxNULL)
@@ -768,7 +813,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Gets color vector */
         orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
         orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-        stColor.fAlpha = orxFLOAT_1;
+        stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
 
         /* Applies it */
         orxViewport_SetBackgroundColor(pstResult, &stColor);

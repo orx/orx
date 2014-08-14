@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -439,6 +439,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMotorSpeed(orxBODY
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque);
 
 
+/** Gets the reaction force on the attached body at the joint anchor
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[out]  _pvForce                              Reaction force
+ * @return      Reaction force in Newtons
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce);
+
+/** Gets the reaction torque on the attached body
+ * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @return      Reaction torque
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint);
+
+
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvStart        Start of raycast
  * @param[in]   _pvEnd          End of raycast
@@ -450,13 +464,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orx
  * @return Colliding orxBODY / orxNULL
  */
 extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
-
-
-/** Applies physics simulation result to the Body
- * @param[in]   _pstBody                      Concerned body
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI void orxFASTCALL             orxBody_ApplySimulationResult(orxBODY *_pstBody);
 
 #endif /* _orxBODY_H_ */
 

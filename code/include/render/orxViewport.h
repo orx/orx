@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -68,6 +68,19 @@
 
 /** Internal Viewport structure */
 typedef struct __orxVIEWPORT_t                orxVIEWPORT;
+
+
+/** Event enum
+ */
+typedef enum __orxVIEWPORT_EVENT_t
+{
+  orxVIEWPORT_EVENT_RESIZE = 0,              /**< Event sent when a viewport has been resized */
+
+  orxVIEWPORT_EVENT_NUMBER,
+
+  orxVIEWPORT_EVENT_NONE = orxENUM_NONE
+
+} orxVIEWPORT_EVENT;
 
 
 /** Viewport module setup

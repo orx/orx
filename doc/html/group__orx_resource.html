@@ -145,6 +145,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:ga4ad4377c2af029158e647b9c7b84543d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga948a63dd429cab823a250654fc7f88eb"><td class="memItemLeft" align="right" valign="top">typedef orxS64(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga948a63dd429cab823a250654fc7f88eb">orxRESOURCE_FUNCTION_WRITE</a> )(orxHANDLE _hResource, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
 <tr class="separator:ga948a63dd429cab823a250654fc7f88eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacfdaeff8b636c2c1c19c98670df6cd41"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41">orxRESOURCE_OP_FUNCTION</a> )(orxHANDLE _hResource, orxS64 _s64Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gacfdaeff8b636c2c1c19c98670df6cd41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -174,12 +176,14 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gaf70cf038b10873bb96b6e5e18930d95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac52d43702eed0d52efc4da779c8f8f6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gac52d43702eed0d52efc4da779c8f8f6c">orxResource_GetGroupCounter</a> ()</td></tr>
 <tr class="separator:gac52d43702eed0d52efc4da779c8f8f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf62cd57c7b0d0ede2cb0c04228965af4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
-orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaf62cd57c7b0d0ede2cb0c04228965af4">orxResource_GetLocation</a> (const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)</td></tr>
-<tr class="separator:gaf62cd57c7b0d0ede2cb0c04228965af4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3a7f9786c66d41b83f3ce5409d8bc510"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga3a7f9786c66d41b83f3ce5409d8bc510">orxResource_GetLocation</a> (orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga3a7f9786c66d41b83f3ce5409d8bc510"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga31ca51910d18dd1a9a47efbe3c0adb66"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga31ca51910d18dd1a9a47efbe3c0adb66">orxResource_GetPath</a> (const orxSTRING _zLocation)</td></tr>
 <tr class="separator:ga31ca51910d18dd1a9a47efbe3c0adb66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9adcd80b622498107596bab46dc34246"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga9adcd80b622498107596bab46dc34246">orxResource_GetPendingOpCounter</a> (const orxHANDLE _hResource)</td></tr>
+<tr class="separator:ga9adcd80b622498107596bab46dc34246"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadfccb6c1430c35c86489c4b6f54be41c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gadfccb6c1430c35c86489c4b6f54be41c">orxResource_GetSize</a> (orxHANDLE _hResource)</td></tr>
 <tr class="separator:gadfccb6c1430c35c86489c4b6f54be41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae578724bc22c4f38fee60e3faf0db8a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
@@ -189,6 +193,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga49e89a8530fc6af9dc992eb810c67f09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga80ce68bed4694865fb8c383697c11408"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga80ce68bed4694865fb8c383697c11408">orxResource_GetTime</a> (const orxSTRING _zLocation)</td></tr>
 <tr class="separator:ga80ce68bed4694865fb8c383697c11408"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaec6ee06345229deba6d980e0d6f1a000"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaec6ee06345229deba6d980e0d6f1a000">orxResource_GetTotalPendingOpCounter</a> ()</td></tr>
+<tr class="separator:gaec6ee06345229deba6d980e0d6f1a000"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7bcd55bc36a9760dae50fb847dc31b20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <br class="typebreak"/>
 <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a> <br class="typebreak"/>
 *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga7bcd55bc36a9760dae50fb847dc31b20">orxResource_GetType</a> (const orxSTRING _zLocation)</td></tr>
@@ -203,10 +209,13 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:ga0318f5abe598c70018a72aa0cb5952a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga0318f5abe598c70018a72aa0cb5952a5">orxResource_Locate</a> (const orxSTRING _zGroup, const orxSTRING _zName)</td></tr>
 <tr class="separator:ga0318f5abe598c70018a72aa0cb5952a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaecc059a026186c426e640e0cb2eb5dd2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gaecc059a026186c426e640e0cb2eb5dd2">orxResource_LocateInStorage</a> (const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName)</td></tr>
+<tr class="separator:gaecc059a026186c426e640e0cb2eb5dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga13b22b3931348af5db029433bd65ba5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga13b22b3931348af5db029433bd65ba5e">orxResource_Open</a> (const orxSTRING _zLocation, orxBOOL _bEraseMode)</td></tr>
 <tr class="separator:ga13b22b3931348af5db029433bd65ba5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5915bd1cde6fcd067b61adf49594c35c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga5915bd1cde6fcd067b61adf49594c35c">orxResource_Read</a> (orxHANDLE _hResource, orxS64 _s64Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
-<tr class="separator:ga5915bd1cde6fcd067b61adf49594c35c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8186a33559e0d358a40ab5e2e4b2a8c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga8186a33559e0d358a40ab5e2e4b2a8c2">orxResource_Read</a> (orxHANDLE _hResource, orxS64 _s64Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, <a class="el" href="group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41">orxRESOURCE_OP_FUNCTION</a> _pfnCallback, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga8186a33559e0d358a40ab5e2e4b2a8c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga778759087c5ea703b51d0f7b20ec74a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga778759087c5ea703b51d0f7b20ec74a5">orxResource_RegisterType</a> (const <a class="el" href="structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html">orxRESOURCE_TYPE_INFO</a> *_pstInfo)</td></tr>
 <tr class="separator:ga778759087c5ea703b51d0f7b20ec74a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadba8c905ff1d9f9f7a68858e8805d694"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gadba8c905ff1d9f9f7a68858e8805d694">orxResource_ReloadStorage</a> ()</td></tr>
@@ -219,8 +228,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga727617afed34519f0d94189f252a7de3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga727617afed34519f0d94189f252a7de3">orxResource_Tell</a> (orxHANDLE _hResource)</td></tr>
 <tr class="separator:ga727617afed34519f0d94189f252a7de3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4500715569730285b9e9ab6c00d29aa2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga4500715569730285b9e9ab6c00d29aa2">orxResource_Write</a> (orxHANDLE _hResource, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
-<tr class="separator:ga4500715569730285b9e9ab6c00d29aa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5c3dbe1b13f5f5f8f343c8c0c760fcc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga5c3dbe1b13f5f5f8f343c8c0c760fcc0">orxResource_Write</a> (orxHANDLE _hResource, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, <a class="el" href="group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41">orxRESOURCE_OP_FUNCTION</a> _pfnCallback, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga5c3dbe1b13f5f5f8f343c8c0c760fcc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Resource module Module that handles resource mapping </p>
@@ -250,7 +259,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00055">55</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00060">60</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -264,7 +273,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00056">56</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00061">61</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -278,7 +287,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00053">53</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00058">58</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -293,7 +302,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Resource handlers </p>
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00052">52</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00057">57</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -307,7 +316,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00054">54</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00059">59</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -321,7 +330,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00059">59</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00064">64</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -335,7 +344,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00057">57</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00062">62</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -349,7 +358,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00058">58</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00063">63</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -363,7 +372,22 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00060">60</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00065">65</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gacfdaeff8b636c2c1c19c98670df6cd41"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>(orxFASTCALL * orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64 _s64Size, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Resource asynchronous operation callback function </p>
+
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00052">52</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -393,7 +417,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00081">81</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_resource_8h_source.html#l00086">86</a> of file <a class="el" href="orx_resource_8h_source.html">orxResource.h</a>.</p>
 
 </div>
 </div>
@@ -537,45 +561,27 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gaf62cd57c7b0d0ede2cb0c04228965af4"></a>
+<a class="anchor" id="ga3a7f9786c66d41b83f3ce5409d8bc510"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxResource_GetLocation </td>
           <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zGroup</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zStorage</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zName</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets the location for a resource (existing or not) in a <em>specific storage</em>, for a given group. The location doesn't get cached and thus needs to be copied by the caller before the next call </p>
+<p>Gets the literal location of a resource </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zStorage</td><td>Concerned storage, if orxNULL then the highest priority storage will be used </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name of the resource </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Location string if found, orxNULL otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Literal location string </dd></dl>
 
 </div>
 </div>
@@ -600,6 +606,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Path string if valid, orxSTRING_EMPTY otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga9adcd80b622498107596bab46dc34246"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxResource_GetPendingOpCounter </td>
+          <td>(</td>
+          <td class="paramtype">const orxHANDLE&#160;</td>
+          <td class="paramname"><em>_hResource</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets pending operation counter for a given resource </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of pending asynchronous operations for that resource </dd></dl>
 
 </div>
 </div>
@@ -707,6 +737,23 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Time of last modification, in seconds since epoch, if found, 0 otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaec6ee06345229deba6d980e0d6f1a000"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxResource_GetTotalPendingOpCounter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets total pending operation counter </p>
+<dl class="section return"><dt>Returns</dt><dd>Number of total pending asynchronous operations </dd></dl>
 
 </div>
 </div>
@@ -828,6 +875,48 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gaecc059a026186c426e640e0cb2eb5dd2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxResource_LocateInStorage </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zStorage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the location for a resource (existing or not) in a <em>specific storage</em>, for a given group. The location doesn't get cached and thus needs to be copied by the caller before the next call </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zStorage</td><td>Concerned storage, if orxNULL then the highest priority storage will be used </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name of the resource </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Location string if found, orxNULL otherwise </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga13b22b3931348af5db029433bd65ba5e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -863,7 +952,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga5915bd1cde6fcd067b61adf49594c35c"></a>
+<a class="anchor" id="ga8186a33559e0d358a40ab5e2e4b2a8c2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -883,7 +972,19 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
-          <td class="paramname"><em>_pBuffer</em>&#160;</td>
+          <td class="paramname"><em>_pBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41">orxRESOURCE_OP_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -898,10 +999,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_s64Size</td><td>Size to read (in bytes) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pBuffer</td><td>Buffer that will be filled by the read data </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context that will be transmitted to the callback when called </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Size of the read data, in bytes </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Size of the read data, in bytes or -1 for successful asynchronous call </dd></dl>
 
 </div>
 </div>
@@ -1063,7 +1166,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga4500715569730285b9e9ab6c00d29aa2"></a>
+<a class="anchor" id="ga5c3dbe1b13f5f5f8f343c8c0c760fcc0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1083,7 +1186,19 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
-          <td class="paramname"><em>_pBuffer</em>&#160;</td>
+          <td class="paramname"><em>_pBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_resource.html#gacfdaeff8b636c2c1c19c98670df6cd41">orxRESOURCE_OP_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1098,10 +1213,12 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
     <tr><td class="paramdir">[in]</td><td class="paramname">_hResource</td><td>Concerned resource </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_s64Size</td><td>Size to write (in bytes) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pBuffer</td><td>Buffer that will be written </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context that will be transmitted to the callback when called </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Size of the written data, in bytes, 0 if nothing could be written, -1 if this resource type doesn't have any write support </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Size of the written data, in bytes, 0 if nothing could be written/no write support for this resource type or -1 for successful asynchronous call </dd></dl>
 
 </div>
 </div>

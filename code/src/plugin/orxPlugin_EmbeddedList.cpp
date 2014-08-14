@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -48,7 +48,7 @@
 #pragma GCC visibility pop
 
 /* Android? */
-#elif defined(__orxANDROID__)
+#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #include "../plugins/Display/android/orxDisplay.c"
 #include "../plugins/Joystick/android/orxJoystick.c"
@@ -59,12 +59,12 @@
 #include "../plugins/Sound/android/orxSoundSystem.c"
 
 /* Others */
-#else
+#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Includes all plugins to embed
  */
 
-/* GLFW, Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
+/* GLFW, Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
 #include "../plugins/Display/GLFW/orxDisplay.c"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
@@ -84,7 +84,7 @@
 
 #ifndef __orxMAC__
 
-/* SDL (no mac support, no rendering to texture, not optimized, deprecated), Box2D, OpenAL, SOIL, libsndfile & stb_vorbis */
+/* SDL (no mac support, no rendering to texture, not optimized, deprecated), Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
 //#include "../plugins/Display/SDL/orxDisplay.c"
 //#include "../plugins/Joystick/SDL/orxJoystick.c"
 //#include "../plugins/Keyboard/SDL/orxKeyboard.c"
@@ -93,8 +93,8 @@
 //#include "../plugins/Render/Home/orxRender.c"
 //#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
-#endif /* __orxMAC__ */
+#endif /* !__orxMAC__ */
 
-#endif
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxEMBEDDED__ */

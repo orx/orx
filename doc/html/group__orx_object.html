@@ -131,7 +131,9 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960">orxOBJECT_EVENT_ENABLE</a>, 
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f">orxOBJECT_EVENT_DISABLE</a>, 
 <br/>
-&#160;&#160;<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9">orxOBJECT_EVENT_NUMBER</a>, 
+&#160;&#160;<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112">orxOBJECT_EVENT_PAUSE</a>, 
+<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce">orxOBJECT_EVENT_UNPAUSE</a>, 
+<a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9">orxOBJECT_EVENT_NUMBER</a>, 
 <a class="el" href="group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a67c375a6b5d3f7ae7599a35a79da3449">orxOBJECT_EVENT_NONE</a> = orxENUM_NONE
 <br/>
  }</td></tr>
@@ -499,7 +501,7 @@ Picking</h2></td></tr>
 </div><div class="memdoc">
 <p>Internal object structure </p>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00083">83</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00085">85</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -522,6 +524,10 @@ Picking</h2></td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960"></a>orxOBJECT_EVENT_ENABLE</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f"></a>orxOBJECT_EVENT_DISABLE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112"></a>orxOBJECT_EVENT_PAUSE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce"></a>orxOBJECT_EVENT_UNPAUSE</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="gga6d3be2b225f5e2ae28fc521d39cbb6b1a017311a08e691a452d8f709dcf7ba8a9"></a>orxOBJECT_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
@@ -1395,7 +1401,7 @@ Picking</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBoundingBox</td><td>Bounding box result </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pstBoundingBox</td><td>Bounding box result </td></tr>
   </table>
   </dd>
 </dl>
@@ -2694,7 +2700,7 @@ Picking</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxNULL for all </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
   </table>
   </dd>
 </dl>

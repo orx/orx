@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -668,6 +668,33 @@ extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SaveBitmap(const orxBITMAP *_ps
 
   /* Done! */
   return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetTempBitmap(const orxBITMAP *_pstBitmap)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" const orxBITMAP *orxFASTCALL orxDisplay_SFML_GetTempBitmap()
+{
+  const orxBITMAP *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  //! TODO
+
+  /* Done! */
+  return pstResult;
 }
 
 extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_LoadBitmap(const orxSTRING _zFilename)
@@ -2094,6 +2121,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapData, DISPLAY, GET_BITMAP_DATA);

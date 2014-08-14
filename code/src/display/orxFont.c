@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -915,7 +915,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
       if(pstResult != orxNULL)
       {
         /* Stores its reference key */
-        pstResult->zReference = orxString_GetFromID(orxString_GetID(orxConfig_GetCurrentSection()));
+        pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
         /* Processes its config data */
         if(orxFont_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
@@ -1103,7 +1103,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterList(orxFONT *_pstFont, const orxSTRIN
   if((_zList != orxNULL) && (_zList != orxSTRING_EMPTY))
   {
     /* Stores it */
-    _pstFont->zCharacterList = orxString_GetFromID(orxString_GetID(_zList));
+    _pstFont->zCharacterList = orxString_Store(_zList);
   }
   else
   {

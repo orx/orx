@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -157,7 +157,7 @@ static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
 /** Help callback (for -h or --help)
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
  */
 static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
@@ -531,7 +531,7 @@ void orxFASTCALL orxParam_Exit()
 }
 
 /** Register a new parameter
- * @param[in] _pstParam Informations about the option to register
+ * @param[in] _pstParam Information about the option to register
  * @return Returns the status of the registration
  */
 orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
@@ -720,8 +720,8 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   stParams.pfnParser  = orxParam_Help;
   stParams.zShortName = "h";
   stParams.zLongName  = "help";
-  stParams.zShortDesc = "Display this help. You can use extra parameter to display complete description (-h <param>).";
-  stParams.zLongDesc  = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed.";
+  stParams.zShortDesc = "Prints this help. A parameter can be specified to print its complete description (-h <param>).";
+  stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
   /* Register */
   eResult = orxParam_Register(&stParams);

@@ -4,6 +4,7 @@ var orx_vector_8h =
     [ "orxVector_2DRotate", "orx_vector_8h.html#gad8e43d373a71b5fdb1bae79cf3254185", null ],
     [ "orxVector_Add", "orx_vector_8h.html#gabe4db2c5e46746a1d83d1682e1620176", null ],
     [ "orxVector_AreEqual", "orx_vector_8h.html#ga45069121878eae7a3d0721fa3eed3b2f", null ],
+    [ "orxVector_Bezier", "orx_vector_8h.html#gacea978095ea5328f2348d8ebada2c458", null ],
     [ "orxVector_CatmullRom", "orx_vector_8h.html#gad6425e055fe1166db59ba2ee56e0ba64", null ],
     [ "orxVector_Clamp", "orx_vector_8h.html#gabd8aced1e15230cefe84887104c3e50d", null ],
     [ "orxVector_Copy", "orx_vector_8h.html#ga8412bc334ebe4bda4593b25309d5f022", null ],

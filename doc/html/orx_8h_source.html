@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="contents">
 <a href="orx_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/* Orx - Portable Game Engine</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2013 Orx-Project</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (c) 2008-2014 Orx-Project</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * This software is provided &#39;as-is&#39;, without any express or implied</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * warranty. In no event will the authors be held liable for any damages</span></div>
@@ -278,7 +278,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="preprocessor">#else </span><span class="comment">/* __orxIOS__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">  #ifdef __orxANDROID__</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)</span></div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="orx_android_8h.html">main/orxAndroid.h</a>&quot;</span></div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;</div>
@@ -323,7 +323,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            bStop == <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            bStop = ((sbStopByEvent != <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>) || (eMainStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>) || (eClockStatus == <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxSTATUS_FAILURE</a>)) ? <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a> : <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;          orxAndroid_PumpEvents();</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;          <a class="code" href="group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367">orxAndroid_PumpEvents</a>();</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;          <span class="comment">/* Sends frame start event */</span></div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;          <a class="code" href="group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(<a class="code" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a>, <a class="code" href="group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea72a6496ab2b209fdc3ad19f501c5d840">orxSYSTEM_EVENT_GAME_LOOP_START</a>, orxNULL, orxNULL, &amp;stPayload);</div>
@@ -358,7 +358,7 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  <a class="code" href="group__orx_debug.html#gaa1f495a2e235f27771f46449c924466d">orxDEBUG_EXIT</a>();</div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;}</div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="preprocessor">  #else </span><span class="comment">/* __orxANDROID__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="preprocessor">  #else </span><span class="comment">/* __orxANDROID__ || __orxANDROID_NATIVE__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00296"></a><span class="lineno"><a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">  296</a></span>&#160;<span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(orxU32 _u32NbParams, orxSTRING _azParams[], <span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)</div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;{</div>
@@ -438,61 +438,58 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;</div>
 <div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;<span class="preprocessor">    #ifdef __orxMSVC__</span></div>
 <div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;<span class="preprocessor">    #define WIN32_LEAN_AND_MEAN</span></div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor"></span><span class="preprocessor">    #include &lt;windows.h&gt;</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> orx_WinExecute(<span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;{</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;<span class="preprocessor">  #define orxMAX_ARGS 256</span></div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;  <span class="keywordtype">int</span>   argc;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;  <span class="keywordtype">char</span> *argv[orxMAX_ARGS];</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  <span class="keywordtype">char</span> *pcToken, *pcNextToken, *pcFirstDelimiters;</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  LPSTR lpFullCmdLine;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="keyword">static</span> orxINLINE <span class="keywordtype">void</span> orx_WinExecute(<span class="keyword">const</span> orxMODULE_INIT_FUNCTION _pfnInit, <span class="keyword">const</span> orxMODULE_RUN_FUNCTION _pfnRun, <span class="keyword">const</span> orxMODULE_EXIT_FUNCTION _pfnExit)</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;{</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">  #define orxMAX_ARGS 256</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;  <span class="keywordtype">int</span>   argc;</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;  <span class="keywordtype">char</span> *argv[orxMAX_ARGS];</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;  <span class="keywordtype">char</span> *pcToken, *pcNextToken, *pcFirstDelimiters;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;  LPSTR lpFullCmdLine;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  <span class="comment">/* Gets full command line */</span></div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  lpFullCmdLine = GetCommandLineA();</div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  <span class="comment">/* Gets full command line */</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  lpFullCmdLine = GetCommandLineA();</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;  <span class="comment">/* Starts with a double quote? */</span></div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;  <span class="keywordflow">if</span>(*<a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(lpFullCmdLine) == <span class="charliteral">&#39;&quot;&#39;</span>)</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;  {</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="comment">/* Gets first delimiters */</span></div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    pcFirstDelimiters = <span class="stringliteral">&quot;\&quot;&quot;</span>;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  }</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;  <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  {</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="comment">/* Gets first delimiters */</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    pcFirstDelimiters = <span class="stringliteral">&quot; &quot;</span>;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;  }</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;  <span class="comment">/* Process command line */</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;  <span class="keywordflow">for</span>(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &amp;pcNextToken);</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;      pcToken &amp;&amp; (argc &lt; orxMAX_ARGS);</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;      pcToken = strtok_s(NULL, <span class="stringliteral">&quot; &quot;</span>, &amp;pcNextToken))</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;  {</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    argv[argc++] = pcToken;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;  }</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;  <span class="comment">/* Inits and executes orx */</span></div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(argc, argv, _pfnInit, _pfnRun, _pfnExit);</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;}</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxMSVC__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxANDROID__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxIOS__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxPLUGIN__ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  <span class="comment">/* Starts with a double quote? */</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  <span class="keywordflow">if</span>(*<a class="code" href="group__orx_string.html#ga9005ced07cec12a8ee12cb4cee3213c8">orxString_SkipWhiteSpaces</a>(lpFullCmdLine) == <span class="charliteral">&#39;&quot;&#39;</span>)</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;  {</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    <span class="comment">/* Gets first delimiters */</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    pcFirstDelimiters = <span class="stringliteral">&quot;\&quot;&quot;</span>;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;  }</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;  <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;  {</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    <span class="comment">/* Gets first delimiters */</span></div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    pcFirstDelimiters = <span class="stringliteral">&quot; &quot;</span>;</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  }</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;  <span class="comment">/* Process command line */</span></div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;  <span class="keywordflow">for</span>(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &amp;pcNextToken);</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      pcToken &amp;&amp; (argc &lt; orxMAX_ARGS);</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;      pcToken = strtok_s(NULL, <span class="stringliteral">&quot; &quot;</span>, &amp;pcNextToken))</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;  {</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    argv[argc++] = pcToken;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;  }</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  <span class="comment">/* Inits and executes orx */</span></div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;  <a class="code" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a>(argc, argv, _pfnInit, _pfnRun, _pfnExit);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;}</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxMSVC__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="preprocessor">  #endif </span><span class="comment">/* __orxANDROID__ || __orxANDROID_NATIVE__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxIOS__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __orxPLUGIN__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

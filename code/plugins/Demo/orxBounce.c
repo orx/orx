@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -403,6 +403,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 {
   orxVECTOR vMousePos;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("Bounce_Update");
+
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
     /* Starts recording with default settings */
@@ -518,6 +521,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Toggles shader status */
     sbShaderEnabled = !sbShaderEnabled;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 }
 
 /** Inits the bounce demo

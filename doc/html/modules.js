@@ -2,7 +2,7 @@ var modules =
 [
     [ "Orx", "group___orx.html", "group___orx" ],
     [ "OrxAABox", "group__orx_a_a_box.html", "group__orx_a_a_box" ],
-    [ "OrxAndroid", "group__orx_android.html", null ],
+    [ "OrxAndroid", "group__orx_android.html", "group__orx_android" ],
     [ "OrxAnim", "group__orx_anim.html", "group__orx_anim" ],
     [ "OrxAnimPointer", "group__orx_anim_pointer.html", "group__orx_anim_pointer" ],
     [ "OrxAnimSet", "group__orx_anim_set.html", "group__orx_anim_set" ],
@@ -54,6 +54,7 @@ var modules =
     [ "OrxSystem", "group__orx_system.html", "group__orx_system" ],
     [ "OrxText", "group__orx_text.html", "group__orx_text" ],
     [ "OrxTexture", "group__orx_texture.html", "group__orx_texture" ],
+    [ "OrxThread", "group__orx_thread.html", "group__orx_thread" ],
     [ "OrxTimeLine", "group__orx_time_line.html", "group__orx_time_line" ],
     [ "OrxTree", "group__orx_tree.html", "group__orx_tree" ],
     [ "OrxType", "group__orx_type.html", "group__orx_type" ],

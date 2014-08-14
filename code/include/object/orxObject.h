@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -47,13 +47,13 @@
 
 #include "orxInclude.h"
 
-#include "object/orxStructure.h"
-#include "core/orxClock.h"
-#include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "core/orxClock.h"
 #include "display/orxTexture.h"
 #include "display/orxDisplay.h"
 #include "math/orxOBox.h"
+#include "memory/orxBank.h"
+#include "object/orxStructure.h"
 #include "sound/orxSound.h"
 
 
@@ -71,6 +71,8 @@ typedef enum __orxOBJECT_EVENT_t
   orxOBJECT_EVENT_DELETE,
   orxOBJECT_EVENT_ENABLE,
   orxOBJECT_EVENT_DISABLE,
+  orxOBJECT_EVENT_PAUSE,
+  orxOBJECT_EVENT_UNPAUSE,
 
   orxOBJECT_EVENT_NUMBER,
 
@@ -601,7 +603,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *
  * @{ */
 /** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstBoundingBox Bounding box result
+ * @param[out]  _pstBoundingBox Bounding box result
  * @return      Bounding box / orxNULL
  */
 extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox);
@@ -922,7 +924,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(orxOBJECT *_pstObj
  * @{ */
 /** Picks the first active object with graphic "under" the given position, within a given group
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _u32GroupID     Group ID to consider, orxNULL for all
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID);

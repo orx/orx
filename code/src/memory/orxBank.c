@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -90,7 +90,7 @@ static orxBANK_STATIC sstBank;
 
 /** Create a new segment of memory and returns a pointer on it
  * @param[in] _pstBank    Concerned bank
- * @return  returns a pointer on the memory segment (orxNULL if an error occured)
+ * @return  returns a pointer on the memory segment (orxNULL if an error occurred)
  */
 static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
 {

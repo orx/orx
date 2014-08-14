@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="orxCrypt"
-	ProjectGUID="{D15ABB9E-FCBA-AB4A-A0DA-5BB6A6A9324B}"
+	ProjectGUID="{710934D4-7F4C-F742-A6DE-F1E9F2336092}"
 	RootNamespace="orxCrypt"
 	Keyword="Win32Proj"
 	>
@@ -69,6 +69,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:LIBCMT"
 				AdditionalDependencies="orxd.lib winmm.lib"
 				OutputFile="$(OutDir)\orxcrypt.exe"
 				LinkIncremental="2"

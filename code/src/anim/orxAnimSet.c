@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -2151,7 +2151,7 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32
     /* Gets work done */
     eResult = orxAnimSet_SetLinkTableLinkProperty(_pstAnimSet->pstLinkTable, _u32LinkID, _u32Property, _u32Value);
 
-    /* Changes occured? */
+    /* Changes occurred? */
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Added loop counter? */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,11 +35,16 @@
 #include "orxPluginAPI.h"
 
 #include "SDL.h"
-#include "SOIL.h"
 
 #ifdef __orxMAC__
   #error This plugin doesn't work on Mac OS X!
 #endif /* __orxMAC__ */
+
+#include "stb_image.c"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__
@@ -1193,31 +1198,6 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
   /* Gets extension */
   zExtension = (u32Length > 3) ? _zFilename + u32Length - 3 : orxSTRING_EMPTY;
 
-  /* PNG? */
-  if(orxString_ICompare(zExtension, "png") == 0)
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_PNG;
-  }
-  /* DDS? */
-  else if(orxString_ICompare(zExtension, "dds") == 0)
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_DDS;
-  }
-  /* BMP? */
-  else if(orxString_ICompare(zExtension, "bmp") == 0)
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_BMP;
-  }
-  /* TGA */
-  else
-  {
-    /* Updates format */
-    iFormat = SOIL_SAVE_TYPE_TGA;
-  }
-
   /* Allocates buffers */
   pu8ImageData    = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
   pu8ImageBuffer  = (orxU8 *)orxMemory_Allocate(orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
@@ -1266,8 +1246,24 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
     orxMemory_Copy(pu8ImageBuffer + u32DstOffset, pu8ImageData + u32SrcOffset, u32LineSize);
   }
 
-  /* Saves screenshot */
-  eResult = SOIL_save_image(_zFilename, iFormat, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageBuffer) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  /* PNG? */
+  if(orxString_ICompare(zExtension, "png") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_png(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* BMP? */
+  else if(orxString_ICompare(zExtension, "bmp") == 0)
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_bmp(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* TGA */
+  else
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_tga(_zFilename, orxF2U(_pstBitmap->fWidth), orxF2U(_pstBitmap->fHeight), 4, pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
 
   /* Frees buffers */
   orxMemory_Free(pu8ImageBuffer);
@@ -1276,6 +1272,34 @@ orxSTATUS orxFASTCALL orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, con
   /* Done! */
   return eResult;
 }
+
+orxSTATUS orxFASTCALL orxDisplay_SDL_SetTempBitmap(const orxBITMAP *_pstBitmap)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+const orxBITMAP *orxFASTCALL orxDisplay_SDL_GetTempBitmap()
+{
+  const orxBITMAP *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  //! TODO
+
+  /* Done! */
+  return pstResult;
+}
+
 
 orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
 {
@@ -1287,7 +1311,7 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Loads image */
-  pu8ImageData = SOIL_load_image(_zFilename, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, SOIL_LOAD_RGBA);
+  pu8ImageData = stbi_load(_zFilename, (int *)&uiWidth, (int *)&uiHeight, (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
   /* Valid? */
   if(pu8ImageData != NULL)
@@ -1371,7 +1395,7 @@ orxBITMAP *orxFASTCALL orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
     }
 
     /* Deletes surface */
-    SOIL_free_image_data(pu8ImageData);
+    stbi_image_free(pu8ImageData);
   }
 
   /* Done! */
@@ -3185,6 +3209,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_Swap, DISPLAY, SWAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateBitmap, DISPLAY, CREATE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);

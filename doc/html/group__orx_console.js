@@ -2,6 +2,7 @@ var group__orx_console =
 [
     [ "orxCONSOLE_KZ_INPUT_AUTOCOMPLETE", "group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE", "group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023", null ],
+    [ "orxCONSOLE_KZ_INPUT_DELETE_AFTER", "group__orx_console.html#ga0d48acf8c6d88562437d4c81a519475d", null ],
     [ "orxCONSOLE_KZ_INPUT_END", "group__orx_console.html#ga7cf90b1814c4ab1ce2b31f56325c9b79", null ],
     [ "orxCONSOLE_KZ_INPUT_ENTER", "group__orx_console.html#gaa7fe6035175d80d28aaf5bb02e0afbe1", null ],
     [ "orxCONSOLE_KZ_INPUT_LEFT", "group__orx_console.html#ga2613d6eeaf63099c8447ad92ecdccf1e", null ],
@@ -11,6 +12,7 @@ var group__orx_console =
     [ "orxCONSOLE_KZ_INPUT_SET", "group__orx_console.html#ga4d5c257aca0b99f7e7c92d0b72ce8197", null ],
     [ "orxCONSOLE_KZ_INPUT_START", "group__orx_console.html#ga29d52437b05553a053b434165d5bbeab", null ],
     [ "orxCONSOLE_KZ_INPUT_TOGGLE", "group__orx_console.html#ga332e8d61d04138184aaf878193623431", null ],
+    [ "orxCONSOLE_KZ_INPUT_TOGGLE_MODE", "group__orx_console.html#ga6b17221c7bb5dfb6f9da6402b008b082", null ],
     [ "orxConsole_Enable", "group__orx_console.html#gad3bae40e302c140330f2c9b84bce62b9", null ],
     [ "orxConsole_Exit", "group__orx_console.html#ga131e4e88f33df218f1651e1a9c7f7c6b", null ],
     [ "orxConsole_GetFont", "group__orx_console.html#gaf8426d4d9c05745a70ff23b3308364e5", null ],
@@ -19,6 +21,7 @@ var group__orx_console =
     [ "orxConsole_GetTrailLogLine", "group__orx_console.html#ga859acfa690023effb99b31a616a45031", null ],
     [ "orxConsole_Init", "group__orx_console.html#ga6e843897f872e5d1760fd46ad3536777", null ],
     [ "orxConsole_IsEnabled", "group__orx_console.html#ga325e941005ce33c772edc9f9232340f8", null ],
+    [ "orxConsole_IsInsertMode", "group__orx_console.html#ga340e1c258504c95b07015483d1d412a3", null ],
     [ "orxConsole_Log", "group__orx_console.html#gae38e4c990bc8bd3caa6724690a1b83ee", null ],
     [ "orxConsole_SetFont", "group__orx_console.html#ga112f1868a022f4f279c86aad0ee9361c", null ],
     [ "orxConsole_SetLogLineLength", "group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210", null ],

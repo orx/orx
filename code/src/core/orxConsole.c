@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,6 +52,7 @@
 
 #define orxCONSOLE_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
 #define orxCONSOLE_KU32_STATIC_FLAG_ENABLED           0x00000002                      /**< Enabled flag */
+#define orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE       0x00000004                      /**< Insert mode flag */
 
 #define orxCONSOLE_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
@@ -68,12 +69,14 @@
 #define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
 #define orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST       "InputHistoryList"              /**< Input history list */
 
-#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension*/
+#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension */
 
 #define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_BACKQUOTE       /**< Default toggle key */
 
 #define orxCONSOLE_KE_KEY_AUTOCOMPLETE                orxKEYBOARD_KEY_TAB             /**< Autocomplete key */
 #define orxCONSOLE_KE_KEY_DELETE                      orxKEYBOARD_KEY_BACKSPACE       /**< Delete key */
+#define orxCONSOLE_KE_KEY_DELETE_AFTER                orxKEYBOARD_KEY_DELETE          /**< Delete after key */
+#define orxCONSOLE_KE_KEY_TOGGLE_MODE                 orxKEYBOARD_KEY_INSERT          /**< Toggle mode key */
 #define orxCONSOLE_KE_KEY_ENTER                       orxKEYBOARD_KEY_RETURN          /**< Enter key */
 #define orxCONSOLE_KE_KEY_ENTER_ALTERNATE             orxKEYBOARD_KEY_NUMPAD_RETURN   /**< Enter alternate key */
 #define orxCONSOLE_KE_KEY_PREVIOUS                    orxKEYBOARD_KEY_UP              /**< Previous key */
@@ -270,83 +273,8 @@ static orxINLINE orxU32 orxConsole_PrintLastResult(orxCHAR *_acBuffer, orxU32 _u
 {
   orxU32 u32Result;
 
-  /* Depending on type */
-  switch(sstConsole.stLastResult.eType)
-  {
-    default:
-    case orxCOMMAND_VAR_TYPE_STRING:
-    {
-      /* Updates pointer */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%s", sstConsole.stLastResult.zValue);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_FLOAT:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%g", sstConsole.stLastResult.fValue);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_S32:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%d", sstConsole.stLastResult.s32Value);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_U32:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%u", sstConsole.stLastResult.u32Value);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_S64:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%lld", sstConsole.stLastResult.s64Value);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_U64:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "0x%016llX", sstConsole.stLastResult.u64Value);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_BOOL:
-    {
-      /* Stores it */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%s", (sstConsole.stLastResult.bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_VECTOR:
-    {
-      /* Gets literal value */
-      u32Result = orxString_NPrint(_acBuffer, _u32Size, "%c%g%c%g%c%g%c", orxSTRING_KC_VECTOR_START, sstConsole.stLastResult.vValue.fX, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fY, orxSTRING_KC_VECTOR_SEPARATOR, sstConsole.stLastResult.vValue.fZ, orxSTRING_KC_VECTOR_END);
-
-      break;
-    }
-
-    case orxCOMMAND_VAR_TYPE_NONE:
-    {
-      /* Ends string */
-      _acBuffer[0]  = orxCHAR_NULL;
-      u32Result     = 0;
-
-      break;
-    }
-  }
+  /* Prints it */
+  u32Result = orxCommand_PrintVar(_acBuffer, _u32Size, &(sstConsole.stLastResult));
 
   /* Done! */
   return u32Result;
@@ -423,33 +351,63 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           orxU32 i;
 
           /* Clears ends of buffer */
-          for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
+          for(i = 0; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
         }
 
         /* Clears last completed command */
         sstConsole.zCompletedCommand = orxNULL;
       }
 
-      /* Enough room left? */
-      if(pstEntry->u32CursorIndex + u32CharacterLength < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
+      /* Insert mode? */
+      if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE))
       {
-        /* Appends character to entry */
-        orxString_PrintUTF8Character(pstEntry->acBuffer + pstEntry->u32CursorIndex, u32CharacterLength, u32CharacterCodePoint);
-
-        /* Updates log index */
-        pstEntry->u32CursorIndex += u32CharacterLength;
-
-        /* Asked for implicit space and enough room left? */
-        if((bAddImplicitSpace != orxFALSE) && (pstEntry->u32CursorIndex + 1 < orxCONSOLE_KU32_INPUT_ENTRY_SIZE))
+        /* Enough room left? */
+        if(pstEntry->acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - u32CharacterLength] == orxCHAR_NULL)
         {
-          /* Adds implicit space */
-          pstEntry->acBuffer[pstEntry->u32CursorIndex++] = ' ';
+          orxU32  i;
+          orxCHAR cNext, cCurrent;
+
+          /* Shifts all further characters one step to the right */
+          for(i = 0, cCurrent = pstEntry->acBuffer[pstEntry->u32CursorIndex];
+              cCurrent != orxCHAR_NULL;
+              cNext = pstEntry->acBuffer[pstEntry->u32CursorIndex + i + u32CharacterLength], pstEntry->acBuffer[pstEntry->u32CursorIndex + i + u32CharacterLength] = cCurrent, cCurrent = cNext, i++);
+          pstEntry->acBuffer[pstEntry->u32CursorIndex + i + u32CharacterLength] = cCurrent;
+
+          /* Inserts new character */
+          orxString_PrintUTF8Character(pstEntry->acBuffer + pstEntry->u32CursorIndex, u32CharacterLength, u32CharacterCodePoint);
+
+          /* Updates log index */
+          pstEntry->u32CursorIndex += u32CharacterLength;
+        }
+        else
+        {
+          /* Stops */
+          break;
         }
       }
       else
       {
-        /* Stops */
-        break;
+        /* Enough room left? */
+        if(pstEntry->u32CursorIndex + u32CharacterLength < orxCONSOLE_KU32_INPUT_ENTRY_SIZE)
+        {
+          /* Appends character to entry */
+          orxString_PrintUTF8Character(pstEntry->acBuffer + pstEntry->u32CursorIndex, u32CharacterLength, u32CharacterCodePoint);
+
+          /* Updates log index */
+          pstEntry->u32CursorIndex += u32CharacterLength;
+
+          /* Asked for implicit space and enough room left? */
+          if((bAddImplicitSpace != orxFALSE) && (pstEntry->u32CursorIndex + 1 < orxCONSOLE_KU32_INPUT_ENTRY_SIZE))
+          {
+            /* Adds implicit space */
+            pstEntry->acBuffer[pstEntry->u32CursorIndex++] = ' ';
+          }
+        }
+        else
+        {
+          /* Stops */
+          break;
+        }
       }
     }
 
@@ -459,7 +417,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Has character? */
       if((pstEntry->u32CursorIndex != 0) || (pstEntry->acBuffer[0] != orxCHAR_NULL))
       {
-        orxU32         i;
+        orxU32         u32Offset, i;
         const orxCHAR *pc, *pcLast;
 
         /* Gets last character */
@@ -467,21 +425,56 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
             (*pc != orxCHAR_NULL) && ((orxU32)(pc - pstEntry->acBuffer) < pstEntry->u32CursorIndex);
             pcLast = pc, orxString_GetFirstCharacterCodePoint(pcLast, &pc));
 
+        /* Gets offset */
+        u32Offset = pstEntry->u32CursorIndex - (orxU32)(pcLast - pstEntry->acBuffer);
+
         /* Updates cursor index */
-        pstEntry->u32CursorIndex = pcLast - pstEntry->acBuffer;
+        pstEntry->u32CursorIndex -= u32Offset;
 
-        /* Ends entry string */
-        pstEntry->acBuffer[pstEntry->u32CursorIndex] = orxCHAR_NULL;
+        /* Has a completed command? */
+        if(sstConsole.zCompletedCommand != orxNULL)
+        {
+          /* Updates offset to bypass end of command */
+          for(i = 0; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; u32Offset++, i++);
 
-        /* Clears ends of buffer */
-        for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
+          /* Clears last completed command */
+          sstConsole.zCompletedCommand = orxNULL;
+        }
 
-        /* Clears last completed command */
-        sstConsole.zCompletedCommand = orxNULL;
+        /* Shifts all further characters to the left */
+        for(i = 0; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] = pstEntry->acBuffer[pstEntry->u32CursorIndex + i + u32Offset], i++);
       }
 
       /* Adds input reset timer */
       orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_DELETE);
+    }
+    /* Delete after? */
+    else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_DELETE_AFTER) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_DELETE_AFTER) != orxFALSE))
+    {
+      /* Has character? */
+      if(pstEntry->acBuffer[pstEntry->u32CursorIndex] != orxCHAR_NULL)
+      {
+        orxU32 u32Offset, i;
+
+        /* Gets offset */
+        u32Offset = orxString_GetUTF8CharacterLength(orxString_GetFirstCharacterCodePoint(&(pstEntry->acBuffer[pstEntry->u32CursorIndex]), orxNULL));
+
+        /* Has a completed command? */
+        if(sstConsole.zCompletedCommand != orxNULL)
+        {
+          /* Updates offset to bypass end of command */
+          for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; u32Offset++, i++);
+
+          /* Clears last completed command */
+          sstConsole.zCompletedCommand = orxNULL;
+        }
+
+        /* Shifts all further characters to the left */
+        for(i = 0; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] = pstEntry->acBuffer[pstEntry->u32CursorIndex + i + u32Offset], i++);
+      }
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_DELETE_AFTER);
     }
 
     /* Previous history? */
@@ -682,7 +675,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
         else
         {
           /* Logs failure */
-           orxConsole_Log(": Invalid command!");
+          orxConsole_Log(": Invalid command!");
         }
 
         /* Updates input index */
@@ -744,6 +737,13 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       /* Adds input reset timer */
       orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_RIGHT);
     }
+
+    /* Toggles mode? */
+    if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_TOGGLE_MODE) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_TOGGLE_MODE) != orxFALSE))
+    {
+      /* Updates status flags */
+      orxFLAG_SWAP(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE);
+    }
   }
 
   /* Restores previous set */
@@ -768,6 +768,9 @@ static void orxFASTCALL orxConsole_Start()
 
     /* Replaces input set */
     orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
+
+    /* Sets insert mode */
+    orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE, orxCONSOLE_KU32_STATIC_FLAG_NONE);
 
     /* Clears keyboard buffer */
     orxKeyboard_ClearBuffer();
@@ -1044,6 +1047,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE_AFTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE_AFTER);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE_MODE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_TOGGLE_MODE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS);
@@ -1250,6 +1255,23 @@ orxBOOL orxFASTCALL orxConsole_IsEnabled()
 
   /* Updates result */
   bResult = orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Is the console input in insert mode?
+ * @return orxTRUE if insert mode, orxFALSE otherwise (overwrite mode)
+ */
+orxBOOL orxFASTCALL orxConsole_IsInsertMode()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

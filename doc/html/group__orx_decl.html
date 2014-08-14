@@ -123,6 +123,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga7f7f410f595812b1c9c36c21ef1c3480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9108596dcc7bb4203fee1d30fd1db504"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga9108596dcc7bb4203fee1d30fd1db504">orxALIGN64</a>(ADDRESS)&#160;&#160;&#160;<a class="el" href="group__orx_decl.html#ga92c478fc93993c0ff07093dd9f69ec83">orxALIGN</a>(ADDRESS, 64)</td></tr>
 <tr class="separator:ga9108596dcc7bb4203fee1d30fd1db504"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga070df85403a3d5629023d0254e6ea1dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga070df85403a3d5629023d0254e6ea1dd">orxARRAY_GET_ITEM_COUNT</a>(ARRAY)&#160;&#160;&#160;(sizeof(ARRAY) / sizeof(ARRAY[0]))</td></tr>
+<tr class="separator:ga070df85403a3d5629023d0254e6ea1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae6527efdaa8c25ec0ea370a9acb1c2ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a>&#160;&#160;&#160;<a class="el" href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> orxDLLEXPORT /* Compiling orx library =&gt; API needs to be exported */</td></tr>
 <tr class="separator:gae6527efdaa8c25ec0ea370a9acb1c2ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9b90fb6387fa8d26553593350e2f7805"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_decl.html#ga9b90fb6387fa8d26553593350e2f7805">orxFLAG_GET</a>(X, M)&#160;&#160;&#160;((X) &amp; (M))</td></tr>
@@ -153,7 +155,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00125">125</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00131">131</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -167,7 +169,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00094">94</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00100">100</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +198,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Memory alignment macros </p>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00370">370</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00388">388</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -214,7 +216,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00372">372</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00390">390</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -232,7 +234,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00373">373</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00391">391</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -250,7 +252,26 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00374">374</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00392">392</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga070df85403a3d5629023d0254e6ea1dd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxARRAY_GET_ITEM_COUNT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ARRAY</td><td>)</td>
+          <td>&#160;&#160;&#160;(sizeof(ARRAY) / sizeof(ARRAY[0]))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Array macros </p>
+
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00400">400</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -264,7 +285,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00364">364</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00382">382</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -301,7 +322,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Masked flags </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00399">399</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00424">424</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -349,7 +370,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00406">406</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00431">431</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -385,7 +406,7 @@ Macros</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00417">417</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00442">442</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -422,7 +443,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if at least one flag is present </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00392">392</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00417">417</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -449,7 +470,7 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Tests all flags </p>
+<p>Flag macros Tests all flags </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">X</td><td>Flag container </td></tr>
@@ -459,7 +480,7 @@ Macros</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if flags are all presents </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00385">385</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00410">410</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -473,7 +494,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00210">210</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00221">221</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>
@@ -508,7 +529,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure macros </p>
 
-<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00378">378</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_decl_8h_source.html#l00396">396</a> of file <a class="el" href="orx_decl_8h_source.html">orxDecl.h</a>.</p>
 
 </div>
 </div>

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -856,6 +856,18 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(cons
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
+
+
+/** Sets temp bitmap, if a valid temp bitmap is given, load operations will be asynchronous
+ * @param[in]   _pstBitmap                            Concerned bitmap, orxNULL for forcing synchronous load operations
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetTempBitmap(const orxBITMAP *_pstBitmap);
+
+/** Gets current temp bitmap
+ * @return orxBITMAP, if non-null, load operations are currently asynchronous, otherwise they're synchronous
+ */
+extern orxDLLAPI const orxBITMAP *orxFASTCALL         orxDisplay_GetTempBitmap();
 
 
 /** Sets destination bitmaps

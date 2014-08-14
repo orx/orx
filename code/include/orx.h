@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -197,7 +197,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #ifdef __orxANDROID__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
 #include "main/orxAndroid.h"
 
@@ -284,7 +284,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
-  #else /* __orxANDROID__ */
+  #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -371,9 +371,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
     #ifdef __orxMSVC__
 
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
 /** Orx main execution function (console-less windows application)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
@@ -417,7 +414,7 @@ static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, con
 
     #endif /* __orxMSVC__ */
 
-  #endif /* __orxANDROID__ */
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxIOS__ */
 

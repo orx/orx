@@ -28,6 +28,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -59,6 +60,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -89,6 +91,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -117,6 +120,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxd" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -148,6 +152,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orxp" />
 					<Add library="dl" />
 					<Add library="m" />
@@ -178,6 +183,7 @@
 					<Add option="-Wl,--export-dynamic" />
 					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
+					<Add directory="." />
 					<Add library="orx" />
 					<Add library="dl" />
 					<Add library="m" />

@@ -116,6 +116,7 @@ $(document).ready(function(){initNavTree('orx_profiler_8h.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="orx_include_8h_source.html">orxInclude.h</a>&quot;</code><br/>
+<code>#include &quot;<a class="el" href="orx_thread_8h_source.html">core/orxThread.h</a>&quot;</code><br/>
 </div>
 <p><a href="orx_profiler_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -123,7 +124,7 @@ $(document).ready(function(){initNavTree('orx_profiler_8h.html','');});
 Macros</h2></td></tr>
 <tr class="memitem:ga2b4928419f83ca68d4f4b65164e83efe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga2b4928419f83ca68d4f4b65164e83efe">orxPROFILER_KS32_MARKER_ID_NONE</a>&#160;&#160;&#160;-1</td></tr>
 <tr class="separator:ga2b4928419f83ca68d4f4b65164e83efe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac4f1815b6680b23d52244da9a3463a5a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gac4f1815b6680b23d52244da9a3463a5a">orxPROFILER_KU32_HISTORY_LENGTH</a>&#160;&#160;&#160;1</td></tr>
+<tr class="memitem:gac4f1815b6680b23d52244da9a3463a5a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gac4f1815b6680b23d52244da9a3463a5a">orxPROFILER_KU32_HISTORY_LENGTH</a>&#160;&#160;&#160;2</td></tr>
 <tr class="separator:gac4f1815b6680b23d52244da9a3463a5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga90c7c9280ab9e00ad524b12b14f4ead2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga90c7c9280ab9e00ad524b12b14f4ead2">orxPROFILER_POP_MARKER</a>()</td></tr>
 <tr class="separator:ga90c7c9280ab9e00ad524b12b14f4ead2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -181,15 +182,15 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga324b7b0136fbda66d63b7dd715c5728b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a3ec1d7238daade394651ed47909a11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga7a3ec1d7238daade394651ed47909a11">orxProfiler_ResetAllMaxima</a> ()</td></tr>
 <tr class="separator:ga7a3ec1d7238daade394651ed47909a11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga44ddc46885e13981d10165f99d030607"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga44ddc46885e13981d10165f99d030607">orxProfiler_SelectQueryFrame</a> (orxU32 _u32QueryFrame)</td></tr>
-<tr class="separator:ga44ddc46885e13981d10165f99d030607"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadf7a291120263ee0c05cb67fea1d3ee6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#gadf7a291120263ee0c05cb67fea1d3ee6">orxProfiler_SelectQueryFrame</a> (orxU32 _u32QueryFrame, orxU32 _u32ThreadID)</td></tr>
+<tr class="separator:gadf7a291120263ee0c05cb67fea1d3ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga77435c60c85ff4da82d2599f238632cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_profiler.html#ga77435c60c85ff4da82d2599f238632cb">orxProfiler_Setup</a> ()</td></tr>
 <tr class="separator:ga77435c60c85ff4da82d2599f238632cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><dl class="section date"><dt>Date</dt><dd>29/04/2011 </dd></dl>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'iar'+'wa'+'in@'+'or'+'x-p'+'ro'+'jec'+'t.'+'org'; return false;">iarwa<span style="display: none;">.nosp@m.</span>in@o<span style="display: none;">.nosp@m.</span>rx-pr<span style="display: none;">.nosp@m.</span>ojec<span style="display: none;">.nosp@m.</span>t.org</a></dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd></dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd></dd></dl>
 
 <p>Definition in file <a class="el" href="orx_profiler_8h_source.html">orxProfiler.h</a>.</p>
 </div></div><!-- contents -->

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,19 +35,6 @@
 #include "orxPluginAPI.h"
 
 
-#ifdef __orxMSVC__
-
-  #include "malloc.h"
-
-#endif /* __orxMSVC__ */
-
-#if defined(__orxGCC__) && defined(__orxWINDOWS__)
-
-  #define alloca __builtin_alloca
-
-#endif /* __orxGCC__ && __orxWINDOWS__ */
-
-
 /** Module flags
  */
 #define orxRENDER_KU32_STATIC_FLAG_NONE             0x00000000 /**< No flags */
@@ -75,12 +62,14 @@
 #define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT      orx2F(0.25f)
 #define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
-#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(32.0f)
+#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(24.0f)
 #define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
+#define orxRENDER_KF_PROFILER_BAR_HIGH_L            orx2F(0.7f)
+#define orxRENDER_KF_PROFILER_BAR_LOW_L             orx2F(0.3f)
 #define orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT       orx2F(1.0f)
 #define orxRENDER_KF_PROFILER_TEXT_DEFAULT_WIDTH    orx2F(800.0f)
-#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.2f)
+#define orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA       orx2F(0.4f)
 #define orxRENDER_KF_PROFILER_HUE_STACK_RANGE       orx2F(2.0f)
 #define orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE     orx2F(0.8f/3.0f)
 #define orxRENDER_KC_PROFILER_DEPTH_MARKER          '*'
@@ -100,9 +89,13 @@
 #define orxRENDER_KE_KEY_PROFILER_NEXT_FRAME        orxKEYBOARD_KEY_RIGHT
 #define orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH    orxKEYBOARD_KEY_UP
 #define orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH        orxKEYBOARD_KEY_DOWN
+#define orxRENDER_KE_KEY_PROFILER_PREVIOUS_THREAD   orxKEYBOARD_KEY_PAGEUP
+#define orxRENDER_KE_KEY_PROFILER_NEXT_THREAD       orxKEYBOARD_KEY_PAGEDOWN
 
 #define orxRENDER_KF_INPUT_RESET_FIRST_DELAY        orx2F(0.25f)
 #define orxRENDER_KF_INPUT_RESET_DELAY              orx2F(0.02f)
+
+#define orxRENDER_KU32_MAX_MARKER_DEPTH             16
 
 
 /***************************************************************************
@@ -134,6 +127,7 @@ typedef struct __orxRENDER_STATIC_t
   orxFLOAT      fDefaultConsoleOffset;              /**< Default console offset */
   orxFLOAT      fConsoleOffset;                     /**< Console offset */
   orxU32        u32SelectedFrame;                   /**< Selected frame */
+  orxU32        u32SelectedThread;                  /**< Selected thread */
   orxU32        u32SelectedMarkerDepth;             /**< Selected marker depth */
   orxU32        u32MaxMarkerDepth;                  /**< Maximum marker depth */
 
@@ -351,7 +345,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   const orxCHARACTER_MAP *pstMap;
   orxFLOAT                fMarkerWidth;
   orxCHAR                 acLabel[64];
-  orxDOUBLE              *adDepthBlockEndTime;
+  orxDOUBLE               adDepthBlockEndTime[orxRENDER_KU32_MAX_MARKER_DEPTH];
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderProfiler");
@@ -375,7 +369,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile("pixel");
+  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -408,9 +402,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     }
   }
 
-  /* Allocates & inits array for storing block ends at each depth */
-  adDepthBlockEndTime = (orxDOUBLE *)alloca(sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
-  orxMemory_Zero(adDepthBlockEndTime, sstRender.u32MaxMarkerDepth * sizeof(orxDOUBLE));
+  /* Inits array for storing block ends at each depth */
+  orxMemory_Zero(adDepthBlockEndTime, orxRENDER_KU32_MAX_MARKER_DEPTH * sizeof(orxDOUBLE));
 
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
@@ -461,8 +454,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Should render history? */
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
   {
-    orxDISPLAY_VERTEX astVertexList[2 * orxPROFILER_KU32_HISTORY_LENGTH];
-    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH];
+    orxDISPLAY_VERTEX astVertexList[2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1)];
+    orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH - 1], dFrameRecDuration = orxDOUBLE_0;
     orxBOOL           bFirst;
 
     /* Inits color */
@@ -470,7 +463,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
     orxColor_FromRGBToHSV(&stColor, &stColor);
 
     /* For all vertices */
-    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+    for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
     {
       /* Inits both vertices */
       astVertexList[2 * i].fX     =
@@ -497,15 +490,36 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* First marker? */
           if(bFirst != orxFALSE)
           {
+            orxDOUBLE dAccDuration = orxDOUBLE_0, dDurationSampleNumber = orxDOUBLE_0;
+
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
+              orxDOUBLE dDuration;
+
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, sstRender.u32SelectedThread);
 
               /* Stores its frame start time */
               adStartTimeList[i] = orxProfiler_GetUniqueMarkerStartTime(s32MarkerID);
+
+              /* Gets frame duration */
+              dDuration = orxProfiler_GetResetTime();
+
+              /* Valid? */
+              if(dDuration != orxDOUBLE_0)
+              {
+                /* Updates accumulators */
+                dAccDuration           += dDuration;
+                dDurationSampleNumber  += orxDOUBLE_1;
+              }
             }
+
+            /* Gets averaged frame reciprocal duration */
+            dFrameRecDuration = orx2D(dDurationSampleNumber) / dAccDuration;
+
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
 
             /* Clears first status */
             bFirst = orxFALSE;
@@ -514,49 +528,52 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* Desired depth? */
           if(orxProfiler_GetUniqueMarkerDepth(s32MarkerID) == sstRender.u32SelectedMarkerDepth)
           {
-            orxCOLOR  stBarColor;
-            orxRGBA   stRGBA;
+            orxCOLOR  stBarColor, stTempColor;
+            orxRGBA   stLowRGBA, stHighRGBA;
 
-            /* Gets associated color */
-            stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
-            stRGBA = orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor));
+            /* Gets associated colors */
+            stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
+            stBarColor.vHSL.fH  = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+            stBarColor.vHSL.fS  = orxFLOAT_1;
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_LOW_L;
+            stLowRGBA           = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
+            stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_HIGH_L;
+            stHighRGBA          = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
 
             /* For all past frames */
-            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH; i++)
+            for(i = 0; i < orxPROFILER_KU32_HISTORY_LENGTH - 1; i++)
             {
-              orxDOUBLE dFrameRecDuration;
-
-              /* Gets frame reciprocal duration */
-              dFrameRecDuration = 1.0 / orxProfiler_GetResetTime();
-
               /* Selects it */
-              orxProfiler_SelectQueryFrame(i);
+              orxProfiler_SelectQueryFrame(i, sstRender.u32SelectedThread);
 
               /* Landscape? */
               if(bLandscape != orxFALSE)
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fY     = fScreenHeight - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fY     = astVertexList[2 * i].fY - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenHeight - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
               else
               {
                 /* Updates bottom vertex with previous top one */
                 astVertexList[2 * i].fX     = fScreenWidth - fBorder - orx2F((orxProfiler_GetUniqueMarkerStartTime(s32MarkerID) - adStartTimeList[i]) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stLowRGBA;
 
                 /* Updates top vertex */
                 astVertexList[2 * i + 1].fX     = astVertexList[2 * i].fX - orx2F(orxProfiler_GetMarkerTime(s32MarkerID) * dFrameRecDuration) * (orx2F(0.5f) * fScreenWidth - fBorder);
-                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stRGBA;
+                astVertexList[2 * i + 1].stRGBA = (i == sstRender.u32SelectedFrame) ? orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF) : stHighRGBA;
               }
             }
 
+            /* Resets query frame */
+            orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
+
             /* Draws it */
-            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * orxPROFILER_KU32_HISTORY_LENGTH, astVertexList);
+            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
           }
         }
       }
@@ -564,7 +581,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   }
 
   /* Resets frame selection */
-  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame);
+  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
 
   /* Inits color */
   orxColor_Set(&stColor, &orxVECTOR_GREEN, orxRENDER_KF_PROFILER_BAR_ALPHA);
@@ -592,7 +609,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=orxPROFILER=-     Frame [%.2f|%.2fms]", orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
+  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=%s Thread=-  Frame[%.2f|%.2fms]", orxThread_GetName(sstRender.u32SelectedThread), orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
@@ -666,6 +683,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         /* Updates start time */
         dFrameStartTime = dStartTime;
       }
+
+      /* Checks */
+      orxASSERT(u32Depth < orxRENDER_KU32_MAX_MARKER_DEPTH);
 
       /* Adjusts start time to prevent block overlap at this level */
       dStartTime = orxMAX(dStartTime, adDepthBlockEndTime[u32Depth]);
@@ -1021,7 +1041,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     orxU32                  u32Counter, u32PeakCounter, u32Size, u32PeakSize, u32OperationCounter, u32UnitIndex;
     orxFLOAT                fSize, fPeakSize;
-    static const orxFLOAT   sfSaturationThreshold = orxFLOAT_1 / orxU2F(128 * 1024 * 1024);
+    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
     static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
 
     /* Updates position */
@@ -1090,7 +1110,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight;
   orxU32                  u32CursorIndex, i;
-  orxCHAR                 cBackup;
+  orxCHAR                 acBackup[2];
   orxFLOAT                fCharacterHeight;
   orxCOLOR                stColor;
   const orxFONT          *pstFont;
@@ -1116,7 +1136,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   fCharacterHeight = orxFont_GetCharacterHeight(pstFont);
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile("pixel");
+  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1184,29 +1204,51 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
   zText               = orxConsole_GetInput(&u32CursorIndex);
-  cBackup             = zText[u32CursorIndex];
+  acBackup[0]         = zText[u32CursorIndex];
+  acBackup[1]         = (u32CursorIndex < 255) ? zText[u32CursorIndex + 1] : orxCHAR_NULL;
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR);
 
-  /* Has room for cursor? */
-  if(u32CursorIndex < 255)
+  /* Has room for cursor & should display it? */
+  if((u32CursorIndex < 255) && (orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK)))
   {
-    /* Should display it? */
-    if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_CONSOLE_BLINK))
+    /* Is in insert mode? */
+    if(orxConsole_IsInsertMode() != orxFALSE)
     {
-      ((orxCHAR*)zText)[u32CursorIndex] = '_';
+      /* Displays full input, including auto-completion */
       orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-      ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+
+      /* Overrides characters at cursor position */
+      ((orxCHAR*)zText)[u32CursorIndex] = '_';
     }
+    else
+    {
+      /* Overrides characters at cursor position */
+      ((orxCHAR*)zText)[u32CursorIndex] = '#';
+
+      /* Displays full input, including auto-completion */
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    }
+
+    /* Truncates to base input + cursor */
+    ((orxCHAR*)zText)[u32CursorIndex + 1] = orxCHAR_NULL;
+  }
+  else
+  {
+    /* Displays full input, including auto-completion */
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+
+    /* Truncates to base input */
+    ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   }
 
-  /* Displays full input, including auto-completion */
-  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-
   /* Displays base input (ie. validated part) */
-  ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_INPUT_COLOR);
   orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  ((orxCHAR*)zText)[u32CursorIndex] = cBackup;
+  ((orxCHAR*)zText)[u32CursorIndex] = acBackup[0];
+  if(u32CursorIndex < 255)
+  {
+    ((orxCHAR*)zText)[u32CursorIndex + 1] = acBackup[1];
+  }
 
   /* While there are log lines to display */
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
@@ -1238,7 +1280,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
  * @param[in]   _eBlendMode       Blend mode
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstObject, orxFRAME *_pstRenderFrame, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstObject, orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -1249,7 +1291,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pstRenderFrame != orxNULL);
+  orxASSERT(_pstTransform != orxNULL);
 
   /* Gets object's graphic */
   pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
@@ -1258,50 +1300,62 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
+    orxANIMPOINTER                 *pstAnimPointer;
+    orxTEXTURE                     *pstTexture;
+    orxTEXT                        *pstText;
+    orxFONT                        *pstFont;
+    orxBITMAP                      *pstBitmap = orxNULL;
+    orxBOOL                         bIs2D;
     orxEVENT                        stEvent;
     orxRENDER_EVENT_OBJECT_PAYLOAD  stPayload;
+
+    /* Stores type */
+    bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
+
+    /* Is 2D? */
+    if(bIs2D != orxFALSE)
+    {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("RenderObject <2D>");
+    }
+    else
+    {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("RenderObject <Text>");
+    }
 
     /* Cleans event payload */
     orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_OBJECT_PAYLOAD));
 
     /* Inits it */
-    stPayload.pstRenderFrame = _pstRenderFrame;
+    stPayload.pstTransform = _pstTransform;
 
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
-    /* 2D? */
-    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+    /* Gets animation pointer */
+    pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+    /* Valid? */
+    if(pstAnimPointer != orxNULL)
     {
-      orxBITMAP      *pstBitmap;
-      orxTEXTURE     *pstTexture;
-      orxANIMPOINTER *pstAnimPointer;
-      orxVECTOR       vClipTL, vClipBR, vPivot, vSize;
+      orxGRAPHIC *pstTemp;
 
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (2D)");
-
-      /* Gets animation pointer */
-      pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+      /* Gets current anim data */
+      pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
 
       /* Valid? */
-      if(pstAnimPointer != orxNULL)
+      if(pstTemp != orxNULL)
       {
-        orxGRAPHIC *pstTemp;
-
-        /* Gets current anim data */
-        pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
-
-        /* Valid? */
-        if(pstTemp != orxNULL)
-        {
-          /* Uses it */
-          pstGraphic = pstTemp;
-        }
+        /* Uses it */
+        pstGraphic = pstTemp;
       }
+    }
 
-      /* Gets its pivot */
-      orxGraphic_GetPivot(pstGraphic, &vPivot);
+    /* Is 2D? */
+    if(bIs2D != orxFALSE)
+    {
+      orxVECTOR vClipTL, vClipBR, vSize;
 
       /* Gets its texture */
       pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
@@ -1316,19 +1370,47 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
 
       /* Updates its clipping (before event start for updated texture coordinates in shader) */
       orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+    }
+    else
+    {
+      /* Gets text */
+      pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
 
-      /* Sends start event */
-      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+      /* Valid? */
+      if(pstText != orxNULL)
       {
-        orxVECTOR             vPosition, vScale;
-        orxDISPLAY_TRANSFORM  stTransform;
-        orxBOOL               bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
-        orxFLOAT              fRepeatX, fRepeatY, fRotation;
+        /* Gets its font */
+        pstFont = orxText_GetFont(pstText);
 
-        /* Gets rendering frame's position, rotation & scale */
-        fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-        orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-        orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+        /* Valid? */
+        if(pstFont != orxNULL)
+        {
+          orxTEXTURE *pstTexture;
+
+          /* Gets its texture */
+          pstTexture = orxFont_GetTexture(pstFont);
+
+          /* Valid? */
+          if(pstTexture != orxNULL)
+          {
+            /* Gets its bitmap */
+            pstBitmap = orxTexture_GetBitmap(pstTexture);
+          }
+        }
+      }
+    }
+
+    /* Should render? */
+    if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE) && (pstBitmap != orxNULL))
+    {
+      /* Valid scale? */
+      if((stPayload.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.pstTransform->fScaleY != orxFLOAT_0))
+      {
+        orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
+        orxVECTOR vPivot;
+
+        /* Gets graphic's pivot */
+        orxGraphic_GetPivot(pstGraphic, &vPivot);
 
         /* Gets object & graphic flipping */
         orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
@@ -1337,12 +1419,16 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         /* Updates using combined flipping */
         if(bObjectFlipX ^ bGraphicFlipX)
         {
-          vScale.fX = -vScale.fX;
+          stPayload.pstTransform->fScaleX *= -orxFLOAT_1;
         }
         if(bObjectFlipY ^ bGraphicFlipY)
         {
-          vScale.fY = -vScale.fY;
+          stPayload.pstTransform->fScaleY *= -orxFLOAT_1;
         }
+
+        /* Updates transform */
+        stPayload.pstTransform->fSrcX += vPivot.fX;
+        stPayload.pstTransform->fSrcY += vPivot.fY;
 
         /* Has object color? */
         if(orxObject_HasColor(_pstObject) != orxFALSE)
@@ -1358,163 +1444,47 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
           orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
         }
 
-        /* Gets object repeat values */
-        orxObject_GetRepeat(_pstObject, &fRepeatX, &fRepeatY);
-
-        /* Updates if invalid */
-        if(fRepeatX == orxFLOAT_0)
+        /* Is 2D? */
+        if(bIs2D != orxFALSE)
         {
-          fRepeatX = orx2F(0.01f);
+          /* Transforms bitmap */
+          eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.pstTransform, _eSmoothing, _eBlendMode);
         }
-        if(fRepeatY == orxFLOAT_0)
+        else
         {
-          fRepeatY = orx2F(0.01f);
+          /* Transfomrs text */
+          eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.pstTransform, _eSmoothing, _eBlendMode);
         }
-
-        /* Sets transformation values */
-        stTransform.fSrcX     = vPivot.fX;
-        stTransform.fSrcY     = vPivot.fY;
-        stTransform.fDstX     = vPosition.fX;
-        stTransform.fDstY     = vPosition.fY;
-        stTransform.fRepeatX  = fRepeatX;
-        stTransform.fRepeatY  = fRepeatY;
-        stTransform.fScaleX   = vScale.fX;
-        stTransform.fScaleY   = vScale.fY;
-        stTransform.fRotation = fRotation;
-
-        /* Transforms bitmap */
-        eResult = orxDisplay_TransformBitmap(pstBitmap, &stTransform, _eSmoothing, _eBlendMode);
       }
       else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", stPayload.pstTransform->fScaleX, stPayload.pstTransform->fScaleY);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+    else
+    {
+      /* Was valid? */
+      if(pstBitmap != orxNULL)
       {
         /* Updates result, aborted by user request */
         eResult = orxSTATUS_SUCCESS;
       }
-
-      /* Sends stop event */
-      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
-    else
-    {
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxRender_RenderObject (Text)");
 
-      /* Sends start event */
-      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
-      {
-        orxTEXT *pstText;
+    /* Sends stop event */
+    orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
-        /* Gets text */
-        pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
-
-        /* Valid? */
-        if(pstText != orxNULL)
-        {
-          const orxFONT *pstFont;
-
-          /* Gets its font */
-          pstFont = orxText_GetFont(pstText);
-
-          /* Valid? */
-          if(pstFont != orxNULL)
-          {
-            orxTEXTURE *pstTexture;
-
-            /* Gets its texture */
-            pstTexture = orxFont_GetTexture(pstFont);
-
-            /* Valid? */
-            if(pstTexture != orxNULL)
-            {
-              orxVECTOR   vPosition, vScale, vPivot, vSize;
-              orxFLOAT    fRotation;
-              orxBOOL     bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
-              orxBITMAP  *pstBitmap;
-
-              /* Gets its bitmap */
-              pstBitmap = orxTexture_GetBitmap(pstTexture);
-
-              /* Gets graphic's pivot & size*/
-              orxGraphic_GetPivot(pstGraphic, &vPivot);
-              orxGraphic_GetSize(pstGraphic, &vSize);
-
-              /* Gets rendering frame's position, rotation & scale */
-              fRotation = orxFrame_GetRotation(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL);
-              orxFrame_GetScale(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
-              orxFrame_GetPosition(stPayload.pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
-
-              /* Gets object & graphic flipping */
-              orxObject_GetFlip(_pstObject, &bObjectFlipX, &bObjectFlipY);
-              orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
-
-              /* Updates using combined flipping */
-              if(bObjectFlipX ^ bGraphicFlipX)
-              {
-                vScale.fX = -vScale.fX;
-              }
-              if(bObjectFlipY ^ bGraphicFlipY)
-              {
-                vScale.fY = -vScale.fY;
-              }
-
-              /* Has object color? */
-              if(orxObject_HasColor(_pstObject) != orxFALSE)
-              {
-                orxCOLOR stColor;
-
-                /* Updates display color */
-                orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
-              }
-              else
-              {
-                /* Applies white color */
-                orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
-              }
-
-              /* Valid scale? */
-              if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
-              {
-                orxDISPLAY_TRANSFORM stTransform;
-
-                /* Sets transformation values */
-                stTransform.fSrcX     = vPivot.fX;
-                stTransform.fSrcY     = vPivot.fY;
-                stTransform.fDstX     = vPosition.fX;
-                stTransform.fDstY     = vPosition.fY;
-                stTransform.fScaleX   = vScale.fX;
-                stTransform.fScaleY   = vScale.fY;
-                stTransform.fRotation = fRotation;
-
-                /* Draws text */
-                eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), &stTransform, _eSmoothing, _eBlendMode);
-              }
-              else
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", vScale.fX, vScale.fY);
-
-                /* Updates result */
-                eResult = orxSTATUS_SUCCESS;
-              }
-            }
-          }
-        }
-      }
-
-      /* Sends stop event */
-      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
-    }
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid graphic or non-2d graphic detected.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid graphic or non-2D/text graphic detected.");
   }
 
   /* Profiles */
@@ -1668,298 +1638,289 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           if((pstCamera != orxNULL)
           && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
           {
-            orxFRAME *pstRenderFrame;
+            orxAABOX stFrustum;
+            orxFLOAT fCameraWidth, fCameraHeight;
 
-            /* Creates rendering frame */
-            pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+            /* Gets camera frustum */
+            orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+            /* Gets camera size */
+            fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
+            fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
             /* Valid? */
-            if(pstRenderFrame != orxNULL)
+            if((fCameraWidth > orxFLOAT_0)
+            && (fCameraHeight > orxFLOAT_0))
             {
-              orxAABOX stFrustum;
-              orxFLOAT fCameraWidth, fCameraHeight;
+              orxU32          u32Number;
+              orxOBJECT      *pstObject;
+              orxFRAME       *pstCameraFrame;
+              orxRENDER_NODE *pstRenderNode;
+              orxVECTOR       vCameraScale, vCameraCenter, vCameraPosition;
+              orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fRecZoom, fRenderRotation, fCameraBoundingRadius;
 
-              /* Gets camera frustum */
-              orxCamera_GetFrustum(pstCamera, &stFrustum);
+              /* Gets camera frame */
+              pstCameraFrame = orxCamera_GetFrame(pstCamera);
 
-              /* Gets camera size */
-              fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
-              fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
+              /* Gets camera scale */
+              orxFrame_GetScale(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraScale);
 
-              /* Valid? */
-              if((fCameraWidth > orxFLOAT_0)
-              && (fCameraHeight > orxFLOAT_0))
+              /* Gets camera reciprocal zoom */
+              fRecZoom = (vCameraScale.fX != orxFLOAT_0) ? vCameraScale.fX : orxFLOAT_1;
+
+              /* Gets camera position */
+              orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+              /* Gets camera world frustum */
+              orxVector_Add(&(stFrustum.vTL), &(stFrustum.vTL), &vCameraPosition);
+              orxVector_Add(&(stFrustum.vBR), &(stFrustum.vBR), &vCameraPosition);
+
+              /* Gets camera center */
+              orxVector_Add(&vCameraCenter, &(stFrustum.vTL), &(stFrustum.vBR));
+              orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
+
+              /* Gets camera depth */
+              fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
+
+              /* Gets camera square bounding radius */
+              fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) * fRecZoom;
+
+              /* Gets rendering scales */
+              fRenderScaleX = (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / (fRecZoom * fCameraWidth);
+              fRenderScaleY = (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / (fRecZoom * fCameraHeight);
+
+              /* Gets camera rotation */
+              fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
+
+              /* For all camera group IDs */
+              for(i = 0, u32Number = orxCamera_GetGroupIDCounter(pstCamera); i < u32Number; i++)
               {
-                orxU32          u32Number;
-                orxOBJECT      *pstObject;
-                orxFRAME       *pstCameraFrame;
-                orxRENDER_NODE *pstRenderNode;
-                orxVECTOR       vCameraScale, vCameraCenter, vCameraPosition;
-                orxFLOAT        fCameraDepth, fRenderScaleX, fRenderScaleY, fRecZoom, fRenderRotation, fCameraBoundingRadius;
+                orxU32 u32GroupID;
 
-                /* Gets camera frame */
-                pstCameraFrame = orxCamera_GetFrame(pstCamera);
+                /* Gets it */
+                u32GroupID = orxCamera_GetGroupID(pstCamera, i);
 
-                /* Gets camera scale */
-                orxFrame_GetScale(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraScale);
-
-                /* Gets camera reciprocal zoom */
-                fRecZoom = (vCameraScale.fX != orxFLOAT_0) ? vCameraScale.fX : orxFLOAT_1;
-
-                /* Gets camera position */
-                orxFrame_GetPosition(pstCameraFrame, orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-                /* Gets camera world frustum */
-                orxVector_Add(&(stFrustum.vTL), &(stFrustum.vTL), &vCameraPosition);
-                orxVector_Add(&(stFrustum.vBR), &(stFrustum.vBR), &vCameraPosition);
-
-                /* Gets camera center */
-                orxVector_Add(&vCameraCenter, &(stFrustum.vTL), &(stFrustum.vBR));
-                orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
-
-                /* Gets camera depth */
-                fCameraDepth = stFrustum.vBR.fZ - vCameraPosition.fZ;
-
-                /* Gets camera square bounding radius */
-                fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) * fRecZoom;
-
-                /* Gets rendering scales */
-                fRenderScaleX = (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / (fRecZoom * fCameraWidth);
-                fRenderScaleY = (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / (fRecZoom * fCameraHeight);
-
-                /* Gets camera rotation */
-                fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
-
-                /* For all camera group IDs */
-                for(i = 0, u32Number = orxCamera_GetGroupIDCounter(pstCamera); i < u32Number; i++)
+                /* For all objects in this group */
+                for(pstObject = orxObject_GetNext(orxNULL, u32GroupID);
+                    pstObject != orxNULL;
+                    pstObject = orxObject_GetNext(pstObject, u32GroupID))
                 {
-                  orxU32 u32GroupID;
-
-                  /* Gets it */
-                  u32GroupID = orxCamera_GetGroupID(pstCamera, i);
-
-                  /* For all objects in this group */
-                  for(pstObject = orxObject_GetNext(orxNULL, u32GroupID);
-                      pstObject != orxNULL;
-                      pstObject = orxObject_GetNext(pstObject, u32GroupID))
+                  /* Is object enabled? */
+                  if(orxObject_IsEnabled(pstObject) != orxFALSE)
                   {
-                    /* Is object enabled? */
-                    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+                    orxGRAPHIC *pstGraphic;
+
+                    /* Gets object's graphic */
+                    pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC);
+
+                    /* Valid 2D graphic? */
+                    if((pstGraphic != orxNULL)
+                    && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE))
                     {
-                      orxGRAPHIC *pstGraphic;
+                      orxFRAME     *pstFrame;
+                      orxSTRUCTURE *pstData;
+                      orxTEXTURE   *pstTexture;
 
-                      /* Gets object's graphic */
-                      pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC);
+                      /* Gets object's frame */
+                      pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
-                      /* Valid 2D graphic? */
-                      if((pstGraphic != orxNULL)
-                      && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE))
+                      /* Gets graphic data */
+                      pstData = orxGraphic_GetData(pstGraphic);
+
+                      /* Valid and has text/texture data? */
+                      if((pstFrame != orxNULL)
+                      && (((pstTexture = orxTEXTURE(pstData)) != orxNULL)
+                       || (orxTEXT(pstData) != orxNULL)))
                       {
-                        orxFRAME     *pstFrame;
-                        orxSTRUCTURE *pstData;
-                        orxTEXTURE   *pstTexture;
+                        orxVECTOR vObjectPos;
 
-                        /* Gets object's frame */
-                        pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
-
-                        /* Gets graphic data */
-                        pstData = orxGraphic_GetData(pstGraphic);
-
-                        /* Valid and has text/texture data? */
-                        if((pstFrame != orxNULL)
-                        && (((pstTexture = orxTEXTURE(pstData)) != orxNULL)
-                         || (orxTEXT(pstData) != orxNULL)))
+                        /* Not a texture? */
+                        if(pstTexture == orxNULL)
                         {
-                          orxVECTOR vObjectPos;
+                          /* Gets texture from text */
+                          pstTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(pstData)));
+                        }
 
-                          /* Not a texture? */
-                          if(pstTexture == orxNULL)
+                        /* Gets its position */
+                        orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
+
+                        /* Is object in Z frustum? */
+                        if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
+                        {
+                          orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef, fObjectRotation;
+                          orxVECTOR vSize, vOffset, vObjectScale, vDist;
+
+                          /* Gets its size */
+                          orxGraphic_GetSize(pstGraphic, &vSize);
+
+                          /* Gets object's scale & rotation */
+                          orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
+                          fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
+
+                          /* Updates its size with object scale */
+                          vSize.fX  *= vObjectScale.fX;
+                          vSize.fY  *= vObjectScale.fY;
+
+                          /* Gets offset based on pivot */
+                          orxGraphic_GetPivot(pstGraphic, &vOffset);
+                          vOffset.fX = orx2F(0.5f) * vSize.fX - vObjectScale.fX * vOffset.fX;
+                          vOffset.fY = orx2F(0.5f) * vSize.fY - vObjectScale.fY * vOffset.fY;
+                          orxVector_2DRotate(&vOffset, &vOffset, fObjectRotation);
+
+                          /* Gets real 2D distance vector */
+                          orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
+                          vDist.fZ = orxFLOAT_0;
+
+                          /* Uses differential scrolling or depth scaling? */
+                          if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+                          || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                           {
-                            /* Gets texture from text */
-                            pstTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(pstData)));
+                            orxFLOAT fObjectRelativeDepth;
+
+                            /* Gets objects relative depth */
+                            fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
+
+                            /* Near space? */
+                            if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
+                            {
+                              /* Gets depth scale coef */
+                              fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
+                            }
+                            /* Far space */
+                            else
+                            {
+                              /* Gets depth scale coef */
+                              fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
+                            }
+
+                            /* X-axis scroll? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
+                            {
+                              /* Updates base distance vector */
+                              vDist.fX *= fDepthCoef;
+                            }
+
+                            /* Y-axis scroll? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
+                            {
+                              /* Updates base distance vector */
+                              vDist.fY *= fDepthCoef;
+                            }
+
+                            /* Depth scale? */
+                            if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
+                            {
+                              /* Updates size & offset */
+                              vSize.fX *= fDepthCoef;
+                              vSize.fY *= fDepthCoef;
+                              vOffset.fX *= fDepthCoef;
+                              vOffset.fY *= fDepthCoef;
+                            }
+                          }
+                          else
+                          {
+                            /* Clears depth coef */
+                            fDepthCoef = orxFLOAT_1;
                           }
 
-                          /* Gets its position */
-                          orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
+                          /* Gets object square bounding radius */
+                          fObjectBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
-                          /* Is object in Z frustum? */
-                          if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
+                          /* Updates distance vector */
+                          orxVector_Add(&vDist, &vDist, &vOffset);
+
+                          /* Gets 2D square distance to camera */
+                          fSqrDist = orxVector_GetSquareSize(&vDist);
+
+                          /* Circle test between object & camera */
+                          if(fSqrDist <= (fCameraBoundingRadius + fObjectBoundingRadius) * (fCameraBoundingRadius + fObjectBoundingRadius))
                           {
-                            orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef, fObjectRotation;
-                            orxVECTOR vSize, vOffset, vObjectScale, vDist;
+                            orxDISPLAY_BLEND_MODE eBlendMode;
+                            orxDISPLAY_SMOOTHING  eSmoothing;
+                            const orxSHADER      *pstShader;
+                            orxSHADERPOINTER     *pstShaderPointer;
 
-                            /* Gets its size */
-                            orxGraphic_GetSize(pstGraphic, &vSize);
+                            /* Gets shader pointer */
+                            pstShaderPointer = orxOBJECT_GET_STRUCTURE(pstObject, SHADERPOINTER);
 
-                            /* Gets object's scale & rotation */
-                            orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
-                            fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
-
-                            /* Updates its size with object scale */
-                            vSize.fX  *= vObjectScale.fX;
-                            vSize.fY  *= vObjectScale.fY;
-
-                            /* Gets offset based on pivot */
-                            orxGraphic_GetPivot(pstGraphic, &vOffset);
-                            vOffset.fX = orx2F(0.5f) * vSize.fX - vObjectScale.fX * vOffset.fX;
-                            vOffset.fY = orx2F(0.5f) * vSize.fY - vObjectScale.fY * vOffset.fY;
-                            orxVector_2DRotate(&vOffset, &vOffset, fObjectRotation);
-
-                            /* Gets real 2D distance vector */
-                            orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
-                            vDist.fZ = orxFLOAT_0;
-
-                            /* Uses differential scrolling or depth scaling? */
-                            if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
-                            || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
+                            /* Valid? */
+                            if(pstShaderPointer != orxNULL)
                             {
-                              orxFLOAT fObjectRelativeDepth;
-
-                              /* Gets objects relative depth */
-                              fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
-
-                              /* Near space? */
-                              if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
-                              {
-                                /* Gets depth scale coef */
-                                fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
-                              }
-                              /* Far space */
-                              else
-                              {
-                                /* Gets depth scale coef */
-                                fDepthCoef = (fCameraDepth - fObjectRelativeDepth) / (orx2F(0.5f) * fCameraDepth);
-                              }
-
-                              /* X-axis scroll? */
-                              if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
-                              {
-                                /* Updates base distance vector */
-                                vDist.fX *= fDepthCoef;
-                              }
-
-                              /* Y-axis scroll? */
-                              if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
-                              {
-                                /* Updates base distance vector */
-                                vDist.fY *= fDepthCoef;
-                              }
-
-                              /* Depth scale? */
-                              if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
-                              {
-                                /* Updates size & offset */
-                                vSize.fX *= fDepthCoef;
-                                vSize.fY *= fDepthCoef;
-                                vOffset.fX *= fDepthCoef;
-                                vOffset.fY *= fDepthCoef;
-                              }
+                              /* Gets first shader */
+                              pstShader = orxShaderPointer_GetShader(pstShaderPointer, 0);
                             }
                             else
                             {
-                              /* Clears depth coef */
-                              fDepthCoef = orxFLOAT_1;
+                              /* Clears shader */
+                              pstShader = orxNULL;
                             }
 
-                            /* Gets object square bounding radius */
-                            fObjectBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
+                            /* Gets graphic smoothing */
+                            eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
 
-                            /* Updates distance vector */
-                            orxVector_Add(&vDist, &vDist, &vOffset);
-
-                            /* Gets 2D square distance to camera */
-                            fSqrDist = orxVector_GetSquareSize(&vDist);
-
-                            /* Circle test between object & camera */
-                            if(fSqrDist <= (fCameraBoundingRadius + fObjectBoundingRadius) * (fCameraBoundingRadius + fObjectBoundingRadius))
+                            /* Default? */
+                            if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
                             {
-                              orxDISPLAY_BLEND_MODE eBlendMode;
-                              orxDISPLAY_SMOOTHING  eSmoothing;
-                              const orxSHADER      *pstShader;
-                              orxSHADERPOINTER     *pstShaderPointer;
+                              /* Gets object smoothing */
+                              eSmoothing = orxObject_GetSmoothing(pstObject);
+                            }
 
-                              /* Gets shader pointer */
-                              pstShaderPointer = orxOBJECT_GET_STRUCTURE(pstObject, SHADERPOINTER);
+                            /* Gets object blend mode */
+                            eBlendMode = orxObject_GetBlendMode(pstObject);
 
-                              /* Valid? */
-                              if(pstShaderPointer != orxNULL)
+                            /* Creates a render node */
+                            pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);
+
+                            /* Cleans its internal node */
+                            orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));
+
+                            /* Stores object */
+                            pstRenderNode->pstObject  = pstObject;
+                            pstRenderNode->pstTexture = pstTexture;
+                            pstRenderNode->pstShader  = pstShader;
+                            pstRenderNode->eSmoothing = eSmoothing;
+                            pstRenderNode->eBlendMode = eBlendMode;
+
+                            /* Stores its Z coordinate */
+                            pstRenderNode->fZ = vObjectPos.fZ;
+
+                            /* Stores its depth coef */
+                            pstRenderNode->fDepthCoef = fDepthCoef;
+
+                            /* Empty list? */
+                            if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
+                            {
+                              /* Adds node at beginning */
+                              orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
+                            }
+                            else
+                            {
+                              orxRENDER_NODE *pstNode;
+
+                              /* Finds correct node position */
+                              for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
+                                  (pstNode != orxNULL)
+                               && ((vObjectPos.fZ < pstNode->fZ)
+                                || ((vObjectPos.fZ == pstNode->fZ)
+                                 && ((pstTexture < pstNode->pstTexture)
+                                  || ((pstTexture == pstNode->pstTexture)
+                                   && ((pstShader < pstNode->pstShader)
+                                    || ((pstShader == pstNode->pstShader)
+                                     && (eBlendMode < pstNode->eBlendMode))
+                                      || ((eBlendMode == pstNode->eBlendMode)
+                                       && (eSmoothing < pstNode->eSmoothing)))))));
+                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
+
+                              /* End of list reached? */
+                              if(pstNode == orxNULL)
                               {
-                                /* Gets first shader */
-                                pstShader = orxShaderPointer_GetShader(pstShaderPointer, 0);
+                                /* Adds it at end */
+                                orxLinkList_AddEnd(&(sstRender.stRenderList), &(pstRenderNode->stNode));
                               }
                               else
                               {
-                                /* Clears shader */
-                                pstShader = orxNULL;
-                              }
-
-                              /* Gets graphic smoothing */
-                              eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
-
-                              /* Default? */
-                              if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
-                              {
-                                /* Gets object smoothing */
-                                eSmoothing = orxObject_GetSmoothing(pstObject);
-                              }
-
-                              /* Gets object blend mode */
-                              eBlendMode = orxObject_GetBlendMode(pstObject);
-
-                              /* Creates a render node */
-                              pstRenderNode = (orxRENDER_NODE *)orxBank_Allocate(sstRender.pstRenderBank);
-
-                              /* Cleans its internal node */
-                              orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));
-
-                              /* Stores object */
-                              pstRenderNode->pstObject  = pstObject;
-                              pstRenderNode->pstTexture = pstTexture;
-                              pstRenderNode->pstShader  = pstShader;
-                              pstRenderNode->eSmoothing = eSmoothing;
-                              pstRenderNode->eBlendMode = eBlendMode;
-
-                              /* Stores its Z coordinate */
-                              pstRenderNode->fZ = vObjectPos.fZ;
-
-                              /* Stores its depth coef */
-                              pstRenderNode->fDepthCoef = fDepthCoef;
-
-                              /* Empty list? */
-                              if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
-                              {
-                                /* Adds node at beginning */
-                                orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
-                              }
-                              else
-                              {
-                                orxRENDER_NODE *pstNode;
-
-                                /* Finds correct node position */
-                                for(pstNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
-                                    (pstNode != orxNULL)
-                                 && ((vObjectPos.fZ < pstNode->fZ)
-                                  || ((vObjectPos.fZ == pstNode->fZ)
-                                   && ((pstTexture < pstNode->pstTexture)
-                                    || ((pstTexture == pstNode->pstTexture)
-                                     && ((pstShader < pstNode->pstShader)
-                                      || ((pstShader == pstNode->pstShader)
-                                       && (eBlendMode < pstNode->eBlendMode))
-                                        || ((eBlendMode == pstNode->eBlendMode)
-                                         && (eSmoothing < pstNode->eSmoothing)))))));
-                                    pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
-
-                                /* End of list reached? */
-                                if(pstNode == orxNULL)
-                                {
-                                  /* Adds it at end */
-                                  orxLinkList_AddEnd(&(sstRender.stRenderList), &(pstRenderNode->stNode));
-                                }
-                                else
-                                {
-                                  /* Adds it before found node */
-                                  orxLinkList_AddBefore(&(pstNode->stNode), &(pstRenderNode->stNode));
-                                }
+                                /* Adds it before found node */
+                                orxLinkList_AddBefore(&(pstNode->stNode), &(pstRenderNode->stNode));
                               }
                             }
                           }
@@ -1967,113 +1928,123 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                       }
                     }
                   }
+                }
 
-                  /* For all render nodes */
-                  for(pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
-                      pstRenderNode != orxNULL;
-                      pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
+                /* For all render nodes */
+                for(pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
+                    pstRenderNode != orxNULL;
+                    pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
+                {
+                  orxFRAME             *pstFrame;
+                  orxVECTOR             vObjectPos, vRenderPos, vObjectScale;
+                  orxFLOAT              fObjectRotation, fObjectScaleX, fObjectScaleY, fRepeatX, fRepeatY;
+                  orxDISPLAY_TRANSFORM  stTransform;
+
+                  /* Gets object */
+                  pstObject = pstRenderNode->pstObject;
+
+                  /* Gets object's position */
+                  orxObject_GetWorldPosition(pstObject, &vObjectPos);
+
+                  /* Gets object's frame */
+                  pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+                  /* Gets object's scales */
+                  orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
+
+                  /* Gets object's rotation */
+                  fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
+
+                  /* Gets object scale */
+                  fObjectScaleX = fRenderScaleX;
+                  fObjectScaleY = fRenderScaleY;
+
+                  /* Gets position in camera space */
+                  orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraCenter);
+                  vRenderPos.fX  *= fObjectScaleX;
+                  vRenderPos.fY  *= fObjectScaleY;
+
+                  /* Uses differential scrolling or depth scaling? */
+                  if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+                  || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
                   {
-                    orxFRAME *pstFrame;
-                    orxVECTOR vObjectPos, vRenderPos, vObjectScale;
-                    orxFLOAT  fObjectRotation, fObjectScaleX, fObjectScaleY;
-
-                    /* Gets object */
-                    pstObject = pstRenderNode->pstObject;
-
-                    /* Gets object's position */
-                    orxObject_GetWorldPosition(pstObject, &vObjectPos);
-
-                    /* Gets object's frame */
-                    pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
-
-                    /* Gets object's scales */
-                    orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
-
-                    /* Gets object's rotation */
-                    fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
-
-                    /* Gets object scale */
-                    fObjectScaleX = fRenderScaleX;
-                    fObjectScaleY = fRenderScaleY;
-
-                    /* Gets position in camera space */
-                    orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraCenter);
-                    vRenderPos.fX  *= fObjectScaleX;
-                    vRenderPos.fY  *= fObjectScaleY;
-
-                    /* Uses differential scrolling or depth scaling? */
-                    if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
-                    || (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE))
+                    /* X-axis scroll? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
                     {
-                      /* X-axis scroll? */
-                      if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE)
-                      {
-                        /* Updates render position */
-                        vRenderPos.fX *= pstRenderNode->fDepthCoef;
-                      }
-
-                      /* Y-axis scroll? */
-                      if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
-                      {
-                        /* Updates render position */
-                        vRenderPos.fY *= pstRenderNode->fDepthCoef;
-                      }
-
-                      /* Depth scale? */
-                      if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
-                      {
-                        /* Updates object scales */
-                        vObjectScale.fX *= pstRenderNode->fDepthCoef;
-                        vObjectScale.fY *= pstRenderNode->fDepthCoef;
-                      }
+                      /* Updates render position */
+                      vRenderPos.fX *= pstRenderNode->fDepthCoef;
                     }
 
-                    /* Has camera rotation? */
-                    if(fRenderRotation != orxFLOAT_0)
+                    /* Y-axis scroll? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE)
                     {
-                      /* Rotates it */
-                      orxVector_2DRotate(&vRenderPos, &vRenderPos, -fRenderRotation);
+                      /* Updates render position */
+                      vRenderPos.fY *= pstRenderNode->fDepthCoef;
                     }
 
-                    /* Gets position in screen space */
-                    orxVector_Add(&vRenderPos, &vRenderPos, &vViewportCenter);
-                    orxVector_Add(&vRenderPos, &vRenderPos, &(stTextureBox.vTL));
-
-                    /* Updates render frame */
-                    orxFrame_SetPosition(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vRenderPos);
-                    orxFrame_SetRotation(pstRenderFrame, orxFRAME_SPACE_LOCAL, fObjectRotation - fRenderRotation);
-                    vObjectScale.fX *= fObjectScaleX;
-                    vObjectScale.fY *= fObjectScaleY;
-                    orxFrame_SetScale(pstRenderFrame, orxFRAME_SPACE_LOCAL, &vObjectScale);
-
-                    /* Renders it */
-                    if(orxRender_Home_RenderObject(pstObject, pstRenderFrame, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
+                    /* Depth scale? */
+                    if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_DEPTH_SCALE) != orxFALSE)
                     {
-                      /* Prints error message */
-                      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s] couldn't be rendered.", pstObject, orxObject_GetName(pstObject));
+                      /* Updates object scales */
+                      vObjectScale.fX *= pstRenderNode->fDepthCoef;
+                      vObjectScale.fY *= pstRenderNode->fDepthCoef;
                     }
                   }
 
-                  /* Cleans rendering bank */
-                  orxBank_Clear(sstRender.pstRenderBank);
+                  /* Has camera rotation? */
+                  if(fRenderRotation != orxFLOAT_0)
+                  {
+                    /* Rotates it */
+                    orxVector_2DRotate(&vRenderPos, &vRenderPos, -fRenderRotation);
+                  }
 
-                  /* Cleans rendering list */
-                  orxMemory_Zero(&(sstRender.stRenderList), sizeof(orxLINKLIST));
+                  /* Gets position in screen space */
+                  orxVector_Add(&vRenderPos, &vRenderPos, &vViewportCenter);
+                  orxVector_Add(&vRenderPos, &vRenderPos, &(stTextureBox.vTL));
+
+                  /* Gets object repeat values */
+                  orxObject_GetRepeat(pstObject, &fRepeatX, &fRepeatY);
+
+                  /* Updates if invalid */
+                  if(fRepeatX == orxFLOAT_0)
+                  {
+                    fRepeatX = orxMATH_KF_EPSILON;
+                  }
+                  if(fRepeatY == orxFLOAT_0)
+                  {
+                    fRepeatY = orxMATH_KF_EPSILON;
+                  }
+
+                  /* Sets transformation values */
+                  stTransform.fSrcX     = orxFLOAT_0;
+                  stTransform.fSrcY     = orxFLOAT_0;
+                  stTransform.fDstX     = vRenderPos.fX;
+                  stTransform.fDstY     = vRenderPos.fY;
+                  stTransform.fRepeatX  = fRepeatX;
+                  stTransform.fRepeatY  = fRepeatY;
+                  stTransform.fScaleX   = vObjectScale.fX * fObjectScaleX;
+                  stTransform.fScaleY   = vObjectScale.fY * fObjectScaleY;
+                  stTransform.fRotation = fObjectRotation - fRenderRotation;
+
+                  /* Renders it */
+                  if(orxRender_Home_RenderObject(pstObject, &stTransform, pstRenderNode->eSmoothing, pstRenderNode->eBlendMode) == orxSTATUS_FAILURE)
+                  {
+                    /* Prints error message */
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / %s] couldn't be rendered.", pstObject, orxObject_GetName(pstObject));
+                  }
                 }
 
-                /* Deletes rendering frame */
-                orxFrame_Delete(pstRenderFrame);
-              }
-              else
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Camera size out of bounds: %g, %g.", fCameraWidth, fCameraHeight);
+                /* Cleans rendering bank */
+                orxBank_Clear(sstRender.pstRenderBank);
+
+                /* Cleans rendering list */
+                orxMemory_Zero(&(sstRender.stRenderList), sizeof(orxLINKLIST));
               }
             }
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Could not create rendering frame.");
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Camera size out of bounds: %g, %g.", fCameraWidth, fCameraHeight);
             }
           }
           else
@@ -2334,6 +2305,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         /* Input on? */
         if(_pstEvent->eID == orxINPUT_EVENT_ON)
         {
+          orxS32                  s32ThreadDelta = 0;
           orxINPUT_EVENT_PAYLOAD *pstPayload;
 
           /* Gets payload */
@@ -2358,7 +2330,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
           else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME))
           {
             /* Not first frame? */
-            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH)
+            if(sstRender.u32SelectedFrame < orxPROFILER_KU32_HISTORY_LENGTH - 2)
             {
               /* Updates it */
               sstRender.u32SelectedFrame++;
@@ -2404,6 +2376,40 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
                 sstRender.u32SelectedMarkerDepth++;
               }
             }
+          }
+
+          /* Previous thread? */
+          if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD))
+          {
+            /* Updates thread delta */
+            s32ThreadDelta = -1;
+          }
+          /* Next profiler depth? */
+          else if(!orxString_Compare(pstPayload->zInputName, orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD))
+          {
+            /* Updates thread delta */
+            s32ThreadDelta = 1;
+          }
+
+          /* Should update selected thread? */
+          if(s32ThreadDelta != 0)
+          {
+            do
+            {
+              /* Previous? */
+              if(s32ThreadDelta < 0)
+              {
+                /* Updates selected thread */
+                sstRender.u32SelectedThread = (sstRender.u32SelectedThread == 0) ? orxTHREAD_KU32_MAX_THREAD_NUMBER - 1 : sstRender.u32SelectedThread - 1;
+              }
+              /* Next */
+              else
+              {
+                /* Updates selected thread */
+                sstRender.u32SelectedThread = (sstRender.u32SelectedThread == orxTHREAD_KU32_MAX_THREAD_NUMBER - 1) ? 0 : sstRender.u32SelectedThread + 1;
+              }
+            }
+            while(orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread) == orxSTATUS_FAILURE);
           }
         }
       }
@@ -2795,6 +2801,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_FRAME);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_DEPTH);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_THREAD);
+            orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_THREAD);
 
             /* Restores previous set */
             orxInput_SelectSet(zPreviousSet);
@@ -2823,6 +2831,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
 
             /* Inits selected frame */
             sstRender.u32SelectedFrame = 0;
+
+            /* Inits selected thread */
+            sstRender.u32SelectedThread = orxTHREAD_KU32_MAIN_THREAD_ID;
 
             /* Inits Flags */
             sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_REGISTERED;

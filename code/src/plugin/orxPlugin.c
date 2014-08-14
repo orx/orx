@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -42,20 +42,11 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
-
-  #ifdef __orxWINDOWS__
-
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
-  #endif /* __orxWINDOWS__ */
-
-#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 
 /** Platform dependent type & function defines
@@ -764,7 +755,7 @@ static orxINLINE void orxPlugin_DeleteAll()
 /** Processes command line parameters
  * @param[in] _u32ParamCount  Number of extra parameters read for this option
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
  */
 static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {

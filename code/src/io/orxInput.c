@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2013 Orx-Project
+ * Copyright (c) 2008-2014 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -884,7 +884,8 @@ static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryNam
       pstResult->u32Status  = orxINPUT_KU32_ENTRY_FLAG_NONE;
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
-        pstResult->astBindingList[i].eType = orxINPUT_TYPE_NONE;
+        pstResult->astBindingList[i].eID    = orxENUM_NONE;
+        pstResult->astBindingList[i].eType  = orxINPUT_TYPE_NONE;
       }
     }
   }
@@ -1097,7 +1098,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
         /* Registers to core clock */
         eResult = orxClock_Register(pstClock, orxInput_Update, orxNULL, orxMODULE_ID_INPUT, orxCLOCK_PRIORITY_HIGH);
 
-        /* Succesful? */
+        /* Successful? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Updates flags */
