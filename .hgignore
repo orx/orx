@@ -53,3 +53,5 @@ tutorial/build/**.htm
 extern/openal-soft/build
 code/bin
 BuildLog.htm
+*.sdf
+obj/**.cache
