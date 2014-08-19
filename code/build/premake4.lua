@@ -94,7 +94,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2010")
+defaultaction ("windows", "vs2012")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -263,6 +263,15 @@ solution "orx"
             "../../extern/openal-soft/lib/vc2010",
             "../../extern/libsndfile-1.0.22/lib/vc2010",
             "../../extern/Box2D_2.1.3/lib/msvs2010"
+        }
+
+    configuration {"vs2012"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2012",
+            "../../extern/openal-soft/lib/vc2012",
+            "../../extern/libsndfile-1.0.22/lib/vc2012",
+            "../../extern/Box2D_2.1.3/lib/msvs2012"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
