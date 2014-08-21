@@ -751,7 +751,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   orxCHAR *pcTemp;
 
                   /* Erases it */
-                  for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxNULL; pcTemp++)
+                  for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxCHAR_NULL; pcTemp++)
                   {
                     *pcTemp = *(pcTemp + 1);
                   }
