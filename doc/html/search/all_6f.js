@@ -2265,6 +2265,7 @@ var searchData=
   ['orxstring_5fempty',['orxSTRING_EMPTY',['../group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16',1,'orxType.h']]],
   ['orxstring_5feol',['orxSTRING_EOL',['../group__orx_type.html#ga4a31f472b61a07c2b79005543d7d0480',1,'orxType.h']]],
   ['orxstring_5fexit',['orxString_Exit',['../group__orx_string.html#ga5609313df76783e84f9ab2726f3014a5',1,'orxString.h']]],
+  ['orxstring_5fextractbase',['orxString_ExtractBase',['../group__orx_string.html#ga643f4af16e0e79abe462c2b7a1fd0fcf',1,'orxString.h']]],
   ['orxstring_5ffalse',['orxSTRING_FALSE',['../group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb',1,'orxType.h']]],
   ['orxstring_5fgetcharactercounter',['orxString_GetCharacterCounter',['../group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998',1,'orxString.h']]],
   ['orxstring_5fgetextension',['orxString_GetExtension',['../group__orx_string.html#ga3352602bfc1529ae7c20fc8c665c179d',1,'orxString.h']]],

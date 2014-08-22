@@ -38,19 +38,19 @@ var NAVTREEINDEX =
 "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2b36d39c2bb495dfe2b85f856b29a11a",
 "group__orx_screenshot.html",
 "group__orx_string.html#ga5216a1e7197fc8ca6b4861f48863d095",
-"group__orx_tree.html#ga347489e50ce3eb5ed2596c78d8d59dd3",
-"orx_anim_set_8h.html#ga3697f4c6a4d6ba8499a0ff2300efaa45",
-"orx_config_8h.html#ga4364104aa37903ccb207a76622e2644d",
-"orx_display_8h.html#gad54faad16cd6fe98b24adbdde00137fc",
-"orx_graphic_8h.html#ga49707d128385388a046065c6f390edc6",
-"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea4dbb7dcf5cb0f332442d683f2dcbd9bc",
-"orx_module_8h.html#ggada33eee351097708b92f32d0c5972708ae550ab5ac0eec3180237bd7836f38d06",
-"orx_physics_8h.html#gac0c9d300ee61b05b28a86313af67d137",
-"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7",
-"orx_sound_8h.html#gaeba832ec94a53adc3b805987ca095751",
-"orx_structure_8h.html#ga95058db32c35e47042cf42e560bda596",
-"orx_vector_8h.html#gabe4db2c5e46746a1d83d1682e1620176",
-"structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545"
+"group__orx_tree.html#ga26ed9987077dc6e4918205ac3dac360a",
+"orx_anim_set_8h.html#ga35f2f2538a0088e0691265b0c4bb2096",
+"orx_config_8h.html#ga3b258fb083297065cc8642803e9d8982",
+"orx_display_8h.html#gad49f19c1e34d7dc1e535cfbede0d967c",
+"orx_graphic_8h.html#ga429feecaa5e1169e1facf295b8204a2f",
+"orx_keyboard_8h.html#gga50a25da712297bb6cbbd47e66ac233fea4a5926a7147569f7212bbeecf4cae2cc",
+"orx_module_8h.html#ggada33eee351097708b92f32d0c5972708ae2d3a393475efd251c83b65f71c4e442",
+"orx_physics_8h.html#gabebb7ab1d353627fd016914456185556",
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec",
+"orx_sound_8h.html#gaeb665de88011fc4deb1ae8182fcef109",
+"orx_structure_8h.html#ga8dc56d431e06f7b1a1300eeae5259f4c",
+"orx_vector_8h.html#gab20d9cfbfd0c1fcc33eed217002e2e2d",
+"structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
