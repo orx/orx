@@ -9,7 +9,7 @@
         {
             "path": "../../extern",
             "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb"],
-            "folder_exclude_patterns": ["obj", "bin", "lib"]
+            "folder_exclude_patterns": ["obj", "bin"]
         },
         {
             "path": "../../tools",

@@ -488,6 +488,10 @@ project "orxLIB"
             "OpenGL.framework"
         }
 
+    configuration{"macosx"}
+        buildoptions{"-Wno-deprecated-declarations"}
+
+
     configuration {"macosx", "*Debug*"}
         linkoptions {"-install_name @executable_path/liborxd.dylib"}
 
@@ -561,9 +565,11 @@ project "Bounce"
 
     links
     {
-        "orxLIB",
-        "orx"
+        "orxLIB"
     }
+
+    configuration {"not xcode*"}
+        links {"orx"}
 
 
 -- Linux
