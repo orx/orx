@@ -2444,6 +2444,9 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
 
       /* Deletes it */
       orxBank_Free(sstCommand.pstBank, pstCommand);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
