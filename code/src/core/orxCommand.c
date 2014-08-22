@@ -756,17 +756,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     *pcTemp = *(pcTemp + 1);
                   }
 
-                  /* Updates block status */
-                  bInBlock = !bInBlock;
-
-                  /* Double marker? */
-                  if(*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
+                  /* Not double marker? */
+                  if(*pcSrc != orxCOMMAND_KC_BLOCK_MARKER)
                   {
                     /* Updates block status */
                     bInBlock = !bInBlock;
-                  }
-                  else
-                  {
+
                     /* Handles current character in new mode */
                     pcSrc--;
                   }
