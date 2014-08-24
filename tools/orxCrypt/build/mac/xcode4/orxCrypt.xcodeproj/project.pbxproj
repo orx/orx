@@ -1,0 +1,524 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6C7323BD726A1D743D322807 /* orxCrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 5974525958522F5B2AD6651B /* orxCrypt.c */; };
+		713F7E9D29C4155D42BB3D72 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B47B6E134B4A6A0C94605A /* Foundation.framework */; };
+		091C25043D1F6261642D5982 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6F138D18ED046D1D352FDB /* AppKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5974525958522F5B2AD6651B /* orxCrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "orxCrypt.c"; path = "../../../src/orxCrypt.c"; sourceTree = "<group>"; };
+		04B47B6E134B4A6A0C94605A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		2A6F138D18ED046D1D352FDB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		129458EB3DF817E4160953EF /* orxcrypt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "orxcrypt"; path = "orxcrypt"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		35B64FFC62EF760358096D65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				713F7E9D29C4155D42BB3D72 /* Foundation.framework in Frameworks */,
+				091C25043D1F6261642D5982 /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		55F0108D32280122207B7B34 /* orxCrypt */ = {
+			isa = PBXGroup;
+			children = (
+				406810BC5D68603823FC0F5B /* src */,
+				708745AF23AB342F26B752AF /* Frameworks */,
+				1EB268CB260544A4071245D0 /* Products */,
+			);
+			name = "orxCrypt";
+			sourceTree = "<group>";
+		};
+		406810BC5D68603823FC0F5B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				5974525958522F5B2AD6651B /* orxCrypt.c */,
+			);
+			name = "src";
+			sourceTree = "<group>";
+		};
+		708745AF23AB342F26B752AF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				04B47B6E134B4A6A0C94605A /* Foundation.framework */,
+				2A6F138D18ED046D1D352FDB /* AppKit.framework */,
+			);
+			name = "Frameworks";
+			sourceTree = "<group>";
+		};
+		1EB268CB260544A4071245D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				129458EB3DF817E4160953EF /* orxcrypt */,
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1150455C4D6C77DA34E543EF /* orxCrypt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06E728A054D051DE644F3790 /* Build configuration list for PBXNativeTarget "orxCrypt" */;
+			buildPhases = (
+				790373875B694E562DFA0D54 /* Resources */,
+				460903FF5EC21E2D313D558B /* Sources */,
+				35B64FFC62EF760358096D65 /* Frameworks */,
+				9607AE3710C85E8F00CD1376 /* Postbuild */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "orxCrypt";
+			productInstallPath = "$(HOME)/bin";
+			productName = "orxCrypt";
+			productReference = 129458EB3DF817E4160953EF /* orxcrypt */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxCrypt" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = 55F0108D32280122207B7B34 /* orxCrypt */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1150455C4D6C77DA34E543EF /* orxcrypt */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		790373875B694E562DFA0D54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9607AE3710C85E8F00CD1376 /* Postbuild */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Postbuild;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] && cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)";
+		};
+/* End PBXShellScriptBuildPhase section */
+/* Begin PBXSourcesBuildPhase section */
+		460903FF5EC21E2D313D558B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C7323BD726A1D743D322807 /* orxCrypt.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		418D46572350742B4E520622 /* Debug Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Debug Native 64-bit";
+		};
+		026E246506DB295532FE6A97 /* Debug Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Debug Native 32-bit";
+		};
+		25336976719D35BC6487136D /* Profile Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Profile Native 64-bit";
+		};
+		0EFE4F30177719A32A4143DA /* Profile Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Profile Native 32-bit";
+		};
+		503D77976182360B45FC5A7B /* Release Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Release Native 64-bit";
+		};
+		10AC387075FE21A517DB302F /* Release Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Release Native 32-bit";
+		};
+		3F807831776939EC36C21B9B /* Debug Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "x86_64";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxDEBUG__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x64/Debug";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxd",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Debug Native 64-bit";
+		};
+		06DA7249547B6A6E12B33309 /* Debug Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "i386";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxDEBUG__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x32/Debug";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+					"-mfix-and-continue",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxd",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Debug Native 32-bit";
+		};
+		7F97449A0EFC455B03EA1C1C /* Profile Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "x86_64";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxPROFILER__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x64/Profile";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxp",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Profile Native 64-bit";
+		};
+		478702D052E61F240284583C /* Profile Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "i386";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxPROFILER__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x32/Profile";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+					"-mfix-and-continue",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxp",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Profile Native 32-bit";
+		};
+		7948195E26D517A228BC73E8 /* Release Native 64-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "x86_64";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x64/Release";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorx",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Release Native 64-bit";
+		};
+		046B32A3205002BD50931540 /* Release Native 32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "i386";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/x32/Release";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+					"-mfix-and-continue",
+				);
+				OTHER_LDFLAGS = (
+					"-lorx",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Release Native 32-bit";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		06E728A054D051DE644F3790 /* Build configuration list for PBXNativeTarget "orxcrypt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				418D46572350742B4E520622 /* Debug Native 64-bit */,
+				026E246506DB295532FE6A97 /* Debug Native 32-bit */,
+				25336976719D35BC6487136D /* Profile Native 64-bit */,
+				0EFE4F30177719A32A4143DA /* Profile Native 32-bit */,
+				503D77976182360B45FC5A7B /* Release Native 64-bit */,
+				10AC387075FE21A517DB302F /* Release Native 32-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug Native 64-bit";
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxCrypt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F807831776939EC36C21B9B /* Debug Native 64-bit */,
+				06DA7249547B6A6E12B33309 /* Debug Native 32-bit */,
+				7F97449A0EFC455B03EA1C1C /* Profile Native 64-bit */,
+				478702D052E61F240284583C /* Profile Native 32-bit */,
+				7948195E26D517A228BC73E8 /* Release Native 64-bit */,
+				046B32A3205002BD50931540 /* Release Native 32-bit */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug Native 64-bit";
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

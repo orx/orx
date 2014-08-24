@@ -124,13 +124,8 @@ solution "orxFontGen"
         "../../../extern/freetype-2.4.1/include"
     }
 
-    libdirs
-    {
-        "../lib"
-    }
-
     configuration {"not macosx"}
-        libdirs {"../../../code/lib/static"}
+        libdirs {"../lib", "../../../code/lib/static"}
 
     configuration {"macosx"}
         libdirs {"../../../code/lib/dynamic"}
@@ -199,14 +194,12 @@ solution "orxFontGen"
         }
         buildoptions
         {
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }

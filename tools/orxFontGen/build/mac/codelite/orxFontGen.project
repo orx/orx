@@ -8,7 +8,7 @@
   <Settings Type="Executable">
     <Configuration Name="Debug_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
@@ -16,8 +16,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -27,6 +26,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
@@ -47,7 +47,7 @@
     </Configuration>
     <Configuration Name="Profile_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
@@ -55,8 +55,7 @@
         <Preprocessor Value="__orxPROFILER__"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -66,6 +65,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
@@ -86,15 +86,14 @@
     </Configuration>
     <Configuration Name="Release_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m64;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m64;-L/usr/lib64;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m64;-L/usr/lib64;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -104,6 +103,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
@@ -124,7 +124,7 @@
     </Configuration>
     <Configuration Name="Debug_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m32;-fno-exceptions;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
@@ -132,8 +132,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -143,6 +142,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
@@ -163,7 +163,7 @@
     </Configuration>
     <Configuration Name="Profile_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
@@ -171,8 +171,7 @@
         <Preprocessor Value="__orxPROFILER__"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -182,6 +181,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>
@@ -202,15 +202,14 @@
     </Configuration>
     <Configuration Name="Release_x32" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxfontgen" IntermediateDirectory="$(ConfigurationName)" Command="./orxfontgen" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-m32;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings;-mfix-and-continue">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../../code/include"/>
         <IncludePath Value="../../../../../extern/stb_image"/>
         <IncludePath Value="../../../../../extern/freetype-2.4.1/include"/>
         <Preprocessor Value="__orxSTATIC__"/>
       </Compiler>
-      <Linker Required="yes" Options="-m32;-L/usr/lib32;-isysroot /Developer/SDKs/MacOSX10.6.sdk;-mmacosx-version-min=10.6;-dead_strip">
-        <LibraryPath Value="../../../lib" />
+      <Linker Required="yes" Options="-m32;-L/usr/lib32;-mmacosx-version-min=10.6;-dead_strip">
         <LibraryPath Value="../../../../../code/lib/dynamic" />
         <LibraryPath Value="../../../../../extern/freetype-2.4.1/lib/mac" />
         <LibraryPath Value="." />
@@ -220,6 +219,7 @@
         <Library Value="AppKit" />
         <Library Value="OpenGL" />
         <Library Value="z" />
+        <Library Value="pthread" />
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PostBuild>

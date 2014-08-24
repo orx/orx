@@ -19,7 +19,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -31,10 +30,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -44,6 +41,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -64,7 +62,6 @@
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -76,10 +73,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -89,6 +84,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -108,7 +104,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -120,10 +115,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -133,6 +126,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -151,7 +145,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -164,10 +157,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -177,6 +168,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -197,7 +189,6 @@
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -210,10 +201,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -223,6 +212,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
@@ -242,7 +232,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxSTATIC__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -255,10 +244,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../../code/lib/dynamic" />
 					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
 					<Add directory="." />
@@ -268,6 +255,7 @@
 					<Add library="AppKit" />
 					<Add library="OpenGL" />
 					<Add library="z" />
+					<Add library="pthread" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
