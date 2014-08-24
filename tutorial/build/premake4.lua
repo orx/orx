@@ -122,9 +122,12 @@ solution "Tutorial"
         "../../code/include"
     }
 
+    configuration{"not macosx"}
+        libdirs{"../lib"}
+    configuration{}
+
     libdirs
     {
-        "../lib",
         "../../code/lib/dynamic"
     }
 
@@ -183,7 +186,6 @@ solution "Tutorial"
     configuration {"macosx"}
         buildoptions
         {
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-gdwarf-2",
             "-Wno-write-strings"
@@ -195,7 +197,6 @@ solution "Tutorial"
         }
         linkoptions
         {
-            "-isysroot /Developer/SDKs/MacOSX10.6.sdk",
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }

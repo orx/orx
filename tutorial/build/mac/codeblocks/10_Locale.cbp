@@ -18,7 +18,6 @@
 					<Add option="-m64" />
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -28,10 +27,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orxd" />
@@ -53,7 +50,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -63,10 +59,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orxp" />
@@ -87,7 +81,6 @@
 					<Add option="-m64" />
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -97,10 +90,8 @@
 				<Linker>
 					<Add option="-m64" />
 					<Add option="-L/usr/lib64" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orx" />
@@ -120,7 +111,6 @@
 					<Add option="-m32" />
 					<Add option="-fno-exceptions" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -131,10 +121,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orxd" />
@@ -156,7 +144,6 @@
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
 					<Add option="-D__orxPROFILER__" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -167,10 +154,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orxp" />
@@ -191,7 +176,6 @@
 					<Add option="-m32" />
 					<Add option="-fno-exceptions" />
 					<Add option="-fno-rtti" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-gdwarf-2" />
 					<Add option="-Wno-write-strings" />
@@ -202,10 +186,8 @@
 				<Linker>
 					<Add option="-m32" />
 					<Add option="-L/usr/lib32" />
-					<Add option="-isysroot /Developer/SDKs/MacOSX10.6.sdk" />
 					<Add option="-mmacosx-version-min=10.6" />
 					<Add option="-dead_strip" />
-					<Add directory="../../../lib" />
 					<Add directory="../../../../code/lib/dynamic" />
 					<Add directory="." />
 					<Add library="orx" />
