@@ -123,7 +123,7 @@ Here is a list with a small description for each package.
     - codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
     - GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
     - vs2008 & vs2010 (Windows Visual Studio, all versions)
-    - xcode (3.2+, for MacOS X, non-static versions; 4.2 for iOS, static embedded versions)
+    - xcode (3.2+, for MacOS X, non-static versions; SDK 7.1 for iOS, static embedded versions)
     - ndk build files for Android (static embedded versions)
 NB: You'll need orx-extern-1.6rc0.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
 - orx-extern-1.6rc0.zip: orx's external dependencies. You will *only NEED* these if you
