@@ -489,8 +489,7 @@ project "orxLIB"
         }
 
     configuration{"macosx"}
-        buildoptions{"-Wno-deprecated-declarations"}
-
+        buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
 
     configuration {"macosx", "*Debug*"}
         linkoptions {"-install_name @executable_path/liborxd.dylib"}
