@@ -11,6 +11,8 @@ platformlist = [
     'tutovs2008',
     'vs2010',
     'tutovs2010',
+    'vs2012',
+    'tutovs2012',
     'mingw',
     'tutomingw',
     'mac',
@@ -252,6 +254,7 @@ codefolderinfolist = [
     {'src': 'build/mac/gmake',                                          'dst': None},
     {'src': 'build/windows/vs2008',                                     'dst': None},
     {'src': 'build/windows/vs2010',                                     'dst': None},
+    {'src': 'build/windows/vs2012',                                     'dst': None},
     {'src': 'build/windows/codeblocks',                                 'dst': None},
     {'src': 'build/windows/codelite',                                   'dst': None},
     {'src': 'build/windows/gmake',                                      'dst': None},
@@ -296,9 +299,25 @@ platforminfolist = {
         'folderinfolist':   devfolderinfolist
     },
 
+    'vs2012': {
+        'foldername':       'dev-vs2012',
+        'filename':         'dev-vs2012',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
     'tutovs2010': {
         'foldername':       'tutorial-vs2010',
         'filename':         'tutorial-vs2010',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutovs2012': {
+        'foldername':       'tutorial-vs2012',
+        'filename':         'tutorial-vs2012',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
