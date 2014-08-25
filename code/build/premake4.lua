@@ -82,8 +82,7 @@ function initplatforms ()
     elseif os.is ("macosx") then
         return
         {
-            "Universal64",
-            "Universal32"
+            "Universal"
         }
     end
 end
