@@ -31,7 +31,7 @@ Files
 -----
 
     /dev-ios
-      /build/mac/xcode                  - XCode project file for both orx and the iOS demo
+      /build/ios/xcode                  - XCode project file for both orx and the iOS demo
       /demo                             - Source, config and data files for the iOS demo
       /include                          - Include files
       /lib/static/ios                   - Folder where the static orx library is built
@@ -52,7 +52,7 @@ Files
 HowTo
 -----
 
-If you're not familiar with orx you can start by opening the XCode project in `/dev-ios/build/mac/xcode`.  
+If you're not familiar with orx you can start by opening the XCode project in `/dev-ios/build/ios/xcode`.  
 This project contains both orx library and a small iOS-oriented demo.
 
 The demo uses iOS's accelerometer (using orx's joystick module) and iOS's touch system (using orx's mouse module).

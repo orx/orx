@@ -116,7 +116,7 @@ tutorialmacfileinfolist = [
     {'src': '../tutorial/build/mac/codelite/*.workspace',               'dst': 'build/mac/codelite'},
     {'src': '../tutorial/build/mac/gmake/*.make',                       'dst': 'build/mac/gmake'},
     {'src': '../tutorial/build/mac/gmake/Makefile',                     'dst': 'build/mac/gmake'},
-    {'src': '../tutorial/build/mac/xcode/Tutorial.xcodeproj/*.pbxproj', 'dst': 'build/mac/xcode/Tutorial.xcodeproj'}
+    {'src': '../tutorial/build/mac/xcode4/Tutorial.xcodeproj/*.pbxproj','dst': 'build/mac/xcode4/Tutorial.xcodeproj'}
 ]
 
 linuxfileinfolist = devfileinfolist + [
@@ -136,7 +136,7 @@ tutoriallinuxfileinfolist = [
 iosfileinfolist = devfileinfolist + [
     {'src': '../extern/Box2D_2.1.3/License.txt',                        'dst': None},
     {'src': '../liborx-fat-*',                                          'dst': None},
-    {'src': 'build/mac/xcode/Info.plist',                               'dst': None},
+    {'src': 'build/ios/xcode/Info.plist',                               'dst': None},
     {'src': 'demo/iOS/ReadMe-iOS.html',                                 'dst': '..'}
 ]
 
@@ -191,7 +191,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': '../extern/Box2D_2.1.3/src',                                'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None},
-    {'src': 'build/mac/xcode/orx-ios.xcodeproj',                        'dst': None},
+    {'src': 'build/ios/xcode/orx-ios.xcodeproj',                        'dst': None},
     {'src': 'demo/iOS',                                                 'dst': None},
     {'src': 'plugins/Display/iOS',                                      'dst': None},
     {'src': 'plugins/Joystick/iOS',                                     'dst': None},
@@ -248,7 +248,7 @@ codefolderinfolist = [
     {'src': '../tools',                                                 'dst': None},
     {'src': 'bin',                                                      'dst': None},
     {'src': 'build/linux',                                              'dst': None},
-    {'src': 'build/mac/xcode/orx-embedded.xcodeproj',                   'dst': None},
+    {'src': 'build/mac/xcode4/orx-embedded.xcodeproj',                  'dst': None},
     {'src': 'build/mac/codeblocks',                                     'dst': None},
     {'src': 'build/mac/codelite',                                       'dst': None},
     {'src': 'build/mac/gmake',                                          'dst': None},
