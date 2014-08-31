@@ -4663,6 +4663,37 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   return bResult;
 }
 
+/** Is this value random? (ie. using '~' character, within or without a list)
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsRandomValue(const orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Has random flag? */
+    if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
