@@ -60,6 +60,12 @@
 #define orxSPAWNER_KU32_FLAG_WAVE_MODE            0x80000000  /**< Wave mode flag */
 #define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x01000000  /**< Speed flag */
 
+#define orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED  0x00100000  /**< Random object speed flag */
+#define orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE     0x00200000  /**< Random wave size flag */
+#define orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY    0x00400000  /**< Random wave delay flag */
+
+#define orxSPAWNER_KU32_MASK_RANDOM_ALL           0x00700000  /**< Random all mask */
+
 #define orxSPAWNER_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
 
@@ -139,6 +145,9 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     orxVECTOR vValue;
     orxU32    u32Value;
 
+    /* Clears its random status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_MASK_RANDOM_ALL);
+
     /* Pushes its config section */
     orxConfig_PushSection(_pstSpawner->zReference);
 
@@ -197,8 +206,22 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     /* Sets wave size */
     orxSpawner_SetWaveSize(_pstSpawner, orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE));
 
+    /* Has list/random value? */
+    if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) != orxFALSE))
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE, orxSPAWNER_KU32_FLAG_NONE);
+    }
+
     /* Sets wave delay */
     orxSpawner_SetWaveDelay(_pstSpawner, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY));
+
+    /* Has list/random value? */
+    if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) != orxFALSE))
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY, orxSPAWNER_KU32_FLAG_NONE);
+    }
 
     /* Has a position? */
     if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
@@ -256,6 +279,13 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
       {
         /* Updates status */
         orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
+      /* Has list/random value? */
+      if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE))
+      {
+        /* Updates status */
+        orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
       }
     }
 
@@ -1158,6 +1188,9 @@ orxSTATUS orxFASTCALL orxSpawner_SetWaveSize(orxSPAWNER *_pstSpawner, orxU32 _u3
     orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_WAVE_MODE);
   }
 
+  /* Clears random status */
+  orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE);
+
   /* Done! */
   return eResult;
 }
@@ -1189,6 +1222,9 @@ orxSTATUS orxFASTCALL orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT 
     /* Updates status */
     orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_WAVE_MODE);
   }
+
+  /* Clears random status */
+  orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY);
 
   /* Done! */
   return eResult;
@@ -1278,6 +1314,9 @@ orxSTATUS orxFASTCALL orxSpawner_SetObjectSpeed(orxSPAWNER *_pstSpawner, const o
     /* Updates status */
     orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_OBJECT_SPEED);
   }
+
+  /* Clears random status */
+  orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED);
 
   /* Done! */
   return eResult;
@@ -1426,6 +1465,13 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Should apply speed? */
         if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED))
         {
+          /* Use random speed? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED))
+          {
+            /* Updates its value */
+            orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(_pstSpawner->vSpeed));
+          }
+
           /* Use relative speed? */
           if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED))
           {
@@ -1448,6 +1494,20 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
       }
+    }
+
+    /* Should update wave size? */
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE))
+    {
+      /* Stores it */
+      _pstSpawner->u32WaveSize = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE);
+    }
+
+    /* Should update wave delay? */
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY))
+    {
+      /* Stores it */
+      _pstSpawner->fWaveDelay = orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY);
     }
 
     /* Pops previous section */
