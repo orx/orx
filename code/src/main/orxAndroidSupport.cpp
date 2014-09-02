@@ -163,7 +163,7 @@ void orxAndroid_JNI_SetupThread(void) {
 }
 
 // Library init
-extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
+extern "C" jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     JNIEnv *env;
     mJavaVM = vm;
@@ -290,7 +290,7 @@ static void orxAndroid_Exit(JNIEnv* env)
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, jobject thiz)
 {
     LOGI("nativeCreate()");
 
@@ -317,7 +317,7 @@ extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, j
 }
 
 // Start up the Orx app
-extern "C" void Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject thiz, jobject fragment)
+extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject thiz, jobject fragment)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     orxAndroid_Init(env, fragment);
@@ -332,7 +332,7 @@ extern "C" void Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject
 }
 
 // Keydown
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode, jint unicode)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobject thiz, jint keycode, jint unicode)
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
@@ -350,7 +350,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env, jobjec
 }
 
 // Keyup
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject thiz, jint keycode)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject thiz, jint keycode)
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
@@ -367,17 +367,17 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, jobject 
 }
 
 // Touch
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch(
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnTouch(
                                     JNIEnv* env, jobject thiz,
                                     jint touch_device_id_in, jint pointer_finger_id_in,
-                                    jint action, jfloat x, jfloat y, jfloat p)
+                                    jint action, jint x, jint y, jint p)
 {
     orxANDROID_TOUCH_EVENT stTouchEvent;
 
     stTouchEvent.u32ID = pointer_finger_id_in;
     stTouchEvent.u32Action = action;
-    stTouchEvent.fX = x;
-    stTouchEvent.fY = y;
+    stTouchEvent.fX = orx2F(x);
+    stTouchEvent.fY = orx2F(y);
 
     if(sstAndroid.pipeTouchEvent[1] != -1)
     {
@@ -389,38 +389,38 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnTouch(
 }
 
 // Quit
-extern "C" void Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
 {    
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnPause(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnPause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
 
 // SurfaceDestroyed
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_SURFACE_DESTROYED);
 }
 
 // SurfaceCreated
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
 {
   sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
   app_write_cmd(APP_CMD_SURFACE_CREATED);
 }
 
 // SurfaceChanged
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jint width, jint height)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env, jobject thiz, jint width, jint height)
 {
   sstAndroid.u32SurfaceWidth = width;
   sstAndroid.u32SurfaceHeight = height;
@@ -428,7 +428,7 @@ extern "C" void Java_org_orx_lib_OrxActivity_nativeOnSurfaceChanged(JNIEnv* env,
 }
 
 // Focus gained / lost
-extern "C" void Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv* env, jobject thiz, jboolean hasFocus)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv* env, jobject thiz, jboolean hasFocus)
 {
   if(hasFocus == JNI_TRUE)
   {
