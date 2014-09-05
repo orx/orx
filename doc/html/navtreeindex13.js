@@ -1,5 +1,6 @@
 var NAVTREEINDEX13 =
 {
+"orx_display_8h.html#gac7c00862a44ea6807d9cb3ae2daed091":[3,0,0,4,0,19],
 "orx_display_8h.html#gacfe7630f589a37750b8a64611b5fcedc":[3,0,0,4,0,40],
 "orx_display_8h.html#gad115c2a3c5a27410cc1509bb100bf44c":[3,0,0,4,0,52],
 "orx_display_8h.html#gad49f19c1e34d7dc1e535cfbede0d967c":[3,0,0,4,0,47],
@@ -23,8 +24,9 @@ var NAVTREEINDEX13 =
 "orx_display_8h.html#gga06d1a571694db550938b75f1c66cd331ad3caa8b13c52378a4e39235285f82be1":[3,0,0,4,0,28,0],
 "orx_display_8h.html#gga06d1a571694db550938b75f1c66cd331ad951083cb25c45a525052b1a3c180528":[3,0,0,4,0,28,4],
 "orx_display_8h.html#gga06d1a571694db550938b75f1c66cd331afb3f9ebd6c222fb730dde752f4245dc2":[3,0,0,4,0,28,2],
-"orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb":[3,0,0,4,0,27,2],
-"orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b":[3,0,0,4,0,27,1],
+"orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb":[3,0,0,4,0,27,3],
+"orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567":[3,0,0,4,0,27,1],
+"orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b":[3,0,0,4,0,27,2],
 "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4aee50ab60b03798af8d1529d9684ff464":[3,0,0,4,0,27,0],
 "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820":[3,0,0,4,0,26,5],
 "orx_display_8h.html#ggad54faad16cd6fe98b24adbdde00137fca109031a2954c14e60394b49532675c84":[3,0,0,4,0,26,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX13 =
 "orx_graphic_8h.html#ga1fc18c9f41311d6dd18130932866e5f5":[3,0,0,4,2,42],
 "orx_graphic_8h.html#ga23f4eb005f820bf37f464ea9e21c0f9e":[3,0,0,4,2,16],
 "orx_graphic_8h.html#ga2ff28e37c696cded16d31036b708e934":[3,0,0,4,2,41],
-"orx_graphic_8h.html#ga3041630773c0c6ed4763b48e94b15f15":[3,0,0,4,2,29],
-"orx_graphic_8h.html#ga325d3601ce4f74e9bb0a3941e2403dbc":[3,0,0,4,2,32],
-"orx_graphic_8h.html#ga38722ec651bca62ed02231a8e1e9172d":[3,0,0,4,2,34]
+"orx_graphic_8h.html#ga3041630773c0c6ed4763b48e94b15f15":[3,0,0,4,2,29]
 };

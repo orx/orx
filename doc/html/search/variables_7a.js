@@ -10,7 +10,7 @@ var searchData=
   ['zfxname',['zFXName',['../structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html#aa3c1bc570b695781bc7485a4e3fcf742',1,'orxFX_EVENT_PAYLOAD']]],
   ['zinputname',['zInputName',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a08e6a0ce11c5a30a3ff68e18cefec922',1,'orxINPUT_EVENT_PAYLOAD']]],
   ['zlanguage',['zLanguage',['../structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a2cab91ef5f11b24ec11821841093ed51',1,'orxLOCALE_EVENT_PAYLOAD']]],
-  ['zlocation',['zLocation',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a820a5364548a39a718d68679bfe3e02a',1,'orxRESOURCE_EVENT_PAYLOAD']]],
+  ['zlocation',['zLocation',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a820a5364548a39a718d68679bfe3e02a',1,'orxRESOURCE_EVENT_PAYLOAD::zLocation()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f',1,'orxDISPLAY_EVENT_PAYLOAD::zLocation()']]],
   ['zlongdesc',['zLongDesc',['../structorx_p_a_r_a_m.html#ac750616434df3255fc2de999eaa933db',1,'orxPARAM']]],
   ['zlongname',['zLongName',['../structorx_p_a_r_a_m.html#a893320c84b8e76fb0cf8613f702500ab',1,'orxPARAM']]],
   ['zname',['zName',['../structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html#aeb528ada0c79bd7bf197d0a0765e25ba',1,'orxANIM_CUSTOM_EVENT::zName()'],['../structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79',1,'orxCOMMAND_VAR_DEF::zName()'],['../structorx_f_i_l_e___i_n_f_o.html#ae6d272aa5102c9ad888cc679c43af7e4',1,'orxFILE_INFO::zName()'],['../structorx_s_h_a_d_e_r___p_a_r_a_m.html#ad949bc322551e4f65ae08dc9b37fc7e1',1,'orxSHADER_PARAM::zName()']]],

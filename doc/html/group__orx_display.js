@@ -18,14 +18,18 @@ var group__orx_display =
     ] ],
     [ "orxDISPLAY_EVENT_PAYLOAD", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html", [
       [ "bFullScreen", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#abb131f973635560a61e36ba54309a389", null ],
+      [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a12b4e23b41ae3571aa9fcdb15d002a67", null ],
+      [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#ac541323775fa1acad0f1ee6a16cf321a", null ],
       [ "u32Depth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a83b0b72b22599076d557733a1ce4649a", null ],
       [ "u32Height", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3", null ],
+      [ "u32ID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a61c2eddbf4069fd19a1b8ab665d348d5", null ],
       [ "u32PreviousDepth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a680f22e8d18e09ca63319d563c295242", null ],
       [ "u32PreviousHeight", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a80c983b650878822e3c0919ffe75ad54", null ],
       [ "u32PreviousRefreshRate", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a", null ],
       [ "u32PreviousWidth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a09e8ddcd607dceacf8021000c0e857b4", null ],
       [ "u32RefreshRate", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a7911b5fd6b34107c04ea9c7d8313df3f", null ],
-      [ "u32Width", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d", null ]
+      [ "u32Width", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d", null ],
+      [ "zLocation", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f", null ]
     ] ],
     [ "orxDISPLAY_TRANSFORM", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html", [
       [ "fDstX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a54b8a1dee3c659bf3abdfff81b78bb75", null ],
@@ -94,6 +98,7 @@ var group__orx_display =
     ] ],
     [ "orxDISPLAY_EVENT", "group__orx_display.html#ga28840e9c6ef7b5e7eaf61f0108e806a4", [
       [ "orxDISPLAY_EVENT_SET_VIDEO_MODE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4aee50ab60b03798af8d1529d9684ff464", null ],
+      [ "orxDISPLAY_EVENT_LOAD_BITMAP", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567", null ],
       [ "orxDISPLAY_EVENT_NUMBER", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
     ] ],

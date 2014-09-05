@@ -36,6 +36,7 @@ var orx_display_8h =
     ] ],
     [ "orxDISPLAY_EVENT", "orx_display_8h.html#ga28840e9c6ef7b5e7eaf61f0108e806a4", [
       [ "orxDISPLAY_EVENT_SET_VIDEO_MODE", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4aee50ab60b03798af8d1529d9684ff464", null ],
+      [ "orxDISPLAY_EVENT_LOAD_BITMAP", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567", null ],
       [ "orxDISPLAY_EVENT_NUMBER", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
     ] ],

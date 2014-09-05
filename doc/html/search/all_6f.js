@@ -596,6 +596,7 @@ var searchData=
   ['orxdisplay_5fdrawpolyline',['orxDisplay_DrawPolyline',['../group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3',1,'orxDisplay.h']]],
   ['orxdisplay_5fenablevsync',['orxDisplay_EnableVSync',['../group__orx_display.html#gaf463e1f2aa57d66db163d6306bfe433a',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent',['orxDISPLAY_EVENT',['../group__orx_display.html#ga28840e9c6ef7b5e7eaf61f0108e806a4',1,'orxDisplay.h']]],
+  ['orxdisplay_5fevent_5fload_5fbitmap',['orxDISPLAY_EVENT_LOAD_BITMAP',['../group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent_5fnone',['orxDISPLAY_EVENT_NONE',['../group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent_5fnumber',['orxDISPLAY_EVENT_NUMBER',['../group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent_5fpayload',['orxDISPLAY_EVENT_PAYLOAD',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
