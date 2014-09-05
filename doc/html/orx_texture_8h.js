@@ -7,6 +7,7 @@ var orx_texture_8h =
     [ "orxTEXTURE_EVENT", "orx_texture_8h.html#gaf4b625f49855b667995b2ed8b9887a75", [
       [ "orxTEXTURE_EVENT_CREATE", "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678", null ],
       [ "orxTEXTURE_EVENT_DELETE", "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809", null ],
+      [ "orxTEXTURE_EVENT_LOAD", "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a9d0f73d4e88d3664f1f3fb8657ba38cc", null ],
       [ "orxTEXTURE_EVENT_NUMBER", "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9", null ],
       [ "orxTEXTURE_EVENT_NONE", "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29", null ]
     ] ],

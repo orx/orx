@@ -1,5 +1,6 @@
 var NAVTREEINDEX20 =
 {
+"orx_structure_8h.html#ga796d7432fb8b158eac03b6d6aea5f6fa":[3,0,0,9,5,30],
 "orx_structure_8h.html#ga82035ca088171d0ae9999da3f05b5d4c":[3,0,0,9,5,58],
 "orx_structure_8h.html#ga862d22374bae77072677d56b7f74d80d":[3,0,0,9,5,52],
 "orx_structure_8h.html#ga87797b60466b73e0eb66e8f998c19e09":[3,0,0,9,5,7],
@@ -118,10 +119,11 @@ var NAVTREEINDEX20 =
 "orx_texture_8h.html#gad52d9b8f91ea1f394474e077a34fd04a":[3,0,0,4,5,17],
 "orx_texture_8h.html#gaf2c3fbc73fb52abcf479cb8b76cc4299":[3,0,0,4,5,13],
 "orx_texture_8h.html#gaf4b625f49855b667995b2ed8b9887a75":[3,0,0,4,5,4],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9":[3,0,0,4,5,4,2],
+"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9":[3,0,0,4,5,4,3],
 "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809":[3,0,0,4,5,4,1],
 "orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678":[3,0,0,4,5,4,0],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29":[3,0,0,4,5,4,3],
+"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a9d0f73d4e88d3664f1f3fb8657ba38cc":[3,0,0,4,5,4,2],
+"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29":[3,0,0,4,5,4,4],
 "orx_texture_8h_source.html":[3,0,0,4,5],
 "orx_thread_8h.html":[3,0,0,2,8],
 "orx_thread_8h.html#ga01cb3684e738f61dfcc6e9d11e871bd2":[3,0,0,2,8,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX20 =
 "orx_vector_8h.html#ga7f793888572a06e5ff09e1e0862db134":[3,0,0,7,3,21],
 "orx_vector_8h.html#ga8412bc334ebe4bda4593b25309d5f022":[3,0,0,7,3,7],
 "orx_vector_8h.html#ga862ea8f52930a245fc06bcb894fdbf48":[3,0,0,7,3,23],
-"orx_vector_8h.html#ga8b01c25bb39320c77bbbf2ea17e53121":[3,0,0,7,3,36],
-"orx_vector_8h.html#ga8b7585ad45338d8594c88885a14e57fa":[3,0,0,7,3,16],
-"orx_vector_8h.html#ga9412b01bd07f9397b8239c477848e606":[3,0,0,7,3,27]
+"orx_vector_8h.html#ga8b01c25bb39320c77bbbf2ea17e53121":[3,0,0,7,3,36]
 };
