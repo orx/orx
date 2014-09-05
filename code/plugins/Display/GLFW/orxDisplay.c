@@ -744,9 +744,10 @@ static int orxDisplay_GLFW_EOFSTBICallback(void *_hResource)
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pContext)
 {
-  orxDISPLAY_LOAD_INFO *pstInfo;
-  orxU32                i;
-  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+  orxDISPLAY_EVENT_PAYLOAD  stPayload;
+  orxDISPLAY_LOAD_INFO     *pstInfo;
+  orxU32                    i;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
@@ -811,6 +812,13 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
 
   /* Frees load info */
   orxMemory_Free(pstInfo);
+
+  /* Inits payload */
+  stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
+  stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
+
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
 
   /* Done! */
   return eResult;
@@ -3482,15 +3490,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-      stPayload.u32Width                = (orxU32)iWidth;
-      stPayload.u32Height               = (orxU32)iHeight;
-      stPayload.u32Depth                = (orxU32)iDepth;
-      stPayload.u32RefreshRate          = (orxU32)iRefreshRate;
-      stPayload.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
-      stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
-      stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
-      stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-      stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
+      stPayload.stVideoMode.u32Width                = (orxU32)iWidth;
+      stPayload.stVideoMode.u32Height               = (orxU32)iHeight;
+      stPayload.stVideoMode.u32Depth                = (orxU32)iDepth;
+      stPayload.stVideoMode.u32RefreshRate          = (orxU32)iRefreshRate;
+      stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
+      stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
+      stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
+      stPayload.stVideoMode.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
+      stPayload.stVideoMode.bFullScreen             = _pstVideoMode->bFullScreen;
 
       /* Ignores resize event for now */
       sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
@@ -3712,15 +3720,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-        stPayload.u32Width                = (orxU32)iWidth;
-        stPayload.u32Height               = (orxU32)iHeight;
-        stPayload.u32Depth                = (orxU32)iDepth;
-        stPayload.u32RefreshRate          = (orxU32)iRefreshRate;
-        stPayload.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
-        stPayload.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
-        stPayload.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
-        stPayload.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
-        stPayload.bFullScreen             = _pstVideoMode->bFullScreen;
+        stPayload.stVideoMode.u32Width                = (orxU32)iWidth;
+        stPayload.stVideoMode.u32Height               = (orxU32)iHeight;
+        stPayload.stVideoMode.u32Depth                = (orxU32)iDepth;
+        stPayload.stVideoMode.u32RefreshRate          = (orxU32)iRefreshRate;
+        stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
+        stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
+        stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
+        stPayload.stVideoMode.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
+        stPayload.stVideoMode.bFullScreen             = _pstVideoMode->bFullScreen;
 
         /* Inits extensions */
         orxDisplay_GLFW_InitExtensions();

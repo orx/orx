@@ -160,8 +160,8 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Gets new width & height ratios */
-      fWidthRatio   = orxU2F(pstPayload->u32Width) / orxU2F(pstPayload->u32PreviousWidth);
-      fHeightRatio  = orxU2F(pstPayload->u32Height) / orxU2F(pstPayload->u32PreviousHeight);
+      fWidthRatio   = orxU2F(pstPayload->stVideoMode.u32Width) / orxU2F(pstPayload->stVideoMode.u32PreviousWidth);
+      fHeightRatio  = orxU2F(pstPayload->stVideoMode.u32Height) / orxU2F(pstPayload->stVideoMode.u32PreviousHeight);
 
       /* Changed? */
       if((fWidthRatio != orxFLOAT_1) || (fHeightRatio != orxFLOAT_1))

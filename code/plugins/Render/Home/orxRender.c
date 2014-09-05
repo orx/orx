@@ -2291,7 +2291,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Inits console */
-        orxRender_Home_InitConsole(orxU2F(pstPayload->u32Width), orxU2F(pstPayload->u32Height));
+        orxRender_Home_InitConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
       }
 
       break;

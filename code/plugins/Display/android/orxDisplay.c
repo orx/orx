@@ -785,9 +785,10 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
 
 static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_pContext)
 {
-  orxDISPLAY_LOAD_INFO *pstInfo;
-  orxU32                i;
-  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+  orxDISPLAY_EVENT_PAYLOAD  stPayload;
+  orxDISPLAY_LOAD_INFO     *pstInfo;
+  orxU32                    i;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
@@ -852,6 +853,13 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
 
   /* Frees load info */
   orxMemory_Free(pstInfo);
+
+  /* Inits payload */
+  stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
+  stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
+
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
 
   /* Done! */
   return eResult;

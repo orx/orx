@@ -206,6 +206,7 @@ typedef struct __orxCOLOR_t
 typedef enum __orxDISPLAY_EVENT_t
 {
   orxDISPLAY_EVENT_SET_VIDEO_MODE = 0,
+  orxDISPLAY_EVENT_LOAD_BITMAP,
 
   orxDISPLAY_EVENT_NUMBER,
 
@@ -217,15 +218,29 @@ typedef enum __orxDISPLAY_EVENT_t
  */
 typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 {
-  orxU32  u32Width;                                     /**< Screen width : 4 */
-  orxU32  u32Height;                                    /**< Screen height : 8 */
-  orxU32  u32Depth;                                     /**< Screen depth : 12 */
-  orxU32  u32RefreshRate;                               /**< Refresh rate: 16 */
-  orxU32  u32PreviousWidth;                             /**< Previous screen width : 20 */
-  orxU32  u32PreviousHeight;                            /**< Previous screen height : 24 */
-  orxU32  u32PreviousDepth;                             /**< Previous screen depth : 28 */
-  orxU32  u32PreviousRefreshRate;                       /**< Previous refresh rate : 32 */
-  orxBOOL bFullScreen;                                  /**< FullScreen? : 36 */
+  union
+  {
+    struct
+    {
+      orxU32  u32Width;                                     /**< Screen width : 4 */
+      orxU32  u32Height;                                    /**< Screen height : 8 */
+      orxU32  u32Depth;                                     /**< Screen depth : 12 */
+      orxU32  u32RefreshRate;                               /**< Refresh rate: 16 */
+      orxU32  u32PreviousWidth;                             /**< Previous screen width : 20 */
+      orxU32  u32PreviousHeight;                            /**< Previous screen height : 24 */
+      orxU32  u32PreviousDepth;                             /**< Previous screen depth : 28 */
+      orxU32  u32PreviousRefreshRate;                       /**< Previous refresh rate : 32 */
+      orxBOOL bFullScreen;                                  /**< FullScreen? : 36 */
+
+    } stVideoMode;
+
+    struct
+    {
+      const orxSTRING zLocation;                            /**< File location : 40 */
+      orxU32          u32ID;                                /**< Bitmap ID : 44 */
+
+    } stBitmap;
+  };
 
 } orxDISPLAY_EVENT_PAYLOAD;
 
@@ -844,7 +859,7 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_CreateBitmap(or
 extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
 
 
-/** Loads a bitmap from file
+/** Loads a bitmap from file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not)
  * @param[in]   _zFileName                            Name of the file to load
  * @return orxBITMAP * / orxNULL
  */
