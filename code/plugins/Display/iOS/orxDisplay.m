@@ -4214,10 +4214,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-        stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
-        stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
-        stPayload.u32Depth    = 32;
-        stPayload.bFullScreen = orxTRUE;
+        stPayload.stVideoMode.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+        stPayload.stVideoMode.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+        stPayload.stVideoMode.u32Depth    = 32;
+        stPayload.stVideoMode.bFullScreen = orxTRUE;
 
         /* Sends it */
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);

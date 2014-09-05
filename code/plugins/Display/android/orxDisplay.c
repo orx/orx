@@ -3494,26 +3494,26 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-    stPayload.u32Depth                = sstDisplay.u32Depth;
-    stPayload.u32RefreshRate          = 60;
-    stPayload.u32PreviousWidth        = sstDisplay.u32SurfaceWidth;
-    stPayload.u32PreviousHeight       = sstDisplay.u32SurfaceHeight;
-    stPayload.u32PreviousDepth        = sstDisplay.u32Depth;
-    stPayload.u32PreviousRefreshRate  = 60;
-    stPayload.bFullScreen             = orxTRUE;
-    stPayload.u32Width                = pstSurfaceChangedEvent->u32Width;
-    stPayload.u32Height               = pstSurfaceChangedEvent->u32Height;
+    stPayload.stVideoMode.u32Depth                = sstDisplay.u32Depth;
+    stPayload.stVideoMode.u32RefreshRate          = 60;
+    stPayload.stVideoMode.u32PreviousWidth        = sstDisplay.u32SurfaceWidth;
+    stPayload.stVideoMode.u32PreviousHeight       = sstDisplay.u32SurfaceHeight;
+    stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.u32Depth;
+    stPayload.stVideoMode.u32PreviousRefreshRate  = 60;
+    stPayload.stVideoMode.bFullScreen             = orxTRUE;
+    stPayload.stVideoMode.u32Width                = pstSurfaceChangedEvent->u32Width;
+    stPayload.stVideoMode.u32Height               = pstSurfaceChangedEvent->u32Height;
 
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "surface changed (%dx%d)->(%dx%d)",
-                   stPayload.u32PreviousWidth,
-                   stPayload.u32PreviousHeight,
-                   stPayload.u32Width,
-                   stPayload.u32Height);
+                   stPayload.stVideoMode.u32PreviousWidth,
+                   stPayload.stVideoMode.u32PreviousHeight,
+                   stPayload.stVideoMode.u32Width,
+                   stPayload.stVideoMode.u32Height);
 
     sstDisplay.u32SurfaceWidth = pstSurfaceChangedEvent->u32Width;
     sstDisplay.u32SurfaceHeight = pstSurfaceChangedEvent->u32Height;
 
-    if(stPayload.u32PreviousWidth != stPayload.u32Width || stPayload.u32PreviousHeight != stPayload.u32Height)
+    if(stPayload.stVideoMode.u32PreviousWidth != stPayload.stVideoMode.u32Width || stPayload.stVideoMode.u32PreviousHeight != stPayload.stVideoMode.u32Height)
     {
       sstDisplay.pstScreen->fWidth = orxU2F(sstDisplay.u32SurfaceWidth);
       sstDisplay.pstScreen->fHeight = orxU2F(sstDisplay.u32SurfaceHeight);
@@ -3779,10 +3779,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-        stPayload.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
-        stPayload.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
-        stPayload.u32Depth    = sstDisplay.u32Depth;
-        stPayload.bFullScreen = orxTRUE;
+        stPayload.stVideoMode.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
+        stPayload.stVideoMode.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
+        stPayload.stVideoMode.u32Depth    = sstDisplay.u32Depth;
+        stPayload.stVideoMode.bFullScreen = orxTRUE;
 
         /* Sends it */
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
