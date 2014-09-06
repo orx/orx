@@ -6,6 +6,129 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="Debug|Universal">
+				<Option output="../../../bin/orxfontgen" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Universal/Debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-msse2" />
+					<Add option="-ffast-math" />
+					<Add option="-g" />
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-fno-exceptions" />
+					<Add option="-D__orxDEBUG__" />
+					<Add option="-D__orxSTATIC__" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-gdwarf-2" />
+					<Add option="-Wno-write-strings" />
+					<Add directory="../../../include" />
+					<Add directory="../../../../../code/include" />
+					<Add directory="../../../../../extern/stb_image" />
+					<Add directory="../../../../../extern/freetype-2.4.1/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-dead_strip" />
+					<Add directory="../../../../../code/lib/dynamic" />
+					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
+					<Add library="orxd" />
+					<Add library="freetype" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
+					<Add library="z" />
+					<Add library="pthread" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Profile|Universal">
+				<Option output="../../../bin/orxfontgen" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Universal/Profile" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-msse2" />
+					<Add option="-ffast-math" />
+					<Add option="-g" />
+					<Add option="-O2" />
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-fno-exceptions" />
+					<Add option="-fno-rtti" />
+					<Add option="-D__orxPROFILER__" />
+					<Add option="-D__orxSTATIC__" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-gdwarf-2" />
+					<Add option="-Wno-write-strings" />
+					<Add directory="../../../include" />
+					<Add directory="../../../../../code/include" />
+					<Add directory="../../../../../extern/stb_image" />
+					<Add directory="../../../../../extern/freetype-2.4.1/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-dead_strip" />
+					<Add directory="../../../../../code/lib/dynamic" />
+					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
+					<Add library="orxp" />
+					<Add library="freetype" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
+					<Add library="z" />
+					<Add library="pthread" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release|Universal">
+				<Option output="../../../bin/orxfontgen" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Universal/Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-msse2" />
+					<Add option="-ffast-math" />
+					<Add option="-g" />
+					<Add option="-O2" />
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-fno-exceptions" />
+					<Add option="-fno-rtti" />
+					<Add option="-D__orxSTATIC__" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-gdwarf-2" />
+					<Add option="-Wno-write-strings" />
+					<Add directory="../../../include" />
+					<Add directory="../../../../../code/include" />
+					<Add directory="../../../../../extern/stb_image" />
+					<Add directory="../../../../../extern/freetype-2.4.1/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-arch i386 -arch x86_64 -arch ppc -arch ppc64" />
+					<Add option="-mmacosx-version-min=10.6" />
+					<Add option="-dead_strip" />
+					<Add directory="../../../../../code/lib/dynamic" />
+					<Add directory="../../../../../extern/freetype-2.4.1/lib/mac" />
+					<Add directory="." />
+					<Add library="orx" />
+					<Add library="freetype" />
+					<Add library="Foundation" />
+					<Add library="AppKit" />
+					<Add library="OpenGL" />
+					<Add library="z" />
+					<Add library="pthread" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)" />
+				</ExtraCommands>
+			</Target>
 			<Target title="Debug|x64">
 				<Option output="../../../bin/orxfontgen" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Debug" />

@@ -2,6 +2,15 @@
 <CodeLite_Workspace Name="orxFontGen" Database="./orxFontGen.tags">
   <Project Name="orxFontGen" Path="orxFontGen.project" Active="Yes" />
   <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug_Universal" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Debug_Universal"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Profile_Universal" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Profile_Universal"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release_Universal" Selected="yes">
+      <Project Name="orxFontGen" ConfigName="Release_Universal"/>
+    </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Debug_x64" Selected="yes">
       <Project Name="orxFontGen" ConfigName="Debug_x64"/>
     </WorkspaceConfiguration>

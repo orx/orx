@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C7323BD726A1D743D322807 /* orxCrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 5974525958522F5B2AD6651B /* orxCrypt.c */; };
-		713F7E9D29C4155D42BB3D72 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04B47B6E134B4A6A0C94605A /* Foundation.framework */; };
-		091C25043D1F6261642D5982 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A6F138D18ED046D1D352FDB /* AppKit.framework */; };
+		7C1226D76E2B0A0D0ECE14E5 /* orxCrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 66F0254E305E0DAB11FD26A8 /* orxCrypt.c */; };
+		594E322C7E442D42091556AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B67421710E00DA832AD257D /* Foundation.framework */; };
+		2A772B4E4326066A43C002CB /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2500472704253F9235226AD0 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5974525958522F5B2AD6651B /* orxCrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "orxCrypt.c"; path = "../../../src/orxCrypt.c"; sourceTree = "<group>"; };
-		04B47B6E134B4A6A0C94605A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		2A6F138D18ED046D1D352FDB /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		129458EB3DF817E4160953EF /* orxcrypt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "orxcrypt"; path = "orxcrypt"; sourceTree = BUILT_PRODUCTS_DIR; };
+		66F0254E305E0DAB11FD26A8 /* orxCrypt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "orxCrypt.c"; path = "../../../src/orxCrypt.c"; sourceTree = "<group>"; };
+		6B67421710E00DA832AD257D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		2500472704253F9235226AD0 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		3A94663F379202127DB12C2B /* orxcrypt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "orxcrypt"; path = "orxcrypt"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		35B64FFC62EF760358096D65 /* Frameworks */ = {
+		17BB7DE74B2D778B5E9334D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				713F7E9D29C4155D42BB3D72 /* Foundation.framework in Frameworks */,
-				091C25043D1F6261642D5982 /* AppKit.framework in Frameworks */,
+				594E322C7E442D42091556AD /* Foundation.framework in Frameworks */,
+				2A772B4E4326066A43C002CB /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		55F0108D32280122207B7B34 /* orxCrypt */ = {
+		0D3E6DA441992AE5229C4B00 /* orxCrypt */ = {
 			isa = PBXGroup;
 			children = (
-				406810BC5D68603823FC0F5B /* src */,
-				708745AF23AB342F26B752AF /* Frameworks */,
-				1EB268CB260544A4071245D0 /* Products */,
+				11557343714719BD716F4387 /* src */,
+				00C33EFF151E1E375BCC45D8 /* Frameworks */,
+				7D050A250A421EE90B0925BE /* Products */,
 			);
 			name = "orxCrypt";
 			sourceTree = "<group>";
 		};
-		406810BC5D68603823FC0F5B /* src */ = {
+		11557343714719BD716F4387 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				5974525958522F5B2AD6651B /* orxCrypt.c */,
+				66F0254E305E0DAB11FD26A8 /* orxCrypt.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		708745AF23AB342F26B752AF /* Frameworks */ = {
+		00C33EFF151E1E375BCC45D8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				04B47B6E134B4A6A0C94605A /* Foundation.framework */,
-				2A6F138D18ED046D1D352FDB /* AppKit.framework */,
+				6B67421710E00DA832AD257D /* Foundation.framework */,
+				2500472704253F9235226AD0 /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		1EB268CB260544A4071245D0 /* Products */ = {
+		7D050A250A421EE90B0925BE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				129458EB3DF817E4160953EF /* orxcrypt */,
+				3A94663F379202127DB12C2B /* orxcrypt */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1150455C4D6C77DA34E543EF /* orxCrypt */ = {
+		74CD6BEF489D6E5D465D28E4 /* orxCrypt */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06E728A054D051DE644F3790 /* Build configuration list for PBXNativeTarget "orxCrypt" */;
+			buildConfigurationList = 603273875A1418B13699778F /* Build configuration list for PBXNativeTarget "orxCrypt" */;
 			buildPhases = (
-				790373875B694E562DFA0D54 /* Resources */,
-				460903FF5EC21E2D313D558B /* Sources */,
-				35B64FFC62EF760358096D65 /* Frameworks */,
+				0C84587D2DF807D3519F21FD /* Resources */,
+				72AB707C74D90A28661A3C70 /* Sources */,
+				17BB7DE74B2D778B5E9334D5 /* Frameworks */,
 				9607AE3710C85E8F00CD1376 /* Postbuild */,
 			);
 			buildRules = (
@@ -86,7 +86,7 @@
 			name = "orxCrypt";
 			productInstallPath = "$(HOME)/bin";
 			productName = "orxCrypt";
-			productReference = 129458EB3DF817E4160953EF /* orxcrypt */;
+			productReference = 3A94663F379202127DB12C2B /* orxcrypt */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -97,17 +97,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxCrypt" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 55F0108D32280122207B7B34 /* orxCrypt */;
+			mainGroup = 0D3E6DA441992AE5229C4B00 /* orxCrypt */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1150455C4D6C77DA34E543EF /* orxcrypt */,
+				74CD6BEF489D6E5D465D28E4 /* orxcrypt */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		790373875B694E562DFA0D54 /* Resources */ = {
+		0C84587D2DF807D3519F21FD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -133,11 +133,11 @@
 		};
 /* End PBXShellScriptBuildPhase section */
 /* Begin PBXSourcesBuildPhase section */
-		460903FF5EC21E2D313D558B /* Sources */ = {
+		72AB707C74D90A28661A3C70 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6C7323BD726A1D743D322807 /* orxCrypt.c in Sources */,
+				7C1226D76E2B0A0D0ECE14E5 /* orxCrypt.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,7 +147,19 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		418D46572350742B4E520622 /* Debug Native 64-bit */ = {
+		2FFD3A2A4A4B240844FF0282 /* Debug Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Debug Universal";
+		};
+		003C7E4C70D67F63500333EA /* Debug Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -159,7 +171,7 @@
 			};
 			name = "Debug Native 64-bit";
 		};
-		026E246506DB295532FE6A97 /* Debug Native 32-bit */ = {
+		596069F631D113CD126A7B6A /* Debug Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -171,7 +183,19 @@
 			};
 			name = "Debug Native 32-bit";
 		};
-		25336976719D35BC6487136D /* Profile Native 64-bit */ = {
+		14A7703E2D73022B04D34D84 /* Profile Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Profile Universal";
+		};
+		4A5C157F6DC3492615B21242 /* Profile Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -183,7 +207,7 @@
 			};
 			name = "Profile Native 64-bit";
 		};
-		0EFE4F30177719A32A4143DA /* Profile Native 32-bit */ = {
+		14C877BF3ABC27F50016542B /* Profile Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -195,7 +219,19 @@
 			};
 			name = "Profile Native 32-bit";
 		};
-		503D77976182360B45FC5A7B /* Release Native 64-bit */ = {
+		52B8543F2F6D286118733E7B /* Release Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxcrypt";
+			};
+			name = "Release Universal";
+		};
+		20161B5667D302EF2CD44AB8 /* Release Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -207,7 +243,7 @@
 			};
 			name = "Release Native 64-bit";
 		};
-		10AC387075FE21A517DB302F /* Release Native 32-bit */ = {
+		660C476750490D7734FB4C38 /* Release Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -219,7 +255,51 @@
 			};
 			name = "Release Native 32-bit";
 		};
-		3F807831776939EC36C21B9B /* Debug Native 64-bit */ = {
+		65B3530108862FFC0A0A40A6 /* Debug Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxDEBUG__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/Universal/Debug";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxd",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Debug Universal";
+		};
+		7CDF3742085B1EA234AB04C7 /* Debug Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -263,7 +343,7 @@
 			};
 			name = "Debug Native 64-bit";
 		};
-		06DA7249547B6A6E12B33309 /* Debug Native 32-bit */ = {
+		1B476CD94CB943B87C365D88 /* Debug Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -308,7 +388,52 @@
 			};
 			name = "Debug Native 32-bit";
 		};
-		7F97449A0EFC455B03EA1C1C /* Profile Native 64-bit */ = {
+		24C463382DB1650275C6329A /* Profile Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxPROFILER__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/Universal/Profile";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxp",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Profile Universal";
+		};
+		6B1C0B8E54ED2010173053A9 /* Profile Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -353,7 +478,7 @@
 			};
 			name = "Profile Native 64-bit";
 		};
-		478702D052E61F240284583C /* Profile Native 32-bit */ = {
+		7A4B62F625F05377335316E9 /* Profile Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -399,7 +524,51 @@
 			};
 			name = "Profile Native 32-bit";
 		};
-		7948195E26D517A228BC73E8 /* Release Native 64-bit */ = {
+		075C3F691AE73A8E53024A51 /* Release Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+				);
+				OBJROOT = "obj/Universal/Release";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorx",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Release Universal";
+		};
+		0EA30C4525EB6DD34F8945CE /* Release Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -443,7 +612,7 @@
 			};
 			name = "Release Native 64-bit";
 		};
-		046B32A3205002BD50931540 /* Release Native 32-bit */ = {
+		0AF179F239736BEB194B3A62 /* Release Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -491,31 +660,37 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		06E728A054D051DE644F3790 /* Build configuration list for PBXNativeTarget "orxcrypt" */ = {
+		603273875A1418B13699778F /* Build configuration list for PBXNativeTarget "orxcrypt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				418D46572350742B4E520622 /* Debug Native 64-bit */,
-				026E246506DB295532FE6A97 /* Debug Native 32-bit */,
-				25336976719D35BC6487136D /* Profile Native 64-bit */,
-				0EFE4F30177719A32A4143DA /* Profile Native 32-bit */,
-				503D77976182360B45FC5A7B /* Release Native 64-bit */,
-				10AC387075FE21A517DB302F /* Release Native 32-bit */,
+				2FFD3A2A4A4B240844FF0282 /* Debug Universal */,
+				003C7E4C70D67F63500333EA /* Debug Native 64-bit */,
+				596069F631D113CD126A7B6A /* Debug Native 32-bit */,
+				14A7703E2D73022B04D34D84 /* Profile Universal */,
+				4A5C157F6DC3492615B21242 /* Profile Native 64-bit */,
+				14C877BF3ABC27F50016542B /* Profile Native 32-bit */,
+				52B8543F2F6D286118733E7B /* Release Universal */,
+				20161B5667D302EF2CD44AB8 /* Release Native 64-bit */,
+				660C476750490D7734FB4C38 /* Release Native 32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug Universal";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxCrypt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3F807831776939EC36C21B9B /* Debug Native 64-bit */,
-				06DA7249547B6A6E12B33309 /* Debug Native 32-bit */,
-				7F97449A0EFC455B03EA1C1C /* Profile Native 64-bit */,
-				478702D052E61F240284583C /* Profile Native 32-bit */,
-				7948195E26D517A228BC73E8 /* Release Native 64-bit */,
-				046B32A3205002BD50931540 /* Release Native 32-bit */,
+				65B3530108862FFC0A0A40A6 /* Debug Universal */,
+				7CDF3742085B1EA234AB04C7 /* Debug Native 64-bit */,
+				1B476CD94CB943B87C365D88 /* Debug Native 32-bit */,
+				24C463382DB1650275C6329A /* Profile Universal */,
+				6B1C0B8E54ED2010173053A9 /* Profile Native 64-bit */,
+				7A4B62F625F05377335316E9 /* Profile Native 32-bit */,
+				075C3F691AE73A8E53024A51 /* Release Universal */,
+				0EA30C4525EB6DD34F8945CE /* Release Native 64-bit */,
+				0AF179F239736BEB194B3A62 /* Release Native 32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug Universal";
 		};
 /* End XCConfigurationList section */
 

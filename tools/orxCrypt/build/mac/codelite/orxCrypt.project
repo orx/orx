@@ -6,6 +6,104 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <Settings Type="Executable">
+    <Configuration Name="Debug_Universal" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-arch i386 -arch x86_64 -arch ppc -arch ppc64;-fno-exceptions;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-arch i386 -arch x86_64 -arch ppc -arch ppc64;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
+        <Library Value="orxd" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="pthread" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Profile_Universal" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-arch i386 -arch x86_64 -arch ppc -arch ppc64;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxPROFILER__"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-arch i386 -arch x86_64 -arch ppc -arch ppc64;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
+        <Library Value="orxp" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="pthread" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Release_Universal" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-O2;-arch i386 -arch x86_64 -arch ppc -arch ppc64;-fno-exceptions;-fno-rtti;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
+        <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../../code/include"/>
+        <Preprocessor Value="__orxSTATIC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-arch i386 -arch x86_64 -arch ppc -arch ppc64;-mmacosx-version-min=10.6;-dead_strip">
+        <LibraryPath Value="../../../../../code/lib/dynamic" />
+        <LibraryPath Value="." />
+        <Library Value="orx" />
+        <Library Value="Foundation" />
+        <Library Value="AppKit" />
+        <Library Value="pthread" />
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PostBuild>
+        <Command Enabled="yes">$(shell [ -f ../../../../../code/lib/dynamic/liborx.dylib ] &amp;&amp; cp -f ../../../../../code/lib/dynamic/liborx*.dylib ../../../bin)</Command>
+      </PostBuild>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
     <Configuration Name="Debug_x64" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxcrypt" IntermediateDirectory="$(ConfigurationName)" Command="./orxcrypt" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-msse2;-ffast-math;-g;-m64;-fno-exceptions;-mmacosx-version-min=10.6;-gdwarf-2;-Wno-write-strings">
@@ -203,6 +301,12 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies name="Debug_Universal">
+  </Dependencies>
+  <Dependencies name="Profile_Universal">
+  </Dependencies>
+  <Dependencies name="Release_Universal">
+  </Dependencies>
   <Dependencies name="Debug_x64">
   </Dependencies>
   <Dependencies name="Profile_x64">

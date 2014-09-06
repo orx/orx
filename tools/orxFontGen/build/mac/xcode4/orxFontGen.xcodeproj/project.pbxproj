@@ -7,66 +7,66 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D8E76F624210A4C33F5291A /* orxFontGen.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B1032F24E25743E1B97604D /* orxFontGen.c */; };
-		13D860321E3F5E7A5B8717BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 254859FF2DC9197354176B83 /* Foundation.framework */; };
-		47D26CA573981183652B22FC /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E97A4B624941134F2A67F4 /* AppKit.framework */; };
-		470206F6343A58A81C2563AB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FE639C94C016FDF2F780CE9 /* OpenGL.framework */; };
+		61302E515F41536874C773BA /* orxFontGen.c in Sources */ = {isa = PBXBuildFile; fileRef = 4EB50C195CAA41CB10EE02F4 /* orxFontGen.c */; };
+		60511DB5707A06A6003E7624 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 581222BC15193FDD4E5336FA /* Foundation.framework */; };
+		535F3BF35C7F32083D4B1B28 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FA207AB785F2CD308113088 /* AppKit.framework */; };
+		77D830264B8400D523BD6938 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2019629216C8485212D56EAE /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2B1032F24E25743E1B97604D /* orxFontGen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "orxFontGen.c"; path = "../../../src/orxFontGen.c"; sourceTree = "<group>"; };
-		254859FF2DC9197354176B83 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		18E97A4B624941134F2A67F4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		4FE639C94C016FDF2F780CE9 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OpenGL.framework"; path = "/System/Library/Frameworks/OpenGL.framework"; sourceTree = "<absolute>"; };
-		128C5FD0687236AD18360B21 /* orxfontgen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "orxfontgen"; path = "orxfontgen"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EB50C195CAA41CB10EE02F4 /* orxFontGen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "orxFontGen.c"; path = "../../../src/orxFontGen.c"; sourceTree = "<group>"; };
+		581222BC15193FDD4E5336FA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		5FA207AB785F2CD308113088 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		2019629216C8485212D56EAE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "OpenGL.framework"; path = "/System/Library/Frameworks/OpenGL.framework"; sourceTree = "<absolute>"; };
+		3A9C01064E8858B303E82D07 /* orxfontgen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "orxfontgen"; path = "orxfontgen"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1DC37AA3691F275568973569 /* Frameworks */ = {
+		2D7B0A8E069F4E7907C55241 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13D860321E3F5E7A5B8717BD /* Foundation.framework in Frameworks */,
-				47D26CA573981183652B22FC /* AppKit.framework in Frameworks */,
-				470206F6343A58A81C2563AB /* OpenGL.framework in Frameworks */,
+				60511DB5707A06A6003E7624 /* Foundation.framework in Frameworks */,
+				535F3BF35C7F32083D4B1B28 /* AppKit.framework in Frameworks */,
+				77D830264B8400D523BD6938 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4FDE1F1B270E1F8D22902716 /* orxFontGen */ = {
+		01F0525A4DE24BD710B2266C /* orxFontGen */ = {
 			isa = PBXGroup;
 			children = (
-				40F0787619822D40461C5ECA /* src */,
-				6C3D4B864F157ABE551D7640 /* Frameworks */,
-				032308EC77734F45640F1CF0 /* Products */,
+				12F549F0563A2E61228C325C /* src */,
+				3C62494E5A03280A648216CC /* Frameworks */,
+				6C20636F2E7B4DE85BE93A62 /* Products */,
 			);
 			name = "orxFontGen";
 			sourceTree = "<group>";
 		};
-		40F0787619822D40461C5ECA /* src */ = {
+		12F549F0563A2E61228C325C /* src */ = {
 			isa = PBXGroup;
 			children = (
-				2B1032F24E25743E1B97604D /* orxFontGen.c */,
+				4EB50C195CAA41CB10EE02F4 /* orxFontGen.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		6C3D4B864F157ABE551D7640 /* Frameworks */ = {
+		3C62494E5A03280A648216CC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				254859FF2DC9197354176B83 /* Foundation.framework */,
-				18E97A4B624941134F2A67F4 /* AppKit.framework */,
-				4FE639C94C016FDF2F780CE9 /* OpenGL.framework */,
+				581222BC15193FDD4E5336FA /* Foundation.framework */,
+				5FA207AB785F2CD308113088 /* AppKit.framework */,
+				2019629216C8485212D56EAE /* OpenGL.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		032308EC77734F45640F1CF0 /* Products */ = {
+		6C20636F2E7B4DE85BE93A62 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				128C5FD0687236AD18360B21 /* orxfontgen */,
+				3A9C01064E8858B303E82D07 /* orxfontgen */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -74,13 +74,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5CA916851CEC72A2743F7960 /* orxFontGen */ = {
+		357F4890270362DE6930786C /* orxFontGen */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5F763F2E0BAF12607987300B /* Build configuration list for PBXNativeTarget "orxFontGen" */;
+			buildConfigurationList = 0DE205370CC96F831EE75C23 /* Build configuration list for PBXNativeTarget "orxFontGen" */;
 			buildPhases = (
-				5EBE438175F96F9672494C08 /* Resources */,
-				5A3970E507C87FA747B01A8C /* Sources */,
-				1DC37AA3691F275568973569 /* Frameworks */,
+				1F3A2FDC513D33C829EC7A1E /* Resources */,
+				4F9E35734BF20EB6568C1D4B /* Sources */,
+				2D7B0A8E069F4E7907C55241 /* Frameworks */,
 				9607AE3710C85E8F00CD1376 /* Postbuild */,
 			);
 			buildRules = (
@@ -90,7 +90,7 @@
 			name = "orxFontGen";
 			productInstallPath = "$(HOME)/bin";
 			productName = "orxFontGen";
-			productReference = 128C5FD0687236AD18360B21 /* orxfontgen */;
+			productReference = 3A9C01064E8858B303E82D07 /* orxfontgen */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -101,17 +101,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxFontGen" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 4FDE1F1B270E1F8D22902716 /* orxFontGen */;
+			mainGroup = 01F0525A4DE24BD710B2266C /* orxFontGen */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5CA916851CEC72A2743F7960 /* orxfontgen */,
+				357F4890270362DE6930786C /* orxfontgen */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		5EBE438175F96F9672494C08 /* Resources */ = {
+		1F3A2FDC513D33C829EC7A1E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -137,11 +137,11 @@
 		};
 /* End PBXShellScriptBuildPhase section */
 /* Begin PBXSourcesBuildPhase section */
-		5A3970E507C87FA747B01A8C /* Sources */ = {
+		4F9E35734BF20EB6568C1D4B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D8E76F624210A4C33F5291A /* orxFontGen.c in Sources */,
+				61302E515F41536874C773BA /* orxFontGen.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,7 +151,19 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		4AA541955605021E3D1B6892 /* Debug Native 64-bit */ = {
+		7BA047C625461DAF0207220B /* Debug Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxfontgen";
+			};
+			name = "Debug Universal";
+		};
+		0A226C99698675D777F26BFE /* Debug Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -163,7 +175,7 @@
 			};
 			name = "Debug Native 64-bit";
 		};
-		51263CFD25B65A49758E6605 /* Debug Native 32-bit */ = {
+		78AA04380D1B6C3A064933F1 /* Debug Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -175,7 +187,19 @@
 			};
 			name = "Debug Native 32-bit";
 		};
-		27DE10D814083AD52FE6566F /* Profile Native 64-bit */ = {
+		71AC6BC9710326F552BF3388 /* Profile Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxfontgen";
+			};
+			name = "Profile Universal";
+		};
+		43D22806307F63E95EFC7997 /* Profile Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -187,7 +211,7 @@
 			};
 			name = "Profile Native 64-bit";
 		};
-		77C9435F18206F2519332436 /* Profile Native 32-bit */ = {
+		03B516BE349416540E572150 /* Profile Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -199,7 +223,19 @@
 			};
 			name = "Profile Native 32-bit";
 		};
-		3E5F663822F26CF57948719D /* Release Native 64-bit */ = {
+		370F66DC770043AB163A7612 /* Release Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "orxfontgen";
+			};
+			name = "Release Universal";
+		};
+		37F8122A36F3286445A0474F /* Release Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -211,7 +247,7 @@
 			};
 			name = "Release Native 64-bit";
 		};
-		68AE036103C32A2D7A7E6FDD /* Release Native 32-bit */ = {
+		7327412D19710679148E0CAE /* Release Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -223,7 +259,56 @@
 			};
 			name = "Release Native 32-bit";
 		};
-		7F2F778434446CB6611626BB /* Debug Native 64-bit */ = {
+		082B64CA368C2D02767D23B8 /* Debug Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxDEBUG__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+					"../../../../../extern/stb_image",
+					"../../../../../extern/freetype-2.4.1/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+					"../../../../../extern/freetype-2.4.1/lib/mac",
+				);
+				OBJROOT = "obj/Universal/Debug";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxd",
+					"-lfreetype",
+					"-lz",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Debug Universal";
+		};
+		0D8C69393B5D610C7BA9453A /* Debug Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -272,7 +357,7 @@
 			};
 			name = "Debug Native 64-bit";
 		};
-		5F38037264A9342B0825469D /* Debug Native 32-bit */ = {
+		2B4B7A9839586D711763054A /* Debug Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -322,7 +407,57 @@
 			};
 			name = "Debug Native 32-bit";
 		};
-		289377B749272E3E0A7056D5 /* Profile Native 64-bit */ = {
+		64510D3C767841CF01E42AAC /* Profile Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxPROFILER__",
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+					"../../../../../extern/stb_image",
+					"../../../../../extern/freetype-2.4.1/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+					"../../../../../extern/freetype-2.4.1/lib/mac",
+				);
+				OBJROOT = "obj/Universal/Profile";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorxp",
+					"-lfreetype",
+					"-lz",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Profile Universal";
+		};
+		2D3C7F337EF84E231A15791B /* Profile Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -372,7 +507,7 @@
 			};
 			name = "Profile Native 64-bit";
 		};
-		63F3036D06AC28245F286FAA /* Profile Native 32-bit */ = {
+		297435B864AD54F674511AD3 /* Profile Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -423,7 +558,56 @@
 			};
 			name = "Profile Native 32-bit";
 		};
-		7B4A3CF46F6B7C70260530CD /* Release Native 64-bit */ = {
+		4286261B38A970EC48365375 /* Release Universal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__orxSTATIC__",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../include",
+					"../../../../../code/include",
+					"../../../../../extern/stb_image",
+					"../../../../../extern/freetype-2.4.1/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"../../../../../code/lib/dynamic",
+					"../../../../../extern/freetype-2.4.1/lib/mac",
+				);
+				OBJROOT = "obj/Universal/Release";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-mmacosx-version-min=10.6",
+					"-gdwarf-2",
+					"-Wno-write-strings",
+				);
+				OTHER_LDFLAGS = (
+					"-lorx",
+					"-lfreetype",
+					"-lz",
+					"-lpthread",
+					"-mmacosx-version-min=10.6",
+					"-dead_strip",
+				);
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				SYMROOT = "../../../bin";
+			};
+			name = "Release Universal";
+		};
+		270F66B31B8E135226304D31 /* Release Native 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "x86_64";
@@ -472,7 +656,7 @@
 			};
 			name = "Release Native 64-bit";
 		};
-		1834250D357E215513A54195 /* Release Native 32-bit */ = {
+		0A5372F147DC535908BF509D /* Release Native 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "i386";
@@ -525,31 +709,37 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5F763F2E0BAF12607987300B /* Build configuration list for PBXNativeTarget "orxfontgen" */ = {
+		0DE205370CC96F831EE75C23 /* Build configuration list for PBXNativeTarget "orxfontgen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4AA541955605021E3D1B6892 /* Debug Native 64-bit */,
-				51263CFD25B65A49758E6605 /* Debug Native 32-bit */,
-				27DE10D814083AD52FE6566F /* Profile Native 64-bit */,
-				77C9435F18206F2519332436 /* Profile Native 32-bit */,
-				3E5F663822F26CF57948719D /* Release Native 64-bit */,
-				68AE036103C32A2D7A7E6FDD /* Release Native 32-bit */,
+				7BA047C625461DAF0207220B /* Debug Universal */,
+				0A226C99698675D777F26BFE /* Debug Native 64-bit */,
+				78AA04380D1B6C3A064933F1 /* Debug Native 32-bit */,
+				71AC6BC9710326F552BF3388 /* Profile Universal */,
+				43D22806307F63E95EFC7997 /* Profile Native 64-bit */,
+				03B516BE349416540E572150 /* Profile Native 32-bit */,
+				370F66DC770043AB163A7612 /* Release Universal */,
+				37F8122A36F3286445A0474F /* Release Native 64-bit */,
+				7327412D19710679148E0CAE /* Release Native 32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug Universal";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "orxFontGen" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7F2F778434446CB6611626BB /* Debug Native 64-bit */,
-				5F38037264A9342B0825469D /* Debug Native 32-bit */,
-				289377B749272E3E0A7056D5 /* Profile Native 64-bit */,
-				63F3036D06AC28245F286FAA /* Profile Native 32-bit */,
-				7B4A3CF46F6B7C70260530CD /* Release Native 64-bit */,
-				1834250D357E215513A54195 /* Release Native 32-bit */,
+				082B64CA368C2D02767D23B8 /* Debug Universal */,
+				0D8C69393B5D610C7BA9453A /* Debug Native 64-bit */,
+				2B4B7A9839586D711763054A /* Debug Native 32-bit */,
+				64510D3C767841CF01E42AAC /* Profile Universal */,
+				2D3C7F337EF84E231A15791B /* Profile Native 64-bit */,
+				297435B864AD54F674511AD3 /* Profile Native 32-bit */,
+				4286261B38A970EC48365375 /* Release Universal */,
+				270F66B31B8E135226304D31 /* Release Native 64-bit */,
+				0A5372F147DC535908BF509D /* Release Native 32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug Universal";
 		};
 /* End XCConfigurationList section */
 
