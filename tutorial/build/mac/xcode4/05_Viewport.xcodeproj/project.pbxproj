@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2AE338502FEA2ED539E5026D /* 05_Viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = 38CB530E722047C63D2552AC /* 05_Viewport.c */; };
-		1EA452EB556433BC34E40404 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FEC08E87656218D700A455C /* Foundation.framework */; };
-		166A09607DDC2AF0038067A9 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D80520417ED50713DD522D4 /* AppKit.framework */; };
+		58D943A25A6D3BF2476831C7 /* 05_Viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = 10E1618F1B1D216A3D8C63BC /* 05_Viewport.c */; };
+		6DDE0D373D525C750A4741A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23A552806AC2123178201D4F /* Foundation.framework */; };
+		24EE092F05504E2C3C462FD2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C431A1447D4360738683F2B /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		38CB530E722047C63D2552AC /* 05_Viewport.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "05_Viewport.c"; path = "../../../src/05_Viewport.c"; sourceTree = "<group>"; };
-		6FEC08E87656218D700A455C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		3D80520417ED50713DD522D4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		4BC371F0756E1AD34E07382E /* 05_Viewport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "05_Viewport"; path = "05_Viewport"; sourceTree = BUILT_PRODUCTS_DIR; };
+		10E1618F1B1D216A3D8C63BC /* 05_Viewport.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "05_Viewport.c"; path = "../../../src/05_Viewport.c"; sourceTree = "<group>"; };
+		23A552806AC2123178201D4F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		1C431A1447D4360738683F2B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		411D0D446E1A0ADB45D8024E /* 05_Viewport */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "05_Viewport"; path = "05_Viewport"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		6AA83F84026631EF5F3C5E74 /* Frameworks */ = {
+		67CB66706C5E470B32F63ABD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1EA452EB556433BC34E40404 /* Foundation.framework in Frameworks */,
-				166A09607DDC2AF0038067A9 /* AppKit.framework in Frameworks */,
+				6DDE0D373D525C750A4741A0 /* Foundation.framework in Frameworks */,
+				24EE092F05504E2C3C462FD2 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		73CA0A420171302212295C94 /* 05_Viewport */ = {
+		1A907D0E5D941FB135FA5132 /* 05_Viewport */ = {
 			isa = PBXGroup;
 			children = (
-				362C125D17FB73E55B472F09 /* src */,
-				709B09BC466C02B572E65EA6 /* Frameworks */,
-				09C507663C9625A719A11D7B /* Products */,
+				35BF232B17FF7A6C0419290A /* src */,
+				1D9815897BDC3AEA6BBF6455 /* Frameworks */,
+				36FC63A82E5F6123759C757A /* Products */,
 			);
 			name = "05_Viewport";
 			sourceTree = "<group>";
 		};
-		362C125D17FB73E55B472F09 /* src */ = {
+		35BF232B17FF7A6C0419290A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				38CB530E722047C63D2552AC /* 05_Viewport.c */,
+				10E1618F1B1D216A3D8C63BC /* 05_Viewport.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		709B09BC466C02B572E65EA6 /* Frameworks */ = {
+		1D9815897BDC3AEA6BBF6455 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6FEC08E87656218D700A455C /* Foundation.framework */,
-				3D80520417ED50713DD522D4 /* AppKit.framework */,
+				23A552806AC2123178201D4F /* Foundation.framework */,
+				1C431A1447D4360738683F2B /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		09C507663C9625A719A11D7B /* Products */ = {
+		36FC63A82E5F6123759C757A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4BC371F0756E1AD34E07382E /* 05_Viewport */,
+				411D0D446E1A0ADB45D8024E /* 05_Viewport */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		77FA4552329B63EF084579A0 /* 05_Viewport */ = {
+		7F87255E57774B0349B129B4 /* 05_Viewport */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06832EC260747FDA64700393 /* Build configuration list for PBXNativeTarget "05_Viewport" */;
+			buildConfigurationList = 2C903E037849354C29F05C15 /* Build configuration list for PBXNativeTarget "05_Viewport" */;
 			buildPhases = (
-				45E768FA23E45FDA756427C0 /* Resources */,
-				3697195146402EB931D539AA /* Sources */,
-				6AA83F84026631EF5F3C5E74 /* Frameworks */,
+				78BB441B015260E01A3E6C81 /* Resources */,
+				3CD349C20704212D1B7B2BA3 /* Sources */,
+				67CB66706C5E470B32F63ABD /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -85,7 +85,7 @@
 			name = "05_Viewport";
 			productInstallPath = "$(HOME)/bin";
 			productName = "05_Viewport";
-			productReference = 4BC371F0756E1AD34E07382E /* 05_Viewport */;
+			productReference = 411D0D446E1A0ADB45D8024E /* 05_Viewport */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,17 +96,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "05_Viewport" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 73CA0A420171302212295C94 /* 05_Viewport */;
+			mainGroup = 1A907D0E5D941FB135FA5132 /* 05_Viewport */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				77FA4552329B63EF084579A0 /* 05_Viewport */,
+				7F87255E57774B0349B129B4 /* 05_Viewport */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		45E768FA23E45FDA756427C0 /* Resources */ = {
+		78BB441B015260E01A3E6C81 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,11 +116,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3697195146402EB931D539AA /* Sources */ = {
+		3CD349C20704212D1B7B2BA3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2AE338502FEA2ED539E5026D /* 05_Viewport.c in Sources */,
+				58D943A25A6D3BF2476831C7 /* 05_Viewport.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		6F7910B445DA20B6345C3117 /* Debug Native 64-bit */ = {
+		7E267C13622B28AC4799106F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -140,9 +140,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "05_Viewport";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		3E3A5D3E29D970245D220008 /* Debug Native 32-bit */ = {
+		6B7B6585228D598E367635B4 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -152,9 +152,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "05_Viewport";
 			};
-			name = "Debug Native 32-bit";
+			name = "Profile";
 		};
-		2DA369556573702332255B5C /* Profile Native 64-bit */ = {
+		34332913516D75451AC935B4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,48 +164,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "05_Viewport";
 			};
-			name = "Profile Native 64-bit";
+			name = "Release";
 		};
-		5FB7134B5BF55C1A559A1CBC /* Profile Native 32-bit */ = {
+		6AF70A9760D94DA91F5C6B58 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "05_Viewport";
-			};
-			name = "Profile Native 32-bit";
-		};
-		365A5DE85D87584352E15AF7 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "05_Viewport";
-			};
-			name = "Release Native 64-bit";
-		};
-		488804043A7F14571033117F /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "05_Viewport";
-			};
-			name = "Release Native 32-bit";
-		};
-		5E2233E53F9F20BC381714F2 /* Debug Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -226,7 +190,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Debug/05_Viewport";
+				OBJROOT = "obj/Universal/Debug/05_Viewport";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -242,55 +206,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		33D509160F8D2C6A06277262 /* Debug Native 32-bit */ = {
+		64A650B3489D647430606F91 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxDEBUG__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Debug/05_Viewport";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxd",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Debug Native 32-bit";
-		};
-		30B632680A2867762E8A6781 /* Profile Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -312,7 +233,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Profile/05_Viewport";
+				OBJROOT = "obj/Universal/Profile/05_Viewport";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -328,56 +249,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Profile Native 64-bit";
+			name = "Profile";
 		};
-		2BC07AB107963D547FBE4DDA /* Profile Native 32-bit */ = {
+		67FC05E17FFB3B9C0BAA54CF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxPROFILER__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Profile/05_Viewport";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxp",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Profile Native 32-bit";
-		};
-		106E25DE4371320310CA585D /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -396,7 +273,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Release/05_Viewport";
+				OBJROOT = "obj/Universal/Release/05_Viewport";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -412,77 +289,30 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Release Native 64-bit";
-		};
-		5B694E870B4D143762FE1881 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Release/05_Viewport";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorx",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Release Native 32-bit";
+			name = "Release";
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		06832EC260747FDA64700393 /* Build configuration list for PBXNativeTarget "05_Viewport" */ = {
+		2C903E037849354C29F05C15 /* Build configuration list for PBXNativeTarget "05_Viewport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6F7910B445DA20B6345C3117 /* Debug Native 64-bit */,
-				3E3A5D3E29D970245D220008 /* Debug Native 32-bit */,
-				2DA369556573702332255B5C /* Profile Native 64-bit */,
-				5FB7134B5BF55C1A559A1CBC /* Profile Native 32-bit */,
-				365A5DE85D87584352E15AF7 /* Release Native 64-bit */,
-				488804043A7F14571033117F /* Release Native 32-bit */,
+				7E267C13622B28AC4799106F /* Debug */,
+				6B7B6585228D598E367635B4 /* Profile */,
+				34332913516D75451AC935B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "05_Viewport" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5E2233E53F9F20BC381714F2 /* Debug Native 64-bit */,
-				33D509160F8D2C6A06277262 /* Debug Native 32-bit */,
-				30B632680A2867762E8A6781 /* Profile Native 64-bit */,
-				2BC07AB107963D547FBE4DDA /* Profile Native 32-bit */,
-				106E25DE4371320310CA585D /* Release Native 64-bit */,
-				5B694E870B4D143762FE1881 /* Release Native 32-bit */,
+				6AF70A9760D94DA91F5C6B58 /* Debug */,
+				64A650B3489D647430606F91 /* Profile */,
+				67FC05E17FFB3B9C0BAA54CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 /* End XCConfigurationList section */
 

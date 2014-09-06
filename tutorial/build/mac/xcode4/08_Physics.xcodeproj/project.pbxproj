@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5EDC5AAD39E8560A32AF0F9A /* 08_Physics.c in Sources */ = {isa = PBXBuildFile; fileRef = 06D07F000EFB36552DDF340B /* 08_Physics.c */; };
-		35652862460D1C217BD35AA1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B465A7E27F22B3A0E8F55BA /* Foundation.framework */; };
-		1AC730135CA42B9F5EE74A08 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 275F596B154F1737404D2F38 /* AppKit.framework */; };
+		53E173D677A658FC420565A7 /* 08_Physics.c in Sources */ = {isa = PBXBuildFile; fileRef = 00351CFA75D1272D7F845D92 /* 08_Physics.c */; };
+		2B5B0917715252AC4C043282 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B9810FB746C057E24840FC2 /* Foundation.framework */; };
+		70F0285927DA6B6072FE2F45 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F04767E084D7FE7529610ED /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		06D07F000EFB36552DDF340B /* 08_Physics.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "08_Physics.c"; path = "../../../src/08_Physics.c"; sourceTree = "<group>"; };
-		5B465A7E27F22B3A0E8F55BA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		275F596B154F1737404D2F38 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		4784694B3DA55D2471870E1B /* 08_Physics */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "08_Physics"; path = "08_Physics"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00351CFA75D1272D7F845D92 /* 08_Physics.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "08_Physics.c"; path = "../../../src/08_Physics.c"; sourceTree = "<group>"; };
+		3B9810FB746C057E24840FC2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		1F04767E084D7FE7529610ED /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		663736E935F519F357395F7D /* 08_Physics */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "08_Physics"; path = "08_Physics"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2BCA6FB30E1E04EE4A660344 /* Frameworks */ = {
+		0A3205A26359158A37156BDF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35652862460D1C217BD35AA1 /* Foundation.framework in Frameworks */,
-				1AC730135CA42B9F5EE74A08 /* AppKit.framework in Frameworks */,
+				2B5B0917715252AC4C043282 /* Foundation.framework in Frameworks */,
+				70F0285927DA6B6072FE2F45 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		17E165BF730E1C661ABF255E /* 08_Physics */ = {
+		6561636912084DC031190DA2 /* 08_Physics */ = {
 			isa = PBXGroup;
 			children = (
-				77E44C422347250514E02C74 /* src */,
-				7C1752177AEC20C44557766C /* Frameworks */,
-				57FB24C10AE822AB169111B9 /* Products */,
+				0ED75D0265F02A867BBA0BB0 /* src */,
+				5B637438437C38B10BC568E9 /* Frameworks */,
+				734C394864890F7965C10F6F /* Products */,
 			);
 			name = "08_Physics";
 			sourceTree = "<group>";
 		};
-		77E44C422347250514E02C74 /* src */ = {
+		0ED75D0265F02A867BBA0BB0 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				06D07F000EFB36552DDF340B /* 08_Physics.c */,
+				00351CFA75D1272D7F845D92 /* 08_Physics.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		7C1752177AEC20C44557766C /* Frameworks */ = {
+		5B637438437C38B10BC568E9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5B465A7E27F22B3A0E8F55BA /* Foundation.framework */,
-				275F596B154F1737404D2F38 /* AppKit.framework */,
+				3B9810FB746C057E24840FC2 /* Foundation.framework */,
+				1F04767E084D7FE7529610ED /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		57FB24C10AE822AB169111B9 /* Products */ = {
+		734C394864890F7965C10F6F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4784694B3DA55D2471870E1B /* 08_Physics */,
+				663736E935F519F357395F7D /* 08_Physics */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		10D72C665F391FBF6E2401BB /* 08_Physics */ = {
+		215E380D150E77A525CB66D1 /* 08_Physics */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 376C40A0637275CE35AB7FB8 /* Build configuration list for PBXNativeTarget "08_Physics" */;
+			buildConfigurationList = 76D27D286F76487B1C1A1674 /* Build configuration list for PBXNativeTarget "08_Physics" */;
 			buildPhases = (
-				13E95EBD74C13C8E1CF33E8D /* Resources */,
-				591471524E2912E712F93DB6 /* Sources */,
-				2BCA6FB30E1E04EE4A660344 /* Frameworks */,
+				3BA15D404A7952913E137B30 /* Resources */,
+				26E27E5320AD4202378646BA /* Sources */,
+				0A3205A26359158A37156BDF /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -85,7 +85,7 @@
 			name = "08_Physics";
 			productInstallPath = "$(HOME)/bin";
 			productName = "08_Physics";
-			productReference = 4784694B3DA55D2471870E1B /* 08_Physics */;
+			productReference = 663736E935F519F357395F7D /* 08_Physics */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,17 +96,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "08_Physics" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 17E165BF730E1C661ABF255E /* 08_Physics */;
+			mainGroup = 6561636912084DC031190DA2 /* 08_Physics */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				10D72C665F391FBF6E2401BB /* 08_Physics */,
+				215E380D150E77A525CB66D1 /* 08_Physics */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		13E95EBD74C13C8E1CF33E8D /* Resources */ = {
+		3BA15D404A7952913E137B30 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,11 +116,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		591471524E2912E712F93DB6 /* Sources */ = {
+		26E27E5320AD4202378646BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EDC5AAD39E8560A32AF0F9A /* 08_Physics.c in Sources */,
+				53E173D677A658FC420565A7 /* 08_Physics.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		000832DA14FC506C6F5777D4 /* Debug Native 64-bit */ = {
+		1A6E61B202D66A8E16D90098 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -140,9 +140,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "08_Physics";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		57C5046B41AF57EE59DF518F /* Debug Native 32-bit */ = {
+		14061B822BB058C8576348BE /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -152,9 +152,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "08_Physics";
 			};
-			name = "Debug Native 32-bit";
+			name = "Profile";
 		};
-		32C80C9448BF778351BC28C9 /* Profile Native 64-bit */ = {
+		15BD3D2763BF519B19F20B10 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,48 +164,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "08_Physics";
 			};
-			name = "Profile Native 64-bit";
+			name = "Release";
 		};
-		0543123F01BD27B62DEE043B /* Profile Native 32-bit */ = {
+		0D6A5508378A5C5B197F7EF3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "08_Physics";
-			};
-			name = "Profile Native 32-bit";
-		};
-		0FD63AAC771476327D8B6091 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "08_Physics";
-			};
-			name = "Release Native 64-bit";
-		};
-		2F646E7D5B021C51206766E4 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "08_Physics";
-			};
-			name = "Release Native 32-bit";
-		};
-		2825205D448B0A82704347A5 /* Debug Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -226,7 +190,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Debug/08_Physics";
+				OBJROOT = "obj/Universal/Debug/08_Physics";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -242,55 +206,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		21D8000E529B4A8457553C5F /* Debug Native 32-bit */ = {
+		6EAB254D0A24027C410F4B62 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxDEBUG__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Debug/08_Physics";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxd",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Debug Native 32-bit";
-		};
-		388127B563C9436C165124C5 /* Profile Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -312,7 +233,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Profile/08_Physics";
+				OBJROOT = "obj/Universal/Profile/08_Physics";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -328,56 +249,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Profile Native 64-bit";
+			name = "Profile";
 		};
-		65412E035F0F7C0276A00FF0 /* Profile Native 32-bit */ = {
+		5BCD0F93029808B5640A633F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxPROFILER__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Profile/08_Physics";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxp",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Profile Native 32-bit";
-		};
-		6431699773981CB356200F18 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -396,7 +273,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Release/08_Physics";
+				OBJROOT = "obj/Universal/Release/08_Physics";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -412,77 +289,30 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Release Native 64-bit";
-		};
-		229A4FA15D860A9424B16472 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Release/08_Physics";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorx",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Release Native 32-bit";
+			name = "Release";
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		376C40A0637275CE35AB7FB8 /* Build configuration list for PBXNativeTarget "08_Physics" */ = {
+		76D27D286F76487B1C1A1674 /* Build configuration list for PBXNativeTarget "08_Physics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000832DA14FC506C6F5777D4 /* Debug Native 64-bit */,
-				57C5046B41AF57EE59DF518F /* Debug Native 32-bit */,
-				32C80C9448BF778351BC28C9 /* Profile Native 64-bit */,
-				0543123F01BD27B62DEE043B /* Profile Native 32-bit */,
-				0FD63AAC771476327D8B6091 /* Release Native 64-bit */,
-				2F646E7D5B021C51206766E4 /* Release Native 32-bit */,
+				1A6E61B202D66A8E16D90098 /* Debug */,
+				14061B822BB058C8576348BE /* Profile */,
+				15BD3D2763BF519B19F20B10 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "08_Physics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2825205D448B0A82704347A5 /* Debug Native 64-bit */,
-				21D8000E529B4A8457553C5F /* Debug Native 32-bit */,
-				388127B563C9436C165124C5 /* Profile Native 64-bit */,
-				65412E035F0F7C0276A00FF0 /* Profile Native 32-bit */,
-				6431699773981CB356200F18 /* Release Native 64-bit */,
-				229A4FA15D860A9424B16472 /* Release Native 32-bit */,
+				0D6A5508378A5C5B197F7EF3 /* Debug */,
+				6EAB254D0A24027C410F4B62 /* Profile */,
+				5BCD0F93029808B5640A633F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 /* End XCConfigurationList section */
 

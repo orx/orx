@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7DED580538F17E50447029EE /* 09_Scrolling.c in Sources */ = {isa = PBXBuildFile; fileRef = 7EA93F9300C508D6250570E3 /* 09_Scrolling.c */; };
-		57A279350AC275242B25350A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13A334F358864B805A695BE4 /* Foundation.framework */; };
-		40BA791E4AAC149758F74C17 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E255D0772117DB530E4D09 /* AppKit.framework */; };
+		68DE001D17FF0652165F71D9 /* 09_Scrolling.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F4A2EBC661902471DD125A8 /* 09_Scrolling.c */; };
+		79B15E82321673C854816C73 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DB17FE125CC01A31171264E /* Foundation.framework */; };
+		6664417C68C658A478DC33C5 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32132A6359541C2D5F5033B7 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7EA93F9300C508D6250570E3 /* 09_Scrolling.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "09_Scrolling.c"; path = "../../../src/09_Scrolling.c"; sourceTree = "<group>"; };
-		13A334F358864B805A695BE4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		23E255D0772117DB530E4D09 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		31BA61241050183361BE2196 /* 09_Scrolling */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "09_Scrolling"; path = "09_Scrolling"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F4A2EBC661902471DD125A8 /* 09_Scrolling.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "09_Scrolling.c"; path = "../../../src/09_Scrolling.c"; sourceTree = "<group>"; };
+		0DB17FE125CC01A31171264E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		32132A6359541C2D5F5033B7 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		4DA51DE67C143F37353E3689 /* 09_Scrolling */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "09_Scrolling"; path = "09_Scrolling"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		010D363379143D5D43BE1623 /* Frameworks */ = {
+		412F24CD22DA355F759F2A60 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57A279350AC275242B25350A /* Foundation.framework in Frameworks */,
-				40BA791E4AAC149758F74C17 /* AppKit.framework in Frameworks */,
+				79B15E82321673C854816C73 /* Foundation.framework in Frameworks */,
+				6664417C68C658A478DC33C5 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5AA46A8C2B2F40E538FD09BA /* 09_Scrolling */ = {
+		3BC11690514A76137C3B3341 /* 09_Scrolling */ = {
 			isa = PBXGroup;
 			children = (
-				33FC7ABB22355C643F076AD7 /* src */,
-				6F6C59376681430B14476600 /* Frameworks */,
-				0A0F1751797F0CA61A2671D1 /* Products */,
+				2A737B720B4649DA329A3B87 /* src */,
+				07CA73F4491A7B4056D00D38 /* Frameworks */,
+				746674C355DD51A1492A06D8 /* Products */,
 			);
 			name = "09_Scrolling";
 			sourceTree = "<group>";
 		};
-		33FC7ABB22355C643F076AD7 /* src */ = {
+		2A737B720B4649DA329A3B87 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				7EA93F9300C508D6250570E3 /* 09_Scrolling.c */,
+				4F4A2EBC661902471DD125A8 /* 09_Scrolling.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		6F6C59376681430B14476600 /* Frameworks */ = {
+		07CA73F4491A7B4056D00D38 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				13A334F358864B805A695BE4 /* Foundation.framework */,
-				23E255D0772117DB530E4D09 /* AppKit.framework */,
+				0DB17FE125CC01A31171264E /* Foundation.framework */,
+				32132A6359541C2D5F5033B7 /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		0A0F1751797F0CA61A2671D1 /* Products */ = {
+		746674C355DD51A1492A06D8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				31BA61241050183361BE2196 /* 09_Scrolling */,
+				4DA51DE67C143F37353E3689 /* 09_Scrolling */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		310D7F092CA944C522545A5C /* 09_Scrolling */ = {
+		0C075CA965811B5570FE4ED5 /* 09_Scrolling */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 02FD445C0F4B1EAB06A62BF6 /* Build configuration list for PBXNativeTarget "09_Scrolling" */;
+			buildConfigurationList = 067973E96783767B29926773 /* Build configuration list for PBXNativeTarget "09_Scrolling" */;
 			buildPhases = (
-				3F606FF33C077BED15611792 /* Resources */,
-				325240A72AF94299614D3BF7 /* Sources */,
-				010D363379143D5D43BE1623 /* Frameworks */,
+				52D4094612723B325ECE67A6 /* Resources */,
+				71FF25975DDF060D62324CC7 /* Sources */,
+				412F24CD22DA355F759F2A60 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -85,7 +85,7 @@
 			name = "09_Scrolling";
 			productInstallPath = "$(HOME)/bin";
 			productName = "09_Scrolling";
-			productReference = 31BA61241050183361BE2196 /* 09_Scrolling */;
+			productReference = 4DA51DE67C143F37353E3689 /* 09_Scrolling */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,17 +96,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "09_Scrolling" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 5AA46A8C2B2F40E538FD09BA /* 09_Scrolling */;
+			mainGroup = 3BC11690514A76137C3B3341 /* 09_Scrolling */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				310D7F092CA944C522545A5C /* 09_Scrolling */,
+				0C075CA965811B5570FE4ED5 /* 09_Scrolling */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3F606FF33C077BED15611792 /* Resources */ = {
+		52D4094612723B325ECE67A6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,11 +116,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		325240A72AF94299614D3BF7 /* Sources */ = {
+		71FF25975DDF060D62324CC7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DED580538F17E50447029EE /* 09_Scrolling.c in Sources */,
+				68DE001D17FF0652165F71D9 /* 09_Scrolling.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		02CD6E1415E117C249FF10C8 /* Debug Native 64-bit */ = {
+		3C855C4978EF257608497900 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -140,9 +140,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "09_Scrolling";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		1D0E17A8371D77577B971B80 /* Debug Native 32-bit */ = {
+		56DF6DE1735C280A5B0208BF /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -152,9 +152,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "09_Scrolling";
 			};
-			name = "Debug Native 32-bit";
+			name = "Profile";
 		};
-		564971B40E4847CD75C84C11 /* Profile Native 64-bit */ = {
+		2BF0345172A13B8F4F4A1289 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,48 +164,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "09_Scrolling";
 			};
-			name = "Profile Native 64-bit";
+			name = "Release";
 		};
-		6B4B1CA800E53BDF53904788 /* Profile Native 32-bit */ = {
+		21A02B4E0F0F3D6828E04BA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "09_Scrolling";
-			};
-			name = "Profile Native 32-bit";
-		};
-		647F0F4C60AD2B81583C6F50 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "09_Scrolling";
-			};
-			name = "Release Native 64-bit";
-		};
-		1CAB5C123E93649114CE01B6 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "09_Scrolling";
-			};
-			name = "Release Native 32-bit";
-		};
-		4B9C0E701BC05E6761C35A1C /* Debug Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -226,7 +190,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Debug/09_Scrolling";
+				OBJROOT = "obj/Universal/Debug/09_Scrolling";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -242,55 +206,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		08A135AE47AF45C26FE34306 /* Debug Native 32-bit */ = {
+		65A1679D7FD446004A7B0E7A /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxDEBUG__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Debug/09_Scrolling";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxd",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Debug Native 32-bit";
-		};
-		30C02F512725286733990C3C /* Profile Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -312,7 +233,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Profile/09_Scrolling";
+				OBJROOT = "obj/Universal/Profile/09_Scrolling";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -328,56 +249,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Profile Native 64-bit";
+			name = "Profile";
 		};
-		337D77F72CD62F7A28875140 /* Profile Native 32-bit */ = {
+		704D7C7662F42E8E731A52EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxPROFILER__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Profile/09_Scrolling";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxp",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Profile Native 32-bit";
-		};
-		7C9810576A7F75E1310416B6 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -396,7 +273,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Release/09_Scrolling";
+				OBJROOT = "obj/Universal/Release/09_Scrolling";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -412,77 +289,30 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Release Native 64-bit";
-		};
-		663A18F0407172F01453691C /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Release/09_Scrolling";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorx",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Release Native 32-bit";
+			name = "Release";
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		02FD445C0F4B1EAB06A62BF6 /* Build configuration list for PBXNativeTarget "09_Scrolling" */ = {
+		067973E96783767B29926773 /* Build configuration list for PBXNativeTarget "09_Scrolling" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				02CD6E1415E117C249FF10C8 /* Debug Native 64-bit */,
-				1D0E17A8371D77577B971B80 /* Debug Native 32-bit */,
-				564971B40E4847CD75C84C11 /* Profile Native 64-bit */,
-				6B4B1CA800E53BDF53904788 /* Profile Native 32-bit */,
-				647F0F4C60AD2B81583C6F50 /* Release Native 64-bit */,
-				1CAB5C123E93649114CE01B6 /* Release Native 32-bit */,
+				3C855C4978EF257608497900 /* Debug */,
+				56DF6DE1735C280A5B0208BF /* Profile */,
+				2BF0345172A13B8F4F4A1289 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "09_Scrolling" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4B9C0E701BC05E6761C35A1C /* Debug Native 64-bit */,
-				08A135AE47AF45C26FE34306 /* Debug Native 32-bit */,
-				30C02F512725286733990C3C /* Profile Native 64-bit */,
-				337D77F72CD62F7A28875140 /* Profile Native 32-bit */,
-				7C9810576A7F75E1310416B6 /* Release Native 64-bit */,
-				663A18F0407172F01453691C /* Release Native 32-bit */,
+				21A02B4E0F0F3D6828E04BA3 /* Debug */,
+				65A1679D7FD446004A7B0E7A /* Profile */,
+				704D7C7662F42E8E731A52EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 /* End XCConfigurationList section */
 

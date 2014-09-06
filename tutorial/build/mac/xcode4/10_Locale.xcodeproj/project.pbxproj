@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18FF3453738144F35DD14892 /* 10_Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 58DA700F70CB455F6DA63E0E /* 10_Locale.cpp */; };
-		2DC6290C5F53593C10C33353 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EFD06DF551C471559FB22AD /* Foundation.framework */; };
-		26FB625E122226C21D1F0D56 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24AF14643CE62CF32A865497 /* AppKit.framework */; };
+		493601D5490E6D4D713B047A /* 10_Locale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CDC2555155B3F822C2F4B91 /* 10_Locale.cpp */; };
+		7ADB4E5B61AF30FC044A3B71 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31F83838134F383670BC4876 /* Foundation.framework */; };
+		53C82FE76AD007833AB8375B /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07637AAC53F9378064376A2D /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		58DA700F70CB455F6DA63E0E /* 10_Locale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "10_Locale.cpp"; path = "../../../src/10_Locale.cpp"; sourceTree = "<group>"; };
-		1EFD06DF551C471559FB22AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		24AF14643CE62CF32A865497 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		522328EA35693371463621DE /* 10_Locale */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "10_Locale"; path = "10_Locale"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CDC2555155B3F822C2F4B91 /* 10_Locale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "10_Locale.cpp"; path = "../../../src/10_Locale.cpp"; sourceTree = "<group>"; };
+		31F83838134F383670BC4876 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		07637AAC53F9378064376A2D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		170D1088554B400A5C8271C1 /* 10_Locale */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "10_Locale"; path = "10_Locale"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4D497EE0509646E56FB62D59 /* Frameworks */ = {
+		1D947543105439A46C3046B9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DC6290C5F53593C10C33353 /* Foundation.framework in Frameworks */,
-				26FB625E122226C21D1F0D56 /* AppKit.framework in Frameworks */,
+				7ADB4E5B61AF30FC044A3B71 /* Foundation.framework in Frameworks */,
+				53C82FE76AD007833AB8375B /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		46D55E540B48413A59C27407 /* 10_Locale */ = {
+		6BBC3A026A212E30619F3AA4 /* 10_Locale */ = {
 			isa = PBXGroup;
 			children = (
-				24AB7CC234C379630E1F4E67 /* src */,
-				2891511F7C0479D402FA0281 /* Frameworks */,
-				42F64A9320F9545D53F118A7 /* Products */,
+				6B9D47F61F0C0B93182B4638 /* src */,
+				6EF1452B358150E30C9D266E /* Frameworks */,
+				74CA131C547A3371630C5B0E /* Products */,
 			);
 			name = "10_Locale";
 			sourceTree = "<group>";
 		};
-		24AB7CC234C379630E1F4E67 /* src */ = {
+		6B9D47F61F0C0B93182B4638 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				58DA700F70CB455F6DA63E0E /* 10_Locale.cpp */,
+				2CDC2555155B3F822C2F4B91 /* 10_Locale.cpp */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		2891511F7C0479D402FA0281 /* Frameworks */ = {
+		6EF1452B358150E30C9D266E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1EFD06DF551C471559FB22AD /* Foundation.framework */,
-				24AF14643CE62CF32A865497 /* AppKit.framework */,
+				31F83838134F383670BC4876 /* Foundation.framework */,
+				07637AAC53F9378064376A2D /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		42F64A9320F9545D53F118A7 /* Products */ = {
+		74CA131C547A3371630C5B0E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				522328EA35693371463621DE /* 10_Locale */,
+				170D1088554B400A5C8271C1 /* 10_Locale */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1B3C3B2445690B36289434F5 /* 10_Locale */ = {
+		38CF3C2750AE6A2E03320764 /* 10_Locale */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1530106B0E255DFC595318AB /* Build configuration list for PBXNativeTarget "10_Locale" */;
+			buildConfigurationList = 08A7151663D605FB458C1B53 /* Build configuration list for PBXNativeTarget "10_Locale" */;
 			buildPhases = (
-				3F3945407DD62DF557160AAC /* Resources */,
-				4C5C45EE359F04EB1DD10B85 /* Sources */,
-				4D497EE0509646E56FB62D59 /* Frameworks */,
+				6ACC2B8328231896262E4D41 /* Resources */,
+				6835717F4EA75FCB1CEE71EB /* Sources */,
+				1D947543105439A46C3046B9 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -85,7 +85,7 @@
 			name = "10_Locale";
 			productInstallPath = "$(HOME)/bin";
 			productName = "10_Locale";
-			productReference = 522328EA35693371463621DE /* 10_Locale */;
+			productReference = 170D1088554B400A5C8271C1 /* 10_Locale */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,17 +96,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "10_Locale" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 46D55E540B48413A59C27407 /* 10_Locale */;
+			mainGroup = 6BBC3A026A212E30619F3AA4 /* 10_Locale */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1B3C3B2445690B36289434F5 /* 10_Locale */,
+				38CF3C2750AE6A2E03320764 /* 10_Locale */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3F3945407DD62DF557160AAC /* Resources */ = {
+		6ACC2B8328231896262E4D41 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,11 +116,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4C5C45EE359F04EB1DD10B85 /* Sources */ = {
+		6835717F4EA75FCB1CEE71EB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18FF3453738144F35DD14892 /* 10_Locale.cpp in Sources */,
+				493601D5490E6D4D713B047A /* 10_Locale.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		7F2F6DFA41655AB40ED958EA /* Debug Native 64-bit */ = {
+		27BB780F42CE7EE461187E9C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -140,9 +140,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "10_Locale";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		26C70A7F3E5817BE55AB6D49 /* Debug Native 32-bit */ = {
+		3C754FFA649C5F352C3813EE /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -152,9 +152,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "10_Locale";
 			};
-			name = "Debug Native 32-bit";
+			name = "Profile";
 		};
-		7467190B499632A64070246B /* Profile Native 64-bit */ = {
+		7E233CCA02AD5FC858A7694E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,48 +164,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "10_Locale";
 			};
-			name = "Profile Native 64-bit";
+			name = "Release";
 		};
-		2CC8127C1F02575C724069DB /* Profile Native 32-bit */ = {
+		53D41950759B16D872715E95 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "10_Locale";
-			};
-			name = "Profile Native 32-bit";
-		};
-		105B74F706A20E0173744A36 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "10_Locale";
-			};
-			name = "Release Native 64-bit";
-		};
-		282D3C016B2E4A2C2EAE5F85 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "10_Locale";
-			};
-			name = "Release Native 32-bit";
-		};
-		061C30310DD9341B7BFA7849 /* Debug Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -226,7 +190,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Debug/10_Locale";
+				OBJROOT = "obj/Universal/Debug/10_Locale";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -242,55 +206,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		7E3D0C7C3DFA73EF6E9C561C /* Debug Native 32-bit */ = {
+		0EC2000349C32F21584F3704 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxDEBUG__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Debug/10_Locale";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxd",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Debug Native 32-bit";
-		};
-		0C365C37204600750C770D2D /* Profile Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -312,7 +233,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Profile/10_Locale";
+				OBJROOT = "obj/Universal/Profile/10_Locale";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -328,56 +249,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Profile Native 64-bit";
+			name = "Profile";
 		};
-		59103AA9478311834EA74890 /* Profile Native 32-bit */ = {
+		1E3206F749AB7F7A3865223B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxPROFILER__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Profile/10_Locale";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxp",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Profile Native 32-bit";
-		};
-		2A420384062F202E63F25558 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -396,7 +273,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Release/10_Locale";
+				OBJROOT = "obj/Universal/Release/10_Locale";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -412,77 +289,30 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Release Native 64-bit";
-		};
-		3F7E1BB80982656167B008FF /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Release/10_Locale";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorx",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Release Native 32-bit";
+			name = "Release";
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1530106B0E255DFC595318AB /* Build configuration list for PBXNativeTarget "10_Locale" */ = {
+		08A7151663D605FB458C1B53 /* Build configuration list for PBXNativeTarget "10_Locale" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7F2F6DFA41655AB40ED958EA /* Debug Native 64-bit */,
-				26C70A7F3E5817BE55AB6D49 /* Debug Native 32-bit */,
-				7467190B499632A64070246B /* Profile Native 64-bit */,
-				2CC8127C1F02575C724069DB /* Profile Native 32-bit */,
-				105B74F706A20E0173744A36 /* Release Native 64-bit */,
-				282D3C016B2E4A2C2EAE5F85 /* Release Native 32-bit */,
+				27BB780F42CE7EE461187E9C /* Debug */,
+				3C754FFA649C5F352C3813EE /* Profile */,
+				7E233CCA02AD5FC858A7694E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "10_Locale" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				061C30310DD9341B7BFA7849 /* Debug Native 64-bit */,
-				7E3D0C7C3DFA73EF6E9C561C /* Debug Native 32-bit */,
-				0C365C37204600750C770D2D /* Profile Native 64-bit */,
-				59103AA9478311834EA74890 /* Profile Native 32-bit */,
-				2A420384062F202E63F25558 /* Release Native 64-bit */,
-				3F7E1BB80982656167B008FF /* Release Native 32-bit */,
+				53D41950759B16D872715E95 /* Debug */,
+				0EC2000349C32F21584F3704 /* Profile */,
+				1E3206F749AB7F7A3865223B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 /* End XCConfigurationList section */
 

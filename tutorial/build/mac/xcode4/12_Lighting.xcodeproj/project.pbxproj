@@ -7,62 +7,62 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E0638FB747B63300FA80E54 /* 12_Lighting.c in Sources */ = {isa = PBXBuildFile; fileRef = 48A8355C31F40DB97BDC3D0B /* 12_Lighting.c */; };
-		3D7E535A571B52D41C0A5B91 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E40F316AB732B675BC1716 /* Foundation.framework */; };
-		4B7A50B11AE9544937FF62FD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E7664600F1637B32361867 /* AppKit.framework */; };
+		258A09CE54952F8142814D95 /* 12_Lighting.c in Sources */ = {isa = PBXBuildFile; fileRef = 066378DC5BE728153B1018F9 /* 12_Lighting.c */; };
+		39CE06CD05D2235733552209 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7810A4386A4B9964126C93 /* Foundation.framework */; };
+		3740692B3EBE3AC013E53166 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF44E9C644B7B60670679A4 /* AppKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		48A8355C31F40DB97BDC3D0B /* 12_Lighting.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "12_Lighting.c"; path = "../../../src/12_Lighting.c"; sourceTree = "<group>"; };
-		45E40F316AB732B675BC1716 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
-		18E7664600F1637B32361867 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
-		3D6B3D086C4873E40AE430BC /* 12_Lighting */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "12_Lighting"; path = "12_Lighting"; sourceTree = BUILT_PRODUCTS_DIR; };
+		066378DC5BE728153B1018F9 /* 12_Lighting.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "12_Lighting.c"; path = "../../../src/12_Lighting.c"; sourceTree = "<group>"; };
+		5A7810A4386A4B9964126C93 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Foundation.framework"; path = "/System/Library/Frameworks/Foundation.framework"; sourceTree = "<absolute>"; };
+		2CF44E9C644B7B60670679A4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "AppKit.framework"; path = "/System/Library/Frameworks/AppKit.framework"; sourceTree = "<absolute>"; };
+		0F4060E1059848C872D47DD4 /* 12_Lighting */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "12_Lighting"; path = "12_Lighting"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		40F20F161C4D15BA173D4FA9 /* Frameworks */ = {
+		708012C402194CFC71CC1BC9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D7E535A571B52D41C0A5B91 /* Foundation.framework in Frameworks */,
-				4B7A50B11AE9544937FF62FD /* AppKit.framework in Frameworks */,
+				39CE06CD05D2235733552209 /* Foundation.framework in Frameworks */,
+				3740692B3EBE3AC013E53166 /* AppKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0AA632CA7D5B7B011CD50181 /* 12_Lighting */ = {
+		601B4B0D626D12AC13EC7668 /* 12_Lighting */ = {
 			isa = PBXGroup;
 			children = (
-				5C5852E745E5586304B67BA1 /* src */,
-				43545DEF0A5505C81E924308 /* Frameworks */,
-				5997564024D93EAF77003481 /* Products */,
+				4D052E7F32E1753572EB3253 /* src */,
+				026A128423D64D8C5F6F7789 /* Frameworks */,
+				47336DE441DE741B3ABE4A8F /* Products */,
 			);
 			name = "12_Lighting";
 			sourceTree = "<group>";
 		};
-		5C5852E745E5586304B67BA1 /* src */ = {
+		4D052E7F32E1753572EB3253 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				48A8355C31F40DB97BDC3D0B /* 12_Lighting.c */,
+				066378DC5BE728153B1018F9 /* 12_Lighting.c */,
 			);
 			name = "src";
 			sourceTree = "<group>";
 		};
-		43545DEF0A5505C81E924308 /* Frameworks */ = {
+		026A128423D64D8C5F6F7789 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				45E40F316AB732B675BC1716 /* Foundation.framework */,
-				18E7664600F1637B32361867 /* AppKit.framework */,
+				5A7810A4386A4B9964126C93 /* Foundation.framework */,
+				2CF44E9C644B7B60670679A4 /* AppKit.framework */,
 			);
 			name = "Frameworks";
 			sourceTree = "<group>";
 		};
-		5997564024D93EAF77003481 /* Products */ = {
+		47336DE441DE741B3ABE4A8F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3D6B3D086C4873E40AE430BC /* 12_Lighting */,
+				0F4060E1059848C872D47DD4 /* 12_Lighting */,
 			);
 			name = "Products";
 			sourceTree = "<group>";
@@ -70,13 +70,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		33F317DA066C4F333CFF4090 /* 12_Lighting */ = {
+		765D1280480A14D8724F367E /* 12_Lighting */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B07298F77626667075A6249 /* Build configuration list for PBXNativeTarget "12_Lighting" */;
+			buildConfigurationList = 03EB5B44755F60CB63F44161 /* Build configuration list for PBXNativeTarget "12_Lighting" */;
 			buildPhases = (
-				4B6212377ED5091503077F1E /* Resources */,
-				1CEB27771DDD4E9B580A31B2 /* Sources */,
-				40F20F161C4D15BA173D4FA9 /* Frameworks */,
+				4E573A9D4ADD21C72E3E10DD /* Resources */,
+				4FFB73251CE036275AF10480 /* Sources */,
+				708012C402194CFC71CC1BC9 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -85,7 +85,7 @@
 			name = "12_Lighting";
 			productInstallPath = "$(HOME)/bin";
 			productName = "12_Lighting";
-			productReference = 3D6B3D086C4873E40AE430BC /* 12_Lighting */;
+			productReference = 0F4060E1059848C872D47DD4 /* 12_Lighting */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -96,17 +96,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "12_Lighting" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
-			mainGroup = 0AA632CA7D5B7B011CD50181 /* 12_Lighting */;
+			mainGroup = 601B4B0D626D12AC13EC7668 /* 12_Lighting */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				33F317DA066C4F333CFF4090 /* 12_Lighting */,
+				765D1280480A14D8724F367E /* 12_Lighting */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4B6212377ED5091503077F1E /* Resources */ = {
+		4E573A9D4ADD21C72E3E10DD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -116,11 +116,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1CEB27771DDD4E9B580A31B2 /* Sources */ = {
+		4FFB73251CE036275AF10480 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E0638FB747B63300FA80E54 /* 12_Lighting.c in Sources */,
+				258A09CE54952F8142814D95 /* 12_Lighting.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +130,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		540C62B434E9399164EF3870 /* Debug Native 64-bit */ = {
+		0C6F0B5041F42F9C69474C6A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -140,9 +140,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "12_Lighting";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		02EC6E321A557764724F60D4 /* Debug Native 32-bit */ = {
+		745248CD1CDA46F11C032C93 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -152,9 +152,9 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "12_Lighting";
 			};
-			name = "Debug Native 32-bit";
+			name = "Profile";
 		};
-		1AAE2F6B4BC638BD085C081C /* Profile Native 64-bit */ = {
+		545E7CE00B7B5AE83EB705CF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,48 +164,12 @@
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = "12_Lighting";
 			};
-			name = "Profile Native 64-bit";
+			name = "Release";
 		};
-		10C533A40BF533473704050A /* Profile Native 32-bit */ = {
+		73790D2D2973532A0CAA1B28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "12_Lighting";
-			};
-			name = "Profile Native 32-bit";
-		};
-		652024A7731E44B90AE36D6C /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "12_Lighting";
-			};
-			name = "Release Native 64-bit";
-		};
-		1E94472829FB353A0EF710FB /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CONFIGURATION_BUILD_DIR = ../../../bin;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = "12_Lighting";
-			};
-			name = "Release Native 32-bit";
-		};
-		44A61E690B990D8206972BC4 /* Debug Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -226,7 +190,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Debug/12_Lighting";
+				OBJROOT = "obj/Universal/Debug/12_Lighting";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -242,55 +206,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Debug Native 64-bit";
+			name = "Debug";
 		};
-		2E6F1000794606602F3F7975 /* Debug Native 32-bit */ = {
+		0B147E782B2476A61E8429CD /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxDEBUG__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Debug/12_Lighting";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxd",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Debug Native 32-bit";
-		};
-		72637BA941892DC2310437B7 /* Profile Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -312,7 +233,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Profile/12_Lighting";
+				OBJROOT = "obj/Universal/Profile/12_Lighting";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -328,56 +249,12 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Profile Native 64-bit";
+			name = "Profile";
 		};
-		0445538F61EB432071D83BD4 /* Profile Native 32-bit */ = {
+		6C19047A7B3D73AB7B27528F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__orxPROFILER__",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Profile/12_Lighting";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorxp",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Profile Native 32-bit";
-		};
-		5CB124B306FC298041CB2BB3 /* Release Native 64-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
 				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
 				COPY_PHASE_STRIP = NO;
@@ -396,7 +273,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../../../../code/lib/dynamic",
 				);
-				OBJROOT = "obj/x64/Release/12_Lighting";
+				OBJROOT = "obj/Universal/Release/12_Lighting";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -412,77 +289,30 @@
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = "../../../bin";
 			};
-			name = "Release Native 64-bit";
-		};
-		71417E94272034D519154066 /* Release Native 32-bit */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "i386";
-				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
-				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"../../../include",
-					"../../../../code/include",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"../../../../code/lib/dynamic",
-				);
-				OBJROOT = "obj/x32/Release/12_Lighting";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-ffast-math",
-					"-mmacosx-version-min=10.6",
-					"-gdwarf-2",
-					"-Wno-write-strings",
-					"-mfix-and-continue",
-				);
-				OTHER_LDFLAGS = (
-					"-lorx",
-					"-mmacosx-version-min=10.6",
-					"-dead_strip",
-				);
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				SYMROOT = "../../../bin";
-			};
-			name = "Release Native 32-bit";
+			name = "Release";
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0B07298F77626667075A6249 /* Build configuration list for PBXNativeTarget "12_Lighting" */ = {
+		03EB5B44755F60CB63F44161 /* Build configuration list for PBXNativeTarget "12_Lighting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				540C62B434E9399164EF3870 /* Debug Native 64-bit */,
-				02EC6E321A557764724F60D4 /* Debug Native 32-bit */,
-				1AAE2F6B4BC638BD085C081C /* Profile Native 64-bit */,
-				10C533A40BF533473704050A /* Profile Native 32-bit */,
-				652024A7731E44B90AE36D6C /* Release Native 64-bit */,
-				1E94472829FB353A0EF710FB /* Release Native 32-bit */,
+				0C6F0B5041F42F9C69474C6A /* Debug */,
+				745248CD1CDA46F11C032C93 /* Profile */,
+				545E7CE00B7B5AE83EB705CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "12_Lighting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				44A61E690B990D8206972BC4 /* Debug Native 64-bit */,
-				2E6F1000794606602F3F7975 /* Debug Native 32-bit */,
-				72637BA941892DC2310437B7 /* Profile Native 64-bit */,
-				0445538F61EB432071D83BD4 /* Profile Native 32-bit */,
-				5CB124B306FC298041CB2BB3 /* Release Native 64-bit */,
-				71417E94272034D519154066 /* Release Native 32-bit */,
+				73790D2D2973532A0CAA1B28 /* Debug */,
+				0B147E782B2476A61E8429CD /* Profile */,
+				6C19047A7B3D73AB7B27528F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug Native 64-bit";
+			defaultConfigurationName = "Debug";
 		};
 /* End XCConfigurationList section */
 

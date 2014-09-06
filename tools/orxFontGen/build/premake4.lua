@@ -59,12 +59,17 @@ function initplatforms ()
             }
         end
     elseif os.is ("macosx") then
-        return
-        {
-            "Universal",
-            "x64",
-            "x32"
-        }
+        if string.find(string.lower(_ACTION), "xcode") then
+            return
+            {
+                "Universal"
+            }
+        else
+            return
+            {
+                "x32", "x64"
+            }
+        end
     end
 end
 
