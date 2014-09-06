@@ -333,20 +333,11 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       }
     }
   }
-  /* Created object? */
-  else if((_pstEvent->eType == orxEVENT_TYPE_OBJECT) && (_pstEvent->eID == orxOBJECT_EVENT_CREATE))
+  /* Texture loaded? */
+  else if((_pstEvent->eType == orxEVENT_TYPE_TEXTURE) && (_pstEvent->eID == orxTEXTURE_EVENT_LOAD))
   {
-    orxGRAPHIC *pstGraphic;
-
-    /* Gets its graphic object */
-    pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
-
-    /* Valid? */
-    if(pstGraphic)
-    {
-      /* Creates associated normal map */
-      CreateNormalMap(orxTEXTURE(orxGraphic_GetData(pstGraphic)));
-    }
+    /* Creates associated normal map */
+    CreateNormalMap(orxTEXTURE(_pstEvent->hSender));
   }
 
   /* Done! */
@@ -392,7 +383,7 @@ orxSTATUS orxFASTCALL Init()
 
   /* Adds event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
-  orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, EventHandler);
+  orxEvent_AddHandler(orxEVENT_TYPE_TEXTURE, EventHandler);
 
   /* Creates texture table */
   pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
