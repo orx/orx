@@ -4433,6 +4433,32 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         pc                                = sstDisplay.acShaderCodeBuffer;
         s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
 
+        /* Pushes display config section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Has shader version? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION) != orxFALSE)
+        {
+          orxU32 u32ShaderVersion;
+
+          /* Gets it */
+          u32ShaderVersion = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION);
+
+          /* Valid? */
+          if(u32ShaderVersion != 0)
+          {
+            orxS32 s32Offset;
+
+            /* Prints shader version */
+            s32Offset = orxString_NPrint(pc, s32Free, "#version %u\n", u32ShaderVersion);
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+          }
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
         /* Has parameters? */
         if(_pstParamList != orxNULL)
         {

@@ -191,6 +191,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
 #define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
 #define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
+#define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
 
 
 /** Shader texture suffixes
