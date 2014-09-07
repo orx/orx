@@ -810,15 +810,15 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
   stbi_image_free(pstInfo->pu8ImageSource);
   pstInfo->pu8ImageSource = orxNULL;
 
-  /* Frees load info */
-  orxMemory_Free(pstInfo);
-
   /* Inits payload */
   stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
   stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
+
+  /* Frees load info */
+  orxMemory_Free(pstInfo);
 
   /* Done! */
   return eResult;
