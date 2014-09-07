@@ -13,6 +13,7 @@ var orx_display_8h =
     [ "orxDISPLAY_KZ_CONFIG_POSITION", "orx_display_8h.html#gaa287680bea018a30033b8429defc2d99", null ],
     [ "orxDISPLAY_KZ_CONFIG_REFRESH_RATE", "orx_display_8h.html#ga093b52d235bab6c2688aa558a8ad41c7", null ],
     [ "orxDISPLAY_KZ_CONFIG_SECTION", "orx_display_8h.html#ga0f78f3c80268bddeaeb1b55d2090e649", null ],
+    [ "orxDISPLAY_KZ_CONFIG_SHADER_VERSION", "orx_display_8h.html#gae5810099ced599ea96aab75be2f7697b", null ],
     [ "orxDISPLAY_KZ_CONFIG_SMOOTH", "orx_display_8h.html#ga638cb8650bf097c243c44a9dd57bb863", null ],
     [ "orxDISPLAY_KZ_CONFIG_TITLE", "orx_display_8h.html#ga92a769a3391090a7c8cde88a1a9d5da0", null ],
     [ "orxDISPLAY_KZ_CONFIG_VSYNC", "orx_display_8h.html#gab0f0452283708c385e761db3ee37e189", null ],
