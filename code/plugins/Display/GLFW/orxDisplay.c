@@ -689,7 +689,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 #endif /* __orxMAC__ */
 
       /* Gets supported GLSL version */
-      if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (orxMath_Round(fShaderVersion) >= orx2F(1.1f)))
+      if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (fShaderVersion + orxMATH_KF_EPSILON >= orx2F(1.1f)))
       {
         /* Pushes config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
