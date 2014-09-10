@@ -660,6 +660,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     && (glfwExtensionSupported("GL_ARB_vertex_shader") != GL_FALSE)
     && (glfwExtensionSupported("GL_ARB_fragment_shader") != GL_FALSE))
     {
+      orxFLOAT fShaderVersion;
+
 #ifndef __orxMAC__
 
       /* Loads related OpenGL extension functions */
@@ -685,6 +687,23 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   #endif /* __orxLINUX__ */
 
 #endif /* __orxMAC__ */
+
+      /* Gets supported GLSL version */
+      if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (orxMath_Round(fShaderVersion) >= orx2F(1.1f)))
+      {
+        /* Pushes config section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Doesn't have a shader version? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION) == orxFALSE)
+        {
+          /* Stores it */
+          orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
 
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB, &(sstDisplay.iTextureUnitNumber));
@@ -3788,6 +3807,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Has shader support? */
         if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
         {
+          orxU32 u32ShaderVersion = orxU32_UNDEFINED;
+
           static const orxSTRING szFragmentShaderSource =
           "uniform sampler2D orxTexture;"
           "void main()"
@@ -3800,9 +3821,32 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "  gl_FragColor = gl_Color;"
           "}";
 
+          /* Pushes display section */
+          orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+          /* Has shader version value? */
+          if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION))
+          {
+            /* Stores it */
+            u32ShaderVersion = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION);
+
+            /* Clears it */
+            orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, 0);
+          }
+
           /* Creates default & no texture shaders */
           sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
           sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
+
+          /* Should restore shader version? */
+          if(u32ShaderVersion != orxU32_UNDEFINED)
+          {
+            /* Restores it */
+            orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, u32ShaderVersion);
+          }
+
+          /* Pops config section */
+          orxConfig_PopSection();
 
           /* Uses default shader */
           orxDisplay_StopShader(orxNULL);
