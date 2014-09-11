@@ -384,6 +384,6 @@ extern orxDLLAPI void orxFASTCALL             _orxDebug_SetDebugFile(const orxST
  */
 extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogFile(const orxSTRING _zFileName);
 
-#endif /* __orxDEBUG__ */
+#endif /* __orxDEBUG_H_ */
 
 /** @} */
