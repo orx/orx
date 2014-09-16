@@ -3722,6 +3722,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
 
+        /* Gets actual window size */
+        glfwGetWindowSize(&iWidth, &iHeight);
+
         /* Disables events auto-polling */
         glfwDisable(GLFW_AUTO_POLL_EVENTS);
 
