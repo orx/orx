@@ -94,7 +94,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
     LOGI("orxAndroid_GetNativeWindow()");
 
-    while(sstAndroid.app_->window == orxNULL)
+    while(sstAndroid.app_->window == NULL)
     {
         LOGI("no window received yet");
 
@@ -343,7 +343,7 @@ void handleCmd( struct android_app* app, int32_t cmd )
 
 static inline orxBOOL isInteractible()
 {
-  return (sstAndroid.app_->window != orxNULL && sstAndroid.bPaused != orxTRUE);
+  return (sstAndroid.app_->window != NULL && sstAndroid.bPaused != orxTRUE);
 }
 
 
@@ -408,7 +408,11 @@ void android_main( android_app* state )
 
     /* Cleans static controller */
     memset(&sstAndroid, 0, sizeof(orxANDROID_STATIC));
+
     sstAndroid.app_ = state;
+    sstAndroid.lastWidth = 0;
+    sstAndroid.lastHeight = 0;
+
     jVM = state->activity->vm;
 
     /*
