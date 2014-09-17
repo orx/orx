@@ -217,7 +217,7 @@ public:
     }
 
     /* Done! */
-    return _fFraction;
+    return fResult;
   }
 
   orxVECTOR   vContact;
