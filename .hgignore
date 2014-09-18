@@ -27,9 +27,14 @@ code/build/windows/msvs2008/Scroll
 code/build/windows/msvs2008/*.ncb
 code/build/windows/msvs2008/*.suo
 code/build/codelite/*
-code/demo/android/bin
-code/demo/android/libs
-code/demo/android/obj
+code/demo/android/.idea
+code/demo/android/.gradle
+code/demo/android/**.iml
+code/demo/android/build
+code/demo/android/local.properties
+code/demo/android/app/build
+code/demo/android/app/src/obj
+code/demo/android/app/src/libs
 code/demo/android-native/.idea
 code/demo/android-native/.gradle
 code/demo/android-native/**.iml
