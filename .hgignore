@@ -27,6 +27,8 @@ code/build/windows/msvs2008/Scroll
 code/build/windows/msvs2008/*.ncb
 code/build/windows/msvs2008/*.suo
 code/build/codelite/*
+code/build/android/obj
+code/build/android-native/obj
 code/demo/android/.idea
 code/demo/android/.gradle
 code/demo/android/**.iml
@@ -43,6 +45,9 @@ code/demo/android-native/local.properties
 code/demo/android-native/app/build
 code/demo/android-native/app/src/obj
 code/demo/android-native/app/src/libs
+extern/android/orx-lib/build
+extern/android/.gradle
+extern/android/local.properties
 code/lib/*
 extern/android/bin/*
 extern/android/gen/*
