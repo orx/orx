@@ -211,28 +211,28 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
         /* Inits event's payload */
         orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
         stPayload.stTouch.fPressure = orxFLOAT_0;
-        stPayload.stTouch.fX = AMotionEvent_getX(event, 0);
-        stPayload.stTouch.fY = AMotionEvent_getY(event, 0);
 
         int32_t action = AMotionEvent_getAction(event);
         unsigned int flags = action & AMOTION_EVENT_ACTION_MASK;
         switch( flags )
         {
             case AMOTION_EVENT_ACTION_DOWN:
+                stPayload.stTouch.fX = AMotionEvent_getX(event, 0);
+                stPayload.stTouch.fY = AMotionEvent_getY(event, 0);
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
                 break;
             case AMOTION_EVENT_ACTION_UP:
+                stPayload.stTouch.fX = AMotionEvent_getX(event, 0);
+                stPayload.stTouch.fY = AMotionEvent_getY(event, 0);
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
                 break;
             case AMOTION_EVENT_ACTION_MOVE:
             {
                 int32_t count = AMotionEvent_getPointerCount(event);
-                stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
 
-                for(int i = 1; i < count; i++)
+                for(int i = 0; i < count; i++)
                 {
                   stPayload.stTouch.fX = AMotionEvent_getX(event, i);
                   stPayload.stTouch.fY = AMotionEvent_getY(event, i);
@@ -246,6 +246,8 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
                 int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
                     >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
+                stPayload.stTouch.fX = AMotionEvent_getX(event, iIndex);
+                stPayload.stTouch.fY = AMotionEvent_getY(event, iIndex);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
                 break;
             }
@@ -254,6 +256,8 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
                 int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
                     >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
+                stPayload.stTouch.fX = AMotionEvent_getX(event, iIndex);
+                stPayload.stTouch.fY = AMotionEvent_getY(event, iIndex);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
                 break;
             }
