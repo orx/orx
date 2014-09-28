@@ -171,6 +171,14 @@ static orxCOMMAND_STATIC sstCommand;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Is character a white space?
+ */
+static orxINLINE orxBOOL orxCommand_IsWhiteSpace(orxCHAR _cChar)
+{
+  /* Done! */
+  return ((_cChar == ' ') || (_cChar == '\t')) ? orxTRUE : orxFALSE;
+}
+
 /** Gets literal name of a command var type
  */
 static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _eType)
@@ -458,7 +466,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     orxCHAR         cBackupChar, acGUID[20];
 
     /* For all push markers / spaces */
-    for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (*zCommand == ' ') || (*zCommand == '\t'); zCommand++)
+    for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
     {
       /* Is a push marker? */
       if(*zCommand == orxCOMMAND_KC_PUSH_MARKER)
@@ -469,7 +477,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     }
 
     /* Finds end of command */
-    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (*pcCommandEnd != ' ') && (*pcCommandEnd != '\t') && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++);
+    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (orxCommand_IsWhiteSpace(*pcCommandEnd) == orxFALSE) && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++);
 
     /* Ends command */
     cBackupChar               = *pcCommandEnd;
@@ -603,7 +611,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                       for(pc = zValue; *pc != orxCHAR_NULL; pc++)
                       {
                         /* Is a white space? */
-                        if((*pc == ' ') || (*pc == '\t'))
+                        if(orxCommand_IsWhiteSpace(*pc) != orxFALSE)
                         {
                           /* Has room? */
                           if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
@@ -772,7 +780,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 if(bInBlock == orxFALSE)
                 {
                   /* End of string? */
-                  if((*pcSrc == ' ') || (*pcSrc == '\t'))
+                  if(orxCommand_IsWhiteSpace(*pcSrc) != orxFALSE)
                   {
                     /* Stops */
                     break;
