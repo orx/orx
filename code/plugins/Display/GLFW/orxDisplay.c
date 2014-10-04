@@ -709,6 +709,9 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
           orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
         }
 
+        //! TODO: Support "modern" OpenGL in this plugin, for now overriding default value with 120 for "classic" OpenGL
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, 120);
+
         /* Pops config section */
         orxConfig_PopSection();
       }
