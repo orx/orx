@@ -56,6 +56,13 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
+#define orxDISPLAY_KU32_BITMAP_FLAG_NONE        0x00000000  /** No flags */
+
+#define orxDISPLAY_KU32_BITMAP_FLAG_LOADING     0x00000001  /**< Loading flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_DELETE      0x00000002  /**< Delete flag */
+
+#define orxDISPLAY_KU32_BITMAP_MASK_ALL         0xFFFFFFFF  /**< All mask */
+
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        128
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        16
 
@@ -190,6 +197,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
+  orxU32                    u32Flags;
 };
 
 /** Internal bitmap save info structure
@@ -1479,6 +1487,17 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmapCallback(void *_pCon
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
 
+  /* Clears loading flag */
+  orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+  orxMEMORY_BARRIER();
+
+  /* Asked for deletion? */
+  if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
+  {
+    /* Deletes it */
+    orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
+  }
+
   /* Frees load info */
   orxMemory_Free(pstInfo);
 
@@ -1595,11 +1614,14 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load PVR texture <%s>: invalid format, aborting.", pstInfo->pstBitmap->zLocation);
 
         /* Asynchronous call? */
-        if(orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID)
+        if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
         {
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
         }
+
+        /* Clears loading flag */
+        orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
 
         /* Frees original source from resource */
         orxMemory_Free(pstInfo->pu8ImageSource);
@@ -1649,7 +1671,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
     {
       /* Checks */
       orxASSERT((uiBytesPerPixel == 3) || (uiBytesPerPixel == 4));
-      
+
       /* Has NPOT texture support? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
       {
@@ -1713,11 +1735,14 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
     else
     {
       /* Asynchronous call? */
-      if(orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID)
+      if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
       }
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
 
       /* Frees original source from resource */
       orxMemory_Free(pstInfo->pu8ImageSource);
@@ -1755,7 +1780,7 @@ static void orxFASTCALL orxDisplay_iOS_ReadResourceCallback(orxHANDLE _hResource
   pstInfo->pstBitmap      = (orxBITMAP *)_pContext;
 
   /* Asynchronous? */
-  if(sstDisplay.pstTempBitmap != orxNULL)
+  if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
   {
     /* Runs asynchronous task */
     if(orxThread_RunTask(&orxDisplay_iOS_DecompressBitmap, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
@@ -1864,6 +1889,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_LoadBitmapData(orxBITMAP *_pstBitmap
         {
           /* Resets resource cursor */
           orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+
+          /* Updates asynchronous loading flag */
+          orxFLAG_SET(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
           /* Loads data from resource */
           s64Size = orxResource_Read(hResource, s64Size, pu8Buffer, orxDisplay_iOS_ReadResourceCallback, (void *)_pstBitmap);
@@ -2896,18 +2924,27 @@ void orxFASTCALL orxDisplay_iOS_DeleteBitmap(orxBITMAP *_pstBitmap)
   /* Not screen? */
   if(_pstBitmap != sstDisplay.pstScreen)
   {
-    /* Delete its data */
-    orxDisplay_iOS_DeleteBitmapData(_pstBitmap);
-
-    /* Is temp bitmap? */
-    if(_pstBitmap == sstDisplay.pstTempBitmap)
+    /* Loading? */
+    if(orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
     {
-      /* Clears temp bitmap */
-      sstDisplay.pstTempBitmap = orxNULL;
+      /* Asks for deletion */
+      orxFLAG_SET(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
     }
+    else
+    {
+      /* Delete its data */
+      orxDisplay_iOS_DeleteBitmapData(_pstBitmap);
 
-    /* Deletes it */
-    orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
+      /* Is temp bitmap? */
+      if(_pstBitmap == sstDisplay.pstTempBitmap)
+      {
+        /* Clears temp bitmap */
+        sstDisplay.pstTempBitmap = orxNULL;
+      }
+
+      /* Deletes it */
+      orxBank_Free(sstDisplay.pstBitmapBank, _pstBitmap);
+    }
   }
 
   /* Done! */
@@ -2937,6 +2974,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+    pstBitmap->zLocation      = orxSTRING_EMPTY;
+    pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -3755,6 +3794,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       /* Inits it */
       pstBitmap->bSmoothing = sstDisplay.bDefaultSmoothing;
       pstBitmap->zLocation  = zResourceLocation;
+      pstBitmap->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
       if(orxDisplay_iOS_LoadBitmapData(pstBitmap) == orxSTATUS_FAILURE)
