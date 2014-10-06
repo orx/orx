@@ -639,138 +639,149 @@ static int orxDisplay_Android_EOFSTBICallback(void *_hResource)
 
 static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
 {
-  unsigned char  *pu8ImageData;
-  GLuint          uiWidth, uiHeight;
-  KTX_header     *stHeader;
-  orxBOOL         bCompressed = orxFALSE;
-  GLint           previousUnpackAlignment;
-  orxU32          u32DataSize, u32DataSizeRounded;
-  GLenum          eInternalFormat;
-
-  stHeader = (KTX_header*)_pBuffer;
-
-  /* Check glType and glFormat */
-  if(stHeader->glType == 0 || stHeader->glFormat == 0)
+  if(_s64Size >= sizeof(KTX_header))
   {
-    if(stHeader->glType + stHeader->glFormat != 0)
+    KTX_header     *stHeader;
+    unsigned char  *pu8ImageData;
+    orxBOOL         bCompressed = orxFALSE;
+    GLint           previousUnpackAlignment;
+    GLuint          uiWidth, uiHeight;
+    GLenum          eInternalFormat;
+
+    stHeader = (KTX_header*)_pBuffer;
+    uiWidth  = stHeader->pixelWidth;
+    uiHeight = stHeader->pixelHeight;
+
+    /* Check glType and glFormat */
+    if(stHeader->glType == 0 || stHeader->glFormat == 0)
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", ((orxBITMAP *)_pContext)->zLocation);
+      orxASSERT(stHeader->glType + stHeader->glFormat != 0 && "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", ((orxBITMAP *)_pContext)->zLocation);
+      bCompressed = orxTRUE;
     }
-    bCompressed = orxTRUE;
-  }
 
-  /* KTX files require an unpack alignment of 4 */
-  glGetIntegerv(GL_UNPACK_ALIGNMENT, &previousUnpackAlignment);
-  if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
-  {
-    glPixelStorei(GL_UNPACK_ALIGNMENT, KTX_GL_UNPACK_ALIGNMENT);
-  }
+    /* KTX files require an unpack alignment of 4 */
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &previousUnpackAlignment);
+    if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
+    {
+      glPixelStorei(GL_UNPACK_ALIGNMENT, KTX_GL_UNPACK_ALIGNMENT);
+    }
 
-  if(bCompressed == orxTRUE)
-  {
-    eInternalFormat = stHeader->glInternalFormat;
-  }
-  else
-  {
-    eInternalFormat = stHeader->glBaseInternalFormat;
-  }
-
-  uiWidth  = stHeader->pixelWidth;
-  uiHeight = stHeader->pixelHeight;
-
-  /* Loads image */
-  pu8ImageData = (unsigned char*)_pBuffer;
-  /* Skip header */
-  pu8ImageData = (unsigned char*)(pu8ImageData + sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
-  u32DataSize = *((orxU32*)pu8ImageData);
-  u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
-
-  /* Valid? */
-  if(pu8ImageData != NULL)
-  {
-    GLuint      uiRealWidth, uiRealHeight;
-    orxS32      i;
-    orxU8      *pu8ImageBuffer;
-    orxBITMAP  *pstBitmap;
-
-    /* Uses image buffer */
-    pu8ImageBuffer = pu8ImageData + sizeof(u32DataSize);
-
-    /* Gets real size */
-    uiRealWidth   = uiWidth;
-    uiRealHeight  = uiHeight;
-
-    /* Gets associated bitmap */
-    pstBitmap = (orxBITMAP *)_pContext;
-
-    /* Inits bitmap */
-    pstBitmap->fWidth         = orxU2F(uiWidth);
-    pstBitmap->fHeight        = orxU2F(uiHeight);
-    pstBitmap->u32RealWidth   = (orxU32)uiRealWidth;
-    pstBitmap->u32RealHeight  = (orxU32)uiRealHeight;
-    pstBitmap->u32Depth       = 32;
-    pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
-    pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-    pstBitmap->u32DataSize    = u32DataSizeRounded;
-    orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
-    orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
-
-    /* Tracks video memory */
-    orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
-
-    /* Creates new texture */
-    glGenTextures(1, &pstBitmap->uiTexture);
-    glASSERT();
-    glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-    glASSERT();
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-    glASSERT();
-
-    /* Compressed? */
     if(bCompressed == orxTRUE)
     {
-      /* Loads compressed data */
-      glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, u32DataSize, pu8ImageBuffer);
+      eInternalFormat = stHeader->glInternalFormat;
     }
     else
     {
-      /* Loads data */
-      glTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, stHeader->glFormat, stHeader->glType, pu8ImageBuffer);
+      eInternalFormat = stHeader->glBaseInternalFormat;
     }
-    glASSERT();
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-    glASSERT();
+    /* Loads image */
+    pu8ImageData = (unsigned char*)_pBuffer;
 
-    /* For all bound bitmaps */
-    for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+    if(_s64Size >= sizeof(KTX_header) + stHeader->bytesOfKeyValueData)
     {
-      /* Is deleted bitmap? */
-      if(sstDisplay.apstBoundBitmapList[i] == pstBitmap)
+      orxU32          u32DataSize, u32DataSizeRounded;
+      GLuint          uiRealWidth, uiRealHeight;
+      orxS32          i;
+      orxU8          *pu8ImageBuffer;
+      orxBITMAP      *pstBitmap;
+      orxDISPLAY_EVENT_PAYLOAD  stPayload;
+
+      /* Skip header */
+      pu8ImageData = (unsigned char*)(pu8ImageData + sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
+      u32DataSize = *((orxU32*)pu8ImageData);
+      u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
+
+      /* Uses image buffer */
+      pu8ImageBuffer = pu8ImageData + sizeof(u32DataSize);
+
+      /* Gets real size */
+      uiRealWidth   = uiWidth;
+      uiRealHeight  = uiHeight;
+
+      /* Gets associated bitmap */
+      pstBitmap = (orxBITMAP *)_pContext;
+
+      /* Inits bitmap */
+      pstBitmap->fWidth         = orxU2F(uiWidth);
+      pstBitmap->fHeight        = orxU2F(uiHeight);
+      pstBitmap->u32RealWidth   = (orxU32)uiRealWidth;
+      pstBitmap->u32RealHeight  = (orxU32)uiRealHeight;
+      pstBitmap->u32Depth       = 32;
+      pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+      pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
+      pstBitmap->u32DataSize    = u32DataSizeRounded;
+      orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
+      orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
+
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, pstBitmap->u32DataSize, orxTRUE);
+
+      /* Creates new texture */
+      glGenTextures(1, &pstBitmap->uiTexture);
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+
+      /* Compressed? */
+      if(bCompressed == orxTRUE)
       {
-        /* Resets it */
-        sstDisplay.apstBoundBitmapList[i] = orxNULL;
-        sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+        /* Loads compressed data */
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, u32DataSize, pu8ImageBuffer);
       }
+      else
+      {
+        /* Loads data */
+        glTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, stHeader->glFormat, stHeader->glType, pu8ImageBuffer);
+      }
+      glASSERT();
+
+      /* Restores previous texture */
+      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+      glASSERT();
+
+      /* For all bound bitmaps */
+      for(i = 0; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+      {
+        /* Is deleted bitmap? */
+        if(sstDisplay.apstBoundBitmapList[i] == pstBitmap)
+        {
+          /* Resets it */
+          sstDisplay.apstBoundBitmapList[i] = orxNULL;
+          sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+        }
+      }
+
+      /* Inits payload */
+      stPayload.stBitmap.zLocation  = pstBitmap->zLocation;
+      stPayload.stBitmap.u32ID      = (orxU32)pstBitmap->uiTexture;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", ((orxBITMAP *)_pContext)->zLocation);
+    }
+
+    if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
+    {
+      glPixelStorei(GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
     }
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", ((orxBITMAP *)_pContext)->zLocation);
-  }
-
-  if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
-  {
-    glPixelStorei(GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
   }
 
   /* Frees buffer */
