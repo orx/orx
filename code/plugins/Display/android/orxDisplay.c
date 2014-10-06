@@ -655,7 +655,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     /* Check glType and glFormat */
     if(stHeader->glType == 0 || stHeader->glFormat == 0)
     {
-      orxASSERT(stHeader->glType + stHeader->glFormat != 0 && "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", ((orxBITMAP *)_pContext)->zLocation);
+      orxASSERT(stHeader->glType + stHeader->glFormat == 0 && "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", ((orxBITMAP *)_pContext)->zLocation);
       bCompressed = orxTRUE;
     }
 
