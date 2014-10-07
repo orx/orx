@@ -647,6 +647,11 @@ static int orxDisplay_Android_EOFSTBICallback(void *_hResource)
 
 static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
 {
+  orxBITMAP      *pstBitmap;
+
+  /* Gets associated bitmap */
+  pstBitmap = (orxBITMAP *)_pContext;
+
   if(_s64Size >= sizeof(KTX_header))
   {
     KTX_header     *stHeader;
@@ -663,7 +668,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     /* Check glType and glFormat */
     if(stHeader->glType == 0 || stHeader->glFormat == 0)
     {
-      orxASSERT(stHeader->glType + stHeader->glFormat == 0 && "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", ((orxBITMAP *)_pContext)->zLocation);
+      orxASSERT(stHeader->glType + stHeader->glFormat == 0 && "Can't load KTX texture <%s>: either both or none of glType, glFormat must be zero, aborting.", pstBitmap->zLocation);
       bCompressed = orxTRUE;
     }
 
@@ -692,7 +697,6 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       GLuint          uiRealWidth, uiRealHeight;
       orxS32          i;
       orxU8          *pu8ImageBuffer;
-      orxBITMAP      *pstBitmap;
       orxDISPLAY_EVENT_PAYLOAD  stPayload;
 
       /* Skip header */
@@ -706,9 +710,6 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       /* Gets real size */
       uiRealWidth   = uiWidth;
       uiRealHeight  = uiHeight;
-
-      /* Gets associated bitmap */
-      pstBitmap = (orxBITMAP *)_pContext;
 
       /* Inits bitmap */
       pstBitmap->fWidth         = orxU2F(uiWidth);
@@ -774,11 +775,25 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+      orxMEMORY_BARRIER();
+
+      /* Asked for deletion? */
+      if(orxFLAG_TEST(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
+      {
+        /* Deletes it */
+        orxDisplay_DeleteBitmap(pstBitmap);
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", ((orxBITMAP *)_pContext)->zLocation);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
     }
 
     if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
@@ -789,18 +804,10 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", ((orxBITMAP *)_pContext)->zLocation);
-  }
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
 
-  /* Clears loading flag */
-  orxFLAG_SET(((orxBITMAP *)_pContext)->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
-  orxMEMORY_BARRIER();
-
-  /* Asked for deletion? */
-  if(orxFLAG_TEST(((orxBITMAP *)_pContext)->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
-  {
-    /* Deletes it */
-    orxDisplay_DeleteBitmap((orxBITMAP *)_pContext);
+    /* Clears loading flag */
+    orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
   }
 
   /* Frees buffer */
