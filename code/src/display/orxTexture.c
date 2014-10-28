@@ -154,7 +154,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
             /* Gets current texture name */
             zName = orxTexture_GetName(pstTexture);
 
-          /* Resets internal status */
+            /* Resets internal status */
             orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_INTERNAL);
 
             /* Backups current bitmap */
