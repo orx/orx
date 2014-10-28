@@ -646,7 +646,7 @@ extern "C" void orxAndroid_PumpEvents()
 
     if(ident == LOOPER_ID_SENSOR)
     {
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE);
+      orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
     }
 
     if(ident == LOOPER_ID_KEY_EVENT)

@@ -9,7 +9,7 @@
         <activity android:name="org.orxproject.orxtest.OrxDemo" android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="@string/orientation">
+            android:screenOrientation="@integer/orientation">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

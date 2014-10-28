@@ -369,7 +369,7 @@ extern "C" void orxAndroid_PumpEvents()
 
         if (id == LOOPER_ID_USER)
         {
-            orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE);
+            orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
         }
 
         // Check if we are exiting.

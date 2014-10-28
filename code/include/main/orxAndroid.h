@@ -149,6 +149,8 @@ ANativeActivity* orxAndroid_GetNativeActivity();
 #define orxANDROID_EVENT_SURFACE_CREATED     1
 #define orxANDROID_EVENT_SURFACE_CHANGED     2
 
+#define orxANDROID_EVENT_TYPE_ACCELERATE     (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 2)
+
 #endif /* _orxANDROID_H_ */
 
 /** @} */
