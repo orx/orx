@@ -119,7 +119,7 @@ static void disableSensorManager()
   }
 }
 
-static orxSTATUS orxFASTCALL orxJoystick_Android_EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxJoystick_Android_AccelerometerEventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -195,40 +195,44 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     sstJoystick.s32Rotation = -1;
     sstJoystick.bEnabled = orxFALSE;
 
-    /* Adds our joystick event handlers */
-    if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler)) != orxSTATUS_FAILURE)
-    {
-      if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_EventHandler)) != orxSTATUS_FAILURE)
-      {
-        if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_EventHandler)) != orxSTATUS_FAILURE)
-        {
-          /* Updates status */
-          sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
+    /* Updates status */
+    sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
 
-          ALooper* looper = ALooper_forThread();
-          sstJoystick.sensorManager = ASensorManager_getInstance();
-          sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+    sstJoystick.sensorManager = ASensorManager_getInstance();
+    sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+
+    if(sstJoystick.accelerometerSensor != NULL)
+    {
+      /* Adds our joystick event handlers */
+      if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+      {
+        if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+        {
+          if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+          {
+            ALooper* looper = ALooper_forThread();
 #ifdef __orxANDROID__
-          sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
+            sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
 #else
-          sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
+            sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
 #endif
 
-          orxConfig_PushSection(KZ_CONFIG_ANDROID);
+            orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
-          if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
-          {
-            sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+            if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
+            {
+              sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+            }
+            else
+            { /* enable acceleromter with default rate */
+              sstJoystick.u32Frequency = 60;
+            }
+
+            orxConfig_PopSection();
+
+            /* enable sensor */
+            enableSensorManager();
           }
-          else
-          { /* enable acceleromter with default rate */
-            sstJoystick.u32Frequency = 60;
-          }
-
-          orxConfig_PopSection();
-
-          /* enable sensor */
-          enableSensorManager();
         }
       }
     }
@@ -243,13 +247,18 @@ void orxFASTCALL orxJoystick_Android_Exit()
   /* Was initialized? */
   if (sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_EventHandler);
-    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_EventHandler);
+    if(sstJoystick.accelerometerSensor != NULL)
+    {
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler);
+      orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler);
+      orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler);
 
-    disableSensorManager();
-    /* destroy event queue */
-    ASensorManager_destroyEventQueue(sstJoystick.sensorManager, sstJoystick.sensorEventQueue);
+      disableSensorManager();
+
+      /* destroy event queue */
+      ASensorManager_destroyEventQueue(sstJoystick.sensorManager, sstJoystick.sensorEventQueue);
+    }
 
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
