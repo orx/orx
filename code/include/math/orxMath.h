@@ -319,7 +319,7 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
   /* This variable needs to be volatile otherwise gcc will aggressively optimize it away during the circular clamp trick */
   volatile orxFLOAT fTemp;
   orxFLOAT          fOp;
-  const orxFLOAT    fP = 3.6f, fQ = 3.1f;
+  const orxFLOAT    fP = 3.584135056f, fQ = 3.10396624f;
 
   /* Brings operand to a normalized [-1, 1] range */
   fOp = _fOp * (orxFLOAT_1 / orxMATH_KF_PI);
