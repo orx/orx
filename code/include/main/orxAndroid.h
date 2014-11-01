@@ -133,6 +133,7 @@ void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
 #ifdef __orxANDROID_NATIVE__
+#define          LOOPER_ID_SENSOR        LOOPER_ID_USER
 ANativeActivity* orxAndroid_GetNativeActivity();
 #endif /* __orxANDROID_NATIVE__ */
 

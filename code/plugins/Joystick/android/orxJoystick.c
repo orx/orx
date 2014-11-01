@@ -211,11 +211,7 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
           if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
           {
             ALooper* looper = ALooper_forThread();
-#ifdef __orxANDROID__
             sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
-#else
-            sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_USER, NULL, NULL);
-#endif
 
             orxConfig_PushSection(KZ_CONFIG_ANDROID);
 

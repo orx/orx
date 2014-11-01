@@ -367,7 +367,7 @@ extern "C" void orxAndroid_PumpEvents()
         if( source != NULL )
             source->process( sstAndroid.app_, source );
 
-        if (id == LOOPER_ID_USER)
+        if (id == LOOPER_ID_SENSOR)
         {
             orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
         }
