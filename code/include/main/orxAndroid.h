@@ -98,9 +98,7 @@ typedef struct __orxANDROID_TOUCH_EVENT_t {
 #endif /*__orxANDROID__*/
 
 typedef struct __orxANDROID_KEY_EVENT_t {
-#ifdef __orxANDROID__
        orxU32 u32Action;
-#endif
        orxU32 u32KeyCode;
        orxU32 u32Unicode;
 

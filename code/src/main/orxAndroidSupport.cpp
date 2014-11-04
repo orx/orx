@@ -336,7 +336,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnKeyDown(JNIEnv* env
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
-  stKeyEvent.u32Action = 0;
+  stKeyEvent.u32Action = orxANDROID_EVENT_KEYBOARD_DOWN;
   stKeyEvent.u32KeyCode = keycode;
   stKeyEvent.u32Unicode = unicode;
 
@@ -354,7 +354,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnKeyUp(JNIEnv* env, 
 {
   orxANDROID_KEY_EVENT stKeyEvent;
 
-  stKeyEvent.u32Action = 1;
+  stKeyEvent.u32Action = orxANDROID_EVENT_KEYBOARD_UP;
   stKeyEvent.u32KeyCode = keycode;
 
   if(sstAndroid.pipeKeyEvent[1] != -1)
@@ -438,6 +438,30 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv
   {
     app_write_cmd(APP_CMD_FOCUS_LOST);
   }
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceAdded(JNIEnv* env, jobject thiz, jint deviceId)
+{
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceChanged(JNIEnv* env, jobject thiz, jint deviceId)
+{
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceRemoved(JNIEnv* env, jobject thiz, jint deviceId)
+{
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickMove(JNIEnv* env, jobject thiz, jint deviceId)
+{
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickDown(JNIEnv* env, jobject thiz, jint deviceId, jint keycode)
+{
+}
+
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickUp(JNIEnv* env, jobject thiz, jint deviceId, jint keycode)
+{
 }
 
 class LocalReferenceHolder
@@ -655,9 +679,7 @@ extern "C" void orxAndroid_PumpEvents()
 
       if (read(sstAndroid.pipeKeyEvent[0], &stKeyEvent, sizeof(stKeyEvent)) == sizeof(stKeyEvent))
       {
-        orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD,
-                       stKeyEvent.u32Action == 0 ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
-                       orxNULL, orxNULL, &stKeyEvent);
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
       } else {
         LOGE("No data on command pipe!");
       }

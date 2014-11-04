@@ -177,7 +177,7 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
   pstKeyEvent = (orxANDROID_KEY_EVENT *) _pstEvent->pstPayload;
 
   /* Depending on ID */
-  switch(_pstEvent->eID)
+  switch(pstKeyEvent->u32Action)
   {
     case orxANDROID_EVENT_KEYBOARD_DOWN:
       eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
@@ -215,7 +215,7 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
 
       break;
 
-    case orxANDROID_EVENT_KEYBOARD_UP:
+    case orxANDROID_EVENT_KEYBOARD_UP: // UP
       eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
 
       if(eKey != orxKEYBOARD_KEY_NONE)

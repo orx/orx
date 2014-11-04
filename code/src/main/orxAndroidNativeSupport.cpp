@@ -274,13 +274,12 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
         /* Inits event's payload */
         orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
         stKeyEvent.u32KeyCode = AKeyEvent_getKeyCode(event);
+        stKeyEvent.u32Action = action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP;
         // TODO stKeyEvent.u32Unicode = unicode;
 
         if(action != AKEY_EVENT_ACTION_MULTIPLE)
         {
-            orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD,
-                       action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP,
-                       orxNULL, orxNULL, &stKeyEvent);
+            orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
         }
         else
         {
