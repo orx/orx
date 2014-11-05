@@ -2883,15 +2883,15 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
         if(pstBaseNode->pstCommand == orxNULL)
         {
           orxCOMMAND_TRIE_NODE *pstNode, *pstParent;
-          orxU32                i, u32Position;
+          orxS32                i, u32Position;
 
           /* Finds prefix node position */
           for(pstNode = orxCommand_FindTrieNode(zCommandName, orxFALSE), pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i = 0, u32Position = -1;
               pstNode != pstBaseNode;
               pstNode = pstParent, pstParent = (orxCOMMAND_TRIE_NODE *)orxTree_GetParent(&(pstNode->stNode)), i++)
           {
-            /* Has sibling? */
-            if((orxTree_GetSibling(&(pstNode->stNode)) != orxNULL) || ((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstParent->stNode)) != pstNode))
+            /* Has sibling, or is a command? */
+            if((orxTree_GetSibling(&(pstNode->stNode)) != orxNULL) || ((orxCOMMAND_TRIE_NODE *)orxTree_GetChild(&(pstParent->stNode)) != pstNode) || (pstParent->pstCommand != orxNULL))
             {
               /* Updates position */
               u32Position = i;
@@ -2911,7 +2911,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
     if(pstNextCommand == orxNULL)
     {
       /* Is base a different command? */
-      if((pstBaseNode->pstCommand != orxNULL) && (pstBaseNode != pstPreviousNode))
+      if((pstBaseNode->pstCommand != orxNULL) && (pstPreviousNode != orxNULL) && (pstBaseNode != pstPreviousNode))
       {
         /* Gets it */
         pstNextCommand = pstBaseNode->pstCommand;

@@ -621,7 +621,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           for(i = 1; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i] != orxCHAR_NULL; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i++] = orxCHAR_NULL);
 
           /* Partial prefix? */
-          if(u32PrefixLength < (orxU32)s32Offset)
+          if(u32PrefixLength <= (orxU32)s32Offset)
           {
             /* Updates cursor position */
             pstEntry->u32CursorIndex = (pcStart - pstEntry->acBuffer) + u32PrefixLength;
