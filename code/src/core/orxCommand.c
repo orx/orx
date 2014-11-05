@@ -1048,17 +1048,6 @@ void orxFASTCALL orxCommand_CommandExit(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
-/** Command: Echo
- */
-void orxFASTCALL orxCommand_CommandEcho(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  /* Updates result */
-  _pstResult->zValue = (_u32ArgNumber != 0) ? _astArgList[0].zValue : orxSTRING_EMPTY;
-
-  /* Done! */
-  return;
-}
-
 /** Command: ListCommands
  */
 void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1859,9 +1848,6 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Exit */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Exit, "Exit", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Message = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
-  /* Command: Echo */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Echo, "Echo", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Parameter", orxCOMMAND_VAR_TYPE_STRING});
-
   /* Command: ListCommands */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
@@ -1928,9 +1914,6 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Exit", "Command.Exit", orxNULL);
   /* Alias: Quit */
   orxCommand_AddAlias("Quit", "Command.Exit", orxNULL);
-
-  /* Alias: Echo */
-  orxCommand_AddAlias("Echo", "Command.Echo", orxNULL);
 
   /* Alias: Eval */
   orxCommand_AddAlias("Eval", "Command.Evaluate", orxNULL);
@@ -2027,9 +2010,6 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Quit */
   orxCommand_RemoveAlias("Quit");
 
-  /* Alias: Echo */
-  orxCommand_RemoveAlias("Echo");
-
   /* Alias: Eval */
   orxCommand_RemoveAlias("Eval");
   /* Alias: EvalIf */
@@ -2116,9 +2096,6 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Exit */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Exit);
-
-  /* Command: Echo */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Echo);
 
   /* Command: ListCommands */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ListCommands);
