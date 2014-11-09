@@ -109,7 +109,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
 extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
 {
-    // NOOP on NativeActivity
+  // NOOP on NativeActivity
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
@@ -120,6 +120,11 @@ extern "C" void *orxAndroid_GetJNIEnv()
 extern "C" jobject orxAndroid_GetActivity()
 {
   return sstAndroid.app_->activity->clazz;
+}
+
+extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
+{
+  // TODO
 }
 
 extern "C" ANativeActivity* orxAndroid_GetNativeActivity()

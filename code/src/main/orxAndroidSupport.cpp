@@ -79,6 +79,7 @@ typedef struct __orxANDROID_STATIC_t {
 	jmethodID midSetWindowFormat;
         jmethodID midGetActivity;
         jmethodID midGetApplicationContext;
+        jmethodID midGetDeviceIds;
 
         // AssetManager
         AAssetManager *poAssetManager;
@@ -90,6 +91,7 @@ typedef struct __orxANDROID_STATIC_t {
         int pipeCmd[2];
         int pipeTouchEvent[2];
         int pipeKeyEvent[2];
+        int pipeJoystickEvent[2];
 
         orxBOOL bPaused;
         orxBOOL bDestroyRequested;
@@ -227,8 +229,13 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
+    sstAndroid.midGetDeviceIds = mEnv->GetMethodID(objClass, "getDeviceIds", "()[I");
 
-    if(!sstAndroid.midGetRotation || !sstAndroid.midSetWindowFormat || !sstAndroid.midGetActivity || !sstAndroid.midGetApplicationContext) {
+    if(!sstAndroid.midGetRotation
+       || !sstAndroid.midSetWindowFormat
+       || !sstAndroid.midGetActivity
+       || !sstAndroid.midGetApplicationContext
+       || !sstAndroid.midGetDeviceIds) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
 
@@ -250,6 +257,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeCmd[0], LOOPER_ID_MAIN, ALOOPER_EVENT_INPUT, NULL, NULL);
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0], LOOPER_ID_KEY_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
     ALooper_addFd(sstAndroid.looper, sstAndroid.pipeTouchEvent[0], LOOPER_ID_TOUCH_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
+    ALooper_addFd(sstAndroid.looper, sstAndroid.pipeJoystickEvent[0], LOOPER_ID_JOYSTICK_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
 
     LOGI("orxAndroid_Init() finished!");
 }
@@ -270,6 +278,7 @@ static void orxAndroid_Exit(JNIEnv* env)
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeCmd[0]);
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeKeyEvent[0]);
   ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeTouchEvent[0]);
+  ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeJoystickEvent[0]);
 
   close(sstAndroid.pipeCmd[0]);
   close(sstAndroid.pipeCmd[1]);
@@ -285,6 +294,11 @@ static void orxAndroid_Exit(JNIEnv* env)
   close(sstAndroid.pipeKeyEvent[1]);
   sstAndroid.pipeKeyEvent[0] = -1;
   sstAndroid.pipeKeyEvent[1] = -1;
+
+  close(sstAndroid.pipeJoystickEvent[0]);
+  close(sstAndroid.pipeJoystickEvent[1]);
+  sstAndroid.pipeJoystickEvent[0] = -1;
+  sstAndroid.pipeJoystickEvent[1] = -1;
 }
 
 /* Main function to call */
@@ -305,6 +319,12 @@ extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv
 
     // setup looper for key events
     if (pipe(sstAndroid.pipeKeyEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
+
+    // setup looper for joystick events
+    if (pipe(sstAndroid.pipeJoystickEvent)) {
         LOGE("could not create pipe: %s", strerror(errno));
         return;
     }
@@ -372,20 +392,20 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnTouch(
                                     jint touch_device_id_in, jint pointer_finger_id_in,
                                     jint action, jint x, jint y, jint p)
 {
-    orxANDROID_TOUCH_EVENT stTouchEvent;
+  orxANDROID_TOUCH_EVENT stTouchEvent;
 
-    stTouchEvent.u32ID = pointer_finger_id_in;
-    stTouchEvent.u32Action = action;
-    stTouchEvent.fX = orx2F(x);
-    stTouchEvent.fY = orx2F(y);
+  stTouchEvent.u32ID = pointer_finger_id_in;
+  stTouchEvent.u32Action = action;
+  stTouchEvent.fX = orx2F(x);
+  stTouchEvent.fY = orx2F(y);
 
-    if(sstAndroid.pipeTouchEvent[1] != -1)
+  if(sstAndroid.pipeTouchEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
     {
-        if (write(sstAndroid.pipeTouchEvent[1], &stTouchEvent, sizeof(stTouchEvent)) != sizeof(stTouchEvent))
-        {
-            LOGE("Failure writing touch event: %s\n", strerror(errno));
-        }
+      LOGE("Failure writing touch event: %s\n", strerror(errno));
     }
+  }
 }
 
 // Quit
@@ -442,26 +462,102 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnFocusChanged(JNIEnv
 
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceAdded(JNIEnv* env, jobject thiz, jint deviceId)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_ADDED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceChanged(JNIEnv* env, jobject thiz, jint deviceId)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_CHANGED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnInputDeviceRemoved(JNIEnv* env, jobject thiz, jint deviceId)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_REMOVED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
-extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickMove(JNIEnv* env, jobject thiz, jint deviceId)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickMove(JNIEnv* env, jobject thiz, jint deviceId, jfloatArray axis)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_MOVE;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  env->GetFloatArrayRegion(axis, 0, 8, &stJoystickEvent.stAxisData.afValues[0]);
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickDown(JNIEnv* env, jobject thiz, jint deviceId, jint keycode)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_DOWN;
+  stJoystickEvent.u32DeviceId = deviceId;
+  stJoystickEvent.u32KeyCode = keycode;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickUp(JNIEnv* env, jobject thiz, jint deviceId, jint keycode)
 {
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_UP;
+  stJoystickEvent.u32DeviceId = deviceId;
+  stJoystickEvent.u32KeyCode = keycode;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 class LocalReferenceHolder
@@ -561,6 +657,16 @@ extern "C" jobject orxAndroid_GetActivity()
   JNIEnv *env = Android_JNI_GetEnv();
   jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
   return jActivity;
+}
+
+extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
+{
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  jintArray retval = (jintArray) env->CallObjectMethod(jActivity, sstAndroid.midGetDeviceIds);
+  env->GetIntArrayRegion(retval, 0, 4, (jint*) &deviceIds[0]);
+  env->DeleteLocalRef(retval);
+  env->DeleteLocalRef(jActivity);
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
@@ -714,6 +820,18 @@ extern "C" void orxAndroid_PumpEvents()
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
           break;
         }
+      } else {
+        LOGE("No data on command pipe!");
+      }
+    }
+
+    if(ident == LOOPER_ID_JOYSTICK_EVENT)
+    {
+      orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+      if (read(sstAndroid.pipeJoystickEvent[0], &stJoystickEvent, sizeof(stJoystickEvent)) == sizeof(stJoystickEvent))
+      {
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_JOYSTICK, 0, orxNULL, orxNULL, &stJoystickEvent);
       } else {
         LOGE("No data on command pipe!");
       }

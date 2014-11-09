@@ -61,41 +61,79 @@ extern "C"
 
 #ifdef __orxANDROID__
 
-enum {
-    /**
-     * Looper data ID of commands coming from the app's main thread, which
-     * is returned as an identifier from ALooper_pollOnce().  The data for this
-     * identifier is a pointer to an android_poll_source structure.
-     * These can be retrieved and processed with android_app_read_cmd()
-     * and android_app_exec_cmd().
-     */
-    LOOPER_ID_MAIN = 1,
-    LOOPER_ID_SENSOR = 2,
-    LOOPER_ID_KEY_EVENT = 3,
-    LOOPER_ID_TOUCH_EVENT = 4,
-    LOOPER_ID_USER = 5
+enum
+{
+  /**
+   * Looper data ID of commands coming from the app's main thread, which
+   * is returned as an identifier from ALooper_pollOnce().  The data for this
+   * identifier is a pointer to an android_poll_source structure.
+   * These can be retrieved and processed with android_app_read_cmd()
+   * and android_app_exec_cmd().
+   */
+  LOOPER_ID_MAIN = 1,
+  LOOPER_ID_SENSOR = 2,
+  LOOPER_ID_KEY_EVENT = 3,
+  LOOPER_ID_TOUCH_EVENT = 4,
+  LOOPER_ID_JOYSTICK_EVENT = 5,
+  LOOPER_ID_USER = 6
 };
 
-enum {
-    APP_CMD_PAUSE,
-    APP_CMD_RESUME,
-    APP_CMD_SURFACE_DESTROYED,
-    APP_CMD_SURFACE_CREATED,
-    APP_CMD_SURFACE_CHANGED,
-    APP_CMD_QUIT,
-    APP_CMD_FOCUS_LOST,
-    APP_CMD_FOCUS_GAINED
+enum
+{
+  APP_CMD_PAUSE,
+  APP_CMD_RESUME,
+  APP_CMD_SURFACE_DESTROYED,
+  APP_CMD_SURFACE_CREATED,
+  APP_CMD_SURFACE_CHANGED,
+  APP_CMD_QUIT,
+  APP_CMD_FOCUS_LOST,
+  APP_CMD_FOCUS_GAINED
 };
 
-typedef struct __orxANDROID_TOUCH_EVENT_t {
-        orxU32   u32ID;
-        orxFLOAT fX;
-        orxFLOAT fY;
-        orxU32   u32Action;
+typedef struct __orxANDROID_TOUCH_EVENT_t
+{
+  orxU32   u32ID;
+  orxFLOAT fX;
+  orxFLOAT fY;
+  orxU32   u32Action;
 
 } orxANDROID_TOUCH_EVENT;
 
 #endif /*__orxANDROID__*/
+
+typedef struct __orxANDROID_AXIS_DATA_t
+{
+  union
+  {
+    struct
+    {
+      orxFLOAT fX;
+      orxFLOAT fY;
+      orxFLOAT fZ;
+      orxFLOAT fRZ;
+      orxFLOAT fU;
+      orxFLOAT fV;
+      orxFLOAT fHAT_X;
+      orxFLOAT fHAT_Y;
+    };
+
+    orxFLOAT afValues[8];
+  };
+
+} orxANDROID_AXIS_DATA;
+
+typedef struct __orxANDROID_JOYSTICK_EVENT_t
+{
+  orxU32 u32Type;
+  orxU32 u32DeviceId;
+
+  union
+  {
+    orxU32 u32KeyCode;
+    orxANDROID_AXIS_DATA stAxisData;
+  };
+
+} orxANDROID_JOYSTICK_EVENT;
 
 typedef struct __orxANDROID_KEY_EVENT_t {
        orxU32 u32Action;
@@ -116,9 +154,9 @@ ANativeWindow * orxAndroid_GetNativeWindow();
   Get the internal storage path
   */
 const char * orxAndroid_GetInternalStoragePath();
-
-orxU32 orxAndroid_JNI_GetRotation();
-void   orxAndroid_JNI_SetWindowFormat(orxU32 format);
+orxU32       orxAndroid_JNI_GetRotation();
+void         orxAndroid_JNI_SetWindowFormat(orxU32 format);
+void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[4]);
 
 /**
   Register APK resources IO
@@ -149,6 +187,14 @@ ANativeActivity* orxAndroid_GetNativeActivity();
 #define orxANDROID_EVENT_SURFACE_CHANGED     2
 
 #define orxANDROID_EVENT_TYPE_ACCELERATE     (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 2)
+
+#define orxANDROID_EVENT_TYPE_JOYSTICK       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 3)
+#define orxANDROID_EVENT_JOYSTICK_ADDED      0
+#define orxANDROID_EVENT_JOYSTICK_REMOVED    1
+#define orxANDROID_EVENT_JOYSTICK_CHANGED    2
+#define orxANDROID_EVENT_JOYSTICK_DOWN       3
+#define orxANDROID_EVENT_JOYSTICK_UP         4
+#define orxANDROID_EVENT_JOYSTICK_MOVE       5
 
 #endif /* _orxANDROID_H_ */
 
