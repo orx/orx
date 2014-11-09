@@ -53,6 +53,7 @@
 #define orxCONSOLE_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
 #define orxCONSOLE_KU32_STATIC_FLAG_ENABLED           0x00000002                      /**< Enabled flag */
 #define orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE       0x00000004                      /**< Insert mode flag */
+#define orxCONSOLE_KU32_STATIC_FLAG_ECHO              0x00000008                      /**< Echo flag */
 
 #define orxCONSOLE_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
@@ -621,7 +622,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           for(i = 1; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i] != orxCHAR_NULL; pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset + i++] = orxCHAR_NULL);
 
           /* Partial prefix? */
-          if(u32PrefixLength < (orxU32)s32Offset)
+          if(u32PrefixLength <= (orxU32)s32Offset)
           {
             /* Updates cursor position */
             pstEntry->u32CursorIndex = (pcStart - pstEntry->acBuffer) + u32PrefixLength;
@@ -671,6 +672,16 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
           /* Logs it */
           orxConsole_Log(acValue);
+
+          /* Should echo? */
+          if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ECHO))
+          {
+            /* Echos command */
+            orxLOG("$ %s", pstEntry->acBuffer);
+
+            /* Echos result */
+            orxLOG("%s", acValue);
+          }
         }
         else
         {
@@ -914,6 +925,30 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: Echo
+ */
+void orxFASTCALL orxConsole_CommandEcho(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Echo on? */
+  if(_astArgList[0].bValue != orxFALSE)
+  {
+    /* Updates status */
+    orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ECHO, orxCONSOLE_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_NONE, orxCONSOLE_KU32_STATIC_FLAG_ECHO);
+  }
+
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue;
+
+  /* Done! */
+  return;
+}
+
+
 /** Registers all the console commands
  */
 static orxINLINE void orxConsole_RegisterCommands()
@@ -927,8 +962,14 @@ static orxINLINE void orxConsole_RegisterCommands()
   /* Command: SetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Console, SetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 0, 1, {"Color = <default>", orxCOMMAND_VAR_TYPE_VECTOR});
 
+  /* Command: Echo */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, Echo, "Echo", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Echo = true", orxCOMMAND_VAR_TYPE_BOOL});
+
   /* Alias: Log */
   orxCommand_AddAlias("Log", "Console.Log", orxNULL);
+
+  /* Alias: Echo */
+  orxCommand_AddAlias("Echo", "Console.Echo", orxNULL);
 }
 
 /** Unregisters all the console commands
@@ -938,6 +979,9 @@ static orxINLINE void orxConsole_UnregisterCommands()
   /* Alias: Log */
   orxCommand_RemoveAlias("Log");
 
+  /* Alias: Echo */
+  orxCommand_RemoveAlias("Echo");
+
   /* Command: Enable */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, Enable);
 
@@ -946,6 +990,9 @@ static orxINLINE void orxConsole_UnregisterCommands()
 
   /* Command: SetColor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, SetColor);
+
+  /* Command: Echo */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Console, Echo);
 }
 
 

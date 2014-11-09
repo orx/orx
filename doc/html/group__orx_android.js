@@ -13,6 +13,7 @@ var group__orx_android =
     [ "orxANDROID_EVENT_SURFACE_CHANGED", "group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff", null ],
     [ "orxANDROID_EVENT_SURFACE_CREATED", "group__orx_android.html#ga0cc518bbc6da8cb86d21aa071da39db3", null ],
     [ "orxANDROID_EVENT_SURFACE_DESTROYED", "group__orx_android.html#gaf58cbf6efdf1f84d0d307885a44158d2", null ],
+    [ "orxANDROID_EVENT_TYPE_ACCELERATE", "group__orx_android.html#ga12c34ada03ea722b1436196ffcc71e7f", null ],
     [ "orxANDROID_EVENT_TYPE_KEYBOARD", "group__orx_android.html#ga2571fc956eb158bdd227cc4477fd5e6c", null ],
     [ "orxANDROID_EVENT_TYPE_SURFACE", "group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81", null ],
     [ "orxAndroid_GetActivity", "group__orx_android.html#ga20a0d5ce4493d08bbd5a8e726c602ec0", null ],
