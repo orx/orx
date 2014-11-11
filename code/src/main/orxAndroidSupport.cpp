@@ -76,7 +76,6 @@ typedef struct __orxANDROID_STATIC_t {
 
         // method signatures
         jmethodID midGetRotation;
-	jmethodID midSetWindowFormat;
         jmethodID midGetActivity;
         jmethodID midGetApplicationContext;
         jmethodID midGetDeviceIds;
@@ -228,11 +227,9 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
-    sstAndroid.midSetWindowFormat = mEnv->GetMethodID(objClass, "setWindowFormat","(I)V");
     sstAndroid.midGetDeviceIds = mEnv->GetMethodID(objClass, "getDeviceIds", "()[I");
 
     if(!sstAndroid.midGetRotation
-       || !sstAndroid.midSetWindowFormat
        || !sstAndroid.midGetActivity
        || !sstAndroid.midGetApplicationContext
        || !sstAndroid.midGetDeviceIds) {
@@ -637,14 +634,6 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
   env->DeleteLocalRef(jActivity);
   return rotation;
-}
-
-extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
-{
-  JNIEnv *env = Android_JNI_GetEnv();
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-  env->CallVoidMethod(jActivity, sstAndroid.midSetWindowFormat, format);
-  env->DeleteLocalRef(jActivity);
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()

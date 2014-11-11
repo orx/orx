@@ -107,11 +107,6 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
     return sstAndroid.app_->window;
 }
 
-extern "C" void orxAndroid_JNI_SetWindowFormat(orxU32 format)
-{
-  // NOOP on NativeActivity
-}
-
 extern "C" void *orxAndroid_GetJNIEnv()
 {
   return Android_JNI_GetEnv();

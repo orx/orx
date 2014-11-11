@@ -422,7 +422,6 @@ static void orxAndroid_Display_CreateSurface()
 
   ANativeWindow *window = orxAndroid_GetNativeWindow();
   ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
-  orxAndroid_JNI_SetWindowFormat(sstDisplay.format);
 
   sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
   eglASSERT();
