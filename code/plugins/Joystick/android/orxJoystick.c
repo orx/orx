@@ -39,6 +39,7 @@
 
 #define KZ_CONFIG_ANDROID                        "Android"
 #define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
+#define KZ_CONFIG_USE_JOYSTICK                   "UseJoystick"
 
 #define orxANDROID_LAST_JOYSTICK                  3
 
@@ -178,12 +179,7 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
   switch(pstJoystickEvent->u32Type)
   {
     case orxANDROID_EVENT_JOYSTICK_ADDED:
-      if(newDeviceIndex(pstJoystickEvent->u32DeviceId) == orxSTATUS_SUCCESS)
-      {
-        sstJoystick.bUseJoystick = orxTRUE;
-        // TODO disable accelerometer
-      }
-      else
+      if(newDeviceIndex(pstJoystickEvent->u32DeviceId) != orxSTATUS_SUCCESS)
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "couldn't add new device %d", pstJoystickEvent->u32DeviceId);
       }
@@ -199,8 +195,6 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown device %d", pstJoystickEvent->u32DeviceId);
       }
-
-      // TODO if no more connected devices, enable accelerometer
       break;
 
     case orxANDROID_EVENT_JOYSTICK_CHANGED:
@@ -428,17 +422,20 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
+    orxConfig_PushSection(KZ_CONFIG_ANDROID);
+
     sstJoystick.s32ScreenRotation = -1;
     sstJoystick.bAccelerometerEnabled = orxFALSE;
-    orxAndroid_JNI_GetDeviceIds(sstJoystick.au32DeviceIds);
-    sstJoystick.bUseJoystick = (sstJoystick.au32DeviceIds[0] != 0);
-    sstJoystick.sensorManager = ASensorManager_getInstance();
+    sstJoystick.bUseJoystick = orxConfig_GetBool(KZ_CONFIG_USE_JOYSTICK);
 
-    orxEvent_AddHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
-
-    /* Has device ? */
-    if(!sstJoystick.bUseJoystick)
+    if(sstJoystick.bUseJoystick == orxTRUE)
     {
+      orxAndroid_JNI_GetDeviceIds(sstJoystick.au32DeviceIds);
+      orxEvent_AddHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
+    }
+    else
+    {
+      sstJoystick.sensorManager = ASensorManager_getInstance();
       sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
 
       if(sstJoystick.accelerometerSensor != NULL)
@@ -453,8 +450,6 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
               ALooper* looper = ALooper_forThread();
               sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
 
-              orxConfig_PushSection(KZ_CONFIG_ANDROID);
-
               if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
               {
                 sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
@@ -464,8 +459,6 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
                 sstJoystick.u32Frequency = 60;
               }
 
-              orxConfig_PopSection();
-
               /* enable sensor */
               enableSensorManager();
             }
@@ -473,6 +466,8 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
         }
       }
     }
+
+    orxConfig_PopSection();
 
     /* Updates status */
     sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
