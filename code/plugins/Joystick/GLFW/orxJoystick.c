@@ -254,7 +254,7 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 
       /* Gets axis */
       s32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
-    
+
       /* Updates result */
       fResult = orx2F(sstJoystick.astJoyInfoList[u32ID].afAxisInfoList[s32Axis]);
     }
@@ -305,7 +305,7 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
 
       /* Gets button */
       s32Button = _eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
-    
+
       /* Updates result */
       bResult = (sstJoystick.astJoyInfoList[u32ID].au8ButtonInfoList[s32Button] != GLFW_RELEASE) ? orxTRUE : orxFALSE;
     }
