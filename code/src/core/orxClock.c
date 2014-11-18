@@ -79,6 +79,8 @@
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
+#define orxCLOCK_KU32_BANK_SIZE                 8           /**< Bank size */
+
 #define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
 
 
@@ -337,7 +339,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
   if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY))
   {
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(CLOCK, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(CLOCK, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxCLOCK_KU32_BANK_SIZE, orxNULL);
 
     /* Successful? */
     if(eResult != orxSTATUS_FAILURE)

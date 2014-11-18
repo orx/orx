@@ -65,6 +65,8 @@
 
 #define orxTEXTURE_KU32_TABLE_SIZE              128
 
+#define orxTEXTURE_KU32_BANK_SIZE               128
+
 #define orxTEXTURE_KU32_HOTLOAD_DELAY           orx2F(0.01f)
 #define orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER      10
 
@@ -545,7 +547,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
     orxMemory_Zero(&sstTexture, sizeof(orxTEXTURE_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTEXTURE_KU32_BANK_SIZE, orxNULL);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)

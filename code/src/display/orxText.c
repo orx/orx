@@ -66,6 +66,8 @@
 
 #define orxTEXT_KC_LOCALE_MARKER              '$'
 
+#define orxTEXT_KU32_BANK_SIZE                128         /**< Bank size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -478,7 +480,7 @@ orxSTATUS orxFASTCALL orxText_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTEXT_KU32_BANK_SIZE, orxNULL);
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)

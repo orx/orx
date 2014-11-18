@@ -88,6 +88,8 @@
 #define orxTIMELINE_KU32_TRACK_TABLE_SIZE             256
 #define orxTIMELINE_KU32_TRACK_BANK_SIZE              128
 
+#define orxTIMELINE_KU32_BANK_SIZE                    256         /**< Bank size */
+
 #define orxTIMELINE_KU32_TRACK_NUMBER                 8
 
 #define orxTIMELINE_KZ_CONFIG_LOOP                    "Loop"
@@ -708,7 +710,7 @@ orxSTATUS orxFASTCALL orxTimeLine_Init()
     if(sstTimeLine.pstTrackTable != orxNULL)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(TIMELINE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxTimeLine_Update);
+      eResult = orxSTRUCTURE_REGISTER(TIMELINE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTIMELINE_KU32_BANK_SIZE, &orxTimeLine_Update);
     }
     else
     {

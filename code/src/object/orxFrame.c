@@ -61,6 +61,11 @@
 #define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
+/** Misc defines
+ */
+#define orxFRAME_KU32_BANK_SIZE             512         /**< Bank size */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -655,7 +660,7 @@ orxSTATUS orxFASTCALL orxFrame_Init()
     sstFrame.u32Flags = orxFRAME_KU32_STATIC_MASK_DEFAULT|orxFRAME_KU32_STATIC_FLAG_READY;
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxFRAME_KU32_BANK_SIZE, orxNULL);
 
     /* Successful? */
     if(eResult != orxSTATUS_FAILURE)

@@ -74,6 +74,8 @@
  */
 #define orxSOUND_KU32_SAMPLE_BANK_SIZE                  32
 
+#define orxSOUND_KU32_BANK_SIZE                         64          /**< Bank size */
+
 #define orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER       1
 #define orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE          44100
 
@@ -800,7 +802,7 @@ orxSTATUS orxFASTCALL orxSound_Init()
       if(sstSound.pstSampleBank != orxNULL)
       {
         /* Registers structure type */
-        eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSound_Update);
+        eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUND_KU32_BANK_SIZE, &orxSound_Update);
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);

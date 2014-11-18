@@ -71,6 +71,7 @@
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 
 #define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
+#define orxCAMERA_KU32_BANK_SIZE              16          /**< Bank size */
 
 
 /***************************************************************************
@@ -640,7 +641,7 @@ orxSTATUS orxFASTCALL orxCamera_Init()
       orxCamera_RegisterCommands();
 
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxCAMERA_KU32_BANK_SIZE, orxNULL);
     }
   }
   else

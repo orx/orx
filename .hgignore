@@ -65,3 +65,4 @@ code/bin
 BuildLog.htm
 *.sdf
 obj/**.cache
+*.opensdf

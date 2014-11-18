@@ -69,6 +69,11 @@
 #define orxFXPOINTER_HOLDER_KU32_MASK_ALL       0xFFFFFFFF  /**< All mask */
 
 
+/** Misc defines
+ */
+#define orxFXPOINTER_KU32_BANK_SIZE             128         /**< Bank size */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -303,7 +308,7 @@ orxSTATUS orxFASTCALL orxFXPointer_Init()
     orxMemory_Zero(&sstFXPointer, sizeof(orxFXPOINTER_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(FXPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxFXPointer_Update);
+    eResult = orxSTRUCTURE_REGISTER(FXPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxFXPOINTER_KU32_BANK_SIZE, &orxFXPointer_Update);
 
     /* Initialized? */
     if(eResult != orxSTATUS_FAILURE)

@@ -89,6 +89,8 @@
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
 #define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
 
+#define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -656,7 +658,7 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSpawner_Update);
+      eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSPAWNER_KU32_BANK_SIZE, &orxSpawner_Update);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)

@@ -84,9 +84,11 @@
 
 /** Misc defines
  */
-#define orxFX_KU32_REFERENCE_TABLE_SIZE         32
+#define orxFX_KU32_REFERENCE_TABLE_SIZE         64
 
 #define orxFX_KU32_SLOT_NUMBER                  8
+
+#define orxFX_KU32_BANK_SIZE                    64
 
 #define orxFX_KZ_CONFIG_SLOT_LIST               "SlotList"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"
@@ -449,7 +451,7 @@ orxSTATUS orxFASTCALL orxFX_Init()
     if(sstFX.pstReferenceTable != orxNULL)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(FX, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(FX, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxFX_KU32_BANK_SIZE, orxNULL);
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);

@@ -132,6 +132,8 @@
 #define orxBODY_KU32_PART_BANK_SIZE           256
 #define orxBODY_KU32_JOINT_BANK_SIZE          32
 
+#define orxBODY_KU32_BANK_SIZE                256         /**< Bank size */
+
 
 /** Helpers
  */
@@ -319,7 +321,7 @@ orxSTATUS orxFASTCALL orxBody_Init()
     && (sstBody.pstJointBank != orxNULL))
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxBODY_KU32_BANK_SIZE, orxNULL);
     }
     else
     {

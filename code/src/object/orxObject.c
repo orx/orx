@@ -90,6 +90,8 @@
  */
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
+#define orxOBJECT_KU32_BANK_SIZE                1024
+
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
 
@@ -2397,7 +2399,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
     orxMemory_Zero(&sstObject, sizeof(orxOBJECT_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxOBJECT_KU32_BANK_SIZE, orxNULL);
 
     /* Initialized? */
     if(eResult != orxSTATUS_FAILURE)

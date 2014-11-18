@@ -127,6 +127,7 @@
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          32          /**< Reference table size */
+#define orxANIMSET_KU32_BANK_SIZE                     64          /**< Bank size */
 
 
 /***************************************************************************
@@ -1298,7 +1299,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
     if(sstAnimSet.pstReferenceTable != orxNULL)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMSET_KU32_BANK_SIZE, orxNULL);
     }
   }
   else

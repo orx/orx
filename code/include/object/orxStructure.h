@@ -80,8 +80,8 @@
 
 /** Structure register macro
  */
-#define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
-  orxStructure_Register(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), UPDATE_FUNCTION)
+#define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, BANK_SIZE, UPDATE_FUNCTION) \
+  orxStructure_Register(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), BANK_SIZE, UPDATE_FUNCTION)
 
 /** Structure assert
  */
@@ -223,10 +223,11 @@ extern orxDLLAPI void orxFASTCALL                       orxStructure_Exit();
  * @param[in]   _eStorageType   Storage type to use for this structure type
  * @param[in]   _eMemoryType    Memory type to store this structure type
  * @param[in]   _u32Size        Structure size
+ * @param[in]   _u32BankSize    Bank (segment) size
  * @param[in]   _pfnUpdate      Structure update function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
+extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxU32 _u32BankSize, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
 
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID

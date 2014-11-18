@@ -100,6 +100,8 @@
 #define orxGRAPHIC_KZ_Y                           "y"
 #define orxGRAPHIC_KZ_BOTH                        "both"
 
+#define orxGRAPHIC_KU32_BANK_SIZE                 1024
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -250,7 +252,7 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxGRAPHIC_KU32_BANK_SIZE, orxNULL);
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)

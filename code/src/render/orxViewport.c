@@ -71,6 +71,8 @@
 
 /** Misc defines
  */
+#define orxVIEWPORT_KU32_BANK_SIZE              16          /**< Bank size */
+
 #define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME      "Texture"
 #define orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME "TextureList"
 #define orxVIEWPORT_KZ_CONFIG_POSITION          "Position"
@@ -328,7 +330,7 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxVIEWPORT_KU32_BANK_SIZE, orxNULL);
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)

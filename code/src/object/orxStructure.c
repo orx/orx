@@ -51,9 +51,6 @@
 
 /** Defines
  */
-#define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   128
-
-#define orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE 128
 
 
 /***************************************************************************
@@ -164,36 +161,15 @@ orxSTATUS orxFASTCALL orxStructure_Init()
     /* For all IDs */
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
-      /* Creates a bank */
-      sstStructure.astStorage[i].pstNodeBank = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
       /* Cleans storage type */
       sstStructure.astStorage[i].eType = orxSTRUCTURE_STORAGE_TYPE_NONE;
     }
 
-    /* All banks created? */
-    if(i == orxSTRUCTURE_ID_NUMBER)
-    {
-      /* Inits Flags */
-      sstStructure.u32Flags = orxSTRUCTURE_KU32_STATIC_FLAG_READY;
+    /* Inits Flags */
+    sstStructure.u32Flags = orxSTRUCTURE_KU32_STATIC_FLAG_READY;
 
-      /* Everything's ok */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      orxU32 j;
-
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create bank with ID (%d).", i);
-
-      /* For all created banks */
-      for(j = 0; j < i; j++)
-      {
-        /* Deletes it */
-        orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
-      }
-    }
+    /* Updates status */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -245,10 +221,14 @@ void orxFASTCALL orxStructure_Exit()
         }
       }
 
-      /* Deletes node bank */
-      orxBank_Delete(sstStructure.astStorage[i].pstNodeBank);
+      /* Is node bank valid? */
+      if(sstStructure.astStorage[i].pstNodeBank != orxNULL)
+      {
+        /* Deletes it */
+        orxBank_Delete(sstStructure.astStorage[i].pstNodeBank);
+      }
 
-      /* Is bank valid? */
+      /* Is structure bank valid? */
       if(sstStructure.astStorage[i].pstStructureBank != orxNULL)
       {
         /* Deletes it */
@@ -274,10 +254,11 @@ void orxFASTCALL orxStructure_Exit()
  * @param[in]   _eStorageType   Storage type to use for this structure type
  * @param[in]   _eMemoryTyp     Memory type to store this structure type
  * @param[in]   _u32Size        Structure size
+ * @param[in]   _u32BankSize    Bank (segment) size
  * @param[in]   _pfnUpdate      Structure update function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)
+orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxU32 _u32BankSize, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -285,17 +266,21 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
   orxASSERT(_u32Size != 0);
+  orxASSERT(_u32BankSize != 0);
+  orxASSERT(_u32BankSize <= 0xFFFF);
   orxASSERT(_eStorageType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
   orxASSERT(_eMemoryType < orxMEMORY_TYPE_NUMBER);
 
   /* Not already registered? */
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
-    /* Creates bank for structure storage */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
+    /* Creates associated banks */
+    sstStructure.astStorage[_eStructureID].pstNodeBank      = orxBank_Create((orxU16)_u32BankSize, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create((orxU16)_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
 
     /* Valid? */
-    if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
+    if((sstStructure.astStorage[_eStructureID].pstNodeBank != orxNULL)
+    && (sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL))
     {
       /* Registers it */
       sstStructure.astInfo[_eStructureID].eStorageType  = _eStorageType;
@@ -307,6 +292,18 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
     }
     else
     {
+      /* Clean up banks */
+      if(sstStructure.astStorage[_eStructureID].pstNodeBank != orxNULL)
+      {
+        orxBank_Delete(sstStructure.astStorage[_eStructureID].pstNodeBank);
+        sstStructure.astStorage[_eStructureID].pstNodeBank = orxNULL;
+      }
+      if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
+      {
+        orxBank_Delete(sstStructure.astStorage[_eStructureID].pstStructureBank);
+        sstStructure.astStorage[_eStructureID].pstStructureBank = orxNULL;
+      }
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage bank created.");
     }

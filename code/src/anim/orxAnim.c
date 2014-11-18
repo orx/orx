@@ -63,6 +63,8 @@
 #define orxANIM_KZ_CONFIG_KEY_EVENT_VALUE   "KeyEventValue"
 #define orxANIM_KZ_CONFIG_DEFAULT_DURATION  "DefaultKeyDuration"
 
+#define orxANIM_KU32_BANK_SIZE              128         /**< Bank size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -370,7 +372,7 @@ orxSTATUS orxFASTCALL orxAnim_Init()
     orxMemory_Zero(&sstAnim, sizeof(orxANIM_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIM_KU32_BANK_SIZE, orxNULL);
   }
   else
   {

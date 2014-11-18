@@ -68,8 +68,10 @@
 
 /** Misc defines
  */
-#define orxSHADER_KU32_REFERENCE_TABLE_SIZE   16
+#define orxSHADER_KU32_REFERENCE_TABLE_SIZE   32
 #define orxSHADER_KU32_PARAM_BANK_SIZE        8
+
+#define orxSHADER_KU32_BANK_SIZE              32          /**< Bank size */
 
 #define orxSHADER_KZ_CONFIG_CODE              "Code"
 #define orxSHADER_KZ_CONFIG_PARAM_LIST        "ParamList"
@@ -482,7 +484,7 @@ orxSTATUS orxFASTCALL orxShader_Init()
     if(sstShader.pstReferenceTable != orxNULL)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SHADER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(SHADER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADER_KU32_BANK_SIZE, orxNULL);
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)

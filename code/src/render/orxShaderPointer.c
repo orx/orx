@@ -73,6 +73,11 @@
 #define orxSHADERPOINTER_HOLDER_KU32_MASK_ALL       0xFFFFFFFF  /**< All mask */
 
 
+/** Misc defines
+ */
+#define orxSHADERPOINTER_KU32_BANK_SIZE             256         /**< Bank size */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -281,7 +286,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+      eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADERPOINTER_KU32_BANK_SIZE, orxNULL);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)

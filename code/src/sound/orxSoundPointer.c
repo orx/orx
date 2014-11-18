@@ -69,6 +69,11 @@
 #define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
 
+/** Misc defines
+ */
+#define orxSOUNDPOINTER_KU32_BANK_SIZE              128         /**< Bank size */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -328,7 +333,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxSoundPointer_Update);
+      eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUNDPOINTER_KU32_BANK_SIZE, &orxSoundPointer_Update);
 
       /* Initialized? */
       if(eResult != orxSTATUS_FAILURE)

@@ -72,7 +72,7 @@
 /** Misc defines
  */
 #define orxANIMPOINTER_KZ_CONFIG_FREQUENCY            "Frequency"
-
+#define orxANIMPOINTER_KU32_BANK_SIZE                 128         /**< Bank size */
 #define orxANIMPOINTER_KF_FREQUENCY_DEFAULT           1.0         /**< Default animation frequency */
 
 
@@ -399,7 +399,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Init()
     orxMemory_Zero(&sstAnimPointer, sizeof(orxANIMPOINTER_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(ANIMPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxAnimPointer_Update);
+    eResult = orxSTRUCTURE_REGISTER(ANIMPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMPOINTER_KU32_BANK_SIZE, &orxAnimPointer_Update);
   }
   else
   {
