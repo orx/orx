@@ -324,19 +324,20 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   orxU32 u32Dummy;
 
   /* Done! */
-  return orxBank_AllocateIndexed(_pstBank, &u32Dummy);
+  return orxBank_AllocateIndexed(_pstBank, &u32Dummy, orxNULL);
 }
 
 /** Allocates a new cell from the bank and returns its index
  * @param[in] _pstBank        Pointer on the memory bank to use
  * @param[out] _pu32ItemIndex Will be set with the allocated item index
+ * @param[out] _ppPrevious    If non-null, will contain previous neighbor if found
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIndex)
+void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIndex, void **_ppPrevious)
 {
   orxU32            u32SegmentIndex;
-  orxBANK_SEGMENT  *pstCurrentSegment;
-  void             *pCell = orxNULL;   /* Returned cell */
+  orxBANK_SEGMENT  *pstCurrentSegment, *pstPreviousSegment;
+  void             *pResult = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxBank_Allocate");
@@ -349,9 +350,9 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
   orxASSERT(_pu32ItemIndex != orxNULL);
 
   /* Finds the first segment with empty space */
-  for(u32SegmentIndex = 0, pstCurrentSegment = _pstBank->pstFirstSegment;
+  for(u32SegmentIndex = 0, pstCurrentSegment = _pstBank->pstFirstSegment, pstPreviousSegment = orxNULL;
       (pstCurrentSegment->pstNext != orxNULL) && (pstCurrentSegment->u32NbFree == 0);
-      u32SegmentIndex++, pstCurrentSegment = pstCurrentSegment->pstNext);
+      u32SegmentIndex++, pstPreviousSegment = pstCurrentSegment, pstCurrentSegment = pstCurrentSegment->pstNext);
 
   /* Is there a free space in the current segment ? (If no, try to expand it if allowed) */
   if((pstCurrentSegment->u32NbFree == 0) && (!(_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE)))
@@ -404,7 +405,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
     if(bFound)
     {
       /* Get the pointer on the cell according to index value and cells size */
-      pCell = (void *)(((orxU8 *)pstCurrentSegment->pSegmentData) + _pstBank->u32ElemSize * ((u32MapPartIndex << 5) + u32BitIndex));
+      pResult = (void *)(((orxU8 *)pstCurrentSegment->pSegmentData) + _pstBank->u32ElemSize * ((u32MapPartIndex << 5) + u32BitIndex));
 
       /* Decrease the number of free elements */
       pstCurrentSegment->u32NbFree--;
@@ -412,11 +413,27 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
       /* Updates bank counter */
       _pstBank->u32Counter++;
 
-      /* Set the bit as used */
+      /* Sets the bit as used */
       ((orxU32 *)(pstCurrentSegment->au32CellAllocationMap))[u32MapPartIndex] |= 1 << u32BitIndex;
 
       /* Updates item ID */
       *_pu32ItemIndex = (u32SegmentIndex * (orxU32)_pstBank->u16NbCellPerSegments) + (u32MapPartIndex << 5) + u32BitIndex;
+
+      /* Asked for previous element? */
+      if(_ppPrevious != orxNULL)
+      {
+        /* Is current allocation first in segment? */
+        if((u32MapPartIndex == 0) && (u32BitIndex == 0))
+        {
+          /* Updates previous */
+          *_ppPrevious = (pstPreviousSegment != orxNULL) ? (void *)(((orxU8 *)pstPreviousSegment->pSegmentData) + _pstBank->u32ElemSize * (_pstBank->u16NbCellPerSegments - 1)) : orxNULL;
+        }
+        else
+        {
+          /* Updates previous */
+          *_ppPrevious = (void *)(((orxU8 *)pResult) - _pstBank->u32ElemSize);
+        }
+      }
 
 #ifdef __orxMEMORY_DEBUG__
       {
@@ -443,7 +460,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return pCell;
+  return pResult;
 }
 
 /** Free an allocated cell

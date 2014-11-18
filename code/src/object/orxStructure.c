@@ -370,10 +370,11 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
   /* Is structure type registered? */
   if(sstStructure.astInfo[_eStructureID].u32Size != 0)
   {
-    orxU32 u32ItemID;
+    orxSTRUCTURE *pstPrevious;
+    orxU32        u32ItemID;
 
     /* Creates structure */
-    pstStructure = (orxSTRUCTURE *)orxBank_AllocateIndexed(sstStructure.astStorage[_eStructureID].pstStructureBank, &u32ItemID);
+    pstStructure = (orxSTRUCTURE *)orxBank_AllocateIndexed(sstStructure.astStorage[_eStructureID].pstStructureBank, &u32ItemID, (void **)&pstPrevious);
 
     /* Valid? */
     if(pstStructure != orxNULL)
@@ -399,8 +400,22 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         {
           case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
           {
-            /* Adds node to list */
-            eResult = orxLinkList_AddEnd(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
+            /* Has a previous element? */
+            if(pstPrevious != orxNULL)
+            {
+              orxSTRUCTURE_STORAGE_NODE *pstPreviousNode;
+
+              /* Gets previous' storage node */
+              pstPreviousNode = (orxSTRUCTURE_STORAGE_NODE *)pstPrevious->hStorageNode;
+
+              /* Adds node to list */
+              eResult = orxLinkList_AddAfter(&(pstPreviousNode->stLinkListNode), &(pstNode->stLinkListNode));
+            }
+            else
+            {
+              /* Adds node to list */
+              eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
+            }
 
             break;
           }
@@ -463,7 +478,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed adding node to list.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add node to list.");
 
           /* Frees allocated node & structure */
           orxBank_Free(sstStructure.astStorage[_eStructureID].pstNodeBank, pstNode);

@@ -66,3 +66,4 @@ BuildLog.htm
 *.sdf
 obj/**.cache
 *.opensdf
+*.unsuccessfulbuild

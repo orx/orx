@@ -95,9 +95,10 @@ extern orxDLLAPI void *orxFASTCALL          orxBank_Allocate(orxBANK *_pstBank);
 /** Allocates a new cell from the bank and returns its index
  * @param[in] _pstBank        Pointer on the memory bank to use
  * @param[out] _pu32ItemIndex Will be set with the allocated item index
+ * @param[out] _ppPrevious    If non-null, will contain previous neighbor if found
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-extern orxDLLAPI void *orxFASTCALL          orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIndex);
+extern orxDLLAPI void *orxFASTCALL          orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIndex, void **_ppPrevious);
 
 /** Frees an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
