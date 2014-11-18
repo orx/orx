@@ -304,7 +304,7 @@ $(document).ready(function(){initNavTree('orx_math_8h_source.html','');});
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  <span class="comment">/* This variable needs to be volatile otherwise gcc will aggressively optimize it away during the circular clamp trick */</span></div>
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  <span class="keyword">volatile</span> orxFLOAT fTemp;</div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  orxFLOAT          fOp;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  <span class="keyword">const</span> orxFLOAT    fP = 3.6f, fQ = 3.1f;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  <span class="keyword">const</span> orxFLOAT    fP = 3.584135056f, fQ = 3.10396624f;</div>
 <div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;</div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="comment">/* Brings operand to a normalized [-1, 1] range */</span></div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;  fOp = _fOp * (<a class="code" href="group__orx_type.html#ga90038a35c998993f88db62d2a02e4dc7">orxFLOAT_1</a> / <a class="code" href="group__orx_math.html#gaebc0034bd52ec9a0cd34031da1a9b7bb">orxMATH_KF_PI</a>);</div>

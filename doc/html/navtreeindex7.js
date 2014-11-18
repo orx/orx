@@ -1,5 +1,12 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba00444da683b7350bda3e46df238290e8":[1,38,38,5],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba0923e78d5e9e890fb956edf65da26c14":[1,38,38,34],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba0b2d2a121d70580640f124ec1a1e077f":[1,38,38,12],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba0d60d02e629e97bd9cfb4e823ee60e24":[1,38,38,14],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e":[1,38,38,6],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe":[1,38,38,3],
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba1c3e15d578c12838fb838eaa2c08ad30":[1,38,38,24],
 "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642":[1,38,38,4],
 "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba247f44c2212aa056834c1d8a81b75576":[1,38,38,23],
 "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a":[1,38,38,2],
@@ -242,12 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_resource.html#gad92cb4c1520aa40cb2af3332807bbc81":[1,41,39],
 "group__orx_resource.html#gadab8aee947370c4c45dd39916c4b56f2":[1,41,13],
 "group__orx_resource.html#gadba8c905ff1d9f9f7a68858e8805d694":[1,41,37],
-"group__orx_resource.html#gadbbf62141368ea35da893b69667fa289":[1,41,14],
-"group__orx_resource.html#gadfccb6c1430c35c86489c4b6f54be41c":[1,41,23],
-"group__orx_resource.html#gae578724bc22c4f38fee60e3faf0db8a5":[1,41,24],
-"group__orx_resource.html#gaec6ee06345229deba6d980e0d6f1a000":[1,41,27],
-"group__orx_resource.html#gaecc059a026186c426e640e0cb2eb5dd2":[1,41,33],
-"group__orx_resource.html#gaf3389231bc1f977bbf51c943ee8f8cce":[1,41,17],
-"group__orx_resource.html#gaf70cf038b10873bb96b6e5e18930d95d":[1,41,18],
-"group__orx_resource.html#ggadab8aee947370c4c45dd39916c4b56f2a7ee1d130bd666d86316c756c72edd884":[1,41,13,4]
+"group__orx_resource.html#gadbbf62141368ea35da893b69667fa289":[1,41,14]
 };
