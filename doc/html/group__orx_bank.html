@@ -127,8 +127,8 @@ Typedefs</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga355e01cc604740999d2fa9832dfb03b2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga355e01cc604740999d2fa9832dfb03b2">orxBank_Allocate</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 <tr class="separator:ga355e01cc604740999d2fa9832dfb03b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabd08fcf851bf8003436a39a22de50053"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gabd08fcf851bf8003436a39a22de50053">orxBank_AllocateIndexed</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxU32 *_pu32ItemIndex)</td></tr>
-<tr class="separator:gabd08fcf851bf8003436a39a22de50053"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe64701e53c6281656206060c7bc0b22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gabe64701e53c6281656206060c7bc0b22">orxBank_AllocateIndexed</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxU32 *_pu32ItemIndex, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> **_ppPrevious)</td></tr>
+<tr class="separator:gabe64701e53c6281656206060c7bc0b22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga66e8bef6563faa63e337fefd6d7980fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa">orxBank_Clear</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 <tr class="separator:ga66e8bef6563faa63e337fefd6d7980fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee2adddbac4a9fea1f65ae9013a44c68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gaee2adddbac4a9fea1f65ae9013a44c68">orxBank_Compact</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
@@ -229,7 +229,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gabd08fcf851bf8003436a39a22de50053"></a>
+<a class="anchor" id="gabe64701e53c6281656206060c7bc0b22"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -243,7 +243,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32 *&#160;</td>
-          <td class="paramname"><em>_pu32ItemIndex</em>&#160;</td>
+          <td class="paramname"><em>_pu32ItemIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> **&#160;</td>
+          <td class="paramname"><em>_ppPrevious</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -257,6 +263,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer on the memory bank to use </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu32ItemIndex</td><td>Will be set with the allocated item index </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_ppPrevious</td><td>If non-null, will contain previous neighbor if found </td></tr>
   </table>
   </dd>
 </dl>

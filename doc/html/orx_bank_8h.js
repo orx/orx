@@ -4,7 +4,7 @@ var orx_bank_8h =
     [ "orxBANK_KU32_FLAG_NOT_EXPANDABLE", "orx_bank_8h.html#gada45dfd24895af1d89b8eb5a69f6a3e3", null ],
     [ "orxBANK", "orx_bank_8h.html#ga2de3e15387a28fb80a85207e882c9ee1", null ],
     [ "orxBank_Allocate", "orx_bank_8h.html#ga355e01cc604740999d2fa9832dfb03b2", null ],
-    [ "orxBank_AllocateIndexed", "orx_bank_8h.html#gabd08fcf851bf8003436a39a22de50053", null ],
+    [ "orxBank_AllocateIndexed", "orx_bank_8h.html#gabe64701e53c6281656206060c7bc0b22", null ],
     [ "orxBank_Clear", "orx_bank_8h.html#ga66e8bef6563faa63e337fefd6d7980fa", null ],
     [ "orxBank_Compact", "orx_bank_8h.html#gaee2adddbac4a9fea1f65ae9013a44c68", null ],
     [ "orxBank_CompactAll", "orx_bank_8h.html#ga41751f5c0b3f1032ccaac78d576b0dca", null ],

@@ -88,7 +88,7 @@ var searchData=
   ['orxanimset_5fsetlinkproperty',['orxAnimSet_SetLinkProperty',['../group__orx_anim_set.html#ga9679f739152f52fdf4d2640003e6d05b',1,'orxAnimSet.h']]],
   ['orxanimset_5fsetup',['orxAnimSet_Setup',['../group__orx_anim_set.html#ga8375cad79074c0d670fd0ab1a695d635',1,'orxAnimSet.h']]],
   ['orxbank_5fallocate',['orxBank_Allocate',['../group__orx_bank.html#ga355e01cc604740999d2fa9832dfb03b2',1,'orxBank.h']]],
-  ['orxbank_5fallocateindexed',['orxBank_AllocateIndexed',['../group__orx_bank.html#gabd08fcf851bf8003436a39a22de50053',1,'orxBank.h']]],
+  ['orxbank_5fallocateindexed',['orxBank_AllocateIndexed',['../group__orx_bank.html#gabe64701e53c6281656206060c7bc0b22',1,'orxBank.h']]],
   ['orxbank_5fclear',['orxBank_Clear',['../group__orx_bank.html#ga66e8bef6563faa63e337fefd6d7980fa',1,'orxBank.h']]],
   ['orxbank_5fcompact',['orxBank_Compact',['../group__orx_bank.html#gaee2adddbac4a9fea1f65ae9013a44c68',1,'orxBank.h']]],
   ['orxbank_5fcompactall',['orxBank_CompactAll',['../group__orx_bank.html#ga41751f5c0b3f1032ccaac78d576b0dca',1,'orxBank.h']]],
