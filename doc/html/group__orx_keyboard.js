@@ -110,7 +110,6 @@ var group__orx_keyboard =
       [ "orxKEYBOARD_KEY_NUMBER", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea01bfff170c6773d41ca6cc627ab599c4", null ],
       [ "orxKEYBOARD_KEY_NONE", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea725387db4e5ab1cb06111eca89c7d164", null ]
     ] ],
-    [ "orxKeybard_Show", "group__orx_keyboard.html#ga231f33fd60ede254f62fc6e08f7a9748", null ],
     [ "orxKeyboard_ClearBuffer", "group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a", null ],
     [ "orxKeyboard_Exit", "group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2", null ],
     [ "orxKeyboard_GetKeyName", "group__orx_keyboard.html#ga1e2d858b8ecd23c4e0d56aad0137e520", null ],
@@ -118,5 +117,6 @@ var group__orx_keyboard =
     [ "orxKeyboard_IsKeyPressed", "group__orx_keyboard.html#ga7687c5ca36f6a69d86ce91b3ac24b908", null ],
     [ "orxKeyboard_ReadKey", "group__orx_keyboard.html#gac30eff35e3dab48ed446d3d95cb5807c", null ],
     [ "orxKeyboard_ReadString", "group__orx_keyboard.html#ga5535cda182c25f8db8cebbb1e71672e1", null ],
-    [ "orxKeyboard_Setup", "group__orx_keyboard.html#gae02029be67f0066490ed87031c723988", null ]
+    [ "orxKeyboard_Setup", "group__orx_keyboard.html#gae02029be67f0066490ed87031c723988", null ],
+    [ "orxKeyboard_Show", "group__orx_keyboard.html#gaf1783279d17107f2eaf05822ab5370ab", null ]
 ];
