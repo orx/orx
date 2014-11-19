@@ -819,6 +819,37 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   {
     /* Gets value */
     pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey), sstConfig.pstCurrentSection);
+
+#ifdef __orxDEBUG__
+
+    /* Not found? */
+    if(pstResult == orxNULL)
+    {
+      orxCONFIG_ENTRY *pstEntry;
+
+      /* For all entries in section */
+      for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+      {
+        const orxSTRING zKey;
+
+        /* Gets its key */
+        zKey = orxString_GetFromID(pstEntry->u32ID);
+
+        /* Case-only difference? */
+        if(orxString_ICompare(zKey, _zKey) == 0)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> was found instead of requested key <%s>, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), zKey, _zKey);
+
+          break;
+        }
+      }
+    }
+
+#endif /* __orxDEBUG__ */
+
   }
 
   /* Profiles */
@@ -900,7 +931,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry [%s] with value [%s].", _zKey, _zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry <%s> with value <%s>.", _zKey, _zValue);
 
         /* Reusing entry? */
         if(bReuse != orxFALSE)
@@ -1026,7 +1057,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
         orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section <%s> was previously pushed and has to be removed from stack.", orxString_GetFromID(_pstSection->u32ID));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", orxString_GetFromID(_pstSection->u32ID));
       }
     }
 
@@ -1049,7 +1080,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section <%s> can't be deleted as it's protected by %d entities.", orxString_GetFromID(_pstSection->u32ID), _pstSection->s32ProtectionCounter);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section [%s] can't be deleted as it's protected by %d entities.", orxString_GetFromID(_pstSection->u32ID), _pstSection->s32ProtectionCounter);
   }
 
   return;
@@ -4045,7 +4076,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: section not found.", _zSectionName, _zNewSectionName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: section not found.", _zSectionName, _zNewSectionName);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -4054,7 +4085,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -4063,7 +4094,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: empty name.", _zSectionName, _zNewSectionName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: empty name.", _zSectionName, _zNewSectionName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
