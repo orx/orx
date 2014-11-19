@@ -215,7 +215,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxKeyboard_GetKeyName(orxKEYBOARD
  * @param[in]   _bShow          Show/hide virtual keyboard
  * @return orxSTATUS_SUCCESS if supported by platform, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxKeybard_Show(orxBOOL _bShow);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxKeyboard_Show(orxBOOL _bShow);
 
 #endif /* _orxKEYBOARD_H_ */
 
