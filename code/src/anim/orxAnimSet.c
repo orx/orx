@@ -74,12 +74,12 @@
 #define orxANIMSET_KU32_FLAG_REFERENCED               0x20000000  /**< Referenced flag  */
 #define orxANIMSET_KU32_FLAG_ID_TABLE                 0x40000000  /**< Has an ID table flag  */
 
-#define orxANIMSET_KU32_MASK_SIZE                     0x000000FF  /**< ID mask for size */
-#define orxANIMSET_KU32_MASK_COUNTER                  0x0000FF00  /**< ID mask for counter */
-#define orxANIMSET_KU32_MASK_FLAGS                    0xFFFF0000  /**< ID mask for flags */
+#define orxANIMSET_KU32_MASK_SIZE                     0x000003FF  /**< ID mask for size */
+#define orxANIMSET_KU32_MASK_COUNTER                  0x000FFC00  /**< ID mask for counter */
+#define orxANIMSET_KU32_MASK_FLAGS                    0xFFF00000  /**< ID mask for flags */
 
 #define orxANIMSET_KU32_ID_SHIFT_SIZE                 0           /**< ID shift for size */
-#define orxANIMSET_KU32_ID_SHIFT_COUNTER              8           /**< ID shift for counter */
+#define orxANIMSET_KU32_ID_SHIFT_COUNTER              10          /**< ID shift for counter */
 
 
 /** Link table link flags

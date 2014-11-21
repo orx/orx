@@ -57,8 +57,8 @@
  */
 #define orxANIMSET_KU32_FLAG_NONE                   0x00000000  /**< No flags. */
 
-#define orxANIMSET_KU32_FLAG_REFERENCE_LOCK         0x00010000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
-#define orxANIMSET_KU32_FLAG_LINK_STATIC            0x00020000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
+#define orxANIMSET_KU32_FLAG_REFERENCE_LOCK         0x00100000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
+#define orxANIMSET_KU32_FLAG_LINK_STATIC            0x00200000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
 
 /** AnimSet Link Flags
  */
