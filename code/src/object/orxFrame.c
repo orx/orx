@@ -63,7 +63,7 @@
 
 /** Misc defines
  */
-#define orxFRAME_KU32_BANK_SIZE             512         /**< Bank size */
+#define orxFRAME_KU32_BANK_SIZE             2048        /**< Bank size */
 
 
 /***************************************************************************

@@ -75,7 +75,7 @@
 
 /** Misc defines
  */
-#define orxSHADERPOINTER_KU32_BANK_SIZE             256         /**< Bank size */
+#define orxSHADERPOINTER_KU32_BANK_SIZE             512         /**< Bank size */
 
 
 /***************************************************************************

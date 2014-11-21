@@ -90,7 +90,7 @@
  */
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
-#define orxOBJECT_KU32_BANK_SIZE                1024
+#define orxOBJECT_KU32_BANK_SIZE                2048
 
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64

@@ -71,7 +71,7 @@
 
 /** Misc defines
  */
-#define orxFXPOINTER_KU32_BANK_SIZE             128         /**< Bank size */
+#define orxFXPOINTER_KU32_BANK_SIZE             1024        /**< Bank size */
 
 
 /***************************************************************************

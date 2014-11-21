@@ -69,7 +69,7 @@
 /** Misc defines
  */
 #define orxSHADER_KU32_REFERENCE_TABLE_SIZE   32
-#define orxSHADER_KU32_PARAM_BANK_SIZE        8
+#define orxSHADER_KU32_PARAM_BANK_SIZE        16
 
 #define orxSHADER_KU32_BANK_SIZE              32          /**< Bank size */
 

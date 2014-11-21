@@ -84,11 +84,11 @@
 
 /** Misc defines
  */
-#define orxFX_KU32_REFERENCE_TABLE_SIZE         64
+#define orxFX_KU32_REFERENCE_TABLE_SIZE         128
 
 #define orxFX_KU32_SLOT_NUMBER                  8
 
-#define orxFX_KU32_BANK_SIZE                    64
+#define orxFX_KU32_BANK_SIZE                    128
 
 #define orxFX_KZ_CONFIG_SLOT_LIST               "SlotList"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"

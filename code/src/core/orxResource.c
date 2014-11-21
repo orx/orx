@@ -65,15 +65,15 @@
 
 /** Misc
  */
-#define orxRESOURCE_KU32_CACHE_TABLE_SIZE             32                              /**< Resource info cache table size */
+#define orxRESOURCE_KU32_CACHE_TABLE_SIZE             256                             /**< Resource info cache table size */
 
-#define orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE      128                             /**< Resource info bank size */
+#define orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE      256                             /**< Resource info bank size */
 
-#define orxRESOURCE_KU32_STORAGE_BANK_SIZE            16                              /**< Storage bank size */
+#define orxRESOURCE_KU32_STORAGE_BANK_SIZE            128                             /**< Storage bank size */
 #define orxRESOURCE_KU32_GROUP_BANK_SIZE              8                               /**< Group bank size */
 #define orxRESOURCE_KU32_TYPE_BANK_SIZE               8                               /**< Type bank size */
 
-#define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          16                              /**< Open resource info bank size */
+#define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          64                              /**< Open resource info bank size */
 
 #define orxRESOURCE_KU32_WATCH_ITERATION_LIMIT        2                               /**< Watch iteration limit */
 #define orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED     -1                              /**< Watch time uninitialized */

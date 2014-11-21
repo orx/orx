@@ -63,8 +63,8 @@
  */
 #define orxFONT_KU32_MAP_BANK_SIZE              4           /**< Map bank size */
 #define orxFONT_KU32_REFERENCE_TABLE_SIZE       4           /**< Reference table size */
-#define orxFONT_KU32_CHARACTER_BANK_SIZE        128         /**< Character bank size */
-#define orxFONT_KU32_CHARACTER_TABLE_SIZE       128         /**< Character table size */
+#define orxFONT_KU32_CHARACTER_BANK_SIZE        256         /**< Character bank size */
+#define orxFONT_KU32_CHARACTER_TABLE_SIZE       256         /**< Character table size */
 
 #define orxFONT_KU32_BANK_SIZE                  16          /**< Bank size */
 
