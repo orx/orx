@@ -98,6 +98,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
     case AKEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
     case AKEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}
     case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}
+    case AKEYCODE_BUTTON_SELECT:      {eResult = orxKEYBOARD_KEY_RETURN; break;}
     case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
     case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
     case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
