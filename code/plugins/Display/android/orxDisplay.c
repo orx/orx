@@ -3215,38 +3215,26 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Not already loaded? */
-  if(pstResult == orxNULL)
+  /* Gets resource name */
+  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+
+  /* Success? */
+  if(zResourceName != orxNULL)
   {
-    /* Gets resource name */
-    zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+    pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
 
-    /* Success? */
-    if(zResourceName != orxNULL)
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      pstResult = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+      /* Inits it */
+      pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
+      pstResult->zLocation  = zResourceName;
+      pstResult->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
-      /* Valid? */
-      if(pstResult != orxNULL)
+      /* Loads its data */
+      if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL)
       {
-        /* Inits it */
-        pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
-        pstResult->zLocation  = zResourceName;
-        pstResult->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
-
-        /* Loads its data */
-        if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL)
-        {
-          if(orxDisplay_Android_LoadKTXBitmapData(pstResult) == orxSTATUS_FAILURE)
-          {
-            /* Deletes it */
-            orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
-
-            /* Updates result */
-            pstResult = orxNULL;
-          }
-        }
-        else if(orxDisplay_Android_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
+        if(orxDisplay_Android_LoadKTXBitmapData(pstResult) == orxSTATUS_FAILURE)
         {
           /* Deletes it */
           orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
@@ -3254,6 +3242,14 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
           /* Updates result */
           pstResult = orxNULL;
         }
+      }
+      else if(orxDisplay_Android_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
+      {
+        /* Deletes it */
+        orxBank_Free(sstDisplay.pstBitmapBank, pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
       }
     }
   }
