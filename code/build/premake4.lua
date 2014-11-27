@@ -156,7 +156,8 @@ solution "orx"
         "../../extern/stb_image",
         "../../extern/openal-soft/include",
         "../../extern/libsndfile-1.0.22/include",
-        "../../extern/stb_vorbis"
+        "../../extern/stb_vorbis",
+        "../../extern/libwebp/include"
     }
 
     excludes
@@ -203,7 +204,8 @@ solution "orx"
         {
             "../../extern/glfw-2.7/lib/linux",
             "../../extern/libsndfile-1.0.22/lib/linux",
-            "../../extern/Box2D_2.1.3/lib/linux"
+            "../../extern/Box2D_2.1.3/lib/linux",
+            "../../extern/libwebp/lib/linux"
         }
         buildoptions
         {
@@ -215,7 +217,8 @@ solution "orx"
         {
             "../../extern/glfw-2.7/lib/linux64",
             "../../extern/libsndfile-1.0.22/lib/linux64",
-            "../../extern/Box2D_2.1.3/lib/linux64"
+            "../../extern/Box2D_2.1.3/lib/linux64",
+            "../../extern/libwebp/lib/linux64"
         }
         buildoptions
         {
@@ -316,10 +319,10 @@ project "orx"
         defines {"__orxSTATIC__"}
 
     configuration {"*Static*", "*Debug*"}
-        links {"Box2Dd"}
+        links {"Box2Dd", "webpdecoder"}
 
     configuration {"*Static*", "not *Debug*"}
-        links {"Box2D"}
+        links {"Box2D", "webpdecoder"}
 
 
 -- Linux
@@ -435,10 +438,10 @@ project "orxLIB"
     end
 
     configuration {"*Debug*"}
-        links {"Box2Dd"}
+        links {"Box2Dd", "webpdecoder"}
 
     configuration {"not *Debug*"}
-        links {"Box2D"}
+        links {"Box2D", "webpdecoder"}
 
 
 -- Linux
