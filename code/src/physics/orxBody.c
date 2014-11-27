@@ -129,8 +129,8 @@
 #define orxBODY_KZ_TYPE_FRICTION              "friction"
 #define orxBODY_KZ_TYPE_GEAR                  "gear"
 
-#define orxBODY_KU32_PART_BANK_SIZE           256
-#define orxBODY_KU32_JOINT_BANK_SIZE          32
+#define orxBODY_KU32_PART_BANK_SIZE           512
+#define orxBODY_KU32_JOINT_BANK_SIZE          64
 
 #define orxBODY_KU32_BANK_SIZE                256         /**< Bank size */
 

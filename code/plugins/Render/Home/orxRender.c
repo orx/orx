@@ -53,7 +53,7 @@
 /** Defines
  */
 #define orxRENDER_KF_TICK_SIZE                      orx2F(1.0f / 10.0f)
-#define orxRENDER_KU32_ORDER_BANK_SIZE              256
+#define orxRENDER_KU32_ORDER_BANK_SIZE              1024
 #define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
 #define orxRENDER_KF_CONSOLE_BLINK_DELAY            orx2F(0.5f)

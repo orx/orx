@@ -53,8 +53,8 @@
 /** Misc defines
  */
 #define orxEVENT_KU32_HANDLER_TABLE_SIZE  64
-#define orxEVENT_KU32_HANDLER_BANK_SIZE   4
-#define orxEVENT_KU32_STORAGE_BANK_SIZE   16
+#define orxEVENT_KU32_HANDLER_BANK_SIZE   32
+#define orxEVENT_KU32_STORAGE_BANK_SIZE   32
 
 
 /***************************************************************************

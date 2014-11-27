@@ -66,7 +66,7 @@ namespace orxPhysics
 {
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
-  static const orxU32   su32MessageBankSize     = 64;
+  static const orxU32   su32MessageBankSize     = 512;
   static const orxFLOAT sfMaxDT                 = orx2F(1.0f / 30.0f);
 }
 

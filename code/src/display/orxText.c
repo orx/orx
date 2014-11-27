@@ -66,7 +66,7 @@
 
 #define orxTEXT_KC_LOCALE_MARKER              '$'
 
-#define orxTEXT_KU32_BANK_SIZE                128         /**< Bank size */
+#define orxTEXT_KU32_BANK_SIZE                256         /**< Bank size */
 
 
 /***************************************************************************

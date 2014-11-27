@@ -68,10 +68,9 @@
 #define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
 
 
-#define orxCOMMAND_KU32_TABLE_SIZE                    256
-#define orxCOMMAND_KU32_BANK_SIZE                     128
-#define orxCOMMAND_KU32_TRIE_BANK_SIZE                1024
-#define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
+#define orxCOMMAND_KU32_BANK_SIZE                     512
+#define orxCOMMAND_KU32_TRIE_BANK_SIZE                4096
+#define orxCOMMAND_KU32_RESULT_BANK_SIZE              32
 #define orxCOMMAND_KU32_RESULT_BUFFER_SIZE            256
 
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256

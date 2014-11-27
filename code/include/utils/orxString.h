@@ -1367,10 +1367,10 @@ static orxINLINE orxU32                                   orxString_NToCRC(const
   return(orxString_NContinueCRC(_zString, 0, _u32CharNumber));
 }
 
-/** Returns the first occurence of _zString2 in _zString1
+/** Returns the first occurrence of _zString2 in _zString1
  * @param[in] _zString1 String to analyze
  * @param[in] _zString2 String that must be inside _zString1
- * @return The pointer of the first occurence of _zString2, or orxNULL if not found
+ * @return The pointer of the first occurrence of _zString2, or orxNULL if not found
  */
 static orxINLINE const orxSTRING                          orxString_SearchString(const orxSTRING _zString1, const orxSTRING _zString2)
 {
@@ -1382,10 +1382,10 @@ static orxINLINE const orxSTRING                          orxString_SearchString
   return(strstr(_zString1, _zString2));
 }
 
-/** Returns the first occurence of _cChar in _zString
+/** Returns the first occurrence of _cChar in _zString
  * @param[in] _zString String to analyze
  * @param[in] _cChar   The character to find
- * @return The pointer of the first occurence of _cChar, or orxNULL if not found
+ * @return The pointer of the first occurrence of _cChar, or orxNULL if not found
  */
 static orxINLINE const orxSTRING                          orxString_SearchChar(const orxSTRING _zString, orxCHAR _cChar)
 {
@@ -1396,11 +1396,11 @@ static orxINLINE const orxSTRING                          orxString_SearchChar(c
   return(strchr(_zString, _cChar));
 }
 
-/** Returns the first occurence of _cChar in _zString
+/** Returns the first occurrence of _cChar in _zString
  * @param[in] _zString      String to analyze
  * @param[in] _cChar        The character to find
  * @param[in] _u32Position  Search begin position
- * @return The index of the next occurence of requested character, starting at given position / -1 if not found
+ * @return The index of the next occurrence of requested character, starting at given position / -1 if not found
  */
 static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
 {
