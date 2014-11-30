@@ -42,6 +42,8 @@
 
 #include <sys/endian.h>
 
+#include "webp/decode.h"
+
 #define STBI_NO_STDIO
 #include "stb_image.c"
 #undef STBI_NO_STDIO
