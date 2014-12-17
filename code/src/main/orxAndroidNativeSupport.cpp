@@ -27,7 +27,7 @@ struct android_app;
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        char *s_AndroidInternalFilesPath;
+        orxSTRING zAndroidInternalFilesPath;
         orxBOOL bPaused;
 
         int32_t lastWidth;
@@ -129,7 +129,7 @@ extern "C" ANativeActivity* orxAndroid_GetNativeActivity()
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-  if (!sstAndroid.s_AndroidInternalFilesPath)
+  if (!sstAndroid.zAndroidInternalFilesPath)
   {
     jmethodID mid;
     jobject fileObject;
@@ -143,7 +143,6 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     // fileObj = context.getFilesDir();
     mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
     fileObject = env->CallObjectMethod(jActivity, mid);
-
     if (!fileObject)
     {
       LOGE("Couldn't get internal directory");
@@ -156,12 +155,12 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     env->DeleteLocalRef(fileObject);
 
     path = env->GetStringUTFChars(pathString, NULL);
-    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    sstAndroid.zAndroidInternalFilesPath = orxString_Duplicate(path);
     env->ReleaseStringUTFChars(pathString, path);
     env->DeleteLocalRef(pathString);
   }
 
-  return sstAndroid.s_AndroidInternalFilesPath;
+  return sstAndroid.zAndroidInternalFilesPath;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -433,9 +432,9 @@ void android_main( android_app* state )
     int status;
     status = main(0, orxNULL);
 
-    if (sstAndroid.s_AndroidInternalFilesPath)
+    if(sstAndroid.zAndroidInternalFilesPath)
     {
-        free(sstAndroid.s_AndroidInternalFilesPath);
+      orxString_Delete(sstAndroid.zAndroidInternalFilesPath);
     }
 
     if(state->destroyRequested == 0)

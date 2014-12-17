@@ -48,7 +48,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-// #define DEBUG_ANDROID_SUPPORT
+//#define DEBUG_ANDROID_SUPPORT
 
 #ifdef DEBUG_ANDROID_SUPPORT
 
@@ -83,7 +83,7 @@ typedef struct __orxANDROID_STATIC_t {
         // AssetManager
         AAssetManager *poAssetManager;
         jobject jAssetManager;
-        char *s_AndroidInternalFilesPath;
+        orxSTRING zAndroidInternalFilesPath;
 
         // looper stufs
         ALooper* looper;
@@ -264,7 +264,10 @@ static void orxAndroid_Exit(JNIEnv* env)
   env->DeleteGlobalRef(sstAndroid.mFragment);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
-  free(sstAndroid.s_AndroidInternalFilesPath);
+  if(sstAndroid.zAndroidInternalFilesPath)
+  {
+    orxString_Delete(sstAndroid.zAndroidInternalFilesPath);
+  }
 
   if(sstAndroid.window != orxNULL)
   {
@@ -557,48 +560,6 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickUp(JNIEnv* 
   }
 }
 
-class LocalReferenceHolder
-{
-private:
-    static int s_active;
-
-public:
-    static bool IsActive() {
-        return s_active > 0;
-    }
-
-public:
-    LocalReferenceHolder(const char *func) : m_env(NULL), m_func(func) {
-#ifdef DEBUG_JNI
-        LOGI("Entering function %s", m_func);
-#endif
-    }
-    ~LocalReferenceHolder() {
-#ifdef DEBUG_JNI
-        LOGI("Leaving function %s", m_func);
-#endif
-        if (m_env) {
-            m_env->PopLocalFrame(NULL);
-            --s_active;
-        }
-    }
-
-    bool init(JNIEnv *env, jint capacity = 16) {
-        if (env->PushLocalFrame(capacity) < 0) {
-            LOGE("Failed to allocate enough JVM local references");
-            return false;
-        }
-        ++s_active;
-        m_env = env;
-        return true;
-    }
-
-protected:
-    JNIEnv *m_env;
-    const char *m_func;
-};
-int LocalReferenceHolder::s_active;
-
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
   int ident;
@@ -660,9 +621,8 @@ extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-  if (!sstAndroid.s_AndroidInternalFilesPath)
+  if (!sstAndroid.zAndroidInternalFilesPath)
   {
-    LocalReferenceHolder refs(__FUNCTION__);
     jmethodID mid;
     jobject fileObject;
     jstring pathString;
@@ -670,15 +630,13 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     jobject jActivity;
 
     JNIEnv *env = Android_JNI_GetEnv();
-    if (!refs.init(env))
-    {
-      return NULL;
-    }
 
     jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     // fileObj = context.getFilesDir();
     mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
     fileObject = env->CallObjectMethod(jActivity, mid);
+    env->DeleteLocalRef(jActivity);
+
     if (!fileObject)
     {
       LOGE("Couldn't get internal directory");
@@ -688,13 +646,15 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     // path = fileObject.getAbsolutePath();
     mid = env->GetMethodID(env->GetObjectClass(fileObject), "getAbsolutePath", "()Ljava/lang/String;");
     pathString = (jstring)env->CallObjectMethod(fileObject, mid);
+    env->DeleteLocalRef(fileObject);
 
     path = env->GetStringUTFChars(pathString, NULL);
-    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    sstAndroid.zAndroidInternalFilesPath = orxString_Duplicate(path);
     env->ReleaseStringUTFChars(pathString, path);
+    env->DeleteLocalRef(pathString);
   }
 
-  return sstAndroid.s_AndroidInternalFilesPath;
+  return sstAndroid.zAndroidInternalFilesPath;
 }
 
 static inline orxBOOL isInteractible()
