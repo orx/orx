@@ -66,7 +66,6 @@
  */
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxOBJECT_KU32_FLAG_2D                  0x00000010  /**< 2D flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
 #define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
@@ -2694,14 +2693,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       const orxSTRING zCameraName;
       orxFRAME       *pstFrame;
       orxBODY        *pstBody;
-      orxU32          u32FrameFlags, u32Flags;
+      orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
       orxS32          s32Number;
       orxVECTOR       vValue, vParentSize, vColor;
       orxCOLOR        stColor;
       orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
-
-      /* Defaults to 2D flags */
-      u32Flags = orxOBJECT_KU32_FLAG_2D;
 
       /* Has group? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_GROUP) != orxFALSE)
@@ -6156,9 +6152,8 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOB
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstBoundingBox != orxNULL);
 
-  /* Is 2D and has sized graphic? */
-  if((orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_2D))
-  && ((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
+  /* Has sized graphic? */
+  if(((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
   && (orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL))
   {
     orxVECTOR vPivot, vPosition, vScale;
