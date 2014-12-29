@@ -229,6 +229,9 @@ void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Marks it for deletion */
     orxObject_SetLifeTime(pstObject, orxFLOAT_0);
 
+    /* Makes sure it's enabled */
+    orxObject_Enable(pstObject, orxTRUE);
+
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
