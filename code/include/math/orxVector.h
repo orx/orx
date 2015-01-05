@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxVector
- * 
+ *
  * Vector module
  * Module that handles vectors and basic structures based on them
  *
@@ -536,7 +536,7 @@ static orxINLINE orxFLOAT                     orxVector_GetDistance(const orxVEC
 static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   register orxFLOAT fOp;
-  
+
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);

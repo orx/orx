@@ -817,8 +817,13 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   /* Valid? */
   if((_zKey != orxSTRING_EMPTY) && (_zKey != orxNULL))
   {
+    orxU32 u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zKey);
+
     /* Gets value */
-    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey), sstConfig.pstCurrentSection);
+    pstResult = orxConfig_GetValueFromKey(u32ID, sstConfig.pstCurrentSection);
 
 #ifdef __orxDEBUG__
 
@@ -832,18 +837,29 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
           pstEntry != orxNULL;
           pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
       {
-        const orxSTRING zKey;
-
-        /* Gets its key */
-        zKey = orxString_GetFromID(pstEntry->u32ID);
-
-        /* Case-only difference? */
-        if(orxString_ICompare(zKey, _zKey) == 0)
+        /* Identical? */
+        if(pstEntry->u32ID == u32ID)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> was found instead of requested key <%s>, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), zKey, _zKey);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> inherits from <%s> however one of its ancestors was not found, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), _zKey, pstEntry->stValue.zValue);
 
           break;
+        }
+        else
+        {
+          const orxSTRING zKey;
+
+          /* Gets its key */
+          zKey = orxString_GetFromID(pstEntry->u32ID);
+
+          /* Case-only difference? */
+          if(orxString_ICompare(zKey, _zKey) == 0)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> was found instead of requested key <%s>, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), zKey, _zKey);
+
+            break;
+          }
         }
       }
     }
