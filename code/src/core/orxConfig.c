@@ -652,9 +652,10 @@ static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
  * @param[in] _pstOrigin        Origin section for in-section forwarding
+ * @param[out] _ppstSource      Source section where the value was found
  * @return                      orxCONFIG_VALUE / orxNULL
  */
-static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, orxCONFIG_SECTION *_pstOrigin)
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, orxCONFIG_SECTION *_pstOrigin, orxCONFIG_SECTION **_ppstSource)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCONFIG_VALUE  *pstResult = orxNULL;
@@ -702,7 +703,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
           }
 
           /* Gets its inherited value */
-          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin, _ppstSource);
         }
         else
         {
@@ -716,7 +717,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
           orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
           /* Gets its inherited value */
-          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin, _ppstSource);
 
           /* Restores the name */
           *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
@@ -731,7 +732,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin, _ppstSource);
       }
 
       /* Restores current section */
@@ -741,6 +742,9 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
     {
       /* Updates result */
       pstResult = &(pstEntry->stValue);
+
+      /* Stores source section */
+      *_ppstSource = sstConfig.pstCurrentSection;
     }
   }
   else
@@ -788,7 +792,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
         sstConfig.pstCurrentSection = pstSection;
 
         /* Gets inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin, _ppstSource);
 
         /* Restores current section */
         sstConfig.pstCurrentSection = pstPreviousSection;
@@ -817,13 +821,14 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   /* Valid? */
   if((_zKey != orxSTRING_EMPTY) && (_zKey != orxNULL))
   {
-    orxU32 u32ID;
+    orxCONFIG_SECTION  *pstDummy = orxNULL;
+    orxU32              u32ID;
 
     /* Gets its ID */
     u32ID = orxString_ToCRC(_zKey);
 
     /* Gets value */
-    pstResult = orxConfig_GetValueFromKey(u32ID, sstConfig.pstCurrentSection);
+    pstResult = orxConfig_GetValueFromKey(u32ID, sstConfig.pstCurrentSection, &pstDummy);
 
 #ifdef __orxDEBUG__
 
@@ -4702,8 +4707,10 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   }
   else
   {
+    orxCONFIG_SECTION *pstDummy = orxNULL;
+
     /* Updates result */
-    bResult = (orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection, &pstDummy) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -4759,6 +4766,51 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 
   /* Done! */
   return bResult;
+}
+
+/** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
+ * @param[in] _zKey             Key name
+ * @return Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found
+ */
+const orxSTRING orxFASTCALL orxConfig_GetValueSource(const orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxU32            u32KeyID;
+  const orxSTRING   zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets ID */
+  u32KeyID = orxString_ToCRC(_zKey);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(u32KeyID);
+
+  /* Valid? */
+  if(pstEntry != orxNULL)
+  {
+    /* Updates result */
+    zResult = orxString_GetFromID(sstConfig.pstCurrentSection->u32ID);
+  }
+  else
+  {
+    orxCONFIG_SECTION *pstSource = orxNULL;
+
+    /* Gets value from key */
+    if(orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection, &pstSource) != orxNULL)
+    {
+      /* Updates result */
+      zResult = orxString_GetFromID(pstSource->u32ID);
+    }
+  }
+
+  /* Updates result */
+
+  /* Done! */
+  return zResult;
 }
 
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)

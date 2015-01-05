@@ -257,6 +257,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsRandomValue(const orxS
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValue(const orxSTRING _zKey);
 
+/** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
+ * @param[in] _zKey             Key name
+ * @return Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetValueSource(const orxSTRING _zKey);
+
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
