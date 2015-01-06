@@ -93,7 +93,8 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
-  const orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 52 */
+  orxU32                  u32LoopCounter;             /**< Current animation loop counter : 52 */
+  const orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 56 */
 };
 
 
@@ -169,9 +170,9 @@ static orxINLINE void orxAnimPointer_SendCustomEvents(orxANIM *_pstAnim, const o
       pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTimeStamp))
   {
     /* Updates event payload */
-    stPayload.zCustomEventName  = pstCustomEvent->zName;
-    stPayload.fCustomEventValue = pstCustomEvent->fValue;
-    stPayload.fCustomEventTime  = pstCustomEvent->fTimeStamp;
+    stPayload.stCustom.zName  = pstCustomEvent->zName;
+    stPayload.stCustom.fValue = pstCustomEvent->fValue;
+    stPayload.stCustom.fTime  = pstCustomEvent->fTimeStamp;
 
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUSTOM_EVENT, _pstOwner, _pstOwner, &stPayload);
@@ -246,6 +247,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Updates current anim ID */
           _pstAnimPointer->u32CurrentAnim = u32NewAnim;
 
+          /* Clears loop counter */
+          _pstAnimPointer->u32LoopCounter = 0;
+
           /* Stores target anim */
           u32TargetAnim = _pstAnimPointer->u32TargetAnim;
 
@@ -314,6 +318,12 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             /* Stores current and target anims */
             u32CurrentAnim  = _pstAnimPointer->u32CurrentAnim;
             u32TargetAnim   = _pstAnimPointer->u32TargetAnim;
+
+            /* Updates loop counter */
+            _pstAnimPointer->u32LoopCounter++;
+
+            /* Updates payload */
+            stPayload.stLoop.u32Counter = _pstAnimPointer->u32LoopCounter;
 
             /* Sends it */
             orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
@@ -509,6 +519,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
     pstAnimPointer->fFrequency        = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
     pstAnimPointer->fTime             = orxFLOAT_0;
     pstAnimPointer->u32TargetAnim     = orxU32_UNDEFINED;
+    pstAnimPointer->u32LoopCounter    = 0;
 
     /* Stores owner */
     pstAnimPointer->pstOwner          = _pstOwner;
@@ -949,6 +960,9 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
 
       /* Clears target anim */
       _pstAnimPointer->u32TargetAnim  = orxU32_UNDEFINED;
+
+      /* Clears loop counter */
+      _pstAnimPointer->u32LoopCounter = 0;
 
       /* Has current anim? */
       if(u32CurrentAnim != orxU32_UNDEFINED)
