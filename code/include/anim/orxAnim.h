@@ -82,6 +82,7 @@ typedef enum __orxANIM_EVENT_t
   orxANIM_EVENT_STOP,                         /**< Event sent when an animation stops */
   orxANIM_EVENT_CUT,                          /**< Event sent when an animation is cut */
   orxANIM_EVENT_LOOP,                         /**< Event sent when an animation has looped */
+  orxANIM_EVENT_UPDATE,                       /**< Event sent when an animation has been updated (current key) */
   orxANIM_EVENT_CUSTOM_EVENT,                 /**< Event sent when a custom event is reached */
 
   orxANIM_EVENT_NUMBER,
