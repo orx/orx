@@ -27,6 +27,7 @@ var group__orx_anim =
       [ "orxANIM_EVENT_STOP", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0acd32ec01dd2b410f7bfe8d8dbe0fa61d", null ],
       [ "orxANIM_EVENT_CUT", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a3ad02947e37f6a84a131dba87c132c0c", null ],
       [ "orxANIM_EVENT_LOOP", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a83d9ae013834c5fc7bf9990606d2ffc5", null ],
+      [ "orxANIM_EVENT_UPDATE", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a60293cbf7f30232037ac0db6e19ca1d1", null ],
       [ "orxANIM_EVENT_CUSTOM_EVENT", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a1d89ac9eb00e961ee1f3e30ff5655707", null ],
       [ "orxANIM_EVENT_NUMBER", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0aa7b2beb25ff0451d0168e147b24b756d", null ],
       [ "orxANIM_EVENT_NONE", "group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0ade667583911ba99dbbb2ca87418d1590", null ]
