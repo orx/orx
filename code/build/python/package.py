@@ -13,6 +13,8 @@ platformlist = [
     'tutovs2010',
     'vs2012',
     'tutovs2012',
+    'vs2013',
+    'tutovs2013',
     'mingw',
     'tutomingw',
     'mac',
@@ -255,6 +257,7 @@ codefolderinfolist = [
     {'src': 'build/windows/vs2008',                                     'dst': None},
     {'src': 'build/windows/vs2010',                                     'dst': None},
     {'src': 'build/windows/vs2012',                                     'dst': None},
+    {'src': 'build/windows/vs2013',                                     'dst': None},
     {'src': 'build/windows/codeblocks',                                 'dst': None},
     {'src': 'build/windows/codelite',                                   'dst': None},
     {'src': 'build/windows/gmake',                                      'dst': None},
@@ -299,14 +302,6 @@ platforminfolist = {
         'folderinfolist':   devfolderinfolist
     },
 
-    'vs2012': {
-        'foldername':       'dev-vs2012',
-        'filename':         'dev-vs2012',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
     'tutovs2010': {
         'foldername':       'tutorial-vs2010',
         'filename':         'tutorial-vs2010',
@@ -315,9 +310,33 @@ platforminfolist = {
         'folderinfolist':   tutorialfolderinfolist
     },
 
+    'vs2012': {
+        'foldername':       'dev-vs2012',
+        'filename':         'dev-vs2012',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
     'tutovs2012': {
         'foldername':       'tutorial-vs2012',
         'filename':         'tutorial-vs2012',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'vs2013': {
+        'foldername':       'dev-vs2013',
+        'filename':         'dev-vs2013',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutovs2013': {
+        'foldername':       'tutorial-vs2013',
+        'filename':         'tutorial-vs2013',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
