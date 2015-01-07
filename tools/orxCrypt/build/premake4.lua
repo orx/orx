@@ -79,7 +79,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2012")
+defaultaction ("windows", "vs2013")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 

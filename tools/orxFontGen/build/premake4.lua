@@ -79,7 +79,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2012")
+defaultaction ("windows", "vs2013")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -239,6 +239,12 @@ solution "orxFontGen"
         libdirs
         {
             "../../../extern/freetype-2.4.1/lib/vc2012"
+        }
+
+    configuration {"vs2013"}
+        libdirs
+        {
+            "../../../extern/freetype-2.4.1/lib/vc2013/32"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
