@@ -61,10 +61,18 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        return
-        {
-            "Native"
-        }
+        if string.lower(_ACTION) == "vs2013" then
+            return
+            {
+                "x64",
+                "x32"
+            }
+        else
+            return
+            {
+                "Native"
+            }
+        end
     elseif os.is ("linux") then
         if islinux64 () then
             return
@@ -100,7 +108,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2012")
+defaultaction ("windows", "vs2013")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -278,6 +286,24 @@ solution "orx"
             "../../extern/openal-soft/lib/vc2012",
             "../../extern/libsndfile-1.0.22/lib/vc2012",
             "../../extern/Box2D_2.1.3/lib/msvs2012"
+        }
+
+    configuration {"vs2013", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2013/32",
+            "../../extern/openal-soft/lib/vc2013/32",
+            "../../extern/libsndfile-1.0.22/lib/vc2013/32",
+            "../../extern/Box2D_2.1.3/lib/msvs2013/32"
+        }
+
+    configuration {"vs2013", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2013/64",
+            "../../extern/openal-soft/lib/vc2013/64",
+            "../../extern/libsndfile-1.0.22/lib/vc2013/64",
+            "../../extern/Box2D_2.1.3/lib/msvs2013/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
