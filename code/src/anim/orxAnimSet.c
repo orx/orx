@@ -1650,6 +1650,9 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
       orxHashTable_Delete(_pstAnimSet->pstIDTable);
     }
 
+    /* Frees anim pointer array */
+    orxMemory_Free(_pstAnimSet->pastAnim);
+
     /* Has reference? */
     if(_pstAnimSet->zReference != orxNULL)
     {
