@@ -328,7 +328,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
   orxSTATUS eResult;
 
   /* Removes first instance of handler */
-  eResult = orxEvent_RemoveHandlerWithContext(_eEventType, _pfnEventHandler, _pfnEventHandler);
+  eResult = orxEvent_RemoveHandlerWithContext(_eEventType, _pfnEventHandler, (void *)_pfnEventHandler);
 
   /* Done! */
   return eResult;
