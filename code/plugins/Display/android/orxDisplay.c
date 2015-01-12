@@ -49,9 +49,7 @@
 #define STBI_NO_HDR
 #define STBI_NO_PIC
 #define STBI_NO_PNM
-#define STBI_NEON
 #include "stb_image.h"
-#undef STBI_NEON
 #undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
