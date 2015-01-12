@@ -40,10 +40,18 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        return
-        {
-            "Native"
-        }
+        if string.lower(_ACTION) == "vs2013" then
+            return
+            {
+                "x64",
+                "x32"
+            }
+        else
+            return
+            {
+                "Native"
+            }
+        end
     elseif os.is ("linux") then
         if islinux64 () then
             return
@@ -246,10 +254,16 @@ solution "orxFontGen"
             "../../../extern/freetype-2.4.1/lib/vc2012"
         }
 
-    configuration {"vs2013"}
+    configuration {"vs2013", "x32"}
         libdirs
         {
             "../../../extern/freetype-2.4.1/lib/vc2013/32"
+        }
+
+    configuration {"vs2013", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype-2.4.1/lib/vc2013/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}

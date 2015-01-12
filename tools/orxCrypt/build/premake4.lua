@@ -40,10 +40,18 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        return
-        {
-            "Native"
-        }
+        if string.lower(_ACTION) == "vs2013" then
+            return
+            {
+                "x64",
+                "x32"
+            }
+        else
+            return
+            {
+                "Native"
+            }
+        end
     elseif os.is ("linux") then
         if islinux64 () then
             return
