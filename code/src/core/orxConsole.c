@@ -613,7 +613,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           orxS32 s32Offset, i;
 
           /* Prints it */
-          s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
+          s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (orxU32)(pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
 
           /* Ends string */
           pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset] = orxCHAR_NULL;
@@ -625,7 +625,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           if(u32PrefixLength <= (orxU32)s32Offset)
           {
             /* Updates cursor position */
-            pstEntry->u32CursorIndex = (pcStart - pstEntry->acBuffer) + u32PrefixLength;
+            pstEntry->u32CursorIndex = (orxU32)(pcStart - pstEntry->acBuffer) + u32PrefixLength;
           }
         }
         else

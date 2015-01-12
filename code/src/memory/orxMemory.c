@@ -95,13 +95,13 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
   orxU32                                u32InfoListSize = 0, u32Result = orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE, i, u32Number;
 
   /* Requests total size of processors info */
-  GetLogicalProcessorInformation(0, &u32InfoListSize);
+  GetLogicalProcessorInformation(0, (PDWORD)&u32InfoListSize);
 
   /* Allocates info list */
   astProcessorInfoList = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION *)orxMemory_Allocate(u32InfoListSize, orxMEMORY_TYPE_TEMP);
 
   /* Gets processors info */
-  GetLogicalProcessorInformation(astProcessorInfoList, &u32InfoListSize);
+  GetLogicalProcessorInformation(astProcessorInfoList, (PDWORD)&u32InfoListSize);
 
   /* For all processor info */
   for(i = 0, u32Number = u32InfoListSize / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
@@ -272,7 +272,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
     uMemoryChunkSize = dlmalloc_usable_size(pResult);
 
     /* Updates memory tracker */
-    orxMemory_Track(_eMemType, uMemoryChunkSize - sizeof(orxMEMORY_TYPE), orxTRUE);
+    orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxTRUE);
 
     /* Updates result */
     pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
@@ -315,7 +315,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     uMemoryChunkSize = dlmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
-    orxMemory_Track(eMemType, uMemoryChunkSize - sizeof(orxMEMORY_TYPE), orxFALSE);
+    orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxFALSE);
   }
 
 #endif /* __orxPROFILER__ */

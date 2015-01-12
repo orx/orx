@@ -2586,7 +2586,7 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
   if((_zEncryptionKey != orxNULL) && (_zEncryptionKey != orxSTRING_EMPTY))
   {
     /* Updates values */
-    sstConfig.u32EncryptionKeySize  = strlen(_zEncryptionKey);
+    sstConfig.u32EncryptionKeySize  = (orxU32)strlen(_zEncryptionKey);
     sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
     memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
     sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
