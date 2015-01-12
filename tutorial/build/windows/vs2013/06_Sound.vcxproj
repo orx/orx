@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F87E9A58-E966-B34B-ADA0-8EEEADA3487F}</ProjectGuid>
+    <ProjectGuid>{FE4AF6E4-9904-3146-823B-D6CF1B7EE96F}</ProjectGuid>
     <RootNamespace>06_Sound</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -151,7 +151,6 @@
       <WarningLevel>Level3</WarningLevel>
     <ExceptionHandling>false</ExceptionHandling>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)06_Sound.pdb</ProgramDataBaseFileName>
@@ -216,7 +215,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)06_Sound.pdb</ProgramDataBaseFileName>
@@ -286,7 +284,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)06_Sound.pdb</ProgramDataBaseFileName>

@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}</ProjectGuid>
+    <ProjectGuid>{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}</ProjectGuid>
     <RootNamespace>orxCrypt</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>

@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E432B7FE-9130-E14C-B973-FCE9BA06C456}</ProjectGuid>
+    <ProjectGuid>{1441CA44-D980-1C40-90A1-C2B9D636D540}</ProjectGuid>
     <RootNamespace>12_Lighting</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -151,7 +151,6 @@
       <WarningLevel>Level3</WarningLevel>
     <ExceptionHandling>false</ExceptionHandling>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)12_Lighting.pdb</ProgramDataBaseFileName>
@@ -216,7 +215,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)12_Lighting.pdb</ProgramDataBaseFileName>
@@ -286,7 +284,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)12_Lighting.pdb</ProgramDataBaseFileName>

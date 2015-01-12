@@ -144,13 +144,18 @@ solution "orxFontGen"
     {
         "NoPCH",
         "NoManifest",
-        "EnableSSE2",
         "FloatFast",
         "NoNativeWChar",
         "NoExceptions",
         "Symbols",
         "StaticRuntime"
     }
+
+    configuration {"not vs2013"}
+        flags {"EnableSSE2"}
+
+    configuration {"not x64"}
+        flags {"EnableSSE2"}
 
     configuration {"not windows"}
         flags {"Unicode"}

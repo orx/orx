@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BAAB3CD6-7FA8-B341-AA4D-7355E4F7874F}</ProjectGuid>
+    <ProjectGuid>{2168A230-BAF6-2A44-A9C0-178A26C938E5}</ProjectGuid>
     <RootNamespace>08_Physics</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -151,7 +151,6 @@
       <WarningLevel>Level3</WarningLevel>
     <ExceptionHandling>false</ExceptionHandling>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)08_Physics.pdb</ProgramDataBaseFileName>
@@ -216,7 +215,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)08_Physics.pdb</ProgramDataBaseFileName>
@@ -286,7 +284,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)08_Physics.pdb</ProgramDataBaseFileName>

@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0B2A7AD7-BD65-324B-B36F-6CE21C1F2279}</ProjectGuid>
+    <ProjectGuid>{369E8FA1-CDD5-4841-AF5B-1FBE80512B51}</ProjectGuid>
     <RootNamespace>09_Scrolling</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -151,7 +151,6 @@
       <WarningLevel>Level3</WarningLevel>
     <ExceptionHandling>false</ExceptionHandling>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)09_Scrolling.pdb</ProgramDataBaseFileName>
@@ -216,7 +215,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)09_Scrolling.pdb</ProgramDataBaseFileName>
@@ -286,7 +284,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)09_Scrolling.pdb</ProgramDataBaseFileName>

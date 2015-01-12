@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{443E5A6E-3F2C-794F-BBBB-DF82051D1FF0}</ProjectGuid>
+    <ProjectGuid>{AAD816FB-7ADE-E540-8059-7350B181A1E9}</ProjectGuid>
     <RootNamespace>05_Viewport</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -151,7 +151,6 @@
       <WarningLevel>Level3</WarningLevel>
     <ExceptionHandling>false</ExceptionHandling>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)05_Viewport.pdb</ProgramDataBaseFileName>
@@ -216,7 +215,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)05_Viewport.pdb</ProgramDataBaseFileName>
@@ -286,7 +284,6 @@
     <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)05_Viewport.pdb</ProgramDataBaseFileName>

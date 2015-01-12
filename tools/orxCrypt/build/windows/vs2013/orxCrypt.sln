@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxCrypt", "orxCrypt.vcxproj", "{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxCrypt", "orxCrypt.vcxproj", "{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,12 +10,12 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Debug|Win32.Build.0 = Debug|Win32
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Profile|Win32.ActiveCfg = Profile|Win32
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Profile|Win32.Build.0 = Profile|Win32
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Release|Win32.ActiveCfg = Release|Win32
-		{10C3B40A-399A-F047-9F88-0BCF0B0F34A9}.Release|Win32.Build.0 = Release|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Debug|Win32.Build.0 = Debug|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Profile|Win32.ActiveCfg = Profile|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Profile|Win32.Build.0 = Profile|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Release|Win32.ActiveCfg = Release|Win32
+		{3E68555A-8BF3-DB4D-A5A8-E075A2CE9895}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
