@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxParam
- * 
+ *
  * Param module
  * Module that handles command line parameters
  *
@@ -66,7 +66,7 @@ typedef struct __orxPARAM_t
 {
   /* Flags associated to the parameters' parser */
   orxU32                  u32Flags;
-  
+
   /* Short parameter name (ex: "h" for help (will be -h)) */
   const orxSTRING         zShortName;
 
@@ -79,10 +79,10 @@ typedef struct __orxPARAM_t
   /* Long description (ex: "Display the list of parameters.
    * -help <param> displays the <param> long description") */
   const orxSTRING         zLongDesc;
-  
+
   /* Function called when the parameter is detected in the command line */
   orxPARAM_INIT_FUNCTION  pfnParser;
-  
+
 } orxPARAM;
 
 
