@@ -254,7 +254,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)
       {
-        /* Short prefix found? */
+        /* Short or long prefix found? */
         if(((orxString_SearchString(sstParam.azParams[i], orxPARAM_KZ_MODULE_SHORT_PREFIX) == sstParam.azParams[i])
          && (orxString_Compare(sstParam.azParams[i] + orxString_GetLength(orxPARAM_KZ_MODULE_SHORT_PREFIX), _pstParamInfo->stParam.zShortName) == 0))
         || ((orxString_SearchString(sstParam.azParams[i], orxPARAM_KZ_MODULE_LONG_PREFIX) == sstParam.azParams[i])
@@ -452,9 +452,71 @@ orxSTATUS orxFASTCALL orxParam_Init()
         /* Registers it */
         eResult = orxParam_Register(&stParams);
 
-        /* If registration failed, module become unready */
-        if(eResult == orxSTATUS_FAILURE)
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
         {
+          orxU32 i, u32PrefixLength;
+
+          /* Pushes config section */
+          orxConfig_PushSection(orxPARAM_KZ_CONFIG_SECTION);
+
+          /* Gets prefix length */
+          u32PrefixLength = orxString_GetLength(orxPARAM_KZ_MODULE_LONG_PREFIX);
+
+          /* For all parameters */
+          for(i = 1; i < sstParam.u32ParamNumber; i++)
+          {
+            /* Is a long param? */
+            if(orxString_SearchString(sstParam.azParams[i], orxPARAM_KZ_MODULE_LONG_PREFIX) == sstParam.azParams[i])
+            {
+              const orxSTRING zParamName;
+
+              /* Gets param name */
+              zParamName = sstParam.azParams[i] + u32PrefixLength;
+
+              /* Valid? */
+              if(*zParamName != orxCHAR_NULL)
+              {
+                orxU32          j;
+                const orxSTRING azParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
+
+                /* For all values */
+                for(j = 0; j + i + 1 < (sstParam.u32ParamNumber) && (j < orxPARAM_KU32_MAX_CONFIG_PARAM); j++)
+                {
+                  orxU32 u32Index;
+
+                  /* Gets source index */
+                  u32Index = i + j + 1;
+
+                  /* Not a parameter? */
+                  if((orxString_SearchString(sstParam.azParams[u32Index], orxPARAM_KZ_MODULE_LONG_PREFIX) != sstParam.azParams[u32Index])
+                  && (orxString_SearchString(sstParam.azParams[u32Index], orxPARAM_KZ_MODULE_SHORT_PREFIX) != sstParam.azParams[u32Index]))
+                  {
+                    /* Stores it */
+                    azParamList[j] = sstParam.azParams[i + j + 1];
+                  }
+                  else
+                  {
+                    /* Stops */
+                    break;
+                  }
+                }
+
+                /* Stores values to config */
+                orxConfig_SetListString(zParamName, azParamList, j);
+
+                /* Updates index */
+                i = i + j;
+              }
+            }
+          }
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        else
+        {
+          /* Updates status */
           sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
         }
       }
