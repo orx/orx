@@ -7,13 +7,12 @@ Orx authors:
     Nicolas Antoniazzi
 
   Tools:
-    Nicolas Antoniazzi
-    Emilien Kia
     Romain Killian
 
-  IDE project files (CodeLite, Visual Studio, XCode, Premake) and external dependencies:
+  IDE project files (CodeLite, Visual Studio, XCode, Android, Premake) and external dependencies:
     4babce
     Grey
+    Lydesik
     Romain Killian
 
   Windows, MacOS X & Linux versions:
@@ -22,10 +21,9 @@ Orx authors:
   iOS (iPhone/iPod Touch/iPad) version:
     Romain Killian
 
-  Android version:
-    Cai 'laschweinski' Huaxu (1.6+)
-    Philippe 'Lydesik' Simons (2.3+)
-    Gilles 'faistoiplaisir' Zucchini (2.3+)
+  Android versions:
+    Philippe 'Lydesik' Simons
+    Gilles 'faistoiplaisir' Zucchini
 
   Launcher, demos and tutorials:
     Romain Killian
@@ -57,3 +55,13 @@ Orx authors:
 
   Default font (dina):
     Jørgen 'Jibs' Ibsen
+
+  Additional contributors:
+    Cai 'laschweinski' Huaxu
+    Emilien Kia
+    Eric Poulsen
+    Fritz 'acksys' Mahnke
+    Graag
+    Grey
+    Sausage
+    Sergei Gnezdov
