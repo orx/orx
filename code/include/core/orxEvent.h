@@ -143,7 +143,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_AddHandler(orxEVENT_TYPE _eEven
 
 /** Adds an event handler with user-defined context
  * @param[in] _eEventType           Concerned type of event
- * @param[in] _pfnHandler           Event handler to add
+ * @param[in] _pfnEventHandler      Event handler to add
  * @param[in] _pContext             Context that will be stored in events sent to this handler
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
