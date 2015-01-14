@@ -25,7 +25,7 @@ orx 1.6
 * Android audio thread is paused when application is sent to the background
 * AnimSets can now contain up to 1024 anims (previously: 256)
 * Command Object.Delete will now handle disabled objects correctly
-* Updated stb_image to v2.0
+* Updated stb_image to v2.0b
 * Updated stb_image_write to v0.95
 * Updated stb_vorbis to v1.04
 * Misc fixes, optimizations and additions
