@@ -41,7 +41,13 @@
 #define STBI_NO_HDR
 #define STBI_NO_PIC
 #define STBI_NO_PNM
+#if defined(__orxARM__)
+  #define STBI_NEON
+#endif /* __orxARM__ */
 #include "stb_image.h"
+#if defined(__orxARM__)
+  #undef STBI_NEON
+#endif /* __orxARM__ */
 #undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
