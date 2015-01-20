@@ -95,11 +95,14 @@ typedef enum __orxRENDER_EVENT_t
 
 /** Event payload
  */
-typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
+typedef struct __orxRENDER_EVENT_PAYLOAD_t
 {
-  orxDISPLAY_TRANSFORM *pstTransform;     /**< Object display transform : 4 / 8 */
+  struct
+  {
+    orxDISPLAY_TRANSFORM *pstTransform;   /**< Object display transform : 4 / 8 */
+  } stObject;
 
-} orxRENDER_EVENT_OBJECT_PAYLOAD;
+} orxRENDER_EVENT_PAYLOAD;
 
 
 /***************************************************************************
