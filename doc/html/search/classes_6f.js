@@ -32,7 +32,7 @@ var searchData=
   ['orxphysics_5fevent_5fpayload',['orxPHYSICS_EVENT_PAYLOAD',['../structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxplugin_5fcore_5ffunction',['orxPLUGIN_CORE_FUNCTION',['../structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html',1,'']]],
   ['orxplugin_5fuser_5ffunction_5finfo',['orxPLUGIN_USER_FUNCTION_INFO',['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html',1,'']]],
-  ['orxrender_5fevent_5fobject_5fpayload',['orxRENDER_EVENT_OBJECT_PAYLOAD',['../structorx_r_e_n_d_e_r___e_v_e_n_t___o_b_j_e_c_t___p_a_y_l_o_a_d.html',1,'']]],
+  ['orxrender_5fevent_5fpayload',['orxRENDER_EVENT_PAYLOAD',['../structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxresource_5fevent_5fpayload',['orxRESOURCE_EVENT_PAYLOAD',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxresource_5ftype_5finfo',['orxRESOURCE_TYPE_INFO',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html',1,'']]],
   ['orxrgba',['orxRGBA',['../structorx_r_g_b_a.html',1,'']]],

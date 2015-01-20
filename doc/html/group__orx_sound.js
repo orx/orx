@@ -4,7 +4,7 @@ var group__orx_sound =
       [ "pstSound", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a4d5dfe7a57f3ddcf6be0c804e3d0f023", null ],
       [ "stInfo", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad09d9ed476407093979ce0038a3db767", null ],
       [ "stPacket", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a84e438192a0b369699f3d96d510fda17", null ],
-      [ "stStream", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a89273bebdf54ad7e980c2f1df49eda11", null ],
+      [ "stStream", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a6c234f7f87b9bac0b4c243f3de8c2367", null ],
       [ "zSoundName", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a668d783111061ec60e45f34789b46c2b", null ]
     ] ],
     [ "orxSOUND_STREAM_INFO", "structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html", [
