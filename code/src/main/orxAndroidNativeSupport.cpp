@@ -27,7 +27,7 @@ struct android_app;
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        orxSTRING zAndroidInternalFilesPath;
+        char *zAndroidInternalFilesPath;
         orxBOOL bPaused;
 
         int32_t lastWidth;
@@ -155,7 +155,7 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     env->DeleteLocalRef(fileObject);
 
     path = env->GetStringUTFChars(pathString, NULL);
-    sstAndroid.zAndroidInternalFilesPath = orxString_Duplicate(path);
+    sstAndroid.zAndroidInternalFilesPath = strdup(path);
     env->ReleaseStringUTFChars(pathString, path);
     env->DeleteLocalRef(pathString);
   }
@@ -434,7 +434,7 @@ void android_main( android_app* state )
 
     if(sstAndroid.zAndroidInternalFilesPath)
     {
-      orxString_Delete(sstAndroid.zAndroidInternalFilesPath);
+      free(sstAndroid.zAndroidInternalFilesPath);
     }
 
     if(state->destroyRequested == 0)

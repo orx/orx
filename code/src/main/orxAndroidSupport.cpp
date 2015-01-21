@@ -83,7 +83,7 @@ typedef struct __orxANDROID_STATIC_t {
         // AssetManager
         AAssetManager *poAssetManager;
         jobject jAssetManager;
-        orxSTRING zAndroidInternalFilesPath;
+        char *zAndroidInternalFilesPath;
 
         // looper stufs
         ALooper* looper;
@@ -266,7 +266,7 @@ static void orxAndroid_Exit(JNIEnv* env)
 
   if(sstAndroid.zAndroidInternalFilesPath)
   {
-    orxString_Delete(sstAndroid.zAndroidInternalFilesPath);
+    free(sstAndroid.zAndroidInternalFilesPath);
   }
 
   if(sstAndroid.window != orxNULL)
@@ -649,7 +649,7 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     env->DeleteLocalRef(fileObject);
 
     path = env->GetStringUTFChars(pathString, NULL);
-    sstAndroid.zAndroidInternalFilesPath = orxString_Duplicate(path);
+    sstAndroid.zAndroidInternalFilesPath = strdup(path);
     env->ReleaseStringUTFChars(pathString, path);
     env->DeleteLocalRef(pathString);
   }
