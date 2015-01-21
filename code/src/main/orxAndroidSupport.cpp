@@ -23,7 +23,7 @@
  */
 
 /**
- * @file orxAndSupport.c
+ * @file orxAndroidSupport.cpp
  * @date 26/06/2011
  * @author simons.philippe@gmail.com
  *
@@ -48,14 +48,11 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
-//#define DEBUG_ANDROID_SUPPORT
-
-#ifdef DEBUG_ANDROID_SUPPORT
+#ifdef __orxDEBUG__
 
 #define MODULE "orxAndroidSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,MODULE,__VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,MODULE,__VA_ARGS__)
-#define DEBUG_JNI
 
 #else
 
