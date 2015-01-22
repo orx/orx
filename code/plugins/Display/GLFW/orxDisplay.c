@@ -43,9 +43,9 @@
 #include "GL/glfw.h"
 #include "GL/glext.h"
 
-// #ifdef __orxLINUX__
+#if !defined(__orxMSVC__) || (_MSC_VER > 1600)
 #include "webp/decode.h"
-// #endif /* __orxLINUX__ */
+#endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION

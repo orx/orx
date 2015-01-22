@@ -276,8 +276,7 @@ solution "orx"
             "../../extern/glfw-2.7/lib/vc2008",
             "../../extern/openal-soft/lib/vc2008",
             "../../extern/libsndfile-1.0.22/lib/vc2008",
-            "../../extern/Box2D_2.1.3/lib/msvs2008",
-            "../../extern/libwebp/lib/vc2008"
+            "../../extern/Box2D_2.1.3/lib/msvs2008"
         }
 
     configuration {"vs2010"}
@@ -286,8 +285,7 @@ solution "orx"
             "../../extern/glfw-2.7/lib/vc2010",
             "../../extern/openal-soft/lib/vc2010",
             "../../extern/libsndfile-1.0.22/lib/vc2010",
-            "../../extern/Box2D_2.1.3/lib/msvs2010",
-            "../../extern/libwebp/lib/vc2010"
+            "../../extern/Box2D_2.1.3/lib/msvs2010"
         }
 
     configuration {"vs2012"}
