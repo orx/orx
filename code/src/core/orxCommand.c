@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -68,10 +68,9 @@
 #define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
 
 
-#define orxCOMMAND_KU32_TABLE_SIZE                    256
-#define orxCOMMAND_KU32_BANK_SIZE                     128
-#define orxCOMMAND_KU32_TRIE_BANK_SIZE                1024
-#define orxCOMMAND_KU32_RESULT_BANK_SIZE              16
+#define orxCOMMAND_KU32_BANK_SIZE                     512
+#define orxCOMMAND_KU32_TRIE_BANK_SIZE                4096
+#define orxCOMMAND_KU32_RESULT_BANK_SIZE              32
 #define orxCOMMAND_KU32_RESULT_BUFFER_SIZE            256
 
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
@@ -564,7 +563,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               if(s32GUIDLength != 0)
               {
                 /* Replaces it with GUID */
-                orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
 
                 /* Updates pointer */
                 pcDst += s32GUIDLength;
@@ -640,7 +639,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 }
 
                 /* Replaces marker with stacked value */
-                orxString_NCopy(pcDst, zValue, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, zValue, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
 
                 /* Updates pointers */
                 pcDst += orxString_GetLength(zValue);
@@ -664,7 +663,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
 
                 /* Replaces marker with stack error */
-                orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
 
                 /* Updates pointers */
                 pcDst += orxString_GetLength(orxCOMMAND_KZ_ERROR_VALUE);

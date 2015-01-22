@@ -1,3 +1,36 @@
+/* Orx - Portable Game Engine
+ *
+ * Copyright (c) 2008-2015 Orx-Project
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+/**
+ * @file orxAndroidNativeSupport.cpp
+ * @date 26/06/2011
+ * @author simons.philippe@gmail.com
+ *
+ * Android support
+ *
+ */
+
 #if defined(__orxANDROID_NATIVE__)
 
 #include <android/log.h>
@@ -9,7 +42,6 @@
 #define MODULE "orxAndroidNativeSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,MODULE,__VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,MODULE,__VA_ARGS__)
-#define DEBUG_JNI
 
 #else
 
@@ -27,7 +59,7 @@ struct android_app;
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        char *s_AndroidInternalFilesPath;
+        char *zAndroidInternalFilesPath;
         orxBOOL bPaused;
 
         int32_t lastWidth;
@@ -129,7 +161,7 @@ extern "C" ANativeActivity* orxAndroid_GetNativeActivity()
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
-  if (!sstAndroid.s_AndroidInternalFilesPath)
+  if (!sstAndroid.zAndroidInternalFilesPath)
   {
     jmethodID mid;
     jobject fileObject;
@@ -143,7 +175,6 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     // fileObj = context.getFilesDir();
     mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
     fileObject = env->CallObjectMethod(jActivity, mid);
-
     if (!fileObject)
     {
       LOGE("Couldn't get internal directory");
@@ -156,12 +187,12 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     env->DeleteLocalRef(fileObject);
 
     path = env->GetStringUTFChars(pathString, NULL);
-    sstAndroid.s_AndroidInternalFilesPath = strdup(path);
+    sstAndroid.zAndroidInternalFilesPath = strdup(path);
     env->ReleaseStringUTFChars(pathString, path);
     env->DeleteLocalRef(pathString);
   }
 
-  return sstAndroid.s_AndroidInternalFilesPath;
+  return sstAndroid.zAndroidInternalFilesPath;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -433,9 +464,9 @@ void android_main( android_app* state )
     int status;
     status = main(0, orxNULL);
 
-    if (sstAndroid.s_AndroidInternalFilesPath)
+    if(sstAndroid.zAndroidInternalFilesPath)
     {
-        free(sstAndroid.s_AndroidInternalFilesPath);
+      free(sstAndroid.zAndroidInternalFilesPath);
     }
 
     if(state->destroyRequested == 0)

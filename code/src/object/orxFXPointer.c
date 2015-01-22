@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -71,7 +71,7 @@
 
 /** Misc defines
  */
-#define orxFXPOINTER_KU32_BANK_SIZE             128         /**< Bank size */
+#define orxFXPOINTER_KU32_BANK_SIZE             1024        /**< Bank size */
 
 
 /***************************************************************************

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -95,11 +95,14 @@ typedef enum __orxRENDER_EVENT_t
 
 /** Event payload
  */
-typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
+typedef struct __orxRENDER_EVENT_PAYLOAD_t
 {
-  orxDISPLAY_TRANSFORM *pstTransform;     /**< Object display transform : 4 / 8 */
+  struct
+  {
+    orxDISPLAY_TRANSFORM *pstTransform;   /**< Object display transform : 4 / 8 */
+  } stObject;
 
-} orxRENDER_EVENT_OBJECT_PAYLOAD;
+} orxRENDER_EVENT_PAYLOAD;
 
 
 /***************************************************************************

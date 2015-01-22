@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -84,11 +84,11 @@
 
 /** Misc defines
  */
-#define orxFX_KU32_REFERENCE_TABLE_SIZE         64
+#define orxFX_KU32_REFERENCE_TABLE_SIZE         128
 
 #define orxFX_KU32_SLOT_NUMBER                  8
 
-#define orxFX_KU32_BANK_SIZE                    64
+#define orxFX_KU32_BANK_SIZE                    128
 
 #define orxFX_KZ_CONFIG_SLOT_LIST               "SlotList"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"

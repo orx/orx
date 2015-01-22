@@ -1,4 +1,4 @@
-Orx - Portable Game Engine  (Version iOS 1.5rc0)
+Orx - Portable Game Engine  (Version iOS 1.6)
 ================================================
 
 Email iarwain [at] orx-project -dot- org to contact the author; or better, check
@@ -41,8 +41,8 @@ Files
       CreationTemplate.ini              - List of all config parameters used when creating objects, sounds, graphics, ...
       SettingsTemplate.ini              - List of all config parameters for physics, display, ... setup
 
-      liborx-fat-sdk7.1.zip             - Fat static library of orx,
-                                          including both simulator & device (iPhone/iPod Touch/iPad) versions compiled with iOS SDK 4.2
+      liborx-fat-sdk8.1.zip             - Fat static library of orx,
+                                          including both simulator & device (iPhone/iPod Touch/iPad) versions compiled with iOS SDK 8.1
 
     /doc/html                           - API documentation (doxygen)
 
@@ -64,7 +64,7 @@ Fiddling with both demo's code and config is probably a good place to start unde
 [The wiki](http://wiki.orx-project.org) also contains useful information as well as some more generic tutorials.
 
 When starting your own new project, you can either modify the demo project file (that also compiles orx) or use
-the precompiled libraries found in `liborx-fat-sdk4.2.zip` along with the include files found in `/dev-ios/include`.
+the precompiled libraries found in `liborx-fat-sdk8.1.zip` along with the include files found in `/dev-ios/include`.
 
 The precompiled libraries contain both device & simulator code for more convenience.
 

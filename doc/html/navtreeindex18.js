@@ -1,5 +1,13 @@
 var NAVTREEINDEX18 =
 {
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba0d60d02e629e97bd9cfb4e823ee60e24":[3,0,0,11,0,8,0,14],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e":[3,0,0,11,0,8,0,6],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe":[3,0,0,11,0,8,0,3],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba1c3e15d578c12838fb838eaa2c08ad30":[3,0,0,11,0,8,0,24],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba2376a1825195bfc2f5c69a676ddd7642":[3,0,0,11,0,8,0,4],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba247f44c2212aa056834c1d8a81b75576":[3,0,0,11,0,8,0,23],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba26a3be541c8e5d6d7fce8f8d7324750a":[3,0,0,11,0,8,0,2],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba280b0d1c4fa1d316c47e6de3879bc388":[3,0,0,11,0,8,0,35],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba2b36d39c2bb495dfe2b85f856b29a11a":[3,0,0,11,0,8,0,33],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba2dae2d47ce321b9cd853f446007c16cc":[3,0,0,11,0,8,0,0],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba3276277e80e91197ca97e672aa3d6e3a":[3,0,0,11,0,8,0,26],
@@ -241,13 +249,5 @@ var NAVTREEINDEX18 =
 "orx_shader_pointer_8h_source.html":[3,0,0,12,3],
 "orx_sound_8h.html":[3,0,0,13,0],
 "orx_sound_8h.html#ga0390001e26b32b18253b9bcd3ac15e49":[3,0,0,13,0,35],
-"orx_sound_8h.html#ga0466c87d987fc8c5729a3ac82bfb1a29":[3,0,0,13,0,25],
-"orx_sound_8h.html#ga15413bce8dbb7e7bab4cde2354f2f00f":[3,0,0,13,0,23],
-"orx_sound_8h.html#ga21f59cf87f87dba393b0ee5b9e1af653":[3,0,0,13,0,11],
-"orx_sound_8h.html#ga2d108c46263157639ebc5c3657a0a8ad":[3,0,0,13,0,12],
-"orx_sound_8h.html#ga54cce1f0fa0a1bcb82834c3617ebdfe1":[3,0,0,13,0,26],
-"orx_sound_8h.html#ga58e0a61f287672d13130384705fe6c87":[3,0,0,13,0,1],
-"orx_sound_8h.html#ga5cef112990ff5264c67eea94a66c7afe":[3,0,0,13,0,5],
-"orx_sound_8h.html#ga6c1ad4ad3c0901724244e736210ee5e4":[3,0,0,13,0,10],
-"orx_sound_8h.html#ga6fbb5775777080c8bbdb4f6b3d527cdc":[3,0,0,13,0,20]
+"orx_sound_8h.html#ga0466c87d987fc8c5729a3ac82bfb1a29":[3,0,0,13,0,25]
 };

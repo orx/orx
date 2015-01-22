@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -63,8 +63,8 @@
  */
 #define orxFONT_KU32_MAP_BANK_SIZE              4           /**< Map bank size */
 #define orxFONT_KU32_REFERENCE_TABLE_SIZE       4           /**< Reference table size */
-#define orxFONT_KU32_CHARACTER_BANK_SIZE        128         /**< Character bank size */
-#define orxFONT_KU32_CHARACTER_TABLE_SIZE       128         /**< Character table size */
+#define orxFONT_KU32_CHARACTER_BANK_SIZE        256         /**< Character bank size */
+#define orxFONT_KU32_CHARACTER_TABLE_SIZE       256         /**< Character table size */
 
 #define orxFONT_KU32_BANK_SIZE                  16          /**< Bank size */
 

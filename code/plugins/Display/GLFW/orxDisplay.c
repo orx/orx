@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -43,10 +43,24 @@
 #include "GL/glfw.h"
 #include "GL/glext.h"
 
+// #ifdef __orxLINUX__
 #include "webp/decode.h"
+// #endif /* __orxLINUX__ */
 
 #define STBI_NO_STDIO
-#include "stb_image.c"
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_PSD
+#define STBI_NO_GIF
+#define STBI_NO_HDR
+#define STBI_NO_PIC
+#define STBI_NO_PNM
+#include "stb_image.h"
+#undef STBI_NO_PNM
+#undef STBI_NO_PIC
+#undef STBI_NO_HDR
+#undef STBI_NO_GIF
+#undef STBI_NO_PSD
+#undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -759,10 +773,10 @@ static int orxDisplay_GLFW_ReadSTBICallback(void *_hResource, char *_pBuffer, in
   return (int)orxResource_Read((orxHANDLE)_hResource, _iSize, (orxU8 *)_pBuffer, orxNULL, orxNULL);
 }
 
-static void orxDisplay_GLFW_SkipSTBICallback(void *_hResource, unsigned int _uiOffset)
+static void orxDisplay_GLFW_SkipSTBICallback(void *_hResource, int _iOffset)
 {
   /* Seeks offset */
-  orxResource_Seek((orxHANDLE)_hResource, _uiOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
+  orxResource_Seek((orxHANDLE)_hResource, _iOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
 
   /* Done! */
   return;

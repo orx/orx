@@ -107,7 +107,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     case orxANIM_EVENT_CUSTOM_EVENT:
     {
        /* Logs info */
-       orxLOG("Animation <%s>@<%s> has sent the event [%s]!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), pstPayload->zCustomEventName);
+       orxLOG("Animation <%s>@<%s> has sent the event [%s]!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), pstPayload->stCustom.zName);
 
       break;
     }

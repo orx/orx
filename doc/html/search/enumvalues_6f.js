@@ -7,6 +7,7 @@ var searchData=
   ['orxanim_5fevent_5fnumber',['orxANIM_EVENT_NUMBER',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0aa7b2beb25ff0451d0168e147b24b756d',1,'orxAnim.h']]],
   ['orxanim_5fevent_5fstart',['orxANIM_EVENT_START',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0ab2335f9d6e75dcb79913bbf6e8bcec2a',1,'orxAnim.h']]],
   ['orxanim_5fevent_5fstop',['orxANIM_EVENT_STOP',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0acd32ec01dd2b410f7bfe8d8dbe0fa61d',1,'orxAnim.h']]],
+  ['orxanim_5fevent_5fupdate',['orxANIM_EVENT_UPDATE',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a60293cbf7f30232037ac0db6e19ca1d1',1,'orxAnim.h']]],
   ['orxclock_5fevent_5fnone',['orxCLOCK_EVENT_NONE',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791dad2c2a028497b40243a3d52eb20f4b0fa',1,'orxClock.h']]],
   ['orxclock_5fevent_5fnumber',['orxCLOCK_EVENT_NUMBER',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da50713812454a2a348fa091d04a64ee35',1,'orxClock.h']]],
   ['orxclock_5fevent_5fpause',['orxCLOCK_EVENT_PAUSE',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da2f29c49771425564483dece719f38a05',1,'orxClock.h']]],

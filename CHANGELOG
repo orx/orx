@@ -1,6 +1,35 @@
 Orx - Portable Game Engine  (Version 1.5rc0)
 =========================================
 
+orx 1.6
+-----
+* IMPORTANT: Added VS2013 (win32 & x64) support + precompiled binaries
+* IMPORTANT: Added VS2012 (win32) support + precompiled binaries
+* IMPORTANT: Removed official support for VS2008 & VS2010
+* IMPORTANT: orxDISPLAY_EVENT_PAYLOAD has been refactored (field renaming)
+* IMPORTANT: orxANIM_EVENT_PAYLOAD has been refactored (field renaming)
+* IMPORTANT: Android builds are now using hard-float ABI and NDK r10b
+* IMPORTANT: Android builds have been migrated from Eclipse to Android Studio
+* IMPORTANT: Added support for Android TV
+
+* Param config section will now be populated with parameters provided on the command line (full names only)
+* Debug-only: orx will try to detect and warn about case config errors
+* Optional context can now be provided when registering event handlers
+* Animations (both current & target) can now be changed from within an animation event callback
+* Added Joystick support to Android, conditional upon Android.UseJoystick config property
+* Added Nexus player remote support to Android
+* orxSTRUCTURES ordered as lists will not be ordered as FIFO anymore (use instead a cache friendly strategy)
+* Added orxDISPLAY_EVENT_LOAD_BITMAP, orxTEXTURE_EVENT_LOAD and orxANIM_EVENT_UPDATE events
+* Added Display.ShaderVersion config property, defaults to 120 on Windows, Linux & OSX
+* Spawner can now handle random/list values for WaveSize, WaveDelay and ObjectSpeed
+* Android audio thread is paused when application is sent to the background
+* AnimSets can now contain up to 1024 anims (previously: 256)
+* Command Object.Delete will now handle disabled objects correctly
+* Updated stb_image to v2.0b
+* Updated stb_image_write to v0.95
+* Updated stb_vorbis to v1.04
+* Misc fixes, optimizations and additions
+
 orx 1.6rc0
 -----
 * IMPORTANT: Added Multi-threading support

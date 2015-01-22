@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -504,7 +504,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       orxU32 u32Length;
 
       /* Updates path & full name base */
-      u32Length = orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
+      u32Length = (orxU32)orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
       orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
       _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
       orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
@@ -1061,7 +1061,11 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
   /* Valid? */
   if(_pstFile != orxNULL)
   {
+#if defined(__orxMSVC__) && defined(__orxX86_64__)
+    fseek((FILE *)_pstFile, (long)_s64Position, _eWhence);
+#else /* __orxMSVC__ && __orxX86_64__ */
     fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
+#endif /* __orxMSVC__ && __orxX86_64__ */
 
     /* Updates result */
     s64Result = orxFile_Tell(_pstFile);

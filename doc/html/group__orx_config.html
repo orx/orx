@@ -210,6 +210,9 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga83219576d7ea724390e548ae3bad5b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3908cf3f00087543c3f1ebfae73c61cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga3908cf3f00087543c3f1ebfae73c61cb">orxConfig_GetU64</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga3908cf3f00087543c3f1ebfae73c61cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga791e5473c18e4616c5b3e457c14b68e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING <br class="typebreak"/>
+orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga791e5473c18e4616c5b3e457c14b68e9">orxConfig_GetValueSource</a> (const orxSTRING _zKey)</td></tr>
+<tr class="separator:ga791e5473c18e4616c5b3e457c14b68e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac3044aadb03cf07112eff4a60e553191"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gac3044aadb03cf07112eff4a60e553191">orxConfig_GetVector</a> (const orxSTRING _zKey, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
 <tr class="separator:gac3044aadb03cf07112eff4a60e553191"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad42bd0a8612fbe43d17a887f7149e4a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gad42bd0a8612fbe43d17a887f7149e4a0">orxConfig_HasSection</a> (const orxSTRING _zSectionName)</td></tr>
@@ -1166,6 +1169,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga791e5473c18e4616c5b3e457c14b68e9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxConfig_GetValueSource </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found </dd></dl>
 
 </div>
 </div>

@@ -45,7 +45,19 @@
 #include "webp/decode.h"
 
 #define STBI_NO_STDIO
-#include "stb_image.c"
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_PSD
+#define STBI_NO_GIF
+#define STBI_NO_HDR
+#define STBI_NO_PIC
+#define STBI_NO_PNM
+#include "stb_image.h"
+#undef STBI_NO_PNM
+#undef STBI_NO_PIC
+#undef STBI_NO_HDR
+#undef STBI_NO_GIF
+#undef STBI_NO_PSD
+#undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -631,10 +643,10 @@ static int orxDisplay_Android_ReadSTBICallback(void *_hResource, char *_pBuffer,
   return (int)orxResource_Read((orxHANDLE)_hResource, _iSize, (orxU8 *)_pBuffer, orxNULL, orxNULL);
 }
 
-static void orxDisplay_Android_SkipSTBICallback(void *_hResource, unsigned int _uiOffset)
+static void orxDisplay_Android_SkipSTBICallback(void *_hResource, int _iOffset)
 {
   /* Seeks offset */
-  orxResource_Seek((orxHANDLE)_hResource, _uiOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
+  orxResource_Seek((orxHANDLE)_hResource, _iOffset, orxSEEK_OFFSET_WHENCE_CURRENT);
 
   /* Done! */
   return;

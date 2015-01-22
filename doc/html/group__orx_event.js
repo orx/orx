@@ -5,6 +5,7 @@ var group__orx_event =
       [ "eType", "structorx_e_v_e_n_t.html#a38f4d78aa53bb9a75034d7658f1b937b", null ],
       [ "hRecipient", "structorx_e_v_e_n_t.html#af249fb0f74b9f119983a179edfc84940", null ],
       [ "hSender", "structorx_e_v_e_n_t.html#ae2d8c2425840a34fe172b2a058e5bb77", null ],
+      [ "pContext", "structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce", null ],
       [ "pstPayload", "structorx_e_v_e_n_t.html#aed283fb8a616b4c4254ddf76f7de909f", null ]
     ] ],
     [ "orxEVENT_INIT", "group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf", null ],
@@ -36,11 +37,13 @@ var group__orx_event =
       [ "orxEVENT_TYPE_NONE", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a031700e9ae9f2a6970c872938b17a9b1", null ]
     ] ],
     [ "orxEvent_AddHandler", "group__orx_event.html#gafa506b8e928baf9e46a4ff20ccaa23c0", null ],
+    [ "orxEvent_AddHandlerWithContext", "group__orx_event.html#ga88a290c855c9d97a08c7694d9df24e5a", null ],
     [ "orxEvent_Exit", "group__orx_event.html#ga038a9bbe36a692bf86ab9fa993ef8f40", null ],
     [ "orxEvent_Init", "group__orx_event.html#ga4e1a076d113d180ee77b23e7769e30e5", null ],
     [ "orxEvent_IsSending", "group__orx_event.html#ga503662819efbce822d0d97eeb595f725", null ],
     [ "orxEvent_RemoveHandler", "group__orx_event.html#ga1276f3b9f69a7f1f82a841bafc2ab532", null ],
-    [ "orxEvent_Send", "group__orx_event.html#ga3435f918d28e1f6f606b6c76f46cdedb", null ],
+    [ "orxEvent_RemoveHandlerWithContext", "group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5", null ],
+    [ "orxEvent_Send", "group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8", null ],
     [ "orxEvent_SendShort", "group__orx_event.html#ga2305585afe32179ee80f9277892d555d", null ],
     [ "orxEvent_Setup", "group__orx_event.html#ga3d093133b3664650417542f56e95f322", null ]
 ];

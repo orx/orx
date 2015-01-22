@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -66,7 +66,6 @@
  */
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxOBJECT_KU32_FLAG_2D                  0x00000010  /**< 2D flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
 #define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
@@ -90,7 +89,7 @@
  */
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
-#define orxOBJECT_KU32_BANK_SIZE                1024
+#define orxOBJECT_KU32_BANK_SIZE                2048
 
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
@@ -229,6 +228,9 @@ void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     /* Marks it for deletion */
     orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+
+    /* Makes sure it's enabled */
+    orxObject_Enable(pstObject, orxTRUE);
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2694,14 +2696,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       const orxSTRING zCameraName;
       orxFRAME       *pstFrame;
       orxBODY        *pstBody;
-      orxU32          u32FrameFlags, u32Flags;
+      orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
       orxS32          s32Number;
       orxVECTOR       vValue, vParentSize, vColor;
       orxCOLOR        stColor;
       orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
-
-      /* Defaults to 2D flags */
-      u32Flags = orxOBJECT_KU32_FLAG_2D;
 
       /* Has group? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_GROUP) != orxFALSE)
@@ -6156,9 +6155,8 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOB
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstBoundingBox != orxNULL);
 
-  /* Is 2D and has sized graphic? */
-  if((orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_2D))
-  && ((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
+  /* Has sized graphic? */
+  if(((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
   && (orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL))
   {
     orxVECTOR vPivot, vPosition, vScale;

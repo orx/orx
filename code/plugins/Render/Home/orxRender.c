@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,7 +53,7 @@
 /** Defines
  */
 #define orxRENDER_KF_TICK_SIZE                      orx2F(1.0f / 10.0f)
-#define orxRENDER_KU32_ORDER_BANK_SIZE              256
+#define orxRENDER_KU32_ORDER_BANK_SIZE              1024
 #define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
 #define orxRENDER_KF_CONSOLE_BLINK_DELAY            orx2F(0.5f)
@@ -1300,14 +1300,14 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
-    orxANIMPOINTER                 *pstAnimPointer;
-    orxTEXTURE                     *pstTexture;
-    orxTEXT                        *pstText;
-    orxFONT                        *pstFont;
-    orxBITMAP                      *pstBitmap = orxNULL;
-    orxBOOL                         bIs2D;
-    orxEVENT                        stEvent;
-    orxRENDER_EVENT_OBJECT_PAYLOAD  stPayload;
+    orxANIMPOINTER         *pstAnimPointer;
+    orxTEXTURE             *pstTexture;
+    orxTEXT                *pstText;
+    orxFONT                *pstFont;
+    orxBITMAP              *pstBitmap = orxNULL;
+    orxBOOL                 bIs2D;
+    orxEVENT                stEvent;
+    orxRENDER_EVENT_PAYLOAD stPayload;
 
     /* Stores type */
     bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
@@ -1325,10 +1325,10 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
     }
 
     /* Cleans event payload */
-    orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_OBJECT_PAYLOAD));
+    orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_PAYLOAD));
 
     /* Inits it */
-    stPayload.pstTransform = _pstTransform;
+    stPayload.stObject.pstTransform = _pstTransform;
 
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
@@ -1404,7 +1404,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
     if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE) && (pstBitmap != orxNULL))
     {
       /* Valid scale? */
-      if((stPayload.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.pstTransform->fScaleY != orxFLOAT_0))
+      if((stPayload.stObject.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.stObject.pstTransform->fScaleY != orxFLOAT_0))
       {
         orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
         orxVECTOR vPivot;
@@ -1419,16 +1419,16 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         /* Updates using combined flipping */
         if(bObjectFlipX ^ bGraphicFlipX)
         {
-          stPayload.pstTransform->fScaleX *= -orxFLOAT_1;
+          stPayload.stObject.pstTransform->fScaleX *= -orxFLOAT_1;
         }
         if(bObjectFlipY ^ bGraphicFlipY)
         {
-          stPayload.pstTransform->fScaleY *= -orxFLOAT_1;
+          stPayload.stObject.pstTransform->fScaleY *= -orxFLOAT_1;
         }
 
         /* Updates transform */
-        stPayload.pstTransform->fSrcX += vPivot.fX;
-        stPayload.pstTransform->fSrcY += vPivot.fY;
+        stPayload.stObject.pstTransform->fSrcX += vPivot.fX;
+        stPayload.stObject.pstTransform->fSrcY += vPivot.fY;
 
         /* Has object color? */
         if(orxObject_HasColor(_pstObject) != orxFALSE)
@@ -1448,18 +1448,18 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         if(bIs2D != orxFALSE)
         {
           /* Transforms bitmap */
-          eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.pstTransform, _eSmoothing, _eBlendMode);
+          eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.stObject.pstTransform, _eSmoothing, _eBlendMode);
         }
         else
         {
           /* Transfomrs text */
-          eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.pstTransform, _eSmoothing, _eBlendMode);
+          eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, _eSmoothing, _eBlendMode);
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", stPayload.pstTransform->fScaleX, stPayload.pstTransform->fScaleY);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling factor should not equal 0. Got (%g, %g).", stPayload.stObject.pstTransform->fScaleX, stPayload.stObject.pstTransform->fScaleY);
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;

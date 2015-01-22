@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -320,7 +320,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddTimer(orxCLOCK
 /** Removes a timer function from a clock
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
  * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
 * @return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -337,7 +337,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddGlobalTimer(co
 
 /** Removes a global timer function (ie. from the main core clock)
  * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurences regardless of their respective delay
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
  * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

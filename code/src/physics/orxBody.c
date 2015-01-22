@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -129,8 +129,8 @@
 #define orxBODY_KZ_TYPE_FRICTION              "friction"
 #define orxBODY_KZ_TYPE_GEAR                  "gear"
 
-#define orxBODY_KU32_PART_BANK_SIZE           256
-#define orxBODY_KU32_JOINT_BANK_SIZE          32
+#define orxBODY_KU32_PART_BANK_SIZE           512
+#define orxBODY_KU32_JOINT_BANK_SIZE          64
 
 #define orxBODY_KU32_BANK_SIZE                256         /**< Bank size */
 

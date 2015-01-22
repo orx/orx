@@ -41,6 +41,7 @@ var orx_config_8h =
     [ "orxConfig_GetString", "orx_config_8h.html#ga5d903626427ae7fcb638130cadc09ec4", null ],
     [ "orxConfig_GetU32", "orx_config_8h.html#ga83219576d7ea724390e548ae3bad5b47", null ],
     [ "orxConfig_GetU64", "orx_config_8h.html#ga3908cf3f00087543c3f1ebfae73c61cb", null ],
+    [ "orxConfig_GetValueSource", "orx_config_8h.html#ga791e5473c18e4616c5b3e457c14b68e9", null ],
     [ "orxConfig_GetVector", "orx_config_8h.html#gac3044aadb03cf07112eff4a60e553191", null ],
     [ "orxConfig_HasSection", "orx_config_8h.html#gad42bd0a8612fbe43d17a887f7149e4a0", null ],
     [ "orxConfig_HasValue", "orx_config_8h.html#gad57211f9017325df09ecc0fd4414eef3", null ],

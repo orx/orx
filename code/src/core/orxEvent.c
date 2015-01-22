@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,8 +53,8 @@
 /** Misc defines
  */
 #define orxEVENT_KU32_HANDLER_TABLE_SIZE  64
-#define orxEVENT_KU32_HANDLER_BANK_SIZE   4
-#define orxEVENT_KU32_STORAGE_BANK_SIZE   16
+#define orxEVENT_KU32_HANDLER_BANK_SIZE   32
+#define orxEVENT_KU32_STORAGE_BANK_SIZE   32
 
 
 /***************************************************************************
@@ -67,6 +67,7 @@ typedef struct __orxEVENT_HANDLER_INFO_t
 {
   orxLINKLIST_NODE  stNode;
   orxEVENT_HANDLER  pfnHandler;
+  void             *pContext;
 
 } orxEVENT_HANDLER_INFO;
 
@@ -214,6 +215,23 @@ void orxFASTCALL orxEvent_Exit()
  */
 orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
 {
+  orxSTATUS eResult;
+
+  /* Adds handler */
+  eResult = orxEvent_AddHandlerWithContext(_eEventType, _pfnEventHandler, orxNULL);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds an event handler with user-defined context
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pfnHandler           Event handler to add
+ * @param[in] _pContext             Context that will be stored in events sent to this handler
+ * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler, void *_pContext)
+{
   orxEVENT_HANDLER_STORAGE *pstStorage;
   orxSTATUS                 eResult = orxSTATUS_FAILURE;
 
@@ -288,6 +306,9 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
       /* Stores its handler */
       pstInfo->pfnHandler = _pfnEventHandler;
 
+      /* Stores context */
+      pstInfo->pContext = _pContext;
+
       /* Adds it to the list */
       eResult = orxLinkList_AddEnd(&(pstStorage->stList), &(pstInfo->stNode));
     }
@@ -303,6 +324,23 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
+{
+  orxSTATUS eResult;
+
+  /* Removes first instance of handler */
+  eResult = orxEvent_RemoveHandlerWithContext(_eEventType, _pfnEventHandler, (void *)_pfnEventHandler);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes an event handler which matches given context
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pfnEventHandler      Event handler to remove
+ * @param[in] _pContext             Context of the handler to remove, orxNULL for removing all occurrences regardless of their context
+ * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler, void *_pContext)
 {
   orxEVENT_HANDLER_STORAGE *pstStorage;
   orxSTATUS                 eResult = orxSTATUS_FAILURE;
@@ -325,7 +363,10 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
         pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
       /* Found? */
-      if(pstInfo->pfnHandler == _pfnEventHandler)
+      if((pstInfo->pfnHandler == _pfnEventHandler)
+      && ((_pContext == orxNULL)
+       || (_pContext == _pfnEventHandler)
+       || (_pContext == pstInfo->pContext)))
       {
         /* Removes it from list */
         orxLinkList_Remove(&(pstInfo->stNode));
@@ -336,7 +377,12 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
 
-        break;
+        /* Should only remove one? */
+        if(_pContext == _pfnEventHandler)
+        {
+          /* Stops */
+          break;
+        }
       }
     }
   }
@@ -353,7 +399,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
 /** Sends an event
  * @param[in] _pstEvent             Event to send
  */
-orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
 {
   orxEVENT_HANDLER_STORAGE *pstStorage;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
@@ -382,6 +428,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
         pstInfo != orxNULL;
         pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
     {
+      /* Stores context */
+      _pstEvent->pContext = pstInfo->pContext;
+
       /* Calls it */
       if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
       {
@@ -391,6 +440,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
         break;
       }
     }
+
+    /* Clears context */
+    _pstEvent->pContext = orxNULL;
 
     /* Main thread? */
     if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -82,6 +82,7 @@ typedef enum __orxANIM_EVENT_t
   orxANIM_EVENT_STOP,                         /**< Event sent when an animation stops */
   orxANIM_EVENT_CUT,                          /**< Event sent when an animation is cut */
   orxANIM_EVENT_LOOP,                         /**< Event sent when an animation has looped */
+  orxANIM_EVENT_UPDATE,                       /**< Event sent when an animation has been updated (current key) */
   orxANIM_EVENT_CUSTOM_EVENT,                 /**< Event sent when a custom event is reached */
 
   orxANIM_EVENT_NUMBER,
@@ -94,11 +95,25 @@ typedef enum __orxANIM_EVENT_t
  */
 typedef struct __orxANIM_EVENT_PAYLOAD_t
 {
-  orxANIM        *pstAnim;                    /**< Animation reference : 4 */
-  const orxSTRING zAnimName;                  /**< Animation name : 8 */
-  const orxSTRING zCustomEventName;           /**< Custom event name : 12 */
-  orxFLOAT        fCustomEventValue;          /**< Custom event value : 16 */
-  orxFLOAT        fCustomEventTime;           /**< Custom event time : 20 */
+  orxANIM            *pstAnim;                /**< Animation reference : 4 */
+  const orxSTRING     zAnimName;              /**< Animation name : 8 */
+
+  union
+  {
+    /* Loop event */
+    struct
+    {
+      orxU32          u32Counter;             /**< Loop counter : 12 */
+    } stLoop;
+
+    /* Custom event */
+    struct
+    {
+      const orxSTRING zName;                  /**< Custom event name : 12 */
+      orxFLOAT        fValue;                 /**< Custom event value : 16 */
+      orxFLOAT        fTime;                  /**< Custom event time : 20 */
+    } stCustom;
+  };
 
 } orxANIM_EVENT_PAYLOAD;
 

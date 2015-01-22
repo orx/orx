@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -79,10 +79,10 @@
 
 /** Defines
  */
-#define orxCONFIG_KU32_SECTION_BANK_SIZE          1024        /**< Default section bank size */
-#define orxCONFIG_KU32_STACK_BANK_SIZE            8           /**< Default stack bank size */
-#define orxCONFIG_KU32_ENTRY_BANK_SIZE            2048        /**< Default entry bank size */
-#define orxCONFIG_KU32_HISTORY_BANK_SIZE          4           /**< Default history bank size */
+#define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
+#define orxCONFIG_KU32_STACK_BANK_SIZE            32          /**< Default stack bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE            8192        /**< Default entry bank size */
+#define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
 #define orxCONFIG_KU32_BUFFER_SIZE                8192        /**< Buffer size */
@@ -652,9 +652,10 @@ static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
  * @param[in] _pstOrigin        Origin section for in-section forwarding
+ * @param[out] _ppstSource      Source section where the value was found
  * @return                      orxCONFIG_VALUE / orxNULL
  */
-static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, orxCONFIG_SECTION *_pstOrigin)
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, orxCONFIG_SECTION *_pstOrigin, orxCONFIG_SECTION **_ppstSource)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCONFIG_VALUE  *pstResult = orxNULL;
@@ -702,7 +703,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
           }
 
           /* Gets its inherited value */
-          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin, _ppstSource);
         }
         else
         {
@@ -716,7 +717,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
           orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
           /* Gets its inherited value */
-          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin);
+          pstResult = orxConfig_GetValueFromKey(u32NewKeyID, _pstOrigin, _ppstSource);
 
           /* Restores the name */
           *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
@@ -731,7 +732,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
         /* Gets its inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin, _ppstSource);
       }
 
       /* Restores current section */
@@ -741,6 +742,9 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
     {
       /* Updates result */
       pstResult = &(pstEntry->stValue);
+
+      /* Stores source section */
+      *_ppstSource = sstConfig.pstCurrentSection;
     }
   }
   else
@@ -788,7 +792,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValueFromKey(orxU32 _u32KeyID, or
         sstConfig.pstCurrentSection = pstSection;
 
         /* Gets inherited value */
-        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin);
+        pstResult = orxConfig_GetValueFromKey(_u32KeyID, _pstOrigin, _ppstSource);
 
         /* Restores current section */
         sstConfig.pstCurrentSection = pstPreviousSection;
@@ -817,8 +821,56 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
   /* Valid? */
   if((_zKey != orxSTRING_EMPTY) && (_zKey != orxNULL))
   {
+    orxCONFIG_SECTION  *pstDummy = orxNULL;
+    orxU32              u32ID;
+
+    /* Gets its ID */
+    u32ID = orxString_ToCRC(_zKey);
+
     /* Gets value */
-    pstResult = orxConfig_GetValueFromKey(orxString_ToCRC(_zKey), sstConfig.pstCurrentSection);
+    pstResult = orxConfig_GetValueFromKey(u32ID, sstConfig.pstCurrentSection, &pstDummy);
+
+#ifdef __orxDEBUG__
+
+    /* Not found? */
+    if(pstResult == orxNULL)
+    {
+      orxCONFIG_ENTRY *pstEntry;
+
+      /* For all entries in section */
+      for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+      {
+        /* Identical? */
+        if(pstEntry->u32ID == u32ID)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> inherits from <%s> however one of its ancestors was not found, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), _zKey, pstEntry->stValue.zValue);
+
+          break;
+        }
+        else
+        {
+          const orxSTRING zKey;
+
+          /* Gets its key */
+          zKey = orxString_GetFromID(pstEntry->u32ID);
+
+          /* Case-only difference? */
+          if(orxString_ICompare(zKey, _zKey) == 0)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s> was found instead of requested key <%s>, typo?", orxString_GetFromID(sstConfig.pstCurrentSection->u32ID), zKey, _zKey);
+
+            break;
+          }
+        }
+      }
+    }
+
+#endif /* __orxDEBUG__ */
+
   }
 
   /* Profiles */
@@ -900,7 +952,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry [%s] with value [%s].", _zKey, _zValue);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry <%s> with value <%s>.", _zKey, _zValue);
 
         /* Reusing entry? */
         if(bReuse != orxFALSE)
@@ -1026,7 +1078,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
         orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section <%s> was previously pushed and has to be removed from stack.", orxString_GetFromID(_pstSection->u32ID));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", orxString_GetFromID(_pstSection->u32ID));
       }
     }
 
@@ -1049,7 +1101,7 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section <%s> can't be deleted as it's protected by %d entities.", orxString_GetFromID(_pstSection->u32ID), _pstSection->s32ProtectionCounter);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section [%s] can't be deleted as it's protected by %d entities.", orxString_GetFromID(_pstSection->u32ID), _pstSection->s32ProtectionCounter);
   }
 
   return;
@@ -2534,7 +2586,7 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
   if((_zEncryptionKey != orxNULL) && (_zEncryptionKey != orxSTRING_EMPTY))
   {
     /* Updates values */
-    sstConfig.u32EncryptionKeySize  = strlen(_zEncryptionKey);
+    sstConfig.u32EncryptionKeySize  = (orxU32)strlen(_zEncryptionKey);
     sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
     memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
     sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
@@ -4045,7 +4097,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: section not found.", _zSectionName, _zNewSectionName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: section not found.", _zSectionName, _zNewSectionName);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -4054,7 +4106,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: inheritance marker detected.", _zSectionName, _zNewSectionName);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -4063,7 +4115,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section <%s> -> <%s>: empty name.", _zSectionName, _zNewSectionName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't rename section [%s] -> <%s>: empty name.", _zSectionName, _zNewSectionName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -4655,8 +4707,10 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   }
   else
   {
+    orxCONFIG_SECTION *pstDummy = orxNULL;
+
     /* Updates result */
-    bResult = (orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection, &pstDummy) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -4712,6 +4766,51 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 
   /* Done! */
   return bResult;
+}
+
+/** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
+ * @param[in] _zKey             Key name
+ * @return Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found
+ */
+const orxSTRING orxFASTCALL orxConfig_GetValueSource(const orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxU32            u32KeyID;
+  const orxSTRING   zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets ID */
+  u32KeyID = orxString_ToCRC(_zKey);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(u32KeyID);
+
+  /* Valid? */
+  if(pstEntry != orxNULL)
+  {
+    /* Updates result */
+    zResult = orxString_GetFromID(sstConfig.pstCurrentSection->u32ID);
+  }
+  else
+  {
+    orxCONFIG_SECTION *pstSource = orxNULL;
+
+    /* Gets value from key */
+    if(orxConfig_GetValueFromKey(u32KeyID, sstConfig.pstCurrentSection, &pstSource) != orxNULL)
+    {
+      /* Updates result */
+      zResult = orxString_GetFromID(pstSource->u32ID);
+    }
+  }
+
+  /* Updates result */
+
+  /* Done! */
+  return zResult;
 }
 
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)

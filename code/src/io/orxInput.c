@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -71,8 +71,8 @@
 #define orxINPUT_KZ_INPUT_EXTERNAL                    "EXTERNAL"  /**< External input */
 
 
-#define orxINPUT_KU32_SET_BANK_SIZE                   4
-#define orxINPUT_KU32_ENTRY_BANK_SIZE                 8
+#define orxINPUT_KU32_SET_BANK_SIZE                   8
+#define orxINPUT_KU32_ENTRY_BANK_SIZE                 32
 
 #define orxINPUT_KU32_SET_FLAG_NONE                   0x00000000  /**< No flags */
 

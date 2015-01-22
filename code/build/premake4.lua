@@ -61,10 +61,18 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        return
-        {
-            "Native"
-        }
+        if string.lower(_ACTION) == "vs2013" then
+            return
+            {
+                "x64",
+                "x32"
+            }
+        else
+            return
+            {
+                "Native"
+            }
+        end
     elseif os.is ("linux") then
         if islinux64 () then
             return
@@ -100,7 +108,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2012")
+defaultaction ("windows", "vs2013")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -170,7 +178,6 @@ solution "orx"
     {
         "NoPCH",
         "NoManifest",
-        "EnableSSE2",
         "FloatFast",
         "NoNativeWChar",
         "NoExceptions",
@@ -180,6 +187,12 @@ solution "orx"
         "Symbols",
         "StaticRuntime"
     }
+
+    configuration {"not vs2013"}
+        flags {"EnableSSE2"}
+
+    configuration {"not x64"}
+        flags {"EnableSSE2"}
 
     configuration {"not windows"}
         flags {"Unicode"}
@@ -233,7 +246,8 @@ solution "orx"
         {
             "../../extern/glfw-2.7/lib/mac",
             "../../extern/libsndfile-1.0.22/lib/mac",
-            "../../extern/Box2D_2.1.3/lib/mac"
+            "../../extern/Box2D_2.1.3/lib/mac",
+            "../../extern/libwebp/lib/mac"
         }
         buildoptions
         {
@@ -262,7 +276,8 @@ solution "orx"
             "../../extern/glfw-2.7/lib/vc2008",
             "../../extern/openal-soft/lib/vc2008",
             "../../extern/libsndfile-1.0.22/lib/vc2008",
-            "../../extern/Box2D_2.1.3/lib/msvs2008"
+            "../../extern/Box2D_2.1.3/lib/msvs2008",
+            "../../extern/libwebp/lib/vc2008"
         }
 
     configuration {"vs2010"}
@@ -271,7 +286,8 @@ solution "orx"
             "../../extern/glfw-2.7/lib/vc2010",
             "../../extern/openal-soft/lib/vc2010",
             "../../extern/libsndfile-1.0.22/lib/vc2010",
-            "../../extern/Box2D_2.1.3/lib/msvs2010"
+            "../../extern/Box2D_2.1.3/lib/msvs2010",
+            "../../extern/libwebp/lib/vc2010"
         }
 
     configuration {"vs2012"}
@@ -280,7 +296,28 @@ solution "orx"
             "../../extern/glfw-2.7/lib/vc2012",
             "../../extern/openal-soft/lib/vc2012",
             "../../extern/libsndfile-1.0.22/lib/vc2012",
-            "../../extern/Box2D_2.1.3/lib/msvs2012"
+            "../../extern/Box2D_2.1.3/lib/msvs2012",
+            "../../extern/libwebp/lib/vc2012"
+        }
+
+    configuration {"vs2013", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2013/32",
+            "../../extern/openal-soft/lib/vc2013/32",
+            "../../extern/libsndfile-1.0.22/lib/vc2013/32",
+            "../../extern/Box2D_2.1.3/lib/msvs2013/32",
+            "../../extern/libwebp/lib/vc2013/32"
+        }
+
+    configuration {"vs2013", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2013/64",
+            "../../extern/openal-soft/lib/vc2013/64",
+            "../../extern/libsndfile-1.0.22/lib/vc2013/64",
+            "../../extern/Box2D_2.1.3/lib/msvs2013/64",
+            "../../extern/libwebp/lib/vc2013/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
@@ -289,7 +326,8 @@ solution "orx"
             "../../extern/glfw-2.7/lib/mingw",
             "../../extern/openal-soft/lib/mingw",
             "../../extern/libsndfile-1.0.22/lib/mingw",
-            "../../extern/Box2D_2.1.3/lib/mingw"
+            "../../extern/Box2D_2.1.3/lib/mingw",
+            "../../extern/libwebp/lib/mingw"
         }
 
 --

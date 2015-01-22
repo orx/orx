@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2014 Orx-Project
+ * Copyright (c) 2008-2015 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -215,7 +215,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxKeyboard_GetKeyName(orxKEYBOARD
  * @param[in]   _bShow          Show/hide virtual keyboard
  * @return orxSTATUS_SUCCESS if supported by platform, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxKeybard_Show(orxBOOL _bShow);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxKeyboard_Show(orxBOOL _bShow);
 
 #endif /* _orxKEYBOARD_H_ */
 
