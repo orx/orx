@@ -3281,6 +3281,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Adds it */
           orxObject_AddDelayedFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i), fDelay);
         }
+
+        /* Success? */
+        if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+        {
+          orxCLOCK_INFO stClockInfo;
+
+          /* Applies FXs directly to prevent any potential 1-frame visual glitches */
+          orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
+          stClockInfo.fDT = orxMATH_KF_EPSILON;
+          orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+        }
       }
 
       /* Has sound? */
