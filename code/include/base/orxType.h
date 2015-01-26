@@ -118,7 +118,7 @@
 
     typedef void *                orxHANDLE;
 
-    #if defined(__orxX86_64__) || defined(__orxPPC64__)
+    #if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
 
     typedef unsigned  long long   orxU64;
     typedef unsigned  int         orxU32;
@@ -132,7 +132,7 @@
 
     typedef unsigned  int         orxBOOL;
 
-    #else /* __orxX86_64__ || __orxPPC64__ */
+    #else /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
     typedef unsigned  long long   orxU64;
     typedef unsigned  long        orxU32;
@@ -146,7 +146,7 @@
 
     typedef unsigned  long        orxBOOL;
 
-    #endif /* __orxX86_64__ || __orxPPC64__ */
+    #endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
     typedef float                 orxFLOAT;
     typedef double                orxDOUBLE;

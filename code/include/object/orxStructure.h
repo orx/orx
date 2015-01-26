@@ -169,15 +169,15 @@ typedef struct __orxSTRUCTURE_t
   orxU32          u32Flags;       /**< Flags : 24/28 */
 
 
-#if defined(__orxX86_64__) || defined(__orxPPC64__)
+#if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
 
   orxU8           au8Padding[4]; /**< Extra padding to be 32-bytes aligned on 64bit architectures */
 
-#else /* __orxX86_64__ || __orxPPC64__ */
+#else /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
   orxU8           au8Padding[8]; /**< Extra padding to be 32-bytes aligned on 32bit architectures */
 
-#endif /* __orxX86_64__ || __orxPPC64__ */
+#endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
 } orxSTRUCTURE;
 
