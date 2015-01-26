@@ -77,12 +77,15 @@
   /* ARM? */
   #if defined(__arm__) || defined(__ARMEL__) || defined(__ARM_EABI__)
 
-    #define __orxARM__
+    #if defined(__LP64__) /* ARM64? */
 
-  /* ARM64? */
-  #elif defined(__LP64__)
+      #define __orxARM64__
 
-    #define __orxARM64__
+    #else
+
+      #define __orxARM__
+
+    #endif
 
   /* PowerPC? */
   #elif defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__) || defined(__powerpc__)
