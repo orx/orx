@@ -34,6 +34,8 @@
 
 #include "orxPluginAPI.h"
 
+#include "webp/decode.h"
+
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_PSD
