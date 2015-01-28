@@ -77,15 +77,15 @@
   /* ARM? */
   #if defined(__arm__) || defined(__ARMEL__) || defined(__ARM_EABI__)
 
-    #if defined(__LP64__) /* ARM64? */
+    #if defined(__LP64__)
 
       #define __orxARM64__
 
-    #else
+    #else /* __LP64__ */
 
       #define __orxARM__
 
-    #endif
+    #endif /* __LP64__ */
 
   /* PowerPC? */
   #elif defined(__ppc__) || defined(PPC) || defined(__PPC) || defined(__POWERPC__) || defined(__powerpc__)
@@ -109,7 +109,7 @@
 
   #endif
 
-#endif /* !__orxARM__ && !__orxPPC__ && !__orxPPC64__ && !__orxX86_64__ && !__orxX86__ */
+#endif /* !__orxARM__ && !__orxPPC__ && !__orxPPC64__ && !__orxX86_64__ && !__orxX86__ && !__orxARM64__ */
 
 /* Has byte order? */
 #if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)

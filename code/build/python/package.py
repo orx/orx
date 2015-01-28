@@ -211,7 +211,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': 'src',                                                      'dst': None}
 ]
 
-androidfolderinfolist = docfolderinfolist + [
+androidfolderinfolist = devfolderinfolist + [
     {'src': 'build/android/jni',                                        'dst': None},
     {'src': 'lib/static/android',                                       'dst': None},
     {'src': '../extern/android',                                        'dst': None},
@@ -227,12 +227,10 @@ androidfolderinfolist = docfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/Box2D',                                    'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None},
-    {'src': 'include',                                                  'dst': None},
-    {'src': 'src',                                                      'dst': None}
+    {'src': 'plugins/Sound/android',                                    'dst': None}
 ]
 
-androidnativefolderinfolist = docfolderinfolist + [
+androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'build/android-native/jni',                                 'dst': None},
     {'src': 'lib/static/android-native',                                'dst': None},
     {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
@@ -247,9 +245,7 @@ androidnativefolderinfolist = docfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/Box2D',                                    'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None},
-    {'src': 'include',                                                  'dst': None},
-    {'src': 'src',                                                      'dst': None}
+    {'src': 'plugins/Sound/android',                                    'dst': None}
 ]
 
 codefolderinfolist = [
@@ -438,7 +434,7 @@ platforminfolist = {
 
     'android': {
         'foldername':       'dev-android',
-        'filename':         'full-android',
+        'filename':         'dev-android',
         'format':           'zip',
         'fileinfolist':     androidfileinfolist,
         'folderinfolist':   androidfolderinfolist
@@ -446,7 +442,7 @@ platforminfolist = {
 
     'android-native': {
         'foldername':       'dev-android-native',
-        'filename':         'full-android-native',
+        'filename':         'dev-android-native',
         'format':           'zip',
         'fileinfolist':     androidnativefileinfolist,
         'folderinfolist':   androidnativefolderinfolist
