@@ -43,6 +43,10 @@
 #include "GL/glfw.h"
 #include "GL/glext.h"
 
+#if !defined(__orxMSVC__) || (_MSC_VER > 1600)
+#include "webp/decode.h"
+#endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
+
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_PSD

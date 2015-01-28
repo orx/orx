@@ -34,6 +34,8 @@
 
 #include "orxPluginAPI.h"
 
+#include "webp/decode.h"
+
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_PSD
@@ -1682,7 +1684,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
     pstInfo->bIsPVRTC = orxFALSE;
 
     /* Loads image */
-    pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, 0);
+    pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
     /* Valid? */
     if(pu8ImageData != NULL)
