@@ -215,7 +215,7 @@ $(document).ready(function(){initNavTree('orx_type_8h_source.html','');});
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">void</span> *                orxHANDLE;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">    #if defined(__orxX86_64__) || defined(__orxPPC64__)</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">    #if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">long</span> <span class="keywordtype">long</span>   orxU64;</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">int</span>         orxU32;</div>
@@ -229,7 +229,7 @@ $(document).ready(function(){initNavTree('orx_type_8h_source.html','');});
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">int</span>         orxBOOL;</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">    #else </span><span class="comment">/* __orxX86_64__ || __orxPPC64__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">    #else </span><span class="comment">/* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">long</span> <span class="keywordtype">long</span>   orxU64;</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">long</span>        orxU32;</div>
@@ -243,7 +243,7 @@ $(document).ready(function(){initNavTree('orx_type_8h_source.html','');});
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span>  <span class="keywordtype">long</span>        orxBOOL;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxX86_64__ || __orxPPC64__ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">    #endif </span><span class="comment">/* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">float</span>                 orxFLOAT;</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">double</span>                orxDOUBLE;</div>
