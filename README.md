@@ -138,8 +138,8 @@ NB: You'll need orx-extern-1.6.zip (orx plugins' external dependencies) if you i
 - orx-dev-vs2013-32-1.6.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
 - orx-dev-vs2013-64-1.6.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
 - orx-full-ios-1.6.zip              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- orx-full-android-1.6.zip          : static embedded binaries for Android, release/profile/debug (device) + doc + source + NDK files.
-- orx-full-android-native-1.6.zip   : static embedded binaries for Android Native, release/profile/debug (device) + doc + source + NDK files.
+- orx-dev-android-1.6.zip           : static embedded binaries for Android, release/profile/debug (device).
+- orx-dev-android-native-1.6.zip    : static embedded binaries for Android Native, release/profile/debug (device).
 - orx-tutorial-linux32-1.6.tar.bz2  : tutorials for Linux (x86)
 - orx-tutorial-linux64-1.6.tar.bz2  : tutorials for Linux (x86-64)
 - orx-tutorial-mac-1.6.zip          : tutorials for MacOS X (x86/x86-64)
