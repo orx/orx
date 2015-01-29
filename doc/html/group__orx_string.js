@@ -5,6 +5,7 @@ var group__orx_string =
     [ "orxSTRING_KC_VECTOR_SEPARATOR", "group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617", null ],
     [ "orxSTRING_KC_VECTOR_START", "group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499", null ],
     [ "orxSTRING_KC_VECTOR_START_ALT", "group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6", null ],
+    [ "STRTO_CAST", "group__orx_string.html#gac3346d324ba58207dd77076759c38dfa", null ],
     [ "orxString_Compare", "group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c", null ],
     [ "orxString_ContinueCRC", "group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637", null ],
     [ "orxString_Copy", "group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16", null ],

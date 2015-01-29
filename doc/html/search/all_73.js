@@ -28,6 +28,7 @@ var searchData=
   ['strevolute',['stRevolute',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#abb64f77a44165cd8ca33b39fd22d2121',1,'orxBODY_JOINT_DEF']]],
   ['strgba',['stRGBA',['../structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#a532187272201cfb0496289d5ec06a030',1,'orxDISPLAY_VERTEX']]],
   ['strope',['stRope',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a87363185aa7d94f4462e0bad5c9db9da',1,'orxBODY_JOINT_DEF']]],
+  ['strto_5fcast',['STRTO_CAST',['../group__orx_string.html#gac3346d324ba58207dd77076759c38dfa',1,'orxString.h']]],
   ['stsphere',['stSphere',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a2b100a5edbebb7b214541bb11e486819',1,'orxBODY_PART_DEF']]],
   ['stspring',['stSpring',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a9dc637a37bfa50f32a39d3a1afc7d6e7',1,'orxBODY_JOINT_DEF']]],
   ['ststream',['stStream',['../structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a6c234f7f87b9bac0b4c243f3de8c2367',1,'orxSOUND_EVENT_PAYLOAD']]],

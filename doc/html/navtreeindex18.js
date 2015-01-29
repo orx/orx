@@ -1,5 +1,7 @@
 var NAVTREEINDEX18 =
 {
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba0923e78d5e9e890fb956edf65da26c14":[3,0,0,11,0,8,0,34],
+"orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba0b2d2a121d70580640f124ec1a1e077f":[3,0,0,11,0,8,0,12],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba0d60d02e629e97bd9cfb4e823ee60e24":[3,0,0,11,0,8,0,14],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e":[3,0,0,11,0,8,0,6],
 "orx_plugin___sound_system_8h.html#gga52930271b93c1ba2aaad22d49a86117ba141d3e639bc53cfe8a6d9b0d756916fe":[3,0,0,11,0,8,0,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX18 =
 "orx_shader_pointer_8h.html#gadea9d751461d3985b3bf9d8ec0327be5":[3,0,0,12,3,11],
 "orx_shader_pointer_8h.html#gaf3be19abb6110e0d89f5df118b7317b4":[3,0,0,12,3,16],
 "orx_shader_pointer_8h_source.html":[3,0,0,12,3],
-"orx_sound_8h.html":[3,0,0,13,0],
-"orx_sound_8h.html#ga0390001e26b32b18253b9bcd3ac15e49":[3,0,0,13,0,35],
-"orx_sound_8h.html#ga0466c87d987fc8c5729a3ac82bfb1a29":[3,0,0,13,0,25]
+"orx_sound_8h.html":[3,0,0,13,0]
 };
