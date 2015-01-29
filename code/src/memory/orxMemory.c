@@ -38,8 +38,17 @@
 #define USE_BUILTIN_FFS 1
 #define USE_LOCKS 1
 #undef _GNU_SOURCE
+
+#if defined(__orxIOS__) && defined(__orxLLVM__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#endif /* __orxIOS__ && __orxLLVM__ */
+
 #include "malloc.c"
 
+#if defined(__orxIOS__) && defined(__orxLLVM__)
+  #pragma clang diagnostic pop
+#endif /* __orxIOS__ && __orxLLVM__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
