@@ -259,7 +259,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     orxMemory_Zero(pstBank, sizeof(orxBANK));
     pstBank->u32Counter               = 0;
     pstBank->u32ElemSize              = (_u32Size > sstBank.u32CacheLineSize)
-                                        ? orxALIGN(_u32Size, sstBank.u32CacheLineSize)
+                                        ? (orxU32)orxALIGN(_u32Size, sstBank.u32CacheLineSize)
                                         : (orxMath_IsPowerOfTwo(_u32Size) == orxFALSE)
                                           ? orxMath_GetNextPowerOfTwo(_u32Size)
                                           : _u32Size;

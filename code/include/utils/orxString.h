@@ -58,6 +58,12 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxIOS__
+  #define STRTO_CAST  (int)
+#else /* __orxIOS__ */
+  #define STRTO_CAST (size_t)
+#endif /* __orxIOS__ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -812,7 +818,7 @@ static orxINLINE orxSTATUS                                orxString_ToS32Base(co
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_ps32OutValue = strtol(_zString, &pcEnd, (size_t)_u32Base);
+  *_ps32OutValue = (orxS32)strtol(_zString, &pcEnd, STRTO_CAST _u32Base);
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
@@ -880,7 +886,7 @@ static orxINLINE orxSTATUS                                orxString_ToU32Base(co
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_pu32OutValue = strtoul(_zString, &pcEnd, (size_t)_u32Base);
+  *_pu32OutValue = (orxU32)strtoul(_zString, &pcEnd, STRTO_CAST _u32Base);
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
@@ -948,7 +954,7 @@ static orxINLINE orxSTATUS                                orxString_ToS64Base(co
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_ps64OutValue = strtoll(_zString, &pcEnd, (size_t)_u32Base);
+  *_ps64OutValue = (orxS64)strtoll(_zString, &pcEnd, STRTO_CAST _u32Base);
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
@@ -1016,7 +1022,7 @@ static orxINLINE orxSTATUS                                orxString_ToU64Base(co
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
-  *_pu64OutValue = strtoull(_zString, &pcEnd, (size_t)_u32Base);
+  *_pu64OutValue = (orxU64)strtoull(_zString, &pcEnd, STRTO_CAST _u32Base);
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
