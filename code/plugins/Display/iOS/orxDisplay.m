@@ -126,6 +126,10 @@ do                                                                      \
 
 #endif /* __orxDEBUG__ */
 
+//If the symbol for iOS 8 isnt defined, define it.
+#ifndef NSFoundationVersionNumber_iOS_8_0
+#define NSFoundationVersionNumber_iOS_8_0 1134.10 //extracted with NSLog(@"%f", NSFoundationVersionNumber)
+#endif
 
 typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
 {
@@ -392,7 +396,7 @@ static orxCHAR              sacPVRTextureTag[4] = "PVR!";
                      : UIInterfaceOrientationPortraitUpsideDown;
 
   /* Is in landscape mode? */
-  if(UIInterfaceOrientationIsLandscape(eOrientation))
+  if((NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) && UIInterfaceOrientationIsLandscape(eOrientation))
   {
     CGFloat fTemp;
 
