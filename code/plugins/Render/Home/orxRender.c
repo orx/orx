@@ -2778,6 +2778,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
         /* Valid? */
         if(sstRender.pstFrame != orxNULL)
         {
+          /* Sets it as its own owner */
+          orxStructure_SetOwner(sstRender.pstFrame, sstRender.pstFrame);
+
           /* Registers render & present functions */
           eResult = orxClock_Register(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_HIGHEST);
           eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(sstRender.pstClock, orxRender_Home_Present, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;

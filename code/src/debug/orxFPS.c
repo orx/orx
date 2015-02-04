@@ -35,6 +35,7 @@
 #include "debug/orxDebug.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
+#include "object/orxStructure.h"
 
 
 /** Module flags
@@ -139,6 +140,9 @@ orxSTATUS orxFASTCALL orxFPS_Init()
     /* Valid? */
     if(sstFPS.pstClock != orxNULL)
     {
+      /* Sets it as its own owner */
+      orxStructure_SetOwner(sstFPS.pstClock, sstFPS.pstClock);
+
       /* Registers callback */
       eResult = orxClock_Register(sstFPS.pstClock, orxFPS_Update, orxNULL, orxMODULE_ID_FPS, orxCLOCK_PRIORITY_NORMAL);
 

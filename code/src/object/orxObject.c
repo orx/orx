@@ -2794,6 +2794,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates its owner */
           orxStructure_SetOwner(pstFrame, pstResult);
         }
+        else
+        {
+          /* Deletes it */
+          orxFrame_Delete(pstFrame);
+          pstFrame = orxNULL;
+        }
       }
 
       /* *** Parent *** */
@@ -2813,6 +2819,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstCamera != orxNULL)
         {
           orxAABOX stFrustum;
+
+          /* No owner? */
+          if(orxStructure_GetOwner(pstCamera) == orxNULL)
+          {
+            /* Sets it as its own owner */
+            orxStructure_SetOwner(pstCamera, pstCamera);
+          }
 
           /* Sets it as parent */
           orxObject_SetParent(pstResult, pstCamera);
@@ -2886,6 +2899,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates its owner */
             orxStructure_SetOwner(pstGraphic, pstResult);
           }
+          else
+          {
+            /* Deletes it */
+            orxGraphic_Delete(pstGraphic);
+            pstGraphic = orxNULL;
+          }
         }
       }
 
@@ -2920,6 +2939,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Updates animation pointer frequency */
               orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FREQUENCY));
             }
+          }
+          else
+          {
+            /* Deletes it */
+            orxAnimPointer_Delete(pstAnimPointer);
+            pstAnimPointer = orxNULL;
           }
         }
       }
@@ -3062,6 +3087,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", _zConfigID);
             }
           }
+          else
+          {
+            /* Deletes it */
+            orxBody_Delete(pstBody);
+            pstBody = orxNULL;
+          }
         }
       }
       else
@@ -3095,6 +3126,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates its owner */
             orxStructure_SetOwner(pstClock, pstResult);
           }
+          else
+          {
+            /* Deletes it */
+            orxClock_Delete(pstClock);
+            pstClock = orxNULL;
+          }
         }
       }
 
@@ -3125,6 +3162,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Updates its owner */
             orxStructure_SetOwner(pstSpawner, pstResult);
+          }
+          else
+          {
+            /* Deletes it */
+            orxSpawner_Delete(pstSpawner);
+            pstSpawner = orxNULL;
           }
         }
       }
@@ -5411,6 +5454,11 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
       /* Updates its owner */
       orxStructure_SetOwner(pstAnimPointer, _pstObject);
     }
+    else
+    {
+      /* Deletes it */
+      orxAnimPointer_Delete(pstAnimPointer);
+    }
   }
   else
   {
@@ -6292,6 +6340,11 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
           /* Adds FX from config */
           eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
         }
+        else
+        {
+          /* Deletes it */
+          orxFXPointer_Delete(pstFXPointer);
+        }
       }
     }
     else
@@ -6352,6 +6405,11 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
 
           /* Adds FX from config */
           eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        }
+        else
+        {
+          /* Deletes it */
+          orxFXPointer_Delete(pstFXPointer);
         }
       }
     }
@@ -6487,6 +6545,11 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
 
           /* Adds sound from config */
           eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+        }
+        else
+        {
+          /* Deletes it */
+          orxSoundPointer_Delete(pstSoundPointer);
         }
       }
     }
@@ -6658,6 +6721,11 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
           /* Adds shader from config */
           eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
         }
+        else
+        {
+          /* Deletes it */
+          orxShaderPointer_Delete(pstShaderPointer);
+        }
       }
     }
     else
@@ -6802,6 +6870,11 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
 
           /* Adds timeline track from config */
           eResult = orxTimeLine_AddTrackFromConfig(pstTimeLine, _zTrackConfigID);
+        }
+        else
+        {
+          /* Deletes it */
+          orxTimeLine_Delete(pstTimeLine);
         }
       }
     }

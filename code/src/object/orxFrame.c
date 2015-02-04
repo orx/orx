@@ -668,8 +668,16 @@ orxSTATUS orxFASTCALL orxFrame_Init()
       /* Inits frame tree */
       sstFrame.pstRoot = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
-      /* Not created? */
-      if(sstFrame.pstRoot == orxNULL)
+      /* Success? */
+      if(sstFrame.pstRoot != orxNULL)
+      {
+        /* Sets it as its own owner */
+        orxStructure_SetOwner(sstFrame.pstRoot, sstFrame.pstRoot);
+
+        /* Continue */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
       {
         /* Unregister structure type */
         orxStructure_Unregister(orxSTRUCTURE_ID_FRAME);
@@ -679,11 +687,6 @@ orxSTATUS orxFASTCALL orxFrame_Init()
 
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
-      }
-      else
-      {
-        /* Continue */
-        eResult = orxSTATUS_SUCCESS;
       }
     }
   }

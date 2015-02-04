@@ -571,6 +571,10 @@ orxSTATUS orxFASTCALL orxTexture_Init()
         /* Valid? */
         if((sstTexture.pstScreen != orxNULL) && (sstTexture.pstPixel != orxNULL))
         {
+          /* Sets them as their own owners */
+          orxStructure_SetOwner(sstTexture.pstScreen, sstTexture.pstScreen);
+          orxStructure_SetOwner(sstTexture.pstPixel, sstTexture.pstPixel);
+
           /* Links screen bitmap */
           eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME);
 

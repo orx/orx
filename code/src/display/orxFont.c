@@ -244,12 +244,18 @@ static orxINLINE void orxFont_CreateDefaultFont()
           /* Success? */
           if(sstFont.pstDefaultFont != orxNULL)
           {
+            /* Sets it as its own owner */
+            orxStructure_SetOwner(sstFont.pstDefaultFont, sstFont.pstDefaultFont);
+
             /* Sets its texture */
             if(orxFont_SetTexture(sstFont.pstDefaultFont, pstTexture) != orxSTATUS_FAILURE)
             {
               orxVECTOR vSpacing;
               orxFLOAT *afCharacterWidthList;
               orxU32    u32CharacterCounter, i;
+
+              /* Sets font as texture's owner */
+              orxStructure_SetOwner(pstTexture, sstFont.pstDefaultFont);
 
               /* Gets character counter */
               u32CharacterCounter = orxString_GetCharacterCounter(sstDefaultFont.zCharacterList);

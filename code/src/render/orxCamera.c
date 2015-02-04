@@ -865,6 +865,13 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(pstCamera != orxNULL)
           {
+            /* No owner? */
+            if(orxStructure_GetOwner(pstCamera) == orxNULL)
+            {
+              /* Sets it as its own owner */
+              orxStructure_SetOwner(pstCamera, pstCamera);
+            }
+
             /* Sets it as parent */
             orxCamera_SetParent(pstResult, pstCamera);
           }

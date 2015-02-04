@@ -359,6 +359,8 @@ orxSTATUS orxFASTCALL orxClock_Init()
         /* Valid? */
         if(sstClock.pstReferenceTable != orxNULL)
         {
+          orxCLOCK *pstClock;
+
           /* No mod type by default */
           sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
 
@@ -368,11 +370,28 @@ orxSTATUS orxFASTCALL orxClock_Init()
           /* Inits Flags */
           sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
 
-          /* Creates default full speed core clock */
+          /* Gets main clock tick size */
           orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
           sstClock.fMainClockTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
-          eResult = (orxClock_Create(sstClock.fMainClockTickSize, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
           orxConfig_PopSection();
+
+          /* Creates default full speed core clock */
+          pstClock = orxClock_Create(sstClock.fMainClockTickSize, orxCLOCK_TYPE_CORE);
+
+          /* Success? */
+          if(pstClock != orxNULL)
+          {
+            /* Sets it as its own owner */
+            orxStructure_SetOwner(pstClock, pstClock);
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+          }
         }
         else
         {
