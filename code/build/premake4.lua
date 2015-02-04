@@ -577,7 +577,7 @@ project "orxLIB"
         links {"OpenGL32"}
 
     configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
 
     configuration {"windows", "*Dynamic*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
