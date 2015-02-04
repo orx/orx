@@ -530,7 +530,7 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(((orxSTRUCTURE *)_pStructure)->u64OwnerGUID == orxU64_UNDEFINED);
+  orxASSERT((((orxSTRUCTURE *)_pStructure)->u64OwnerGUID == orxU64_UNDEFINED) || (((orxSTRUCTURE *)_pStructure)->u64OwnerGUID == ((orxSTRUCTURE *)_pStructure)->u64GUID));
 
   /* Gets storage node */
   pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;

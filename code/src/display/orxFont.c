@@ -768,6 +768,9 @@ void orxFASTCALL orxFont_Exit()
     /* Deletes bitmap */
     orxDisplay_DeleteBitmap(pstBitmap);
 
+    /* Removes texture's owner */
+    orxStructure_SetOwner(pstTexture, orxNULL);
+
     /* Deletes texture */
     orxTexture_Delete(pstTexture);
 
