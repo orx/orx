@@ -3010,6 +3010,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       glASSERT();
       glMatrixMode(GL_MODELVIEW);
       glASSERT();
+      glLoadIdentity();
+      glASSERT();
     }
   }
 
@@ -4083,8 +4085,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glLoadIdentity();
     glASSERT();
     sstDisplay.dLastOrthoRight  = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
-    sstDisplay.dLastOrthoBottom = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
-    glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f);
+    sstDisplay.dLastOrthoBottom = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL)
+                                  ? (sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
+                                    ? sstDisplay.apstDestinationBitmapList[0]->fHeight
+                                    : -sstDisplay.apstDestinationBitmapList[0]->fHeight
+                                  : sstDisplay.pstScreen->fHeight;
+    (sstDisplay.dLastOrthoBottom >= 0.0)
+    ? glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f)
+    : glOrtho(0.0f, sstDisplay.dLastOrthoRight, 0.0f, -sstDisplay.dLastOrthoBottom, -1.0f, 1.0f);
     glASSERT();
     glMatrixMode(GL_MODELVIEW);
     glASSERT();
