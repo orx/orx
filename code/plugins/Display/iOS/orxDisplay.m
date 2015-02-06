@@ -4070,6 +4070,34 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
   }
 
+  /* Shader support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  {
+    /* Inits projection matrix */
+    (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
+    ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+    : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+
+    /* Passes it to shader */
+    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+  }
+  else
+  {
+    /* Inits matrices */
+    glMatrixMode(GL_PROJECTION);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+    (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
+    ? glOrthof(0.0f, (GLfloat)sstDisplay.fLastOrthoRight, (GLfloat)sstDisplay.fLastOrthoBottom, 0.0f, -1.0f, 1.0f)
+    : glOrthof(0.0f, (GLfloat)sstDisplay.fLastOrthoRight, 0.0f, -(GLfloat)sstDisplay.fLastOrthoBottom, -1.0f, 1.0f);
+    glASSERT();
+    glMatrixMode(GL_MODELVIEW);
+    glASSERT();
+    glLoadIdentity();
+    glASSERT();
+  }
+
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
