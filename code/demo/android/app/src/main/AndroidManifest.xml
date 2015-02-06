@@ -15,6 +15,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <!-- uncomment LEANBACK_LAUNCHER if you want to publish for Android TV. -->
+                <!-- Google is reviewing every apps published for Android TV. -->
                 <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
             </intent-filter>
 
