@@ -3566,10 +3566,16 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   orxDisplay_StopShader(orxNULL);
 
   /* Inits matrices */
-  sstDisplay.fLastOrthoRight  = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
-  sstDisplay.fLastOrthoBottom = sstDisplay.apstDestinationBitmapList[0] != orxNULL ? sstDisplay.apstDestinationBitmapList[0]->fHeight : sstDisplay.pstScreen->fHeight;
+  sstDisplay.fLastOrthoRight  = (sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
+  sstDisplay.fLastOrthoBottom = (sstDisplay.apstDestinationBitmapList[0] != orxNULL)
+                                ? (sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
+                                  ? sstDisplay.apstDestinationBitmapList[0]->fHeight
+                                  : -sstDisplay.apstDestinationBitmapList[0]->fHeight
+                                : sstDisplay.pstScreen->fHeight;
 
-  orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1);
+  (sstDisplay.fLastOrthoBottom >= 0.0)
+  ? orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+  : orxDisplay_Android_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
   /* Passes it to shader */
   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
