@@ -2497,11 +2497,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
-  eglWaitNative(EGL_CORE_NATIVE_ENGINE);
-  eglASSERT();
-  eglWaitGL();
-  eglASSERT();
-
   eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
   eglASSERT();
 
