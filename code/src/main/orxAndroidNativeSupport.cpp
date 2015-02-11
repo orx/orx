@@ -417,24 +417,21 @@ extern "C" void orxAndroid_PumpEvents()
     }
 
     // Check if window size changed
-    if( isInteractible() )
+    int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
+    int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
+
+    if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
     {
-        int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
-        int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
+        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
 
-        if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
-        {
-            orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+        stSurfaceChangedEvent.u32Width = newWidth;
+        stSurfaceChangedEvent.u32Height = newHeight;
 
-            stSurfaceChangedEvent.u32Width = newWidth;
-            stSurfaceChangedEvent.u32Height = newHeight;
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
 
-            orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
-
-            sstAndroid.lastWidth = newWidth;
-            sstAndroid.lastHeight = newHeight;
-            sstAndroid.fSurfaceScale = orxFLOAT_0;
-        }
+        sstAndroid.lastWidth = newWidth;
+        sstAndroid.lastHeight = newHeight;
+        sstAndroid.fSurfaceScale = orxFLOAT_0;
     }
 }
 
