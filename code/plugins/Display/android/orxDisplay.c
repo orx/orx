@@ -446,7 +446,7 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
   {
     orxU32 u32Width, u32Height;
     int32_t windowWidth, windowHeight;
-    orxFLOAT fScale = orxFLOAT_1;
+    orxFLOAT fScale;
 
     ANativeWindow *window = orxAndroid_GetNativeWindow();
     windowWidth = ANativeWindow_getWidth(window);
@@ -456,6 +456,11 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
 
     if(windowWidth > 0 && windowHeight > 0)
     {
+      /* default to native window size */
+      u32Width = 0;
+      u32Height = 0;
+      fScale = orxFLOAT_1;
+
       orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
       if (orxConfig_HasValue(KZ_CONFIG_MAX_SURFACE_WIDTH))
@@ -477,12 +482,6 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
           u32Width = windowWidth * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
         }
-      }
-      else
-      {
-        // use native window size
-        u32Width = 0;
-        u32Height = 0;
       }
 
       orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
