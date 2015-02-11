@@ -430,18 +430,74 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
   return bestConfig;
 }
 
+/** Render inhibiter
+ */
+static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibiter(const orxEVENT *_pstEvent)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 static void orxAndroid_Display_CreateSurface()
 {
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
+  if (sstDisplay.surface == EGL_NO_SURFACE)
+  {
+    orxU32 u32Width, u32Height;
+    orxU32 u32WindowWidth, u32WindowHeight;
+    orxFLOAT fScale;
 
-  ANativeWindow *window = orxAndroid_GetNativeWindow();
-  ANativeWindow_setBuffersGeometry(window, 0, 0, sstDisplay.format);
+    ANativeWindow *window = orxAndroid_GetNativeWindow();
+    u32WindowWidth = ANativeWindow_getWidth(window);
+    u32WindowHeight = ANativeWindow_getHeight(window);
 
-  sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
-  eglASSERT();
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "native windows size: (%dx%d)", u32WindowWidth, u32WindowHeight);
 
-  eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
-  eglASSERT();
+    orxConfig_PushSection(KZ_CONFIG_ANDROID);
+
+    if (orxConfig_HasValue(KZ_CONFIG_MAX_SURFACE_WIDTH))
+    {
+      u32Width = orxConfig_GetU32(KZ_CONFIG_MAX_SURFACE_WIDTH);
+      if ( u32WindowWidth > u32Width )
+      {
+        fScale = orx2F(u32Width) / orx2F(u32WindowWidth);
+        u32Height = u32WindowHeight * fScale;
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
+      }
+    }
+    else if (orxConfig_HasValue(KZ_CONFIG_MAX_SURFACE_HEIGHT))
+    {
+      u32Height = orxConfig_GetU32(KZ_CONFIG_MAX_SURFACE_HEIGHT);
+      if ( u32WindowHeight > u32Height )
+      {
+        fScale = orx2F(u32Height) / orx2F(u32WindowHeight);
+        u32Width = u32WindowWidth * fScale;
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
+      }
+    }
+    else
+    {
+      // use native window size
+      u32Width = 0;
+      u32Height = 0;
+      fScale = orxFLOAT_1;
+    }
+
+    orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
+
+    orxConfig_PopSection();
+
+    ANativeWindow_setBuffersGeometry(window, u32Width, u32Height, sstDisplay.format);
+
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
+    sstDisplay.surface = eglCreateWindowSurface(sstDisplay.display, sstDisplay.config, window, NULL);
+    eglASSERT();
+
+    eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
+    eglASSERT();
+
+    /* Removes render inhibiter */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
+  }
 }
 
 static void orxAndroid_Display_DestroySurface()
@@ -449,10 +505,16 @@ static void orxAndroid_Display_DestroySurface()
   eglMakeCurrent(sstDisplay.display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
   eglASSERT();
 
-  eglDestroySurface(sstDisplay.display, sstDisplay.surface);
-  eglASSERT();
+  if( sstDisplay.surface != EGL_NO_SURFACE )
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Destroying EGL Surface");
+    eglDestroySurface(sstDisplay.display, sstDisplay.surface);
+    eglASSERT();
+    sstDisplay.surface = EGL_NO_SURFACE;
 
-  sstDisplay.surface = EGL_NO_SURFACE;
+    /* Adds render inhibiter */
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
+  }
 }
 
 static void orxAndroid_Display_CreateContext()
@@ -2497,17 +2559,19 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
-  eglWaitNative(EGL_CORE_NATIVE_ENGINE);
-  eglASSERT();
-  eglWaitGL();
-  eglASSERT();
-
-  eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
-  eglASSERT();
+  if(sstDisplay.surface != EGL_NO_SURFACE)
+  {
+    eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+    eglASSERT();
+  }
 
   /* Waits for GPU work to be done */
   glFinish();
-  glASSERT();
+  if(glGetError() == GL_OUT_OF_MEMORY)
+  {
+    /* looks like surface is gone */
+    orxAndroid_Display_DestroySurface();
+  }
 
   /* Done! */
   return eResult;
@@ -3465,8 +3529,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
     orxAndroid_Display_CreateSurface();
 
     /* Gets its info */
-    iWidth        = (int)_pstVideoMode->u32Width;
-    iHeight       = (int)_pstVideoMode->u32Height;
+    eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &iWidth);
+    eglASSERT();
+    eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &iHeight);
+    eglASSERT();
     iDepth        = (int)_pstVideoMode->u32Depth;
     iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
@@ -3611,14 +3677,6 @@ orxBOOL orxFASTCALL orxDisplay_Android_IsVideoModeAvailable(const orxDISPLAY_VID
   return bResult;
 }
 
-/** Render inhibiter
- */
-static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibiter(const orxEVENT *_pstEvent)
-{
-  /* Done! */
-  return orxSTATUS_FAILURE;
-}
-
 static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   /* Render stop? */
@@ -3629,23 +3687,21 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
     /* Flushes pending commands */
     glFlush();
-    glASSERT();
+    if(glGetError() == GL_OUT_OF_MEMORY)
+    {
+      /* looks like surface is gone */
+      orxAndroid_Display_DestroySurface();
+    }
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
   {
     orxAndroid_Display_DestroySurface();
-
-    /* Adds render inhibiter */
-    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
     orxAndroid_Display_CreateSurface();
-
-    /* Removes render inhibiter */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)

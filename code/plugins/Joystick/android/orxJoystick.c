@@ -37,10 +37,6 @@
 #include "main/orxAndroid.h"
 #include <android/sensor.h>
 
-#define KZ_CONFIG_ANDROID                        "Android"
-#define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
-#define KZ_CONFIG_USE_JOYSTICK                   "UseJoystick"
-
 #define orxANDROID_LAST_JOYSTICK                  3
 
 /** Module flags
