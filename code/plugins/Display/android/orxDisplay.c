@@ -2559,8 +2559,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
-  eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
-  eglASSERT();
+  if(sstDisplay.surface != EGL_NO_SURFACE)
+  {
+    eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+    eglASSERT();
+  }
 
   /* Waits for GPU work to be done */
   glFinish();
@@ -3684,7 +3687,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
     /* Flushes pending commands */
     glFlush();
-    glASSERT();
+    if(glGetError() == GL_OUT_OF_MEMORY)
+    {
+      /* looks like surface is gone */
+      orxAndroid_Display_DestroySurface();
+    }
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)

@@ -91,6 +91,7 @@ typedef struct __orxANDROID_STATIC_t {
 
         orxBOOL bPaused;
         orxBOOL bDestroyRequested;
+        orxFLOAT fSurfaceScale;
 
         ANativeWindow* pendingWindow;
         ANativeWindow* window;
@@ -245,6 +246,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     sstAndroid.bPaused = orxFALSE;
     sstAndroid.bDestroyRequested = orxFALSE;
     sstAndroid.window = orxNULL;
+    sstAndroid.fSurfaceScale = orxFLOAT_0;
 
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
@@ -683,6 +685,7 @@ extern "C" void orxAndroid_PumpEvents()
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
 
+        sstAndroid.fSurfaceScale = orxFLOAT_0;
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
         if(sstAndroid.window != orxNULL)
         {
@@ -696,6 +699,7 @@ extern "C" void orxAndroid_PumpEvents()
 
         stSurfaceChangedEvent.u32Width = sstAndroid.u32SurfaceWidth;
         stSurfaceChangedEvent.u32Height = sstAndroid.u32SurfaceHeight;
+        sstAndroid.fSurfaceScale = orxFLOAT_0;
 
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
       }
@@ -745,11 +749,18 @@ extern "C" void orxAndroid_PumpEvents()
       {
         orxSYSTEM_EVENT_PAYLOAD stPayload;
 
+        if(sstAndroid.fSurfaceScale == orxFLOAT_0)
+        {
+          orxConfig_PushSection(KZ_CONFIG_ANDROID);
+          sstAndroid.fSurfaceScale = orxConfig_GetFloat(KZ_CONFIG_SURFACE_SCALE);
+          orxConfig_PopSection();
+        }
+
         /* Inits event's payload */
         orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
         stPayload.stTouch.fPressure = orxFLOAT_0;
-        stPayload.stTouch.fX = stTouchEvent.fX;
-        stPayload.stTouch.fY = stTouchEvent.fY;
+        stPayload.stTouch.fX = sstAndroid.fSurfaceScale * stTouchEvent.fX;
+        stPayload.stTouch.fY = sstAndroid.fSurfaceScale * stTouchEvent.fY;
         stPayload.stTouch.u32ID = stTouchEvent.u32ID;
 
         switch(stTouchEvent.u32Action)

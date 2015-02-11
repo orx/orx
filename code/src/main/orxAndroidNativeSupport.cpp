@@ -64,6 +64,7 @@ typedef struct __orxANDROID_STATIC_t {
 
         int32_t lastWidth;
         int32_t lastHeight;
+        orxFLOAT fSurfaceScale;
 
         android_app* app_;
 } orxANDROID_STATIC;
@@ -239,6 +240,13 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
     {
         orxSYSTEM_EVENT_PAYLOAD stPayload;
 
+        if(sstAndroid.fSurfaceScale == orxFLOAT_0)
+        {
+          orxConfig_PushSection(KZ_CONFIG_ANDROID);
+          sstAndroid.fSurfaceScale = orxConfig_GetFloat(KZ_CONFIG_SURFACE_SCALE);
+          orxConfig_PopSection();
+        }
+
         /* Inits event's payload */
         orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
         stPayload.stTouch.fPressure = orxFLOAT_0;
@@ -248,14 +256,14 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
         switch( flags )
         {
             case AMOTION_EVENT_ACTION_DOWN:
-                stPayload.stTouch.fX = AMotionEvent_getX(event, 0);
-                stPayload.stTouch.fY = AMotionEvent_getY(event, 0);
+                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
+                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
                 break;
             case AMOTION_EVENT_ACTION_UP:
-                stPayload.stTouch.fX = AMotionEvent_getX(event, 0);
-                stPayload.stTouch.fY = AMotionEvent_getY(event, 0);
+                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
+                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
                 break;
@@ -265,8 +273,8 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
 
                 for(int i = 0; i < count; i++)
                 {
-                  stPayload.stTouch.fX = AMotionEvent_getX(event, i);
-                  stPayload.stTouch.fY = AMotionEvent_getY(event, i);
+                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, i));
+                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, i));
                   stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, i);
                   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
                 }
@@ -274,21 +282,19 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
             }
             case AMOTION_EVENT_ACTION_POINTER_DOWN:
             {
-                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
-                    >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
-                stPayload.stTouch.fX = AMotionEvent_getX(event, iIndex);
-                stPayload.stTouch.fY = AMotionEvent_getY(event, iIndex);
+                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
+                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
                 break;
             }
             case AMOTION_EVENT_ACTION_POINTER_UP:
             {
-                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
-                    >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
-                stPayload.stTouch.fX = AMotionEvent_getX(event, iIndex);
-                stPayload.stTouch.fY = AMotionEvent_getY(event, iIndex);
+                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
+                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
                 break;
             }
@@ -348,6 +354,7 @@ void handleCmd( struct android_app* app, int32_t cmd )
     case APP_CMD_TERM_WINDOW:
         LOGI("APP_CMD_TERM_WINDOW");
 
+        sstAndroid.fSurfaceScale = orxFLOAT_0;
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
         break;
     case APP_CMD_INIT_WINDOW:
@@ -426,6 +433,7 @@ extern "C" void orxAndroid_PumpEvents()
 
             sstAndroid.lastWidth = newWidth;
             sstAndroid.lastHeight = newHeight;
+            sstAndroid.fSurfaceScale = orxFLOAT_0;
         }
     }
 }
@@ -446,6 +454,8 @@ void android_main( android_app* state )
     sstAndroid.app_ = state;
     sstAndroid.lastWidth = 0;
     sstAndroid.lastHeight = 0;
+    sstAndroid.bPaused = orxTRUE;
+    sstAndroid.fSurfaceScale = orxFLOAT_0;
 
     jVM = state->activity->vm;
 
