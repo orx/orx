@@ -417,7 +417,7 @@ extern "C" void orxAndroid_PumpEvents()
     }
 
     // Check if window size changed
-    if( sstAndroid.app_->window != NULL )
+    if( isInteractible() )
     {
         int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
         int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
