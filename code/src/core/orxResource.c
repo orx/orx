@@ -77,6 +77,7 @@
 
 #define orxRESOURCE_KU32_WATCH_ITERATION_LIMIT        2                               /**< Watch iteration limit */
 #define orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED     -1                              /**< Watch time uninitialized */
+#define orxRESOURCE_KF_WATCH_NOTIFICATION_DELAY       0.2                             /**< Watch notification delay */
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
 
@@ -661,6 +662,28 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   orxThread_SignalSemaphore(sstResource.pstRequestSemaphore);
 }
 
+static void orxFASTCALL orxResource_NotifyUpdateChange(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  orxRESOURCE_INFO         *pstResourceInfo;
+  orxRESOURCE_EVENT_PAYLOAD stPayload;
+
+  /* Gets resource info */
+  pstResourceInfo = (orxRESOURCE_INFO *)_pContext;
+
+  /* Clears payload */
+  orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
+
+  /* Inits payload */
+  stPayload.s64Time     = pstResourceInfo->s64Time;
+  stPayload.zLocation   = pstResourceInfo->zLocation;
+  stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
+  stPayload.u32GroupID  = pstResourceInfo->u32GroupID;
+  stPayload.u32NameID   = pstResourceInfo->u32NameID;
+
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
+}
+
 static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
 {
   orxRESOURCE_INFO *pstResourceInfo;
@@ -674,43 +697,54 @@ static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s
     /* Not first inspection? */
     if(pstResourceInfo->s64Time != orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED)
     {
-      orxRESOURCE_EVENT_PAYLOAD stPayload;
-
-      /* Clears payload */
-      orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
-
-      /* Inits payload */
-      stPayload.s64Time     = _s64Size;
-      stPayload.zLocation   = pstResourceInfo->zLocation;
-      stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
-      stPayload.u32GroupID  = pstResourceInfo->u32GroupID;
-      stPayload.u32NameID   = pstResourceInfo->u32NameID;
-
-      /* Removed? */
-      if(_s64Size == 0)
+      /* Removed or added? */
+      if((_s64Size == 0) || (pstResourceInfo->s64Time == 0))
       {
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, orxNULL, orxNULL, &stPayload);
-      }
-      else
-      {
-        /* Added? */
-        if(pstResourceInfo->s64Time == 0)
+        orxRESOURCE_EVENT_PAYLOAD stPayload;
+
+        /* Stores its new modification time */
+        pstResourceInfo->s64Time = _s64Size;
+
+        /* Clears payload */
+        orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
+
+        /* Inits payload */
+        stPayload.s64Time     = _s64Size;
+        stPayload.zLocation   = pstResourceInfo->zLocation;
+        stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
+        stPayload.u32GroupID  = pstResourceInfo->u32GroupID;
+        stPayload.u32NameID   = pstResourceInfo->u32NameID;
+
+        /* Removed? */
+        if(_s64Size == 0)
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_REMOVE, orxNULL, orxNULL, &stPayload);
+        }
+        /* Added */
+        else
         {
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_ADD, orxNULL, orxNULL, &stPayload);
         }
-        /* Updated */
-        else
-        {
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
-        }
+      }
+      else
+      {
+        /* Stores its new modification time */
+        pstResourceInfo->s64Time = _s64Size;
+
+        /* Removes potential pending update notification */
+        orxClock_RemoveGlobalTimer(orxResource_NotifyUpdateChange, orxRESOURCE_KF_WATCH_NOTIFICATION_DELAY, _pContext);
+
+        /* Defers update notification to cope with potential slow external resource writes */
+        orxClock_AddGlobalTimer(orxResource_NotifyUpdateChange, orxRESOURCE_KF_WATCH_NOTIFICATION_DELAY, 1, _pContext);
       }
     }
-
-    /* Stores its new modification time */
-    pstResourceInfo->s64Time = _s64Size;
+    else
+    {
+      /* Stores its new modification time */
+      pstResourceInfo->s64Time = _s64Size;
+    }
   }
 
   /* Done! */
