@@ -26,6 +26,12 @@ var group__orx_android =
       [ "u32Height", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#a69518db6a92b5448e2c44a7cd3ce7961", null ],
       [ "u32Width", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#ad5eb0e190c36a0f14343f2412e83bfab", null ]
     ] ],
+    [ "KZ_CONFIG_ACCELEROMETER_FREQUENCY", "group__orx_android.html#gafd41769b5b852fdf9ee270202f526806", null ],
+    [ "KZ_CONFIG_ANDROID", "group__orx_android.html#gaaa7cf34e35cd184548f6b11f2124c00c", null ],
+    [ "KZ_CONFIG_MAX_SURFACE_HEIGHT", "group__orx_android.html#gafd0e0df12f37a3b496eca968cdcdfdcf", null ],
+    [ "KZ_CONFIG_MAX_SURFACE_WIDTH", "group__orx_android.html#ga6669dafdc217c2c6805057b3e38d0718", null ],
+    [ "KZ_CONFIG_SURFACE_SCALE", "group__orx_android.html#gab716135367c8f2c971827d19e46a2e5a", null ],
+    [ "KZ_CONFIG_USE_JOYSTICK", "group__orx_android.html#ga1364bcd555a5bde53904d1e77ea4352c", null ],
     [ "orxANDROID_EVENT_JOYSTICK_ADDED", "group__orx_android.html#ga311a7e9ea1448a85c65bc13f828cd97c", null ],
     [ "orxANDROID_EVENT_JOYSTICK_CHANGED", "group__orx_android.html#ga82cec606cf0c51f2bf368bd3309db697", null ],
     [ "orxANDROID_EVENT_JOYSTICK_DOWN", "group__orx_android.html#ga494e235fc601a585858e607c9cbdba6d", null ],
