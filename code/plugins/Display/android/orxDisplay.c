@@ -446,7 +446,7 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
   {
     orxU32 u32Width, u32Height;
     int32_t windowWidth, windowHeight;
-    orxFLOAT fScale;
+    orxFLOAT fScale = orxFLOAT_1;
 
     ANativeWindow *window = orxAndroid_GetNativeWindow();
     windowWidth = ANativeWindow_getWidth(window);
@@ -483,7 +483,6 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
         // use native window size
         u32Width = 0;
         u32Height = 0;
-        fScale = orxFLOAT_1;
       }
 
       orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
