@@ -90,6 +90,7 @@ typedef struct __orxANDROID_STATIC_t {
         int pipeJoystickEvent[2];
 
         orxBOOL bPaused;
+        orxBOOL bHasFocus;
         orxBOOL bDestroyRequested;
         orxFLOAT fSurfaceScale;
 
@@ -239,14 +240,10 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
     jobject jAssetManager = mEnv->CallObjectMethod(jActivity, midGetAssets);
     sstAndroid.jAssetManager = mEnv->NewGlobalRef(jAssetManager);
     sstAndroid.poAssetManager = AAssetManager_fromJava(mEnv, sstAndroid.jAssetManager);
+
     mEnv->DeleteLocalRef(objClass);
     mEnv->DeleteLocalRef(jActivity);
     mEnv->DeleteLocalRef(jAssetManager);
-
-    sstAndroid.bPaused = orxFALSE;
-    sstAndroid.bDestroyRequested = orxFALSE;
-    sstAndroid.window = orxNULL;
-    sstAndroid.fSurfaceScale = orxFLOAT_0;
 
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
 
@@ -303,12 +300,18 @@ static void orxAndroid_Exit(JNIEnv* env)
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnCreate(JNIEnv *env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnCreate(JNIEnv *env, jobject thiz)
 {
     LOGI("nativeCreate()");
 
     /* Cleans static controller */
     memset(&sstAndroid, 0, sizeof(orxANDROID_STATIC));
+
+    sstAndroid.bPaused = orxFALSE;
+    sstAndroid.bHasFocus = orxFALSE;
+    sstAndroid.bDestroyRequested = orxFALSE;
+    sstAndroid.window = orxNULL;
+    sstAndroid.fSurfaceScale = orxFLOAT_0;
 
     // setup looper for commandes
     if (pipe(sstAndroid.pipeCmd)) {
@@ -570,18 +573,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
   {
     LOGI("no window received yet");
 
-    ident=ALooper_pollAll(-1, NULL, &events, NULL);
-
-    if(ident == LOOPER_ID_MAIN)
-    {
-      int8_t cmd = app_read_cmd();
-
-      if(cmd == APP_CMD_SURFACE_CREATED)
-      {
-        LOGI("APP_CMD_SURFACE_CREATED");
-        sstAndroid.window = sstAndroid.pendingWindow;
-      }
-    }
+    orxAndroid_PumpEvents();
   }
 
   return sstAndroid.window;
@@ -658,7 +650,7 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
 
 static inline orxBOOL isInteractible()
 {
-  return (sstAndroid.window != orxNULL && sstAndroid.bPaused == orxFALSE);
+  return (sstAndroid.window && !sstAndroid.bPaused && sstAndroid.bHasFocus);
 }
 
 extern "C" void orxAndroid_PumpEvents()
@@ -684,7 +676,6 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
-
         sstAndroid.fSurfaceScale = orxFLOAT_0;
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
         if(sstAndroid.window != orxNULL)
@@ -696,17 +687,14 @@ extern "C" void orxAndroid_PumpEvents()
       if(cmd == APP_CMD_SURFACE_CHANGED) {
         LOGI("APP_CMD_SURFACE_CHANGED");
         orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-
         stSurfaceChangedEvent.u32Width = sstAndroid.u32SurfaceWidth;
         stSurfaceChangedEvent.u32Height = sstAndroid.u32SurfaceHeight;
         sstAndroid.fSurfaceScale = orxFLOAT_0;
-
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
       }
       if(cmd == APP_CMD_SURFACE_CREATED) {
         LOGI("APP_CMD_SURFACE_CREATED");
         sstAndroid.window = sstAndroid.pendingWindow;
-
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_QUIT) {
@@ -716,10 +704,12 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_FOCUS_GAINED) {
         LOGI("APP_CMD_FOCUS_GAINED");
+        sstAndroid.bHasFocus = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       }
       if(cmd == APP_CMD_FOCUS_LOST) {
         LOGI("APP_CMD_FOCUS_LOST");
+        sstAndroid.bHasFocus = orxFALSE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       }
     }

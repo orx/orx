@@ -61,6 +61,7 @@ struct android_app;
 typedef struct __orxANDROID_STATIC_t {
         char *zAndroidInternalFilesPath;
         orxBOOL bPaused;
+        orxBOOL bHasFocus;
 
         int32_t lastWidth;
         int32_t lastHeight;
@@ -129,12 +130,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
     while(sstAndroid.app_->window == NULL)
     {
-        LOGI("no window received yet");
-
-        ident = ALooper_pollAll(-1, NULL, &events, (void**) &source );
-        // Process this event.
-        if( source != NULL )
-            source->process( sstAndroid.app_, source );
+        orxAndroid_PumpEvents();
     }
 
     return sstAndroid.app_->window;
@@ -370,11 +366,13 @@ void handleCmd( struct android_app* app, int32_t cmd )
     case APP_CMD_GAINED_FOCUS:
         LOGI("APP_CMD_GAINED_FOCUS");
 
+        sstAndroid.bHasFocus = orxTRUE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
         break;
     case APP_CMD_LOST_FOCUS:
         LOGI("APP_CMD_LOST_FOCUS");
 
+        sstAndroid.bHasFocus = orxFALSE;
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
         break;
     default:
@@ -384,7 +382,7 @@ void handleCmd( struct android_app* app, int32_t cmd )
 
 static inline orxBOOL isInteractible()
 {
-  return (sstAndroid.app_->window != NULL && sstAndroid.bPaused != orxTRUE);
+  return (sstAndroid.app_->window && !sstAndroid.bPaused && sstAndroid.bHasFocus);
 }
 
 
@@ -452,6 +450,7 @@ void android_main( android_app* state )
     sstAndroid.lastWidth = 0;
     sstAndroid.lastHeight = 0;
     sstAndroid.bPaused = orxTRUE;
+    sstAndroid.bHasFocus = orxFALSE;
     sstAndroid.fSurfaceScale = orxFLOAT_0;
 
     jVM = state->activity->vm;
