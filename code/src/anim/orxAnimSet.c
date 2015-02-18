@@ -2443,6 +2443,25 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   return u32Result;
 }
 
+/** AnimSet name get accessor
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxAnimSet_GetName(const orxANIMSET *_pstAnimSet)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimSet);
+
+  /* Updates result */
+  zResult = _pstAnimSet->zReference;
+
+  /* Done! */
+  return zResult;
+}
+
 
 #ifdef __orxMSVC__
 
