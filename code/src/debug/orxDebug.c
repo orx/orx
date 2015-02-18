@@ -121,7 +121,7 @@ static orxDEBUG_STATIC sstDebug;
 
 /** Gets debug level name
  * @param[in]   _eLevel                       Concerned debug level
-  *@return      Corresponding literal string
+ *@return      Corresponding literal string
  */
 static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {

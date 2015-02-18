@@ -123,6 +123,48 @@ static orxSTRUCTURE_STATIC sstStructure;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Gets structure ID name
+ * @param[in]   _eID                       Concerned ID
+ *@return      Corresponding literal string
+ */
+static orxINLINE const orxSTRING orxStructure_GetIDString(orxSTRUCTURE_ID _eID)
+{
+  const orxSTRING zResult;
+
+#define orxSTRUCTURE_DECLARE_ID_ENTRY(ID)    case orxSTRUCTURE_ID_##ID: zResult = #ID; break
+
+  /* Depending on ID */
+  switch(_eID)
+  {
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIMPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(BODY);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(CLOCK);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FRAME);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FXPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(GRAPHIC);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SHADERPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SOUNDPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SPAWNER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TIMELINE);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIM);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIMSET);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(CAMERA);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FONT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FX);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(OBJECT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SHADER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SOUND);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TEXT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TEXTURE);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(VIEWPORT);
+
+    default: zResult = "INVALID STRUCTURE ID"; break;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -136,6 +178,7 @@ void orxFASTCALL orxStructure_Setup()
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_CONFIG);
 
   /* Done! */
   return;
@@ -666,7 +709,7 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
 
   /* Gets structure ID */
   u32ID = orxStructure_GetID(_pStructure);
-  
+
   /* Is structure registered? */
   if(sstStructure.astInfo[u32ID].u32Size != 0)
   {
@@ -687,6 +730,62 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is not registered.");
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Logs all user-generated active structures
+ * @param[in]   _bVerbose       If orxTRUE, the whole owner hierarchy of active structures will be logged, otherwise only owner-less ones (ie. roots) will be logged
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxStructure_LogAll(orxBOOL _bVerbose)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+
+  /* Logs header */
+  orxLOG("*** BEGIN STRUCTURE LOG [%s] ***", (_bVerbose != orxFALSE) ? "VERBOSE" : "SHORT");
+
+  /* For all IDs */
+  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+  {
+    orxSTRUCTURE_STORAGE_NODE *pstNode;
+
+    /* Is a list storage? */
+    if(sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
+    {
+      /* For all nodes */
+      for(pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[i].stLinkList));
+          pstNode != orxNULL;
+          pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetNext(&(pstNode->stLinkListNode)))
+      {
+        orxSTRUCTURE *pstStructure;
+
+        /* Gets associated structure */
+        pstStructure = pstNode->pstStructure;
+
+        /* Is owner-less? */
+        if(pstStructure->u64OwnerGUID == orxU64_UNDEFINED)
+        {
+          /* Logs it */
+          orxLOG("%s [%016llX]", orxStructure_GetIDString((orxSTRUCTURE_ID)i), pstStructure->u64GUID);
+
+          /* Verbose mode? */
+          if(_bVerbose != orxFALSE)
+          {
+            //! TODO
+          }
+        }
+      }
+    }
+  }
+
+  /* Logs footer */
+  orxLOG("*** END STRUCTURE LOG ***");
 
   /* Done! */
   return eResult;

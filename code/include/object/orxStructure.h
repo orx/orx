@@ -227,7 +227,7 @@ extern orxDLLAPI void orxFASTCALL                       orxStructure_Exit();
  * @param[in]   _pfnUpdate      Structure update function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxU32 _u32BankSize, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxU32 _u32BankSize, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
 
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID
@@ -259,15 +259,22 @@ extern orxDLLAPI orxSTRUCTURE_STORAGE_TYPE orxFASTCALL  orxStructure_GetStorageT
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxU32 orxFASTCALL                     orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID);
 
 /** Updates structure if update function was registered for the structure type
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @param[in]   _phCaller       Caller structure
  * @param[in]   _pstClockInfo   Update associated clock info
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(void *_pStructure, const void *_phCaller, const orxCLOCK_INFO *_pstClockInfo);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Update(void *_pStructure, const void *_phCaller, const orxCLOCK_INFO *_pstClockInfo);
+
+
+/** Logs all user-generated active structures
+ * @param[in]   _bVerbose       If orxTRUE, the whole owner hierarchy of active structures will be logged, otherwise only owner-less ones (ie. roots) will be logged
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_LogAll(orxBOOL _bVerbose);
 
 
 /** *** Structure storage accessors *** */
@@ -339,7 +346,7 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetNext(con
  * @param[in]   _phParent       Structure to set as parent
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(void *_pStructure, void *_phParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_SetParent(void *_pStructure, void *_phParent);
 
 
 /** *** Inlined structure accessors *** */
