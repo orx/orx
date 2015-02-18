@@ -133,6 +133,7 @@ var searchData=
   ['orxanimset_5fgetanimstoragesize',['orxAnimSet_GetAnimStorageSize',['../group__orx_anim_set.html#gaa5c5f90938347f059a3c684388546deb',1,'orxAnimSet.h']]],
   ['orxanimset_5fgetlink',['orxAnimSet_GetLink',['../group__orx_anim_set.html#ga34ac80b498b31780cb66239ece236354',1,'orxAnimSet.h']]],
   ['orxanimset_5fgetlinkproperty',['orxAnimSet_GetLinkProperty',['../group__orx_anim_set.html#gacd2d6e84f4b6ceb177aac2b15b79d2f1',1,'orxAnimSet.h']]],
+  ['orxanimset_5fgetname',['orxAnimSet_GetName',['../group__orx_anim_set.html#ga3efd297a6e4a7491d9cb05bb2224823e',1,'orxAnimSet.h']]],
   ['orxanimset_5finit',['orxAnimSet_Init',['../group__orx_anim_set.html#ga37754c99b9e025dad5d79eb338356692',1,'orxAnimSet.h']]],
   ['orxanimset_5fku32_5fflag_5flink_5fstatic',['orxANIMSET_KU32_FLAG_LINK_STATIC',['../group__orx_anim_set.html#ga8524959b93035324fe0d128d59af2ccb',1,'orxAnimSet.h']]],
   ['orxanimset_5fku32_5fflag_5fnone',['orxANIMSET_KU32_FLAG_NONE',['../group__orx_anim_set.html#ga10a09bfa3c10a2030bcc546e6c4e56b7',1,'orxAnimSet.h']]],

@@ -28,6 +28,7 @@ var orx_anim_set_8h =
     [ "orxAnimSet_GetAnimStorageSize", "orx_anim_set_8h.html#gaa5c5f90938347f059a3c684388546deb", null ],
     [ "orxAnimSet_GetLink", "orx_anim_set_8h.html#ga34ac80b498b31780cb66239ece236354", null ],
     [ "orxAnimSet_GetLinkProperty", "orx_anim_set_8h.html#gacd2d6e84f4b6ceb177aac2b15b79d2f1", null ],
+    [ "orxAnimSet_GetName", "orx_anim_set_8h.html#ga3efd297a6e4a7491d9cb05bb2224823e", null ],
     [ "orxAnimSet_Init", "orx_anim_set_8h.html#ga37754c99b9e025dad5d79eb338356692", null ],
     [ "orxAnimSet_RemoveAllAnims", "orx_anim_set_8h.html#gad0657936d4749c3229b55198d0010bb5", null ],
     [ "orxAnimSet_RemoveAnim", "orx_anim_set_8h.html#gafa36a6234c6dc6589082fdb88d0b8e57", null ],
