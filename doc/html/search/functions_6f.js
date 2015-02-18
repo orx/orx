@@ -1132,6 +1132,7 @@ var searchData=
   ['orxstructure_5fgetstoragetype',['orxStructure_GetStorageType',['../group__orx_structure.html#ga92c89569bf3d75646c5ae5a9f36ac58a',1,'orxStructure.h']]],
   ['orxstructure_5fincreasecounter',['orxStructure_IncreaseCounter',['../group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36',1,'orxStructure.h']]],
   ['orxstructure_5finit',['orxStructure_Init',['../group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c',1,'orxStructure.h']]],
+  ['orxstructure_5flogall',['orxStructure_LogAll',['../group__orx_structure.html#ga179e850c5f1a2150b20d76172cd96c1c',1,'orxStructure.h']]],
   ['orxstructure_5fregister',['orxStructure_Register',['../group__orx_structure.html#gab643d3cca457a20400bb056fb14a2ba1',1,'orxStructure.h']]],
   ['orxstructure_5fsetflags',['orxStructure_SetFlags',['../group__orx_structure.html#ga95058db32c35e47042cf42e560bda596',1,'orxStructure.h']]],
   ['orxstructure_5fsetowner',['orxStructure_SetOwner',['../group__orx_structure.html#gae4e2dfb3c7a38e389941211b90931e1e',1,'orxStructure.h']]],
