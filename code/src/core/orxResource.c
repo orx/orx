@@ -2262,18 +2262,18 @@ orxU32 orxFASTCALL orxResource_GetPendingOpCounter(const orxHANDLE _hResource)
  */
 orxU32 orxFASTCALL orxResource_GetTotalPendingOpCounter()
 {
-  orxU32 u32InIndex, u32ProcessIndex;
+  orxU32 u32InIndex, u32OutIndex;
   orxU32 u32Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Gets indices */
-  u32InIndex      = sstResource.u32RequestInIndex;
-  u32ProcessIndex = sstResource.u32RequestProcessIndex;
+  u32InIndex  = sstResource.u32RequestInIndex;
+  u32OutIndex = sstResource.u32RequestOutIndex;
 
   /* Update result */
-  u32Result = (u32InIndex >= u32ProcessIndex) ? u32InIndex - u32ProcessIndex : u32InIndex + (orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32ProcessIndex);
+  u32Result = (u32InIndex >= u32OutIndex) ? u32InIndex - u32OutIndex : u32InIndex + (orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32OutIndex);
 
   /* Has pending operations? */
   if(u32Result != 0)
