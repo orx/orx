@@ -62,6 +62,12 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
 @synthesize poWindow;
 @synthesize poViewController;
 
+const orxSTRING orxIOS_GetDocumentsPath()
+{
+  NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  return (const orxSTRING) [path UTF8String];
+}
+
 - (void) applicationDidFinishLaunching:(UIApplication *)_poApplication
 {
   CGRect stFrame;

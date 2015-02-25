@@ -90,7 +90,7 @@
 
 #elif defined(__orxIOS__)
 
-#define orxFILE_KZ_APPLICATION_FOLDER           "../Documents"
+extern const orxSTRING orxIOS_GetDocumentsPath();
 
 #endif
 
@@ -239,15 +239,6 @@ orxSTATUS orxFASTCALL orxFile_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
-
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-    if(chdir(orxAndroid_GetInternalStoragePath()) != 0)
-    {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_FILE, "could not chdir to %s !", orxAndroid_GetInternalStoragePath());
-    }
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -426,7 +417,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxFILE_KZ_APPLICATION_FOLDER);
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxIOS_GetDocumentsPath());
 
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
