@@ -1965,7 +1965,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
         orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't open resource <%s> of type <%s>: unable to open the location.", _zLocation);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't open resource <%s> of type <%s>: unable to open the location.", _zLocation, pstType->stInfo.zTag);
       }
     }
     else
