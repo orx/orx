@@ -55,18 +55,29 @@ static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
   return orxSTATUS_FAILURE;
 }
 
+/** Documents path retrieval
+ */
+const orxSTRING orxiOS_GetDocumentsPath()
+{
+  NSString       *poPath;
+  const orxSTRING zResult;
+
+  /* Gets documents path */
+  poPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+
+  /* Updates result */
+  zResult = (const orxSTRING)[poPath UTF8String];
+
+  /* Done! */
+  return zResult;
+}
+
 /** Orx application implementation
  */
 @implementation orxAppDelegate
 
 @synthesize poWindow;
 @synthesize poViewController;
-
-const orxSTRING orxIOS_GetDocumentsPath()
-{
-  NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-  return (const orxSTRING) [path UTF8String];
-}
 
 - (void) applicationDidFinishLaunching:(UIApplication *)_poApplication
 {

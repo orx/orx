@@ -90,7 +90,7 @@
 
 #elif defined(__orxIOS__)
 
-extern const orxSTRING orxIOS_GetDocumentsPath();
+extern const orxSTRING orxiOS_GetDocumentsPath();
 
 #endif
 
@@ -417,7 +417,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxIOS_GetDocumentsPath());
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxiOS_GetDocumentsPath());
 
 #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
