@@ -32,17 +32,17 @@
 
 /**
  * @addtogroup orxHashTable
- * 
+ *
  * Hashtable module
  * Module that handles Hashtables
  *
  * @{
  */
 
- 
+
 #ifndef _orxHASHTABLE_H_
 #define _orxHASHTABLE_H_
- 
+
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
 
@@ -87,34 +87,34 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(const or
  * @{ */
 /** Find an item in a hash table.
  * @param[in] _pstHashTable  The hash table where search.
- * @param[in] _u32Key      Key to find.
+ * @param[in] _u64Key      Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
-extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
+extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u64Key);
 
 /** Set an item value.
  * @param[in] _pstHashTable The hash table where set.
- * @param[in] _u32Key      Key to assign.
+ * @param[in] _u64Key      Key to assign.
  * @param[in] _pData       Data to assign.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64Key, void *_pData);
 
 
 /** Add an item value.
  * @param[in] _pstHashTable The hash table where set.
- * @param[in] _u32Key      Key to assign.
+ * @param[in] _u64Key      Key to assign.
  * @param[in] _pData       Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU64 _u64Key, void *_pData);
 
 /** Remove an item.
  * @param[in] _pstHashTable  The hash table where remove.
- * @param[in] _u32Key      Key to remove.
+ * @param[in] _u64Key      Key to remove.
  * @return Returns the status of the operation.
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU64 _u64Key);
 /** @} */
 
 
@@ -124,11 +124,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
 /** Gets the next item in the hashtable and returns an iterator for next search
  * @param[in]   _pstHashTable   Concerned HashTable
  * @param[in]   _hIterator      Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
- * @param[out]  _pu32Key        Current element key
+ * @param[out]  _pu64Key        Current element key
  * @param[out]  _ppData         Current element data
  * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU64 *_pu64Key, void **_ppData);
 /** @} */
 
 /** Optimizes a hashtable for read accesses (minimizes number of cache misses upon collisions)

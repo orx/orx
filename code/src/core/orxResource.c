@@ -377,13 +377,13 @@ static orxS64 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS64 _s
 static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
 {
   orxRESOURCE_INFO *pstResourceInfo;
-  orxU32            u32Key;
+  orxU64            u64Key;
   orxHANDLE         hIterator;
 
   /* For all cached resources */
-  for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
+  for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
       hIterator != orxHANDLE_UNDEFINED;
-      hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+      hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
   {
     /* Deletes its location */
     orxMemory_Free(pstResourceInfo->zLocation);
@@ -783,7 +783,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     if(pstGroup != orxNULL)
     {
       static orxHANDLE  hIterator;
-      orxU32            u32Key;
+      orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* New group? */
@@ -797,9 +797,9 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
       }
 
       /* For all its cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo);
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
       {
         /* Does its type support time? */
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
@@ -2428,13 +2428,13 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
     {
       orxHANDLE         hIterator;
-      orxU32            u32Key;
+      orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* For all cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstResourceInfo);
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u32Key, (void **)&pstResourceInfo))
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
       {
         /* Deletes its location */
         orxMemory_Free(pstResourceInfo->zLocation);

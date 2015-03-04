@@ -386,13 +386,13 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
     if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxHANDLE           hIterator;
-      orxU32              u32Key;
+      orxU64              u64Key;
       orxTIMELINE_TRACK  *pstTrack;
 
       /* For all tracks */
-      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstTrack);
+      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstTrack);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u32Key, (void **)&pstTrack))
+          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u64Key, (void **)&pstTrack))
       {
         /* Match origin? */
         if(orxConfig_GetOriginID(pstTrack->zReference) == pstPayload->u32NameID)
