@@ -750,35 +750,49 @@ orxSTATUS orxFASTCALL orxStructure_LogAll(orxBOOL _bVerbose)
   /* Logs header */
   orxLOG("*** BEGIN STRUCTURE LOG [%s] ***", (_bVerbose != orxFALSE) ? "VERBOSE" : "SHORT");
 
+  /* Verbose mode? */
+  if(_bVerbose != orxFALSE)
+  {
+    /* For all IDs */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    {
+      orxSTRUCTURE_STORAGE_NODE *pstNode;
+
+      /* For all nodes */
+      for(pstNode = (sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST) ? (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[i].stLinkList)) : (orxSTRUCTURE_STORAGE_NODE *)orxBank_GetNext(sstStructure.astStorage[i].pstNodeBank, orxNULL);
+          pstNode != orxNULL;
+          pstNode = (sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST) ? (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetNext(&(pstNode->stLinkListNode)) : (orxSTRUCTURE_STORAGE_NODE *)orxBank_GetNext(sstStructure.astStorage[i].pstNodeBank, pstNode))
+      {
+          //! TODO: Build ownership tree
+      }
+    }
+  }
+
   /* For all IDs */
   for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
   {
     orxSTRUCTURE_STORAGE_NODE *pstNode;
 
-    /* Is a list storage? */
-    if(sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
+    /* For all nodes */
+    for(pstNode = (sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST) ? (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[i].stLinkList)) : (orxSTRUCTURE_STORAGE_NODE *)orxBank_GetNext(sstStructure.astStorage[i].pstNodeBank, orxNULL);
+        pstNode != orxNULL;
+        pstNode = (sstStructure.astStorage[i].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST) ? (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetNext(&(pstNode->stLinkListNode)) : (orxSTRUCTURE_STORAGE_NODE *)orxBank_GetNext(sstStructure.astStorage[i].pstNodeBank, pstNode))
     {
-      /* For all nodes */
-      for(pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[i].stLinkList));
-          pstNode != orxNULL;
-          pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetNext(&(pstNode->stLinkListNode)))
+      orxSTRUCTURE *pstStructure;
+
+      /* Gets associated structure */
+      pstStructure = pstNode->pstStructure;
+
+      /* Is owner-less? */
+      if(orxStructure_GetOwner(pstStructure) == orxNULL)
       {
-        orxSTRUCTURE *pstStructure;
+        /* Logs it */
+        orxLOG("%s [%016llX]", orxStructure_GetIDString((orxSTRUCTURE_ID)i), pstStructure->u64GUID);
 
-        /* Gets associated structure */
-        pstStructure = pstNode->pstStructure;
-
-        /* Is owner-less? */
-        if(pstStructure->u64OwnerGUID == orxU64_UNDEFINED)
+        /* Verbose mode? */
+        if(_bVerbose != orxFALSE)
         {
-          /* Logs it */
-          orxLOG("%s [%016llX]", orxStructure_GetIDString((orxSTRUCTURE_ID)i), pstStructure->u64GUID);
-
-          /* Verbose mode? */
-          if(_bVerbose != orxFALSE)
-          {
-            //! TODO
-          }
+          //! TODO: Print branch owned by this structure
         }
       }
     }
