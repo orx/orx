@@ -135,7 +135,7 @@ solution "orxFontGen"
         "../include",
         "../../../code/include",
         "../../../extern/stb_image",
-        "../../../extern/freetype-2.4.1/include"
+        "../../../extern/freetype/include"
     }
 
     configuration {"not macosx"}
@@ -190,13 +190,13 @@ solution "orxFontGen"
     configuration {"linux", "x32"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/linux",
+            "../../../extern/freetype/lib/linux",
         }
 
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/linux64"
+            "../../../extern/freetype/lib/linux64"
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
@@ -209,7 +209,7 @@ solution "orxFontGen"
     configuration {"macosx"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/mac"
+            "../../../extern/freetype/lib/mac"
         }
         buildoptions
         {
@@ -239,37 +239,37 @@ solution "orxFontGen"
     configuration {"vs2008"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/vc2008"
+            "../../../extern/freetype/lib/vc2008"
         }
 
     configuration {"vs2010"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/vc2010"
+            "../../../extern/freetype/lib/vc2010"
         }
 
     configuration {"vs2012"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/vc2012"
+            "../../../extern/freetype/lib/vc2012"
         }
 
     configuration {"vs2013", "x32"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/vc2013/32"
+            "../../../extern/freetype/lib/vc2013/32"
         }
 
     configuration {"vs2013", "x64"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/vc2013/64"
+            "../../../extern/freetype/lib/vc2013/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
         libdirs
         {
-            "../../../extern/freetype-2.4.1/lib/mingw"
+            "../../../extern/freetype/lib/mingw"
         }
 
 
@@ -296,6 +296,9 @@ project "orxFontGen"
             "m",
             "z",
             "rt",
+            "bz2",
+            "png16",
+            "harfbuzz",
             "pthread"
         }
 
