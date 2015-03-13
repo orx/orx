@@ -73,6 +73,8 @@
 #define orxFONT_KZ_CONFIG_CHARACTER_SIZE        "CharacterSize"
 #define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT      "CharacterHeight"
 #define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST  "CharacterWidthList"
+#define orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST   "CharacterSizeList"
+#define orxFONT_KZ_CONFIG_CHARACTER_ORIGIN_LIST "CharacterOriginList"
 #define orxFONT_KZ_CONFIG_CHARACTER_SPACING     "CharacterSpacing"
 #define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN        "TextureOrigin"
 #define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
@@ -474,6 +476,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         {
           orxVECTOR       vCharacterSize, vCharacterSpacing;
           orxFLOAT       *afCharacterWidthList = orxNULL, fCharacterHeight;
+          orxVECTOR      *avCharacterOriginList = orxNULL, *avCharacterSizeList = orxNULL;
           const orxSTRING zCharacterList;
 
           /* Sets its owner */
@@ -570,35 +573,71 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               }
               else
               {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find character size / height & width list properties for font (%s).", _pstFont->zReference);
+                /* Has valide character height and character origin & size lists */
+                if(((fCharacterHeight = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_HEIGHT)) > orxFLOAT_0)
+                && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST) == (orxS32)u32CharacterCounter)
+                && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_ORIGIN_LIST) == (orxS32)u32CharacterCounter))
+                {
+                  orxU32 i;
 
-                /* Updates result */
-                eResult = orxSTATUS_FAILURE;
+                  /* Allocates character origin list */
+                  avCharacterOriginList = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
+                  avCharacterSizeList   = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
+
+                  /* For all characters */
+                  for(i = 0; i < u32CharacterCounter; i++)
+                  {
+                    /* Stores values */
+                    orxConfig_GetListVector(orxFONT_KZ_CONFIG_CHARACTER_ORIGIN_LIST, i, &avCharacterOriginList[i]);
+                    orxConfig_GetListVector(orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST, i, &avCharacterSizeList[i]);
+                  }
+                }
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "TODO Couldn't find character size / height & width list properties for font (%s).", _pstFont->zReference);
+
+                  /* Updates result */
+                  eResult = orxSTATUS_FAILURE;
+                }
               }
             }
 
             /* Valid? */
             if(eResult != orxSTATUS_FAILURE)
             {
-              /* Sets character height & width list */
-              if((orxFont_SetCharacterHeight(_pstFont, fCharacterHeight) != orxSTATUS_FAILURE)
-              && (orxFont_SetCharacterWidthList(_pstFont, u32CharacterCounter, afCharacterWidthList) != orxSTATUS_FAILURE))
+              /* Sets character height */
+              if(orxFont_SetCharacterHeight(_pstFont, fCharacterHeight) != orxSTATUS_FAILURE)
               {
-                /* Updates status flags */
-                orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
+                /* Has valid character width list? */
+                if(afCharacterWidthList != orxNULL)
+                {
+                  /* Updates result */
+                  eResult = orxFont_SetCharacterWidthList(_pstFont, u32CharacterCounter, afCharacterWidthList);
+                }
+                else
+                {
+                  /* Has valid charcater size & origin list? */
+                  if(avCharacterSizeList != orxNULL && avCharacterOriginList != orxNULL)
+                  {
+                    /* Updates result */
+                    eResult = orxFont_SetCharacterSizeList(_pstFont, u32CharacterCounter, avCharacterSizeList);
+                    eResult &= orxFont_SetCharacterOriginList(_pstFont, u32CharacterCounter, avCharacterOriginList);
+                  }
+                  else
+                  {
+                    /* Updates result */
+                    eResult = orxSTATUS_FAILURE;
+                  }
+                }
               }
-              else
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character size (%f, %f) for font (%s).", vCharacterSize.fX, vCharacterSize.fY, _pstFont->zReference);
+            }
 
-                /* Deletes texture */
-                orxTexture_Delete(pstTexture);
-
-                /* Updates result */
-                eResult = orxSTATUS_FAILURE;
-              }
+            /* Valid? */
+            if(eResult != orxSTATUS_FAILURE)
+            {
+              /* Updates status flags */
+              orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
             }
             else
             {
@@ -611,6 +650,20 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             {
               /* Frees it */
               orxMemory_Free(afCharacterWidthList);
+            }
+
+            /* Has character size list? */
+            if(avCharacterSizeList != orxNULL)
+            {
+              /* Frees it */
+              orxMemory_Free(avCharacterSizeList);
+            }
+
+            /* Has character origin list? */
+            if(avCharacterOriginList != orxNULL)
+            {
+              /* Frees it */
+              orxMemory_Free(avCharacterOriginList);
             }
           }
           else
