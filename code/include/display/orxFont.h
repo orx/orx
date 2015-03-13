@@ -132,6 +132,22 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterWidthL
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSpacing(orxFONT *_pstFont, const orxVECTOR *_pvSpacing);
 
+/** Sets font's character size list
+ * @param[in]   _pstFont              Concerned font
+ * @param[in]   _u32CharacterNumber   Character's number
+ * @param[in]   _avCharacterSizeList List of sizes for all the characters
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSizeList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxVECTOR *_avCharacterSizeList);
+
+/** Sets font's character origin list
+ * @param[in]   _pstFont              Concerned font
+ * @param[in]   _u32CharacterNumber   Character's number
+ * @param[in]   _avCharacterOriginList List of origins for all the characters
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterOriginList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxVECTOR *_avCharacterOriginList);
+
 /** Sets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[in]   _pvOrigin     Font's origin

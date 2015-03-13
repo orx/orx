@@ -99,6 +99,8 @@ struct __orxFONT_t
   orxFLOAT          fHeight;                    /**< Height : 60 */
   const orxSTRING   zCharacterList;             /**< Character list : 64 */
   const orxSTRING   zReference;                 /**< Config reference : 68 */
+  orxVECTOR        *avCharacterSizeList;
+  orxVECTOR        *avCharacterOriginList;
 };
 
 /** Static structure
@@ -129,6 +131,132 @@ static orxFONT_STATIC sstFont;
 /** Updates font's map
  * @param[in]   _pstFont       Concerned font
  */
+static void orxFASTCALL orxFont_UpdateMapFromCharacterSizeAndOriginList(orxFONT *_pstFont)
+{
+  const orxCHAR  *pc;
+  orxU32          u32CharacterCodePoint;
+  orxS32          s32Index;
+
+  /* For all defined characters */
+  for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc);
+      (u32CharacterCodePoint != orxCHAR_NULL);
+      s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+  {
+    orxCHARACTER_GLYPH *pstGlyph;
+
+    /* Not already defined? */
+    if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint)) == orxNULL)
+    {
+      /* Allocates it */
+      pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstCharacterBank);
+
+      /* Checks */
+      orxASSERT(pstGlyph != orxNULL);
+
+      /* Adds it to table */
+      orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
+    }
+
+    /* Stores its width and height */
+    pstGlyph->fWidth  = _pstFont->avCharacterSizeList[s32Index].fX;
+    pstGlyph->fHeight = _pstFont->avCharacterSizeList[s32Index].fY;
+
+    /* Stores its origin */
+    pstGlyph->fX = _pstFont->avCharacterOriginList[s32Index].fX;
+    pstGlyph->fY = _pstFont->avCharacterOriginList[s32Index].fY;
+  }
+
+  /* Optimizes character table */
+  orxHashTable_Optimize(_pstFont->pstMap->pstCharacterTable);
+
+  /* Stores character height */
+  _pstFont->pstMap->fCharacterHeight = _pstFont->fCharacterHeight;
+
+  /* Had more defined characters? */
+  if(u32CharacterCodePoint != orxCHAR_NULL)
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Updates font's map
+ * @param[in]   _pstFont       Concerned font
+ */
+static void orxFASTCALL orxFont_UpdateMapFromCharacterWidthList(orxFONT *_pstFont)
+{
+  const orxCHAR  *pc;
+  orxU32          u32CharacterCodePoint;
+  orxS32          s32Index;
+  orxVECTOR       vOrigin;
+
+  /* For all defined characters */
+  for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
+      (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
+      s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+  {
+    orxCHARACTER_GLYPH *pstGlyph;
+
+    /* Not already defined? */
+    if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint)) == orxNULL)
+    {
+      /* Allocates it */
+      pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstCharacterBank);
+
+      /* Checks */
+      orxASSERT(pstGlyph != orxNULL);
+
+      /* Adds it to table */
+      orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
+    }
+
+    /* Stores its width */
+    pstGlyph->fWidth = _pstFont->afCharacterWidthList[s32Index];
+
+    /* Stores its height */
+    pstGlyph->fHeight = _pstFont->fCharacterHeight;
+
+    /* Out of bound? */
+    if(vOrigin.fX + pstGlyph->fWidth > _pstFont->fLeft + _pstFont->fWidth)
+    {
+      /* Reinits its X value */
+      vOrigin.fX = _pstFont->fLeft;
+
+      /* Updates its Y value */
+      vOrigin.fY += _pstFont->fCharacterHeight + _pstFont->vCharacterSpacing.fY;
+    }
+
+    /* Stores its origin */
+    pstGlyph->fX = vOrigin.fX;
+    pstGlyph->fY = vOrigin.fY;
+
+    /* Updates current origin X value */
+    vOrigin.fX += pstGlyph->fWidth + _pstFont->vCharacterSpacing.fX;
+  }
+
+  /* Optimizes character table */
+  orxHashTable_Optimize(_pstFont->pstMap->pstCharacterTable);
+
+  /* Stores character height */
+  _pstFont->pstMap->fCharacterHeight = _pstFont->fCharacterHeight;
+
+  /* Had more defined characters? */
+  if(u32CharacterCodePoint != orxCHAR_NULL)
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Updates font's map
+ * @param[in]   _pstFont       Concerned font
+ */
 static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
 {
   /* Check */
@@ -144,67 +272,19 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
   if((_pstFont->pstTexture != orxNULL)
   && (_pstFont->fWidth > orxFLOAT_0)
   && (_pstFont->fHeight > orxFLOAT_0)
-  && (_pstFont->fCharacterHeight > orxFLOAT_0)
-  && (_pstFont->afCharacterWidthList != orxNULL)
-  && (_pstFont->zCharacterList != orxSTRING_EMPTY))
+  && (_pstFont->zCharacterList != orxSTRING_EMPTY)
+  && (_pstFont->fCharacterHeight > orxFLOAT_0))
   {
-    const orxCHAR  *pc;
-    orxU32          u32CharacterCodePoint;
-    orxS32          s32Index;
-    orxVECTOR       vOrigin;
-
-    /* For all defined characters */
-    for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft, _pstFont->fTop, orxFLOAT_0);
-        (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
-        s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+    /* Has character width list? */
+    if(_pstFont->afCharacterWidthList != orxNULL)
     {
-      orxCHARACTER_GLYPH *pstGlyph;
-
-      /* Not already defined? */
-      if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint)) == orxNULL)
-      {
-        /* Allocates it */
-        pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstCharacterBank);
-
-        /* Checks */
-        orxASSERT(pstGlyph != orxNULL);
-
-        /* Adds it to table */
-        orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
-      }
-
-      /* Stores its width */
-      pstGlyph->fWidth = _pstFont->afCharacterWidthList[s32Index];
-
-      /* Out of bound? */
-      if(vOrigin.fX + pstGlyph->fWidth > _pstFont->fLeft + _pstFont->fWidth)
-      {
-        /* Reinits its X value */
-        vOrigin.fX = _pstFont->fLeft;
-
-        /* Updates its Y value */
-        vOrigin.fY += _pstFont->fCharacterHeight + _pstFont->vCharacterSpacing.fY;
-      }
-
-      /* Stores its origin */
-      pstGlyph->fX = vOrigin.fX;
-      pstGlyph->fY = vOrigin.fY;
-
-      /* Updates current origin X value */
-      vOrigin.fX += pstGlyph->fWidth + _pstFont->vCharacterSpacing.fX;
+      orxFont_UpdateMapFromCharacterWidthList(_pstFont);
     }
-
-    /* Optimizes character table */
-    orxHashTable_Optimize(_pstFont->pstMap->pstCharacterTable);
-
-    /* Stores character height */
-    _pstFont->pstMap->fCharacterHeight = _pstFont->fCharacterHeight;
-
-    /* Had more defined characters? */
-    if(u32CharacterCodePoint != orxCHAR_NULL)
+    else
+    /* Has character size and origin list? */
+    if(_pstFont->avCharacterSizeList != orxNULL && _pstFont->avCharacterOriginList != orxNULL)
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);
+      orxFont_UpdateMapFromCharacterSizeAndOriginList(_pstFont);
     }
   }
 
@@ -1001,6 +1081,27 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
       orxHashTable_Remove(sstFont.pstReferenceTable, orxString_ToCRC(_pstFont->zReference));
     }
 
+    /* Had a character width list? */
+    if(_pstFont->afCharacterWidthList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->afCharacterWidthList);
+    }
+
+    /* Had a character size list? */
+    if(_pstFont->avCharacterSizeList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->avCharacterSizeList);
+    }
+
+    /* Had a character origin list? */
+    if(_pstFont->avCharacterOriginList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->avCharacterOriginList);
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstFont);
   }
@@ -1152,7 +1253,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterHeight(orxFONT *_pstFont, orxFLOAT _fC
 /** Sets font's character width list
  * @param[in]   _pstFont              Concerned font
  * @param[in]   _u32CharacterNumber   Character's number
-= * @param[in]   _afCharacterWidthList List of widths for all the characters
+ * @param[in]   _afCharacterWidthList List of widths for all the characters
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxFLOAT *_afCharacterWidthList)
@@ -1183,6 +1284,104 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u
 
     /* Stores values */
     orxMemory_Copy(_pstFont->afCharacterWidthList, _afCharacterWidthList, u32CharacterCounter * sizeof(orxFLOAT));
+
+    /* Updates font's map */
+    orxFont_UpdateMap(_pstFont);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets font's character size list
+ * @param[in]   _pstFont              Concerned font
+ * @param[in]   _u32CharacterNumber   Character's number
+ * @param[in]   _avCharacterSizeList List of sizes for all the characters
+
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFont_SetCharacterSizeList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxVECTOR *_avCharacterSizeList)
+{
+  orxU32    u32CharacterCounter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFont);
+  orxASSERT(_avCharacterSizeList != orxNULL);
+
+  /* Gets character counter */
+  u32CharacterCounter = orxString_GetCharacterCounter(_pstFont->zCharacterList);
+
+  /* Valid? */
+  if(_u32CharacterNumber == u32CharacterCounter)
+  {
+    /* Had a character size list? */
+    if(_pstFont->avCharacterSizeList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->avCharacterSizeList);
+    }
+
+    /* Allocates character size list */
+    _pstFont->avCharacterSizeList = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
+
+    /* Stores values */
+    orxMemory_Copy(_pstFont->avCharacterSizeList, _avCharacterSizeList, u32CharacterCounter * sizeof(orxVECTOR));
+
+    /* Updates font's map */
+    orxFont_UpdateMap(_pstFont);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets font's character origin list
+ * @param[in]   _pstFont              Concerned font
+ * @param[in]   _u32CharacterNumber   Character's number
+ * @param[in]   _avCharacterOriginList List of origins for all the characters
+
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFont_SetCharacterOriginList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxVECTOR *_avCharacterOriginList)
+{
+  orxU32    u32CharacterCounter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFont);
+  orxASSERT(_avCharacterOriginList != orxNULL);
+
+  /* Gets character counter */
+  u32CharacterCounter = orxString_GetCharacterCounter(_pstFont->zCharacterList);
+
+  /* Valid? */
+  if(_u32CharacterNumber == u32CharacterCounter)
+  {
+    /* Had a character origin list? */
+    if(_pstFont->avCharacterOriginList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->avCharacterOriginList);
+    }
+
+    /* Allocates character size list */
+    _pstFont->avCharacterOriginList = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
+
+    /* Stores values */
+    orxMemory_Copy(_pstFont->avCharacterOriginList, _avCharacterOriginList, u32CharacterCounter * sizeof(orxVECTOR));
 
     /* Updates font's map */
     orxFont_UpdateMap(_pstFont);

@@ -1771,7 +1771,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   orxDISPLAY_MATRIX mTransform;
   const orxCHAR    *pc;
   orxU32            u32CharacterCodePoint;
-  GLfloat           fX, fY, fHeight;
+  GLfloat           fX, fY, fLineHeight;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1785,7 +1785,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   orxDisplay_GLFW_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* Gets character's height */
-  fHeight = _pstMap->fCharacterHeight;
+  fLineHeight = _pstMap->fCharacterHeight;
 
   /* Prepares font for drawing */
   orxDisplay_GLFW_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
@@ -1813,7 +1813,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
       case orxCHAR_LF:
       {
         /* Updates Y position */
-        fY += fHeight;
+        fY += fLineHeight;
 
         /* Resets X position */
         fX = 0.0f;
@@ -1824,7 +1824,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
       default:
       {
         const orxCHARACTER_GLYPH *pstGlyph;
-        orxFLOAT                  fWidth;
+        orxFLOAT                  fWidth, fHeight;
 
         /* Gets glyph from UTF-8 table */
         pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
@@ -1834,6 +1834,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
         {
           /* Gets character width */
           fWidth = pstGlyph->fWidth;
+
+          /* Gets character height */
+          fHeight = pstGlyph->fHeight;
 
           /* End of buffer? */
           if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
@@ -1873,7 +1876,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
         else
         {
           /* Gets default width */
-          fWidth = fHeight;
+          fWidth = fLineHeight;
         }
 
         /* Updates X position */
