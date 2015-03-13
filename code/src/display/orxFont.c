@@ -574,8 +574,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               else
               {
                 /* Has valide character height and character origin & size lists */
-                if(((fCharacterHeight = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_HEIGHT)) > orxFLOAT_0)
-                && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST) == (orxS32)u32CharacterCounter)
+                if((orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST) == (orxS32)u32CharacterCounter)
                 && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_ORIGIN_LIST) == (orxS32)u32CharacterCounter))
                 {
                   orxU32 i;
@@ -584,12 +583,16 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                   avCharacterOriginList = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
                   avCharacterSizeList   = (orxVECTOR *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
 
+                  fCharacterHeight = orxFLOAT_0;
+
                   /* For all characters */
                   for(i = 0; i < u32CharacterCounter; i++)
                   {
                     /* Stores values */
                     orxConfig_GetListVector(orxFONT_KZ_CONFIG_CHARACTER_ORIGIN_LIST, i, &avCharacterOriginList[i]);
                     orxConfig_GetListVector(orxFONT_KZ_CONFIG_CHARACTER_SIZE_LIST, i, &avCharacterSizeList[i]);
+
+                    fCharacterHeight = orxMAX(fCharacterHeight, avCharacterSizeList[i].fY);
                   }
                 }
                 else
