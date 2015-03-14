@@ -148,6 +148,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterSizeLi
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterOriginList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxVECTOR *_avCharacterOriginList);
 
+/** Sets font's character y offset list
+ * @param[in]   _pstFont              Concerned font
+ * @param[in]   _u32CharacterNumber   Character's number
+ * @param[in]   _afYOffsetList        List of y offsets for all the characters
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterYOffsetList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxFLOAT *_afYOffsetList);
+
 /** Sets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[in]   _pvOrigin     Font's origin

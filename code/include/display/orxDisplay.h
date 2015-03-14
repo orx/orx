@@ -117,7 +117,7 @@ typedef struct __orxDISPLAY_VIDEO_MODE_t
  */
 typedef struct __orxCHARACTER_GLYPH_t
 {
-  orxFLOAT fX, fY, fWidth, fHeight;
+  orxFLOAT fX, fY, fWidth, fHeight, fYOffset;
 
 } orxCHARACTER_GLYPH;
 
