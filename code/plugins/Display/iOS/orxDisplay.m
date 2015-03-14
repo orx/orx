@@ -2570,7 +2570,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
   orxDISPLAY_MATRIX mTransform;
   const orxCHAR    *pc;
   orxU32            u32CharacterCodePoint;
-  GLfloat           fX, fY, fHeight;
+  GLfloat           fX, fY, fLineHeight;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2584,7 +2584,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
   orxDisplay_iOS_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
   /* Gets character's height */
-  fHeight = _pstMap->fCharacterHeight;
+  fLineHeight = _pstMap->fCharacterHeight;
 
   /* Prepares font for drawing */
   orxDisplay_iOS_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
@@ -2612,7 +2612,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
       case orxCHAR_LF:
       {
         /* Updates Y position */
-        fY += fHeight;
+        fY += fLineHeight;
 
         /* Resets X position */
         fX = 0.0f;
@@ -2623,7 +2623,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
       default:
       {
         const orxCHARACTER_GLYPH *pstGlyph;
-        orxFLOAT                  fWidth;
+        orxFLOAT                  fWidth, fHeight, fYOffset;
 
         /* Gets glyph from table */
         pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstMap->pstCharacterTable, u32CharacterCodePoint);
@@ -2634,6 +2634,12 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
           /* Gets character width */
           fWidth = pstGlyph->fWidth;
 
+          /* Gets character height */
+          fHeight = pstGlyph->fHeight;
+
+          /* Gets character y offset */
+          fYOffset = pstGlyph->fYOffset;
+
           /* End of buffer? */
           if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
           {
@@ -2642,14 +2648,14 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
           }
 
           /* Outputs vertices and texture coordinates */
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight + fYOffset)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight + fYOffset)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fYOffset)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fYOffset)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight + fYOffset)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight + fYOffset)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fYOffset)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fYOffset)) + mTransform.vY.fZ;
 
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
@@ -2672,13 +2678,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
         else
         {
           /* Gets default width */
-          fWidth = fHeight;
+          fWidth = fLineHeight;
         }
 
-    /* Updates X position */
-    fX += fWidth;
+        /* Updates X position */
+        fX += fWidth;
 
-    break;
+        break;
       }
     }
   }
