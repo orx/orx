@@ -1395,6 +1395,86 @@ void orxFASTCALL orxCommand_CommandAreEqual(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/* Command: IsGreater */
+void orxFASTCALL orxCommand_CommandIsGreater(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Updates result */
+      _pstResult->bValue = (astOperandList[0].fValue > astOperandList[1].fValue);
+    }
+    /* Both vectors? */
+    else if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_VECTOR)
+         && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_VECTOR))
+    {
+      /* Updates result */
+      _pstResult->bValue = ((astOperandList[0].vValue.fX > astOperandList[1].vValue.fX)
+                         && (astOperandList[0].vValue.fY > astOperandList[1].vValue.fY)
+                         && (astOperandList[0].vValue.fZ > astOperandList[1].vValue.fZ));
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: IsLesser */
+void orxFASTCALL orxCommand_CommandIsLesser(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Updates result */
+      _pstResult->bValue = (astOperandList[0].fValue < astOperandList[1].fValue);
+    }
+    /* Both vectors? */
+    else if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_VECTOR)
+         && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_VECTOR))
+    {
+      /* Updates result */
+      _pstResult->bValue = ((astOperandList[0].vValue.fX < astOperandList[1].vValue.fX)
+                         && (astOperandList[0].vValue.fY < astOperandList[1].vValue.fY)
+                         && (astOperandList[0].vValue.fZ < astOperandList[1].vValue.fZ));
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
 /* Command: Add */
 void orxFASTCALL orxCommand_CommandAdd(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -1877,6 +1957,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, XOr, "XOr", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_BOOL}, {"Operand2", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: AreEqual */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, AreEqual, "Equal?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: IsGreater */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsGreater, "Greater?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: IsLesser */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsLesser, "Lesser?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
 
   /* Command: Add */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Add, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
@@ -1934,6 +2018,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Logic.XOr", "Command.XOr", orxNULL);
   /* Alias: Logic.AreEqual */
   orxCommand_AddAlias("Logic.AreEqual", "Command.AreEqual", orxNULL);
+  /* Alias: Logic.IsGreater */
+  orxCommand_AddAlias("Logic.IsGreater", "Command.IsGreater", orxNULL);
+  /* Alias: Logic.IsLesser */
+  orxCommand_AddAlias("Logic.IsLesser", "Command.IsLesser", orxNULL);
 
   /* Alias: If */
   orxCommand_AddAlias("If", "Logic.If", orxNULL);
@@ -1947,6 +2035,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("XOr", "Logic.XOr", orxNULL);
   /* Alias: == */
   orxCommand_AddAlias("==", "Logic.AreEqual", orxNULL);
+  /* Alias: gt */
+  orxCommand_AddAlias("gt", "Logic.IsGreater", orxNULL);
+  /* Alias: ly */
+  orxCommand_AddAlias("lt", "Logic.IsLesser", orxNULL);
 
   /* Alias: Math.Add */
   orxCommand_AddAlias("Math.Add", "Command.Add", orxNULL);
@@ -2029,6 +2121,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Logic.XOr");
   /* Alias: Logic.AreEqual */
   orxCommand_RemoveAlias("Logic.AreEqual");
+  /* Alias: Logic.IsGreater */
+  orxCommand_RemoveAlias("Logic.IsGreater");
+  /* Alias: Logic.IsLesser */
+  orxCommand_RemoveAlias("Logic.IsLesser");
 
   /* Alias: If */
   orxCommand_RemoveAlias("If");
@@ -2042,6 +2138,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("XOr");
   /* Alias: == */
   orxCommand_RemoveAlias("==");
+  /* Alias: gt */
+  orxCommand_RemoveAlias("gt");
+  /* Alias: lt */
+  orxCommand_RemoveAlias("lt");
 
   /* Alias: Math.Add */
   orxCommand_RemoveAlias("Math.Add");
@@ -2124,6 +2224,12 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Or);
   /* Command: XOr */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, XOr);
+  /* Command: AreEqual */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, AreEqual);
+  /* Command: IsGreater */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, IsGreater);
+  /* Command: IsLesser */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, IsLesser);
 
   /* Command: Add */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Add);
