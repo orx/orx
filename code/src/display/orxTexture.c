@@ -134,90 +134,87 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       {
         orxTEXTURE *pstTexture;
 
-        /* For all textures */
-        for(pstTexture = orxTEXTURE(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE));
-            pstTexture != orxNULL;
-            pstTexture = orxTEXTURE(orxStructure_GetNext(pstTexture)))
+        /* Gets texture */
+        pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->u32NameID);
+
+        /* Found? */
+        if(pstTexture != orxNULL)
         {
-          /* Matches? */
-          if(pstTexture->u32ID == pstPayload->u32NameID)
+          orxBITMAP      *pstBackupBitmap, *pstBitmap;
+          const orxSTRING zName;
+          orxBOOL         bInternal;
+          orxU32          i;
+
+          /* Profiles */
+          orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+
+          /* Stores status */
+          bInternal = orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL);
+
+          /* Gets current texture name */
+          zName = orxTexture_GetName(pstTexture);
+
+          /* Resets internal status */
+          orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_INTERNAL);
+
+          /* Backups current bitmap */
+          pstBackupBitmap = orxTexture_GetBitmap(pstTexture);
+
+          /* Unlinks it */
+          orxTexture_UnlinkBitmap(pstTexture);
+
+          /* Re-loads bitmap */
+          pstBitmap = orxDisplay_LoadBitmap(zName);
+
+          /* Failure? */
+          for(i = 0; (pstBitmap == orxNULL) && (i < orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER); i++)
           {
-            orxBITMAP      *pstBackupBitmap, *pstBitmap;
-            const orxSTRING zName;
-            orxBOOL         bInternal;
-            orxU32          i;
+            /* Waits a bit */
+            orxSystem_Delay(orxTEXTURE_KU32_HOTLOAD_DELAY);
 
-            /* Profiles */
-            orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
-
-            /* Stores status */
-            bInternal = orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL);
-
-            /* Gets current texture name */
-            zName = orxTexture_GetName(pstTexture);
-
-            /* Resets internal status */
-            orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_INTERNAL);
-
-            /* Backups current bitmap */
-            pstBackupBitmap = orxTexture_GetBitmap(pstTexture);
-
-            /* Unlinks it */
-            orxTexture_UnlinkBitmap(pstTexture);
-
-            /* Re-loads bitmap */
+            /* Tries again */
             pstBitmap = orxDisplay_LoadBitmap(zName);
-
-            /* Failure? */
-            for(i = 0; (pstBitmap == orxNULL) && (i < orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER); i++)
-            {
-              /* Waits a bit */
-              orxSystem_Delay(orxTEXTURE_KU32_HOTLOAD_DELAY);
-
-              /* Tries again */
-              pstBitmap = orxDisplay_LoadBitmap(zName);
-            }
-
-            /* Success? */
-            if(pstBitmap != orxNULL)
-            {
-              /* Was internal? */
-              if(bInternal != orxFALSE)
-              {
-                /* Deletes backup */
-                orxDisplay_DeleteBitmap(pstBackupBitmap);
-              }
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't hotload texture <%s> after %u tries, reverting to former version.", zName, orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER);
-
-              /* Restores backup */
-              pstBitmap = pstBackupBitmap;
-            }
-
-            /* Assigns given bitmap to it */
-            if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName) != orxSTATUS_FAILURE)
-            {
-              /* Was internal? */
-              if(bInternal != orxFALSE)
-              {
-                /* Updates flags */
-                orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
-              }
-
-              /* No asynchronous loading? */
-              if(orxDisplay_GetTempBitmap() == orxNULL)
-              {
-                /* Sends event */
-                orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
-              }
-            }
-
-            /* Profiles */
-            orxPROFILER_POP_MARKER();
           }
+
+          /* Success? */
+          if(pstBitmap != orxNULL)
+          {
+            /* Was internal? */
+            if(bInternal != orxFALSE)
+            {
+              /* Deletes backup */
+              orxDisplay_DeleteBitmap(pstBackupBitmap);
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't hotload texture <%s> after %u tries, reverting to former version.", zName, orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER);
+
+            /* Restores backup */
+            pstBitmap = pstBackupBitmap;
+          }
+
+          /* Assigns given bitmap to it */
+          if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName) != orxSTATUS_FAILURE)
+          {
+            /* Was internal? */
+            if(bInternal != orxFALSE)
+            {
+              /* Updates flags */
+              orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+            }
+
+            /* No asynchronous loading? */
+            if(orxDisplay_GetTempBitmap() == orxNULL)
+            {
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+            }
+          }
+
+          /* Profiles */
+          orxPROFILER_POP_MARKER();
         }
       }
     }
