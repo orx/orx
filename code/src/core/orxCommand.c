@@ -531,7 +531,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
           pstCommandNode = orxCommand_FindTrieNode(pstCommandNode->pstCommand->zAliasedCommandName, orxFALSE))
       {
         /* Has args? */
-        if((pstCommandNode != orxNULL) && (pstCommandNode->pstCommand->zArgs != orxNULL))
+        if(pstCommandNode->pstCommand->zArgs != orxNULL)
         {
           /* Adds it to the buffer list */
           azBufferList[s32BufferCounter++] = pstCommandNode->pstCommand->zArgs;
