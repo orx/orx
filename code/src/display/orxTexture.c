@@ -96,6 +96,7 @@ typedef struct __orxTEXTURE_STATIC_t
   orxTEXTURE     *pstScreen;                    /**< Screen texture */
   orxTEXTURE     *pstPixel;                     /**< Pixel texture */
   orxU32          u32ResourceGroupID;           /**< Resource group ID */
+  orxU32          u32LoadCounter;               /**< Load counter */
   orxU32          u32Flags;                     /**< Control flags */
 
 } orxTEXTURE_STATIC;
@@ -205,8 +206,13 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
               orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
             }
 
-            /* No asynchronous loading? */
-            if(orxDisplay_GetTempBitmap() == orxNULL)
+            /* Asynchronous loading? */
+            if(orxDisplay_GetTempBitmap() != orxNULL)
+            {
+              /* Updates load counter */
+              sstTexture.u32LoadCounter++;
+            }
+            else
             {
               /* Sends event */
               orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
@@ -239,6 +245,9 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
           orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
         }
       }
+
+      /* Updates load counter */
+      sstTexture.u32LoadCounter--;
     }
   }
 
@@ -471,6 +480,17 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: GetLoadCounter
+ */
+void orxFASTCALL orxTexture_CommandGetLoadCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = sstTexture.u32LoadCounter;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the texture commands
  */
 static orxINLINE void orxTexture_RegisterCommands()
@@ -488,6 +508,9 @@ static orxINLINE void orxTexture_RegisterCommands()
 
   /* Command: Save */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture|Name", orxCOMMAND_VAR_TYPE_STRING}, {"File = Name.png", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: GetLoadCounter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetLoadCounter, "Load Counter", orxCOMMAND_VAR_TYPE_U32, 0, 0);
 }
 
 /** Unregisters all the texture commands
@@ -507,6 +530,9 @@ static orxINLINE void orxTexture_UnregisterCommands()
 
   /* Command: Save */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Save);
+
+  /* Command: GetLoadCounter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetLoadCounter);
 }
 
 
@@ -816,8 +842,13 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileNa
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_CREATE, pstTexture, orxNULL, orxNULL);
 
-        /* No asynchronous loading? */
-        if(orxDisplay_GetTempBitmap() == orxNULL)
+        /* Asynchronous loading? */
+        if(orxDisplay_GetTempBitmap() != orxNULL)
+        {
+          /* Updates load counter */
+          sstTexture.u32LoadCounter++;
+        }
+        else
         {
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
@@ -1137,5 +1168,17 @@ orxTEXTURE *orxFASTCALL orxTexture_GetScreenTexture()
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
 
   /* Done! */
-  return(sstTexture.pstScreen);
+  return sstTexture.pstScreen;
+}
+
+/** Gets pending load counter
+ * @return      Pending load counter
+ */
+orxU32 orxFASTCALL orxTexture_GetLoadCounter()
+{
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return sstTexture.u32LoadCounter;
 }
