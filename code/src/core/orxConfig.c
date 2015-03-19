@@ -3842,12 +3842,22 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't copy config file <%s> -> <%s>: can't open source file.", _zSrcFileName, _zDstFileName);
       }
+      else
+      {
+        /* Closes it */
+        orxFile_Close(pstSrcFile);
+      }
 
       /* Invalid destination file? */
       if(pstDstFile == orxNULL)
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't copy config file <%s> -> <%s>: can't open destination file.", _zSrcFileName, _zDstFileName);
+      }
+      else
+      {
+        /* Closes it */
+        orxFile_Close(pstDstFile);
       }
 
       /* Updates result */

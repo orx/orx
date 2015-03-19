@@ -482,7 +482,7 @@ static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
   orxS32    i, s32BestCandidate;
 
   /* For all texture units */
-  for(i = 0, s32BestCandidate = -1, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  for(i = 0, s32BestCandidate = 0, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
   {
     /* Found? */
     if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)

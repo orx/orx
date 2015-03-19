@@ -91,7 +91,7 @@
 #define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000080  /**< Friction body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000100  /**< Gear body joint def flag */
 
-#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x000000FF  /**< Type body joint def mask */
+#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x00000FFF  /**< Type body joint def mask */
 
 #define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE           0x10000000  /**< Collide body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation  limit body joint def flag */

@@ -751,13 +751,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     stTransform.fDstX = fBorder;
     stTransform.fDstY = orxMath_Ceil(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight + orxFLOAT_1);
-    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenHeight / orxS2F(s32UniqueCounter));
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenHeight / ((s32UniqueCounter) ? orxS2F(s32UniqueCounter) : orxFLOAT_1));
   }
   else
   {
     stTransform.fDstX = orxMath_Ceil(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth + orxFLOAT_1);
     stTransform.fDstY = fScreenHeight - fBorder;
-    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenWidth / orxS2F(s32UniqueCounter));
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenWidth / ((s32UniqueCounter) ? orxS2F(s32UniqueCounter) : orxFLOAT_1));
   }
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
 
