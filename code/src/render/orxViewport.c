@@ -239,7 +239,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
 
                   /* Re-links it */
-                  orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
+                  (void)orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
                 }
               }
 

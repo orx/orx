@@ -140,9 +140,9 @@ do                                                                        \
 } while(orxFALSE)
 
 #if defined(__orxGCC__) || defined(__orxLLVM__)
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 #else /* __orxGCC__ || __orxLLVM__ */
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glGetError();}} while(orxFALSE)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 #endif /* __orxGCC__ || __orxLLVM__ */
 
 #else /* __orxDEBUG__ */

@@ -3922,7 +3922,7 @@ orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstCl
   if(_pstClock != orxNULL)
   {
     /* Links it */
-    orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
+    (void)orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
   }
 
   /* Done! */
