@@ -891,20 +891,20 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Gets hue delta */
-  fHueDelta = orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE / orxS2F(s32MarkerCounter);
+  fHueDelta = orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE / ((s32MarkerCounter != 0) ? orxS2F(s32MarkerCounter) : 1);
 
   /* Updates vertical values & marker's height */
   if(bLandscape != orxFALSE)
   {
     stTransform.fDstX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth + fBorder;
     stTransform.fDstY = orxFLOAT_1;
-    fHeight           = orxMath_Floor(fScreenHeight / orxS2F(s32MarkerCounter - s32UniqueCounter));
+    fHeight           = orxMath_Floor(fScreenHeight / ((s32MarkerCounter > s32UniqueCounter) ? orxS2F(s32MarkerCounter - s32UniqueCounter) : 1));
   }
   else
   {
     stTransform.fDstX = orxFLOAT_1;
     stTransform.fDstY = fScreenHeight - (orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight + fBorder);
-    fHeight           = orxMath_Floor(fScreenWidth / orxS2F(s32MarkerCounter - s32UniqueCounter));
+    fHeight           = orxMath_Floor(fScreenWidth / ((s32MarkerCounter > s32UniqueCounter) ? orxS2F(s32MarkerCounter - s32UniqueCounter) : 1));
   }
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
   stTransform.fScaleY = fHeight - orx2F(2.0f);
