@@ -165,10 +165,8 @@ class RayCastCallback : public b2RayCastCallback
 {
 public:
 
-  RayCastCallback()
+  RayCastCallback() : hResult(orxHANDLE_UNDEFINED), bEarlyExit(orxFALSE), u16SelfFlags(0), u16CheckMask(0)
   {
-    /* Clears handle */
-    hResult = orxHANDLE_UNDEFINED;
   }
 
   float32 ReportFixture(b2Fixture *_poFixture, const b2Vec2 &_rvContact, const b2Vec2 &_rvNormal, float32 _fFraction)

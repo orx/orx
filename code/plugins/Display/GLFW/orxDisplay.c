@@ -140,9 +140,9 @@ do                                                                        \
 } while(orxFALSE)
 
 #if defined(__orxGCC__) || defined(__orxLLVM__)
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glGetError();}} while(orxFALSE)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 #else /* __orxGCC__ || __orxLLVM__ */
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glGetError();}} while(orxFALSE)
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 #endif /* __orxGCC__ || __orxLLVM__ */
 
 #else /* __orxDEBUG__ */
@@ -482,7 +482,7 @@ static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
   orxS32    i, s32BestCandidate;
 
   /* For all texture units */
-  for(i = 0, s32BestCandidate = -1, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
+  for(i = 0, s32BestCandidate = 0, dBestTime = orxDOUBLE_MAX; i < (orxS32)sstDisplay.iTextureUnitNumber; i++)
   {
     /* Found? */
     if(sstDisplay.apstBoundBitmapList[i] == _pstBitmap)

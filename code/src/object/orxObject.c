@@ -382,7 +382,7 @@ void orxFASTCALL orxObject_CommandSetScale(orxU32 _u32ArgNumber, const orxCOMMAN
   orxCOMMAND_VAR stOperand;
 
   /* Parses numerical arguments */
-  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, &_astArgList[1], &stOperand) != orxSTATUS_FAILURE)
+  if(orxCommand_ParseNumericalArguments(1, &_astArgList[1], &stOperand) != orxSTATUS_FAILURE)
   {
     orxOBJECT *pstObject;
 
@@ -3922,7 +3922,7 @@ orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstCl
   if(_pstClock != orxNULL)
   {
     /* Links it */
-    orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
+    (void)orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
   }
 
   /* Done! */

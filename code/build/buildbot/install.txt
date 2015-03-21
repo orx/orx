@@ -28,7 +28,10 @@ Master
    (otherwise it'll choke when non ASCII-characters have been used in the svn history)
    line 86, in _getRevDetails, args = ['log', '--encoding', self.encoding, '-r', rev, os.linesep.join((
 
-6. Start BuildBot master: buildbot start <master-folder> (and add it as a service/init script if desired)
+6. Modify <Python>/Lib/site-packages/buildbot.*.egg/buildbot/steps/vstudio.py and prefix command line arguments
+   with ["cmd", "/c"] (end of file)
+
+7. Start BuildBot master: buildbot start <master-folder> (and add it as a service/init script if desired)
 
 More info on adding buildbot windows services at http://trac.buildbot.net/wiki/RunningBuildbotOnWindows
 

@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxTexture
- * 
+ *
  * Texture module
  * Module that handles textures
  *
@@ -154,6 +154,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTe
  * @return      Screen texture / orxNULL
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_GetScreenTexture();
+
+/** Gets pending load counter
+ * @return      Pending load counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL       orxTexture_GetLoadCounter();
 
 #endif /* _orxTEXTURE_H_ */
 

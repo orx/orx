@@ -138,15 +138,17 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     pstHashTable->pstBank = orxBank_Create((orxU16)u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
 
     /* Correct bank allocation ? */
-    if(pstHashTable->pstBank == orxNULL)
+    if(pstHashTable->pstBank != orxNULL)
+    {
+      /* Stores its size */
+      pstHashTable->u32Size = u32Size;
+    }
+    else
     {
       /* Allocation problem, returns orxNULL */
       orxMemory_Free(pstHashTable);
       pstHashTable = orxNULL;
     }
-
-    /* Stores its size */
-    pstHashTable->u32Size = u32Size;
   }
 
   return pstHashTable;

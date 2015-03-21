@@ -16,6 +16,7 @@ var orx_texture_8h =
     [ "orxTexture_Delete", "orx_texture_8h.html#gab750c77800d4ce0aa301678276b41af6", null ],
     [ "orxTexture_Exit", "orx_texture_8h.html#ga6693d5ec14b90cb8246d965a050d3688", null ],
     [ "orxTexture_GetBitmap", "orx_texture_8h.html#ga7d713a02b692a3765dfd89d3f585cd8c", null ],
+    [ "orxTexture_GetLoadCounter", "orx_texture_8h.html#gafc422f0de3be1db48dce8abc82591bc6", null ],
     [ "orxTexture_GetName", "orx_texture_8h.html#ga78eb3dd271806f3dedc5f606fc8e231b", null ],
     [ "orxTexture_GetScreenTexture", "orx_texture_8h.html#ga825ee63bf968b878456de7471d09e267", null ],
     [ "orxTexture_GetSize", "orx_texture_8h.html#ga870a6e1969393ad770be7f6e6342bb6b", null ],

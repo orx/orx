@@ -632,6 +632,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPoi
 
     /* Updates its flags */
     orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_NONE, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {

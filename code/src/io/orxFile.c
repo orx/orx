@@ -1053,9 +1053,9 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
   if(_pstFile != orxNULL)
   {
 #if defined(__orxMSVC__) && defined(__orxX86_64__)
-    fseek((FILE *)_pstFile, (long)_s64Position, _eWhence);
+    (void)fseek((FILE *)_pstFile, (long)_s64Position, _eWhence);
 #else /* __orxMSVC__ && __orxX86_64__ */
-    fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
+    (void)fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
 #endif /* __orxMSVC__ && __orxX86_64__ */
 
     /* Updates result */
