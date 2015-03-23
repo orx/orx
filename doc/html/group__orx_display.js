@@ -21,6 +21,7 @@ var group__orx_display =
       [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a92666d99eca84c3f679ecc22b9f7466f", null ],
       [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#aa4cac613321f9cd331ae5b926c860001", null ],
       [ "u32Depth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a83b0b72b22599076d557733a1ce4649a", null ],
+      [ "u32FilenameID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a5deb59a00d46485264ae548c77d43613", null ],
       [ "u32Height", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3", null ],
       [ "u32ID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a61c2eddbf4069fd19a1b8ab665d348d5", null ],
       [ "u32PreviousDepth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a680f22e8d18e09ca63319d563c295242", null ],
