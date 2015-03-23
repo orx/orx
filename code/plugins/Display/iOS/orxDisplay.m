@@ -221,6 +221,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
+  orxU32                    u32FilenameID;
   orxU32                    u32Flags;
 };
 
@@ -1505,8 +1506,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmapCallback(void *_pCon
   }
 
   /* Inits payload */
-  stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
-  stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
+  stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
+  stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+  stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
@@ -2999,6 +3001,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
+    pstBitmap->u32FilenameID  = 0;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -3816,9 +3819,10 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
     if(pstBitmap != orxNULL)
     {
       /* Inits it */
-      pstBitmap->bSmoothing = sstDisplay.bDefaultSmoothing;
-      pstBitmap->zLocation  = zResourceLocation;
-      pstBitmap->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
+      pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
+      pstBitmap->zLocation      = zResourceLocation;
+      pstBitmap->u32FilenameID  = orxString_GetID(_zFilename);
+      pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
       if(orxDisplay_iOS_LoadBitmapData(pstBitmap) == orxSTATUS_FAILURE)

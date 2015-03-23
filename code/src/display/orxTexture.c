@@ -231,23 +231,24 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
     /* Load? */
     if(_pstEvent->eID == orxDISPLAY_EVENT_LOAD_BITMAP)
     {
-      orxTEXTURE *pstTexture;
+      orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+      orxTEXTURE               *pstTexture;
 
-      /* For all textures */
-      for(pstTexture = orxTEXTURE(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE));
-          pstTexture != orxNULL;
-          pstTexture = orxTEXTURE(orxStructure_GetNext(pstTexture)))
+      /* Gets payload */
+      pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Gets texture */
+      pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->stBitmap.u32FilenameID);
+
+      /* Found? */
+      if(pstTexture != orxNULL)
       {
-        /* Matches? */
-        if(pstTexture->hData == _pstEvent->hSender)
-        {
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
-        }
-      }
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
 
-      /* Updates load counter */
-      sstTexture.u32LoadCounter--;
+        /* Updates load counter */
+        sstTexture.u32LoadCounter--;
+      }
     }
   }
 

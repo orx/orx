@@ -174,6 +174,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
+  orxU32                    u32FilenameID;
   orxU32                    u32Flags;
 };
 
@@ -852,8 +853,9 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       }
 
       /* Inits payload */
-      stPayload.stBitmap.zLocation  = pstBitmap->zLocation;
-      stPayload.stBitmap.u32ID      = (orxU32)pstBitmap->uiTexture;
+      stPayload.stBitmap.zLocation      = pstBitmap->zLocation;
+      stPayload.stBitmap.u32FilenameID  = pstBitmap->u32FilenameID;
+      stPayload.stBitmap.u32ID          = (orxU32)pstBitmap->uiTexture;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
@@ -968,8 +970,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
   pstInfo->pu8ImageSource = orxNULL;
 
   /* Inits payload */
-  stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
-  stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
+  stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
+  stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+  stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
@@ -2368,17 +2371,18 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Inits it */
-    pstBitmap->bSmoothing = sstDisplay.bDefaultSmoothing;
-    pstBitmap->fWidth = orxU2F(_u32Width);
-    pstBitmap->fHeight = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth = _u32Width;
-    pstBitmap->u32RealHeight = _u32Height;
+    pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
+    pstBitmap->fWidth         = orxU2F(_u32Width);
+    pstBitmap->fHeight        = orxU2F(_u32Height);
+    pstBitmap->u32RealWidth   = _u32Width;
+    pstBitmap->u32RealHeight  = _u32Height;
     pstBitmap->u32Depth       = 32;
-    pstBitmap->fRecRealWidth = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
+    pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
-    pstBitmap->stColor = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+    pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
+    pstBitmap->u32FilenameID  = 0;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -3312,9 +3316,10 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
     if(pstResult != orxNULL)
     {
       /* Inits it */
-      pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
-      pstResult->zLocation  = zResourceName;
-      pstResult->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
+      pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
+      pstResult->zLocation      = zResourceName;
+      pstResult->u32FilenameID  = orxString_GetID(_zFilename);
+      pstResult->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
       if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL)

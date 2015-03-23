@@ -194,6 +194,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
+  orxU32                    u32FilenameID;
   orxU32                    u32Flags;
 };
 
@@ -857,8 +858,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
   pstInfo->pu8ImageSource = orxNULL;
 
   /* Inits payload */
-  stPayload.stBitmap.zLocation  = pstInfo->pstBitmap->zLocation;
-  stPayload.stBitmap.u32ID      = (orxU32)pstInfo->pstBitmap->uiTexture;
+  stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
+  stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+  stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
@@ -2201,6 +2203,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
+    pstBitmap->u32FilenameID  = 0;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -3263,9 +3266,10 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
     if(pstResult != orxNULL)
     {
       /* Inits it */
-      pstResult->bSmoothing = sstDisplay.bDefaultSmoothing;
-      pstResult->zLocation  = zResourceLocation;
-      pstResult->u32Flags   = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
+      pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
+      pstResult->zLocation      = zResourceLocation;
+      pstResult->u32FilenameID  = orxString_GetID(_zFilename);
+      pstResult->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
       if(orxDisplay_GLFW_LoadBitmapData(pstResult) == orxSTATUS_FAILURE)
