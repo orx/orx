@@ -6320,7 +6320,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
     if(pstFXPointer == orxNULL)
     {
       /* Creates one */
-      pstFXPointer = orxFXPointer_Create(orxSTRUCTURE(_pstObject));
+      pstFXPointer = orxFXPointer_Create();
 
       /* Valid? */
       if(pstFXPointer != orxNULL)
@@ -6386,7 +6386,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
     if(pstFXPointer == orxNULL)
     {
       /* Creates one */
-      pstFXPointer = orxFXPointer_Create(orxSTRUCTURE(_pstObject));
+      pstFXPointer = orxFXPointer_Create();
 
       /* Valid? */
       if(pstFXPointer != orxNULL)

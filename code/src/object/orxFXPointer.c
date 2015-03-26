@@ -95,7 +95,6 @@ struct __orxFXPOINTER_t
   orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 32 */
   orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 112 */
   orxFLOAT                fTime;                                  /**< Time stamp : 116 */
-  const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 120 */
 };
 
 /** Static structure
@@ -171,8 +170,12 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
   /* Is enabled? */
   if(orxFXPointer_IsEnabled(pstFXPointer) != orxFALSE)
   {
-    orxFLOAT  fLastTime;
-    orxU32    i;
+    orxFLOAT      fLastTime;
+    orxU32        i;
+    orxSTRUCTURE *pstOwner;
+
+    /* Gets owner */
+    pstOwner = orxStructure_GetOwner(pstFXPointer);
 
     /* Backups last time */
     fLastTime = pstFXPointer->fTime;
@@ -211,7 +214,7 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
             stPayload.zFXName = orxFX_GetName(pstFX);
 
             /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_START, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+            orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_START, pstOwner, pstOwner, &stPayload);
           }
 
           /* Updates its status */
@@ -231,7 +234,7 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
             if(orxFX_IsLooping(pstFX) != orxFALSE)
             {
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_LOOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_LOOP, pstOwner, pstOwner, &stPayload);
 
               /* Updates its start time */
               pstFXPointer->astFXList[i].fStartTime = pstFXPointer->fTime;
@@ -245,10 +248,10 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
               pstFXPointer->astFXList[i].pstFX = orxNULL;
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_STOP, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_STOP, pstOwner, pstOwner, &stPayload);
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstFXPointer->pstOwner, pstFXPointer->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
               /* Is internal? */
               if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
@@ -361,10 +364,9 @@ void orxFASTCALL orxFXPointer_Exit()
 }
 
 /** Creates an empty FXPointer
- * @param[in]   _pstOwner       FXPointer's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxFXPOINTER / orxNULL
  */
-orxFXPOINTER *orxFASTCALL orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
+orxFXPOINTER *orxFASTCALL orxFXPointer_Create()
 {
   orxFXPOINTER *pstResult;
 
@@ -377,9 +379,6 @@ orxFXPOINTER *orxFASTCALL orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Stores owner */
-    pstResult->pstOwner = _pstOwner;
-
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFXPOINTER_KU32_FLAG_ENABLED, orxFXPOINTER_KU32_MASK_ALL);
 
@@ -448,25 +447,6 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
 
   /* Done! */
   return eResult;
-}
-
-/** Gets an FXPointer owner
- * @param[in]   _pstFXPointer   Concerned FXPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxFXPointer_GetOwner(const orxFXPOINTER *_pstFXPointer)
-{
-  orxSTRUCTURE *pstResult;
-
-  /* Checks */
-  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstFXPointer);
-
-  /* Updates result */
-  pstResult = orxSTRUCTURE(_pstFXPointer->pstOwner);
-
-  /* Done! */
-  return pstResult;
 }
 
 /** Enables/disables an FXPointer
@@ -552,7 +532,11 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
   /* Found? */
   if(u32Index < orxFXPOINTER_KU32_FX_NUMBER)
   {
+    orxSTRUCTURE       *pstOwner;
     orxFX_EVENT_PAYLOAD stPayload;
+
+    /* Gets owner */
+    pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
     /* Increases its reference counter */
     orxStructure_IncreaseCounter(_pstFX);
@@ -572,7 +556,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
     stPayload.zFXName = orxFX_GetName(_pstFX);
 
     /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_ADD, _pstFXPointer->pstOwner, _pstFXPointer->pstOwner, &stPayload);
+    orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_ADD, pstOwner, pstOwner, &stPayload);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -597,13 +581,17 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
  */
 orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX)
 {
-  orxU32    i;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxU32        i;
+  orxSTRUCTURE *pstOwner;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Gets owner */
+  pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -633,7 +621,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
         stPayload.zFXName = orxFX_GetName(pstFX);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, _pstFXPointer->pstOwner, _pstFXPointer->pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
@@ -730,7 +718,11 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
     /* Valid? */
     if(pstFX != orxNULL)
     {
+      orxSTRUCTURE       *pstOwner;
       orxFX_EVENT_PAYLOAD stPayload;
+
+      /* Gets owner */
+      pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
       /* Increases its reference counter */
       orxStructure_IncreaseCounter(pstFX);
@@ -753,7 +745,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
       stPayload.zFXName = orxFX_GetName(pstFX);
 
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_ADD, _pstFXPointer->pstOwner, _pstFXPointer->pstOwner, &stPayload);
+      orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_ADD, pstOwner, pstOwner, &stPayload);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -798,7 +790,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID); 
+  u32ID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -840,16 +832,20 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
  */
 orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxU32        i, u32ID;
+  orxSTRUCTURE *pstOwner;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
 
+  /* Gets owner */
+  pstOwner = orxStructure_GetOwner(_pstFXPointer);
+
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID); 
+  u32ID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -879,7 +875,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
         stPayload.zFXName = orxFX_GetName(pstFX);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, _pstFXPointer->pstOwner, _pstFXPointer->pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
