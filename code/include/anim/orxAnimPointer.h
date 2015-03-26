@@ -73,30 +73,22 @@ extern orxDLLAPI void orxFASTCALL             orxAnimPointer_Exit();
 
 
 /** Creates an empty AnimPointer
- * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _pstAnimSet                   AnimSet reference
  * @return      orxANIMPOINTER / orxNULL
  */
-extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(orxANIMSET *_pstAnimSet);
 
 /** Creates an animation pointer from config
- * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMPOINTER / orxNULL
  */
-extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID);
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer);
-
-/** Gets an AnimPointer owner
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetOwner(const orxANIMPOINTER *_pstAnimPointer);
 
 /** Gets the referenced AnimSet
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

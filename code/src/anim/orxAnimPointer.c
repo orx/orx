@@ -94,7 +94,6 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
   orxU32                  u32LoopCounter;             /**< Current animation loop counter : 52 */
-  const orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 56 */
 };
 
 
@@ -201,7 +200,11 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       orxBOOL               bCut, bClearTarget;
       orxU32                u32NewAnim;
       orxFLOAT              fTimeBackup, fEventStartTime;
+      orxSTRUCTURE         *pstOwner;
       orxANIM_EVENT_PAYLOAD stPayload;
+
+      /* Gets owner */
+      pstOwner = orxStructure_GetOwner(_pstAnimPointer);
 
       /* Gets event start time */
       fEventStartTime = _pstAnimPointer->fCurrentAnimTime;
@@ -240,7 +243,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             if(fEventStartTime < fAnimLength)
             {
               /* Sends custom events */
-              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimLength);
             }
           }
 
@@ -257,7 +260,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           u32TargetAnim = _pstAnimPointer->u32TargetAnim;
 
           /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_ANIM, (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+          orxEVENT_SEND(orxEVENT_TYPE_ANIM, (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP, pstOwner, pstOwner, &stPayload);
 
           /* No new anim? */
           if(_pstAnimPointer->u32CurrentAnim == orxU32_UNDEFINED)
@@ -286,7 +289,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
               stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, pstOwner, pstOwner, &stPayload);
 
               /* Should clear target? */
               if(bClearTarget != orxFALSE)
@@ -315,7 +318,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             if(fEventStartTime < fAnimLength)
             {
               /* Sends custom events */
-              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, fAnimLength);
+              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimLength);
             }
 
             /* Stores current and target anims */
@@ -329,7 +332,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             stPayload.stLoop.u32Counter = _pstAnimPointer->u32LoopCounter;
 
             /* Sends it */
-            orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+            orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, pstOwner, pstOwner, &stPayload);
 
             /* Not modified during event? */
             if((_pstAnimPointer->u32CurrentAnim == u32CurrentAnim)
@@ -373,11 +376,11 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
           /* Sends it */
-          orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_UPDATE, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+          orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_UPDATE, pstOwner, pstOwner, &stPayload);
         }
 
         /* Sends custom events */
-        orxAnimPointer_SendCustomEvents(pstAnim, _pstAnimPointer->pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
+        orxAnimPointer_SendCustomEvents(pstAnim, pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
       }
     }
     else
@@ -504,17 +507,15 @@ void orxFASTCALL orxAnimPointer_Exit()
 }
 
 /** Creates an empty AnimPointer
- * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _pstAnimSet                   AnimationSet reference
  * @return      Created orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
 {
   orxANIMPOINTER *pstAnimPointer;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxOBJECT(_pstOwner));
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Creates animpointer */
@@ -540,9 +541,6 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
     pstAnimPointer->u32TargetAnim     = orxU32_UNDEFINED;
     pstAnimPointer->u32CurrentKey     = 0;
     pstAnimPointer->u32LoopCounter    = 0;
-
-    /* Stores owner */
-    pstAnimPointer->pstOwner          = _pstOwner;
 
     /* Is animset link table non-static? */
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
@@ -571,11 +569,10 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner,
 }
 
 /** Creates an animation pointer from config
- * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxANIMPOINTER *pstResult = orxNULL;
 
@@ -595,7 +592,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *
     if(pstAnimSet != orxNULL)
     {
       /* Creates animation pointer from it */
-      pstResult = orxAnimPointer_Create(_pstOwner, pstAnimSet);
+      pstResult = orxAnimPointer_Create(pstAnimSet);
 
       /* Valid? */
       if(pstResult != orxNULL)
@@ -634,25 +631,6 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *
     /* Updates result */
     pstResult = orxNULL;
   }
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Gets an AnimPointer owner
- * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetOwner(const orxANIMPOINTER *_pstAnimPointer)
-{
-  orxSTRUCTURE *pstResult;
-
-  /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnimPointer);
-
-  /* Updates result */
-  pstResult = orxSTRUCTURE(_pstAnimPointer->pstOwner);
 
   /* Done! */
   return pstResult;
@@ -967,10 +945,14 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
     {
       orxANIM_EVENT_PAYLOAD stPayload;
       orxANIM              *pstAnim;
+      orxSTRUCTURE         *pstOwner;
       orxU32                u32CurrentAnim;
 
       /* Clears event payload */
       orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+
+      /* Gets owner */
+      pstOwner = orxStructure_GetOwner(_pstAnimPointer);
 
       /* Stores current anim */
       u32CurrentAnim = _pstAnimPointer->u32CurrentAnim;
@@ -996,7 +978,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
         stPayload.zAnimName = orxAnim_GetName(pstAnim);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUT, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUT, pstOwner, pstOwner, &stPayload);
       }
 
       /* Inits event payload */
@@ -1005,7 +987,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       stPayload.zAnimName = orxAnim_GetName(pstAnim);
 
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+      orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, pstOwner, pstOwner, &stPayload);
 
       /* Updates flags */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);

@@ -2919,7 +2919,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxANIMPOINTER *pstAnimPointer;
 
         /* Creates animation pointer from it */
-        pstAnimPointer = orxAnimPointer_CreateFromConfig(orxSTRUCTURE(pstResult), zAnimPointerName);
+        pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimPointerName);
 
         /* Valid? */
         if(pstAnimPointer != orxNULL)
@@ -5437,7 +5437,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Creates animation pointer from animation set */
-  pstAnimPointer = orxAnimPointer_Create(orxSTRUCTURE(_pstObject), _pstAnimSet);
+  pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
 
   /* Valid? */
   if(pstAnimPointer != orxNULL)
