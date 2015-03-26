@@ -6526,7 +6526,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
     if(pstSoundPointer == orxNULL)
     {
       /* Creates one */
-      pstSoundPointer = orxSoundPointer_Create(orxSTRUCTURE(_pstObject));
+      pstSoundPointer = orxSoundPointer_Create();
 
       /* Valid? */
       if(pstSoundPointer != orxNULL)

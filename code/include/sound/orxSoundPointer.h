@@ -73,22 +73,15 @@ extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Exit();
 
 
 /** Creates an empty SoundPointer
- * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return orxSOUNDPOINTER / orxNULL
  */
-extern orxDLLAPI orxSOUNDPOINTER *orxFASTCALL   orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSOUNDPOINTER *orxFASTCALL   orxSoundPointer_Create();
 
 /** Deletes a SoundPointer
  * @param[in] _pstSoundPointer      Concerned SoundPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer);
-
-/** Gets a SoundPointer owner
- * @param[in]   _pstSoundPointer    Concerned SoundPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxSoundPointer_GetOwner(const orxSOUNDPOINTER *_pstSoundPointer);
 
 /** Enables/disables a SoundPointer
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
