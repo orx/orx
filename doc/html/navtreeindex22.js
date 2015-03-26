@@ -1,11 +1,5 @@
 var NAVTREEINDEX22 =
 {
-"structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7":[1,10,1,0],
-"structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79":[1,10,1,1],
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html":[1,15,3],
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a09e8ddcd607dceacf8021000c0e857b4":[1,15,3,10],
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a":[1,15,3,9],
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3":[1,15,3,5],
 "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f":[1,15,3,13],
 "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d":[1,15,3,12],
 "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a5deb59a00d46485264ae548c77d43613":[1,15,3,4],
