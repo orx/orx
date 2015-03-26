@@ -1383,7 +1383,7 @@ orxSTATUS orxFASTCALL orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orx
     if(_pstViewport->pstShaderPointer == orxNULL)
     {
       /* Creates one */
-      _pstViewport->pstShaderPointer = orxShaderPointer_Create(orxSTRUCTURE(_pstViewport));
+      _pstViewport->pstShaderPointer = orxShaderPointer_Create();
 
       /* Valid? */
       if(_pstViewport->pstShaderPointer != orxNULL)

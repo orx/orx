@@ -58,8 +58,6 @@
 
 #define orxSHADERPOINTER_KU32_FLAG_ENABLED          0x10000000  /**< Enabled flag */
 #define orxSHADERPOINTER_KU32_FLAG_INTERNAL         0x20000000  /**< Internal flag */
-#define orxSHADERPOINTER_KU32_FLAG_OBJECT_OWNER     0x40000000  /**< Object owner flag */
-#define orxSHADERPOINTER_KU32_FLAG_VIEWPORT_OWNER   0x80000000  /**< Viewport owner flag */
 
 #define orxSHADERPOINTER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
@@ -97,7 +95,6 @@ struct __orxSHADERPOINTER_t
 {
   orxSTRUCTURE            stStructure;                          /**< Public structure, first structure member : 32 */
   orxSHADERPOINTER_HOLDER astShaderList[orxSHADERPOINTER_KU32_SHADER_NUMBER]; /**< Shader list : 48 */
-  const orxSTRUCTURE     *pstOwner;                             /**< Owner structure : 52 */
 };
 
 /** Static structure
@@ -165,27 +162,6 @@ static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstE
       {
         /* Stops it */
         orxShaderPointer_Stop(pstShaderPointer);
-      }
-
-      break;
-    }
-
-    case orxRENDER_EVENT_STOP:
-    {
-      const orxSHADERPOINTER *pstShaderPointer;
-
-      /* For all shader pointers */
-      for(pstShaderPointer = orxSHADERPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADERPOINTER));
-          pstShaderPointer != orxNULL;
-          pstShaderPointer = orxSHADERPOINTER(orxStructure_GetNext(pstShaderPointer)))
-      {
-        /* No owner? */
-        if(pstShaderPointer->pstOwner == orxNULL)
-        {
-          /* Starts & stops it */
-          orxShaderPointer_Start(pstShaderPointer);
-          orxShaderPointer_Stop(pstShaderPointer);
-        }
       }
 
       break;
@@ -351,10 +327,9 @@ void orxFASTCALL orxShaderPointer_Exit()
 }
 
 /** Creates an empty ShaderPointer
- * @param[in]   _pstOwner       ShaderPointer's owner used for rendering (usually an orxOBJECT)
  * @return      Created orxSHADERPOINTER / orxNULL
  */
-orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner)
+orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create()
 {
   orxSHADERPOINTER *pstResult;
 
@@ -367,38 +342,6 @@ orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create(const orxSTRUCTURE *_pstOw
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Has owner? */
-    if(_pstOwner != orxNULL)
-    {
-      /* Stores it */
-      pstResult->pstOwner = _pstOwner;
-
-      /* Depending on owner ID */
-      switch(orxStructure_GetID(_pstOwner))
-      {
-        case orxSTRUCTURE_ID_OBJECT:
-        {
-          /* Updates flags */
-          orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_OBJECT_OWNER, orxSHADERPOINTER_KU32_MASK_ALL);
-
-          break;
-        }
-
-        case orxSTRUCTURE_ID_VIEWPORT:
-        {
-          /* Updates flags */
-          orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_VIEWPORT_OWNER, orxSHADERPOINTER_KU32_MASK_ALL);
-
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
-    }
-
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_ENABLED, orxSHADERPOINTER_KU32_MASK_ALL);
 
@@ -484,7 +427,8 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
   /* Enabled? */
   if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_ENABLED))
   {
-    orxU32 i;
+    orxU32        i;
+    orxSTRUCTURE *pstOwner = orxNULL;
 
     /* For all shaders */
     for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
@@ -492,8 +436,15 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
       /* Valid? */
       if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
       {
+        /* No owner retrieved yet? */
+        if(pstOwner == orxNULL)
+        {
+          /* Gets it */
+          pstOwner = orxStructure_GetOwner(_pstShaderPointer);
+        }
+
         /* Renders it */
-        eResult = orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
+        eResult = orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, pstOwner);
       }
     }
   }
@@ -543,25 +494,6 @@ orxSTATUS orxFASTCALL orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPo
 
   /* Done! */
   return eResult;
-}
-
-/** Gets an ShaderPointer owner
- * @param[in]   _pstShaderPointer   Concerned ShaderPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxShaderPointer_GetOwner(const orxSHADERPOINTER *_pstShaderPointer)
-{
-  orxSTRUCTURE *pstResult;
-
-  /* Checks */
-  orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstShaderPointer);
-
-  /* Updates result */
-  pstResult = orxSTRUCTURE(_pstShaderPointer->pstOwner);
-
-  /* Done! */
-  return pstResult;
 }
 
 /** Enables/disables an ShaderPointer

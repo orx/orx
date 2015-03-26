@@ -73,10 +73,9 @@ extern orxDLLAPI void orxFASTCALL               orxShaderPointer_Exit();
 
 
 /** Creates an empty ShaderPointer
- * @param[in]   _pstOwner       ShaderPointer's owner used for rendering (usually an orxOBJECT)
  * @return orxSHADERPOINTER / orxNULL
  */
-extern orxDLLAPI orxSHADERPOINTER *orxFASTCALL  orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSHADERPOINTER *orxFASTCALL  orxShaderPointer_Create();
 
 /** Deletes an ShaderPointer
  * @param[in] _pstShaderPointer     Concerned ShaderPointer
@@ -95,12 +94,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Start(const orx
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPointer);
-
-/** Gets an ShaderPointer owner
- * @param[in]   _pstShaderPointer   Concerned ShaderPointer
- * @return      orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxShaderPointer_GetOwner(const orxSHADERPOINTER *_pstShaderPointer);
 
 /** Enables/disables an ShaderPointer
  * @param[in]   _pstShaderPointer   Concerned ShaderPointer

@@ -6701,7 +6701,7 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
     if(pstShaderPointer == orxNULL)
     {
       /* Creates one */
-      pstShaderPointer = orxShaderPointer_Create(orxSTRUCTURE(_pstObject));
+      pstShaderPointer = orxShaderPointer_Create();
 
       /* Valid? */
       if(pstShaderPointer != orxNULL)
