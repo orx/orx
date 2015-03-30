@@ -100,6 +100,9 @@ typedef struct __orxANDROID_STATIC_t {
         orxU32 u32SurfaceWidth;
         orxU32 u32SurfaceHeight;
 
+        pthread_mutex_t mutex;
+        pthread_cond_t cond;
+
 } orxANDROID_STATIC;
 
 /***************************************************************************
@@ -204,6 +207,21 @@ static void app_write_cmd(int8_t cmd) {
     }
 }
 
+static void app_set_window(ANativeWindow* window) {
+    pthread_mutex_lock(&sstAndroid.mutex);
+    if (sstAndroid.pendingWindow != NULL) {
+        app_write_cmd(APP_CMD_SURFACE_DESTROYED);
+    }
+    sstAndroid.pendingWindow = window;
+    if (window != NULL) {
+        app_write_cmd(APP_CMD_SURFACE_CREATED);
+    }
+    while (sstAndroid.window != sstAndroid.pendingWindow) {
+        pthread_cond_wait(&sstAndroid.cond, &sstAndroid.mutex);
+    }
+    pthread_mutex_unlock(&sstAndroid.mutex);
+}
+
 // Called before main() to initialize JNI bindings
 static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 {
@@ -257,6 +275,44 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 
 static void orxAndroid_Exit(JNIEnv* env)
 {
+  // finish Activity
+  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
+  jclass objClass = env->FindClass("android/app/Activity");
+  jmethodID finish = env->GetMethodID(objClass, "finish", "()V");
+  env->CallVoidMethod(jActivity, finish);
+  env->DeleteLocalRef(objClass);
+  env->DeleteLocalRef(jActivity);
+
+  // wait for quit cmd
+  int ident;
+  int events;
+
+  while ((ident=ALooper_pollAll(-1, NULL, &events, NULL)) >= 0)
+  {
+    if(ident == LOOPER_ID_MAIN)
+    {
+      int8_t cmd = app_read_cmd();
+
+      if(cmd == APP_CMD_QUIT) {
+        LOGI("APP_CMD_QUIT");
+        break;
+      }
+      if(cmd == APP_CMD_SURFACE_DESTROYED) {
+        LOGI("APP_CMD_SURFACE_DESTROYED");
+        pthread_cond_broadcast(&sstAndroid.cond);
+
+        pthread_mutex_lock(&sstAndroid.mutex);
+        if(sstAndroid.window != NULL)
+        {
+          ANativeWindow_release(sstAndroid.window);
+          sstAndroid.window = NULL;
+        }
+        pthread_cond_broadcast(&sstAndroid.cond);
+        pthread_mutex_unlock(&sstAndroid.mutex);
+      }
+    }
+  }
+
   env->DeleteGlobalRef(sstAndroid.mFragment);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
@@ -295,6 +351,9 @@ static void orxAndroid_Exit(JNIEnv* env)
   close(sstAndroid.pipeJoystickEvent[1]);
   sstAndroid.pipeJoystickEvent[0] = -1;
   sstAndroid.pipeJoystickEvent[1] = -1;
+
+  pthread_cond_destroy(&sstAndroid.cond);
+  pthread_mutex_destroy(&sstAndroid.mutex);
 }
 
 /* Main function to call */
@@ -336,6 +395,9 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnCreate(JNIEnv *env,
         LOGE("could not create pipe: %s", strerror(errno));
         return;
     }
+
+    pthread_mutex_init(&sstAndroid.mutex, NULL);
+    pthread_cond_init(&sstAndroid.cond, NULL);
 }
 
 // Start up the Orx app
@@ -349,8 +411,8 @@ extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env,
     status = main(0, orxNULL);
 
     orxAndroid_Exit(env);
-    /* Do not issue an exit or the whole application will terminate instead of just the Orx thread */
-    //exit(status);
+
+    LOGI("startOrx() finished!");
 }
 
 // Keydown
@@ -412,7 +474,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnTouch(
 
 // Quit
 extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
-{    
+{
   app_write_cmd(APP_CMD_QUIT);
 }
 
@@ -431,14 +493,14 @@ extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv
 // SurfaceDestroyed
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnSurfaceDestroyed(JNIEnv* env, jobject thiz)
 {
-  app_write_cmd(APP_CMD_SURFACE_DESTROYED);
+  app_set_window(NULL);
 }
 
 // SurfaceCreated
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnSurfaceCreated(JNIEnv* env, jobject thiz, jobject surface)
 {
-  sstAndroid.pendingWindow = ANativeWindow_fromSurface(env, surface);
-  app_write_cmd(APP_CMD_SURFACE_CREATED);
+  ANativeWindow* window = ANativeWindow_fromSurface(env, surface);
+  app_set_window(window);
 }
 
 // SurfaceChanged
@@ -569,7 +631,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
   LOGI("orxAndroid_GetNativeWindow()");
 
-  while(sstAndroid.window == orxNULL)
+  while(sstAndroid.window == NULL)
   {
     LOGI("no window received yet");
 
@@ -676,13 +738,19 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_SURFACE_DESTROYED) {
         LOGI("APP_CMD_SURFACE_DESTROYED");
+        pthread_cond_broadcast(&sstAndroid.cond);
+
         sstAndroid.fSurfaceScale = orxFLOAT_0;
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
-        if(sstAndroid.window != orxNULL)
+
+        pthread_mutex_lock(&sstAndroid.mutex);
+        if(sstAndroid.window != NULL)
         {
           ANativeWindow_release(sstAndroid.window);
-          sstAndroid.window = orxNULL;
+          sstAndroid.window = NULL;
         }
+        pthread_cond_broadcast(&sstAndroid.cond);
+        pthread_mutex_unlock(&sstAndroid.mutex);
       }
       if(cmd == APP_CMD_SURFACE_CHANGED) {
         LOGI("APP_CMD_SURFACE_CHANGED");
@@ -694,7 +762,11 @@ extern "C" void orxAndroid_PumpEvents()
       }
       if(cmd == APP_CMD_SURFACE_CREATED) {
         LOGI("APP_CMD_SURFACE_CREATED");
+        pthread_mutex_lock(&sstAndroid.mutex);
         sstAndroid.window = sstAndroid.pendingWindow;
+        pthread_cond_broadcast(&sstAndroid.cond);
+        pthread_mutex_unlock(&sstAndroid.mutex);
+
         orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       }
       if(cmd == APP_CMD_QUIT) {

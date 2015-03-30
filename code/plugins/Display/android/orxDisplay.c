@@ -2570,19 +2570,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
-  if(sstDisplay.surface != EGL_NO_SURFACE)
-  {
-    eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
-    eglASSERT();
-  }
+  eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+  eglASSERT();
 
   /* Waits for GPU work to be done */
   glFinish();
-  if(glGetError() == GL_OUT_OF_MEMORY)
-  {
-    /* looks like surface is gone */
-    orxAndroid_Display_DestroySurface();
-  }
+  glASSERT();
 
   /* Done! */
   return eResult;
@@ -3712,11 +3705,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
     /* Flushes pending commands */
     glFlush();
-    if(glGetError() == GL_OUT_OF_MEMORY)
-    {
-      /* looks like surface is gone */
-      orxAndroid_Display_DestroySurface();
-    }
+    glASSERT();
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
