@@ -1,8 +1,5 @@
 var NAVTREEINDEX19 =
 {
-"orx_shader_pointer_8h.html#ga6467e441b95b2d3c4fc6821199016e1b":[3,0,0,12,3,11],
-"orx_shader_pointer_8h.html#ga6c38462d8ef60b304c0926770750c211":[3,0,0,12,3,1],
-"orx_shader_pointer_8h.html#ga74ad326fadbef929e1ebf41429674782":[3,0,0,12,3,2],
 "orx_shader_pointer_8h.html#ga7f9ed712c9be7b7ae522f9de99de5218":[3,0,0,12,3,12],
 "orx_shader_pointer_8h.html#ga84d30855be02bc7a986155f8574649a8":[3,0,0,12,3,4],
 "orx_shader_pointer_8h.html#gaa348a1d6822d7e6db915d304c2f537f5":[3,0,0,12,3,7],
@@ -249,5 +246,8 @@ var NAVTREEINDEX19 =
 "orx_string_8h.html#gaf875887c7a49a423aefcacdfa143bc5d":[3,0,0,14,2,23],
 "orx_string_8h.html#gafb8549f0953530a87577d2dbb0d09e0c":[3,0,0,14,2,6],
 "orx_string_8h.html#gafcac98c42809ed7842a831f48a086089":[3,0,0,14,2,51],
-"orx_string_8h.html#gafde2f0e71190db970d0c6337eeceaf16":[3,0,0,14,2,8]
+"orx_string_8h.html#gafde2f0e71190db970d0c6337eeceaf16":[3,0,0,14,2,8],
+"orx_string_8h.html#gaff5c764928ff1df757b30863b00926a0":[3,0,0,14,2,50],
+"orx_string_8h_source.html":[3,0,0,14,2],
+"orx_structure_8h.html":[3,0,0,9,5]
 };

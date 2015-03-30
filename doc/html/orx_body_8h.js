@@ -27,7 +27,6 @@ var orx_body_8h =
     [ "orxBody_GetMassCenter", "orx_body_8h.html#ga7968024ef3058cdbcc5e9ba863d5b69b", null ],
     [ "orxBody_GetNextJoint", "orx_body_8h.html#ga6fd50b5f766ed0b046270e174ad4fd0f", null ],
     [ "orxBody_GetNextPart", "orx_body_8h.html#gae2d0e00dc1fb881d37c2dcd1ab07d3cb", null ],
-    [ "orxBody_GetOwner", "orx_body_8h.html#ga1a492f7be69dba98bb266af4209f0fc1", null ],
     [ "orxBody_GetPartBody", "orx_body_8h.html#ga94e258979b219f6edced5cc742c79d5f", null ],
     [ "orxBody_GetPartCheckMask", "orx_body_8h.html#ga2c0e1c2ebb5f49125269f3f8e07990bc", null ],
     [ "orxBody_GetPartDef", "orx_body_8h.html#gacef26b2e740bdf6d9fe8f900bdcedc63", null ],

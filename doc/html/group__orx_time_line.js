@@ -18,11 +18,10 @@ var group__orx_time_line =
       [ "orxTIMELINE_EVENT_NONE", "group__orx_time_line.html#gga0ec2c070cd57becb98a40507688ef0aca9d3ab902d68d8165fed10d3c7fc9c52e", null ]
     ] ],
     [ "orxTimeLine_AddTrackFromConfig", "group__orx_time_line.html#ga1281081fa8cb1913b4b769a2a7343157", null ],
-    [ "orxTimeLine_Create", "group__orx_time_line.html#ga6170c8f094ac186e73b8ca1b017dde9a", null ],
+    [ "orxTimeLine_Create", "group__orx_time_line.html#ga69003564f3a0d16b6a56936a0bec9720", null ],
     [ "orxTimeLine_Delete", "group__orx_time_line.html#ga221374d361bbf39ff4b47d112612e24f", null ],
     [ "orxTimeLine_Enable", "group__orx_time_line.html#ga28fd2c8804cf2d25ed38ca6a2968dbc7", null ],
     [ "orxTimeLine_Exit", "group__orx_time_line.html#ga39829d13da82a486e32f9206eddfe9ee", null ],
-    [ "orxTimeLine_GetOwner", "group__orx_time_line.html#ga87d298e8824134ed5178b4513b4c7a89", null ],
     [ "orxTimeLine_GetTrackDuration", "group__orx_time_line.html#ga497e72456d40787395146e29b152d7f1", null ],
     [ "orxTimeLine_Init", "group__orx_time_line.html#ga8c34979216f68ba7f067bc15423da30f", null ],
     [ "orxTimeLine_IsEnabled", "group__orx_time_line.html#ga70de382a9c84c6f34fd1f778f6dee45e", null ],
