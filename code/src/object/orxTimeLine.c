@@ -126,10 +126,10 @@ typedef struct __orxTIMELINE_TRACK_t
  */
 typedef struct __orxTIMELINE_TRACK_HOLDER_t
 {
-  orxTIMELINE_TRACK        *pstTrack;                 /**< Track : 4 */
-  orxFLOAT                  fStartTime;               /**< Start time : 8 */
-  orxU32                    u32NextEventIndex;        /**< Next event index : 12 */
-  orxU32                    u32Flags;                 /**< Flags : 16 */
+  orxTIMELINE_TRACK        *pstTrack;                 /**< Track : 4 / 8 */
+  orxFLOAT                  fStartTime;               /**< Start time : 8 / 12 */
+  orxU32                    u32NextEventIndex;        /**< Next event index : 12 / 16 */
+  orxU32                    u32Flags;                 /**< Flags : 16 / 20 */
 
 } orxTIMELINE_TRACK_HOLDER;
 
@@ -138,9 +138,8 @@ typedef struct __orxTIMELINE_TRACK_HOLDER_t
 struct __orxTIMELINE_t
 {
   orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 32 */
-  const orxSTRUCTURE       *pstOwner;                 /**< Owner structure : 20 */
-  orxFLOAT                  fTime;                    /**< Time : 24 */
-  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 152 */
+  orxFLOAT                  fTime;                    /**< Time : 36 */
+  orxTIMELINE_TRACK_HOLDER  astTrackList[orxTIMELINE_KU32_TRACK_NUMBER]; /**< TimeLine track list : 164 / 196 */
 };
 
 /** Static structure
@@ -582,7 +581,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             stPayload.zTrackName  = pstTrack->zReference;
 
             /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_START, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_START, _pstCaller, _pstCaller, &stPayload);
           }
 
           /* Updates its status */
@@ -603,7 +602,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             stPayload.fTimeStamp  = pstTrack->astEventList[u32EventIndex].fTimeStamp;
 
             /* Sends event */
-            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRIGGER, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+            orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRIGGER, _pstCaller, _pstCaller, &stPayload);
           }
 
           /* Is over? */
@@ -623,7 +622,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             if(orxFLAG_TEST(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_LOOP))
             {
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, _pstCaller, _pstCaller, &stPayload);
 
               /* Resets track */
               pstTimeLine->astTrackList[i].u32NextEventIndex  = 0;
@@ -632,13 +631,13 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             else
             {
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, _pstCaller, _pstCaller, &stPayload);
 
               /* Removes its reference */
               pstTimeLine->astTrackList[i].pstTrack = orxNULL;
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstTimeLine->pstOwner, pstTimeLine->pstOwner, &stPayload);
+              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstCaller, _pstCaller, &stPayload);
 
               /* Deletes it */
               orxTimeLine_DeleteTrack(pstTrack);
@@ -791,16 +790,14 @@ void orxFASTCALL orxTimeLine_Exit()
 }
 
 /** Creates an empty TimeLine
- * @param[in]   _pstOwner                       TimeLine's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxTIMELINE / orxNULL
  */
-orxTIMELINE *orxFASTCALL orxTimeLine_Create(const orxSTRUCTURE *_pstOwner)
+orxTIMELINE *orxFASTCALL orxTimeLine_Create()
 {
   orxTIMELINE *pstResult;
 
   /* Checks */
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstOwner);
 
   /* Creates TimeLine */
   pstResult = orxTIMELINE(orxStructure_Create(orxSTRUCTURE_ID_TIMELINE));
@@ -808,9 +805,6 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create(const orxSTRUCTURE *_pstOwner)
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Stores owner */
-    pstResult->pstOwner = _pstOwner;
-
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTIMELINE_KU32_FLAG_ENABLED, orxTIMELINE_KU32_MASK_ALL);
 
@@ -846,7 +840,11 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
   if(orxStructure_GetRefCounter(_pstTimeLine) == 0)
   {
     orxTIMELINE_EVENT_PAYLOAD stPayload;
+    orxSTRUCTURE             *pstOwner;
     orxU32                    i;
+
+    /* Gets owner */
+    pstOwner = orxStructure_GetOwner(_pstTimeLine);
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
@@ -870,7 +868,7 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
         stPayload.zTrackName = pstTrack->zReference;
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstTimeLine->pstOwner, _pstTimeLine->pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Deletes it */
         orxTimeLine_DeleteTrack(pstTrack);
@@ -888,25 +886,6 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
 
   /* Done! */
   return eResult;
-}
-
-/** Gets a TimeLine owner
- * @param[in]   _pstTimeLine          Concerned TimeLine
- * @return      orxSTRUCTURE / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxTimeLine_GetOwner(const orxTIMELINE *_pstTimeLine)
-{
-  orxSTRUCTURE *pstResult;
-
-  /* Checks */
-  orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTimeLine);
-
-  /* Updates result */
-  pstResult = orxSTRUCTURE(_pstTimeLine->pstOwner);
-
-  /* Done! */
-  return pstResult;
 }
 
 /** Enables/disables a TimeLine
@@ -998,7 +977,11 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     {
       orxTIMELINE_EVENT_PAYLOAD stPayload;
       orxBOOL                   bImmediate;
+      orxSTRUCTURE             *pstOwner;
       orxU32                    u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+
+      /* Gets owner */
+      pstOwner = orxStructure_GetOwner(_pstTimeLine);
 
       /* Pushes its config section */
       orxConfig_PushSection(pstTrack->zReference);
@@ -1028,7 +1011,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
       stPayload.zTrackName  = pstTrack->zReference;
 
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_ADD, _pstTimeLine->pstOwner, _pstTimeLine->pstOwner, &stPayload);
+      orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_ADD, pstOwner, pstOwner, &stPayload);
 
       /* Updates timeline flags */
       orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY, orxTIMELINE_KU32_FLAG_NONE);
@@ -1037,7 +1020,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
       if(bImmediate != orxFALSE)
       {
         /* Updates it */
-        orxTimeLine_Update(orxSTRUCTURE(_pstTimeLine), _pstTimeLine->pstOwner, orxNULL);
+        orxTimeLine_Update(orxSTRUCTURE(_pstTimeLine), pstOwner, orxNULL);
       }
 
       /* Updates result */
@@ -1061,12 +1044,16 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
  */
 orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLine, const orxSTRING _zTrackID)
 {
-  orxU32    u32Index, u32TrackID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxU32        u32Index, u32TrackID;
+  orxSTRUCTURE *pstOwner;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
+
+  /* Gets owner */
+  pstOwner = orxStructure_GetOwner(_pstTimeLine);
 
   /* Gets track ID */
   u32TrackID = orxString_ToCRC(_zTrackID);
@@ -1095,7 +1082,7 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
         stPayload.zTrackName  = pstTrack->zReference;
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstTimeLine->pstOwner, _pstTimeLine->pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Deletes it */
         orxTimeLine_DeleteTrack(pstTrack);

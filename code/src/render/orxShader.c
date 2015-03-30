@@ -786,10 +786,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
   /* Checks */
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShader);
-  if(_pstOwner != orxNULL)
-  {
-    orxSTRUCTURE_ASSERT(_pstOwner);
-  }
+  orxSTRUCTURE_ASSERT(_pstOwner);
 
   /* Valid & enabled? */
   if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
@@ -804,40 +801,36 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
       orxSHADER_PARAM_VALUE  *pstParamValue;
       orxFLOAT                fTime = orxFLOAT_0;
 
-      /* Has owner? */
-      if(_pstOwner != orxNULL)
+      /* Depending on its type */
+      switch(orxStructure_GetID(_pstOwner))
       {
-        /* Depending on its type */
-        switch(orxStructure_GetID(_pstOwner))
+        case orxSTRUCTURE_ID_OBJECT:
         {
-          case orxSTRUCTURE_ID_OBJECT:
-          {
-            orxOBJECT *pstOwner;
+          orxOBJECT *pstOwner;
 
-            /* Gets cast owner */
-            pstOwner = orxOBJECT(_pstOwner);
+          /* Gets cast owner */
+          pstOwner = orxOBJECT(_pstOwner);
 
-            /* Gets its working texture */
-            pstOwnerTexture = orxObject_GetWorkingTexture(pstOwner);
+          /* Gets its working texture */
+          pstOwnerTexture = orxObject_GetWorkingTexture(pstOwner);
 
-            /* Gets its active time */
-            fTime = orxObject_GetActiveTime(pstOwner);
+          /* Gets its active time */
+          fTime = orxObject_GetActiveTime(pstOwner);
 
-            break;
-          }
+          break;
+        }
 
-          case orxSTRUCTURE_ID_VIEWPORT:
-          {
-            /* Updates owner texture */
-            orxViewport_GetTextureList(orxVIEWPORT(_pstOwner), 1, &pstOwnerTexture);
+        case orxSTRUCTURE_ID_VIEWPORT:
+        {
+          /* Updates owner texture */
+          orxViewport_GetTextureList(orxVIEWPORT(_pstOwner), 1, &pstOwnerTexture);
 
-            break;
-          }
+          break;
+        }
 
-          default:
-          {
-            break;
-          }
+        default:
+        {
+          break;
         }
       }
 

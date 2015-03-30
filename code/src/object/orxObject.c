@@ -6851,7 +6851,7 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
     if(pstTimeLine == orxNULL)
     {
       /* Creates one */
-      pstTimeLine = orxTimeLine_Create(orxSTRUCTURE(_pstObject));
+      pstTimeLine = orxTimeLine_Create();
 
       /* Valid? */
       if(pstTimeLine != orxNULL)

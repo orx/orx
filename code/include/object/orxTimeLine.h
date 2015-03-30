@@ -96,22 +96,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_Init();
 extern orxDLLAPI void orxFASTCALL               orxTimeLine_Exit();
 
 /** Creates an empty TimeLine
- * @param[in]   _pstOwner                       TimeLine's owner used for event callbacks (usually an orxOBJECT)
  * @return orxTIMELINE / orxNULL
  */
-extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_Create();
 
 /** Deletes a TimeLine
  * @param[in] _pstTimeLine            Concerned TimeLine
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_Delete(orxTIMELINE *_pstTimeLine);
-
-/** Gets a TimeLine owner
- * @param[in]   _pstTimeLine          Concerned TimeLine
- * @return      orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxTimeLine_GetOwner(const orxTIMELINE *_pstTimeLine);
 
 /** Enables/disables a TimeLine
  * @param[in]   _pstTimeLine          Concerned TimeLine
