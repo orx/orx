@@ -121,12 +121,6 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_TestAllDefFlags(const orxB
 extern orxDLLAPI orxU32 orxFASTCALL           orxBody_GetDefFlags(const orxBODY *_pstBody, orxU32 _u32Mask);
 
 
-/** Gets a body owner
- * @param[in]   _pstBody        Concerned body
- * @return      orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(const orxBODY *_pstBody);
-
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pstBodyPartDef Body part definition

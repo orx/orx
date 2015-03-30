@@ -6111,7 +6111,7 @@ orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvStart, const orxVEC
   if(pstRaycastResult != orxNULL)
   {
     /* Updates result */
-    pstResult = orxOBJECT(orxBody_GetOwner(pstRaycastResult));
+    pstResult = orxOBJECT(orxStructure_GetOwner(pstRaycastResult));
   }
 
   /* Done! */
