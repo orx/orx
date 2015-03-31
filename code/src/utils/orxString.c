@@ -191,14 +191,14 @@ void orxFASTCALL orxString_Exit()
   /* Initialized? */
   if(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY)
   {
-    orxU32    u32Key;
+    orxU64    u64Key;
     orxHANDLE hIterator;
     orxSTRING zString;
 
     /* For all string IDs */
-    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&zString);
+    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&zString);
         hIterator != orxHANDLE_UNDEFINED;
-        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, &u32Key, (void **)&zString))
+        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, &u64Key, (void **)&zString))
     {
       /* Deletes its string */
       orxString_Delete(zString);

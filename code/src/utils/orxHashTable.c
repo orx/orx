@@ -44,9 +44,9 @@
 /** Hash table cell definition.*/
 typedef struct __orxHASHTABLE_CELL_t
 {
-  orxU32                        u32Key;                       /**< Key element of a hash table : 4 */
-  void                         *pData;                        /**< Address of data : 8 */
-  struct __orxHASHTABLE_CELL_t *pstNext;                      /**< Next cell with the same index : 12 */
+  orxU64                        u64Key;                       /**< Key element of a hash table : 8 */
+  void                         *pData;                        /**< Address of data : 12 / 16 */
+  struct __orxHASHTABLE_CELL_t *pstNext;                      /**< Next cell with the same index : 16 / 20 */
 
 } orxHASHTABLE_CELL;
 
@@ -78,16 +78,16 @@ struct __orxHASHTABLE_t
 
 /** Find a row in a hash table.
  * @param[in] _pstHashTable The hash table where search.
- * @param[in] _u32Key Key to find.
+ * @param[in] _u64Key Key to find.
  * @return index associated to the given key.
  */
-static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
+static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable, orxU64 _u64Key)
 {
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Computes the hash index */
-  return(_u32Key & (_pstHashTable->u32Size - 1));
+  return((orxU32)_u64Key & (_pstHashTable->u32Size - 1));
 }
 
 /***************************************************************************
@@ -220,10 +220,10 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
  * @{ */
 /** Find an item in a hash table.
  * @param[in] _pstHashTable  The hash table where search.
- * @param[in] _u32Key      Key to find.
+ * @param[in] _u64Key      Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
-void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
+void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u64Key)
 {
   orxU32              u32Index;
   orxHASHTABLE_CELL  *pstCell = orxNULL;
@@ -235,11 +235,11 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Gets the index from the key */
-  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);
 
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
-      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
       pstCell = pstCell->pstNext);
 
   /* Profiles */
@@ -251,11 +251,11 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
 
 /** Set an item value.
  * @param[in] _pstHashTable The hash table where set.
- * @param[in] _u32Key      Key to assign.
+ * @param[in] _u64Key      Key to assign.
  * @param[in] _pData       Data to assign.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
+orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64Key, void *_pData)
 {
   orxU32              u32Index;
   orxHASHTABLE_CELL  *pstCell = orxNULL;
@@ -267,11 +267,11 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Gets the index from the key */
-  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);
 
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
-      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
       pstCell = pstCell->pstNext);
 
   /* Found ? */
@@ -289,7 +289,7 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
     if(pstCell != orxNULL)
     {
       /* Inits cell */
-      pstCell->u32Key   = _u32Key;
+      pstCell->u64Key   = _u64Key;
       pstCell->pData    = _pData;
       pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
@@ -311,11 +311,11 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32K
 
 /** Add an item value.
  * @param[in] _pstHashTable The hash table where set.
- * @param[in] _u32Key      Key to assign.
+ * @param[in] _u64Key      Key to assign.
  * @param[in] _pData       Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
-orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
+orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU64 _u64Key, void *_pData)
 {
   orxU32              u32Index;
   orxHASHTABLE_CELL  *pstCell;
@@ -329,11 +329,11 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   orxASSERT(_pData != orxNULL);
 
   /* Gets the index from the key */
-  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);
 
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
-      (pstCell != orxNULL) && (pstCell->u32Key != _u32Key);
+      (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
       pstCell = pstCell->pstNext);
 
   /* Not found? */
@@ -346,7 +346,7 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
     if(pstCell != orxNULL)
     {
       /* Inits cell */
-      pstCell->u32Key   = _u32Key;
+      pstCell->u64Key   = _u64Key;
       pstCell->pData    = _pData;
       pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
@@ -370,10 +370,10 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
 
 /** Remove an item.
  * @param[in] _pstHashTable  The hash table where remove.
- * @param[in] _u32Key      Key to remove.
+ * @param[in] _u64Key      Key to remove.
  * @return Returns the status of the operation.
  */
-orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
+orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU64 _u64Key)
 {
   orxU32 u32Index;                        /* Hash table index */
   orxHASHTABLE_CELL *pstCell;             /* Cell used to traverse */
@@ -386,14 +386,14 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Get the index from the key */
-  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);
 
   pstCell = _pstHashTable->apstCell[u32Index];
 
   /* Is the first key is the key to remove ? */
   if(pstCell != orxNULL)
   {
-    if(pstCell->u32Key == _u32Key)
+    if(pstCell->u64Key == _u64Key)
     {
       /* The first cell has to be removed */
       _pstHashTable->apstCell[u32Index] = pstCell->pstNext;
@@ -405,7 +405,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
     else
     {
       /* Traverse to find the key */
-      while(pstCell->pstNext != orxNULL && pstCell->pstNext->u32Key != _u32Key)
+      while(pstCell->pstNext != orxNULL && pstCell->pstNext->u64Key != _u64Key)
       {
         /* Try with next cell */
         pstCell = pstCell->pstNext;
@@ -450,11 +450,11 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
 /** Gets the next item in the hashtable and returns an iterator for next search
  * @param[in]   _pstHashTable   Concerned HashTable
  * @param[in]   _hIterator      Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
- * @param[out]  _pu32Key        Current element key
+ * @param[out]  _pu64Key        Current element key
  * @param[out]  _ppData         Current element data
  * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
  */
-orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
+orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU64 *_pu64Key, void **_ppData)
 {
   orxHASHTABLE_CELL  *pstCell;
   orxU32              u32Index;
@@ -470,7 +470,7 @@ orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, or
     pstCell = (orxHASHTABLE_CELL *)_hIterator;
 
     /* Gets start index */
-    u32Index = orxHashTable_FindIndex(_pstHashTable, pstCell->u32Key) + 1;
+    u32Index = orxHashTable_FindIndex(_pstHashTable, pstCell->u64Key) + 1;
 
     /* Updates temporary result */
     pstCell = pstCell->pstNext;
@@ -489,10 +489,10 @@ orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, or
   if(pstCell != orxNULL)
   {
     /* Asked for key? */
-    if(_pu32Key != orxNULL)
+    if(_pu64Key != orxNULL)
     {
       /* Updates it */
-      *_pu32Key = pstCell->u32Key;
+      *_pu64Key = pstCell->u64Key;
     }
 
     /* Asked for data? */
@@ -537,11 +537,12 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
     /* Valid? */
     if(astWorkBuffer != orxNULL)
     {
-      orxU32              u32KeyIndex, u32BufferIndex, i;
+      orxU64              u64KeyIndex;
+      orxU32              u32BufferIndex, i;
       orxHASHTABLE_CELL  *pstCell;
 
       /* For all cells */
-      for(i = 0, u32KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++, u32BufferIndex++)
+      for(i = 0, u64KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++, u32BufferIndex++)
       {
         /* Linked cell? */
         if((pstCell != orxNULL) && (pstCell->pstNext != orxNULL))
@@ -552,7 +553,7 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
         else
         {
           /* Finds next head cell */
-          do{pstCell = _pstHashTable->apstCell[u32KeyIndex++];} while(pstCell == orxNULL);
+          do{pstCell = _pstHashTable->apstCell[u64KeyIndex++];} while(pstCell == orxNULL);
         }
 
         /* Stores it */
@@ -586,7 +587,7 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
         else
         {
           /* Updates head pointer */
-          _pstHashTable->apstCell[orxHashTable_FindIndex(_pstHashTable, pstCell->u32Key)] = pstCell;
+          _pstHashTable->apstCell[orxHashTable_FindIndex(_pstHashTable, pstCell->u64Key)] = pstCell;
         }
       }
 

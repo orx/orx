@@ -530,13 +530,13 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
     else if(pstPayload->u32GroupID == orxString_ToCRC(orxSOUND_KZ_RESOURCE_GROUP))
     {
       orxHANDLE         hIterator;
-      orxU32            u32Key;
+      orxU64            u64Key;
       orxSOUND_SAMPLE  *pstSample;
 
       /* Looks for matching sample */
-      for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, &u32Key, (void **)&pstSample);
+      for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstSample);
           (hIterator != orxHANDLE_UNDEFINED) && (pstSample->u32ID != pstPayload->u32NameID);
-          hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, &u32Key, (void **)&pstSample));
+          hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, &u64Key, (void **)&pstSample));
 
       /* Found? */
       if(hIterator != orxHANDLE_UNDEFINED)
