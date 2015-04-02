@@ -203,6 +203,50 @@ static orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(const void *_pStructure,
   return pstResult;
 }
 
+/** Gets structure ID string
+ * @param[in]   _eID                       Concerned ID
+ * @return      Corresponding literal string
+ */
+static orxINLINE const orxSTRING orxStructure_GetIDString(orxSTRUCTURE_ID _eID)
+{
+  const orxSTRING zResult;
+
+#define orxSTRUCTURE_DECLARE_ID_ENTRY(ID)    case orxSTRUCTURE_ID_##ID: zResult = #ID; break
+
+  /* Depending on ID */
+  switch(_eID)
+  {
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIMPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(BODY);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(CLOCK);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FRAME);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FXPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(GRAPHIC);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SHADERPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SOUNDPOINTER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SPAWNER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TIMELINE);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIM);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(ANIMSET);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(CAMERA);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FONT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(FX);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(OBJECT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SHADER);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(SOUND);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TEXT);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(TEXTURE);
+    orxSTRUCTURE_DECLARE_ID_ENTRY(VIEWPORT);
+
+    default: zResult = "INVALID STRUCTURE ID"; break;
+  }
+
+#undef orxSTRUCTURE_DECLARE_ID_ENTRY
+
+  /* Done! */
+  return zResult;
+}
+
 
 /** Structure module setup
  */
@@ -268,13 +312,6 @@ extern orxDLLAPI orxU32 orxFASTCALL                     orxStructure_GetCounter(
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Update(void *_pStructure, const void *_phCaller, const orxCLOCK_INFO *_pstClockInfo);
-
-
-/** Logs all user-generated active structures
- * @param[in]   _bVerbose       If orxTRUE, the whole owner hierarchy of active structures will be logged, otherwise only owner-less ones (ie. roots) will be logged
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_LogAll(orxBOOL _bVerbose);
 
 
 /** *** Structure storage accessors *** */

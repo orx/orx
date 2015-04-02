@@ -193,10 +193,11 @@ struct __orxBODY_t
   orxVECTOR               vScale;                                     /**< Scale : 68 */
   orxFLOAT                fAngularVelocity;                           /**< Angular velocity : 72 */
   orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 76 */
-  orxU32                  u32DefFlags;                                /**< Definition flags : 80 */
-  orxLINKLIST             stPartList;                                 /**< Part list : 92 */
-  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 104 */
-  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 116 */
+  const orxSTRING         zReference;                                 /**< Reference : 80 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 84 */
+  orxLINKLIST             stPartList;                                 /**< Part list : 96 */
+  orxLINKLIST             stSrcJointList;                             /**< Source joint list : 108 */
+  orxLINKLIST             stDstJointList;                             /**< Destination joint list : 120 */
 };
 
 /** Static structure
@@ -563,6 +564,12 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
         /* Sets it */
         orxBody_SetCustomGravity(pstResult, orxConfig_GetVector(orxBODY_KZ_CONFIG_CUSTOM_GRAVITY, &vGravity));
       }
+
+      /* Stores its reference key */
+      pstResult->zReference = orxConfig_GetCurrentSection();
+
+      /* Protects it */
+      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
     }
 
     /* Pops previous section */
@@ -635,6 +642,13 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
       orxPhysics_DeleteBody(_pstBody->pstData);
     }
 
+    /* Has reference? */
+    if(_pstBody->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstBody->zReference, orxFALSE);
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstBody);
   }
@@ -646,6 +660,25 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets body config name
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxBody_GetName(const orxBODY *_pstBody)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody);
+
+  /* Updates result */
+  zResult = (_pstBody->zReference != orxNULL) ? _pstBody->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
 
 /** Tests flags against body definition ones

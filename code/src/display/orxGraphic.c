@@ -111,16 +111,17 @@
  */
 struct __orxGRAPHIC_t
 {
-  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 32 */
-  orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
-  orxVECTOR     vPivot;                     /**< Pivot : 32 */
-  orxCOLOR      stColor;                    /**< Color : 48 */
-  orxFLOAT      fTop;                       /**< Top coordinate : 52 */
-  orxFLOAT      fLeft;                      /**< Left coordinate : 56 */
-  orxFLOAT      fWidth;                     /**< Width : 60 */
-  orxFLOAT      fHeight;                    /**< Height : 64 */
-  orxFLOAT      fRepeatX;                   /**< X-axis repeat counter : 68 */
-  orxFLOAT      fRepeatY;                   /**< Y-axis repeat counter : 72 */
+  orxSTRUCTURE    stStructure;              /**< Public structure, first structure member : 32 */
+  orxSTRUCTURE   *pstData;                  /**< Data structure : 20 */
+  orxVECTOR       vPivot;                   /**< Pivot : 32 */
+  orxCOLOR        stColor;                  /**< Color : 48 */
+  orxFLOAT        fTop;                     /**< Top coordinate : 52 */
+  orxFLOAT        fLeft;                    /**< Left coordinate : 56 */
+  orxFLOAT        fWidth;                   /**< Width : 60 */
+  orxFLOAT        fHeight;                  /**< Height : 64 */
+  orxFLOAT        fRepeatX;                 /**< X-axis repeat counter : 68 */
+  orxFLOAT        fRepeatY;                 /**< Y-axis repeat counter : 72 */
+  const orxSTRING zReference;               /**< Reference : 76 */
 };
 
 /** Static structure
@@ -715,6 +716,12 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
         }
 
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Protects it */
+        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags, orxGRAPHIC_KU32_FLAG_NONE);
       }
@@ -767,6 +774,13 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
     /* Cleans data */
     orxGraphic_SetData(_pstGraphic, orxNULL);
 
+    /* Has reference? */
+    if(_pstGraphic->zReference != orxNULL)
+    {
+      /* Unprotects it */
+      orxConfig_ProtectSection(_pstGraphic->zReference, orxFALSE);
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstGraphic);
   }
@@ -778,6 +792,25 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets graphic config name
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxGraphic_GetName(const orxGRAPHIC *_pstGraphic)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstGraphic);
+
+  /* Updates result */
+  zResult = (_pstGraphic->zReference != orxNULL) ? _pstGraphic->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
 
 /** Sets graphic data

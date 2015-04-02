@@ -98,6 +98,12 @@ extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 
+/** Gets body config name
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxBody_GetName(const orxBODY *_pstBody);
+
 
 /** Tests flags against body definition ones
  * @param[in]   _pstBody        Concerned body

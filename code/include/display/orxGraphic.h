@@ -101,16 +101,22 @@ extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
 extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create();
 
 /** Creates a graphic from config
- * @param[in]   _zConfigID            Config ID
+ * @param[in]   _zConfigID      Config ID
  * @ return orxGRAPHIC / orxNULL
  */
 extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a graphic
- * @param[in]   _pstGraphic       Graphic to delete
+ * @param[in]   _pstGraphic     Graphic to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Delete(orxGRAPHIC *_pstGraphic);
+
+/** Gets graphic config name
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxGraphic_GetName(const orxGRAPHIC *_pstGraphic);
 
 
 /** Sets graphic data
