@@ -128,6 +128,10 @@ Macros</h2></td></tr>
 <tr class="separator:ga85d75b8c9e37db787fac4910ba02462f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga28c87695a2a3cae32d0e2e1bcfa49ae0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#ga28c87695a2a3cae32d0e2e1bcfa49ae0">_orx_H_</a></td></tr>
 <tr class="separator:ga28c87695a2a3cae32d0e2e1bcfa49ae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac86a5d8eb1dff5f35f1e745f532716c0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="orx_8h.html#ac86a5d8eb1dff5f35f1e745f532716c0">orx_DECLARE_STRUCTURE_INFO</a>(ID, FN)&#160;&#160;&#160;{orxSTRUCTURE_ID_##ID, (orxSTRUCTURE_GETNAME)FN}</td></tr>
+<tr class="separator:ac86a5d8eb1dff5f35f1e745f532716c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28a5cae59c1c54fc41c431ff65d2521d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d">orx_MAX_NAME_LENGTH</a>&#160;&#160;&#160;20</td></tr>
+<tr class="separator:a28a5cae59c1c54fc41c431ff65d2521d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -135,6 +139,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga62230a89f7961eab406d0bbbb6acbf00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0558e5e4d1eb112a8033e5d95b60b226"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226">orx_Execute</a> (orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)</td></tr>
 <tr class="separator:ga0558e5e4d1eb112a8033e5d95b60b226"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae6277d966fb1c39a483162cd6824c2cd"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#gae6277d966fb1c39a483162cd6824c2cd">orx_LogAllStructures</a> ()</td></tr>
+<tr class="separator:gae6277d966fb1c39a483162cd6824c2cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga25f8974b9edb1f72d95af8c0ae4ce7d9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#ga25f8974b9edb1f72d95af8c0ae4ce7d9">orx_MainSetup</a> ()</td></tr>
 <tr class="separator:ga25f8974b9edb1f72d95af8c0ae4ce7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -149,7 +155,46 @@ Variables</h2></td></tr>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000042">Todo:</a></b></dt><dd></dd></dl>
 
 <p>Definition in file <a class="el" href="orx_8h_source.html">orx.h</a>.</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ac86a5d8eb1dff5f35f1e745f532716c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orx_DECLARE_STRUCTURE_INFO</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ID, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">FN&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;{orxSTRUCTURE_ID_##ID, (orxSTRUCTURE_GETNAME)FN}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a28a5cae59c1c54fc41c431ff65d2521d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orx_MAX_NAME_LENGTH&#160;&#160;&#160;20</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>
 Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>

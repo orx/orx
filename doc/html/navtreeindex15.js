@@ -1,5 +1,13 @@
 var NAVTREEINDEX15 =
 {
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bae2237bd5773ee1426e015f2081fce622":[3,0,0,5,2,5,12],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bae3db9144c2848aa99d311199c273c0fd":[3,0,0,5,2,5,37],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bae79ec666dd5f4eb5c29e86dd0e533587":[3,0,0,5,2,5,44],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94baea08642c866974b219296bf7e775261e":[3,0,0,5,2,5,4],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94baee9239f586033b6568a5b09e75aca756":[3,0,0,5,2,5,14],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94baefc99dd15523f76e28720936582c9d03":[3,0,0,5,2,5,54],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94baf0ea153ca6bc312273e0db9343459801":[3,0,0,5,2,5,58],
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94baf6a781bd670d3d0b93da4ca528080820":[3,0,0,5,2,5,31],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bafcf9751b1d0b2eec608ebfc7ae1e848e":[3,0,0,5,2,5,27],
 "orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bafd113b4b5996372b29d06cc8ef06926d":[3,0,0,5,2,5,22],
 "orx_joystick_8h_source.html":[3,0,0,5,2],
@@ -241,13 +249,5 @@ var NAVTREEINDEX15 =
 "orx_module_8h.html#ga6a492298081fa56cf9c382491c456998":[3,0,0,1,1,3],
 "orx_module_8h.html#ga6e4ea7c93ab0e7f7488b459dba3ac9e7":[3,0,0,1,1,2],
 "orx_module_8h.html#ga7a0361e51ff409dc42025c1019758d02":[3,0,0,1,1,9],
-"orx_module_8h.html#ga83fece8538c577b8a4a0801ee4573a86":[3,0,0,1,1,13],
-"orx_module_8h.html#ga91a59b4a84dcf9c880bbca8056828b99":[3,0,0,1,1,10],
-"orx_module_8h.html#gaaefc7ad879dc99480d598ba40341772b":[3,0,0,1,1,6],
-"orx_module_8h.html#gada33eee351097708b92f32d0c5972708":[3,0,0,1,1,0],
-"orx_module_8h.html#gadf41899d90b19ef9fc33dd7bc0c85296":[3,0,0,1,1,7],
-"orx_module_8h.html#gae6568b5f2c3ed7f4eb64ee81f76f9350":[3,0,0,1,1,5],
-"orx_module_8h.html#gaf44141f0bc45f319187952b4629b862c":[3,0,0,1,1,12],
-"orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a003f040f259a73981d9653237227c169":[3,0,0,1,1,0,12],
-"orx_module_8h.html#ggada33eee351097708b92f32d0c5972708a0dcac02f924f00d04f246747460f1286":[3,0,0,1,1,0,47]
+"orx_module_8h.html#ga83fece8538c577b8a4a0801ee4573a86":[3,0,0,1,1,13]
 };
