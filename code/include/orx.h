@@ -464,7 +464,7 @@ static orxINLINE orxSTATUS orx_LogAllStructures()
   /* Valid? */
   if(pstTable != orxNULL)
   {
-    orxCHAR acBuffer[1024] = {};
+    orxCHAR acBuffer[1024] = {0};
     orxU32  u32DebugFlags;
 
     /* Backups debug flags */
