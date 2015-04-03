@@ -203,6 +203,18 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
       {
         switch(pstJoystickEvent->u32KeyCode)
         {
+          case 19: // KEYCODE_DPAD_UP
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = -orxFLOAT_1;
+            break;
+          case 20: // KEYCODE_DPAD_DOWN
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orxFLOAT_1;
+            break;
+          case 21: // KEYCODE_DPAD_LEFT
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = -orxFLOAT_1;
+            break;
+          case 22: // KEYCODE_DPAD_RIGHT
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orxFLOAT_1;
+            break;
           case 96: // KEYCODE_BUTTON_A
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 1;
             break;
@@ -263,6 +275,14 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
       {
         switch(pstJoystickEvent->u32KeyCode)
         {
+          case 19: // KEYCODE_DPAD_UP
+          case 20: // KEYCODE_DPAD_DOWN
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orxFLOAT_0;
+            break;
+          case 21: // KEYCODE_DPAD_LEFT
+          case 22: // KEYCODE_DPAD_RIGHT
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orxFLOAT_0;
+            break;
           case 96: // KEYCODE_BUTTON_A
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 0;
             break;
@@ -318,17 +338,16 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
 
     case orxANDROID_EVENT_JOYSTICK_MOVE:
       s32DeviceIndex = getDeviceIndex(pstJoystickEvent->u32DeviceId);
+
       if(s32DeviceIndex != -1)
       {
         sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_X_1] = pstJoystickEvent->stAxisData.fX;
         sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_Y_1] = pstJoystickEvent->stAxisData.fY;
         sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_Z_1] = pstJoystickEvent->stAxisData.fZ;
         sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_R_1] = pstJoystickEvent->stAxisData.fRZ;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = pstJoystickEvent->stAxisData.fU;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = pstJoystickEvent->stAxisData.fV;
-
-        // TODO fHAT_X
-        // TODO fHAT_Y
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = pstJoystickEvent->stAxisData.fHAT_X;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = pstJoystickEvent->stAxisData.fHAT_Y;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_POV_1] = pstJoystickEvent->stAxisData.fRTRIGGER != orxFLOAT_0 ? pstJoystickEvent->stAxisData.fRTRIGGER : -pstJoystickEvent->stAxisData.fLTRIGGER;
       }
       else
       {

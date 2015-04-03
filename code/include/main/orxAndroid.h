@@ -118,10 +118,10 @@ typedef struct __orxANDROID_AXIS_DATA_t
       orxFLOAT fY;
       orxFLOAT fZ;
       orxFLOAT fRZ;
-      orxFLOAT fU;
-      orxFLOAT fV;
       orxFLOAT fHAT_X;
       orxFLOAT fHAT_Y;
+      orxFLOAT fRTRIGGER;
+      orxFLOAT fLTRIGGER;
     };
 
     orxFLOAT afValues[8];
