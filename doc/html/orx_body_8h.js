@@ -25,6 +25,7 @@ var orx_body_8h =
     [ "orxBody_GetLinearDamping", "orx_body_8h.html#ga74e07998f3b1303b4592372d8e306b5a", null ],
     [ "orxBody_GetMass", "orx_body_8h.html#ga9382982502a79dd94490893ac1326b00", null ],
     [ "orxBody_GetMassCenter", "orx_body_8h.html#ga7968024ef3058cdbcc5e9ba863d5b69b", null ],
+    [ "orxBody_GetName", "orx_body_8h.html#ga3a095d17e8ae2ecae66e5fed9a4c4994", null ],
     [ "orxBody_GetNextJoint", "orx_body_8h.html#ga6fd50b5f766ed0b046270e174ad4fd0f", null ],
     [ "orxBody_GetNextPart", "orx_body_8h.html#gae2d0e00dc1fb881d37c2dcd1ab07d3cb", null ],
     [ "orxBody_GetPartBody", "orx_body_8h.html#ga94e258979b219f6edced5cc742c79d5f", null ],

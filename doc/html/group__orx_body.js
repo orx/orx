@@ -25,6 +25,7 @@ var group__orx_body =
     [ "orxBody_GetLinearDamping", "group__orx_body.html#ga74e07998f3b1303b4592372d8e306b5a", null ],
     [ "orxBody_GetMass", "group__orx_body.html#ga9382982502a79dd94490893ac1326b00", null ],
     [ "orxBody_GetMassCenter", "group__orx_body.html#ga7968024ef3058cdbcc5e9ba863d5b69b", null ],
+    [ "orxBody_GetName", "group__orx_body.html#ga3a095d17e8ae2ecae66e5fed9a4c4994", null ],
     [ "orxBody_GetNextJoint", "group__orx_body.html#ga6fd50b5f766ed0b046270e174ad4fd0f", null ],
     [ "orxBody_GetNextPart", "group__orx_body.html#gae2d0e00dc1fb881d37c2dcd1ab07d3cb", null ],
     [ "orxBody_GetPartBody", "group__orx_body.html#ga94e258979b219f6edced5cc742c79d5f", null ],

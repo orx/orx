@@ -25,6 +25,7 @@ var orx_graphic_8h =
     [ "orxGraphic_GetColor", "orx_graphic_8h.html#ga4d14fe80ec6bab2d9aede05eb94fd4ac", null ],
     [ "orxGraphic_GetData", "orx_graphic_8h.html#gaf2bf0a43dfcd07dc7294e46d29c70894", null ],
     [ "orxGraphic_GetFlip", "orx_graphic_8h.html#ga49707d128385388a046065c6f390edc6", null ],
+    [ "orxGraphic_GetName", "orx_graphic_8h.html#gaa73253e08ae47e6870457faf9a1c9bf0", null ],
     [ "orxGraphic_GetOrigin", "orx_graphic_8h.html#ga73fdf1dabd67f298501141c0f87103d4", null ],
     [ "orxGraphic_GetPivot", "orx_graphic_8h.html#gac78ee4e14e603a5c36f9ebb1eb536317", null ],
     [ "orxGraphic_GetRepeat", "orx_graphic_8h.html#gaa3963fa7de80ff1321217fc253f740ec", null ],
