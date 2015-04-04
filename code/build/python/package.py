@@ -197,6 +197,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/libwebp/include',                                'dst': None},
     {'src': '../extern/libwebp/lib/ios',                                'dst': None},
+    {'src': '../extern/stb_image',                                      'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None},
     {'src': 'build/ios/xcode/orx-ios.xcodeproj',                        'dst': None},
     {'src': 'demo/iOS',                                                 'dst': None},
@@ -447,7 +448,7 @@ platforminfolist = {
         'fileinfolist':     androidnativefileinfolist,
         'folderinfolist':   androidnativefolderinfolist
     },
-    
+
     'doxygen': {
         'foldername':       'doc',
         'filename':         'doc',
