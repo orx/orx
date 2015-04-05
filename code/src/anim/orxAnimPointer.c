@@ -746,7 +746,7 @@ orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimP
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetTargetAnimID(const orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32Anim = orxU32_UNDEFINED;
 
