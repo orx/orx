@@ -791,93 +791,114 @@ static int orxDisplay_GLFW_EOFSTBICallback(void *_hResource)
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pContext)
 {
-  orxDISPLAY_EVENT_PAYLOAD  stPayload;
-  orxDISPLAY_LOAD_INFO     *pstInfo;
-  orxU32                    i;
-  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+  orxDISPLAY_LOAD_INFO *pstInfo;
+  orxSTATUS             eResult = orxSTATUS_SUCCESS;
 
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
 
-  /* Inits bitmap */
-  pstInfo->pstBitmap->fWidth         = orxU2F(pstInfo->uiWidth);
-  pstInfo->pstBitmap->fHeight        = orxU2F(pstInfo->uiHeight);
-  pstInfo->pstBitmap->u32RealWidth   = (orxU32)pstInfo->uiRealWidth;
-  pstInfo->pstBitmap->u32RealHeight  = (orxU32)pstInfo->uiRealHeight;
-  pstInfo->pstBitmap->u32Depth       = 32;
-  pstInfo->pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealWidth);
-  pstInfo->pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealHeight);
-  pstInfo->pstBitmap->u32DataSize    = pstInfo->pstBitmap->u32RealWidth * pstInfo->pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
-  orxVector_Copy(&(pstInfo->pstBitmap->stClip.vTL), &orxVECTOR_0);
-  orxVector_Set(&(pstInfo->pstBitmap->stClip.vBR), pstInfo->pstBitmap->fWidth, pstInfo->pstBitmap->fHeight, orxFLOAT_0);
-
-  /* Tracks video memory */
-  orxMEMORY_TRACK(VIDEO, pstInfo->pstBitmap->u32DataSize, orxTRUE);
-
-  /* Creates new texture */
-  glGenTextures(1, &(pstInfo->pstBitmap->uiTexture));
-  glASSERT();
-  glBindTexture(GL_TEXTURE_2D, pstInfo->pstBitmap->uiTexture);
-  glASSERT();
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pstInfo->pu8ImageBuffer);
-  glASSERT();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glASSERT();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glASSERT();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-  glASSERT();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
-  glASSERT();
-
-  /* Restores previous texture */
-  glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-  glASSERT();
-
-  /* For all bound bitmaps */
-  for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
+  /* Hasn't exited yet? */
+  if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Is decompressed bitmap? */
-    if(sstDisplay.apstBoundBitmapList[i] == pstInfo->pstBitmap)
+    orxDISPLAY_EVENT_PAYLOAD  stPayload;
+    orxU32                    i;
+
+    /* Inits bitmap */
+    pstInfo->pstBitmap->fWidth         = orxU2F(pstInfo->uiWidth);
+    pstInfo->pstBitmap->fHeight        = orxU2F(pstInfo->uiHeight);
+    pstInfo->pstBitmap->u32RealWidth   = (orxU32)pstInfo->uiRealWidth;
+    pstInfo->pstBitmap->u32RealHeight  = (orxU32)pstInfo->uiRealHeight;
+    pstInfo->pstBitmap->u32Depth       = 32;
+    pstInfo->pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealWidth);
+    pstInfo->pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealHeight);
+    pstInfo->pstBitmap->u32DataSize    = pstInfo->pstBitmap->u32RealWidth * pstInfo->pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+    orxVector_Copy(&(pstInfo->pstBitmap->stClip.vTL), &orxVECTOR_0);
+    orxVector_Set(&(pstInfo->pstBitmap->stClip.vBR), pstInfo->pstBitmap->fWidth, pstInfo->pstBitmap->fHeight, orxFLOAT_0);
+
+    /* Tracks video memory */
+    orxMEMORY_TRACK(VIDEO, pstInfo->pstBitmap->u32DataSize, orxTRUE);
+
+    /* Creates new texture */
+    glGenTextures(1, &(pstInfo->pstBitmap->uiTexture));
+    glASSERT();
+    glBindTexture(GL_TEXTURE_2D, pstInfo->pstBitmap->uiTexture);
+    glASSERT();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pstInfo->pu8ImageBuffer);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+
+    /* Restores previous texture */
+    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+    glASSERT();
+
+    /* For all bound bitmaps */
+    for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
     {
-      /* Resets it */
-      sstDisplay.apstBoundBitmapList[i] = orxNULL;
-      sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+      /* Is decompressed bitmap? */
+      if(sstDisplay.apstBoundBitmapList[i] == pstInfo->pstBitmap)
+      {
+        /* Resets it */
+        sstDisplay.apstBoundBitmapList[i] = orxNULL;
+        sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
+      }
     }
-  }
 
-  /* Frees image buffer */
-  if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
+    /* Frees image buffer */
+    if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
+    {
+      orxMemory_Free(pstInfo->pu8ImageBuffer);
+    }
+    pstInfo->pu8ImageBuffer = orxNULL;
+
+    /* Frees source */
+    stbi_image_free(pstInfo->pu8ImageSource);
+    pstInfo->pu8ImageSource = orxNULL;
+
+    /* Inits payload */
+    stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
+    stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+    stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
+
+    /* Clears loading flag */
+    orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+    orxMEMORY_BARRIER();
+
+    /* Asked for deletion? */
+    if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
+    {
+      /* Deletes it */
+      orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
+    }
+
+    /* Frees load info */
+    orxMemory_Free(pstInfo);
+  }
+  else
   {
-    orxMemory_Free(pstInfo->pu8ImageBuffer);
+    /* Frees image buffer */
+    if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
+    {
+      orxMemory_Free(pstInfo->pu8ImageBuffer);
+    }
+    pstInfo->pu8ImageBuffer = orxNULL;
+
+    /* Frees source */
+    stbi_image_free(pstInfo->pu8ImageSource);
+    pstInfo->pu8ImageSource = orxNULL;
+
+    /* Frees load info */
+    orxMemory_Free(pstInfo);
   }
-  pstInfo->pu8ImageBuffer = orxNULL;
-
-  /* Frees source */
-  stbi_image_free(pstInfo->pu8ImageSource);
-  pstInfo->pu8ImageSource = orxNULL;
-
-  /* Inits payload */
-  stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
-  stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
-  stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
-
-  /* Sends event */
-  orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
-
-  /* Clears loading flag */
-  orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
-  orxMEMORY_BARRIER();
-
-  /* Asked for deletion? */
-  if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
-  {
-    /* Deletes it */
-    orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
-  }
-
-  /* Frees load info */
-  orxMemory_Free(pstInfo);
 
   /* Done! */
   return eResult;
@@ -886,8 +907,6 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
 {
   orxDISPLAY_LOAD_INFO *pstInfo;
-  unsigned char        *pu8ImageData;
-  GLuint                uiBytesPerPixel;
   orxSTATUS             eResult;
 
   /* Profiles */
@@ -896,77 +915,96 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
   /* Gets load info */
   pstInfo = (orxDISPLAY_LOAD_INFO *)_pContext;
 
-  /* Loads image */
-  pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
-
-  /* Valid? */
-  if(pu8ImageData != NULL)
+  /* Hasn't exited yet? */
+  if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Has NPOT texture support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-    {
-      /* Uses image buffer */
-      pstInfo->pu8ImageBuffer = pu8ImageData;
+    unsigned char  *pu8ImageData;
+    GLuint          uiBytesPerPixel;
 
-      /* Gets real size */
-      pstInfo->uiRealWidth  = pstInfo->uiWidth;
-      pstInfo->uiRealHeight = pstInfo->uiHeight;
+    /* Loads image */
+    pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+
+    /* Valid? */
+    if(pu8ImageData != NULL)
+    {
+      /* Has NPOT texture support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+      {
+        /* Uses image buffer */
+        pstInfo->pu8ImageBuffer = pu8ImageData;
+
+        /* Gets real size */
+        pstInfo->uiRealWidth  = pstInfo->uiWidth;
+        pstInfo->uiRealHeight = pstInfo->uiHeight;
+      }
+      else
+      {
+        GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
+
+        /* Gets real size */
+        pstInfo->uiRealWidth  = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiWidth);
+        pstInfo->uiRealHeight = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiHeight);
+
+        /* Allocates buffer */
+        pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+
+        /* Checks */
+        orxASSERT(pstInfo->pu8ImageBuffer != orxNULL);
+
+        /* Gets line sizes */
+        uiLineSize      = pstInfo->uiWidth * 4 * sizeof(orxU8);
+        uiRealLineSize  = pstInfo->uiRealWidth * 4 * sizeof(orxU8);
+
+        /* Clears padding */
+        orxMemory_Zero(pstInfo->pu8ImageBuffer, uiRealLineSize * (pstInfo->uiRealHeight - pstInfo->uiHeight));
+
+        /* For all lines */
+        for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
+            i < pstInfo->uiHeight;
+            i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
+        {
+          /* Copies data */
+          orxMemory_Copy(pstInfo->pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
+
+          /* Adds padding */
+          orxMemory_Zero(pstInfo->pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+        }
+      }
+
+      /* Frees original source from resource */
+      orxMemory_Free(pstInfo->pu8ImageSource);
+
+      /* Stores uncompressed data as new source */
+      pstInfo->pu8ImageSource = pu8ImageData;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
-      GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
-
-      /* Gets real size */
-      pstInfo->uiRealWidth  = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiWidth);
-      pstInfo->uiRealHeight = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiHeight);
-
-      /* Allocates buffer */
-      pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
-
-      /* Checks */
-      orxASSERT(pstInfo->pu8ImageBuffer != orxNULL);
-
-      /* Gets line sizes */
-      uiLineSize      = pstInfo->uiWidth * 4 * sizeof(orxU8);
-      uiRealLineSize  = pstInfo->uiRealWidth * 4 * sizeof(orxU8);
-
-      /* Clears padding */
-      orxMemory_Zero(pstInfo->pu8ImageBuffer, uiRealLineSize * (pstInfo->uiRealHeight - pstInfo->uiHeight));
-
-      /* For all lines */
-      for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
-          i < pstInfo->uiHeight;
-          i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
+      /* Asynchronous call? */
+      if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
       {
-        /* Copies data */
-        orxMemory_Copy(pstInfo->pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
-
-        /* Adds padding */
-        orxMemory_Zero(pstInfo->pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
       }
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+
+      /* Frees original source from resource */
+      orxMemory_Free(pstInfo->pu8ImageSource);
+      pstInfo->pu8ImageSource = orxNULL;
+
+      /* Frees load info */
+      orxMemory_Free(pstInfo);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
-
-    /* Frees original source from resource */
-    orxMemory_Free(pstInfo->pu8ImageSource);
-
-    /* Stores uncompressed data as new source */
-    pstInfo->pu8ImageSource = pu8ImageData;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
-    /* Asynchronous call? */
-    if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
-    }
-
-    /* Clears loading flag */
-    orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
-
     /* Frees original source from resource */
     orxMemory_Free(pstInfo->pu8ImageSource);
     pstInfo->pu8ImageSource = orxNULL;
