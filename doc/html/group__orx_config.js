@@ -1,6 +1,7 @@
 var group__orx_config =
 [
     [ "orxCONFIG_KZ_RESOURCE_GROUP", "group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733", null ],
+    [ "orxCONFIG_BOOTSTRAP_FUNCTION", "group__orx_config.html#gad2079c5205e7d0ef04e34a7a6db3331a", null ],
     [ "orxCONFIG_SAVE_FUNCTION", "group__orx_config.html#ga7e6115a8a97bcce5c51485a75445d52a", null ],
     [ "orxCONFIG_EVENT", "group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],
@@ -59,6 +60,7 @@ var group__orx_config =
     [ "orxConfig_SelectSection", "group__orx_config.html#gae7895ee64c94af8fa264c1e00e95833b", null ],
     [ "orxConfig_SetBaseName", "group__orx_config.html#ga6e2aadd4477e35e776ad8e85b836ff08", null ],
     [ "orxConfig_SetBool", "group__orx_config.html#ga937507317c0d6fb4b2f37fe854c384e0", null ],
+    [ "orxConfig_SetBootstrap", "group__orx_config.html#ga4a7f98ee9e9c845f7eb998ea7263f508", null ],
     [ "orxConfig_SetDefaultParent", "group__orx_config.html#ga9575d67167165e9d10357a2e692cb847", null ],
     [ "orxConfig_SetEncryptionKey", "group__orx_config.html#ga2e4004560e7f01598757abd390b89220", null ],
     [ "orxConfig_SetFloat", "group__orx_config.html#gae177467bb1383c1f442f77107a6858d6", null ],

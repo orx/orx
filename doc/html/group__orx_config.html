@@ -119,6 +119,8 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:gad2079c5205e7d0ef04e34a7a6db3331a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gad2079c5205e7d0ef04e34a7a6db3331a">orxCONFIG_BOOTSTRAP_FUNCTION</a> )()</td></tr>
+<tr class="separator:gad2079c5205e7d0ef04e34a7a6db3331a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7e6115a8a97bcce5c51485a75445d52a"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7e6115a8a97bcce5c51485a75445d52a">orxCONFIG_SAVE_FUNCTION</a> )(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)</td></tr>
 <tr class="separator:ga7e6115a8a97bcce5c51485a75445d52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -247,6 +249,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga6e2aadd4477e35e776ad8e85b836ff08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga937507317c0d6fb4b2f37fe854c384e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga937507317c0d6fb4b2f37fe854c384e0">orxConfig_SetBool</a> (const orxSTRING _zKey, orxBOOL _bValue)</td></tr>
 <tr class="separator:ga937507317c0d6fb4b2f37fe854c384e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4a7f98ee9e9c845f7eb998ea7263f508"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga4a7f98ee9e9c845f7eb998ea7263f508">orxConfig_SetBootstrap</a> (const <a class="el" href="group__orx_config.html#gad2079c5205e7d0ef04e34a7a6db3331a">orxCONFIG_BOOTSTRAP_FUNCTION</a> _pfnBootstrap)</td></tr>
+<tr class="separator:ga4a7f98ee9e9c845f7eb998ea7263f508"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9575d67167165e9d10357a2e692cb847"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9575d67167165e9d10357a2e692cb847">orxConfig_SetDefaultParent</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga9575d67167165e9d10357a2e692cb847"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2e4004560e7f01598757abd390b89220"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga2e4004560e7f01598757abd390b89220">orxConfig_SetEncryptionKey</a> (const orxSTRING _zEncryptionKey)</td></tr>
@@ -293,6 +297,20 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="gad2079c5205e7d0ef04e34a7a6db3331a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * orxCONFIG_BOOTSTRAP_FUNCTION)()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00074">74</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga7e6115a8a97bcce5c51485a75445d52a"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1638,6 +1656,30 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_bValue</td><td>Value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga4a7f98ee9e9c845f7eb998ea7263f508"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_SetBootstrap </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_config.html#gad2079c5205e7d0ef04e34a7a6db3331a">orxCONFIG_BOOTSTRAP_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnBootstrap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded. The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnBootstrap</td><td>Bootstrap function that will get called at module init, before loading any config file. If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen </td></tr>
   </table>
   </dd>
 </dl>

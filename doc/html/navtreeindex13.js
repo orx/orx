@@ -1,5 +1,9 @@
 var NAVTREEINDEX13 =
 {
+"orx_display_8h.html#ga3a2b947697a399f021b75c94d7cfd1b6":[3,0,0,4,0,39],
+"orx_display_8h.html#ga3c706a4ae3c73bebdedb83422d64c565":[3,0,0,4,0,32],
+"orx_display_8h.html#ga3cd69c245850b123fa561396ee82eb3a":[3,0,0,4,0,6],
+"orx_display_8h.html#ga3daedd0e0aa7fcc50fb73fbb819cea6f":[3,0,0,4,0,37],
 "orx_display_8h.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3":[3,0,0,4,0,50],
 "orx_display_8h.html#ga40588b372dcab4f3f4f62815e5e0fa18":[3,0,0,4,0,34],
 "orx_display_8h.html#ga44134e96cc6e61f388f0e1e64a97d6ba":[3,0,0,4,0,33],
@@ -245,9 +249,5 @@ var NAVTREEINDEX13 =
 "orx_font_8h.html#ga6eaf162b26fb22952530260f4861f5f0":[3,0,0,4,1,9],
 "orx_font_8h.html#ga8e56191650ac7c5a713a01d5081243a9":[3,0,0,4,1,2],
 "orx_font_8h.html#gaa7fe16b2b6016e5f3aaed55489d6c73e":[3,0,0,4,1,14],
-"orx_font_8h.html#gab691adc491d2136ac68d160d1f14bc1d":[3,0,0,4,1,1],
-"orx_font_8h.html#gac3f1cf184136cd0ffd837143e79bfe31":[3,0,0,4,1,16],
-"orx_font_8h.html#gae5665dd0101cf568132b829c58082309":[3,0,0,4,1,18],
-"orx_font_8h.html#gaed14890bff7d5d4023873f0275746e3e":[3,0,0,4,1,20],
-"orx_font_8h.html#gaf1446182084028517a65da805684338b":[3,0,0,4,1,10]
+"orx_font_8h.html#gab691adc491d2136ac68d160d1f14bc1d":[3,0,0,4,1,1]
 };
