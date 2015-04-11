@@ -229,6 +229,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxU32              u32ResourceGroupID;   /**< Resource group ID */
   orxU32              u32LoadCounter;       /**< Load counter */
   orxSTRING           zEncryptionKey;       /**< Encryption key */
+  orxCONFIG_BOOTSTRAP_FUNCTION pfnBootstrap;/**< Bootstrap */
   orxU32              u32LoadFileID;        /**< Loading file ID */
   orxU32              u32EncryptionKeySize; /**< Encryption key size */
   orxU32              u32DefaultParentID;   /**< Section ID of the default parent */
@@ -2397,14 +2398,18 @@ orxSTATUS orxFASTCALL orxConfig_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
-    orxCHAR   zBackupBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
-    orxSTRING zBackupEncryptionKey;
+    orxCHAR                       zBackupBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+    orxSTRING                     zBackupEncryptionKey;
+    orxCONFIG_BOOTSTRAP_FUNCTION  pfnBackupBootstrap;
 
     /* Backups base file name */
     orxMemory_Copy(zBackupBaseFile, sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
 
     /* Backups encryption key */
     zBackupEncryptionKey = sstConfig.zEncryptionKey;
+
+    /* Backups bootstrap */
+    pfnBackupBootstrap = sstConfig.pfnBootstrap;
 
     /* Cleans control structure */
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
@@ -2435,6 +2440,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       orxConfig_SetEncryptionKey(orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY);
     }
 
+    /* Restores bootstrap */
+    sstConfig.pfnBootstrap = pfnBackupBootstrap;
+
     /* Creates stack bank, history bank & section bank/table */
     sstConfig.pstStackBank    = orxBank_Create(orxCONFIG_KU32_STACK_BANK_SIZE, sizeof(orxCONFIG_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxU32), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
@@ -2446,6 +2454,8 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Valid? */
     if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
+      orxBOOL bLoadDefault;
+
       /* Inits values */
       sstConfig.u32LoadFileID = 0;
       sstConfig.u32ResourceGroupID  = orxString_GetID(orxCONFIG_KZ_RESOURCE_GROUP);
@@ -2456,8 +2466,24 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       /* Registers commands */
       orxConfig_RegisterCommands();
 
-      /* Loads default config file */
-      orxConfig_Load(sstConfig.zBaseFile);
+      /* Has bootstrap? */
+      if(sstConfig.pfnBootstrap != orxNULL)
+      {
+        /* Calls it */
+        bLoadDefault = (sstConfig.pfnBootstrap() != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+      }
+      else
+      {
+        /* Asks for default loading */
+        bLoadDefault = orxTRUE;
+      }
+
+      /* Should load default? */
+      if(bLoadDefault != orxFALSE)
+      {
+        /* Loads default config file */
+        orxConfig_Load(sstConfig.zBaseFile);
+      }
 
       /* Pushes config section */
       orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION);
@@ -2542,26 +2568,21 @@ void orxFASTCALL orxConfig_Exit()
 
     /* Deletes section table */
     orxHashTable_Delete(sstConfig.pstSectionTable);
-    sstConfig.pstSectionTable = orxNULL;
 
     /* Deletes section bank */
     orxBank_Delete(sstConfig.pstSectionBank);
-    sstConfig.pstSectionBank = orxNULL;
 
     /* Deletes entry bank */
     orxBank_Delete(sstConfig.pstEntryBank);
-    sstConfig.pstEntryBank = orxNULL;
 
     /* Deletes history bank */
     orxBank_Delete(sstConfig.pstHistoryBank);
-    sstConfig.pstHistoryBank = orxNULL;
 
     /* Deletes stack bank */
     orxBank_Delete(sstConfig.pstStackBank);
-    sstConfig.pstStackBank = orxNULL;
 
-    /* Updates flags */
-    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_MASK_ALL);
+    /* Cleans control structure */
+    orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
   }
 
   return;
@@ -2615,6 +2636,23 @@ const orxSTRING orxFASTCALL orxConfig_GetEncryptionKey()
 
   /* Done! */
   return zResult;
+}
+
+/** Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded.
+ *  The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
+ * @param[in] _pfnBootstrap     Bootstrap function that will get called at module init, before loading any config file.
+                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetBootstrap(const orxCONFIG_BOOTSTRAP_FUNCTION _pfnBootstrap)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Stores it */
+  sstConfig.pfnBootstrap = _pfnBootstrap;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets config base name
