@@ -1537,7 +1537,7 @@ orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxS
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, pstParam->u32ArraySize, _u32ArraySize);
         }
       }
       else
