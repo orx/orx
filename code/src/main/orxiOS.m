@@ -129,7 +129,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
   orxASSERT(poView != nil);
 
   /* Queues event */
-  [poView QueueEvent:orxSYSTEM_EVENT_CLOSE];
+  [poView QueueEvent:orxSYSTEM_EVENT_CLOSE WithPayload:nil];
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)_poApplication
@@ -143,7 +143,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
   orxASSERT(poView != nil);
 
   /* Queues event */
-  [poView QueueEvent:orxSYSTEM_EVENT_BACKGROUND];
+  [poView QueueEvent:orxSYSTEM_EVENT_BACKGROUND WithPayload:nil];
 
   /* Adds render inhibiter */
   orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
@@ -160,7 +160,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
   orxASSERT(poView != nil);
 
   /* Queues event */
-  [poView QueueEvent:orxSYSTEM_EVENT_FOREGROUND];
+  [poView QueueEvent:orxSYSTEM_EVENT_FOREGROUND WithPayload:nil];
 
   /* Removes render inhibiter */
   orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
@@ -177,7 +177,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
   orxASSERT(poView != nil);
 
   /* Queues event */
-  [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_LOST];
+  [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_LOST WithPayload:nil];
 }
 
 - (void) applicationDidBecomeActive:(UIApplication *)_poApplication
@@ -201,7 +201,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
     orxASSERT(poView != nil);
 
     /* Queues event */
-    [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_GAINED];
+    [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_GAINED WithPayload:nil];
   }
 }
 

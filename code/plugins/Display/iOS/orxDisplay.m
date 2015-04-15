@@ -1156,7 +1156,7 @@ static orxView *spoInstance;
       if(sstDisplay.u32EventInfoNumber < orxDISPLAY_KU32_EVENT_INFO_NUMBER)
       {
         /* Queues event */
-        [self QueueEvent:orxSYSTEM_EVENT_MOTION_SHAKE];
+        [self QueueEvent:orxSYSTEM_EVENT_MOTION_SHAKE WithPayload:nil];
       }
       else
       {
