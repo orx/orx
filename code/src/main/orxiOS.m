@@ -120,34 +120,64 @@ const orxSTRING orxiOS_GetDocumentsPath()
 
 - (void) applicationWillTerminate:(UIApplication *)_poApplication
 {
-  /* Sends event */
-  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+  orxView *poView;
+
+  /* Gets view instance */
+  poView = [orxView GetInstance];
+
+  /* Checks */
+  orxASSERT(poView != nil);
+
+  /* Queues event */
+  [poView QueueEvent:orxSYSTEM_EVENT_CLOSE];
 }
 
 - (void) applicationDidEnterBackground:(UIApplication *)_poApplication
 {
-  /* Sends event */
-  if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
-  {
-    /* Adds render inhibiter */
-    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
-  }
+  orxView *poView;
+
+  /* Gets view instance */
+  poView = [orxView GetInstance];
+
+  /* Checks */
+  orxASSERT(poView != nil);
+
+  /* Queues event */
+  [poView QueueEvent:orxSYSTEM_EVENT_BACKGROUND];
+
+  /* Adds render inhibiter */
+  orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)_poApplication
 {
-  /* Sends event */
-  if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
-  {
-    /* Removes render inhibiter */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
-  }
+  orxView *poView;
+
+  /* Gets view instance */
+  poView = [orxView GetInstance];
+
+  /* Checks */
+  orxASSERT(poView != nil);
+
+  /* Queues event */
+  [poView QueueEvent:orxSYSTEM_EVENT_FOREGROUND];
+
+  /* Removes render inhibiter */
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
 }
 
 - (void) applicationWillResignActive:(UIApplication *)_poApplication
 {
-  /* Sends event */
-  orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+  orxView *poView;
+
+  /* Gets view instance */
+  poView = [orxView GetInstance];
+
+  /* Checks */
+  orxASSERT(poView != nil);
+
+  /* Queues event */
+  [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_LOST];
 }
 
 - (void) applicationDidBecomeActive:(UIApplication *)_poApplication
@@ -162,8 +192,16 @@ const orxSTRING orxiOS_GetDocumentsPath()
   }
   else
   {
-    /* Sends event */
-    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+    orxView *poView;
+
+    /* Gets view instance */
+    poView = [orxView GetInstance];
+
+    /* Checks */
+    orxASSERT(poView != nil);
+
+    /* Queues event */
+    [poView QueueEvent:orxSYSTEM_EVENT_FOCUS_GAINED];
   }
 }
 

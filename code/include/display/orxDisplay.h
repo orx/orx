@@ -284,6 +284,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
 
 + (orxView *) GetInstance;
 
+- (void) QueueEvent:(orxENUM)_eID WithPayload:(orxSYSTEM_EVENT_PAYLOAD *)_pstPayload;
 - (void) NotifyAcceleration:(UIAcceleration *)_poAcceleration;
 
 @property (nonatomic, retain) EAGLContext  *poMainContext;
