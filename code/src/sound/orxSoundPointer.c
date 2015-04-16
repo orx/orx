@@ -65,6 +65,7 @@
 
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL   0x10000000  /**< Internal flag */
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE 0x00000001  /**< Auto-pause flag */
+#define orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY  0x00000002  /**< Auto-play flag */
 
 #define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
@@ -270,6 +271,16 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
       /* Valid? */
       if(pstSound != orxNULL)
       {
+        /* Should auto play? */
+        if(orxFLAG_TEST(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY))
+        {
+          /* Plays it */
+          orxSound_Play(pstSound);
+
+          /* Updates its flags */
+          orxFLAG_SET(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY);
+        }
+
         /* Is sound stopped? */
         if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
         {
@@ -724,7 +735,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
     _pstSoundPointer->astSoundList[u32Index].pstSound = _pstSound;
 
     /* Updates its flags */
-    orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
+    orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
 
     /* Stores it as last added sound */
     _pstSoundPointer->u32LastAddedIndex = u32Index;
@@ -749,8 +760,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstOwner, pstOwner, &stPayload);
 
-    /* Plays it */
-    eResult = orxSound_Play(_pstSound);
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -999,7 +1010,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
       orxStructure_SetOwner(pstSound, _pstSoundPointer);
 
       /* Updates its flags */
-      orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
+      orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL | orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
 
       /* Stores it as last added sound */
       _pstSoundPointer->u32LastAddedIndex = u32Index;
@@ -1024,8 +1035,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstOwner, pstOwner, &stPayload);
 
-      /* Plays it */
-      eResult = orxSound_Play(pstSound);
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
