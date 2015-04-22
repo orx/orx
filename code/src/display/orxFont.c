@@ -1325,6 +1325,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u
     {
       /* Frees it */
       orxMemory_Free(_pstFont->avCharacterOriginList);
+      _pstFont->avCharacterOriginList = orxNULL;
     }
 
     /* Had a character size list? */
@@ -1332,6 +1333,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u
     {
       /* Frees it */
       orxMemory_Free(_pstFont->avCharacterSizeList);
+      _pstFont->avCharacterSizeList = orxNULL;
     }
 
     /* Allocates character width list */
@@ -1389,6 +1391,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterSizeList(orxFONT *_pstFont, orxU32 _u3
     {
       /* Frees it */
       orxMemory_Free(_pstFont->afCharacterWidthList);
+      _pstFont->afCharacterWidthList = orxNULL;
     }
 
     /* Allocates character size list */
@@ -1445,6 +1448,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterOriginList(orxFONT *_pstFont, orxU32 _
     {
       /* Frees it */
       orxMemory_Free(_pstFont->afCharacterWidthList);
+      _pstFont->afCharacterWidthList = orxNULL;
     }
 
     /* Allocates character size list */
