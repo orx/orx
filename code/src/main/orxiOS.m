@@ -42,6 +42,8 @@
 #define orxIOS_KZ_CONFIG_SECTION                      "iOS"
 #define orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY      "AccelerometerFrequency"
 
+static volatile orxU32 su32FrameCounter = 0;
+
 
 /** Main function pointer
  */
@@ -104,6 +106,9 @@ const orxSTRING orxiOS_GetDocumentsPath()
   /* Activates window */
   [poWindow makeKeyAndVisible];
 
+  /* Inits frame counter */
+  su32FrameCounter = 0;
+
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
 }
@@ -135,6 +140,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
 - (void) applicationDidEnterBackground:(UIApplication *)_poApplication
 {
   orxView *poView;
+  orXU32    u32CurrentFrame;
 
   /* Gets view instance */
   poView = [orxView GetInstance];
@@ -147,6 +153,12 @@ const orxSTRING orxiOS_GetDocumentsPath()
 
   /* Adds render inhibiter */
   orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+
+  /* Gets current frame */
+  u32CurrentFrame = su32FrameCounter;
+
+  /* Spins until end of frame */
+  while(u32CurrentFrame == su32FrameCounter);
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)_poApplication
@@ -266,6 +278,9 @@ const orxSTRING orxiOS_GetDocumentsPath()
       /* Pops config section */
       orxConfig_PopSection();
 
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
       /* Main loop */
       for(bStop = orxFALSE;
           bStop == orxFALSE;
@@ -289,7 +304,8 @@ const orxSTRING orxiOS_GetDocumentsPath()
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
         /* Updates frame counter */
-        stPayload.u32FrameCounter++;
+        su32FrameCounter++;
+        stPayload.u32FrameCounter = su32FrameCounter;
 
         /* Releases memory pool */
         [poPool release];
