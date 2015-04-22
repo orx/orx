@@ -110,12 +110,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetTexture(orxFONT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterList(orxFONT *_pstFont, const orxSTRING _zList);
 
-/** Sets font's character height
+/** Sets font's line height
  * @param[in]   _pstFont              Concerned font
- * @param[in]   _fCharacterHeight     Character's height
+ * @param[in]   _fLineHeight          Line's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetCharacterHeight(orxFONT *_pstFont, orxFLOAT _fCharacterHeight);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetLineHeight(orxFONT *_pstFont, orxFLOAT _fCharacterHeight);
 
 /** Sets font's character width list
  * @param[in]   _pstFont              Concerned font
@@ -183,11 +183,11 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL              orxFont_GetTexture(const o
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxFont_GetCharacterList(const orxFONT *_pstFont);
 
-/** Gets font's character height
+/** Gets font's line height
  * @param[in]   _pstFont                Concerned font
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetCharacterHeight(const orxFONT *_pstFont);
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetLineHeight(const orxFONT *_pstFont);
 
 /** Gets font's character width
  * @param[in]   _pstFont                Concerned font
@@ -195,13 +195,6 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetCharacterHeight
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetCharacterWidth(const orxFONT *_pstFont, orxU32 _u32CharacterCodePoint);
-
-/** Gets font's character spacing
- * @param[in]   _pstFont      Concerned font
- * @param[out]  _pvSpacing    Character's spacing
- * @return      orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSpacing(const orxFONT *_pstFont, orxVECTOR *_pvSpacing);
 
 /** Gets font's origin
  * @param[in]   _pstFont      Concerned font

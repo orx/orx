@@ -1133,7 +1133,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   pstMap = orxFont_GetMap(pstFont);
 
   /* Gets character height */
-  fCharacterHeight = orxFont_GetCharacterHeight(pstFont);
+  fCharacterHeight = orxFont_GetLineHeight(pstFont);
 
   /* Creates pixel texture */
   pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL);
