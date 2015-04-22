@@ -196,6 +196,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetLineHeight(cons
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxFont_GetCharacterWidth(const orxFONT *_pstFont, orxU32 _u32CharacterCodePoint);
 
+/** Gets font's character spacing
+ * @param[in]   _pstFont      Concerned font
+ * @param[out]  _pvSpacing    Character's spacing
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetCharacterSpacing(const orxFONT *_pstFont, orxVECTOR *_pvSpacing);
+
 /** Gets font's origin
  * @param[in]   _pstFont      Concerned font
  * @param[out]  _pvOrigin     Font's origin
