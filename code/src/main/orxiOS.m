@@ -140,7 +140,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
 - (void) applicationDidEnterBackground:(UIApplication *)_poApplication
 {
   orxView *poView;
-  orXU32    u32CurrentFrame;
+  orxU32    u32CurrentFrame;
 
   /* Gets view instance */
   poView = [orxView GetInstance];
