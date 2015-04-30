@@ -307,18 +307,16 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
+#if defined(__orxGCC__) || defined(__orxLLVM__)
 
   /* Updates result */
   fResult = sinf(_fOp);
 
-#else /* __orxGCC__ && !__orxWINDOWS__ */
+#else /* __orxGCC__ || __orxLLVM__ */
 
   /* This implementation comes from Nicolas Capens' work: http://forum.devmaster.net/t/fast-and-accurate-sine-cosine/9648/96 */
 
-  /* This variable needs to be volatile otherwise gcc will aggressively optimize it away during the circular clamp trick */
-  volatile orxFLOAT fTemp;
-  orxFLOAT          fOp;
+  orxFLOAT          fTemp, fOp;
   const orxFLOAT    fP = 3.584135056f, fQ = 3.10396624f;
 
   /* Brings operand to a normalized [-1, 1] range */
@@ -334,7 +332,7 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
   /* Refines result */
   fResult = fResult * (fQ + fP * fabsf(fResult));
 
-#endif /* __orxGCC__ && !__orxWINDOWS__ */
+#endif /* __orxGCC__ || __orxLLVM__ */
 
   /* Done! */
   return fResult;
@@ -348,17 +346,17 @@ static orxINLINE orxFLOAT             orxMath_Cos(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxGCC__) && !defined(__orxWINDOWS__)
+#if defined(__orxGCC__) || defined(__orxLLVM__)
 
   /* Updates result */
   fResult = cosf(_fOp);
 
-#else /* __orxGCC__ && !__orxWINDOWS__ */
+#else /* __orxGCC__ || __orxLLVM__ */
 
   /* Updates result */
   fResult = orxMath_Sin(_fOp + orxMATH_KF_PI_BY_2);
 
-#endif /* __orxGCC__ && !__orxWINDOWS__ */
+#endif /* __orxGCC__ || __orxLLVM__ */
 
   /* Done! */
   return fResult;
