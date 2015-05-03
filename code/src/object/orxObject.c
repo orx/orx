@@ -74,6 +74,7 @@
 #define orxOBJECT_KU32_FLAG_HAS_CHILDREN        0x02000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN  0x04000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
+#define orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD  0x00100000  /**< Detach joint child flag */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -2339,6 +2340,18 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
             }
           }
         }
+        else
+        {
+          /* Should detach? */
+          if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD))
+          {
+            /* Detaches it */
+            orxObject_Detach(pstObject);
+
+            /* Updates status */
+            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
+          }
+        }
       }
     }
 
@@ -3253,24 +3266,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               && (i < s32JointNumber)
               && (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) != orxNULL))
               {
-                orxVECTOR vPosition, vScale;
-                orxFLOAT  fRotation;
-
-                /* Gets its global position, scale and rotation */
-                orxObject_GetWorldPosition(pstChild, &vPosition);
-                orxObject_GetWorldScale(pstChild, &vScale);
-                fRotation = orxObject_GetWorldRotation(pstChild);
-
-                /* Removes parent */
-                orxObject_SetParent(pstChild, orxNULL);
-
-                /* Enforces its position, scale and rotation */
-                orxObject_SetRotation(pstChild, fRotation);
-                orxObject_SetScale(pstChild, &vScale);
-                orxObject_SetPosition(pstChild, &vPosition);
-
                 /* Marks it as a joint child */
-                orxStructure_SetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD, orxOBJECT_KU32_FLAG_NONE);
+                orxStructure_SetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD, orxOBJECT_KU32_FLAG_NONE);
 
                 /* Updates flags */
                 u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
@@ -4278,7 +4275,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4301,7 +4298,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition;
@@ -4378,7 +4375,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4401,7 +4398,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition;
@@ -4477,7 +4474,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4500,7 +4497,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition;
@@ -4579,7 +4576,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4602,7 +4599,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition;
@@ -4684,7 +4681,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4707,7 +4704,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition, vScale;
@@ -4786,7 +4783,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             /* Attaches it back */
             orxObject_Attach(pstChild, _pstObject);
@@ -4809,7 +4806,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
         for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
         {
           /* Is a joint child? */
-          if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+          if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
           {
             orxFRAME *pstChildFrame;
             orxVECTOR vPosition, vScale;
@@ -5115,7 +5112,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
       for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
       {
         /* Is a joint child? */
-        if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+        if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
         {
           /* Attaches it back */
           orxObject_Attach(pstChild, _pstObject);
@@ -5195,7 +5192,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
       for(pstChild = _pstObject->pstChild; pstChild != orxNULL; pstChild = pstChild->pstSibling)
       {
         /* Is a joint child? */
-        if(orxStructure_TestFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+        if(orxStructure_GetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD) == orxOBJECT_KU32_FLAG_IS_JOINT_CHILD)
         {
           orxFRAME *pstChildFrame;
           orxVECTOR vPosition, vScale;
