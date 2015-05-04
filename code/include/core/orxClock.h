@@ -123,7 +123,7 @@ typedef struct __orxCLOCK_INFO_t
 typedef enum __orxCLOCK_EVENT_t
 {
   orxCLOCK_EVENT_RESTART = 0,                         /**< Event sent when a clock restarts */
-  orxCLOCK_EVENT_RESYNC,                              /**< Event sent when a clock recyncs */
+  orxCLOCK_EVENT_RESYNC,                              /**< Event sent when a clock resyncs */
   orxCLOCK_EVENT_PAUSE,                               /**< Event sent when a clock is paused */
   orxCLOCK_EVENT_UNPAUSE,                             /**< Event sent when a clock is unpaused */
 
