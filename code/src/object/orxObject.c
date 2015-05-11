@@ -199,6 +199,52 @@ static orxOBJECT_STATIC sstObject;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Update body scale
+ */
+void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
+{
+  orxOBJECT *pstChild;
+
+  /* Not a joint child? */
+  if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD))
+  {
+    orxBODY *pstBody;
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      orxFRAME *pstFrame;
+
+      /* Gets frame */
+      pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+      /* Valid? */
+      if(pstFrame != orxNULL)
+      {
+        orxVECTOR vScale;
+
+        /* Updates body scale */
+        orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+      }
+    }
+  }
+
+  /* For all children */
+  for(pstChild = orxOBJECT(orxObject_GetChild(_pstObject));
+      pstChild != orxNULL;
+      pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
+  {
+    /* Updates its body scale */
+    orxObject_UpdateBodyScale(pstChild);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: Create
  */
 void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4472,27 +4518,11 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
   /* Valid? */
   if(pstFrame != orxNULL)
   {
-    orxBODY *pstBody;
+    /* Sets frame scale */
+    orxFrame_SetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
-    /* Gets body */
-    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
-
-    /* Valid? */
-    if(pstBody != orxNULL)
-    {
-      orxVECTOR vScale;
-
-      /* Sets frame scale */
-      orxFrame_SetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
-
-      /* Updates body scale */
-      orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale));
-    }
-    else
-    {
-      /* Sets frame scale */
-      orxFrame_SetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
-    }
+    /* Updates body scale */
+    orxObject_UpdateBodyScale(_pstObject);
   }
   else
   {
@@ -4528,25 +4558,11 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
   /* Valid? */
   if(pstFrame != orxNULL)
   {
-    orxBODY *pstBody;
+    /* Sets frame scale */
+    orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
 
-    /* Gets body */
-    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
-
-    /* Valid? */
-    if(pstBody != orxNULL)
-    {
-      /* Sets frame scale */
-      orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
-
-      /* Updates body scale */
-      orxBody_SetScale(pstBody, _pvScale);
-    }
-    else
-    {
-      /* Sets frame scale */
-      orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
-    }
+    /* Updates body scale */
+    orxObject_UpdateBodyScale(_pstObject);
   }
   else
   {
@@ -4864,6 +4880,9 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
       }
     }
   }
+
+  /* Updates body scale */
+  orxObject_UpdateBodyScale(_pstObject);
 
   /* Done! */
   return eResult;
