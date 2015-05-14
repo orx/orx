@@ -500,7 +500,7 @@ static orxINLINE orxSTATUS orx_LogAllStructures()
             orxHashTable_Set(pstTable, orxStructure_GetGUID(pstStructure), pstStructure);
 
             /* Logs it */
-            if(orxMath_GetRandomU32(0, 2) & 1)//sastStructureInfoList[i].pfnGetName != orxNULL)
+            if(sastStructureInfoList[i].pfnGetName != orxNULL)
             {
               orxU32 u32Offset;
               u32Offset = orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%-8s \"%s\"", orxStructure_GetIDString(sastStructureInfoList[i].eID), sastStructureInfoList[i].pfnGetName(pstStructure));
