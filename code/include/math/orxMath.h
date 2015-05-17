@@ -307,32 +307,8 @@ static orxINLINE orxFLOAT             orxMath_Sin(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
   /* Updates result */
   fResult = sinf(_fOp);
-
-#else /* __orxGCC__ || __orxLLVM__ */
-
-  /* This implementation comes from Nicolas Capens' work: http://forum.devmaster.net/t/fast-and-accurate-sine-cosine/9648/96 */
-
-  orxFLOAT          fTemp, fOp;
-  const orxFLOAT    fP = 3.584135056f, fQ = 3.10396624f;
-
-  /* Brings operand to a normalized [-1, 1] range */
-  fOp = _fOp * (orxFLOAT_1 / orxMATH_KF_PI);
-
-  /* Applies circular clamp trick based on IEEE754 float representation */
-  fTemp = (fOp + orx2F(25165824.0f));
-  fOp = fOp - (fTemp - orx2F(25165824.0f));
-
-  /* Gets parabola approximation */
-  fResult = fOp - fOp * fabsf(fOp);
-
-  /* Refines result */
-  fResult = fResult * (fQ + fP * fabsf(fResult));
-
-#endif /* __orxGCC__ || __orxLLVM__ */
 
   /* Done! */
   return fResult;
@@ -346,17 +322,8 @@ static orxINLINE orxFLOAT             orxMath_Cos(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
   /* Updates result */
   fResult = cosf(_fOp);
-
-#else /* __orxGCC__ || __orxLLVM__ */
-
-  /* Updates result */
-  fResult = orxMath_Sin(_fOp + orxMATH_KF_PI_BY_2);
-
-#endif /* __orxGCC__ || __orxLLVM__ */
 
   /* Done! */
   return fResult;
