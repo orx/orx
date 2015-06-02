@@ -2008,10 +2008,10 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_zName != orxNULL);
-  orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
+  orxASSERT((_eType == orxINPUT_TYPE_NONE) || (_eType < orxINPUT_TYPE_NUMBER));
 
   /* Valid? */
-  if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY))
+  if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY) && (_eType != orxINPUT_TYPE_NONE))
   {
     orxINPUT_ENTRY *pstEntry;
     orxU32          u32EntryID;
