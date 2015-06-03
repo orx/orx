@@ -68,13 +68,11 @@
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        // Hosting Fragment
-        jobject mFragment;
+        // Hosting Activity
+        jobject mActivity;
 
         // method signatures
         jmethodID midGetRotation;
-        jmethodID midGetActivity;
-        jmethodID midGetApplicationContext;
         jmethodID midGetDeviceIds;
 
         // AssetManager
@@ -223,32 +221,21 @@ static void app_set_window(ANativeWindow* window) {
 }
 
 // Called before main() to initialize JNI bindings
-static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
+static void orxAndroid_Init(JNIEnv* mEnv, jobject jActivity)
 {
     LOGI("orxAndroid_Init()");
 
     jclass objClass;
-    jobject jActivity;
 
     orxAndroid_JNI_SetupThread();
 
-    sstAndroid.mFragment = mEnv->NewGlobalRef(jFragment);
-    objClass = mEnv->FindClass("android/support/v4/app/Fragment");
-    sstAndroid.midGetActivity = mEnv->GetMethodID(objClass, "getActivity", "()Landroid/support/v4/app/FragmentActivity;");
-    mEnv->DeleteLocalRef(objClass);
+    sstAndroid.mActivity = mEnv->NewGlobalRef(jActivity);
 
-    objClass = mEnv->FindClass("android/content/Context");
-    sstAndroid.midGetApplicationContext = mEnv->GetMethodID(objClass, "getApplicationContext", "()Landroid/content/Context;");
-    mEnv->DeleteLocalRef(objClass);
-
-    jActivity = mEnv->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
     objClass = mEnv->FindClass("org/orx/lib/OrxActivity");
     sstAndroid.midGetRotation = mEnv->GetMethodID(objClass, "getRotation","()I");
     sstAndroid.midGetDeviceIds = mEnv->GetMethodID(objClass, "getDeviceIds", "()[I");
 
     if(!sstAndroid.midGetRotation
-       || !sstAndroid.midGetActivity
-       || !sstAndroid.midGetApplicationContext
        || !sstAndroid.midGetDeviceIds) {
         __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java callbacks, check that they're named and typed correctly");
     }
@@ -276,12 +263,10 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jFragment)
 static void orxAndroid_Exit(JNIEnv* env)
 {
   // finish Activity
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
   jclass objClass = env->FindClass("android/app/Activity");
   jmethodID finish = env->GetMethodID(objClass, "finish", "()V");
-  env->CallVoidMethod(jActivity, finish);
+  env->CallVoidMethod(sstAndroid.mActivity, finish);
   env->DeleteLocalRef(objClass);
-  env->DeleteLocalRef(jActivity);
 
   // wait for quit cmd
   int ident;
@@ -313,7 +298,7 @@ static void orxAndroid_Exit(JNIEnv* env)
     }
   }
 
-  env->DeleteGlobalRef(sstAndroid.mFragment);
+  env->DeleteGlobalRef(sstAndroid.mActivity);
   env->DeleteGlobalRef(sstAndroid.jAssetManager);
 
   if(sstAndroid.zAndroidInternalFilesPath)
@@ -401,10 +386,10 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnCreate(JNIEnv *env,
 }
 
 // Start up the Orx app
-extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_startOrx(JNIEnv* env, jobject thiz, jobject fragment)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_startOrx(JNIEnv* env, jobject thiz, jobject activity)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
-    orxAndroid_Init(env, fragment);
+    orxAndroid_Init(env, activity);
 
     /* Run the application code! */
     int status;
@@ -473,19 +458,19 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnTouch(
 }
 
 // Quit
-extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_stopOrx(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_stopOrx(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_QUIT);
 }
 
 // Pause
-extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnPause(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnPause(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_PAUSE);
 }
 
 // Resume
-extern "C" void JNICALL Java_org_orx_lib_OrxThreadFragment_nativeOnResume(JNIEnv* env, jobject thiz)
+extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnResume(JNIEnv* env, jobject thiz)
 {
   app_write_cmd(APP_CMD_RESUME);
 }
@@ -644,9 +629,7 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
   JNIEnv *env = Android_JNI_GetEnv();
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-  jint rotation = env->CallIntMethod(jActivity, sstAndroid.midGetRotation);
-  env->DeleteLocalRef(jActivity);
+  jint rotation = env->CallIntMethod(sstAndroid.mActivity, sstAndroid.midGetRotation);
   return rotation;
 }
 
@@ -657,19 +640,15 @@ extern "C" void *orxAndroid_GetJNIEnv()
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-  JNIEnv *env = Android_JNI_GetEnv();
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-  return jActivity;
+  return sstAndroid.mActivity;
 }
 
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
 {
   JNIEnv *env = Android_JNI_GetEnv();
-  jobject jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-  jintArray retval = (jintArray) env->CallObjectMethod(jActivity, sstAndroid.midGetDeviceIds);
+  jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
   env->GetIntArrayRegion(retval, 0, 4, (jint*) &deviceIds[0]);
   env->DeleteLocalRef(retval);
-  env->DeleteLocalRef(jActivity);
 }
 
 extern "C" const char * orxAndroid_GetInternalStoragePath()
@@ -684,11 +663,8 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
 
     JNIEnv *env = Android_JNI_GetEnv();
 
-    jActivity = env->CallObjectMethod(sstAndroid.mFragment, sstAndroid.midGetActivity);
-    // fileObj = context.getFilesDir();
-    mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
-    fileObject = env->CallObjectMethod(jActivity, mid);
-    env->DeleteLocalRef(jActivity);
+    mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity), "getFilesDir", "()Ljava/io/File;");
+    fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
 
     if (!fileObject)
     {
