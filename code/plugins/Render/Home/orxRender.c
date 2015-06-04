@@ -2100,6 +2100,7 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
   if(bRender != orxFALSE)
   {
     orxVIEWPORT  *pstViewport;
+    orxBITMAP    *pstScreen;
     orxFLOAT      fWidth, fHeight;
 
     /* Clears screen */
@@ -2117,102 +2118,96 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxRender_Home_RenderViewport(pstViewport);
     }
 
-    /* Sends render stop event */
-    bRender = orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
-
     /* Increases FPS counter */
     orxFPS_IncreaseFrameCounter();
 
-    /* Should render? */
-    if(bRender != orxFALSE)
+    /* Gets screen bitmap */
+    pstScreen = orxDisplay_GetScreenBitmap();
+
+    /* Restores screen as destination bitmap */
+    orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
+
+    /* Restores screen bitmap clipping */
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
+
+    /* Pushes render config section */
+    orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+    /* Should render FPS? */
+    if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
     {
-      orxBITMAP *pstScreen;
-
-      /* Gets screen bitmap */
-      pstScreen = orxDisplay_GetScreenBitmap();
-
-      /* Restores screen as destination bitmap */
-      orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
-
-      /* Restores screen bitmap clipping */
-      orxDisplay_GetScreenSize(&fWidth, &fHeight);
-      orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fWidth), orxF2U(fHeight));
-
-      /* Pushes render config section */
-      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
-
-      /* Should render FPS? */
-      if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
-      {
-        /* Renders it */
-        orxRender_Home_RenderFPS();
-      }
-
-      /* Should render profiler */
-      if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
-      {
-        /* Renders it */
-        orxRender_Home_RenderProfiler();
-
-        /* Doesn't have the reset maxima callback yet? */
-        if(!orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
-        {
-          /* Adds it */
-          orxClock_AddGlobalTimer(orxRender_Home_ResetProfilerMaxima, orxFLOAT_1, -1, orxNULL);
-
-          /* Updates status */
-          orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
-
-          /* Enables input set */
-          orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxTRUE);
-        }
-
-        /* Updates status */
-        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER, orxRENDER_KU32_STATIC_FLAG_NONE);
-      }
-      else
-      {
-        /* Has the reset maxima callback? */
-        if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
-        {
-          /* Removes it */
-          orxClock_RemoveGlobalTimer(orxRender_Home_ResetProfilerMaxima, orx2F(-1.0f), orxNULL);
-
-          /* Updates status */
-          orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
-
-          /* Disables input set */
-          orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxFALSE);
-        }
-
-        /* Updates status */
-        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PROFILER);
-      }
-
-      /* Is console enabled? */
-      if(orxConsole_IsEnabled() != orxFALSE)
-      {
-        /* Updates its offset */
-        sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
-        sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
-      }
-      else
-      {
-        /* Updates its offset */
-        sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
-        sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
-      }
-
-      /* Should render console? */
-      if(sstRender.fConsoleOffset != sstRender.fDefaultConsoleOffset)
-      {
-        /* Renders it */
-        orxRender_Home_RenderConsole();
-      }
-
-      /* Pops previous section */
-      orxConfig_PopSection();
+      /* Renders it */
+      orxRender_Home_RenderFPS();
     }
+
+    /* Should render profiler */
+    if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
+    {
+      /* Renders it */
+      orxRender_Home_RenderProfiler();
+
+      /* Doesn't have the reset maxima callback yet? */
+      if(!orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
+      {
+        /* Adds it */
+        orxClock_AddGlobalTimer(orxRender_Home_ResetProfilerMaxima, orxFLOAT_1, -1, orxNULL);
+
+        /* Updates status */
+        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA, orxRENDER_KU32_STATIC_FLAG_NONE);
+
+        /* Enables input set */
+        orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxTRUE);
+      }
+
+      /* Updates status */
+      orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER, orxRENDER_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Has the reset maxima callback? */
+      if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA))
+      {
+        /* Removes it */
+        orxClock_RemoveGlobalTimer(orxRender_Home_ResetProfilerMaxima, orx2F(-1.0f), orxNULL);
+
+        /* Updates status */
+        orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_RESET_MAXIMA);
+
+        /* Disables input set */
+        orxInput_EnableSet(orxRENDER_KZ_INPUT_SET, orxFALSE);
+      }
+
+      /* Updates status */
+      orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PROFILER);
+    }
+
+    /* Is console enabled? */
+    if(orxConsole_IsEnabled() != orxFALSE)
+    {
+      /* Updates its offset */
+      sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+      sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
+    }
+    else
+    {
+      /* Updates its offset */
+      sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+      sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
+    }
+
+    /* Should render console? */
+    if(sstRender.fConsoleOffset != sstRender.fDefaultConsoleOffset)
+    {
+      /* Renders it */
+      orxRender_Home_RenderConsole();
+    }
+
+    /* Pops previous section */
+    orxConfig_PopSection();
+
+    /* Sends render stop event */
+    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
 
     /* Updates status */
     orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PRESENT_REQUEST, orxRENDER_KU32_STATIC_FLAG_NONE);

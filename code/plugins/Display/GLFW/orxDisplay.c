@@ -3590,8 +3590,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
-    int     iWidth, iHeight, iDepth, iRefreshRate;
-    orxS32  s32BitmapCounter = 0, s32ShaderCounter = 0;
+    int iWidth, iHeight, iDepth, iRefreshRate;
 
     /* Gets its info */
     iWidth        = (int)_pstVideoMode->u32Width;
@@ -3679,6 +3678,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     else
     {
       orxU8 **aau8BufferArray;
+      orxS32  s32BitmapCounter = 0, s32ShaderCounter = 0;
 
       /* Has opened window? */
       if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
@@ -3872,20 +3872,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glDisable(GL_STENCIL_TEST);
         glASSERT();
         glDisable(GL_ALPHA_TEST);
-        glASSERT();
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glASSERT();
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glASSERT();
-        glEnableClientState(GL_COLOR_ARRAY);
-        glASSERT();
-
-        /* Selects arrays */
-        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
         glASSERT();
 
         /* Has depth buffer? */
@@ -4113,6 +4099,18 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
+      /* For all first 8 texture units */
+      for(i = 0; i < (orxS32)orxMIN(8, sstDisplay.iTextureUnitNumber); i++)
+      {
+        /* Selects associated texture unit */
+        glActiveTextureARB(GL_TEXTURE0_ARB + i);
+        glASSERT();
+
+        /* Resets it */
+        glEnable(GL_TEXTURE_2D);
+        glASSERT();
+      }
+
       /* Selects first texture unit */
       glActiveTextureARB(GL_TEXTURE0_ARB);
       glASSERT();
@@ -4140,6 +4138,30 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glLoadIdentity();
     glASSERT();
+
+    /* Resets client states */
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glASSERT();
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glASSERT();
+    glEnableClientState(GL_COLOR_ARRAY);
+    glASSERT();
+
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+
+    /* Has VBO support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
+    {
+      /* Binds it */
+      glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
+      glASSERT();
+    }
 
     /* Pops config section */
     orxConfig_PopSection();
