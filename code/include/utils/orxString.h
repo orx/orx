@@ -79,7 +79,7 @@
 #define orxSTRING_KC_VECTOR_END_ALT     '}'
 
 
-extern orxDLLAPI const orxU32 sau32CRCTable[256];
+extern orxDLLAPI orxU32 sau32CRCTable[256];
 
 
 /* *** String inlined functions *** */
