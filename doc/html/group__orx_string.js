@@ -5,6 +5,7 @@ var group__orx_string =
     [ "orxSTRING_KC_VECTOR_SEPARATOR", "group__orx_string.html#ga6a4ae16da84e7126d749fed80356a617", null ],
     [ "orxSTRING_KC_VECTOR_START", "group__orx_string.html#ga642c9bffe67569c7fb80665b6f42c499", null ],
     [ "orxSTRING_KC_VECTOR_START_ALT", "group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6", null ],
+    [ "orxSTRING_KU32_CRC_POLYNOMIAL", "group__orx_string.html#gaa9bf6baa46fd3120845d5d350977feba", null ],
     [ "STRTO_CAST", "group__orx_string.html#gac3346d324ba58207dd77076759c38dfa", null ],
     [ "orxString_Compare", "group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c", null ],
     [ "orxString_ContinueCRC", "group__orx_string.html#ga97f4ebd9c7861f0a0f34370154db6637", null ],
@@ -54,5 +55,5 @@ var group__orx_string =
     [ "orxString_ToU64Base", "group__orx_string.html#gafcac98c42809ed7842a831f48a086089", null ],
     [ "orxString_ToVector", "group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15", null ],
     [ "orxString_UpperCase", "group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f", null ],
-    [ "sau32CRCTable", "group__orx_string.html#gad8aaa058d20e022dee09adb9e9fd7415", null ]
+    [ "saau32CRCTable", "group__orx_string.html#gabeb4116095640f9af7fa661dd80e047d", null ]
 ];

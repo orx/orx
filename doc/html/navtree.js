@@ -38,19 +38,19 @@ var NAVTREEINDEX =
 "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8",
 "group__orx_resource.html#ga8186a33559e0d358a40ab5e2e4b2a8c2",
 "group__orx_spawner.html#gadbb9862a0f7c458421a564c48994cf39",
-"group__orx_thread.html#gabd3d4c3162d2b1312722b987ad41973f",
-"orx_anim_8h.html#gad3d30b5a08f7fa4c6ff73f8deaf4cc5d",
-"orx_clock_8h.html#ggae63cc0f7b3f765aaccb21184bee35bb9ae6c27ca5a3fab607cb973fd954f76f27",
-"orx_display_8h.html#ga3a2b947697a399f021b75c94d7cfd1b6",
-"orx_font_8h.html#gac3f1cf184136cd0ffd837143e79bfe31",
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac50f8f3fce79f8091b91f50d2bcf34f8",
-"orx_module_8h.html#ga6a492298081fa56cf9c382491c456998",
-"orx_physics_8h.html#ga1fe0927f5638cc9841754941e82a8521",
-"orx_plugin___physics_8h.html#ggafc2c82a23f06f10aee546a81239c999facfecda94f86238300e594f4c3649aa8e",
-"orx_shader_8h_source.html",
-"orx_string_8h.html#gae091c7e34dce2c46b5262a9d78e2faa9",
-"orx_type_8h.html#ga4d349445a40afddcddc979ae95d18a91",
-"structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc"
+"group__orx_thread.html#gabcfbbdf05586f810c91b1dcd5d5f39d3",
+"orx_anim_8h.html#gad06df847b66f6fd8aa654ccf986bb675",
+"orx_clock_8h.html#ggae63cc0f7b3f765aaccb21184bee35bb9ad0aad15d1de77c06c4dce875cae24564",
+"orx_display_8h.html#ga37a6f1e12616eca46dac46f8ff81a9d2",
+"orx_font_8h.html#gab691adc491d2136ac68d160d1f14bc1d",
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94bac3c6f141cc05c6cafed0580022879460",
+"orx_module_8h.html#ga3f7ed5e5d444f7ee30407ad190d44b3f",
+"orx_physics_8h.html#ga1ddedff022a9201a4561898d9e2175c1",
+"orx_plugin___physics_8h.html#ggafc2c82a23f06f10aee546a81239c999face5891a83b89cb223330be509c3ed68e",
+"orx_shader_8h.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235",
+"orx_string_8h.html#gaa62f828ae9bbcad9957df3195a4aca3b",
+"orx_type_8h.html#ga08815b27cb2e29018e06e3d847116915",
+"structorx_c_o_l_o_r.html#aa5b80a4cd29c306189c13a62850ae949"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

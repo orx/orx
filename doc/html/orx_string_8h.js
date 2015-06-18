@@ -1,10 +1,20 @@
 var orx_string_8h =
 [
+    [ "orxCRC_GET_FIRST", "orx_string_8h.html#a48b410748ead27e6cb1ae8269b019f13", null ],
+    [ "orxCRC_INDEX_0", "orx_string_8h.html#a641299bb35331719631f85afc6ab50dd", null ],
+    [ "orxCRC_INDEX_1", "orx_string_8h.html#a094b90b4d81e27d3287eb655fb83c173", null ],
+    [ "orxCRC_INDEX_2", "orx_string_8h.html#a71ffd1f31f5e812b3084b31940abe2bf", null ],
+    [ "orxCRC_INDEX_3", "orx_string_8h.html#ae358ba8e7df937e1f72117253812b61f", null ],
+    [ "orxCRC_INDEX_4", "orx_string_8h.html#acf50bf4ba1cf24e258b3fb1fb5b7cfb8", null ],
+    [ "orxCRC_INDEX_5", "orx_string_8h.html#a8e503ed0e6e464fb3054c0d581ba357c", null ],
+    [ "orxCRC_INDEX_6", "orx_string_8h.html#aecc4257b74e9d14a800015be65faa47a", null ],
+    [ "orxCRC_INDEX_7", "orx_string_8h.html#aab727070597c39ef755dc8afd275ece3", null ],
     [ "orxSTRING_KC_VECTOR_END", "orx_string_8h.html#gac8646f825bc6df7e387d877970d56e91", null ],
     [ "orxSTRING_KC_VECTOR_END_ALT", "orx_string_8h.html#gaa2a656e10d7ec4fe736684cc5e4828ae", null ],
     [ "orxSTRING_KC_VECTOR_SEPARATOR", "orx_string_8h.html#ga6a4ae16da84e7126d749fed80356a617", null ],
     [ "orxSTRING_KC_VECTOR_START", "orx_string_8h.html#ga642c9bffe67569c7fb80665b6f42c499", null ],
     [ "orxSTRING_KC_VECTOR_START_ALT", "orx_string_8h.html#gaa8986a6ede4e3a578f54f816488ce1b6", null ],
+    [ "orxSTRING_KU32_CRC_POLYNOMIAL", "orx_string_8h.html#gaa9bf6baa46fd3120845d5d350977feba", null ],
     [ "STRTO_CAST", "orx_string_8h.html#gac3346d324ba58207dd77076759c38dfa", null ],
     [ "orxString_Compare", "orx_string_8h.html#gafb8549f0953530a87577d2dbb0d09e0c", null ],
     [ "orxString_ContinueCRC", "orx_string_8h.html#ga97f4ebd9c7861f0a0f34370154db6637", null ],
@@ -54,5 +64,5 @@ var orx_string_8h =
     [ "orxString_ToU64Base", "orx_string_8h.html#gafcac98c42809ed7842a831f48a086089", null ],
     [ "orxString_ToVector", "orx_string_8h.html#gace05f65773927e3d5fa88f94ca845d15", null ],
     [ "orxString_UpperCase", "orx_string_8h.html#ga05a31fee6e03d85a57bfd33cce575c0f", null ],
-    [ "sau32CRCTable", "orx_string_8h.html#gad8aaa058d20e022dee09adb9e9fd7415", null ]
+    [ "saau32CRCTable", "orx_string_8h.html#gabeb4116095640f9af7fa661dd80e047d", null ]
 ];

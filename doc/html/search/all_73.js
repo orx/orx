@@ -7,7 +7,7 @@ var searchData=
   ['s64time',['s64Time',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a3471d95d9572c67a0c466ba3a40dbb3b',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['s64timestamp',['s64TimeStamp',['../structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b',1,'orxFILE_INFO']]],
   ['s64value',['s64Value',['../structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc',1,'orxCOMMAND_VAR']]],
-  ['sau32crctable',['sau32CRCTable',['../group__orx_string.html#gad8aaa058d20e022dee09adb9e9fd7415',1,'orxString.h']]],
+  ['saau32crctable',['saau32CRCTable',['../group__orx_string.html#gabeb4116095640f9af7fa661dd80e047d',1,'orxString.h']]],
   ['sbstopbyevent',['sbStopByEvent',['../group___orx.html#ga55fefcd75e9fa01c47e0543d530a358c',1,'orx.h']]],
   ['staabox',['stAABox',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a30c33a3c7cef777ee463a2f33361d452',1,'orxBODY_PART_DEF']]],
   ['staccelerometer',['stAccelerometer',['../structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#aeebf5b4297b69907ae590ff999af7f71',1,'orxSYSTEM_EVENT_PAYLOAD']]],
