@@ -54,5 +54,5 @@ var orx_string_8h =
     [ "orxString_ToU64Base", "orx_string_8h.html#gafcac98c42809ed7842a831f48a086089", null ],
     [ "orxString_ToVector", "orx_string_8h.html#gace05f65773927e3d5fa88f94ca845d15", null ],
     [ "orxString_UpperCase", "orx_string_8h.html#ga05a31fee6e03d85a57bfd33cce575c0f", null ],
-    [ "sau32CRCTable", "orx_string_8h.html#ga73224238694302a058d934102e6a84d1", null ]
+    [ "sau32CRCTable", "orx_string_8h.html#gad8aaa058d20e022dee09adb9e9fd7415", null ]
 ];

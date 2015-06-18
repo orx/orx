@@ -54,5 +54,5 @@ var group__orx_string =
     [ "orxString_ToU64Base", "group__orx_string.html#gafcac98c42809ed7842a831f48a086089", null ],
     [ "orxString_ToVector", "group__orx_string.html#gace05f65773927e3d5fa88f94ca845d15", null ],
     [ "orxString_UpperCase", "group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f", null ],
-    [ "sau32CRCTable", "group__orx_string.html#ga73224238694302a058d934102e6a84d1", null ]
+    [ "sau32CRCTable", "group__orx_string.html#gad8aaa058d20e022dee09adb9e9fd7415", null ]
 ];
