@@ -54,13 +54,11 @@
 
 #define orxSTRING_KU32_ID_BUFFER_SIZE                     131072
 
-#define orxSTRING_KU32_CRC_POLYNOMIAL                     0xEDB88320U       /**< Using 0x04C11DB7's reverse polynomial for CRC32B */
-
 
 /***************************************************************************
- * CRC Table                                                               *
+ * CRC Tables (slice-by-8)                                                 *
  ***************************************************************************/
-orxU32 sau32CRCTable[256];
+orxU32 saau32CRCTable[8][256];
 
 
 /***************************************************************************
@@ -114,7 +112,26 @@ void orxFASTCALL orxString_Setup()
     }
 
     /* Stores it */
-    sau32CRCTable[i] = u32CRC;
+    saau32CRCTable[0][i] = u32CRC;
+  }
+
+  /* For all CRC lookup table entries */
+  for(i = 0; i < 256; i++)
+  {
+    orxU32 u32CRC, j;
+
+    /* Gets original CRC */
+    u32CRC = saau32CRCTable[0][i];
+
+    /* For all other CRC lookup tables */
+    for(j = 1; j < 8; j++)
+    {
+      /* Updates CRC */
+      u32CRC = saau32CRCTable[0][u32CRC & 0xFF] ^ (u32CRC >> 8);
+
+      /* Stores it */
+      saau32CRCTable[j][i] = u32CRC;
+    }
   }
 
   /* Adds module dependencies */
