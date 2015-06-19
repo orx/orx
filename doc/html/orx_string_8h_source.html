@@ -1280,7 +1280,7 @@ $(document).ready(function(){initNavTree('orx_string_8h_source.html','');});
 <div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;  <span class="keywordflow">for</span>(; u32Length != 0; u32Length--, pc++)</div>
 <div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;  {</div>
 <div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;    <span class="comment">/* Updates the CRC */</span></div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;    u32CRC = <a class="code" href="group__orx_string.html#gabeb4116095640f9af7fa661dd80e047d">saau32CRCTable</a>[0][(u32CRC &amp; 0xFF) ^ *pc] ^ (u32CRC &gt;&gt; 8);</div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;    u32CRC = <a class="code" href="group__orx_string.html#gabeb4116095640f9af7fa661dd80e047d">saau32CRCTable</a>[0][(u32CRC ^ *pc) &amp; 0xFF] ^ (u32CRC &gt;&gt; 8);</div>
 <div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;  }</div>
 <div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;</div>
 <div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;<span class="preprocessor">#undef orxCRC_GET_FIRST</span></div>
