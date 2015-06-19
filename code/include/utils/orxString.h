@@ -1365,7 +1365,7 @@ static orxINLINE orxU32                                   orxString_NContinueCRC
   for(; u32Length != 0; u32Length--, pc++)
   {
     /* Updates the CRC */
-    u32CRC = saau32CRCTable[0][(u32CRC & 0xFF) ^ *pc] ^ (u32CRC >> 8);
+    u32CRC = saau32CRCTable[0][(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);
   }
 
 #undef orxCRC_GET_FIRST
