@@ -99,6 +99,8 @@
 
 #define orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING 4           /**< Last active binding shift */
 
+#define orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD        orx2F(0.1f) /**< Default joystick threshold */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -1209,7 +1211,7 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
   && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
   {
     /* Gets joystick threshold */
-    sstInput.fJoystickAxisThreshold = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD);
+    sstInput.fJoystickAxisThreshold = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) != orxFALSE) ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) : orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD;
 
     /* Gets joystick multiplier */
     sstInput.fJoystickAxisMultiplier = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER);
