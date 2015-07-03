@@ -22,7 +22,7 @@ var orx_input_8h =
     [ "orxInput_Bind", "orx_input_8h.html#ga6445ff03f53efd756258070b52f8eea9", null ],
     [ "orxInput_EnableSet", "orx_input_8h.html#ga8b0c6c19d0753b894b6d0add816516bc", null ],
     [ "orxInput_Exit", "orx_input_8h.html#ga494bcae3fb2c30b26d44069ce7a844a1", null ],
-    [ "orxInput_GetActiveBinding", "orx_input_8h.html#gaf6ad5f021a20889b303ca270a9e3d8a2", null ],
+    [ "orxInput_GetActiveBinding", "orx_input_8h.html#gab4636c9b964274cfe2cd10203ccd0dd6", null ],
     [ "orxInput_GetBinding", "orx_input_8h.html#gaba4b01e74bf2c456659a815cf67281c9", null ],
     [ "orxInput_GetBindingList", "orx_input_8h.html#ga7bb6be1573073dfdc881d901c8c79284", null ],
     [ "orxInput_GetBindingName", "orx_input_8h.html#gad764ac0f8b77dbd4bbefdd9891519dbf", null ],
