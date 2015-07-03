@@ -2565,11 +2565,12 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
 }
 
 /** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
- * @param[out]  _peType         Active binding type (mouse/joystick button, keyboard key or joystick axis)
- * @param[out]  _peID           Active binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peType         Active binding's type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Active binding's ID (ID of button/key/axis to bind)
+ * @param[out]  _pfValue        Active binding's value (optional)
  * @return orxSTATUS_SUCCESS if one active binding is found, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID)
+orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID, orxFLOAT *_pfValue)
 {
   orxU32    eType;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -2594,19 +2595,14 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
       /* Valid? */
       if(zBinding != orxSTRING_EMPTY)
       {
-        orxBOOL bActive;
+        orxBOOL   bActive;
+        orxFLOAT  fValue;
 
-        /* Joystick axis? */
-        if(eType == orxINPUT_TYPE_JOYSTICK_AXIS)
-        {
-          /* Updates active status */
-          bActive = (orxMath_Abs(orxInput_GetBindingValue((orxINPUT_TYPE)eType, eID)) > sstInput.fJoystickAxisThreshold) ? orxTRUE : orxFALSE;
-        }
-        else
-        {
-          /* Updates active status */
-          bActive = (orxMath_Abs(orxInput_GetBindingValue((orxINPUT_TYPE)eType, eID)) > orxFLOAT_0) ? orxTRUE : orxFALSE;
-        }
+        /* Gets binding's value */
+        fValue = orxInput_GetBindingValue((orxINPUT_TYPE)eType, eID);
+
+        /* Updates active status */
+        bActive = (orxMath_Abs(fValue) > ((eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)) ? orxTRUE : orxFALSE;
 
         /* Active? */
         if(bActive != orxFALSE)
@@ -2614,6 +2610,10 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
           /* Updates result */
           *_peType  = (orxINPUT_TYPE)eType;
           *_peID    = eID;
+          if(_pfValue != orxNULL)
+          {
+            *_pfValue = fValue;
+          }
           eResult   = orxSTATUS_SUCCESS;
 
           break;
@@ -2628,6 +2628,10 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
     /* Updates result */
     *_peType  = orxINPUT_TYPE_NONE;
     *_peID    = orxENUM_NONE;
+    if(_pfValue != orxNULL)
+    {
+      *_pfValue = orxFLOAT_0;
+    }
   }
 
   /* Done! */

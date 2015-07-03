@@ -272,11 +272,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBindingName(orxINP
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID);
 
 /** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
- * @param[out]  _peType         Active binding type (mouse/joystick button, keyboard key or joystick axis)
- * @param[out]  _peID           Active binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peType         Active binding's type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Active binding's ID (ID of button/key/axis to bind)
+ * @param[out]  _pfValue        Active binding's value (optional)
  * @return orxSTATUS_SUCCESS if one active binding is found, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID, orxFLOAT *_pfValue);
 
 #endif /*_orxINPUT_H_*/
 
