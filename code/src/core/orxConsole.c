@@ -121,6 +121,7 @@ typedef struct __orxCONSOLE_STATIC_t
   const orxSTRING           zCompletedCommand;                                        /**< Last completed command */
   orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
   orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
+  orxINPUT_MODE             eToggleKeyMode;                                           /**< Toggle key mode */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCONSOLE_STATIC;
@@ -1045,6 +1046,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Stores default toggle key */
     sstConsole.eToggleKeyType = orxINPUT_TYPE_KEYBOARD_KEY;
     sstConsole.eToggleKeyID   = orxCONSOLE_KE_DEFAULT_KEY_TOGGLE;
+    sstConsole.eToggleKeyMode = orxINPUT_MODE_FULL;
 
     /* Pushes its section */
     orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
@@ -1054,19 +1056,22 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     {
       orxINPUT_TYPE eType;
       orxENUM       eID;
+      orxINPUT_MODE eMode;
 
       /* Gets its type & ID */
-      if(orxInput_GetBindingType(orxConfig_GetString(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY), &eType, &eID) != orxSTATUS_FAILURE)
+      if(orxInput_GetBindingType(orxConfig_GetString(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY), &eType, &eID, &eMode) != orxSTATUS_FAILURE)
       {
         /* Stores it */
         sstConsole.eToggleKeyType = eType;
         sstConsole.eToggleKeyID   = eID;
+        sstConsole.eToggleKeyMode = eMode;
       }
       else
       {
         /* Resets it */
         sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
         sstConsole.eToggleKeyID   = orxENUM_NONE;
+        sstConsole.eToggleKeyMode = orxINPUT_MODE_NONE;
       }
     }
 
@@ -1091,19 +1096,19 @@ orxSTATUS orxFASTCALL orxConsole_Init()
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Binds console inputs */
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE_AFTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE_AFTER);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE_MODE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_TOGGLE_MODE);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID, sstConsole.eToggleKeyMode);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE_AFTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE_AFTER, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE_MODE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_TOGGLE_MODE, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END, orxINPUT_MODE_FULL);
 
         /* Enables set */
         orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
@@ -1327,9 +1332,10 @@ orxBOOL orxFASTCALL orxConsole_IsInsertMode()
 /** Sets the console toggle
 * @param[in] _eInputType      Type of input peripheral
 * @param[in] _eInputID        ID of button/key/axis
+* @param[in] _eInputMode      Mode of input
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID)
+orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID, orxINPUT_MODE _eInputMode)
 {
   const orxSTRING zPreviousSet;
   orxSTATUS       eResult;
@@ -1345,27 +1351,30 @@ orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _e
 
   /* Has current bindings? */
   if((sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
-  && (sstConsole.eToggleKeyID != orxENUM_NONE))
+  && (sstConsole.eToggleKeyID != orxENUM_NONE)
+  && (sstConsole.eToggleKeyMode != orxINPUT_MODE_NONE))
   {
     /* Unbinds current toggle */
-    orxInput_Unbind(sstConsole.eToggleKeyType, sstConsole.eToggleKeyID);
+    orxInput_Unbind(sstConsole.eToggleKeyType, sstConsole.eToggleKeyID, sstConsole.eToggleKeyMode);
   }
 
   /* Binds new toggle */
-  eResult = orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, _eInputType, _eInputID);
+  eResult = orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, _eInputType, _eInputID, _eInputMode);
 
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
     /* Stores new toggle bindings */
     sstConsole.eToggleKeyType = _eInputType;
-    sstConsole.eToggleKeyID = _eInputID;
+    sstConsole.eToggleKeyID   = _eInputID;
+    sstConsole.eToggleKeyMode = _eInputMode;
   }
   else
   {
     /* Clears toggle bindings */
     sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
-    sstConsole.eToggleKeyID = orxENUM_NONE;
+    sstConsole.eToggleKeyID   = orxENUM_NONE;
+    sstConsole.eToggleKeyMode = orxINPUT_MODE_NONE;
   }
 
   /* Restores previous input set */

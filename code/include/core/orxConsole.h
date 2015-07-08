@@ -99,9 +99,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxConsole_IsInsertMode();
 /** Sets the console toggle
 * @param[in] _eInputType      Type of input peripheral
 * @param[in] _eInputID        ID of button/key/axis
+* @param[in] _eInputMode      Mode of input
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID, orxINPUT_MODE _eInputMode);
 
 
 /** Logs to the console

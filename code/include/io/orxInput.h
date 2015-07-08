@@ -75,6 +75,20 @@ typedef enum __orxINPUT_TYPE_t
 
 } orxINPUT_TYPE;
 
+/** Input mode enum
+ */
+typedef enum __orxINPUT_MODE_t
+{
+  orxINPUT_MODE_FULL = 0,
+  orxINPUT_MODE_POSITIVE,
+  orxINPUT_MODE_NEGATIVE,
+
+  orxINPUT_MODE_NUMBER,
+
+  orxINPUT_MODE_NONE = orxENUM_NONE
+
+} orxINPUT_MODE;
+
 /** Event enum
  */
 typedef enum __orxINPUT_EVENT_t
@@ -95,9 +109,10 @@ typedef struct __orxINPUT_EVENT_PAYLOAD_t
 {
   const orxSTRING zSetName;                               /**< Set name : 4 */
   const orxSTRING zInputName;                             /**< Input name : 8 */
-  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 16 */
-  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 24 */
-  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 32 */
+  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 24 */
+  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 40 */
+  orxINPUT_MODE   aeMode[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding Mode : 56 */
+  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 72 */
 
 } orxINPUT_EVENT_PAYLOAD;
 
@@ -212,64 +227,72 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsInCombineMode(const
  * @param[in] _zName            Concerned input name
  * @param[in] _eType            Type of peripheral to bind
  * @param[in] _eID              ID of button/key/axis to bind
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
 
 /** Unbinds a mouse/joystick button, keyboard key or joystick axis
  * @param[in] _eType            Type of peripheral to unbind
  * @param[in] _eID              ID of button/key/axis to unbind
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
 
 /** Gets the input counter to which a mouse/joystick button, keyboard key or joystick axis is bound
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return Number of bound inputs
  */
-extern orxDLLAPI orxU32 orxFASTCALL               orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID);
+extern orxDLLAPI orxU32 orxFASTCALL               orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
 
 /** Gets the input name to which a mouse/joystick button, keyboard key or joystick axis is bound (at given index)
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
+ * @param[in] _eMode            Mode (only used for axis input)
  * @param[in] _u32InputIndex    Index of the desired input
  * @return orxSTRING input name if bound / orxSTRING_EMPY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxU32 _u32InputIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxU32 _u32InputIndex);
 
 /** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) at a given index
  * @param[in]   _zName            Concerned input name
  * @param[in]   _u32BindingIndex  Index of the desired binding
  * @param[out]  _peType           List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
  * @param[out]  _peID             List of binding IDs (button/key/axis)
+ * @param[out]  _peMode           List of modes (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID, orxINPUT_MODE *_peMode);
 
 /** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) list
  * @param[in]   _zName          Concerned input name
  * @param[out]  _aeTypeList     List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
  * @param[out]  _aeIDList       List of binding IDs (button/key/axis)
+ * @param[out]  _aeMode         List of modes (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER]);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER], orxINPUT_MODE _aeModeList[orxINPUT_KU32_BINDING_NUMBER]);
 
 
-/** Gets a binding name
+/** Gets a binding name, don't keep the result as is as it'll get overridden during the next call to this function
  * @param[in]   _eType          Binding type (mouse/joystick button, keyboard key or joystick axis)
  * @param[in]   _eID            Binding ID (ID of button/key/axis to bind)
+ * @param[in]   _eMode          Mode (only used for axis input)
  * @return orxSTRING (binding's name) if success, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID);
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
 
 /** Gets a binding type and ID from its name
  * @param[in]   _zName          Concerned input name
- * @param[in]   _peType         Binding type (mouse/joystick button, keyboard key or joystick axis)
- * @param[in]   _peID           Binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peType         Binding type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peMode         Binding mode (only used for axis input)
  * @return orxSTATUS_SUCCESS if input is valid, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID, orxINPUT_MODE *_peMode);
 
 /** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
  * @param[out]  _peType         Active binding's type (mouse/joystick button, keyboard key or joystick axis)

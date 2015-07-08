@@ -99,7 +99,13 @@
 
 #define orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING 4           /**< Last active binding shift */
 
-#define orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD        orx2F(0.1f) /**< Default joystick threshold */
+#define orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD        orx2F(0.15f)/**< Default joystick threshold */
+
+#define orxINPUT_KU32_RESULT_BUFFER_SIZE              64
+
+#define orxINPUT_KZ_MODE_FORMAT                       "%c%s"
+#define orxINPUT_KC_MODE_MARKER_POSITIVE              '+'
+#define orxINPUT_KC_MODE_MARKER_NEGATIVE              '-'
 
 
 /***************************************************************************
@@ -112,7 +118,8 @@ typedef struct __orxINPUT_BINDING_t
 {
   orxINPUT_TYPE   eType;                                          /**< Input type : 4 */
   orxENUM         eID;                                            /**< Input ID : 8 */
-  orxFLOAT        fValue;                                         /**< Value : 12 */
+  orxINPUT_MODE   eMode;                                          /**< Input Mode : 12 */
+  orxFLOAT        fValue;                                         /**< Value : 16 */
 
 } orxINPUT_BINDING;
 
@@ -126,7 +133,7 @@ typedef struct __orxINPUT_ENTRY_t
   orxU32            u32Status;                                    /**< Entry status : 24 */
   orxFLOAT          fExternalValue;                               /**< External value : 28 */
 
-  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 92 */
+  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 108 */
 
 } orxINPUT_ENTRY;
 
@@ -154,6 +161,7 @@ typedef struct __orxINPUT_STATIC_t
   orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
+  orxCHAR       acResultBuffer[orxINPUT_KU32_RESULT_BUFFER_SIZE]; /**< Result buffer */
 
 } orxINPUT_STATIC;
 
@@ -466,31 +474,37 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
       /* For all input types */
       for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
       {
-        orxENUM   eID;
-        const orxSTRING zBinding = orxNULL;
+        orxU32 eMode;
 
-        /* For all bindings */
-        for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
+        /* For all modes */
+        for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
         {
-          /* Gets binding name */
-          zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
+          orxENUM   eID;
+          const orxSTRING zBinding = orxNULL;
 
-          /* Valid? */
-          if(zBinding != orxSTRING_EMPTY)
+          /* For all bindings */
+          for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
           {
-            /* For all defined inputs */
-            for(u32Number = orxConfig_GetListCounter(zBinding), i = 0; i < u32Number; i++)
+            /* Gets binding name */
+            zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
+
+            /* Valid? */
+            if(zBinding != orxSTRING_EMPTY)
             {
-              const orxSTRING zInput;
-
-              /* Gets bound input */
-              zInput = orxConfig_GetListString(zBinding, i);
-
-              /* Valid? */
-              if(zInput != orxSTRING_EMPTY)
+              /* For all defined inputs */
+              for(u32Number = orxConfig_GetListCounter(zBinding), i = 0; i < u32Number; i++)
               {
-                /* Binds it */
-                orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID);
+                const orxSTRING zInput;
+
+                /* Gets bound input */
+                zInput = orxConfig_GetListString(zBinding, i);
+
+                /* Valid? */
+                if(zInput != orxSTRING_EMPTY)
+                {
+                  /* Binds it */
+                  orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
+                }
               }
             }
           }
@@ -557,13 +571,42 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
       /* Valid? */
       if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
       {
-        orxFLOAT fTestValue;
+        orxFLOAT fValue, fTestValue;
 
         /* Updates binding status */
         bHasBinding = orxTRUE;
 
-        /* Updates it */
-        pstEntry->astBindingList[i].fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
+        /* Gets raw value */
+        fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
+
+        /* Depending on mode */
+        switch(pstEntry->astBindingList[i].eMode)
+        {
+          default:
+          case orxINPUT_MODE_FULL:
+          {
+            /* Uses raw value */
+            pstEntry->astBindingList[i].fValue = fValue;
+
+            break;
+          }
+
+          case orxINPUT_MODE_POSITIVE:
+          {
+            /* Stores it if positive */
+            pstEntry->astBindingList[i].fValue = (fValue > orxFLOAT_0) ? fValue : orxFLOAT_0;
+
+            break;
+          }
+
+          case orxINPUT_MODE_NEGATIVE:
+          {
+            /* Stores it if negative */
+            pstEntry->astBindingList[i].fValue = (fValue < orxFLOAT_0) ? -fValue : orxFLOAT_0;
+
+            break;
+          }
+        }
 
         /* Is a joystick axis? */
         if(pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS)
@@ -640,6 +683,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
           {
             /* Updates payload */
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
+            stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
             stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
           }
@@ -657,6 +701,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             /* Updates payload values */
             stPayload.aeType[0]   = orxINPUT_TYPE_EXTERNAL;
             stPayload.aeID[0]     = orxENUM_NONE;
+            stPayload.aeMode[0]   = orxINPUT_MODE_FULL;
             stPayload.afValue[0]  = pstEntry->fExternalValue;
           }
           else
@@ -664,6 +709,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             /* Updates active binding values */
             stPayload.aeType[0]   = pstEntry->astBindingList[u32ActiveIndex].eType;
             stPayload.aeID[0]     = pstEntry->astBindingList[u32ActiveIndex].eID;
+            stPayload.aeMode[0]   = pstEntry->astBindingList[u32ActiveIndex].eMode;
             stPayload.afValue[0]  = pstEntry->astBindingList[u32ActiveIndex].fValue;
           }
 
@@ -709,6 +755,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
           {
             /* Updates payload */
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
+            stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
             stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
           }
@@ -723,6 +770,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             /* Updates payload values */
             stPayload.aeType[0]   = orxINPUT_TYPE_EXTERNAL;
             stPayload.aeID[0]     = orxENUM_NONE;
+            stPayload.aeMode[0]   = orxINPUT_MODE_FULL;
             stPayload.afValue[0]  = pstEntry->fExternalValue;
           }
           else
@@ -738,6 +786,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             /* Updates active binding values */
             stPayload.aeType[0]   = pstEntry->astBindingList[u32LastActiveIndex].eType;
             stPayload.aeID[0]     = pstEntry->astBindingList[u32LastActiveIndex].eID;
+            stPayload.aeMode[0]   = pstEntry->astBindingList[u32LastActiveIndex].eMode;
             stPayload.afValue[0]  = pstEntry->astBindingList[u32LastActiveIndex].fValue;
           }
 
@@ -886,8 +935,9 @@ static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryNam
       pstResult->u32Status  = orxINPUT_KU32_ENTRY_FLAG_NONE;
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
-        pstResult->astBindingList[i].eID    = orxENUM_NONE;
         pstResult->astBindingList[i].eType  = orxINPUT_TYPE_NONE;
+        pstResult->astBindingList[i].eID    = orxENUM_NONE;
+        pstResult->astBindingList[i].eMode  = orxINPUT_MODE_NONE;
       }
     }
   }
@@ -1334,7 +1384,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
             if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
             {
               /* Adds it to config */
-              orxConfig_SetString(orxInput_GetBindingName(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID), pstEntry->zName);
+              orxConfig_SetString(orxInput_GetBindingName(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID, pstEntry->astBindingList[i].eMode), pstEntry->zName);
             }
           }
         }
@@ -2001,9 +2051,10 @@ orxBOOL orxFASTCALL orxInput_IsInCombineMode(const orxSTRING _zName)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _eType            Type of peripheral to bind
  * @param[in] _eID              ID of button/key/axis to bind
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID)
+orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2011,6 +2062,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_zName != orxNULL);
   orxASSERT((_eType == orxINPUT_TYPE_NONE) || (_eType < orxINPUT_TYPE_NUMBER));
+  orxASSERT(_eMode < orxINPUT_MODE_NUMBER);
 
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY) && (_eType != orxINPUT_TYPE_NONE))
@@ -2038,10 +2090,10 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         /* Is already bound to this? */
-        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType) && (pstEntry->astBindingList[i].eMode == _eMode))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: <%s> is already bound to input [%s.%s].", sstInput.pstCurrentSet->zName, _zName, orxInput_GetBindingName(_eType, _eID), sstInput.pstCurrentSet->zName, pstEntry->zName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: <%s> is already bound to input [%s.%s].", sstInput.pstCurrentSet->zName, _zName, orxInput_GetBindingName(_eType, _eID, _eMode), sstInput.pstCurrentSet->zName, pstEntry->zName);
         }
       }
     }
@@ -2062,7 +2114,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         /* Is already bound to entry? */
-        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType) && (pstEntry->astBindingList[i].eMode == _eMode))
         {
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
@@ -2086,12 +2138,13 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
         if(pstEntry->astBindingList[u32OldestIndex].eType != orxINPUT_TYPE_NONE)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: replacing <%s> with <%s>", sstInput.pstCurrentSet->zName, pstEntry->zName, orxInput_GetBindingName(pstEntry->astBindingList[u32OldestIndex].eType, pstEntry->astBindingList[u32OldestIndex].eID), orxInput_GetBindingName(_eType, _eID));
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s.%s]: replacing <%s> with <%s>", sstInput.pstCurrentSet->zName, pstEntry->zName, orxInput_GetBindingName(pstEntry->astBindingList[u32OldestIndex].eType, pstEntry->astBindingList[u32OldestIndex].eID, pstEntry->astBindingList[u32OldestIndex].eMode), orxInput_GetBindingName(_eType, _eID, _eMode));
         }
 
         /* Updates binding */
         pstEntry->astBindingList[u32OldestIndex].eType  = _eType;
         pstEntry->astBindingList[u32OldestIndex].eID    = _eID;
+        pstEntry->astBindingList[u32OldestIndex].eMode  = _eMode;
         pstEntry->astBindingList[u32OldestIndex].fValue = orxFLOAT_0;
 
         /* Gets new oldest index */
@@ -2118,15 +2171,17 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
 /** Unbinds a mouse/joystick button, keyboard key or joystick axis
  * @param[in] _eType            Type of peripheral to unbind
  * @param[in] _eID              ID of button/key/axis to unbind
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
+orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
+  orxASSERT(_eMode < orxINPUT_MODE_NUMBER);
 
   /* Valid? */
   if(sstInput.pstCurrentSet != orxNULL)
@@ -2144,7 +2199,7 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         /* Found? */
-        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType) && (pstEntry->astBindingList[i].eMode == _eMode))
         {
           orxU32  j;
           orxBOOL bBound = orxFALSE;
@@ -2192,9 +2247,10 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
 /** Gets the input counter to which a mouse/joystick button, keyboard key or joystick axis is bound
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
+ * @param[in] _eMode            Mode (only used for axis input)
  * @return Number of bound inputs
  */
-orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID)
+orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
 {
   orxU32 u32Result = 0;
 
@@ -2218,7 +2274,7 @@ orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         /* Found? */
-        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType) && (pstEntry->astBindingList[i].eMode == _eMode))
         {
           /* Updates result */
           u32Result++;
@@ -2234,10 +2290,11 @@ orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _
 /** Gets the input name to which a mouse/joystick button, keyboard key or joystick axis is bound (at given index)
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
+ * @param[in] _eMode            Mode (only used for axis input)
  * @param[in] _u32InputIndex    Index of the desired input
  * @return orxSTRING input name if bound / orxSTRING_EMPY otherwise
  */
-const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxU32 _u32InputIndex)
+const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxU32 _u32InputIndex)
 {
   const orxSTRING zResult = orxSTRING_EMPTY;
 
@@ -2246,7 +2303,7 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Valid? */
-  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputCounter(_eType, _eID)))
+  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputCounter(_eType, _eID, _eMode)))
   {
     orxINPUT_ENTRY *pstEntry;
     orxU32          u32CurrentIndex;
@@ -2262,7 +2319,7 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         /* Found? */
-        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
+        if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType) && (pstEntry->astBindingList[i].eMode == _eMode))
         {
           /* Found correct index? */
           if(u32CurrentIndex == _u32InputIndex)
@@ -2291,9 +2348,10 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
  * @param[in]   _u32BindingIndex Index of the desired binding
  * @param[out]  _peType          List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
  * @param[out]  _peID            List of binding IDs (button/key/axis)
+ * @param[out]  _peMode           List of modes (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID)
+orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID, orxINPUT_MODE *_peMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2303,6 +2361,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
   orxASSERT(_u32BindingIndex < orxINPUT_KU32_BINDING_NUMBER);
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
+  orxASSERT(_peMode != orxNULL);
 
   /* Valid? */
   if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY))
@@ -2324,6 +2383,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
         /* Updates result */
         *_peType  = pstEntry->astBindingList[_u32BindingIndex].eType;
         *_peID    = pstEntry->astBindingList[_u32BindingIndex].eID;
+        *_peMode  = pstEntry->astBindingList[_u32BindingIndex].eMode;
         eResult   = orxSTATUS_SUCCESS;
 
         break;
@@ -2337,6 +2397,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
     /* Updates result */
     *_peType  = orxINPUT_TYPE_NONE;
     *_peID    = orxENUM_NONE;
+    *_peMode  = orxINPUT_MODE_NONE;
   }
 
   /* Done! */
@@ -2344,12 +2405,13 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
 }
 
 /** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) list
- * @param[in] _zName            Concerned input name
- * @param[out] _aeTypeList      List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
- * @param[out] _aeIDList        List of binding IDs (button/key/axis)
+ * @param[in]   _zName          Concerned input name
+ * @param[out]  _aeTypeList     List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
+ * @param[out]  _aeIDList       List of binding IDs (button/key/axis)
+ * @param[out]  _aeMode         List of modes (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER])
+orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER], orxINPUT_MODE _aeModeList[orxINPUT_KU32_BINDING_NUMBER])
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2382,8 +2444,9 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
         for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
         {
           /* Updates result */
-          _aeTypeList[i] = pstEntry->astBindingList[i].eType;
-          _aeIDList[i] = pstEntry->astBindingList[i].eType;
+          _aeTypeList[i]  = pstEntry->astBindingList[i].eType;
+          _aeIDList[i]    = pstEntry->astBindingList[i].eID;
+          _aeModeList[i]  = pstEntry->astBindingList[i].eMode;
         }
 
         /* Updates result */
@@ -2403,8 +2466,9 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
     for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
     {
       /* Updates result */
-      _aeTypeList[i] = orxINPUT_TYPE_NONE;
-      _aeIDList[i] = orxENUM_NONE;
+      _aeTypeList[i]  = orxINPUT_TYPE_NONE;
+      _aeIDList[i]    = orxENUM_NONE;
+      _aeModeList[i]  = orxINPUT_MODE_NONE;
     }
   }
 
@@ -2412,12 +2476,13 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
   return eResult;
 }
 
-/** Gets a binding name
+/** Gets a binding name, don't keep the result as is as it'll get overridden during the next call to this function
  * @param[in]   _eType          Binding type (mouse/joystick button, keyboard key or joystick axis)
  * @param[in]   _eID            Binding ID (ID of button/key/axis to bind)
+ * @param[in]   _eMode          Mode (only used for axis input)
  * @return orxSTRING (binding's name) if success, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID)
+const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
 {
   const orxSTRING zResult = orxSTRING_EMPTY;
 
@@ -2504,17 +2569,58 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
     }
   }
 
+  /* Valid result? */
+  if(zResult != orxSTRING_EMPTY)
+  {
+    /* Depending on mode */
+    switch(_eMode)
+    {
+      case orxINPUT_MODE_FULL:
+      {
+        /* Nothing to do */
+        break;
+      }
+
+      case orxINPUT_MODE_POSITIVE:
+      {
+        /* Updates result */
+        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_MARKER_POSITIVE, zResult);
+        zResult = sstInput.acResultBuffer;
+
+        break;
+      }
+
+      case orxINPUT_MODE_NEGATIVE:
+      {
+        /* Updates result */
+        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_MARKER_NEGATIVE, zResult);
+        zResult = sstInput.acResultBuffer;
+
+        break;
+      }
+
+      default:
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+
+        break;
+      }
+    }
+  }
+
   /* Done! */
   return zResult;
 }
 
 /** Gets a binding type and ID from its name
  * @param[in]   _zName          Concerned input name
- * @param[in]   _peType         Binding type (mouse/joystick button, keyboard key or joystick axis)
- * @param[in]   _peID           Binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peType         Binding type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Binding ID (ID of button/key/axis to bind)
+ * @param[out]  _peMode         Binding mode (only used for axis input)
  * @return orxSTATUS_SUCCESS if input is valid, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID)
+orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_TYPE *_peType, orxENUM *_peID, orxINPUT_MODE *_peMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2523,11 +2629,12 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
   orxASSERT(_zName != orxNULL);
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
+  orxASSERT(_peMode != orxNULL);
 
   /* Valid name? */
   if(_zName != orxSTRING_EMPTY)
   {
-    orxU32 eType, u32ID;
+    orxU32 u32ID;
 
     /* Gets binding ID */
     u32ID = orxString_ToCRC(_zName);
@@ -2535,27 +2642,36 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
     /* Valid? */
     if(u32ID != 0)
     {
+      orxU32 eType;
+
       /* For all input types */
       for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
       {
-        orxENUM   eID;
-        const orxSTRING zBinding = orxNULL;
+        orxU32 eMode;
 
-        /* For all bindings */
-        for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
+        /* For all modes */
+        for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
         {
-          /* Gets its name */
-          zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
+          orxENUM   eID;
+          const orxSTRING zBinding = orxNULL;
 
-          /* Found? */
-          if(orxString_ToCRC(zBinding) == u32ID)
+          /* For all bindings */
+          for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
           {
-            /* Updates result */
-            *_peType  = (orxINPUT_TYPE)eType;
-            *_peID    = eID;
-            eResult   = orxSTATUS_SUCCESS;
+            /* Gets its name */
+            zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
 
-            break;
+            /* Found? */
+            if(orxString_ToCRC(zBinding) == u32ID)
+            {
+              /* Updates result */
+              *_peType  = (orxINPUT_TYPE)eType;
+              *_peID    = eID;
+              *_peMode  = (orxINPUT_MODE)eMode;
+              eResult   = orxSTATUS_SUCCESS;
+
+              break;
+            }
           }
         }
       }
@@ -2585,14 +2701,14 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   /* For all input types */
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
   {
-    orxENUM   eID;
+    orxENUM         eID;
     const orxSTRING zBinding = orxNULL;
 
     /* For all bindings */
     for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
     {
-      /* Gets binding name */
-      zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID);
+      /* Gets binding name (full mode) */
+      zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, orxINPUT_MODE_FULL);
 
       /* Valid? */
       if(zBinding != orxSTRING_EMPTY)
