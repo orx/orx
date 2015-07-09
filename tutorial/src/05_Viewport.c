@@ -222,6 +222,7 @@ orxSTATUS orxFASTCALL Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputCameraLeft;
   const orxSTRING zInputCameraRight;
   const orxSTRING zInputCameraUp;
@@ -238,47 +239,47 @@ orxSTATUS orxFASTCALL Init()
   const orxSTRING zInputViewportScaleDown;
 
   /* Gets input binding names */
-  orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
-  zInputCameraLeft = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraLeft", 0, &eType, &eID, &eMode);
+  zInputCameraLeft = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraRight", 0, &eType, &eID);
-  zInputCameraRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraRight", 0, &eType, &eID, &eMode);
+  zInputCameraRight = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraUp", 0, &eType, &eID);
-  zInputCameraUp = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraUp", 0, &eType, &eID, &eMode);
+  zInputCameraUp = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraDown", 0, &eType, &eID);
-  zInputCameraDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraDown", 0, &eType, &eID, &eMode);
+  zInputCameraDown = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraRotateLeft", 0, &eType, &eID);
-  zInputCameraRotateLeft = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraRotateLeft", 0, &eType, &eID, &eMode);
+  zInputCameraRotateLeft = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraRotateRight", 0, &eType, &eID);
-  zInputCameraRotateRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraRotateRight", 0, &eType, &eID, &eMode);
+  zInputCameraRotateRight = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraZoomIn", 0, &eType, &eID);
-  zInputCameraZoomIn = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraZoomIn", 0, &eType, &eID, &eMode);
+  zInputCameraZoomIn = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("CameraZoomOut", 0, &eType, &eID);
-  zInputCameraZoomOut = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CameraZoomOut", 0, &eType, &eID, &eMode);
+  zInputCameraZoomOut = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportLeft", 0, &eType, &eID);
-  zInputViewportLeft = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportLeft", 0, &eType, &eID, &eMode);
+  zInputViewportLeft = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportRight", 0, &eType, &eID);
-  zInputViewportRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportRight", 0, &eType, &eID, &eMode);
+  zInputViewportRight = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportUp", 0, &eType, &eID);
-  zInputViewportUp = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportUp", 0, &eType, &eID, &eMode);
+  zInputViewportUp = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportDown", 0, &eType, &eID);
-  zInputViewportDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportDown", 0, &eType, &eID, &eMode);
+  zInputViewportDown = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportScaleUp", 0, &eType, &eID);
-  zInputViewportScaleUp = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportScaleUp", 0, &eType, &eID, &eMode);
+  zInputViewportScaleUp = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ViewportScaleDown", 0, &eType, &eID);
-  zInputViewportScaleDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ViewportScaleDown", 0, &eType, &eID, &eMode);
+  zInputViewportScaleDown = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n* Worskpaces 1 & 4 display camera 1 content"

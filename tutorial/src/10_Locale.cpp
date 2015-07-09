@@ -224,14 +224,15 @@ orxSTATUS Game::Init()
   orxSTATUS       eResult;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputQuit;
   const orxSTRING zInputCycle;
 
   /* Gets input binding names */
-  orxInput_GetBinding("Quit", 0, &eType, &eID);
-  zInputQuit = orxInput_GetBindingName(eType, eID);
-  orxInput_GetBinding("CycleLanguage", 0, &eType, &eID);
-  zInputCycle = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("Quit", 0, &eType, &eID, &eMode);
+  zInputQuit = orxInput_GetBindingName(eType, eID, eMode);
+  orxInput_GetBinding("CycleLanguage", 0, &eType, &eID, &eMode);
+  zInputCycle = orxInput_GetBindingName(eType, eID, eMode);
 
   // Logs
   orxLOG("\n- '%s' will exit from this tutorial"

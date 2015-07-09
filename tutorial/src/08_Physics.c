@@ -159,15 +159,16 @@ orxSTATUS orxFASTCALL Init()
   orxU32          i;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputRotateLeft;
   const orxSTRING zInputRotateRight;
 
   /* Gets input binding names */
-  orxInput_GetBinding("RotateLeft", 0, &eType, &eID);
-  zInputRotateLeft = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("RotateLeft", 0, &eType, &eID, &eMode);
+  zInputRotateLeft = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("RotateRight", 0, &eType, &eID);
-  zInputRotateRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("RotateRight", 0, &eType, &eID, &eMode);
+  zInputRotateRight = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' & '%s' will rotate the camera"

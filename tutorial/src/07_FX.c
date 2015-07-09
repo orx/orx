@@ -108,12 +108,12 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
       {
         /* Logs info */
-        orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]));
+        orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]));
       }
       else
       {
         /* Logs info */
-        orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]));
+        orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]));
       }
     }
   }
@@ -238,6 +238,7 @@ orxSTATUS orxFASTCALL Init()
   MyObject       *pstMyObject;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputSelectWobble;
   const orxSTRING zInputSelectCircle;
   const orxSTRING zInputSelectFade;
@@ -248,29 +249,29 @@ orxSTATUS orxFASTCALL Init()
   const orxSTRING zInputApplyFX;
 
   /* Gets input binding names */
-  orxInput_GetBinding("SelectWobble", 0, &eType, &eID);
-  zInputSelectWobble  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectWobble", 0, &eType, &eID, &eMode);
+  zInputSelectWobble  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectCircle", 0, &eType, &eID);
-  zInputSelectCircle  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectCircle", 0, &eType, &eID, &eMode);
+  zInputSelectCircle  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectFade", 0, &eType, &eID);
-  zInputSelectFade    = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectFade", 0, &eType, &eID, &eMode);
+  zInputSelectFade    = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectFlash", 0, &eType, &eID);
-  zInputSelectFlash   = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectFlash", 0, &eType, &eID, &eMode);
+  zInputSelectFlash   = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectMove", 0, &eType, &eID);
-  zInputSelectMove    = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectMove", 0, &eType, &eID, &eMode);
+  zInputSelectMove    = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectFlip", 0, &eType, &eID);
-  zInputSelectFlip    = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectFlip", 0, &eType, &eID, &eMode);
+  zInputSelectFlip    = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("SelectMultiFX", 0, &eType, &eID);
-  zInputSelectMultiFX = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("SelectMultiFX", 0, &eType, &eID, &eMode);
+  zInputSelectMultiFX = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ApplyFX", 0, &eType, &eID);
-  zInputApplyFX       = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ApplyFX", 0, &eType, &eID, &eMode);
+  zInputApplyFX       = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- To select the FX to apply:"

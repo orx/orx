@@ -115,23 +115,24 @@ orxSTATUS orxFASTCALL Init()
   orxOBJECT      *pstObject;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputRotateLeft;
   const orxSTRING zInputRotateRight;
   const orxSTRING zInputScaleUp;
   const orxSTRING zInputScaleDown;
 
   /* Gets input binding names */
-  orxInput_GetBinding("RotateLeft", 0, &eType, &eID);
-  zInputRotateLeft  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("RotateLeft", 0, &eType, &eID, &eMode);
+  zInputRotateLeft  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("RotateRight", 0, &eType, &eID);
-  zInputRotateRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("RotateRight", 0, &eType, &eID, &eMode);
+  zInputRotateRight = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ScaleUp", 0, &eType, &eID);
-  zInputScaleUp     = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ScaleUp", 0, &eType, &eID, &eMode);
+  zInputScaleUp     = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ScaleDown", 0, &eType, &eID);
-  zInputScaleDown   = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ScaleDown", 0, &eType, &eID, &eMode);
+  zInputScaleDown   = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- The parent object will follow the mouse\n- '%s' & '%s' will rotate it\n- '%s' & '%s' will scale it", zInputRotateLeft, zInputRotateRight, zInputScaleUp, zInputScaleDown);

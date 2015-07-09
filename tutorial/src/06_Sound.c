@@ -217,6 +217,7 @@ orxSTATUS orxFASTCALL Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputVolumeUp;
   const orxSTRING zInputVolumeDown;
   const orxSTRING zInputPitchUp;
@@ -226,26 +227,26 @@ orxSTATUS orxFASTCALL Init()
   const orxSTRING zInputDefaultSFX;
 
   /* Gets input binding names */
-  orxInput_GetBinding("VolumeUp", 0, &eType, &eID);
-  zInputVolumeUp = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("VolumeUp", 0, &eType, &eID, &eMode);
+  zInputVolumeUp = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("VolumeDown", 0, &eType, &eID);
-  zInputVolumeDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("VolumeDown", 0, &eType, &eID, &eMode);
+  zInputVolumeDown = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("PitchUp", 0, &eType, &eID);
-  zInputPitchUp = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("PitchUp", 0, &eType, &eID, &eMode);
+  zInputPitchUp = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("PitchDown", 0, &eType, &eID);
-  zInputPitchDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("PitchDown", 0, &eType, &eID, &eMode);
+  zInputPitchDown = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ToggleMusic", 0, &eType, &eID);
-  zInputToggleMusic = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ToggleMusic", 0, &eType, &eID, &eMode);
+  zInputToggleMusic = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("RandomSFX", 0, &eType, &eID);
-  zInputRandomSFX = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("RandomSFX", 0, &eType, &eID, &eMode);
+  zInputRandomSFX = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("DefaultSFX", 0, &eType, &eID);
-  zInputDefaultSFX = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("DefaultSFX", 0, &eType, &eID, &eMode);
+  zInputDefaultSFX = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' & '%s' will change the music volume (+ soldier size)"

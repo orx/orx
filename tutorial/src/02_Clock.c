@@ -142,23 +142,24 @@ orxSTATUS orxFASTCALL Init()
   orxOBJECT      *pstObject1, *pstObject2;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputLog;
   const orxSTRING zInputFaster;
   const orxSTRING zInputSlower;
   const orxSTRING zInputNormal;
 
   /* Gets input binding names */
-  orxInput_GetBinding("Log", 0, &eType, &eID);
-  zInputLog     = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("Log", 0, &eType, &eID, &eMode);
+  zInputLog     = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("Faster", 0, &eType, &eID);
-  zInputFaster  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("Faster", 0, &eType, &eID, &eMode);
+  zInputFaster  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("Slower", 0, &eType, &eID);
-  zInputSlower  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("Slower", 0, &eType, &eID, &eMode);
+  zInputSlower  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("Normal", 0, &eType, &eID);
-  zInputNormal  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("Normal", 0, &eType, &eID, &eMode);
+  zInputNormal  = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- Press '%s' to toggle log display"

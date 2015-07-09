@@ -164,23 +164,24 @@ orxSTATUS orxFASTCALL Init()
   orxCLOCK       *pstClock;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputWalkLeft;
   const orxSTRING zInputWalkRight;
   const orxSTRING zInputScaleUp;
   const orxSTRING zInputScaleDown;
 
   /* Gets input binding names */
-  orxInput_GetBinding("GoLeft", 0, &eType, &eID);
-  zInputWalkLeft  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("GoLeft", 0, &eType, &eID, &eMode);
+  zInputWalkLeft  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("GoRight", 0, &eType, &eID);
-  zInputWalkRight = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("GoRight", 0, &eType, &eID, &eMode);
+  zInputWalkRight = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ScaleUp", 0, &eType, &eID);
-  zInputScaleUp   = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ScaleUp", 0, &eType, &eID, &eMode);
+  zInputScaleUp   = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ScaleDown", 0, &eType, &eID);
-  zInputScaleDown = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ScaleDown", 0, &eType, &eID, &eMode);
+  zInputScaleDown = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' & '%s' will change the soldier's animations\n- '%s' & '%s' will scale the soldier", zInputWalkLeft, zInputWalkRight, zInputScaleUp, zInputScaleDown);

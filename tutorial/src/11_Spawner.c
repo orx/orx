@@ -134,15 +134,16 @@ orxSTATUS orxFASTCALL Init()
 {
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputNextConfig;
   const orxSTRING zInputPreviousConfig;
 
   /* Gets binding names */
-  orxInput_GetBinding("NextConfig", 0, &eType, &eID);
-  zInputNextConfig = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("NextConfig", 0, &eType, &eID, &eMode);
+  zInputNextConfig = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("PreviousConfig", 0, &eType, &eID);
-  zInputPreviousConfig = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("PreviousConfig", 0, &eType, &eID, &eMode);
+  zInputPreviousConfig = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' will switch to the next config settings"

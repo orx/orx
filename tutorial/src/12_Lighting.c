@@ -350,6 +350,7 @@ orxSTATUS orxFASTCALL Init()
 {
   orxINPUT_TYPE   eType;
   orxENUM         eID;
+  orxINPUT_MODE   eMode;
   const orxSTRING zInputClearLights;
   const orxSTRING zInputCreateLight;
   const orxSTRING zInputIncreaseRadius;
@@ -358,20 +359,20 @@ orxSTATUS orxFASTCALL Init()
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Gets binding names */
-  orxInput_GetBinding("CreateLight", 0, &eType, &eID);
-  zInputCreateLight     = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("CreateLight", 0, &eType, &eID, &eMode);
+  zInputCreateLight     = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ClearLights", 0, &eType, &eID);
-  zInputClearLights     = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ClearLights", 0, &eType, &eID, &eMode);
+  zInputClearLights     = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("IncreaseRadius", 0, &eType, &eID);
-  zInputIncreaseRadius  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("IncreaseRadius", 0, &eType, &eID, &eMode);
+  zInputIncreaseRadius  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("DecreaseRadius", 0, &eType, &eID);
-  zInputDecreaseRadius  = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("DecreaseRadius", 0, &eType, &eID, &eMode);
+  zInputDecreaseRadius  = orxInput_GetBindingName(eType, eID, eMode);
 
-  orxInput_GetBinding("ToggleAlpha", 0, &eType, &eID);
-  zInputToggleAlpha     = orxInput_GetBindingName(eType, eID);
+  orxInput_GetBinding("ToggleAlpha", 0, &eType, &eID, &eMode);
+  zInputToggleAlpha     = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
   orxLOG("\n- '%s' will create a new light under the cursor"
