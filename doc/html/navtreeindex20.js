@@ -1,5 +1,17 @@
 var NAVTREEINDEX20 =
 {
+"orx_string_8h.html#ga73609453472017913e3e329ce2c12ff4":[3,0,0,14,2,42],
+"orx_string_8h.html#ga7782e2bf85e3f7d33ad24b29a921f756":[3,0,0,14,2,25],
+"orx_string_8h.html#ga79b5537709b17a25daaa794769112723":[3,0,0,14,2,37],
+"orx_string_8h.html#ga79cd63e7940941385c40c0a0a0f62d16":[3,0,0,14,2,38],
+"orx_string_8h.html#ga83400b262aac2f6448baed8df49409f4":[3,0,0,14,2,56],
+"orx_string_8h.html#ga8efae7ba83881a8facdbc8bb8f52e9b1":[3,0,0,14,2,39],
+"orx_string_8h.html#ga8f3628b7c1c5bfd17883ff38218c2bac":[3,0,0,14,2,59],
+"orx_string_8h.html#ga9005ced07cec12a8ee12cb4cee3213c8":[3,0,0,14,2,49],
+"orx_string_8h.html#ga94c86ba15a4ce44d29de9a37b113f55d":[3,0,0,14,2,50],
+"orx_string_8h.html#ga97f4ebd9c7861f0a0f34370154db6637":[3,0,0,14,2,17],
+"orx_string_8h.html#ga981c39a82ad021ec08f84a8cb074a695":[3,0,0,14,2,30],
+"orx_string_8h.html#gaa2a656e10d7ec4fe736684cc5e4828ae":[3,0,0,14,2,10],
 "orx_string_8h.html#gaa62f828ae9bbcad9957df3195a4aca3b":[3,0,0,14,2,29],
 "orx_string_8h.html#gaa669788a1ddcb93b49b4a76711cb6f7b":[3,0,0,14,2,58],
 "orx_string_8h.html#gaa8986a6ede4e3a578f54f816488ce1b6":[3,0,0,14,2,13],
@@ -237,17 +249,5 @@ var NAVTREEINDEX20 =
 "orx_tree_8h.html":[3,0,0,14,3],
 "orx_tree_8h.html#ga26ed9987077dc6e4918205ac3dac360a":[3,0,0,14,3,12],
 "orx_tree_8h.html#ga347489e50ce3eb5ed2596c78d8d59dd3":[3,0,0,14,3,0],
-"orx_tree_8h.html#ga5a7dc6e58ae762c6024acf7606ae2e3d":[3,0,0,14,3,3],
-"orx_tree_8h.html#ga8187d0532bb9c8a1727e4171f2d4f8b3":[3,0,0,14,3,9],
-"orx_tree_8h.html#ga88912cc88afa257504c96c1a2b041338":[3,0,0,14,3,2],
-"orx_tree_8h.html#ga8a11078ef1c414d846550f3e55d4d029":[3,0,0,14,3,10],
-"orx_tree_8h.html#ga8fdba23c6930763d51d5aaa0fcc5c7d7":[3,0,0,14,3,11],
-"orx_tree_8h.html#ga9e30cca8dce436b7a6d74b6f2c4705e3":[3,0,0,14,3,8],
-"orx_tree_8h.html#gac03d3374c0248798ae903e3bb1f2bca3":[3,0,0,14,3,1],
-"orx_tree_8h.html#gac479b2f7c343405752d5031a20a24f1f":[3,0,0,14,3,7],
-"orx_tree_8h.html#gad4ae5f030a001c6d5eeea85d84c59e90":[3,0,0,14,3,4],
-"orx_tree_8h.html#gaeba32cfd9a5a4930b721aeb0829384ba":[3,0,0,14,3,5],
-"orx_tree_8h.html#gaeff1423931d056d7248f16daf4a86c38":[3,0,0,14,3,6],
-"orx_tree_8h_source.html":[3,0,0,14,3],
-"orx_type_8h.html":[3,0,0,1,2]
+"orx_tree_8h.html#ga5a7dc6e58ae762c6024acf7606ae2e3d":[3,0,0,14,3,3]
 };

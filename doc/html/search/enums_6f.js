@@ -16,6 +16,7 @@ var searchData=
   ['orxfx_5fcurve',['orxFX_CURVE',['../group__orx_f_x.html#gae8f2811c408370bc68644656b1806654',1,'orxFX.h']]],
   ['orxfx_5fevent',['orxFX_EVENT',['../group__orx_f_x.html#ga441cf7ac90620ea72e8a285745011b24',1,'orxFX.h']]],
   ['orxinput_5fevent',['orxINPUT_EVENT',['../group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108',1,'orxInput.h']]],
+  ['orxinput_5fmode',['orxINPUT_MODE',['../group__orx_input.html#ga792a36e293073c41ca434b9d6afd30e5',1,'orxInput.h']]],
   ['orxinput_5ftype',['orxINPUT_TYPE',['../group__orx_input.html#ga13d8a7334d0c18530536658991628659',1,'orxInput.h']]],
   ['orxjoystick_5faxis',['orxJOYSTICK_AXIS',['../group__orx_joystick.html#gaac676f97aec33fc1dad588ae845d5642',1,'orxJoystick.h']]],
   ['orxjoystick_5fbutton',['orxJOYSTICK_BUTTON',['../group__orx_joystick.html#gab6cecefc4e8f1578ed021880bb9cc94b',1,'orxJoystick.h']]],

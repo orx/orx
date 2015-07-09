@@ -25,6 +25,6 @@ var group__orx_console =
     [ "orxConsole_Log", "group__orx_console.html#gae38e4c990bc8bd3caa6724690a1b83ee", null ],
     [ "orxConsole_SetFont", "group__orx_console.html#ga112f1868a022f4f279c86aad0ee9361c", null ],
     [ "orxConsole_SetLogLineLength", "group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210", null ],
-    [ "orxConsole_SetToggle", "group__orx_console.html#gaa51b5f9a49e93eab97254b126f160792", null ],
+    [ "orxConsole_SetToggle", "group__orx_console.html#gab15ba4bd4bfcb2a5e6f0b11ff7f87eed", null ],
     [ "orxConsole_Setup", "group__orx_console.html#ga86a9705132e4f6e0a4b4f5378308dc32", null ]
 ];

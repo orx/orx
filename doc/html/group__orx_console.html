@@ -168,8 +168,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:ga112f1868a022f4f279c86aad0ee9361c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacd3c960e8277577e152b9fe22e8ae210"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gacd3c960e8277577e152b9fe22e8ae210">orxConsole_SetLogLineLength</a> (orxU32 _u32LineLength)</td></tr>
 <tr class="separator:gacd3c960e8277577e152b9fe22e8ae210"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa51b5f9a49e93eab97254b126f160792"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gaa51b5f9a49e93eab97254b126f160792">orxConsole_SetToggle</a> (<a class="el" href="group__orx_input.html#ga13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eInputType, orxENUM _eInputID)</td></tr>
-<tr class="separator:gaa51b5f9a49e93eab97254b126f160792"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab15ba4bd4bfcb2a5e6f0b11ff7f87eed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#gab15ba4bd4bfcb2a5e6f0b11ff7f87eed">orxConsole_SetToggle</a> (<a class="el" href="group__orx_input.html#ga13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eInputType, orxENUM _eInputID, <a class="el" href="group__orx_input.html#ga792a36e293073c41ca434b9d6afd30e5">orxINPUT_MODE</a> _eInputMode)</td></tr>
+<tr class="separator:gab15ba4bd4bfcb2a5e6f0b11ff7f87eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga86a9705132e4f6e0a4b4f5378308dc32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_console.html#ga86a9705132e4f6e0a4b4f5378308dc32">orxConsole_Setup</a> ()</td></tr>
 <tr class="separator:ga86a9705132e4f6e0a4b4f5378308dc32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -616,7 +616,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="gaa51b5f9a49e93eab97254b126f160792"></a>
+<a class="anchor" id="gab15ba4bd4bfcb2a5e6f0b11ff7f87eed"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -630,7 +630,13 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxENUM&#160;</td>
-          <td class="paramname"><em>_eInputID</em>&#160;</td>
+          <td class="paramname"><em>_eInputID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_input.html#ga792a36e293073c41ca434b9d6afd30e5">orxINPUT_MODE</a>&#160;</td>
+          <td class="paramname"><em>_eInputMode</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -644,6 +650,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_eInputType</td><td>Type of input peripheral </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_eInputID</td><td>ID of button/key/axis </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eInputMode</td><td>Mode of input </td></tr>
   </table>
   </dd>
 </dl>

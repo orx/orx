@@ -9,6 +9,13 @@ var orx_input_8h =
       [ "orxINPUT_EVENT_NUMBER", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c", null ],
       [ "orxINPUT_EVENT_NONE", "orx_input_8h.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82", null ]
     ] ],
+    [ "orxINPUT_MODE", "orx_input_8h.html#ga792a36e293073c41ca434b9d6afd30e5", [
+      [ "orxINPUT_MODE_FULL", "orx_input_8h.html#gga792a36e293073c41ca434b9d6afd30e5a0aca3225091309eca6305ec9448c2c29", null ],
+      [ "orxINPUT_MODE_POSITIVE", "orx_input_8h.html#gga792a36e293073c41ca434b9d6afd30e5a0df3b4ddf3817c1165a138fecdb39777", null ],
+      [ "orxINPUT_MODE_NEGATIVE", "orx_input_8h.html#gga792a36e293073c41ca434b9d6afd30e5ae3145eb42bacaf2fb3b5310eab3c54ab", null ],
+      [ "orxINPUT_MODE_NUMBER", "orx_input_8h.html#gga792a36e293073c41ca434b9d6afd30e5ae3b8baf824928e1a958f8774ee23c372", null ],
+      [ "orxINPUT_MODE_NONE", "orx_input_8h.html#gga792a36e293073c41ca434b9d6afd30e5accc729d0b5b59a35fafe4bd9de91b569", null ]
+    ] ],
     [ "orxINPUT_TYPE", "orx_input_8h.html#ga13d8a7334d0c18530536658991628659", [
       [ "orxINPUT_TYPE_KEYBOARD_KEY", "orx_input_8h.html#gga13d8a7334d0c18530536658991628659a072036cd0b2a36605c5f13226387e36a", null ],
       [ "orxINPUT_TYPE_MOUSE_BUTTON", "orx_input_8h.html#gga13d8a7334d0c18530536658991628659ada3ebdb12e608125c350130f26b9de52", null ],
@@ -19,16 +26,16 @@ var orx_input_8h =
       [ "orxINPUT_TYPE_NUMBER", "orx_input_8h.html#gga13d8a7334d0c18530536658991628659adea8549dfda454ad486d3697c2c4672b", null ],
       [ "orxINPUT_TYPE_NONE", "orx_input_8h.html#gga13d8a7334d0c18530536658991628659ab866e5f4e6df8eb07878919669d8a3d8", null ]
     ] ],
-    [ "orxInput_Bind", "orx_input_8h.html#ga6445ff03f53efd756258070b52f8eea9", null ],
+    [ "orxInput_Bind", "orx_input_8h.html#ga9fd25621386542b8a76ef605b062eae8", null ],
     [ "orxInput_EnableSet", "orx_input_8h.html#ga8b0c6c19d0753b894b6d0add816516bc", null ],
     [ "orxInput_Exit", "orx_input_8h.html#ga494bcae3fb2c30b26d44069ce7a844a1", null ],
     [ "orxInput_GetActiveBinding", "orx_input_8h.html#gab4636c9b964274cfe2cd10203ccd0dd6", null ],
-    [ "orxInput_GetBinding", "orx_input_8h.html#gaba4b01e74bf2c456659a815cf67281c9", null ],
-    [ "orxInput_GetBindingList", "orx_input_8h.html#ga7bb6be1573073dfdc881d901c8c79284", null ],
-    [ "orxInput_GetBindingName", "orx_input_8h.html#gad764ac0f8b77dbd4bbefdd9891519dbf", null ],
-    [ "orxInput_GetBindingType", "orx_input_8h.html#gad5df2a434ea88a1aed611ea1c6530a3b", null ],
-    [ "orxInput_GetBoundInput", "orx_input_8h.html#ga1d785a408be82ed78e4a2defb0c0acdc", null ],
-    [ "orxInput_GetBoundInputCounter", "orx_input_8h.html#ga4f1eae3eb68f2d9fe9912cdb3512f291", null ],
+    [ "orxInput_GetBinding", "orx_input_8h.html#ga2d9daa283a38740dff7ace1c6df24f82", null ],
+    [ "orxInput_GetBindingList", "orx_input_8h.html#ga70a74994a419dc1b4ad7e7500317fe16", null ],
+    [ "orxInput_GetBindingName", "orx_input_8h.html#gadaad0e95af17d1e3086d3558a7b6868c", null ],
+    [ "orxInput_GetBindingType", "orx_input_8h.html#ga74c83ce70224a1b9f6b14249c79df4fe", null ],
+    [ "orxInput_GetBoundInput", "orx_input_8h.html#ga7a64a4680ff3de5ca7b23f3e9012c17c", null ],
+    [ "orxInput_GetBoundInputCounter", "orx_input_8h.html#ga18c532bd6b587102950a69bf04bdc12c", null ],
     [ "orxInput_GetCurrentSet", "orx_input_8h.html#gabf638c2d7b0cf7488050b390caf26b21", null ],
     [ "orxInput_GetValue", "orx_input_8h.html#gadaa46efcffa6a0267862228ca01f9131", null ],
     [ "orxInput_HasNewStatus", "orx_input_8h.html#gac5afa246a389c779ac3c3a0d6635e363", null ],
@@ -44,5 +51,5 @@ var orx_input_8h =
     [ "orxInput_SetPermanentValue", "orx_input_8h.html#ga42393f5dfe8922974e5ecf198abde788", null ],
     [ "orxInput_Setup", "orx_input_8h.html#ga1095ad88059cd0d841a28ad60efc0a22", null ],
     [ "orxInput_SetValue", "orx_input_8h.html#gab2b159105a935ccb1547119a07822f97", null ],
-    [ "orxInput_Unbind", "orx_input_8h.html#ga41dac9027f2f429d21026c0a2994e7ae", null ]
+    [ "orxInput_Unbind", "orx_input_8h.html#gab92e0cf7b1f98c183d46a05887de1c2c", null ]
 ];
