@@ -57,6 +57,9 @@
 
 #define orxINPUT_KZ_INTERNAL_SET_PREFIX   "-="
 
+#define orxINPUT_KC_MODE_PREFIX_POSITIVE  '+'
+#define orxINPUT_KC_MODE_PREFIX_NEGATIVE  '-'
+
 
 /** Input type enum
  */

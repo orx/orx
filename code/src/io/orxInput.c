@@ -104,8 +104,6 @@
 #define orxINPUT_KU32_RESULT_BUFFER_SIZE              64
 
 #define orxINPUT_KZ_MODE_FORMAT                       "%c%s"
-#define orxINPUT_KC_MODE_MARKER_POSITIVE              '+'
-#define orxINPUT_KC_MODE_MARKER_NEGATIVE              '-'
 
 
 /***************************************************************************
@@ -2584,7 +2582,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
       case orxINPUT_MODE_POSITIVE:
       {
         /* Updates result */
-        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_MARKER_POSITIVE, zResult);
+        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_POSITIVE, zResult);
         zResult = sstInput.acResultBuffer;
 
         break;
@@ -2593,7 +2591,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
       case orxINPUT_MODE_NEGATIVE:
       {
         /* Updates result */
-        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_MARKER_NEGATIVE, zResult);
+        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_NEGATIVE, zResult);
         zResult = sstInput.acResultBuffer;
 
         break;
