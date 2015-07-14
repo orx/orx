@@ -47,7 +47,6 @@
 #define orxSPAWNER_KU32_STATIC_FLAG_NONE          0x00000000
 
 #define orxSPAWNER_KU32_STATIC_FLAG_READY         0x00000001
-#define orxSPAWNER_KU32_STATIC_FLAG_INTERNAL      0x00000002  /**< Internal flag */
 
 #define orxSPAWNER_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
@@ -88,6 +87,7 @@
 #define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
 #define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
+#define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
 
@@ -136,7 +136,7 @@ static orxSPAWNER_STATIC sstSpawner;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawner)
+static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawner, orxBOOL _bFirstCall)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -147,33 +147,34 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     orxVECTOR vValue;
     orxU32    u32Value;
 
-    /* Clears its random status */
-    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_MASK_RANDOM_ALL);
-
     /* Pushes its config section */
     orxConfig_PushSection(_pstSpawner->zReference);
 
-    /* Has spawned objects? */
-    if(_pstSpawner->u32TotalObjectCounter != 0)
+    /* Not first call? */
+    if(_bFirstCall == orxFALSE)
     {
-      orxOBJECT *pstObject;
-
-      /* For all objects */
-      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
-          pstObject != orxNULL;
-          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      /* Has spawned objects? */
+      if(_pstSpawner->u32TotalObjectCounter != 0)
       {
-        /* Is spawner the owner */
-        if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
-        {
-          /* Removes it */
-          orxObject_SetOwner(pstObject, orxNULL);
-        }
-      }
+        orxOBJECT *pstObject;
 
-      /* Clears its counters */
-      _pstSpawner->u32TotalObjectCounter  =
-      _pstSpawner->u32ActiveObjectCounter = 0;
+        /* For all objects */
+        for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+            pstObject != orxNULL;
+            pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+        {
+          /* Is spawner the owner */
+          if(orxSPAWNER(orxObject_GetOwner(pstObject)) == _pstSpawner)
+          {
+            /* Removes it */
+            orxObject_SetOwner(pstObject, orxNULL);
+          }
+        }
+
+        /* Clears its counters */
+        _pstSpawner->u32TotalObjectCounter  =
+        _pstSpawner->u32ActiveObjectCounter = 0;
+      }
     }
 
     /* Resets its flags */
@@ -268,6 +269,13 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
       orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE, orxSPAWNER_KU32_FLAG_NONE);
     }
 
+    /* Should interpolate? */
+    if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_INTERPOLATE) != orxFALSE))
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
+    }
+
     /* Has speed? */
     if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(_pstSpawner->vSpeed)) != orxNULL)
     {
@@ -339,6 +347,69 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
 
   /* Done! */
   return eResult;
+}
+
+/** Creates an empty spawner
+ * @param[in]   _bInternal                    Internal call
+ * @return      Created orxSPAWNER / orxNULL
+ */
+orxSPAWNER *orxFASTCALL orxSpawner_CreateInternal(orxBOOL _bInternal)
+{
+  orxSPAWNER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+
+  /* Creates spawner */
+  pstResult = orxSPAWNER(orxStructure_Create(orxSTRUCTURE_ID_SPAWNER));
+
+  /* Created? */
+  if(pstResult != orxNULL)
+  {
+    /* Creates frame */
+    pstResult->pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+    /* Valid? */
+    if(pstResult->pstFrame != orxNULL)
+    {
+      /* Increases its frame counter */
+      orxStructure_IncreaseCounter(pstResult->pstFrame);
+
+      /* Inits flags */
+      orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstResult->pstFrame, pstResult);
+
+      /* Increases counter */
+      orxStructure_IncreaseCounter(pstResult);
+
+      /* Not creating it internally? */
+      if(_bInternal == orxFALSE)
+      {
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_CREATE, pstResult, orxNULL, orxNULL);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create frame for spawner.");
+
+      /* Deletes spawner */
+      orxStructure_Delete(pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create spawner structure.");
+  }
+
+  return pstResult;
 }
 
 /** Event handler
@@ -420,7 +491,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
               if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->u32NameID)
               {
                 /* Re-processes its config data */
-                orxSpawner_ProcessConfigData(pstSpawner);
+                orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
               }
             }
           }
@@ -740,53 +811,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_Create()
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
 
   /* Creates spawner */
-  pstResult = orxSPAWNER(orxStructure_Create(orxSTRUCTURE_ID_SPAWNER));
-
-  /* Created? */
-  if(pstResult != orxNULL)
-  {
-    /* Creates frame */
-    pstResult->pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
-
-    /* Valid? */
-    if(pstResult->pstFrame != orxNULL)
-    {
-      /* Increases its frame counter */
-      orxStructure_IncreaseCounter(pstResult->pstFrame);
-
-      /* Inits flags */
-      orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
-
-      /* Updates its owner */
-      orxStructure_SetOwner(pstResult->pstFrame, pstResult);
-
-      /* Increases counter */
-      orxStructure_IncreaseCounter(pstResult);
-
-      /* Not creating it internally? */
-      if(!orxFLAG_TEST(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL))
-      {
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_CREATE, pstResult, orxNULL, orxNULL);
-      }
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create frame for spawner.");
-
-      /* Deletes spawner */
-      orxStructure_Delete(pstResult);
-
-      /* Updates result */
-      pstResult = orxNULL;
-    }
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create spawner structure.");
-  }
+  pstResult = orxSpawner_CreateInternal(orxFALSE);
 
   return pstResult;
 }
@@ -807,14 +832,8 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    /* Sets internal flag */
-    orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL, orxSPAWNER_KU32_STATIC_FLAG_NONE);
-
     /* Creates spawner */
-    pstResult = orxSpawner_Create();
-
-    /* Removes internal flag */
-    orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_NONE, orxSPAWNER_KU32_STATIC_FLAG_INTERNAL);
+    pstResult = orxSpawner_CreateInternal(orxTRUE);
 
     /* Valid? */
     if(pstResult != orxNULL)
@@ -823,7 +842,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(const orxSTRING _zConfigID)
       pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
 
       /* Processes its config data */
-      if(orxSpawner_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
+      if(orxSpawner_ProcessConfigData(pstResult, orxTRUE) != orxSTATUS_FAILURE)
       {
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_CREATE, pstResult, orxNULL, orxNULL);
