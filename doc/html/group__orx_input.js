@@ -8,6 +8,8 @@ var group__orx_input =
       [ "zInputName", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a08e6a0ce11c5a30a3ff68e18cefec922", null ],
       [ "zSetName", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a532745a46c44d576c975c80d9a5a8af0", null ]
     ] ],
+    [ "orxINPUT_KC_MODE_PREFIX_NEGATIVE", "group__orx_input.html#ga818373c22d8ca5f51e1faeb77a7494f6", null ],
+    [ "orxINPUT_KC_MODE_PREFIX_POSITIVE", "group__orx_input.html#ga1f4d0bff738f8a3b3d3ffe7055723068", null ],
     [ "orxINPUT_KU32_BINDING_NUMBER", "group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
     [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108", [

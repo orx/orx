@@ -1,5 +1,7 @@
 var orx_input_8h =
 [
+    [ "orxINPUT_KC_MODE_PREFIX_NEGATIVE", "orx_input_8h.html#ga818373c22d8ca5f51e1faeb77a7494f6", null ],
+    [ "orxINPUT_KC_MODE_PREFIX_POSITIVE", "orx_input_8h.html#ga1f4d0bff738f8a3b3d3ffe7055723068", null ],
     [ "orxINPUT_KU32_BINDING_NUMBER", "orx_input_8h.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
     [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "orx_input_8h.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "orx_input_8h.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
