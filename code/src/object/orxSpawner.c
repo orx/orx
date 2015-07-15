@@ -87,7 +87,6 @@
 #define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
 #define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
-#define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
 
@@ -267,13 +266,6 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     {
       /* Updates status */
       orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE, orxSPAWNER_KU32_FLAG_NONE);
-    }
-
-    /* Should interpolate? */
-    if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_INTERPOLATE) != orxFALSE))
-    {
-      /* Updates status */
-      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
     }
 
     /* Has speed? */
