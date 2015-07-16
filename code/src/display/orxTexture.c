@@ -243,8 +243,12 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       /* Found? */
       if(pstTexture != orxNULL)
       {
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+        /* Success? */
+        if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+        }
 
         /* Updates load counter */
         sstTexture.u32LoadCounter--;

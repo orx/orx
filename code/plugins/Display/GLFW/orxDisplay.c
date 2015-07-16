@@ -823,7 +823,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
     glASSERT();
     glBindTexture(GL_TEXTURE_2D, pstInfo->pstBitmap->uiTexture);
     glASSERT();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pstInfo->pu8ImageBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (pstInfo->pu8ImageBuffer != orxNULL) ? pstInfo->pu8ImageBuffer : NULL);
     glASSERT();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glASSERT();
@@ -850,6 +850,25 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       }
     }
 
+    /* Asynchronous call? */
+    if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
+    {
+      /* Failed decompression? */
+      if(pstInfo->pu8ImageBuffer == orxNULL)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: an empty texture will be used instead.", pstInfo->pstBitmap->zLocation);
+      }
+    }
+
+    /* Inits payload */
+    stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
+    stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+    stPayload.stBitmap.u32ID          = (pstInfo->pu8ImageBuffer != orxNULL) ? (orxU32)pstInfo->pstBitmap->uiTexture : orxU32_UNDEFINED;
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
+
     /* Frees image buffer */
     if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
     {
@@ -858,16 +877,11 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
     pstInfo->pu8ImageBuffer = orxNULL;
 
     /* Frees source */
-    stbi_image_free(pstInfo->pu8ImageSource);
-    pstInfo->pu8ImageSource = orxNULL;
-
-    /* Inits payload */
-    stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
-    stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
-    stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
+    if(pstInfo->pu8ImageSource != orxNULL)
+    {
+      stbi_image_free(pstInfo->pu8ImageSource);
+      pstInfo->pu8ImageSource = orxNULL;
+    }
 
     /* Clears loading flag */
     orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
@@ -893,8 +907,11 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
     pstInfo->pu8ImageBuffer = orxNULL;
 
     /* Frees source */
-    stbi_image_free(pstInfo->pu8ImageSource);
-    pstInfo->pu8ImageSource = orxNULL;
+    if(pstInfo->pu8ImageSource != orxNULL)
+    {
+      stbi_image_free(pstInfo->pu8ImageSource);
+      pstInfo->pu8ImageSource = orxNULL;
+    }
 
     /* Frees load info */
     orxMemory_Free(pstInfo);
@@ -976,32 +993,22 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
 
       /* Stores uncompressed data as new source */
       pstInfo->pu8ImageSource = pu8ImageData;
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
-      /* Asynchronous call? */
-      if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstInfo->pstBitmap->zLocation);
-      }
-
-      /* Clears loading flag */
-      orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+      /* Clears info */
+      pstInfo->uiWidth      =
+      pstInfo->uiHeight     =
+      pstInfo->uiRealWidth  =
+      pstInfo->uiRealHeight = 1;
 
       /* Frees original source from resource */
       orxMemory_Free(pstInfo->pu8ImageSource);
       pstInfo->pu8ImageSource = orxNULL;
-
-      /* Frees load info */
-      orxMemory_Free(pstInfo);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
     }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
