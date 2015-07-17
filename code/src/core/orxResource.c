@@ -88,7 +88,7 @@
 #define orxRESOURCE_KZ_CONFIG_SECTION                 "Resource"                      /**< Config section name */
 #define orxRESOURCE_KZ_CONFIG_WATCH_LIST              "WatchList"                     /**< Config watch list */
 
-#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            512                             /**< Request list size */
+#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            2048                            /**< Request list size */
 
 #define orxRESOURCE_KZ_THREAD_NAME                    "Resource"
 
