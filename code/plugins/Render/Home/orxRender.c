@@ -1554,9 +1554,6 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
         orxFLOAT  fTextureWidth, fTextureHeight;
         orxVECTOR vViewportCenter;
 
-        /* Sets destination bitmap */
-        orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
-
         /* Gets texture size */
         orxTexture_GetSize(apstTextureList[0], &fTextureWidth, &fTextureHeight);
 
@@ -1569,6 +1566,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
 
         /* Gets its center */
         orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
+
+        /* Sets destination bitmap */
+        orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
 
         /* Does it intersect with texture */
         if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
@@ -1622,13 +1622,13 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           {
             /* Sets its clipping */
             orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+          }
 
-            /* Does viewport have a background color? */
-            if(bHasColor != orxFALSE)
-            {
-              /* Clears bitmap */
-              orxDisplay_ClearBitmap(apstBitmapList[i], orxColor_ToRGBA(&stColor));
-            }
+          /* Does viewport have a background color? */
+          if(bHasColor != orxFALSE)
+          {
+            /* Clears bitmap */
+            orxDisplay_ClearBitmap(orxNULL, orxColor_ToRGBA(&stColor));
           }
 
           /* Gets camera */

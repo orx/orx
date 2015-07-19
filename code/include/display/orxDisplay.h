@@ -896,7 +896,7 @@ extern orxDLLAPI const orxBITMAP *orxFASTCALL         orxDisplay_GetTempBitmap()
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
 
 /** Clears a bitmap
- * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _pstBitmap                            Concerned bitmap, if orxNULL all the current destination bitmaps will be cleared instead
  * @param[in]   _stColor                              Color to clear the bitmap with
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

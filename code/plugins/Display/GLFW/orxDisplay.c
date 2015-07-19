@@ -2283,20 +2283,13 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-  orxU32      u32BackupBitmapCounter;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
 
-  /* Backups current destinations */
-  orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
-  u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
-
-  /* Sets new destination bitmap */
-  if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
+  /* Clears current destinations? */
+  if(_pstBitmap == orxNULL)
   {
     /* Different clear color? */
     if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
@@ -2312,50 +2305,78 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
     /* Clears the color buffer with given color */
     glClear(GL_COLOR_BUFFER_BIT);
     glASSERT();
-
-    /* Is screen and has depth buffer? */
-    if((_pstBitmap == sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)))
-    {
-      /* Clears depth buffer */
-      glClear(GL_DEPTH_BUFFER_BIT);
-      glASSERT();
-    }
-
-    /* Restores previous destination */
-    orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
   }
-  /* Not screen? */
-  else if(_pstBitmap != sstDisplay.pstScreen)
+  else
   {
-    orxRGBA *astBuffer, *pstPixel;
+    orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+    orxU32      u32BackupBitmapCounter;
 
-    /* Allocates buffer */
-    astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+    /* Backups current destinations */
+    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
+    u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
 
-    /* Checks */
-    orxASSERT(astBuffer != orxNULL);
-
-    /* For all pixels */
-    for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+    /* Sets new destination bitmap */
+    if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
     {
-      /* Sets its value */
-      *pstPixel = _stColor;
+      /* Different clear color? */
+      if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
+      {
+        /* Updates it */
+        glClearColor(orxCOLOR_NORMALIZER * orxU2F(orxRGBA_R(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_G(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_B(_stColor)), orxCOLOR_NORMALIZER * orxU2F(orxRGBA_A(_stColor)));
+        glASSERT();
+
+        /* Stores it */
+        sstDisplay.stLastColor.u32RGBA = _stColor.u32RGBA;
+      }
+
+      /* Clears the color buffer with given color */
+      glClear(GL_COLOR_BUFFER_BIT);
+      glASSERT();
+
+      /* Is screen and has depth buffer? */
+      if((_pstBitmap == sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER)))
+      {
+        /* Clears depth buffer */
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glASSERT();
+      }
+
+      /* Restores previous destination */
+      orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
     }
+    /* Not screen? */
+    else if(_pstBitmap != sstDisplay.pstScreen)
+    {
+      orxRGBA *astBuffer, *pstPixel;
 
-    /* Binds texture */
-    glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-    glASSERT();
+      /* Allocates buffer */
+      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
 
-    /* Updates texture */
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
-    glASSERT();
+      /* Checks */
+      orxASSERT(astBuffer != orxNULL);
 
-    /* Restores previous texture */
-    glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-    glASSERT();
+      /* For all pixels */
+      for(pstPixel = astBuffer; pstPixel < astBuffer + (_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight); pstPixel++)
+      {
+        /* Sets its value */
+        *pstPixel = _stColor;
+      }
 
-    /* Frees buffer */
-    orxMemory_Free(astBuffer);
+      /* Binds texture */
+      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+      glASSERT();
+
+      /* Updates texture */
+      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLsizei)_pstBitmap->u32RealWidth, (GLsizei)_pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, astBuffer);
+      glASSERT();
+
+      /* Restores previous texture */
+      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+      glASSERT();
+
+      /* Frees buffer */
+      orxMemory_Free(astBuffer);
+    }
   }
 
   /* Done! */
