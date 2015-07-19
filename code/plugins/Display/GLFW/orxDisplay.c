@@ -281,6 +281,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLint                     iDrawBufferNumber;
   orxU32                    u32DestinationBitmapCounter;
   GLuint                    uiFrameBuffer;
+  GLuint                    uiLastFrameBuffer;
   GLuint                    uiIndexBuffer;
   orxS32                    s32BufferIndex;
   orxU32                    u32Flags;
@@ -2341,7 +2342,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
         glASSERT();
       }
 
-      /* Restores previous destination */
+      /* Restores previous destinations */
       orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
     }
     /* Not screen? */
@@ -2901,9 +2902,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
         /* Using framebuffer? */
         if(bUseFrameBuffer != orxFALSE)
         {
-          /* Binds frame buffer */
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
-          glASSERT();
+          /* Different framebuffer? */
+          if(sstDisplay.uiFrameBuffer != sstDisplay.uiLastFrameBuffer)
+          {
+            /* Binds frame buffer */
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, sstDisplay.uiFrameBuffer);
+            glASSERT();
+
+            /* Updates status */
+            sstDisplay.uiLastFrameBuffer = sstDisplay.uiFrameBuffer;
+          }
         }
 
         /* For all destination bitmaps */
@@ -2920,9 +2928,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
             /* Different destination bitmap? */
             if(pstBitmap != sstDisplay.apstDestinationBitmapList[i])
             {
-              /* Binds default frame buffer */
-              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-              glASSERT();
+              /* Different framebuffer? */
+              if(sstDisplay.uiFrameBuffer != 0)
+              {
+                /* Binds default frame buffer */
+                glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+                glASSERT();
+
+                /* Updates status */
+                sstDisplay.uiLastFrameBuffer = 0;
+              }
 
               /* Requests pending commands flush */
               bFlush = orxTRUE;
