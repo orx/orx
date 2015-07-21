@@ -64,6 +64,7 @@
 #define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000040  /**< Use relative speed flag */
 #define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000080  /**< Use self as parent flag */
 #define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE      0x00000100  /**< Clean on delete flag */
+#define orxSPAWNER_KU32_FLAG_INTERPOLATE          0x00000200  /**< Interpolate flag */
 
 #define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
 
