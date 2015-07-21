@@ -2334,6 +2334,145 @@ static orxINLINE void orxObject_DeleteAll()
   return;
 }
 
+/** Updates an object
+ * @param[int] _pstObject         Concerned object
+ * @param[in] _pstClockInfo       Clock information where this callback has been registered
+ */
+static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxBOOL     bDeleted = orxFALSE;
+  orxOBJECT  *pstResult;
+
+  /* Is object enabled and not paused? */
+  if((orxObject_IsEnabled(_pstObject) != orxFALSE) && (orxObject_IsPaused(_pstObject) == orxFALSE))
+  {
+    orxU32                i;
+    orxCLOCK             *pstClock;
+    const orxCLOCK_INFO  *pstClockInfo;
+
+    /* Gets associated clock */
+    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
+    {
+      /* Uses it */
+      pstClockInfo = orxClock_GetInfo(pstClock);
+    }
+    else
+    {
+      /* Uses default info */
+      pstClockInfo = _pstClockInfo;
+    }
+
+    /* Updates its active time */
+    _pstObject->fActiveTime += pstClockInfo->fDT;
+
+    /* Has life time? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
+    {
+      /* Updates its life time */
+      _pstObject->fLifeTime -= pstClockInfo->fDT;
+
+      /* Should die? */
+      if(_pstObject->fLifeTime <= orxFLOAT_0)
+      {
+        /* Gets next object */
+        pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
+
+        /* Deletes it */
+        orxObject_Delete(_pstObject);
+
+        /* Marks as deleted */
+        bDeleted = orxTRUE;
+      }
+    }
+
+    /* !!! TODO !!! */
+    /* Updates culling info before calling update subfunctions */
+
+    /* Wasn't object deleted? */
+    if(bDeleted == orxFALSE)
+    {
+      /* Has DT? */
+      if(pstClockInfo->fDT > orxFLOAT_0)
+      {
+        /* For all linked structures */
+        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+        {
+          /* Is structure linked? */
+          if(_pstObject->astStructureList[i].pstStructure != orxNULL)
+          {
+            /* Updates it */
+            if(orxStructure_Update(_pstObject->astStructureList[i].pstStructure, _pstObject, pstClockInfo) == orxSTATUS_FAILURE)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%d for object <%s>.", i, orxObject_GetName(_pstObject));
+            }
+          }
+        }
+
+        /* Has no body? */
+        if(orxOBJECT_GET_STRUCTURE(_pstObject, BODY) == orxNULL)
+        {
+          orxFRAME *pstFrame;
+
+          /* Has frame? */
+          if((pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME)) != orxNULL)
+          {
+            /* Has speed? */
+            if(orxVector_IsNull(&(_pstObject->vSpeed)) == orxFALSE)
+            {
+              orxVECTOR vPosition, vMove;
+
+              /* Gets its position */
+              orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+
+              /* Computes its move */
+              orxVector_Mulf(&vMove, &(_pstObject->vSpeed), pstClockInfo->fDT);
+
+              /* Gets its new position */
+              orxVector_Add(&vPosition, &vPosition, &vMove);
+
+              /* Stores it */
+              orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+            }
+
+            /* Has angular velocity? */
+            if(_pstObject->fAngularVelocity != orxFLOAT_0)
+            {
+              /* Updates its rotation */
+              orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (_pstObject->fAngularVelocity * pstClockInfo->fDT));
+            }
+          }
+        }
+        else
+        {
+          /* Should detach? */
+          if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD))
+          {
+            /* Detaches it */
+            orxObject_Detach(_pstObject);
+
+            /* Updates status */
+            orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
+          }
+        }
+      }
+    }
+  }
+
+  /* Wasn't deleted? */
+  if(bDeleted == orxFALSE)
+  {
+    /* Gets next object */
+    pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Updates all the objects
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pContext           User defined context
@@ -2350,123 +2489,8 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
       pstObject != orxNULL;
       pstObject = pstNextObject)
   {
-    /* Is object enabled and not paused? */
-    if((orxObject_IsEnabled(pstObject) != orxFALSE) && (orxObject_IsPaused(pstObject) == orxFALSE))
-    {
-      orxU32                i;
-      orxCLOCK             *pstClock;
-      const orxCLOCK_INFO  *pstClockInfo;
-
-      /* Gets associated clock */
-      pstClock = orxOBJECT_GET_STRUCTURE(pstObject, CLOCK);
-
-      /* Valid? */
-      if(pstClock != orxNULL)
-      {
-        /* Uses it */
-        pstClockInfo = orxClock_GetInfo(pstClock);
-      }
-      else
-      {
-        /* Uses default info */
-        pstClockInfo = _pstClockInfo;
-      }
-
-      /* Updates its active time */
-      pstObject->fActiveTime += pstClockInfo->fDT;
-
-      /* Has life time? */
-      if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
-      {
-        /* Updates its life time */
-        pstObject->fLifeTime -= pstClockInfo->fDT;
-
-        /* Should die? */
-        if(pstObject->fLifeTime <= orxFLOAT_0)
-        {
-          /* Gets next object */
-          pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
-
-          /* Deletes it */
-          orxObject_Delete(pstObject);
-
-          /* Gets to the next one */
-          continue;
-        }
-      }
-
-      /* !!! TODO !!! */
-      /* Updates culling info before calling update subfunctions */
-
-      /* Has DT? */
-      if(pstClockInfo->fDT > orxFLOAT_0)
-      {
-        /* For all linked structures */
-        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
-        {
-          /* Is structure linked? */
-          if(pstObject->astStructureList[i].pstStructure != orxNULL)
-          {
-            /* Updates it */
-            if(orxStructure_Update(pstObject->astStructureList[i].pstStructure, pstObject, pstClockInfo) == orxSTATUS_FAILURE)
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%d for object <%s>.", i, orxObject_GetName(pstObject));
-            }
-          }
-        }
-
-        /* Has no body? */
-        if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
-        {
-          orxFRAME *pstFrame;
-
-          /* Has frame? */
-          if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
-          {
-            /* Has speed? */
-            if(orxVector_IsNull(&(pstObject->vSpeed)) == orxFALSE)
-            {
-              orxVECTOR vPosition, vMove;
-
-              /* Gets its position */
-              orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
-
-              /* Computes its move */
-              orxVector_Mulf(&vMove, &(pstObject->vSpeed), pstClockInfo->fDT);
-
-              /* Gets its new position */
-              orxVector_Add(&vPosition, &vPosition, &vMove);
-
-              /* Stores it */
-              orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
-            }
-
-            /* Has angular velocity? */
-            if(pstObject->fAngularVelocity != orxFLOAT_0)
-            {
-              /* Updates its rotation */
-              orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * pstClockInfo->fDT));
-            }
-          }
-        }
-        else
-        {
-          /* Should detach? */
-          if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD))
-          {
-            /* Detaches it */
-            orxObject_Detach(pstObject);
-
-            /* Updates status */
-            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
-          }
-        }
-      }
-    }
-
-    /* Gets next object */
-    pstNextObject = orxOBJECT(orxStructure_GetNext(pstObject));
+    /* Updates it */
+    pstNextObject = orxObject_UpdateInternal(pstObject, _pstClockInfo);
   }
 
   /* Profiles */
@@ -2776,6 +2800,27 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Updates an object
+ * @param[in] _pstObject        Concerned object
+ * @param[in] _pstClockInfo     Clock information used to compute new object's state
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstObject != orxNULL);
+  orxASSERT(_pstClockInfo != orxNULL);
+
+  /* Updates object */
+  orxObject_UpdateInternal(_pstObject, _pstClockInfo);
 
   /* Done! */
   return eResult;

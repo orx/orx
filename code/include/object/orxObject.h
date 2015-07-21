@@ -120,6 +120,13 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);
 
+/** Updates an object
+ * @param[in] _pstObject        Concerned object
+ * @param[in] _pstClockInfo     Clock information used to compute new object's state
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo);
+
 /** Enables/disables an object
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable

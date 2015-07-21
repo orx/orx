@@ -422,7 +422,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateInternal(orxBOOL _bInternal)
  * @param[in]   _u32Number      Number of objects to spawn
  * @return      Number of spawned objects
  */
-orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32Number, const orxVECTOR *_pvPosition, const orxVECTOR *_pvScale, orxFLOAT _fRotation)
+orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32Number, const orxVECTOR *_pvPosition, const orxVECTOR *_pvScale, orxFLOAT _fRotation, orxFLOAT _fDT)
 {
   orxU32 u32Result = 0;
 
@@ -460,130 +460,147 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       u32SpawnNumber = orxMIN(u32SpawnNumber, u32AvailableNumber);
     }
 
-    /* Pushes section */
-    orxConfig_PushSection(_pstSpawner->zReference);
-
-    /* For all objects to spawn */
-    for(i = 0; i < u32SpawnNumber; i++)
+    /* Should spawn? */
+    if(u32SpawnNumber > 0)
     {
-      orxOBJECT *pstObject;
+      orxCLOCK_INFO stClockInfo;
 
-      /* Creates object */
-      pstObject = orxObject_CreateFromConfig(orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT));
+      /* Inits clock info for object simulation */
+      orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
+      stClockInfo.fDT = _fDT;
 
-      /* Valid? */
-      if(pstObject != orxNULL)
+      /* Pushes section */
+      orxConfig_PushSection(_pstSpawner->zReference);
+
+      /* For all objects to spawn */
+      for(i = 0; i < u32SpawnNumber; i++)
       {
-        orxVECTOR vPosition, vScale;
+        orxOBJECT *pstObject;
 
-        /* Updates active object counter */
-        _pstSpawner->u32ActiveObjectCounter++;
+        /* Creates object */
+        pstObject = orxObject_CreateFromConfig(orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT));
 
-        /* Updates total object counter */
-        _pstSpawner->u32TotalObjectCounter++;
-
-        /* Sets spawner as owner */
-        orxObject_SetOwner(pstObject, _pstSpawner);
-
-        /* Should use self as parent? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
+        /* Valid? */
+        if(pstObject != orxNULL)
         {
-          /* Updates spawned object's parent */
-          orxObject_SetParent(pstObject, _pstSpawner);
-        }
+          orxVECTOR vPosition, vScale;
 
-        /* Should update rotation? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION))
-        {
-          /* Updates object rotation */
-          orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + _fRotation);
-        }
+          /* Updates active object counter */
+          _pstSpawner->u32ActiveObjectCounter++;
 
-        /* Should update scale? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE))
-        {
-          /* Updates object scale */
-          orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), _pvScale));
-        }
+          /* Updates total object counter */
+          _pstSpawner->u32TotalObjectCounter++;
 
-        /* Not using self as parent? */
-        if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
-        {
-          /* Updates object position */
-          orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), _pvScale), _fRotation), _pvPosition));
-        }
+          /* Sets spawner as owner */
+          orxObject_SetOwner(pstObject, _pstSpawner);
 
-        /* Should apply speed? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED))
-        {
-          /* Use random speed? */
-          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED))
+          /* Should use self as parent? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
           {
-            /* Updates its value */
-            orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(_pstSpawner->vSpeed));
+            /* Updates spawned object's parent */
+            orxObject_SetParent(pstObject, _pstSpawner);
           }
 
-          /* Use relative speed? */
-          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED))
+          /* Should update rotation? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_ROTATION))
           {
-            orxVECTOR vSpeed;
-
-            /* Applies relative speed */
-            orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(_pstSpawner->vSpeed), _fRotation), _pvScale);
-            orxObject_SetSpeed(pstObject, &vSpeed);
+            /* Updates object rotation */
+            orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + _fRotation);
           }
+
+          /* Should update scale? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SCALE))
+          {
+            /* Updates object scale */
+            orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), _pvScale));
+          }
+
+          /* Not using self as parent? */
+          if(!orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
+          {
+            /* Updates object position */
+            orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), _pvScale), _fRotation), _pvPosition));
+          }
+
+          /* Should apply speed? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED))
+          {
+            /* Use random speed? */
+            if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED))
+            {
+              /* Updates its value */
+              orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(_pstSpawner->vSpeed));
+            }
+
+            /* Use relative speed? */
+            if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED))
+            {
+              orxVECTOR vSpeed;
+
+              /* Applies relative speed */
+              orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(_pstSpawner->vSpeed), _fRotation), _pvScale);
+              orxObject_SetSpeed(pstObject, &vSpeed);
+            }
+            else
+            {
+              /* Applies speed */
+              orxObject_SetSpeed(pstObject, &(_pstSpawner->vSpeed));
+            }
+          }
+
+          /* Updates result */
+          u32Result++;
+
+          /* Should simulate object? */
+          if(stClockInfo.fDT > orxFLOAT_0)
+          {
+            /* Simulates object update */
+            orxObject_Update(pstObject, &stClockInfo);
+          }
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
+        }
+      }
+
+      /* Should update wave size? */
+      if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE))
+      {
+        /* Stores it */
+        _pstSpawner->u32WaveSize = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE);
+      }
+
+      /* Should update wave delay? */
+      if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY))
+      {
+        /* Stores it */
+        _pstSpawner->fWaveDelay = orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY);
+      }
+
+      /* Pops previous section */
+      orxConfig_PopSection();
+
+      /* Has a total limit? */
+      if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
+      {
+        /* No available object left? */
+        if(_pstSpawner->u32TotalObjectLimit - _pstSpawner->u32TotalObjectCounter == 0)
+        {
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_EMPTY, _pstSpawner, orxNULL, orxNULL);
+
+          /* Auto reset? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
+          {
+            /* Resets spawner */
+            orxSpawner_Reset(_pstSpawner);
+          }
+          /* Disables */
           else
           {
-            /* Applies speed */
-            orxObject_SetSpeed(pstObject, &(_pstSpawner->vSpeed));
+            /* Updates status */
+            orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ENABLED);
           }
-        }
-
-        /* Updates result */
-        u32Result++;
-
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
-      }
-    }
-
-    /* Should update wave size? */
-    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE))
-    {
-      /* Stores it */
-      _pstSpawner->u32WaveSize = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE);
-    }
-
-    /* Should update wave delay? */
-    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY))
-    {
-      /* Stores it */
-      _pstSpawner->fWaveDelay = orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY);
-    }
-
-    /* Pops previous section */
-    orxConfig_PopSection();
-
-    /* Has a total limit? */
-    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
-    {
-      /* No available object left? */
-      if(_pstSpawner->u32TotalObjectLimit - _pstSpawner->u32TotalObjectCounter == 0)
-      {
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_EMPTY, _pstSpawner, orxNULL, orxNULL);
-
-        /* Auto reset? */
-        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
-        {
-          /* Resets spawner */
-          orxSpawner_Reset(_pstSpawner);
-        }
-        /* Disables */
-        else
-        {
-          /* Updates status */
-          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ENABLED);
         }
       }
     }
@@ -845,7 +862,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
         {
           orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
-          orxFLOAT  fInvDT, fSpawnerRotation, fRotation, fCoef, fDelta;
+          orxFLOAT  fInvDT, fSpawnerRotation, fRotation, fDT, fCoef, fDelta;
 
           /* Gets current spawner frame values */
           orxSpawner_GetWorldPosition(pstSpawner, &vSpawnerPosition);
@@ -853,9 +870,9 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
           fSpawnerRotation = orxSpawner_GetWorldRotation(pstSpawner);
 
           /* For all the waves that need to be spawned */
-          for(fInvDT = orxFLOAT_1 / _pstClockInfo->fDT, fCoef = orxFLOAT_1 + (pstSpawner->fWaveTimer * fInvDT), fDelta = pstSpawner->fWaveDelay * fInvDT;
+          for(fInvDT = orxFLOAT_1 / _pstClockInfo->fDT, fCoef = orxFLOAT_1 + (pstSpawner->fWaveTimer * fInvDT), fDelta = pstSpawner->fWaveDelay * fInvDT, fDT = -pstSpawner->fWaveTimer;
               fCoef <= orxFLOAT_1;
-              fCoef += fDelta)
+              fCoef += fDelta, fDT -= pstSpawner->fWaveDelay)
           {
             /* Gets interpolated frame values */
             orxVector_Lerp(&vPosition, &(pstSpawner->vLastPosition), &vSpawnerPosition, fCoef);
@@ -863,16 +880,16 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
             fRotation = orxLERP(pstSpawner->fLastRotation, fSpawnerRotation, fCoef);
 
             /* Spawns objects */
-            orxSpawner_SpawnInternal(pstSpawner, pstSpawner->u32WaveSize, &vPosition, &vScale, fRotation);
+            orxSpawner_SpawnInternal(pstSpawner, pstSpawner->u32WaveSize, &vPosition, &vScale, fRotation, fDT);
           }
 
           /* Updates timer */
           pstSpawner->fWaveTimer = (fCoef - orxFLOAT_1) * _pstClockInfo->fDT;
 
-          /* Updates latest frame values with last interpolated values */
-          orxVector_Copy(&(pstSpawner->vLastPosition), &vPosition);
-          orxVector_Copy(&(pstSpawner->vLastScale), &vScale);
-          pstSpawner->fLastRotation = fRotation;
+          /* Updates latest frame values current ones */
+          orxVector_Copy(&(pstSpawner->vLastPosition), &vSpawnerPosition);
+          orxVector_Copy(&(pstSpawner->vLastScale), &vSpawnerScale);
+          pstSpawner->fLastRotation = fSpawnerRotation;
         }
         else
         {
@@ -1614,7 +1631,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
   fRotation = orxSpawner_GetWorldRotation(_pstSpawner);
 
   /* Spawns objects */
-  u32Result = orxSpawner_SpawnInternal(_pstSpawner, _u32Number, &vPosition, &vScale, fRotation);
+  u32Result = orxSpawner_SpawnInternal(_pstSpawner, _u32Number, &vPosition, &vScale, fRotation, orxFLOAT_0);
 
   /* Done! */
   return u32Result;
