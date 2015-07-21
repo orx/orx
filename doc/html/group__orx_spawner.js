@@ -3,6 +3,7 @@ var group__orx_spawner =
     [ "orxSPAWNER_KU32_FLAG_AUTO_DELETE", "group__orx_spawner.html#gae85d9762c0af0efefd9371c8bf81f6af", null ],
     [ "orxSPAWNER_KU32_FLAG_AUTO_RESET", "group__orx_spawner.html#ga9787936032dc7d434c0011c995c6873b", null ],
     [ "orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE", "group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93", null ],
+    [ "orxSPAWNER_KU32_FLAG_INTERPOLATE", "group__orx_spawner.html#ga1fcde744796769d444210e53ccdf61c0", null ],
     [ "orxSPAWNER_KU32_FLAG_NONE", "group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_ALPHA", "group__orx_spawner.html#gaacc4ba128377d1617c203696cf724332", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_COLOR", "group__orx_spawner.html#ga1a4e8d2ca6a5107c1f0b0aed92d790fc", null ],

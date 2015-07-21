@@ -124,5 +124,6 @@ var orx_object_8h =
     [ "orxObject_SetWorldRotation", "orx_object_8h.html#gab083b96e18a265a0c7eb80df771adc5b", null ],
     [ "orxObject_SetWorldScale", "orx_object_8h.html#ga43592e3d1c1e6e2c5e763d58ff444b63", null ],
     [ "orxObject_SynchronizeFX", "orx_object_8h.html#ga935328ed11be325c601817c29cd59c26", null ],
-    [ "orxObject_UnlinkStructure", "orx_object_8h.html#ga81a38ca6606fb2588ba746b94b1c6636", null ]
+    [ "orxObject_UnlinkStructure", "orx_object_8h.html#ga81a38ca6606fb2588ba746b94b1c6636", null ],
+    [ "orxObject_Update", "orx_object_8h.html#ga3f2370c4ec2a5950753bb8c1ff7277f4", null ]
 ];

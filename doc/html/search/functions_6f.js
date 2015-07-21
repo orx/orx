@@ -764,6 +764,7 @@ var searchData=
   ['orxobject_5fsetworldscale',['orxObject_SetWorldScale',['../group__orx_object.html#ga43592e3d1c1e6e2c5e763d58ff444b63',1,'orxObject.h']]],
   ['orxobject_5fsynchronizefx',['orxObject_SynchronizeFX',['../group__orx_object.html#ga935328ed11be325c601817c29cd59c26',1,'orxObject.h']]],
   ['orxobject_5funlinkstructure',['orxObject_UnlinkStructure',['../group__orx_object.html#ga81a38ca6606fb2588ba746b94b1c6636',1,'orxObject.h']]],
+  ['orxobject_5fupdate',['orxObject_Update',['../group__orx_object.html#ga3f2370c4ec2a5950753bb8c1ff7277f4',1,'orxObject.h']]],
   ['orxobox_5f2disinside',['orxOBox_2DIsInside',['../group__orx_o_box.html#gab1e89423c8ad01b76aa9ea7c3425d633',1,'orxOBox.h']]],
   ['orxobox_5f2drotate',['orxOBox_2DRotate',['../group__orx_o_box.html#ga587c5f0ef64981bf07014e646022414a',1,'orxOBox.h']]],
   ['orxobox_5f2dset',['orxOBox_2DSet',['../group__orx_o_box.html#ga667a5d563aeab011b05e09d2f02d06f0',1,'orxOBox.h']]],
