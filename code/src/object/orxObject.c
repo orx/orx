@@ -1093,6 +1093,49 @@ void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: SetHSL
+ */
+void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Get HSL */
+    orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
+
+    /* Stores its RGB equivalent */
+    orxColor_FromHSLToRGB(&stColor, &stColor);
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: Enable
  */
 void orxFASTCALL orxObject_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2101,6 +2144,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAlpha, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Alpha", orxCOMMAND_VAR_TYPE_FLOAT});
   /* Command: GetAlpha */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAlpha, "Alpha", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetHSL */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR});
 
   /* Command: Enable */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
@@ -2240,6 +2285,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAlpha);
   /* Command: GetAlpha */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAlpha);
+  /* Command: SetHSL */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetHSL);
 
   /* Command: Enable */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
