@@ -1017,6 +1017,239 @@ void orxFASTCALL orxObject_CommandGetColor(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: SetRGB
+ */
+void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Sets its color */
+    orxVector_Copy(&(stColor.vRGB), &(_astArgList[1].vValue));
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRGB
+ */
+void orxFASTCALL orxObject_CommandGetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR    stColor;
+  orxOBJECT  *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its color */
+    if(orxObject_GetColor(pstObject, &stColor) != orxNULL)
+    {
+      /* Updates result */
+      orxVector_Copy(&(_pstResult->vValue), &(stColor.vRGB));
+    }
+    else
+    {
+      /* Updates result */
+      orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_WHITE);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_WHITE);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetHSL
+ */
+void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Inits color with HSL values */
+    orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
+
+    /* Converts color to RGB  */
+    orxColor_FromHSLToRGB(&stColor, &stColor);
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetHSL
+ */
+void orxFASTCALL orxObject_CommandGetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR    stColor;
+  orxOBJECT  *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Uses white */
+      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+    }
+  }
+  else
+  {
+    /* Uses white */
+    orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+  }
+
+  /* Converts color to HSL */
+  orxColor_FromRGBToHSL(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vHSL));
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetHSV
+ */
+void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its current color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Inits color with HSV values */
+    orxVector_Copy(&stColor.vHSV, &(_astArgList[1].vValue));
+
+    /* Converts color to RGB  */
+    orxColor_FromHSVToRGB(&stColor, &stColor);
+
+    /* Updates object */
+    orxObject_SetColor(pstObject, &stColor);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetHSV
+ */
+void orxFASTCALL orxObject_CommandGetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR    stColor;
+  orxOBJECT  *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its color */
+    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    {
+      /* Uses white */
+      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+    }
+  }
+  else
+  {
+    /* Uses white */
+    orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+  }
+
+  /* Converts color to HSV */
+  orxColor_FromRGBToHSV(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vHSV));
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetAlpha
  */
 void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1087,49 +1320,6 @@ void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     /* Updates result */
     _pstResult->fValue = orxFLOAT_1;
-  }
-
-  /* Done! */
-  return;
-}
-
-/** Command: SetHSL
- */
-void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  orxOBJECT *pstObject;
-
-  /* Gets object */
-  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
-
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    orxCOLOR stColor;
-
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
-    {
-      /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
-    }
-
-    /* Get HSL */
-    orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
-
-    /* Stores its RGB equivalent */
-    orxColor_FromHSLToRGB(&stColor, &stColor);
-
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
-
-    /* Updates result */
-    _pstResult->u64Value = _astArgList[0].u64Value;
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->u64Value = orxU64_UNDEFINED;
   }
 
   /* Done! */
@@ -2140,12 +2330,22 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: GetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetRGB */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRGB, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"RGB", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetRGB */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRGB, "RGB", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetHSL */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSL", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetHSL */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSL, "HSL", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetHSV */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSV, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSV", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetHSV */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSV, "HSV", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetAlpha */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAlpha, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Alpha", orxCOMMAND_VAR_TYPE_FLOAT});
   /* Command: GetAlpha */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAlpha, "Alpha", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
-  /* Command: SetHSL */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR});
 
   /* Command: Enable */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
@@ -2281,12 +2481,22 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetColor);
   /* Command: GetColor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetColor);
+  /* Command: SetRGB */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetRGB);
+  /* Command: GetRGB */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetRGB);
+  /* Command: SetHSL */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetHSL);
+  /* Command: GetHSL */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetHSL);
+  /* Command: SetHSV */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetHSV);
+  /* Command: GetHSV */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetHSV);
   /* Command: SetAlpha */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAlpha);
   /* Command: GetAlpha */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAlpha);
-  /* Command: SetHSL */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetHSL);
 
   /* Command: Enable */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
