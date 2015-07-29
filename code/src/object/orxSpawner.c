@@ -886,7 +886,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
           /* Updates timer */
           pstSpawner->fWaveTimer = (fCoef - orxFLOAT_1) * _pstClockInfo->fDT;
 
-          /* Updates latest frame values current ones */
+          /* Updates latest frame values with current ones */
           orxVector_Copy(&(pstSpawner->vLastPosition), &vSpawnerPosition);
           orxVector_Copy(&(pstSpawner->vLastScale), &vSpawnerScale);
           pstSpawner->fLastRotation = fSpawnerRotation;
@@ -1203,16 +1203,17 @@ void orxFASTCALL    orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
-    /* Updates status flags */
-    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
-
-    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+    /* Is in interpolate mode and wasn't enabled? */
+    if(orxStructure_GetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_ENABLED) == orxSPAWNER_KU32_FLAG_INTERPOLATE)
     {
       /* Stores last values */
       orxSpawner_GetWorldPosition(_pstSpawner, &(_pstSpawner->vLastPosition));
       orxSpawner_GetWorldScale(_pstSpawner, &(_pstSpawner->vLastScale));
       _pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(_pstSpawner);
     }
+
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
   }
   else
   {
