@@ -858,8 +858,15 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         /* Checks */
         orxASSERT(orxOBJECT(orxStructure_GetOwner(pstSpawner)) == pstObject);
 
-        /* Is in interpolate mode? */
-        if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+        /* Sends wave start event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
+
+        /* Adds event handler */
+        orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+
+        /* Is in interpolate mode with a valid wave delay? */
+        if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE)
+        && (pstSpawner->fWaveDelay > orxFLOAT_0))
         {
           orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
           orxFLOAT  fInvDT, fSpawnerRotation, fRotation, fDT, fCoef, fDelta;
@@ -893,24 +900,25 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         }
         else
         {
-          /* Sends wave start event */
-          orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
+          /* Is in interpolate mode? */
+          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Spawner <%s>: Ignoring interpolate mode as its WaveDelay isn't strictly positive.", orxSpawner_GetName(pstSpawner));
+          }
 
-          /* Adds event handler */
-          orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
-
-          /* Spawn the wave */
+          /* Spawns the wave */
           orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveSize);
-
-          /* Removes event handler */
-          orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
 
           /* Updates wave timer */
           pstSpawner->fWaveTimer = pstSpawner->fWaveDelay;
-
-          /* Sends wave stop event */
-          orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_STOP, pstSpawner, orxNULL, orxNULL);
         }
+
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+
+        /* Sends wave stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_STOP, pstSpawner, orxNULL, orxNULL);
       }
     }
   }
