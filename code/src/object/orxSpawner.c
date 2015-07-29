@@ -1205,6 +1205,14 @@ void orxFASTCALL    orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
   {
     /* Updates status flags */
     orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
+
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+    {
+      /* Stores last values */
+      orxSpawner_GetWorldPosition(_pstSpawner, &(_pstSpawner->vLastPosition));
+      orxSpawner_GetWorldScale(_pstSpawner, &(_pstSpawner->vLastScale));
+      _pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(_pstSpawner);
+    }
   }
   else
   {
