@@ -47,6 +47,10 @@
 
 
 #include "orxInclude.h"
+#include "debug/orxDebug.h"
+
+#include <string.h>
+
 
 #ifdef __orxWINDOWS__
   #ifdef NO_WIN32_LEAN_AND_MEAN
@@ -135,6 +139,7 @@ extern orxDLLAPI void *orxFASTCALL                        orxMemory_Allocate(orx
  */
 extern orxDLLAPI void orxFASTCALL                         orxMemory_Free(void *_pMem);
 
+
 /** Copies a portion of memory into another one
  * @param[out] _pDest    Destination pointer
  * @param[in]  _pSrc     Pointer of memory from where data are read
@@ -142,7 +147,15 @@ extern orxDLLAPI void orxFASTCALL                         orxMemory_Free(void *_
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-extern orxDLLAPI void *orxFASTCALL                        orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size);
+static orxINLINE void *                                   orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size)
+{
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+  orxASSERT(_pSrc != orxNULL);
+
+  /* Done! */
+  return((void *)memcpy(_pDest, _pSrc, (size_t)_u32Size));
+}
 
 /** Moves a portion of memory into another one
  * @param[out] _pDest   Destination pointer
@@ -150,7 +163,15 @@ extern orxDLLAPI void *orxFASTCALL                        orxMemory_Copy(void *_
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI void *orxFASTCALL                        orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size);
+static orxINLINE void *                                   orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
+{
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+  orxASSERT(_pSrc != orxNULL);
+
+  /* Done! */
+  return((void *)memmove(_pDest, _pSrc, (size_t)_u32Size));
+}
 
 /** Compares two portions of memory
  * @param[in]  _pMem1   First potion to test
@@ -158,7 +179,15 @@ extern orxDLLAPI void *orxFASTCALL                        orxMemory_Move(void *_
  * @param[in]  _u32Size Size of data to test
  * @return returns a value less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size);
+static orxINLINE orxU32                                   orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size)
+{
+  /* Checks */
+  orxASSERT(_pMem1 != orxNULL);
+  orxASSERT(_pMem2 != orxNULL);
+
+  /* Done! */
+  return((orxU32)memcmp(_pMem1, _pMem2, (size_t)_u32Size));
+}
 
 /** Fills a portion of memory with _u32Data
  * @param[out] _pDest   Destination pointer
@@ -166,14 +195,28 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxMemory_Compare(cons
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI void *orxFASTCALL                        orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+static orxINLINE void *                                   orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
+{
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+
+  /* Done! */
+  return((void *)memset(_pDest, _u8Data, (size_t)_u32Size));
+}
 
 /** Fills a portion of memory with zeroes
  * @param[out] _pDest   Destination pointer
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI void *orxFASTCALL                        orxMemory_Zero(void *_pDest, orxU32 _u32Size);
+static orxINLINE void *                                   orxMemory_Zero(void *_pDest, orxU32 _u32Size)
+{
+  /* Checks */
+  orxASSERT(_pDest != orxNULL);
+
+  /* Done! */
+  return((void *)memset(_pDest, 0, (size_t)_u32Size));
+}
 
 
 /** Gets memory type literal name

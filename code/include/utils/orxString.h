@@ -1305,8 +1305,8 @@ static orxINLINE orxSTRING                                orxString_UpperCase(or
  */
 static orxINLINE orxU32                                   orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
 {
-  orxU32          u32CRC, u32Length;
-  const orxCHAR  *pc;
+  orxU32        u32CRC, u32Length;
+  const orxU8  *pu8;
 
 #ifdef __orxLITTLE_ENDIAN__
 
@@ -1342,13 +1342,14 @@ static orxINLINE orxU32                                   orxString_NContinueCRC
   u32CRC = ~_u32CRC;
 
   /* For all slices */
-  for(u32Length = _u32CharNumber, pc = _zString; u32Length >= 8; u32Length -= 8, pc += 8)
+  for(u32Length = _u32CharNumber, pu8 = (const orxU8 *)_zString; u32Length >= 8; u32Length -= 8, pu8 += 8)
   {
     orxU32 u32First, u32Second;
 
     /* Gets the slice's data */
-    u32First  = *(orxU32 *)pc ^ orxCRC_GET_FIRST(u32CRC);
-    u32Second = *(orxU32 *)(pc + 4);
+    orxMemory_Copy(&u32First, pu8, sizeof(orxU32));
+    orxMemory_Copy(&u32Second, pu8 + 4, sizeof(orxU32));
+    u32First ^= orxCRC_GET_FIRST(u32CRC);
 
     /* Updates the CRC */
     u32CRC  = saau32CRCTable[orxCRC_INDEX_7][u32First & 0xFF]
@@ -1362,10 +1363,10 @@ static orxINLINE orxU32                                   orxString_NContinueCRC
   }
 
   /* For all remaining characters */
-  for(; u32Length != 0; u32Length--, pc++)
+  for(; u32Length != 0; u32Length--, pu8++)
   {
     /* Updates the CRC */
-    u32CRC = saau32CRCTable[0][(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);
+    u32CRC = saau32CRCTable[0][((orxU8)(u32CRC & 0xFF)) ^ *pu8] ^ (u32CRC >> 8);
   }
 
 #undef orxCRC_GET_FIRST
