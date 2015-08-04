@@ -510,7 +510,7 @@ const orxSTRING orxFASTCALL orxKeyboard_GLFW_ReadString()
 {
   orxU32          u32BufferSize;
   orxCHAR        *pc;
-  const orxSTRING zResult = sstKeyboard.acStringBuffer;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);

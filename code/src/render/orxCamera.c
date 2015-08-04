@@ -1368,7 +1368,7 @@ orxFRAME *orxFASTCALL orxCamera_GetFrame(const orxCAMERA *_pstCamera)
 
 /** Sets camera parent
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
