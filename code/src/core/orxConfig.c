@@ -4237,7 +4237,7 @@ orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const o
 }
 
 /** Gets a section's parent
- * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
+ * @param[in] _zSectionName     Concerned section
  * @return Section's parent name / orxNULL
  */
 const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)

@@ -179,7 +179,7 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetOriginID(const orxSTR
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRING _zSectionName, const orxSTRING _zParentName);
 
 /** Gets a section's parent
- * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
+ * @param[in] _zSectionName     Concerned section
  * @return Section's parent name / orxNULL
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
