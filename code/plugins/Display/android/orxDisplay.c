@@ -451,6 +451,12 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
     orxFLOAT fScale;
 
     ANativeWindow *window = orxAndroid_GetNativeWindow();
+
+    if(!window)
+    {
+      return orxSTATUS_FAILURE;
+    }
+
     windowWidth = ANativeWindow_getWidth(window);
     windowHeight = ANativeWindow_getHeight(window);
 
@@ -3901,7 +3907,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxAndroid_Display_CreateContext();
 
         // Create OpenGL ES Surface
-        orxAndroid_Display_CreateSurface();
+        if(orxAndroid_Display_CreateSurface() == orxSTATUS_FAILURE)
+        {
+          return orxSTATUS_FAILURE;
+        }
 
         eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &width);
         eglASSERT();

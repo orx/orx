@@ -616,10 +616,9 @@ extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 
   LOGI("orxAndroid_GetNativeWindow()");
 
-  while(sstAndroid.window == NULL)
+  while(sstAndroid.window == NULL && !sstAndroid.bDestroyRequested)
   {
     LOGI("no window received yet");
-
     orxAndroid_PumpEvents();
   }
 

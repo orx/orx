@@ -122,18 +122,19 @@ void orxAndroid_JNI_SetupThread(void) {
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
-    int ident;
-    int events;
-    android_poll_source* source;
+  int ident;
+  int events;
+  android_poll_source* source;
 
-    LOGI("orxAndroid_GetNativeWindow()");
+  LOGI("orxAndroid_GetNativeWindow()");
 
-    while(sstAndroid.app_->window == NULL)
-    {
-        orxAndroid_PumpEvents();
-    }
+  while(sstAndroid.app_->window == NULL && !sstAndroid.app_->destroyRequested)
+  {
+    LOGI("no window received yet");
+    orxAndroid_PumpEvents();
+  }
 
-    return sstAndroid.app_->window;
+  return sstAndroid.app_->window;
 }
 
 extern "C" void *orxAndroid_GetJNIEnv()
@@ -414,22 +415,25 @@ extern "C" void orxAndroid_PumpEvents()
         }
     }
 
-    // Check if window size changed
-    int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
-    int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
-
-    if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
+    if(sstAndroid.app_->window != NULL)
     {
-        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+      // Check if window size changed
+      int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app_->window);
+      int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app_->window);
 
-        stSurfaceChangedEvent.u32Width = newWidth;
-        stSurfaceChangedEvent.u32Height = newHeight;
+      if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
+      {
+          orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
 
-        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+          stSurfaceChangedEvent.u32Width = newWidth;
+          stSurfaceChangedEvent.u32Height = newHeight;
 
-        sstAndroid.lastWidth = newWidth;
-        sstAndroid.lastHeight = newHeight;
-        sstAndroid.fSurfaceScale = orxFLOAT_0;
+          orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+
+          sstAndroid.lastWidth = newWidth;
+          sstAndroid.lastHeight = newHeight;
+          sstAndroid.fSurfaceScale = orxFLOAT_0;
+      }
     }
 }
 
