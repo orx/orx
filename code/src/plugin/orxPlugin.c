@@ -241,8 +241,10 @@ static orxINLINE void orxPlugin_UpdateAllModule()
           /* Marks as loaded */
           sstPlugin.astCoreInfo[i].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
 
+#ifndef __orxEMBEDDED__
           /* Tries to init associated module */
           orxModule_Init(sstPlugin.astCoreInfo[i].eModuleID);
+#endif /* !__orxEMBEDDED__ */
         }
       }
       /* Was already loaded */
@@ -254,8 +256,10 @@ static orxINLINE void orxPlugin_UpdateAllModule()
           /* Marks as not loaded */
           sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
 
+#ifndef __orxEMBEDDED__
           /* Tries to exit from associated module */
           orxModule_Exit(sstPlugin.astCoreInfo[i].eModuleID);
+#endif /* !__orxEMBEDDED__ */
         }
       }
 

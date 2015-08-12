@@ -299,26 +299,26 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         }
       }
 
-      /* For all optional dependencies */
-      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags, u32Index = 0;
-          u64Depend != (orxU64)0;
-          u64Depend >>= 1, u32Index++)
-      {
-        /* Depends? */
-        if(u64Depend & (orxU64)1)
-        {
-          /* Not already initialized */
-          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
-          {
-            /* Inits it */
-            orxModule_Init((orxMODULE_ID)u32Index);
-          }
-        }
-      }
-
-      /* All dependencies initialized? */
+      /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        /* For all optional dependencies */
+        for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags, u32Index = 0;
+            u64Depend != (orxU64)0;
+            u64Depend >>= 1, u32Index++)
+        {
+          /* Depends? */
+          if(u64Depend & (orxU64)1)
+          {
+            /* Not already initialized */
+            if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
+            {
+              /* Inits it */
+              orxModule_Init((orxMODULE_ID)u32Index);
+            }
+          }
+        }
+
         /* Not already initialized */
         if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
         {
