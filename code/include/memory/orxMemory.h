@@ -121,7 +121,7 @@ extern orxDLLAPI void orxFASTCALL                         orxMemory_Setup();
 /** Inits the memory module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxMemory_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_Init();
 
 /** Exits from the memory module
  */
@@ -221,7 +221,7 @@ static orxINLINE void *                                   orxMemory_Zero(void *_
 
 /** Gets memory type literal name
  * @param[in] _eMemType               Concerned memory type
- * @return Memory type name
+ * @return Memory type name / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType);
 

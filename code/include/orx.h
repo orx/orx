@@ -164,7 +164,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxASSERT(_pfnRun != orxNULL);
 
   /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+  orxModule_Register(orxMODULE_ID_MAIN, "MAIN", orx_MainSetup, _pfnInit, _pfnExit);
 
   /* Stores run callback */
   spfnRun = _pfnRun;
@@ -218,7 +218,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxASSERT(_pfnRun != orxNULL);
 
   /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+  orxModule_Register(orxMODULE_ID_MAIN, "MAIN", orx_MainSetup, _pfnInit, _pfnExit);
 
   /* Registers all other modules */
   orxModule_RegisterAll();
@@ -305,7 +305,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxASSERT(_pfnRun != orxNULL);
 
   /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
+  orxModule_Register(orxMODULE_ID_MAIN, "MAIN", orx_MainSetup, _pfnInit, _pfnExit);
 
   /* Registers all other modules */
   orxModule_RegisterAll();

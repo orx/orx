@@ -119,15 +119,22 @@ typedef void                              (orxFASTCALL *orxMODULE_SETUP_FUNCTION
 
 /** Registers a module
  * @param[in]   _eModuleID                Concerned module ID
+ * @param[in]   _zModuleName              Module name
  * @param[in]   _pfnSetup                 Module setup callback
  * @param[in]   _pfnInit                  Module init callback
  * @param[in]   _pfnExit                  Module exit callback
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL         orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit);
+extern orxDLLAPI void orxFASTCALL         orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit);
 
 /** Registers all modules. ! Needs to be updated for all new modules ! */
 extern orxDLLAPI void orxFASTCALL         orxModule_RegisterAll();
+
+/** Gets module name
+ * @param[in]   _eModuleID                Concerned module ID
+ * @return Module name / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID);
 
 /** Adds dependencies between 2 modules
  * @param[in]   _eModuleID                Concerned module ID

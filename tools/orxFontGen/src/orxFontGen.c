@@ -1094,7 +1094,7 @@ int main(int argc, char **argv)
   orxDEBUG_INIT();
 
   // Registers main module
-  orxModule_Register(orxMODULE_ID_MAIN, Setup, Init, Exit);
+  orxModule_Register(orxMODULE_ID_MAIN, "MAIN", Setup, Init, Exit);
 
   // Registers all other modules
   orxModule_RegisterAll();

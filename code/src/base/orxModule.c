@@ -40,7 +40,7 @@
 
 /** Module registration macro
  */
-#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
+#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(orxMODULE_ID_##MODULE_ID, #MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
 
 
 /** Registers all engine modules
@@ -48,53 +48,53 @@
 void orxFASTCALL orxModule_RegisterAll()
 {
   /* *** All modules registration *** */
-  orxMODULE_REGISTER(orxMODULE_ID_ANIM, orxAnim);
-  orxMODULE_REGISTER(orxMODULE_ID_ANIMPOINTER, orxAnimPointer);
-  orxMODULE_REGISTER(orxMODULE_ID_ANIMSET, orxAnimSet);
-  orxMODULE_REGISTER(orxMODULE_ID_BANK, orxBank);
-  orxMODULE_REGISTER(orxMODULE_ID_BODY, orxBody);
-  orxMODULE_REGISTER(orxMODULE_ID_CAMERA, orxCamera);
-  orxMODULE_REGISTER(orxMODULE_ID_CLOCK, orxClock);
-  orxMODULE_REGISTER(orxMODULE_ID_COMMAND, orxCommand);
-  orxMODULE_REGISTER(orxMODULE_ID_CONFIG, orxConfig);
-  orxMODULE_REGISTER(orxMODULE_ID_CONSOLE, orxConsole);
-  orxMODULE_REGISTER(orxMODULE_ID_DISPLAY, orxDisplay);
-  orxMODULE_REGISTER(orxMODULE_ID_EVENT, orxEvent);
-  orxMODULE_REGISTER(orxMODULE_ID_FILE, orxFile);
-  orxMODULE_REGISTER(orxMODULE_ID_FONT, orxFont);
-  orxMODULE_REGISTER(orxMODULE_ID_FPS, orxFPS);
-  orxMODULE_REGISTER(orxMODULE_ID_FRAME, orxFrame);
-  orxMODULE_REGISTER(orxMODULE_ID_FX, orxFX);
-  orxMODULE_REGISTER(orxMODULE_ID_FXPOINTER, orxFXPointer);
-  orxMODULE_REGISTER(orxMODULE_ID_GRAPHIC, orxGraphic);
-  orxMODULE_REGISTER(orxMODULE_ID_INPUT, orxInput);
-  orxMODULE_REGISTER(orxMODULE_ID_JOYSTICK, orxJoystick);
-  orxMODULE_REGISTER(orxMODULE_ID_KEYBOARD, orxKeyboard);
-  orxMODULE_REGISTER(orxMODULE_ID_LOCALE, orxLocale);
-  orxMODULE_REGISTER(orxMODULE_ID_MEMORY, orxMemory);
-  orxMODULE_REGISTER(orxMODULE_ID_MOUSE, orxMouse);
-  orxMODULE_REGISTER(orxMODULE_ID_OBJECT, orxObject);
-  orxMODULE_REGISTER(orxMODULE_ID_PARAM, orxParam);
-  orxMODULE_REGISTER(orxMODULE_ID_PHYSICS, orxPhysics);
-  orxMODULE_REGISTER(orxMODULE_ID_PLUGIN, orxPlugin);
-  orxMODULE_REGISTER(orxMODULE_ID_PROFILER, orxProfiler);
-  orxMODULE_REGISTER(orxMODULE_ID_RENDER, orxRender);
-  orxMODULE_REGISTER(orxMODULE_ID_RESOURCE, orxResource);
-  orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
-  orxMODULE_REGISTER(orxMODULE_ID_SHADER, orxShader);
-  orxMODULE_REGISTER(orxMODULE_ID_SHADERPOINTER, orxShaderPointer);
-  orxMODULE_REGISTER(orxMODULE_ID_SOUND, orxSound);
-  orxMODULE_REGISTER(orxMODULE_ID_SOUNDPOINTER, orxSoundPointer);
-  orxMODULE_REGISTER(orxMODULE_ID_SOUNDSYSTEM, orxSoundSystem);
-  orxMODULE_REGISTER(orxMODULE_ID_SPAWNER, orxSpawner);
-  orxMODULE_REGISTER(orxMODULE_ID_STRING, orxString);
-  orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
-  orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
-  orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
-  orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
-  orxMODULE_REGISTER(orxMODULE_ID_THREAD, orxThread);
-  orxMODULE_REGISTER(orxMODULE_ID_TIMELINE, orxTimeLine);
-  orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
+  orxMODULE_REGISTER(ANIM, orxAnim);
+  orxMODULE_REGISTER(ANIMPOINTER, orxAnimPointer);
+  orxMODULE_REGISTER(ANIMSET, orxAnimSet);
+  orxMODULE_REGISTER(BANK, orxBank);
+  orxMODULE_REGISTER(BODY, orxBody);
+  orxMODULE_REGISTER(CAMERA, orxCamera);
+  orxMODULE_REGISTER(CLOCK, orxClock);
+  orxMODULE_REGISTER(COMMAND, orxCommand);
+  orxMODULE_REGISTER(CONFIG, orxConfig);
+  orxMODULE_REGISTER(CONSOLE, orxConsole);
+  orxMODULE_REGISTER(DISPLAY, orxDisplay);
+  orxMODULE_REGISTER(EVENT, orxEvent);
+  orxMODULE_REGISTER(FILE, orxFile);
+  orxMODULE_REGISTER(FONT, orxFont);
+  orxMODULE_REGISTER(FPS, orxFPS);
+  orxMODULE_REGISTER(FRAME, orxFrame);
+  orxMODULE_REGISTER(FX, orxFX);
+  orxMODULE_REGISTER(FXPOINTER, orxFXPointer);
+  orxMODULE_REGISTER(GRAPHIC, orxGraphic);
+  orxMODULE_REGISTER(INPUT, orxInput);
+  orxMODULE_REGISTER(JOYSTICK, orxJoystick);
+  orxMODULE_REGISTER(KEYBOARD, orxKeyboard);
+  orxMODULE_REGISTER(LOCALE, orxLocale);
+  orxMODULE_REGISTER(MEMORY, orxMemory);
+  orxMODULE_REGISTER(MOUSE, orxMouse);
+  orxMODULE_REGISTER(OBJECT, orxObject);
+  orxMODULE_REGISTER(PARAM, orxParam);
+  orxMODULE_REGISTER(PHYSICS, orxPhysics);
+  orxMODULE_REGISTER(PLUGIN, orxPlugin);
+  orxMODULE_REGISTER(PROFILER, orxProfiler);
+  orxMODULE_REGISTER(RENDER, orxRender);
+  orxMODULE_REGISTER(RESOURCE, orxResource);
+  orxMODULE_REGISTER(SCREENSHOT, orxScreenshot);
+  orxMODULE_REGISTER(SHADER, orxShader);
+  orxMODULE_REGISTER(SHADERPOINTER, orxShaderPointer);
+  orxMODULE_REGISTER(SOUND, orxSound);
+  orxMODULE_REGISTER(SOUNDPOINTER, orxSoundPointer);
+  orxMODULE_REGISTER(SOUNDSYSTEM, orxSoundSystem);
+  orxMODULE_REGISTER(SPAWNER, orxSpawner);
+  orxMODULE_REGISTER(STRING, orxString);
+  orxMODULE_REGISTER(STRUCTURE, orxStructure);
+  orxMODULE_REGISTER(SYSTEM, orxSystem);
+  orxMODULE_REGISTER(TEXT, orxText);
+  orxMODULE_REGISTER(TEXTURE, orxTexture);
+  orxMODULE_REGISTER(THREAD, orxThread);
+  orxMODULE_REGISTER(TIMELINE, orxTimeLine);
+  orxMODULE_REGISTER(VIEWPORT, orxViewport);
 
   /* Done! */
   return;
@@ -116,6 +116,11 @@ void orxFASTCALL orxModule_RegisterAll()
 #define orxMODULE_KU32_STATUS_MASK_ALL          0xFFFFFFFF
 
 
+/** Misc
+ */
+#define orxMODULE_KU32_NAME_SIZE                32
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -126,10 +131,12 @@ typedef struct __orxMODULE_INFO_t
 {
   orxU64                    u64DependFlags;                 /**< Dependency flags : 8 */
   orxU64                    u64OptionalDependFlags;         /**< Optional dependency flags : 16 */
-  orxMODULE_SETUP_FUNCTION  pfnSetup;                       /**< Setup function : 20 */
-  orxMODULE_INIT_FUNCTION   pfnInit;                        /**< Init function : 24 */
-  orxMODULE_EXIT_FUNCTION   pfnExit;                        /**< Exit function : 28 */
-  orxU32                    u32StatusFlags;                 /**< Status flags : 32 */
+  orxU64                    u64ParentFlags;                 /**< Parent flags : 24 */
+  orxMODULE_SETUP_FUNCTION  pfnSetup;                       /**< Setup function : 28 */
+  orxMODULE_INIT_FUNCTION   pfnInit;                        /**< Init function : 32 */
+  orxMODULE_EXIT_FUNCTION   pfnExit;                        /**< Exit function : 36 */
+  orxU32                    u32StatusFlags;                 /**< Status flags : 40 */
+  orxCHAR                   acName[orxMODULE_KU32_NAME_SIZE]; /**< Name : 72 */
 
 } orxMODULE_INFO;
 
@@ -162,14 +169,23 @@ static orxMODULE_STATIC sstModule;
  ***************************************************************************/
 
 /** Registers a module
+ * @param[in]   _eModuleID                Concerned module ID
+ * @param[in]   _zModuleName              Module name
+ * @param[in]   _pfnSetup                 Module setup callback
+ * @param[in]   _pfnInit                  Module init callback
+ * @param[in]   _pfnExit                  Module exit callback
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)
+void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
   /* Clears module info */
   orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
+
+  /* Stores its name */
+  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, orxMODULE_KU32_STATUS_FLAG_INITIALIZED - 1, _zModuleName);
 
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
@@ -181,6 +197,24 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SET
 
   /* Done! */
   return;
+}
+
+/** Gets module name
+ * @param[in]   _eModuleID                Concerned module ID
+ * @return Module name / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+
+  /* Updates result */
+  zResult = sstModule.astModuleInfo[_eModuleID].acName;
+
+  /* Done! */
+  return zResult;
 }
 
 /** Adds dependencies between 2 modules
