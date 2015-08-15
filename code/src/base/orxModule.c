@@ -45,7 +45,7 @@
 
 /** Registers all engine modules
  */
-void orxFASTCALL orxModule_RegisterAll()
+static orxINLINE void orxModule_RegisterAll()
 {
   /* *** All modules registration *** */
   orxMODULE_REGISTER(ANIM, orxAnim);
@@ -144,8 +144,8 @@ typedef struct __orxMODULE_INFO_t
  */
 typedef struct __orxMODULE_STATIC_t
 {
-  orxMODULE_INFO  astModuleInfo[orxMODULE_ID_NUMBER];
-  orxU32          u32InitLoopCounter;
+  orxMODULE_INFO            astModuleInfo[orxMODULE_ID_NUMBER];
+  orxU32                    u32InitLoopCounter;
 
 } orxMODULE_STATIC;
 
@@ -162,6 +162,48 @@ static orxMODULE_STATIC sstModule;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Calls a module setup
+ */
+static orxINLINE void orxModule_Setup(orxMODULE_ID _eModuleID)
+{
+  /* Checks */
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+
+  /* Is registered? */
+  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
+  {
+    /* Has setup function? */
+    if(sstModule.astModuleInfo[_eModuleID].pfnSetup != orxNULL)
+    {
+      /* Calls it */
+      sstModule.astModuleInfo[_eModuleID].pfnSetup();
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Calls all module setups
+ */
+static orxINLINE void orxModule_SetupAll()
+{
+  orxU32 eID;
+
+  /* Clears static variable */
+  sstModule.u32InitLoopCounter = 0;
+
+  /* For all modules */
+  for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
+  {
+    /* Calls module setup */
+    orxModule_Setup((orxMODULE_ID)eID);
+  }
+
+  /* Done! */
+  return;
+}
 
 
 /***************************************************************************
@@ -195,26 +237,18 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zM
   /* Updates module status flags */
   sstModule.astModuleInfo[_eModuleID].u32StatusFlags = orxMODULE_KU32_STATUS_FLAG_REGISTERED;
 
+  /* Main module? */
+  if(_eModuleID == orxMODULE_ID_MAIN)
+  {
+    /* Registers all other modules */
+    orxModule_RegisterAll();
+
+    /* Setups all modules */
+    orxModule_SetupAll();
+  }
+
   /* Done! */
   return;
-}
-
-/** Gets module name
- * @param[in]   _eModuleID                Concerned module ID
- * @return Module name / orxSTRING_EMPTY
- */
-const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
-{
-  const orxSTRING zResult = orxSTRING_EMPTY;
-
-  /* Checks */
-  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
-
-  /* Updates result */
-  zResult = sstModule.astModuleInfo[_eModuleID].acName;
-
-  /* Done! */
-  return zResult;
 }
 
 /** Adds dependencies between 2 modules
@@ -244,47 +278,6 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
   sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags |= ((orxU64)1) << _eDependID;
 
   /* Done! */
-  return;
-}
-
-/** Calls a module setup
- */
-void orxFASTCALL orxModule_Setup(orxMODULE_ID _eModuleID)
-{
-  /* Checks */
-  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
-
-  /* Is registered? */
-  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
-  {
-    /* Has setup function? */
-    if(sstModule.astModuleInfo[_eModuleID].pfnSetup != orxNULL)
-    {
-      /* Calls it */
-      sstModule.astModuleInfo[_eModuleID].pfnSetup();
-    }
-  }
-
-  /* Done! */
-  return;
-}
-
-/** Calls all module setups
- */
-void orxFASTCALL orxModule_SetupAll()
-{
-  orxU32 eID;
-
-  /* Clears static variable */
-  sstModule.u32InitLoopCounter = 0;
-
-  /* For all modules */
-  for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
-  {
-    /* Calls module setup */
-    orxModule_Setup((orxMODULE_ID)eID);
-  }
-
   return;
 }
 
@@ -523,4 +516,22 @@ orxBOOL orxFASTCALL orxModule_IsInitialized(orxMODULE_ID _eModuleID)
 
   /* Done! */
   return bResult;
+}
+
+/** Gets module name
+ * @param[in]   _eModuleID                Concerned module ID
+ * @return Module name / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+
+  /* Updates result */
+  zResult = sstModule.astModuleInfo[_eModuleID].acName;
+
+  /* Done! */
+  return zResult;
 }

@@ -477,12 +477,6 @@ int main(int argc, char **argv)
   // Registers main module
   orxModule_Register(orxMODULE_ID_MAIN, "MAIN", Setup, Init, Exit);
 
-  // Registers all other modules
-  orxModule_RegisterAll();
-
-  // Calls all modules setup
-  orxModule_SetupAll();
-
   // Sends the command line arguments to orxParam module
   if(orxParam_SetArgs(argc, argv) != orxSTATUS_FAILURE)
   {
