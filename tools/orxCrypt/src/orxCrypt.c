@@ -499,9 +499,6 @@ int main(int argc, char **argv)
       // Exits from engine
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    // Exits from all modules
-    orxModule_ExitAll();
   }
 
   // Exits from the Debug system

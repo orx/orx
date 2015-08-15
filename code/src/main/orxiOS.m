@@ -319,9 +319,6 @@ const orxSTRING orxiOS_GetDocumentsPath()
     orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
-  /* Exits from all modules */
-  orxModule_ExitAll();
-
   /* Releases main pool */
   [poMainPool release];
 

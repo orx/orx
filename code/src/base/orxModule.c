@@ -323,8 +323,13 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
             /* Inits it */
             eResult = orxModule_Init((orxMODULE_ID)u32Index);
 
-            /* Failed ? */
-            if(eResult == orxSTATUS_FAILURE)
+            /* Success ? */
+            if(eResult != orxSTATUS_FAILURE)
+            {
+              /* Updates flags */
+              sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
+            }
+            else
             {
               /* Stops init here */
               break;
@@ -348,7 +353,11 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
             if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
             {
               /* Inits it */
-              orxModule_Init((orxMODULE_ID)u32Index);
+              if(orxModule_Init((orxMODULE_ID)u32Index) != orxSTATUS_FAILURE)
+              {
+                /* Updates flags */
+                sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
+              }
             }
           }
         }
@@ -398,6 +407,9 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Is temporary initialized? */
         if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_PENDING)
         {
+          /* Updates flags */
+          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~(orxU64)1 << _eModuleID;
+
           /* Internal exit call */
           orxModule_Exit((orxMODULE_ID)u32Index);
         }
@@ -419,56 +431,10 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   return eResult;
 }
 
-/** Inits all modules
- */
-orxSTATUS orxFASTCALL orxModule_InitAll()
-{
-  orxU32    eID, u32InitCounter;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* For all modules */
-  for(eID = 0, u32InitCounter = 0; eID < orxMODULE_ID_NUMBER; eID++)
-  {
-    /* Calls module init */
-    eResult = orxModule_Init((orxMODULE_ID)eID);
-
-    /* Failed? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      /* Updates init counter */
-      u32InitCounter++;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to initialized module ID (%d).", eID);
-    }
-  }
-
-  /* Nothing initialized? */
-  if(u32InitCounter == 0)
-  {
-    /* Failed */
-    eResult = orxSTATUS_FAILURE;
-
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "No modules initialized.");
-  }
-  else
-  {
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Exits from a module recursively
  */
 void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 {
-  orxU64 u64Depend;
   orxU32 u32Index;
 
   /* Checks */
@@ -477,8 +443,11 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   /* Is initialized? */
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
   {
+    orxU64 u64Depend;
+
     /* Cleans flags */
     sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
+    sstModule.astModuleInfo[_eModuleID].u64ParentFlags  = 0;
 
     /* Computes dependency flag */
     u64Depend = (orxU64)1 << _eModuleID;
@@ -511,25 +480,30 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       /* Calls it */
       sstModule.astModuleInfo[_eModuleID].pfnExit();
     }
+
+    /* For all modules */
+    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+    {
+      /* Has parents? */
+      if(sstModule.astModuleInfo[u32Index].u64ParentFlags != 0)
+      {
+        /* Was this module one of its parents? */
+        if(sstModule.astModuleInfo[u32Index].u64ParentFlags & u64Depend)
+        {
+          /* Removes self as parent */
+          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~u64Depend;
+
+          /* No more parents? */
+          if(sstModule.astModuleInfo[u32Index].u64ParentFlags == 0)
+          {
+            /* Exits from it */
+            orxModule_Exit((orxMODULE_ID)u32Index);
+          }
+        }
+      }
+    }
   }
 
-  return;
-}
-
-/** Exits from all modules
- */
-void orxFASTCALL orxModule_ExitAll()
-{
-  orxU32 eID;
-
-  /* For all modules */
-  for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
-  {
-    /* Calls module exit */
-    orxModule_Exit((orxMODULE_ID)eID);
-  }
-
-  /* Done! */
   return;
 }
 

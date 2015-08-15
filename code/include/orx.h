@@ -275,13 +275,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Exits from engine */
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Exits from all modules */
-    orxModule_ExitAll();
   }
 
   /* Exits from the Debug system */
-
   orxDEBUG_EXIT();
 }
 
@@ -360,13 +356,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Exits from engine */
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Exits from all modules */
-    orxModule_ExitAll();
   }
 
   /* Exits from the Debug system */
-
   orxDEBUG_EXIT();
 }
 

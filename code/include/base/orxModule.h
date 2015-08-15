@@ -162,18 +162,10 @@ extern orxDLLAPI void orxFASTCALL         orxModule_SetupAll();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxModule_Init(orxMODULE_ID _eModuleID);
 
-/** Inits all modules
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxModule_InitAll();
-
 /** Exits from a module
  * @param[in]   _eModuleID                Concerned module ID
  */
 extern orxDLLAPI void orxFASTCALL         orxModule_Exit(orxMODULE_ID _eModuleID);
-
-/** Exits from all modules.*/
-extern orxDLLAPI void orxFASTCALL         orxModule_ExitAll();
 
 /** Is module initialized?
  * @param[in]   _eModuleID                Concerned module ID
