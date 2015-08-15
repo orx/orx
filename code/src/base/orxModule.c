@@ -185,7 +185,7 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zM
   orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
 
   /* Stores its name */
-  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, orxMODULE_KU32_STATUS_FLAG_INITIALIZED - 1, _zModuleName);
+  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, orxMODULE_KU32_NAME_SIZE - 1, _zModuleName);
 
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
