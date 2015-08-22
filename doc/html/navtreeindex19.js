@@ -1,13 +1,5 @@
 var NAVTREEINDEX19 =
 {
-"orx_shader_8h.html#ga90de18f99b8a163957f646599ffeeaca":[3,0,0,12,2,1],
-"orx_shader_8h.html#ga94512a95acea8de509b7346199eab3a1":[3,0,0,12,2,2],
-"orx_shader_8h.html#ga96e4a893c541b945d05aae98a08b1f46":[3,0,0,12,2,9],
-"orx_shader_8h.html#gac27e790b7913206f56fd598822ee9f47":[3,0,0,12,2,11],
-"orx_shader_8h.html#gac6ac3194160112a55c2c94be75737704":[3,0,0,12,2,16],
-"orx_shader_8h.html#gad521c24602914051107489944a5ca8b2":[3,0,0,12,2,19],
-"orx_shader_8h.html#gad58623e105ed1d5df93a27298e6bae6a":[3,0,0,12,2,17],
-"orx_shader_8h.html#gaee59c669a705b28e66cc8ff5f2c0ae48":[3,0,0,12,2,3],
 "orx_shader_8h.html#gafa7c386fd805fd23b1ff9b32c7972e51":[3,0,0,12,2,0],
 "orx_shader_8h.html#gafb33ac8cb6d593ce19a1c84a5b8f59b3":[3,0,0,12,2,13],
 "orx_shader_8h.html#gafb85fac6a25b5d2ca6d7972c814fcd9c":[3,0,0,12,2,14],
@@ -249,5 +241,13 @@ var NAVTREEINDEX19 =
 "orx_string_8h.html#ga5dd29b1e41db0845ef80863df67f5670":[3,0,0,14,2,28],
 "orx_string_8h.html#ga5ffe64ef217d7745c6b0c3af518083f2":[3,0,0,14,2,41],
 "orx_string_8h.html#ga62381e5a5af1f8243953b3c586ec4875":[3,0,0,14,2,53],
-"orx_string_8h.html#ga6329fe45c8dee73454f8f6dfa10f1437":[3,0,0,14,2,47]
+"orx_string_8h.html#ga6329fe45c8dee73454f8f6dfa10f1437":[3,0,0,14,2,47],
+"orx_string_8h.html#ga642c9bffe67569c7fb80665b6f42c499":[3,0,0,14,2,12],
+"orx_string_8h.html#ga643f4af16e0e79abe462c2b7a1fd0fcf":[3,0,0,14,2,22],
+"orx_string_8h.html#ga675eb3b066ac037e9815c565c4ddbe1c":[3,0,0,14,2,51],
+"orx_string_8h.html#ga688414a65e9accbe3faa0f5d78b7316d":[3,0,0,14,2,34],
+"orx_string_8h.html#ga69005bd58eba44a2443b8ab4b2b90af4":[3,0,0,14,2,40],
+"orx_string_8h.html#ga6a4ae16da84e7126d749fed80356a617":[3,0,0,14,2,11],
+"orx_string_8h.html#ga6f2d9f112ec01738725cd001d7d17ae6":[3,0,0,14,2,36],
+"orx_string_8h.html#ga70a6c603e21569ac76e5e4033737ecd6":[3,0,0,14,2,31]
 };

@@ -56,14 +56,10 @@ var group__orx_module =
     [ "orxModule_AddDependency", "group__orx_module.html#ga3f7ed5e5d444f7ee30407ad190d44b3f", null ],
     [ "orxModule_AddOptionalDependency", "group__orx_module.html#ga6e4ea7c93ab0e7f7488b459dba3ac9e7", null ],
     [ "orxModule_Exit", "group__orx_module.html#ga6a492298081fa56cf9c382491c456998", null ],
-    [ "orxModule_ExitAll", "group__orx_module.html#ga26302cb32518da5834394e07c5339351", null ],
+    [ "orxModule_GetName", "group__orx_module.html#ga7ecd0ed35dda6cc6fb31f84b73d5fe25", null ],
     [ "orxModule_Init", "group__orx_module.html#gae6568b5f2c3ed7f4eb64ee81f76f9350", null ],
-    [ "orxModule_InitAll", "group__orx_module.html#gaaefc7ad879dc99480d598ba40341772b", null ],
     [ "orxModule_IsInitialized", "group__orx_module.html#gadf41899d90b19ef9fc33dd7bc0c85296", null ],
-    [ "orxModule_Register", "group__orx_module.html#ga236c2233cd358ff40c2af94d7ef4b640", null ],
-    [ "orxModule_RegisterAll", "group__orx_module.html#ga7a0361e51ff409dc42025c1019758d02", null ],
-    [ "orxModule_Setup", "group__orx_module.html#ga91a59b4a84dcf9c880bbca8056828b99", null ],
-    [ "orxModule_SetupAll", "group__orx_module.html#ga10bf7e12da32a1f3ad58beee77900609", null ],
+    [ "orxModule_Register", "group__orx_module.html#ga50af0a46cb9f3c0ca76f0042b5c4a2ec", null ],
     [ "orxSTATUS", "group__orx_module.html#gaf44141f0bc45f319187952b4629b862c", null ],
     [ "void", "group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86", null ]
 ];

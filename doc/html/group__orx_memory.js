@@ -16,15 +16,15 @@ var group__orx_memory =
       [ "orxMEMORY_TYPE_NONE", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0ad84d71b9730e52fa197e2cf28d7a4325", null ]
     ] ],
     [ "orxMemory_Allocate", "group__orx_memory.html#ga74fb333b07c13bf3a668c5ee88204ea8", null ],
-    [ "orxMemory_Compare", "group__orx_memory.html#gacc3b257d3c6bec8af29c59fa62a01e59", null ],
-    [ "orxMemory_Copy", "group__orx_memory.html#ga685c30e74ee37efb499e8fb220308a0c", null ],
+    [ "orxMemory_Compare", "group__orx_memory.html#ga177bab636d9bad880174a62f8d41cb17", null ],
+    [ "orxMemory_Copy", "group__orx_memory.html#gae9f162d0bd9c52e8bd44f827401093d9", null ],
     [ "orxMemory_Exit", "group__orx_memory.html#ga643c775ffcf970857a16d419bf298020", null ],
     [ "orxMemory_Free", "group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d", null ],
     [ "orxMemory_GetCacheLineSize", "group__orx_memory.html#ga7e69f5cbe4ac63c45077cc5d9a3da9f8", null ],
     [ "orxMemory_GetTypeName", "group__orx_memory.html#ga23385dc3cafb19d8e25dd58ea4d30af2", null ],
     [ "orxMemory_Init", "group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379", null ],
-    [ "orxMemory_Move", "group__orx_memory.html#ga7e90efa0eef145702488f1d76719dda3", null ],
-    [ "orxMemory_Set", "group__orx_memory.html#gadbe3840a865f43ba5310a54b203ffc9a", null ],
+    [ "orxMemory_Move", "group__orx_memory.html#ga12cc30293a8637b811b731b445bc5c6c", null ],
+    [ "orxMemory_Set", "group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d", null ],
     [ "orxMemory_Setup", "group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0", null ],
-    [ "orxMemory_Zero", "group__orx_memory.html#gafd4fa0cc285a7e64813e4d6dbb1c2347", null ]
+    [ "orxMemory_Zero", "group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b", null ]
 ];
