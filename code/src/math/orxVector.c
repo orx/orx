@@ -119,16 +119,20 @@ orxVECTOR *orxFASTCALL orxVector_CatmullRom(orxVECTOR *_pvRes, const orxVECTOR *
 
 /* *** Vector constants *** */
 
-const orxVECTOR orxVECTOR_X     = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_Y     = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_Z     = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+const orxVECTOR orxVECTOR_X       = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_Y       = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_Z       = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
 
-const orxVECTOR orxVECTOR_0     = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_1     = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
+const orxVECTOR orxVECTOR_0       = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_1       = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
 
-const orxVECTOR orxVECTOR_RED   = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_GREEN = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_BLUE  = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+const orxVECTOR orxVECTOR_RED     = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_GREEN   = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_BLUE    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
 
-const orxVECTOR orxVECTOR_BLACK = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_WHITE = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
+const orxVECTOR orxVECTOR_YELLOW  = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_CYAN    = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
+const orxVECTOR orxVECTOR_MAGENTA = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+
+const orxVECTOR orxVECTOR_BLACK   = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+const orxVECTOR orxVECTOR_WHITE   = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
