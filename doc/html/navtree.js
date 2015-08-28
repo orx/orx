@@ -39,18 +39,18 @@ var NAVTREEINDEX =
 "group__orx_resource.html#ga5dc1c95c114879026d628f0cfb35aca6",
 "group__orx_spawner.html#gaacc4ba128377d1617c203696cf724332",
 "group__orx_thread.html#ga59b6f7828c4c1f23acf433003e276506",
-"orx_anim_8h.html#ga6bdf30ba632aced8fb81f8eb2282837c",
-"orx_clock_8h.html#ggae63cc0f7b3f765aaccb21184bee35bb9a1548835310e2369809523aa3f7bd7742",
-"orx_display_8h.html#ga21afdb1c33f362aa5a1a0660385a64ff",
-"orx_font_8h.html#ga44605b14708588c0ab44d61a060f8887",
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba950c0f70ecec0650fae4099aa740d0de",
-"orx_memory_8h.html#ggab389ac47cdad29f66eb25d37f09179b0a1f7adb5b44b63b1f58ec7bed792bed88",
-"orx_param_8h.html#gaf7cfd1a04903c5a1cd91806c943db5a4",
-"orx_plugin___physics_8h.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7",
-"orx_shader_8h.html#gafa7c386fd805fd23b1ff9b32c7972e51",
-"orx_string_8h.html#ga73609453472017913e3e329ce2c12ff4",
-"orx_tree_8h.html#ga8187d0532bb9c8a1727e4171f2d4f8b3",
-"structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a01a7dcd08cf42946f764f540705e5e83"
+"orx_anim_8h.html#ga511df81510ed565dbba388a87b47ebfe",
+"orx_clock_8h.html#ggada60c0d5d6014d13f9822cb81391e38da58a11437216d0ba61fe5927e14b4713b",
+"orx_display_8h.html#ga16f67c9a5e6bd6bf733c3bc2bc4c7522",
+"orx_font_8h.html#ga2dc09f19c7be6991d175289efd858f24",
+"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba88cc81e2f047f89c5644a15cb4a650f1",
+"orx_memory_8h.html#gafe7c2f7c245a3e8f8e489cd9d1053649",
+"orx_param_8h.html#gaaa54334e7382d583238b892bcb8f97ff",
+"orx_plugin___physics_8h.html#ggafc2c82a23f06f10aee546a81239c999fa838b852881ab17f337251ea9179168aa",
+"orx_shader_8h.html#gad521c24602914051107489944a5ca8b2",
+"orx_string_8h.html#ga6a4ae16da84e7126d749fed80356a617",
+"orx_tree_8h.html#ga26ed9987077dc6e4918205ac3dac360a",
+"structorx_b_o_d_y___p_a_r_t___d_e_f.html#adc5836790791c559495209f647d14b88"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
