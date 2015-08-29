@@ -3909,6 +3909,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         // Create OpenGL ES Surface
         if(orxAndroid_Display_CreateSurface() == orxSTATUS_FAILURE)
         {
+          orxConfig_PopSection();
           return orxSTATUS_FAILURE;
         }
 
