@@ -40,6 +40,7 @@ var orx_physics_8h =
     [ "orxPHYSICS_KZ_CONFIG_RATIO", "orx_physics_8h.html#gacc85fccf6ee1b34191c2eacec867cfbe", null ],
     [ "orxPHYSICS_KZ_CONFIG_SECTION", "orx_physics_8h.html#ga719bed4c6c8c040776938aaf7ac02025", null ],
     [ "orxPHYSICS_KZ_CONFIG_SHOW_DEBUG", "orx_physics_8h.html#ga5ec60d173dab642eca67ebb9ccd23786", null ],
+    [ "orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY", "orx_physics_8h.html#gacea7fc3ee7d17978817421253f43b8f5", null ],
     [ "orxPHYSICS_BODY", "orx_physics_8h.html#ga4d95f1a2c67d8af72bd48522bd47aea6", null ],
     [ "orxPHYSICS_BODY_JOINT", "orx_physics_8h.html#gac0c9d300ee61b05b28a86313af67d137", null ],
     [ "orxPHYSICS_BODY_PART", "orx_physics_8h.html#gad6ca00ed200d20d87023b977ea980526", null ],

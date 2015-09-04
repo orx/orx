@@ -1655,6 +1655,7 @@ var searchData=
   ['orxphysics_5fkz_5fconfig_5fratio',['orxPHYSICS_KZ_CONFIG_RATIO',['../group__orx_physics.html#gacc85fccf6ee1b34191c2eacec867cfbe',1,'orxPhysics.h']]],
   ['orxphysics_5fkz_5fconfig_5fsection',['orxPHYSICS_KZ_CONFIG_SECTION',['../group__orx_physics.html#ga719bed4c6c8c040776938aaf7ac02025',1,'orxPhysics.h']]],
   ['orxphysics_5fkz_5fconfig_5fshow_5fdebug',['orxPHYSICS_KZ_CONFIG_SHOW_DEBUG',['../group__orx_physics.html#ga5ec60d173dab642eca67ebb9ccd23786',1,'orxPhysics.h']]],
+  ['orxphysics_5fkz_5fconfig_5fstep_5ffrequency',['orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY',['../group__orx_physics.html#gacea7fc3ee7d17978817421253f43b8f5',1,'orxPhysics.h']]],
   ['orxphysics_5fraycast',['orxPhysics_Raycast',['../group__orx_physics.html#gadc8ab81f58b2a172aac1ff8a79d5f42f',1,'orxPhysics.h']]],
   ['orxphysics_5fsetangulardamping',['orxPhysics_SetAngularDamping',['../group__orx_physics.html#ga0e53fbc164d83fb779df469636b03da1',1,'orxPhysics.h']]],
   ['orxphysics_5fsetangularvelocity',['orxPhysics_SetAngularVelocity',['../group__orx_physics.html#ga29ca71d106c12ecd60fd2e94dd292005',1,'orxPhysics.h']]],
