@@ -59,6 +59,7 @@
 #define orxPHYSICS_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
 
 #define orxPHYSICS_KU32_STATIC_FLAG_ENABLED     0x00000002 /**< Enabled flag */
+#define orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT    0x00000004 /**< Fixed DT flag */
 
 #define orxPHYSICS_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -67,7 +68,7 @@ namespace orxPhysics
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
   static const orxU32   su32MessageBankSize     = 512;
-  static const orxFLOAT sfMaxDT                 = orx2F(1.0f / 30.0f);
+  static const orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
 }
 
 
@@ -128,6 +129,8 @@ typedef struct __orxPHYSICS_STATIC_t
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
+  orxFLOAT                    fFixedDT;           /**< Fixed DT */
+  orxFLOAT                    fDTAccumulator;     /**< DT accumulator */
 
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
@@ -932,20 +935,36 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   /* Is simulation enabled? */
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
-    orxFLOAT fDT;
+    orxU32 u32Steps, i;
 
     /* Stores DT */
     sstPhysics.fLastDT = _pstClockInfo->fDT;
 
-    /* For all passed cycles */
-    for(fDT = _pstClockInfo->fDT; fDT > orxPhysics::sfMaxDT; fDT -= orxPhysics::sfMaxDT)
+    /* Updates DT accumulator */
+    sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
+
+    /* Computes the number of steps */
+    u32Steps = (orxU32)orxMath_Floor(sstPhysics.fDTAccumulator + orxMATH_KF_EPSILON / sstPhysics.fFixedDT);
+
+    /* For all steps */
+    for(i = 0; i < u32Steps; i++)
     {
       /* Updates world simulation */
-      sstPhysics.poWorld->Step(orxPhysics::sfMaxDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
+      sstPhysics.poWorld->Step(sstPhysics.fFixedDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
     }
 
-    /* Updates last step of world simulation */
-    sstPhysics.poWorld->Step(fDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
+    /* Updates accumulator */
+    sstPhysics.fDTAccumulator -= orxU2F(u32Steps) * sstPhysics.fFixedDT;
+
+    /* Not absolute fixed DT? */
+    if(!orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT))
+    {
+      /* Updates last step of world simulation */
+      sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
+
+      /* Clears accumulator */
+      sstPhysics.fDTAccumulator = orxFLOAT_0;
+    }
 
     /* Clears forces */
     sstPhysics.poWorld->ClearForces();
@@ -1733,7 +1752,7 @@ extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetJointReactionForce(const o
   poJoint = (const b2Joint *)_pstBodyJoint;
 
   /* Gets reaction force */
-  vForce = poJoint->GetReactionForce((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / orxPhysics::sfMaxDT);
+  vForce = poJoint->GetReactionForce((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / sstPhysics.fFixedDT);
 
   /* Updates result */
   orxVector_Set(_pvForce, orx2F(vForce.x), orx2F(vForce.y), orxFLOAT_0);
@@ -1755,7 +1774,7 @@ extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetJointReactionTorque(const or
   poJoint = (const b2Joint *)_pstBodyJoint;
 
   /* Updates result */
-  fResult = orx2F(poJoint->GetReactionTorque((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / orxPhysics::sfMaxDT));
+  fResult = orx2F(poJoint->GetReactionTorque((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / sstPhysics.fFixedDT));
 
   /* Done! */
   return fResult;
@@ -2686,7 +2705,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
   if(!(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY))
   {
     orxBOOL   bAllowSleep;
-    orxFLOAT  fRatio;
+    orxFLOAT  fRatio, fStepFrequency;
     orxVECTOR vGravity;
     b2Vec2    vWorldGravity;
 
@@ -2705,6 +2724,24 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
       orxVector_Copy(&vGravity, &orxVECTOR_0);
     }
     bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
+
+    /* Gets step frequency */
+    fStepFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY);
+
+    /* Deactivated? */
+    if(fStepFrequency < orxFLOAT_0)
+    {
+      /* Uses default frequency */
+      sstPhysics.fFixedDT = orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
+    }
+    else
+    {
+      /* Stores fixed DT */
+      sstPhysics.fFixedDT = (fStepFrequency != orxFLOAT_0) ? orxFLOAT_1 / fStepFrequency : orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
+
+      /* Updates status */
+      orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT, orxPHYSICS_KU32_STATIC_FLAG_NONE);
+    }
 
     /* Gets dimension ratio */
     fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
