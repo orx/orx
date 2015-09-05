@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxFontGen", "orxFontGen.vcxproj", "{223077AD-9F6E-0649-BB74-7B1247BEF1CC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxFontGen", "orxFontGen.vcxproj", "{A8D922DB-BF29-B84B-BB3E-749931570945}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,12 +10,12 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Debug|Win32.ActiveCfg = Debug|Win32
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Debug|Win32.Build.0 = Debug|Win32
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Profile|Win32.ActiveCfg = Profile|Win32
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Profile|Win32.Build.0 = Profile|Win32
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Release|Win32.ActiveCfg = Release|Win32
-		{223077AD-9F6E-0649-BB74-7B1247BEF1CC}.Release|Win32.Build.0 = Release|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Debug|Win32.Build.0 = Debug|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Profile|Win32.ActiveCfg = Profile|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Profile|Win32.Build.0 = Profile|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Release|Win32.ActiveCfg = Release|Win32
+		{A8D922DB-BF29-B84B-BB3E-749931570945}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

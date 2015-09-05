@@ -800,7 +800,7 @@ static void Run()
           }
 
           // Is descend bigger than any previous?
-          if(sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1 > s32MaxDescend)
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1 > s32MaxDescend)
           {
             // Stores it
             s32MaxDescend = sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1;

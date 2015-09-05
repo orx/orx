@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{223077AD-9F6E-0649-BB74-7B1247BEF1CC}</ProjectGuid>
+    <ProjectGuid>{A8D922DB-BF29-B84B-BB3E-749931570945}</ProjectGuid>
     <RootNamespace>orxFontGen</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -78,7 +78,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxDEBUG__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -95,14 +95,14 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxDEBUG__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>orxd.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -110,7 +110,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxPROFILER__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
@@ -128,7 +128,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxPROFILER__;__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,14 +137,14 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>orxp.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
@@ -162,7 +162,7 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>__orxSTATIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\..\code\include;..\..\..\..\..\extern\stb_image;..\..\..\..\..\extern\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,7 +171,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>orx.lib;freetype.lib;winmm.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)orxfontgen.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype-2.4.1\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\lib;..\..\..\..\..\code\lib\static;..\..\..\..\..\extern\freetype\lib\vc2012;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
