@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxFontGen", "orxFontGen.vcxproj", "{025E2D4C-BD55-294A-BAFB-DBC3A7122201}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxFontGen", "orxFontGen.vcxproj", "{6EF0DDD8-03BF-6D41-957F-BB2F23538836}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,18 +13,18 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Debug|x64.ActiveCfg = Debug|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Debug|x64.Build.0 = Debug|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Debug|Win32.ActiveCfg = Debug|Win32
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Debug|Win32.Build.0 = Debug|Win32
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Profile|x64.ActiveCfg = Profile|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Profile|x64.Build.0 = Profile|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Profile|Win32.ActiveCfg = Profile|Win32
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Profile|Win32.Build.0 = Profile|Win32
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Release|x64.ActiveCfg = Release|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Release|x64.Build.0 = Release|x64
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Release|Win32.ActiveCfg = Release|Win32
-		{025E2D4C-BD55-294A-BAFB-DBC3A7122201}.Release|Win32.Build.0 = Release|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Debug|x64.ActiveCfg = Debug|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Debug|x64.Build.0 = Debug|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Debug|Win32.Build.0 = Debug|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Profile|x64.ActiveCfg = Profile|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Profile|x64.Build.0 = Profile|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Profile|Win32.ActiveCfg = Profile|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Profile|Win32.Build.0 = Profile|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Release|x64.ActiveCfg = Release|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Release|x64.Build.0 = Release|x64
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Release|Win32.ActiveCfg = Release|Win32
+		{6EF0DDD8-03BF-6D41-957F-BB2F23538836}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

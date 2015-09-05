@@ -179,7 +179,7 @@ tutorialfolderinfolist = [
 externfolderinfolist = [
     {'src': '../extern/Box2D_2.1.3',                                    'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
-    {'src': '../extern/freetype-2.4.1',                                 'dst': None},
+    {'src': '../extern/freetype',                                       'dst': None},
     {'src': '../extern/glfw-2.7',                                       'dst': None},
     {'src': '../extern/libsndfile-1.0.22',                              'dst': None},
     {'src': '../extern/libwebp',                                        'dst': None},

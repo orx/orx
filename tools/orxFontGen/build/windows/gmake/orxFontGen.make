@@ -24,15 +24,15 @@ ifeq ($(config),debug)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen.exe
   DEFINES   += -D__orxDEBUG__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype/include
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) -ffast-math -g -msse2
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions
   ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype-2.4.1/lib/mingw -L.
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype/lib/mingw -L.
   LIBS      += -lorxd -lfreetype -lwinmm -lOpenGL32
   LDDEPS    +=
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -46,15 +46,15 @@ ifeq ($(config),profile)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen.exe
   DEFINES   += -D__orxPROFILER__ -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype/include
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) -ffast-math -g -msse2 -O2
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
   ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype-2.4.1/lib/mingw -L.
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype/lib/mingw -L.
   LIBS      += -lorxp -lfreetype -lwinmm -lOpenGL32
   LDDEPS    +=
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -68,15 +68,15 @@ ifeq ($(config),release)
   TARGETDIR  = ../../../bin
   TARGET     = $(TARGETDIR)/orxfontgen.exe
   DEFINES   += -D__orxSTATIC__
-  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype-2.4.1/include
+  INCLUDES  += -I../../../include -I../../../../../code/include -I../../../../../extern/stb_image -I../../../../../extern/freetype/include
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -msse2 -ffast-math -g -O2
+  ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) -ffast-math -g -msse2 -O2
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
   ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype-2.4.1/lib/mingw -L.
+  ALL_LDFLAGS   += $(LDFLAGS) -L../../../lib -L../../../../../code/lib/static -L../../../../../extern/freetype/lib/mingw -L.
   LIBS      += -lorx -lfreetype -lwinmm -lOpenGL32
   LDDEPS    +=
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -141,6 +141,7 @@ prelink:
 	$(PRELINKCMDS)
 
 ifneq (,$(PCH))
+.NOTPARALLEL: $(GCH) $(PCH)
 $(GCH): $(PCH)
 	@echo $(notdir $<)
 	$(SILENT) $(CC) -x c-header $(ALL_CFLAGS) -MMD -MP $(DEFINES) $(INCLUDES) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
@@ -148,7 +149,7 @@ endif
 
 $(OBJDIR)/orxFontGen.o: ../../../src/orxFontGen.c
 	@echo $(notdir $<)
-	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+	$(SILENT) $(CC) $(ALL_CFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
 ifneq (,$(PCH))
