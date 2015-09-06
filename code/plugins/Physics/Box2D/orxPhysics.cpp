@@ -944,7 +944,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
     sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
 
     /* Computes the number of steps */
-    u32Steps = (orxU32)orxMath_Floor(sstPhysics.fDTAccumulator + orxMATH_KF_EPSILON / sstPhysics.fFixedDT);
+    u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxMATH_KF_EPSILON) / sstPhysics.fFixedDT);
 
     /* For all steps */
     for(i = 0; i < u32Steps; i++)
