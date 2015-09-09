@@ -184,8 +184,13 @@ static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstE
         /* Updates blend mode */
         orxDisplay_SetBlendMode(orxViewport_GetBlendMode(pstViewport));
 
-        /* Starts & stops it */
+        /* Starts shader */
         orxShaderPointer_Start(pstShaderPointer);
+
+        /* Draws render target's content */
+        orxDisplay_TransformBitmap(orxNULL, orxNULL, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
+
+        /* Stops shader */
         orxShaderPointer_Stop(pstShaderPointer);
       }
 

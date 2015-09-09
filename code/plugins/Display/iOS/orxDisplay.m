@@ -3604,108 +3604,154 @@ orxU32 orxFASTCALL orxDisplay_iOS_GetBitmapID(const orxBITMAP *_pstBitmap)
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxDISPLAY_MATRIX mTransform;
-  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != sstDisplay.pstScreen));
-  orxASSERT(_pstTransform != orxNULL);
+  orxASSERT(_pstSrc != sstDisplay.pstScreen);
+  orxASSERT((_pstSrc == orxNULL) || (_pstTransform != orxNULL));
 
-  /* Inits matrix */
-  orxDisplay_iOS_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
-
-  /* No repeat? */
-  if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
+  /* No bitmap? */
+  if(_pstSrc == orxNULL)
   {
-    /* Draws it */
-    orxDisplay_iOS_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+    /* Has something to display? */
+    if(sstDisplay.s32BufferIndex > 0)
+    {
+      /* Draws arrays */
+      orxDisplay_iOS_DrawArrays();
+    }
+
+    /* Defines the vertex list */
+    sstDisplay.astVertexList[0].fX  =
+    sstDisplay.astVertexList[1].fX  = sstDisplay.pstDestinationBitmap->stClip.vTL.fX;
+    sstDisplay.astVertexList[2].fX  =
+    sstDisplay.astVertexList[3].fX  = sstDisplay.pstDestinationBitmap->stClip.vBR.fX;
+    sstDisplay.astVertexList[1].fY  =
+    sstDisplay.astVertexList[3].fY  = sstDisplay.pstDestinationBitmap->stClip.vTL.fY;
+    sstDisplay.astVertexList[0].fY  =
+    sstDisplay.astVertexList[2].fY  = sstDisplay.pstDestinationBitmap->stClip.vBR.fY;
+
+    /* Defines the texture coord list */
+    sstDisplay.astVertexList[0].fU  =
+    sstDisplay.astVertexList[1].fU  = 0.0f;
+    sstDisplay.astVertexList[2].fU  =
+    sstDisplay.astVertexList[3].fU  = 1.0f;
+    sstDisplay.astVertexList[1].fV  =
+    sstDisplay.astVertexList[3].fV  = 0.0f;
+    sstDisplay.astVertexList[0].fV  =
+    sstDisplay.astVertexList[2].fV  = 1.0f;
+
+    /* Fills the color list */
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
+
+    /* Updates counter */
+    sstDisplay.s32BufferIndex = 4;
+
+    /* Draws arrays */
+    orxDisplay_iOS_DrawArrays();
   }
   else
   {
-    orxFLOAT  i, j, fRecRepeatX;
-    GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
+    orxDISPLAY_MATRIX mTransform;
 
-    /* Prepares bitmap for drawing */
-    orxDisplay_iOS_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+    /* Inits matrix */
+    orxDisplay_iOS_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
 
-    /* Inits bitmap height */
-    fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
-
-    /* Inits texture coords */
-    fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-    fTop    = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
-
-    /* For all lines */
-    for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
+    /* No repeat? */
+    if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
     {
-      /* Partial line? */
-      if(i < orxFLOAT_1)
-      {
-        /* Updates height */
-        fHeight *= (GLfloat)i;
+      /* Draws it */
+      orxDisplay_iOS_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+    }
+    else
+    {
+      orxFLOAT  i, j, fRecRepeatX;
+      GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
 
-        /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
-      }
-      else
-      {
-        /* Resets texture coords */
-        fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-        fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
-      }
+      /* Prepares bitmap for drawing */
+      orxDisplay_iOS_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
 
-      /* Resets bitmap width */
-      fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
+      /* Inits bitmap height */
+      fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
 
-      /* For all columns */
-      for(fX = 0.0f, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
+      /* Inits texture coords */
+      fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
+      fTop    = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+
+      /* For all lines */
+      for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
       {
-        /* Partial column? */
-        if(j < orxFLOAT_1)
+        /* Partial line? */
+        if(i < orxFLOAT_1)
         {
-          /* Updates width */
-          fWidth *= (GLfloat)j;
+          /* Updates height */
+          fHeight *= (GLfloat)i;
 
-          /* Updates texture right coord */
-          fRight = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + (j * (_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX))));
+          /* Resets texture coords */
+          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
+        }
+        else
+        {
+          /* Resets texture coords */
+          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
         }
 
-        /* End of buffer? */
-        if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
+        /* Resets bitmap width */
+        fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
+
+        /* For all columns */
+        for(fX = 0.0f, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
         {
-          /* Draws arrays */
-          orxDisplay_iOS_DrawArrays();
+          /* Partial column? */
+          if(j < orxFLOAT_1)
+          {
+            /* Updates width */
+            fWidth *= (GLfloat)j;
+
+            /* Updates texture right coord */
+            fRight = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + (j * (_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX))));
+          }
+
+          /* End of buffer? */
+          if(sstDisplay.s32BufferIndex > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 5)
+          {
+            /* Draws arrays */
+            orxDisplay_iOS_DrawArrays();
+          }
+
+          /* Outputs vertices and texture coordinates */
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
+
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = fLeft;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = fRight;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = fTop;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = fBottom;
+
+          /* Fills the color list */
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstSrc->stColor;
+
+          /* Updates counter */
+          sstDisplay.s32BufferIndex += 4;
         }
-
-        /* Outputs vertices and texture coordinates */
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fX      = (mTransform.vX.fX * fX) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fY      = (mTransform.vY.fX * fX) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fX  = (mTransform.vX.fX * fX) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fY  = (mTransform.vY.fX * fX) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * (fY + fHeight)) + mTransform.vX.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * (fY + fHeight)) + mTransform.vY.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fX  = (mTransform.vX.fX * (fX + fWidth)) + (mTransform.vX.fY * fY) + mTransform.vX.fZ;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
-
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = fLeft;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = fRight;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = fTop;
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = fBottom;
-
-        /* Fills the color list */
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstSrc->stColor;
-
-        /* Updates counter */
-        sstDisplay.s32BufferIndex += 4;
       }
     }
   }
@@ -4628,6 +4674,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StartShader(orxHANDLE _hShader)
 orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
 {
   orxDISPLAY_SHADER  *pstShader;
+  orxBOOL             bResetShader = orxTRUE;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -4678,38 +4725,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
           }
         }
 
-        /* Defines the vertex list */
-        sstDisplay.astVertexList[0].fX  =
-        sstDisplay.astVertexList[1].fX  = sstDisplay.pstDestinationBitmap->stClip.vTL.fX;
-        sstDisplay.astVertexList[2].fX  =
-        sstDisplay.astVertexList[3].fX  = sstDisplay.pstDestinationBitmap->stClip.vBR.fX;
-        sstDisplay.astVertexList[1].fY  =
-        sstDisplay.astVertexList[3].fY  = sstDisplay.pstDestinationBitmap->stClip.vTL.fY;
-        sstDisplay.astVertexList[0].fY  =
-        sstDisplay.astVertexList[2].fY  = sstDisplay.pstDestinationBitmap->stClip.vBR.fY;
-
-        /* Defines the texture coord list */
-        sstDisplay.astVertexList[0].fU  =
-        sstDisplay.astVertexList[1].fU  = 0.0f;
-        sstDisplay.astVertexList[2].fU  =
-        sstDisplay.astVertexList[3].fU  = 1.0f;
-        sstDisplay.astVertexList[1].fV  =
-        sstDisplay.astVertexList[3].fV  = 0.0f;
-        sstDisplay.astVertexList[0].fV  =
-        sstDisplay.astVertexList[2].fV  = 1.0f;
-
-        /* Fills the color list */
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
-        sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
-
-        /* Updates counter */
-        sstDisplay.s32BufferIndex = 4;
-
-        /* Draws arrays */
-        orxDisplay_iOS_DrawArrays();
-
         /* Clears texture counter */
         pstShader->iTextureCounter = 0;
 
@@ -4727,15 +4742,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
         {
           /* Draws arrays */
           orxDisplay_iOS_DrawArrays();
-        }
-        else
-        {
-          /* Uses default program */
-          glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
-          glASSERT();
 
-          /* Updates its texture unit */
-          glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+          /* Don't reset shader */
+          bResetShader = orxFALSE;
         }
 
         /* Clears texture counter */
@@ -4754,13 +4763,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
 
         /* Updates counter */
         sstDisplay.s32PendingShaderCounter++;
-
-        /* Uses default program */
-        glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
-        glASSERT();
-
-        /* Updates its texture unit */
-        glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
       }
 
       /* Updates projection matrix */
@@ -4768,11 +4770,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
     }
     else
     {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Don't reset shader */
+      bResetShader = orxFALSE;
     }
   }
-  else
+
+  /* Should reset shader? */
+  if(bResetShader != orxFALSE)
   {
     /* Uses default program */
     glUseProgram(sstDisplay.pstDefaultShader->uiProgram);
