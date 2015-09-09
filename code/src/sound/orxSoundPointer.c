@@ -722,6 +722,48 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   /* Finds an empty slot */
   for(u32Index = 0; (u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER) && (_pstSoundPointer->astSoundList[u32Index].pstSound != orxNULL); u32Index++);
 
+  /* Not found? */
+  if(u32Index == orxSOUNDPOINTER_KU32_SOUND_NUMBER)
+  {
+    orxFLOAT  fShortestDuration;
+    orxU32    u32ShortestIndex;
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "No free slot to play sound <%s>, replacing shortest one.", orxSound_GetName(_pstSound));
+
+    /* Gets first index */
+    u32ShortestIndex = (_pstSoundPointer->u32LastAddedIndex == 0) ? 1 : 0;
+
+    /* Gets its duration */
+    fShortestDuration = orxSound_GetDuration(_pstSoundPointer->astSoundList[u32ShortestIndex].pstSound);
+
+    /* For all other sounds */
+    for(u32Index = u32ShortestIndex + 1; (u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER); u32Index++)
+    {
+      /* Not the latest added one? */
+      if(u32Index != _pstSoundPointer->u32LastAddedIndex)
+      {
+        orxFLOAT fDuration;
+
+        /* Gets its duration */
+        fDuration = orxSound_GetDuration(_pstSoundPointer->astSoundList[u32Index].pstSound);
+
+        /* Shorter? */
+        if(fDuration < fShortestDuration)
+        {
+          /* Selects it */
+          u32ShortestIndex = u32Index;
+        }
+      }
+    }
+
+    /* Removes it */
+    orxSoundPointer_RemoveSound(_pstSoundPointer, _pstSoundPointer->astSoundList[u32ShortestIndex].pstSound);
+
+    /* Updates index */
+    u32Index = u32ShortestIndex;
+  }
+
   /* Found? */
   if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
   {
@@ -960,9 +1002,10 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     /* Gets its duration */
     fShortestDuration = orxSound_GetDuration(_pstSoundPointer->astSoundList[u32ShortestIndex].pstSound);
 
+    /* For all other sounds */
     for(u32Index = u32ShortestIndex + 1; (u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER); u32Index++)
     {
-      /* Not the lattest added one? */
+      /* Not the latest added one? */
       if(u32Index != _pstSoundPointer->u32LastAddedIndex)
       {
         orxFLOAT fDuration;

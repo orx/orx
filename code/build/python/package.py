@@ -152,10 +152,10 @@ androidfileinfolist = devfileinfolist + [
 ]
 
 androidnativefileinfolist = devfileinfolist + [
-    {'src': 'build/android-native/*.sh',                                     'dst': None},
-    {'src': 'build/android-native/*.properties',                             'dst': None},
-    {'src': 'build/android-native/obj/local/armeabi-v7a-hard/liborx*.a',     'dst': 'lib/static/android-native/armeabi-v7a-hard'},
-    {'src': 'build/android-native/obj/local/x86/liborx*.a',                  'dst': 'lib/static/android-native/x86'}
+    {'src': 'build/android-native/*.sh',                                'dst': None},
+    {'src': 'build/android-native/*.properties',                        'dst': None},
+    {'src': 'build/android-native/obj/local/armeabi-v7a-hard/liborx*.a','dst': 'lib/static/android-native/armeabi-v7a-hard'},
+    {'src': 'build/android-native/obj/local/x86/liborx*.a',             'dst': 'lib/static/android-native/x86'}
 ]
 
 # List of folder info
