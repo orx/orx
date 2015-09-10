@@ -2075,6 +2075,23 @@ void orxFASTCALL orxConfig_CommandClearSection(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: ClearValue
+ */
+ void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+ {
+   /* Pushes section */
+   orxConfig_PushSection(_astArgList[0].zValue);
+
+   /* Updates result */
+   _pstResult->bValue = (orxConfig_ClearValue(_astArgList[1].zValue) == orxSTATUS_SUCCESS ? orxTRUE : orxFALSE);
+
+   /* Pops section */
+   orxConfig_PopSection();
+
+   /* Done! */
+   return;
+ }
+
 /** Command: HasValue
  */
 void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2292,6 +2309,8 @@ static orxINLINE void orxConfig_RegisterCommands()
 
   /* Command: HasValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: ClearValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 2, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Index = -1", orxCOMMAND_VAR_TYPE_S32}, {"Verbatim = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetValue */
@@ -2356,6 +2375,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
 
   /* Command: HasValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
+  /* Command: ClearValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, ClearValue);
   /* Command: GetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetValue);
   /* Command: SetValue */
