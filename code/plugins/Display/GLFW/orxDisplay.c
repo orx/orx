@@ -357,6 +357,15 @@ PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Prototypes
+ */
+orxSTATUS orxFASTCALL orxDisplay_GLFW_StartShader(orxHANDLE _hShader);
+orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader);
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
+
+
 /** Render inhibiter
  */
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibiter(const orxEVENT *_pstEvent)
@@ -390,7 +399,7 @@ static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
       stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
       /* Applies it */
-      orxDisplay_SetVideoMode(&stVideoMode);
+      orxDisplay_GLFW_SetVideoMode(&stVideoMode);
     }
   }
 
@@ -1501,7 +1510,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
       {
         /* Uses default shader */
-        orxDisplay_StopShader(orxNULL);
+        orxDisplay_GLFW_StopShader(orxNULL);
       }
     }
     else
@@ -1621,7 +1630,7 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
   }
 
   /* Sets blend mode */
-  orxDisplay_SetBlendMode(_eBlendMode);
+  orxDisplay_GLFW_SetBlendMode(_eBlendMode);
 
   /* Done! */
   return;
@@ -1687,7 +1696,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
     /* Starts no texture shader */
-    orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_GLFW_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Inits it */
     orxDisplay_GLFW_InitShader(sstDisplay.pstNoTextureShader);
@@ -1762,7 +1771,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
     sstDisplay.s32BufferIndex = -1;
 
     /* Stops current shader */
-    orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_GLFW_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Resets buffer index */
     sstDisplay.s32BufferIndex = 0;
@@ -1792,10 +1801,6 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
   {
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
-
-    /* Flushes pending commands */
-    glFlush();
-    glASSERT();
 
     /* Polls events */
     glfwPollEvents();
@@ -2317,7 +2322,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
     u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
 
     /* Sets new destination bitmap */
-    if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
+    if(orxDisplay_GLFW_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
     {
       /* Different clear color? */
       if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
@@ -2343,7 +2348,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       }
 
       /* Restores previous destinations */
-      orxDisplay_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+      orxDisplay_GLFW_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
     }
     /* Not screen? */
     else if(_pstBitmap != sstDisplay.pstScreen)
@@ -2778,7 +2783,7 @@ orxRGBA orxFASTCALL orxDisplay_GLFW_GetBitmapColor(const orxBITMAP *_pstBitmap)
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
   orxU32    i, u32Number;
-  orxBOOL   bFlush = orxFALSE, bUseFrameBuffer = orxFALSE;
+  orxBOOL   bUseFrameBuffer = orxFALSE;
   GLdouble  dOrthoRight, dOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2938,9 +2943,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
                 /* Updates status */
                 sstDisplay.uiLastFrameBuffer = 0;
               }
-
-              /* Requests pending commands flush */
-              bFlush = orxTRUE;
             }
           }
           /* Valid texture? */
@@ -3097,14 +3099,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       glLoadIdentity();
       glASSERT();
     }
-  }
-
-  /* Should flush? */
-  if(bFlush != orxFALSE)
-  {
-    /* Flushes command buffer */
-    glFlush();
-    glASSERT();
   }
 
   /* Done! */
@@ -4026,7 +4020,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           orxConfig_PopSection();
 
           /* Uses default shader */
-          orxDisplay_StopShader(orxNULL);
+          orxDisplay_GLFW_StopShader(orxNULL);
         }
 
         /* Has framebuffer support? */
@@ -4205,7 +4199,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
 
       /* Uses default shader */
-      orxDisplay_StopShader(orxNULL);
+      orxDisplay_GLFW_StopShader(orxNULL);
     }
 
     /* Inits matrices */

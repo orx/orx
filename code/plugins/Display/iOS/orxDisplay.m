@@ -364,6 +364,15 @@ static orxCHAR              sacPVRTextureTag[4] = "PVR!";
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Prototypes
+ */
+orxSTATUS orxFASTCALL orxDisplay_iOS_StartShader(orxHANDLE _hShader);
+orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader);
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
+orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
+
+
 /** orxView controller class
  */
 @implementation orxViewController
@@ -898,10 +907,6 @@ static orxView *spoInstance;
 {
   /* Swaps */
   [[EAGLContext currentContext] presentRenderbuffer:GL_RENDERBUFFER_OES];
-
-  /* Waits for GPU work to be done */
-  glFinish();
-  glASSERT();
 }
 
 - (BOOL) IsExtensionSupported:(NSString *)_zExtension
@@ -2243,7 +2248,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
       }
 
       /* Uses default shader */
-      orxDisplay_StopShader(orxNULL);
+      orxDisplay_iOS_StopShader(orxNULL);
     }
     else
     {
@@ -2362,7 +2367,7 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
   }
 
   /* Sets blend mode */
-  orxDisplay_SetBlendMode(_eBlendMode);
+  orxDisplay_iOS_SetBlendMode(_eBlendMode);
 
   /* Done! */
   return;
@@ -2428,7 +2433,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
     /* Starts no texture shader */
-    orxDisplay_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_iOS_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Inits it */
     orxDisplay_iOS_InitShader(sstDisplay.pstNoTextureShader);
@@ -2503,7 +2508,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
     sstDisplay.s32BufferIndex = -1;
 
     /* Stops current shader */
-    orxDisplay_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+    orxDisplay_iOS_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 
     /* Resets buffer index */
     sstDisplay.s32BufferIndex = 0;
@@ -2531,10 +2536,6 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_EventHandler(const orxEVENT *_pstEve
   {
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
-
-    /* Flushes pending commands */
-    glFlush();
-    glASSERT();
   }
 
   /* Done! */
@@ -3050,7 +3051,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
     pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
     /* Sets new destination bitmap */
-    if(orxDisplay_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
+    if(orxDisplay_iOS_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
     {
       /* Different clear color? */
       if(_stColor.u32RGBA != sstDisplay.stLastColor.u32RGBA)
@@ -3076,7 +3077,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
       }
 
       /* Restores previous destination */
-      orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
+      orxDisplay_iOS_SetDestinationBitmaps(&pstBackupBitmap, 1);
     }
     /* Not screen? */
     else if(_pstBitmap != sstDisplay.pstScreen)
@@ -3322,7 +3323,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
     pstBackupBitmap = sstDisplay.pstDestinationBitmap;
 
     /* Sets new destination bitmap */
-    if((eResult = orxDisplay_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
+    if((eResult = orxDisplay_iOS_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
     {
       orxU32  u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset, i;
       orxU8  *pu8ImageBuffer;
@@ -3392,7 +3393,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
       }
 
       /* Restores previous destination */
-      orxDisplay_SetDestinationBitmaps(&pstBackupBitmap, 1);
+      orxDisplay_iOS_SetDestinationBitmaps(&pstBackupBitmap, 1);
     }
   }
   else
@@ -3459,7 +3460,6 @@ orxRGBA orxFASTCALL orxDisplay_iOS_GetBitmapColor(const orxBITMAP *_pstBitmap)
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
-  orxBOOL   bFlush = orxFALSE;
   orxFLOAT  fOrthoRight, fOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -3485,9 +3485,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
       /* Is screen? */
       if(_apstBitmapList[0] == sstDisplay.pstScreen)
       {
-        /* Requests pending commands flush */
-        bFlush = orxTRUE;
-
         /* Updates viewport info */
         iX      = 0;
         iY      = 0;
@@ -3573,14 +3570,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
 
     /* Stores it */
     sstDisplay.pstDestinationBitmap = _apstBitmapList[0];
-  }
-
-  /* Should flush? */
-  if(bFlush != orxFALSE)
-  {
-    /* Flushes command buffer */
-    glFlush();
-    glASSERT();
   }
 
   /* Done! */
@@ -4101,7 +4090,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glASSERT();
 
     /* Uses default shader */
-    orxDisplay_StopShader(orxNULL);
+    orxDisplay_iOS_StopShader(orxNULL);
   }
   else
   {
@@ -4325,7 +4314,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
 
           /* Uses it */
-          orxDisplay_StopShader(orxNULL);
+          orxDisplay_iOS_StopShader(orxNULL);
         }
         else
         {
