@@ -153,6 +153,16 @@ typedef struct __orxDISPLAY_MATRIX_t
 
 } orxDISPLAY_MATRIX;
 
+/** Internal vertex structure
+ */
+typedef struct __orxDISPLAY_ANDROID_VERTEX_t
+{
+  GLfloat fX, fY;
+  GLfloat fU, fV;
+  orxRGBA stRGBA;
+
+} orxDISPLAY_ANDROID_VERTEX;
+
 /** Internal projection matrix structure
  */
 typedef struct __orxDISPLAY_PROJ_MATRIX_t
@@ -263,6 +273,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DestinationBitmapCounter;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
+  GLuint                    uiVertexBuffer;
   GLuint                    uiIndexBuffer;
   orxS32                    s32BufferIndex;
   orxU32                    u32Flags;
@@ -274,7 +285,7 @@ typedef struct __orxDISPLAY_STATIC_t
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDOUBLE                 adMRUBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
-  orxDISPLAY_VERTEX         astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
+  orxDISPLAY_ANDROID_VERTEX astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
 
@@ -563,58 +574,6 @@ static void orxAndroid_Display_CreateContext()
   sstDisplay.context = eglCreateContext(sstDisplay.display, sstDisplay.config, EGL_NO_CONTEXT, contextAttrs);
   eglASSERT();
   orxASSERT(sstDisplay.context != EGL_NO_CONTEXT);
-}
-
-static orxINLINE orxBOOL initGLESConfig()
-{
-  /* Inits it */
-  /* Enables vextex attribute arrays */
-  glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
-  glASSERT();
-  glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
-  glASSERT();
-  glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
-  glASSERT();
-
-  /* Sets vextex attribute arrays */
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-  glASSERT();
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-  glASSERT();
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-  glASSERT();
-
-  /* Has depth buffer? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
-  {
-    /* Enables depth test */
-    glEnable(GL_DEPTH_TEST);
-    glASSERT();
-
-    /* Sets depth function */
-    glDepthFunc(GL_LEQUAL);
-    glASSERT();
-
-    /* Clears depth buffer */
-    glClearDepthf(1.0f);
-    glASSERT();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glASSERT();
-  }
-  else
-  {
-    glDisable(GL_DEPTH_TEST);
-    glASSERT();
-  }
-
-  /* Common init */
-  glEnable(GL_SCISSOR_TEST);
-  glASSERT();
-  glDisable(GL_CULL_FACE);
-  glASSERT();
-  glDisable(GL_STENCIL_TEST);
-  glASSERT();
-  return orxTRUE;
 }
 
 static orxDISPLAY_PROJ_MATRIX *orxDisplay_Android_OrthoProjMatrix(orxDISPLAY_PROJ_MATRIX *_pmResult, orxFLOAT _fLeft, orxFLOAT _fRight, orxFLOAT _fBottom, orxFLOAT _fTop, orxFLOAT _fNear, orxFLOAT _fFar)
@@ -1699,6 +1658,10 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
   {
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
+
+    /* Sends vertex buffer */
+    glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizei)(sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_ANDROID_VERTEX)), &(sstDisplay.astVertexList));
+    glASSERT();
 
     /* Has active shaders? */
     if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
@@ -3733,16 +3696,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       sstDisplay.u32LastClipWidth   = sstDisplay.pstScreen->u32RealWidth;
       sstDisplay.u32LastClipHeight  = sstDisplay.pstScreen->u32RealHeight;
 
-      /* Has depth buffer? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
-      {
-        /* Clears depth buffer */
-        glClearDepthf(1.0f);
-        glASSERT();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glASSERT();
-      }
-
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
 
@@ -3760,11 +3713,49 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glASSERT();
 
   /* Sets vextex attribute arrays */
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, fX));
   glASSERT();
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, fU));
   glASSERT();
-  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, stRGBA));
+  glASSERT();
+
+  /* Binds them */
+  glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+  glASSERT();
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+  glASSERT();
+
+  /* Has depth buffer? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
+  {
+    /* Enables depth test */
+    glEnable(GL_DEPTH_TEST);
+    glASSERT();
+
+    /* Sets depth function */
+    glDepthFunc(GL_LEQUAL);
+    glASSERT();
+
+    /* Clears depth buffer */
+    glClearDepthf(1.0f);
+    glASSERT();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glASSERT();
+  }
+  else
+  {
+    glDisable(GL_DEPTH_TEST);
+    glASSERT();
+  }
+
+  /* Common init */
+  glEnable(GL_SCISSOR_TEST);
+  glASSERT();
+  glDisable(GL_CULL_FACE);
+  glASSERT();
+  glDisable(GL_STENCIL_TEST);
   glASSERT();
 
   /* Updates active texture unit */
@@ -3962,8 +3953,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Renderer: %s, Version: %s", zGlRenderer, zGlVersion);
 
-        initGLESConfig();
-
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
         orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxDisplay_Android_EventHandler);
@@ -3972,8 +3961,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.bDefaultSmoothing = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
+        /* Allocates screen bitmap */
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
+
         sstDisplay.pstScreen->fWidth = orxU2F(width);
         sstDisplay.pstScreen->fHeight = orxU2F(height);
         sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
@@ -4074,20 +4065,29 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
         sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
 
-        /* Uses it */
-        orxDisplay_Android_StopShader(orxNULL);
-
-        /* Generates index buffer object (IBO) */
+        /* Generates index buffer object (VBO/IBO) */
+        glGenBuffers(1, &(sstDisplay.uiVertexBuffer));
+        glASSERT();
         glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
         glASSERT();
 
-        /* Binds it */
+        /* Binds them */
+        glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+        glASSERT();
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
         glASSERT();
 
-        /* Fills it */
+        /* Inits VBO */
+        glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_ANDROID_VERTEX), NULL, GL_STREAM_DRAW);
+        glASSERT();
+
+        /* Fills IBO */
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
         glASSERT();
+
+        /* Set up OpenGL state */
+        orxDisplay_Android_SetVideoMode(orxNULL);
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
