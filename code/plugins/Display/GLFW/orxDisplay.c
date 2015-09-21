@@ -282,6 +282,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DestinationBitmapCounter;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
+  GLuint                    uiVertexBuffer;
   GLuint                    uiIndexBuffer;
   orxS32                    s32BufferIndex;
   orxU32                    u32Flags;
@@ -337,6 +338,10 @@ PFNGLDELETEBUFFERSPROC              glDeleteBuffers             = NULL;
 PFNGLBINDBUFFERPROC                 glBindBuffer                = NULL;
 PFNGLBUFFERDATAPROC                 glBufferData                = NULL;
 PFNGLBUFFERSUBDATAPROC              glBufferSubData             = NULL;
+PFNGLMAPBUFFERRANGEPROC             glMapBufferRange            = NULL;
+PFNGLUNMAPBUFFERPROC                glUnmapBuffer               = NULL;
+PFNGLFENCESYNCPROC                  glFenceSync                 = NULL;
+PFNGLCLIENTWAITSYNCPROC             glClientWaitSync            = NULL;
 
 PFNGLGENFRAMEBUFFERSPROC            glGenFramebuffers           = NULL;
 PFNGLDELETEFRAMEBUFFERSPROC         glDeleteFramebuffers        = NULL;
@@ -525,7 +530,7 @@ static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
       /* Selects unit */
-      glActiveTexture(GL_TEXTURE0_ARB + i);
+      glActiveTexture(GL_TEXTURE0 + i);
       glASSERT();
     }
 
@@ -541,7 +546,7 @@ static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
       /* Selects unit */
-      glActiveTexture(GL_TEXTURE0_ARB + s32BestCandidate);
+      glActiveTexture(GL_TEXTURE0 + s32BestCandidate);
       glASSERT();
     }
 
@@ -640,7 +645,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 #endif /* __orxMAC__ */
 
       /* Gets number of available draw buffers */
-      glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &sstDisplay.iDrawBufferNumber);
+      glGetIntegerv(GL_MAX_DRAW_BUFFERS, &sstDisplay.iDrawBufferNumber);
       glASSERT();
       sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
     }
@@ -679,6 +684,10 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBINDBUFFERPROC, glBindBuffer);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERDATAPROC, glBufferData);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERSUBDATAPROC, glBufferSubData);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLMAPBUFFERRANGEPROC, glMapBufferRange);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNMAPBUFFERPROC, glUnmapBuffer);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLFENCESYNCPROC, glFenceSync);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCLIENTWAITSYNCPROC, glClientWaitSync);
 
 #endif /* __orxMAC__ */
 
@@ -746,7 +755,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       }
 
       /* Gets max texture unit number */
-      glGetIntegerv(GL_MAX_TEXTURE_COORDS_ARB, &(sstDisplay.iTextureUnitNumber));
+      glGetIntegerv(GL_MAX_TEXTURE_COORDS, &(sstDisplay.iTextureUnitNumber));
       sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
       glASSERT();
 
@@ -1294,9 +1303,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
   glASSERT();
 
   /* Creates vertex and fragment shaders */
-  hVertexShader   = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+  hVertexShader   = glCreateShaderObjectARB(GL_VERTEX_SHADER);
   glASSERT();
-  hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+  hFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER);
   glASSERT();
 
   /* Compiles shader objects */
@@ -1459,8 +1468,21 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
     {
+      void *pBuffer;
+
       /* No offset in the index list */
       pIndexContext = (GLvoid *)0;
+
+      /* Maps buffer */
+      pBuffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+      glASSERT();
+
+      /* Copies data to mapped buffer */
+      orxMemory_Copy(pBuffer, sstDisplay.astVertexList, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX));
+
+      /* Unmaps buffer */
+      glUnmapBuffer(GL_ARRAY_BUFFER);
+      glASSERT();
     }
     else
     {
@@ -4036,16 +4058,24 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Has VBO support? */
         if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
         {
-          /* Generates index buffer object (IBO) */
+          /* Generates index buffer objects (VBO/IBO) */
+          glGenBuffers(1, &(sstDisplay.uiVertexBuffer));
+          glASSERT();
           glGenBuffers(1, &(sstDisplay.uiIndexBuffer));
           glASSERT();
 
-          /* Binds it */
-          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
+          /* Binds them */
+          glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+          glASSERT();
+          glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
           glASSERT();
 
-          /* Fills it */
-          glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
+          /* Inits VBO */
+          glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_GLFW_VERTEX), NULL, GL_STREAM_DRAW);
+          glASSERT();
+
+          /* Fills IBO */
+          glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
           glASSERT();
         }
 
@@ -4188,7 +4218,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       for(i = 0; i < (orxS32)orxMIN(8, sstDisplay.iTextureUnitNumber); i++)
       {
         /* Selects associated texture unit */
-        glActiveTexture(GL_TEXTURE0_ARB + i);
+        glActiveTexture(GL_TEXTURE0 + i);
         glASSERT();
 
         /* Resets it */
@@ -4197,7 +4227,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       }
 
       /* Selects first texture unit */
-      glActiveTexture(GL_TEXTURE0_ARB);
+      glActiveTexture(GL_TEXTURE0);
       glASSERT();
 
       /* Uses default shader */
@@ -4233,18 +4263,20 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
 
     /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX));
     glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU));
     glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA));
     glASSERT();
 
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
     {
-      /* Binds it */
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
+      /* Binds them */
+      glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+      glASSERT();
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
       glASSERT();
     }
 
