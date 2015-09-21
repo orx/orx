@@ -165,7 +165,6 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxS32                  s32StreamBufferSize;/**< Stream buffer size */
   orxS32                  s32StreamBufferNumber; /**< Stream buffer number */
   orxS16                 *as16StreamBuffer;   /**< Stream buffer */
-  orxS16                 *as16RecordingBuffer;/**< Recording buffer */
   ALuint                 *auiWorkBufferList;  /**< Buffer list */
   orxTHREAD_SEMAPHORE    *pstStreamSemaphore; /**< Stream semaphore */
 
@@ -980,7 +979,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
 
               /* Allocates stream buffers */
               sstSoundSystem.as16StreamBuffer     = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
-              sstSoundSystem.as16RecordingBuffer  = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
 
               /* Allocates working buffer list */
               sstSoundSystem.auiWorkBufferList    = (ALuint *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxMEMORY_TYPE_AUDIO);
@@ -1120,7 +1118,6 @@ void orxFASTCALL orxSoundSystem_Android_Exit()
 
     /* Deletes stream buffers */
     orxMemory_Free(sstSoundSystem.as16StreamBuffer);
-    orxMemory_Free(sstSoundSystem.as16RecordingBuffer);
 
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
