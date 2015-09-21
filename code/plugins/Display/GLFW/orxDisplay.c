@@ -4254,6 +4254,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glLoadIdentity();
     glASSERT();
 
+    /* Has VBO support? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
+    {
+      /* Binds them */
+      glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+      glASSERT();
+      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+      glASSERT();
+    }
+
     /* Resets client states */
     glEnableClientState(GL_VERTEX_ARRAY);
     glASSERT();
@@ -4269,16 +4279,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA));
     glASSERT();
-
-    /* Has VBO support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
-    {
-      /* Binds them */
-      glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
-      glASSERT();
-      glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
-      glASSERT();
-    }
 
     /* Pops config section */
     orxConfig_PopSection();
