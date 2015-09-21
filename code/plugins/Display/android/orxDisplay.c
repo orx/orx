@@ -3704,6 +3704,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
     }
   }
 
+  /* Binds buffers */
+  glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
+  glASSERT();
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
+  glASSERT();
+
   /* Enables vextex attribute arrays */
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
   glASSERT();
@@ -3718,13 +3725,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, fU));
   glASSERT();
   glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, stRGBA));
-  glASSERT();
-
-  /* Binds them */
-  glBindBuffer(GL_ARRAY_BUFFER, sstDisplay.uiVertexBuffer);
-  glASSERT();
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
   glASSERT();
 
   /* Has depth buffer? */
