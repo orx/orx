@@ -394,43 +394,42 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
+            orxVECTOR vTextureSize;
+
             /* Updates its owner */
             orxStructure_SetOwner(pstTexture, pstResult);
 
             /* Inits default 2D flags */
             u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
-            /* Has origin/size? */
-            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
-            && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+            /* Has size? */
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) != orxNULL)
             {
-              orxVECTOR vTextureOrigin, vTextureSize;
+              orxVECTOR vTextureOrigin;
 
-              /* Gets both values */
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Stores them */
-              pstResult->fLeft    = vTextureOrigin.fX;
-              pstResult->fTop     = vTextureOrigin.fY;
-              pstResult->fWidth   = vTextureSize.fX;
-              pstResult->fHeight  = vTextureSize.fY;
-            }
-            /* Has corner/size? */
-            else if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
-                 && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
-            {
-              orxVECTOR vTextureCorner, vTextureSize;
-
-              /* Gets both values */
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vTextureCorner);
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Stores them */
-              pstResult->fLeft    = vTextureCorner.fX;
-              pstResult->fTop     = vTextureCorner.fY;
-              pstResult->fWidth   = vTextureSize.fX;
-              pstResult->fHeight  = vTextureSize.fY;
+              /* Has origin? */
+              if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin) != orxNULL)
+              {
+                /* Stores them */
+                pstResult->fLeft    = vTextureOrigin.fX;
+                pstResult->fTop     = vTextureOrigin.fY;
+                pstResult->fWidth   = vTextureSize.fX;
+                pstResult->fHeight  = vTextureSize.fY;
+              }
+              /* Has corner? */
+              else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vTextureOrigin) != orxNULL)
+              {
+                /* Stores them */
+                pstResult->fLeft    = vTextureOrigin.fX;
+                pstResult->fTop     = vTextureOrigin.fY;
+                pstResult->fWidth   = vTextureSize.fX;
+                pstResult->fHeight  = vTextureSize.fY;
+              }
+              else
+              {
+                /* Updates size */
+                orxGraphic_UpdateSize(pstResult);
+              }
             }
             else
             {

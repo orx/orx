@@ -111,6 +111,8 @@
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_SPEED               "Speed"
+#define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
+#define orxOBJECT_KZ_CONFIG_SIZE                "Size"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
@@ -131,7 +133,6 @@
 #define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
 #define orxOBJECT_KZ_CONFIG_GROUP               "Group"
 
-#define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
 #define orxOBJECT_KZ_BOTH                       "both"
@@ -164,10 +165,12 @@ struct __orxOBJECT_t
   orxFLOAT          fLifeTime;                  /**< Life time : 104 */
   orxFLOAT          fActiveTime;                /**< Active time : 108 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 124 */
-  orxOBJECT        *pstChild;                   /**< Child: 128 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 132 */
-  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 144 */
+  orxOBJECT        *pstChild;                   /**< Child: 116 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 120 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 132 */
+  orxVECTOR         vSize;                      /**< Object size : 144 */
+  orxVECTOR         vPivot;                     /**< Object pivot : 156 */
+  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 176 */
 };
 
 /** Static structure
@@ -3481,6 +3484,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxObject_SetColor(pstResult, &stColor);
       }
 
+      /* *** Pivot/Size *** */
+
+      /* Has pivot? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vValue) != orxNULL)
+      {
+        /* Updates object pivot */
+        orxObject_SetPivot(pstResult, &vValue);
+      }
+
+      /* Has size? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
+      {
+        /* Updates object size */
+        orxObject_SetSize(pstResult, &vValue);
+      }
+
       /* *** Body *** */
 
       /* Gets body name */
@@ -4466,8 +4485,11 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR 
   }
   else
   {
+    /* Stores it */
+    orxVector_Copy(&(_pstObject->vPivot), _pvPivot);
+
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -4534,8 +4556,11 @@ orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *
   }
   else
   {
+    /* Stores it */
+    orxVector_Copy(&(_pstObject->vSize), _pvSize);
+
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -4568,8 +4593,11 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   }
   else
   {
+    /* Stores value */
+    orxVector_Copy(_pvPivot, &(_pstObject->vPivot));
+
     /* Updates result */
-    pvResult = orxNULL;
+    pvResult = _pvPivot;
   }
 
   /* Done! */
@@ -4636,11 +4664,11 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   }
   else
   {
-    /* No size */
-    orxVector_SetAll(_pvSize, orx2F(-1.0f));
+    /* Stores value */
+    orxVector_Copy(_pvSize, &(_pstObject->vSize));
 
     /* Updates result */
-    pvResult = orxNULL;
+    pvResult = _pvSize;
   }
 
   /* Done! */
@@ -6237,46 +6265,31 @@ const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject)
  */
 orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox)
 {
-  orxVECTOR   vSize;
-  orxGRAPHIC *pstGraphic;
-  orxOBOX    *pstResult;
+  orxVECTOR vSize, vPivot, vPosition, vScale;
+  orxFLOAT  fAngle;
+  orxOBOX  *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstBoundingBox != orxNULL);
 
-  /* Has sized graphic? */
-  if(((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
-  && (orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL))
-  {
-    orxVECTOR vPivot, vPosition, vScale;
-    orxFLOAT  fAngle;
+  /* Gets size, pivot, position, scale & rotation */
+  orxObject_GetSize(_pstObject, &vSize);
+  orxObject_GetPivot(_pstObject, &vPivot);
+  orxObject_GetWorldPosition(_pstObject, &vPosition);
+  orxObject_GetWorldScale(_pstObject, &vScale);
+  fAngle = orxObject_GetWorldRotation(_pstObject);
 
-    /* Gets pivot, position, scale & rotation */
-    orxObject_GetPivot(_pstObject, &vPivot);
-    orxObject_GetWorldPosition(_pstObject, &vPosition);
-    orxObject_GetWorldScale(_pstObject, &vScale);
-    fAngle = orxObject_GetWorldRotation(_pstObject);
+  /* Updates pivot & size */
+  orxVector_Mul(&vSize, &vSize, &vScale);
+  orxVector_Mul(&vPivot, &vPivot, &vScale);
 
-    /* Updates pivot & size */
-    orxVector_Mul(&vSize, &vSize, &vScale);
-    orxVector_Mul(&vPivot, &vPivot, &vScale);
+  /* Updates box */
+  orxOBox_2DSet(_pstBoundingBox, &vPosition, &vPivot, &vSize, fAngle);
 
-    /* Updates box */
-    orxOBox_2DSet(_pstBoundingBox, &vPosition, &vPivot, &vSize, fAngle);
-
-    /* Updates result */
-    pstResult = _pstBoundingBox;
-  }
-  else
-  {
-    /* Updates result */
-    pstResult = orxNULL;
-
-    /* Cleans it */
-    orxMemory_Zero(_pstBoundingBox, sizeof(orxOBOX));
-  }
+  /* Updates result */
+  pstResult = _pstBoundingBox;
 
   /* Done! */
   return pstResult;
