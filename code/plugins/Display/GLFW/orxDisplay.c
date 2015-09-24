@@ -1468,20 +1468,11 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
     {
-      void *pBuffer;
-
       /* No offset in the index list */
       pIndexContext = (GLvoid *)0;
 
-      /* Maps buffer */
-      pBuffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
-      glASSERT();
-
-      /* Copies data to mapped buffer */
-      orxMemory_Copy(pBuffer, sstDisplay.astVertexList, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX));
-
-      /* Unmaps buffer */
-      glUnmapBuffer(GL_ARRAY_BUFFER);
+      /* Copies vertex buffer */
+      glBufferSubData(GL_ARRAY_BUFFER, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
       glASSERT();
     }
     else
@@ -1757,17 +1748,8 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   /* Has VBO support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
   {
-    void *pBuffer;
-
-    /* Maps buffer */
-    pBuffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, _u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
-    glASSERT();
-
-    /* Copies data to mapped buffer */
-    orxMemory_Copy(pBuffer, sstDisplay.astVertexList, _u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX));
-
-    /* Unmaps buffer */
-    glUnmapBuffer(GL_ARRAY_BUFFER);
+    /* Copies vertex buffer */
+    glBufferSubData(GL_ARRAY_BUFFER, 0, _u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
     glASSERT();
   }
 
