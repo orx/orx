@@ -70,9 +70,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000  /**< No flags */
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000004  /**< Has depth buffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000008  /**< NPOT texture support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000002  /**< Has depth buffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -1227,13 +1225,9 @@ static orxINLINE void orxDisplay_iOS_BindBitmap(const orxBITMAP *_pstBitmap)
   /* Found? */
   if(i < (orxS32)sstDisplay.iTextureUnitNumber)
   {
-    /* Has shader support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-    {
-      /* Selects unit */
-      glActiveTexture(GL_TEXTURE0 + i);
-      glASSERT();
-    }
+    /* Selects unit */
+    glActiveTexture(GL_TEXTURE0 + i);
+    glASSERT();
 
     /* Updates MRU timestamp */
     sstDisplay.adMRUBitmapList[i] = orxSystem_GetSystemTime();
@@ -1243,14 +1237,10 @@ static orxINLINE void orxDisplay_iOS_BindBitmap(const orxBITMAP *_pstBitmap)
   }
   else
   {
-    /* Has shader support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-    {
-      /* Selects unit */
-      glActiveTexture(GL_TEXTURE0 + s32BestCandidate);
-      glASSERT();
-    }
-
+    /* Selects unit */
+    glActiveTexture(GL_TEXTURE0 + s32BestCandidate);
+    glASSERT();
+    
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
@@ -1647,8 +1637,6 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
-
-        break;
       }
 
       /* Success? */
@@ -1686,49 +1674,12 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
       /* Checks */
       orxASSERT((uiBytesPerPixel == 3) || (uiBytesPerPixel == 4));
 
-      /* Has NPOT texture support? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-      {
-        /* Uses image buffer */
-        pstInfo->pu8ImageBuffer = pu8ImageData;
-
-        /* Stores real size */
-        pstInfo->uiRealWidth  = pstInfo->uiWidth;
-        pstInfo->uiRealHeight = pstInfo->uiHeight;
-      }
-      else
-      {
-        GLuint i, uiSrcOffset, uiDstOffset, uiLineSize, uiRealLineSize;
-
-        /* Gets real size */
-        pstInfo->uiRealWidth  = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiWidth);
-        pstInfo->uiRealHeight = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiHeight);
-
-        /* Allocates buffer */
-        pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * uiBytesPerPixel, orxMEMORY_TYPE_MAIN);
-
-        /* Checks */
-        orxASSERT(pstInfo->pu8ImageBuffer != orxNULL);
-
-        /* Gets line sizes */
-        uiLineSize      = pstInfo->uiWidth * uiBytesPerPixel;
-        uiRealLineSize  = pstInfo->uiRealWidth * uiBytesPerPixel;
-
-        /* Clears padding */
-        orxMemory_Zero(pstInfo->pu8ImageBuffer, uiRealLineSize * (pstInfo->uiRealHeight - pstInfo->uiHeight));
-
-        /* For all lines */
-        for(i = 0, uiSrcOffset = 0, uiDstOffset = 0;
-            i < pstInfo->uiHeight;
-            i++, uiSrcOffset += uiLineSize, uiDstOffset += uiRealLineSize)
-        {
-          /* Copies data */
-          orxMemory_Copy(pstInfo->pu8ImageBuffer + uiDstOffset, pu8ImageData + uiSrcOffset, uiLineSize);
-
-          /* Adds padding */
-          orxMemory_Zero(pstInfo->pu8ImageBuffer + uiDstOffset + uiLineSize, uiRealLineSize - uiLineSize);
-        }
-      }
+      /* Uses image buffer */
+      pstInfo->pu8ImageBuffer = pu8ImageData;
+      
+      /* Stores real size */
+      pstInfo->uiRealWidth  = pstInfo->uiWidth;
+      pstInfo->uiRealHeight = pstInfo->uiHeight;
 
       /* Frees original source from resource */
       orxMemory_Free(pstInfo->pu8ImageSource);
@@ -2294,15 +2245,11 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     /* Binds bitmap */
     orxDisplay_iOS_BindBitmap(_pstBitmap);
 
-    /* Has shader support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    /* No other shader active? */
+    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
     {
-      /* No other shader active? */
-      if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
-      {
-        /* Updates shader uniform */
-        glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
-      }
+      /* Updates shader uniform */
+      glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
     }
   }
 
@@ -2429,21 +2376,11 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
-  /* Has shader support? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-  {
-    /* Starts no texture shader */
-    orxDisplay_iOS_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
-
-    /* Inits it */
-    orxDisplay_iOS_InitShader(sstDisplay.pstNoTextureShader);
-  }
-  else
-  {
-    /* Disables texturing */
-    glDisable(GL_TEXTURE_2D);
-    glASSERT();
-  }
+  /* Starts no texture shader */
+  orxDisplay_iOS_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+  
+  /* Inits it */
+  orxDisplay_iOS_InitShader(sstDisplay.pstNoTextureShader);
 
   /* Has alpha? */
   if(orxRGBA_A(_stColor) != 0xFF)
@@ -2501,24 +2438,14 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
     }
   }
 
-  /* Has shader support? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-  {
-    /* Bypasses the full screen rendering when stopping shader */
-    sstDisplay.s32BufferIndex = -1;
-
-    /* Stops current shader */
-    orxDisplay_iOS_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
-
-    /* Resets buffer index */
-    sstDisplay.s32BufferIndex = 0;
-  }
-  else
-  {
-    /* Reenables texturing */
-    glEnable(GL_TEXTURE_2D);
-    glASSERT();
-  }
+  /* Bypasses the full screen rendering when stopping shader */
+  sstDisplay.s32BufferIndex = -1;
+  
+  /* Stops current shader */
+  orxDisplay_iOS_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
+  
+  /* Resets buffer index */
+  sstDisplay.s32BufferIndex = 0;
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -2978,8 +2905,8 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
     pstBitmap->fWidth         = orxU2F(_u32Width);
     pstBitmap->fHeight        = orxU2F(_u32Height);
-    pstBitmap->u32RealWidth   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Width : orxMath_GetNextPowerOfTwo(_u32Width);
-    pstBitmap->u32RealHeight  = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? _u32Height : orxMath_GetNextPowerOfTwo(_u32Height);
+    pstBitmap->u32RealWidth   = _u32Width;
+    pstBitmap->u32RealHeight  = _u32Height;
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
@@ -3224,38 +3151,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapData(orxBITMAP *_pstBitmap, const 
   {
     orxU8 *pu8ImageBuffer;
 
-    /* Has NPOT texture support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-    {
-      /* Uses sources bitmap */
-      pu8ImageBuffer = (orxU8 *)_au8Data;
-    }
-    else
-    {
-      orxU32 i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
-
-      /* Allocates buffer */
-      pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
-
-      /* Gets line sizes */
-      u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
-      u32RealLineSize = _pstBitmap->u32RealWidth * 4 * sizeof(orxU8);
-
-      /* Clears padding */
-      orxMemory_Zero(pu8ImageBuffer, u32RealLineSize * (_pstBitmap->u32RealHeight - orxF2U(_pstBitmap->fHeight)));
-
-      /* For all lines */
-      for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
-          i < u32Height;
-          i++, u32SrcOffset += u32LineSize, u32DstOffset += u32RealLineSize)
-      {
-        /* Copies data */
-        orxMemory_Copy(pu8ImageBuffer + u32DstOffset, _au8Data + u32SrcOffset, u32LineSize);
-
-        /* Adds padding */
-        orxMemory_Zero(pu8ImageBuffer + u32DstOffset + u32LineSize, u32RealLineSize - u32LineSize);
-      }
-    }
+    /* Uses sources bitmap */
+    pu8ImageBuffer = (orxU8 *)_au8Data;
 
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
@@ -3329,7 +3226,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
       orxU8  *pu8ImageBuffer;
 
       /* Allocates buffer */
-      pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
+      pu8ImageBuffer = (_pstBitmap != sstDisplay.pstScreen) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
 
       /* Checks */
       orxASSERT(pu8ImageBuffer != orxNULL);
@@ -3372,24 +3269,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
 
         /* Deletes buffer */
         orxMemory_Free(pu8ImageBuffer);
-      }
-      else
-      {
-        /* Doesn't have NPOT texture support? */
-        if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-        {
-          /* For all lines */
-          for(i = 0, u32SrcOffset = 0, u32DstOffset = 0;
-              i < orxF2U(_pstBitmap->fHeight);
-              i++, u32SrcOffset += u32RealLineSize, u32DstOffset += u32LineSize)
-          {
-            /* Copies data */
-            orxMemory_Copy(_au8Data + u32DstOffset, pu8ImageBuffer + u32SrcOffset, u32LineSize);
-          }
-
-          /* Deletes buffer */
-          orxMemory_Free(pu8ImageBuffer);
-        }
       }
 
       /* Restores previous destination */
@@ -3533,33 +3412,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
         sstDisplay.fLastOrthoRight  = fOrthoRight;
         sstDisplay.fLastOrthoBottom = fOrthoBottom;
 
-        /* Shader support? */
-        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-        {
-          /* Inits projection matrix */
-          (fOrthoBottom >= orxFLOAT_0)
-          ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
-          : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
-
-          /* Passes it to shader */
-          glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-        }
-        else
-        {
-          /* Inits matrices */
-          glMatrixMode(GL_PROJECTION);
-          glASSERT();
-          glLoadIdentity();
-          glASSERT();
-          (fOrthoBottom >= orxFLOAT_0)
-          ? glOrthof(0.0f, (GLfloat)fOrthoRight, (GLfloat)fOrthoBottom, 0.0f, -1.0f, 1.0f)
-          : glOrthof(0.0f, (GLfloat)fOrthoRight, 0.0f, -(GLfloat)fOrthoBottom, -1.0f, 1.0f);
-          glASSERT();
-          glMatrixMode(GL_MODELVIEW);
-          glASSERT();
-          glLoadIdentity();
-          glASSERT();
-        }
+        /* Inits projection matrix */
+        (fOrthoBottom >= orxFLOAT_0)
+        ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+        : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+        
+        /* Passes it to shader */
+        glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       }
     }
     else
@@ -4113,33 +3972,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     sstDisplay.adMRUBitmapList[i] = orxDOUBLE_0;
   }
 
-  /* Shader support? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-  {
-    /* Inits projection matrix */
-    (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
-    ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
-    : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
-
-    /* Passes it to shader */
-    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-  }
-  else
-  {
-    /* Inits matrices */
-    glMatrixMode(GL_PROJECTION);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
-    (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
-    ? glOrthof(0.0f, (GLfloat)sstDisplay.fLastOrthoRight, (GLfloat)sstDisplay.fLastOrthoBottom, 0.0f, -1.0f, 1.0f)
-    : glOrthof(0.0f, (GLfloat)sstDisplay.fLastOrthoRight, 0.0f, -(GLfloat)sstDisplay.fLastOrthoBottom, -1.0f, 1.0f);
-    glASSERT();
-    glMatrixMode(GL_MODELVIEW);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
-  }
+  /* Inits projection matrix */
+  (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
+  ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+  : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+  
+  /* Passes it to shader */
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
@@ -4233,18 +4072,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
 
-        /* Has NPOT texture support? */
-        if(([sstDisplay.poView bShaderSupport] != NO) || ([sstDisplay.poView IsExtensionSupported:@"GL_APPLE_texture_2D_limited_npot"] != NO))
-        {
-          /* Updates status flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-        else
-        {
-          /* Updates status flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
-        }
-
         /* Gets render buffer's size */
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
         glASSERT();
@@ -4257,8 +4084,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
         sstDisplay.pstScreen->fWidth          = iWidth;
         sstDisplay.pstScreen->fHeight         = iHeight;
-        sstDisplay.pstScreen->u32RealWidth    = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fWidth) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fWidth));
-        sstDisplay.pstScreen->u32RealHeight   = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT) ? orxF2U(sstDisplay.pstScreen->fHeight) : orxMath_GetNextPowerOfTwo(orxF2U(sstDisplay.pstScreen->fHeight));
+        sstDisplay.pstScreen->u32RealWidth    = orxF2U(sstDisplay.pstScreen->fWidth);
+        sstDisplay.pstScreen->u32RealHeight   = orxF2U(sstDisplay.pstScreen->fHeight);
         sstDisplay.pstScreen->fRecRealWidth   = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);
         sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
         sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
@@ -4284,47 +4111,35 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
         sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
-        /* Has shader support? */
-        if([sstDisplay.poView bShaderSupport] != NO)
-        {
-          static const orxSTRING szFragmentShaderSource =
-          "precision mediump float;"
-          "varying vec2 ___TexCoord___;"
-          "varying vec4 ___Color;"
-          "uniform sampler2D __Texture__;"
-          "void main()"
-          "{"
-          "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
-          "}";
-          static const orxSTRING szNoTextureFragmentShaderSource =
-          "precision mediump float;"
-          "varying vec2 ___TexCoord___;"
-          "varying vec4 ___Color;"
-          "uniform sampler2D __Texture__;"
-          "void main()"
-          "{"
-          "  gl_FragColor = ___Color;"
-          "}";
+        static const orxSTRING szFragmentShaderSource =
+        "precision mediump float;"
+        "varying vec2 ___TexCoord___;"
+        "varying vec4 ___Color;"
+        "uniform sampler2D __Texture__;"
+        "void main()"
+        "{"
+        "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
+        "}";
+        static const orxSTRING szNoTextureFragmentShaderSource =
+        "precision mediump float;"
+        "varying vec2 ___TexCoord___;"
+        "varying vec4 ___Color;"
+        "uniform sampler2D __Texture__;"
+        "void main()"
+        "{"
+        "  gl_FragColor = ___Color;"
+        "}";
+        
+        /* Inits flags */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
-          /* Inits flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER | orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-
-          /* Creates default shaders */
-          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
-
-          /* Uses it */
-          orxDisplay_iOS_StopShader(orxNULL);
-        }
-        else
-        {
-          /* Updates texture unit number */
-          sstDisplay.iTextureUnitNumber = 1;
-
-          /* Inits flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-
+        /* Creates default shaders */
+        sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
+        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
+        
+        /* Uses it */
+        orxDisplay_iOS_StopShader(orxNULL);
+        
         /* Pushes config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -4397,13 +4212,9 @@ void orxFASTCALL orxDisplay_iOS_Exit()
     /* Unregisters update function */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
 
-    /* Has shader support? */
-    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
-    {
-      /* Deletes default shaders */
-      orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
-      orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
-    }
+    /* Deletes default shaders */
+    orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
+    orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
 
     /* Has index buffer? */
     if(sstDisplay.uiIndexBuffer != 0)
@@ -4432,7 +4243,7 @@ orxBOOL orxFASTCALL orxDisplay_iOS_HasShaderSupport()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Done! */
-  return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
+  return orxTRUE;
 }
 
 orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
@@ -4442,145 +4253,141 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Has shader support? */
-  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+  /* Valid? */
+  if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
   {
-    /* Valid? */
-    if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
+    orxDISPLAY_SHADER *pstShader;
+    
+    /* Creates a new shader */
+    pstShader = (orxDISPLAY_SHADER *)orxBank_Allocate(sstDisplay.pstShaderBank);
+    
+    /* Successful? */
+    if(pstShader != orxNULL)
     {
-      orxDISPLAY_SHADER *pstShader;
-
-      /* Creates a new shader */
-      pstShader = (orxDISPLAY_SHADER *)orxBank_Allocate(sstDisplay.pstShaderBank);
-
-      /* Successful? */
-      if(pstShader != orxNULL)
+      orxSHADER_PARAM  *pstParam;
+      orxCHAR          *pc;
+      orxS32            s32Free, s32Offset;
+      
+      /* Inits shader code buffer */
+      sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
+      pc                                = sstDisplay.acShaderCodeBuffer;
+      s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
+      
+      /* Has parameters? */
+      if(_pstParamList != orxNULL)
       {
-        orxSHADER_PARAM  *pstParam;
-        orxCHAR          *pc;
-        orxS32            s32Free, s32Offset;
-
-        /* Inits shader code buffer */
-        sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
-        pc                                = sstDisplay.acShaderCodeBuffer;
-        s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
-
-        /* Has parameters? */
-        if(_pstParamList != orxNULL)
+        orxCHAR *pcReplace;
+        
+        /* Adds wrapping code */
+        s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
+        pc       += s32Offset;
+        s32Free  -= s32Offset;
+        
+        /* For all parameters */
+        for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
+            pstParam != orxNULL;
+            pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
         {
-          orxCHAR *pcReplace;
-
-          /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
-          pc       += s32Offset;
-          s32Free  -= s32Offset;
-
-          /* For all parameters */
-          for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
-              pstParam != orxNULL;
-              pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+          /* Depending on type */
+          switch(pstParam->eType)
           {
-            /* Depending on type */
-            switch(pstParam->eType)
+            case orxSHADER_PARAM_TYPE_FLOAT:
+            case orxSHADER_PARAM_TYPE_TIME:
             {
-              case orxSHADER_PARAM_TYPE_FLOAT:
-              case orxSHADER_PARAM_TYPE_TIME:
-              {
-                /* Adds its literal value */
-                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
-                pc       += s32Offset;
-                s32Free  -= s32Offset;
-
-                break;
-              }
-
-              case orxSHADER_PARAM_TYPE_TEXTURE:
-              {
-                /* Adds its literal value and automated coordinates */
-                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%ld];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
-                pc       += s32Offset;
-                s32Free  -= s32Offset;
-
-                break;
-              }
-
-              case orxSHADER_PARAM_TYPE_VECTOR:
-              {
-                /* Adds its literal value */
-                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
-                pc       += s32Offset;
-                s32Free  -= s32Offset;
-
-                break;
-              }
-
-              default:
-              {
-                break;
-              }
+              /* Adds its literal value */
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+              
+              break;
+            }
+              
+            case orxSHADER_PARAM_TYPE_TEXTURE:
+            {
+              /* Adds its literal value and automated coordinates */
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%ld];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+              
+              break;
+            }
+              
+            case orxSHADER_PARAM_TYPE_VECTOR:
+            {
+              /* Adds its literal value */
+              s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+              
+              break;
+            }
+              
+            default:
+            {
+              break;
             }
           }
-
-          /* Adds code */
-          orxString_NPrint(pc, s32Free, "%s\n", _zCode);
-
-          /* For all gl_TexCoord[0] */
-          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
-              pcReplace != orxNULL;
-              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
-          {
-            /* Replaces it */
-            orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
-          }
-
-          /* For all gl_Color */
-          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
-              pcReplace != orxNULL;
-              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
-          {
-            /* Replaces it */
-            orxMemory_Copy(pcReplace, "___Color", 8 * sizeof(orxCHAR));
-          }
         }
-        else
+        
+        /* Adds code */
+        orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+        
+        /* For all gl_TexCoord[0] */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
         {
-          /* Adds code */
-          orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
         }
-
-        /* Inits shader */
-        orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
-        pstShader->uiProgram              = (GLuint)orxHANDLE_UNDEFINED;
-        pstShader->iTextureCounter        = 0;
-        pstShader->s32ParamCounter        = 0;
-        pstShader->bPending               = orxFALSE;
-        pstShader->bUseCustomParam        = _bUseCustomParam;
-        pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
-        pstShader->astTextureInfoList     = (orxDISPLAY_TEXTURE_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO), orxMEMORY_TYPE_MAIN);
-        pstShader->astParamInfoList       = (orxDISPLAY_PARAM_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO), orxMEMORY_TYPE_MAIN);
-        orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
-        orxMemory_Zero(pstShader->astParamInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO));
-
-        /* Compiles it */
-        if(orxDisplay_iOS_CompileShader(pstShader) != orxSTATUS_FAILURE)
+        
+        /* For all gl_Color */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
         {
-          /* Updates result */
-          hResult = (orxHANDLE)pstShader;
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "___Color", 8 * sizeof(orxCHAR));
         }
-        else
-        {
-          /* Deletes code */
-          orxString_Delete(pstShader->zCode);
-
-          /* Deletes texture info list */
-          orxMemory_Free(pstShader->astTextureInfoList);
-
-          /* Deletes param info list */
-          orxMemory_Free(pstShader->astParamInfoList);
-
-          /* Frees shader */
-          orxBank_Free(sstDisplay.pstShaderBank, pstShader);
-        }
+      }
+      else
+      {
+        /* Adds code */
+        orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+      }
+      
+      /* Inits shader */
+      orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
+      pstShader->uiProgram              = (GLuint)orxHANDLE_UNDEFINED;
+      pstShader->iTextureCounter        = 0;
+      pstShader->s32ParamCounter        = 0;
+      pstShader->bPending               = orxFALSE;
+      pstShader->bUseCustomParam        = _bUseCustomParam;
+      pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
+      pstShader->astTextureInfoList     = (orxDISPLAY_TEXTURE_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO), orxMEMORY_TYPE_MAIN);
+      pstShader->astParamInfoList       = (orxDISPLAY_PARAM_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO), orxMEMORY_TYPE_MAIN);
+      orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
+      orxMemory_Zero(pstShader->astParamInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO));
+      
+      /* Compiles it */
+      if(orxDisplay_iOS_CompileShader(pstShader) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        hResult = (orxHANDLE)pstShader;
+      }
+      else
+      {
+        /* Deletes code */
+        orxString_Delete(pstShader->zCode);
+        
+        /* Deletes texture info list */
+        orxMemory_Free(pstShader->astTextureInfoList);
+        
+        /* Deletes param info list */
+        orxMemory_Free(pstShader->astParamInfoList);
+        
+        /* Frees shader */
+        orxBank_Free(sstDisplay.pstShaderBank, pstShader);
       }
     }
   }
