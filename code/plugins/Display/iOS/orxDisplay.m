@@ -1240,7 +1240,7 @@ static orxINLINE void orxDisplay_iOS_BindBitmap(const orxBITMAP *_pstBitmap)
     /* Selects unit */
     glActiveTexture(GL_TEXTURE0 + s32BestCandidate);
     glASSERT();
-    
+
     /* Binds texture */
     glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
     glASSERT();
@@ -1637,6 +1637,8 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
+
+        break;
       }
 
       /* Success? */
@@ -1676,7 +1678,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
 
       /* Uses image buffer */
       pstInfo->pu8ImageBuffer = pu8ImageData;
-      
+
       /* Stores real size */
       pstInfo->uiRealWidth  = pstInfo->uiWidth;
       pstInfo->uiRealHeight = pstInfo->uiHeight;
@@ -2378,7 +2380,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
 
   /* Starts no texture shader */
   orxDisplay_iOS_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
-  
+
   /* Inits it */
   orxDisplay_iOS_InitShader(sstDisplay.pstNoTextureShader);
 
@@ -2440,10 +2442,10 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
 
   /* Bypasses the full screen rendering when stopping shader */
   sstDisplay.s32BufferIndex = -1;
-  
+
   /* Stops current shader */
   orxDisplay_iOS_StopShader((orxHANDLE)sstDisplay.pstNoTextureShader);
-  
+
   /* Resets buffer index */
   sstDisplay.s32BufferIndex = 0;
 
@@ -3416,7 +3418,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetDestinationBitmaps(orxBITMAP **_apstBitm
         (fOrthoBottom >= orxFLOAT_0)
         ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
         : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
-        
+
         /* Passes it to shader */
         glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
       }
@@ -3976,7 +3978,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   (sstDisplay.fLastOrthoBottom >= orxFLOAT_0)
   ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
   : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
-  
+
   /* Passes it to shader */
   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
@@ -4129,17 +4131,17 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         "{"
         "  gl_FragColor = ___Color;"
         "}";
-        
+
         /* Inits flags */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
         /* Creates default shaders */
         sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
         sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
-        
+
         /* Uses it */
         orxDisplay_iOS_StopShader(orxNULL);
-        
+
         /* Pushes config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -4257,32 +4259,32 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
   if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
   {
     orxDISPLAY_SHADER *pstShader;
-    
+
     /* Creates a new shader */
     pstShader = (orxDISPLAY_SHADER *)orxBank_Allocate(sstDisplay.pstShaderBank);
-    
+
     /* Successful? */
     if(pstShader != orxNULL)
     {
       orxSHADER_PARAM  *pstParam;
       orxCHAR          *pc;
       orxS32            s32Free, s32Offset;
-      
+
       /* Inits shader code buffer */
       sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
       pc                                = sstDisplay.acShaderCodeBuffer;
       s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
-      
+
       /* Has parameters? */
       if(_pstParamList != orxNULL)
       {
         orxCHAR *pcReplace;
-        
+
         /* Adds wrapping code */
         s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
         pc       += s32Offset;
         s32Free  -= s32Offset;
-        
+
         /* For all parameters */
         for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
             pstParam != orxNULL;
@@ -4298,40 +4300,40 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
               s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
-              
+
               break;
             }
-              
+
             case orxSHADER_PARAM_TYPE_TEXTURE:
             {
               /* Adds its literal value and automated coordinates */
               s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%ld];\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%ld];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM";\nuniform float %s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
-              
+
               break;
             }
-              
+
             case orxSHADER_PARAM_TYPE_VECTOR:
             {
               /* Adds its literal value */
               s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%ld];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
               pc       += s32Offset;
               s32Free  -= s32Offset;
-              
+
               break;
             }
-              
+
             default:
             {
               break;
             }
           }
         }
-        
+
         /* Adds code */
         orxString_NPrint(pc, s32Free, "%s\n", _zCode);
-        
+
         /* For all gl_TexCoord[0] */
         for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
             pcReplace != orxNULL;
@@ -4340,7 +4342,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
           /* Replaces it */
           orxMemory_Copy(pcReplace, "___TexCoord___", 14 * sizeof(orxCHAR));
         }
-        
+
         /* For all gl_Color */
         for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
             pcReplace != orxNULL;
@@ -4355,7 +4357,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
         /* Adds code */
         orxString_NPrint(pc, s32Free, "%s\n", _zCode);
       }
-      
+
       /* Inits shader */
       orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
       pstShader->uiProgram              = (GLuint)orxHANDLE_UNDEFINED;
@@ -4368,7 +4370,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
       pstShader->astParamInfoList       = (orxDISPLAY_PARAM_INFO *)orxMemory_Allocate(sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO), orxMEMORY_TYPE_MAIN);
       orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
       orxMemory_Zero(pstShader->astParamInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_PARAM_INFO));
-      
+
       /* Compiles it */
       if(orxDisplay_iOS_CompileShader(pstShader) != orxSTATUS_FAILURE)
       {
@@ -4379,13 +4381,13 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _zCode, const 
       {
         /* Deletes code */
         orxString_Delete(pstShader->zCode);
-        
+
         /* Deletes texture info list */
         orxMemory_Free(pstShader->astTextureInfoList);
-        
+
         /* Deletes param info list */
         orxMemory_Free(pstShader->astParamInfoList);
-        
+
         /* Frees shader */
         orxBank_Free(sstDisplay.pstShaderBank, pstShader);
       }
