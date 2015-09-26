@@ -419,11 +419,11 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #ifdef __orxMSVC__
 
-    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s%s", zLog, orxSTRING_EOL);
+    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), (pcBuffer == zBuffer) ? "%s%s" : " %s%s", zLog, orxSTRING_EOL);
 
 #else /* __orxMSVC__ */
 
-    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " %s%s", zLog, orxSTRING_EOL);
+    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), (pcBuffer == zBuffer) ? "%s%s" : " %s%s", zLog, orxSTRING_EOL);
 
 #endif /* __orxMSVC__ */
 

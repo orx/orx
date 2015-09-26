@@ -1053,7 +1053,16 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
 {
   const orxSTRING zPrefix;
   const orxSTRING zCommand;
-  orxU32          u32Counter;
+  orxU32          u32Counter, u32Flags;
+
+  /* Backups debug flags */
+  u32Flags = orxDEBUG_GET_FLAGS();
+
+  /* Deactivates all tagging */
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP|orxDEBUG_KU32_STATIC_FLAG_FULL_TIMESTAMP|orxDEBUG_KU32_STATIC_FLAG_TYPE|orxDEBUG_KU32_STATIC_FLAG_TAGGED);
+
+  /* Logs header */
+  orxLOG("Listing %scommands%s%s%s:", (_u32ArgNumber > 0) ? orxSTRING_EMPTY : "all ", (_u32ArgNumber > 0) ? " with prefix [" : orxSTRING_EMPTY, (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY, (_u32ArgNumber > 0) ? "]" : orxSTRING_EMPTY);
 
   /* Gets prefix */
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
@@ -1067,12 +1076,15 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
     if(orxCommand_IsAlias(zCommand) == orxFALSE)
     {
       /* Logs it */
-      orxConsole_Log(zCommand);
+      orxLOG(zCommand);
 
       /* Updates counter */
       u32Counter++;
     }
   }
+
+  /* Restores debug flags */
+  orxDEBUG_SET_FLAGS(u32Flags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   /* Updates result */
   _pstResult->u32Value = u32Counter;
@@ -1138,7 +1150,16 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
 {
   const orxSTRING zPrefix;
   const orxSTRING zAlias;
-  orxU32          u32Counter;
+  orxU32          u32Counter, u32Flags;
+
+  /* Backups debug flags */
+  u32Flags = orxDEBUG_GET_FLAGS();
+
+  /* Deactivates all tagging */
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP|orxDEBUG_KU32_STATIC_FLAG_FULL_TIMESTAMP|orxDEBUG_KU32_STATIC_FLAG_TYPE|orxDEBUG_KU32_STATIC_FLAG_TAGGED);
+
+  /* Logs header */
+  orxLOG("Listing %saliases%s%s%s:", (_u32ArgNumber > 0) ? orxSTRING_EMPTY : "all ", (_u32ArgNumber > 0) ? " with prefix [" : orxSTRING_EMPTY, (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY, (_u32ArgNumber > 0) ? "]" : orxSTRING_EMPTY);
 
   /* Gets prefix */
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
@@ -1188,12 +1209,15 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
       }
 
       /* Logs it */
-      orxConsole_Log(acBuffer);
+      orxLOG(acBuffer);
 
       /* Updates counter */
       u32Counter++;
     }
   }
+
+  /* Restores debug flags */
+  orxDEBUG_SET_FLAGS(u32Flags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   /* Updates result */
   _pstResult->u32Value = u32Counter;
