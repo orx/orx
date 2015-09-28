@@ -32,7 +32,7 @@ delete-dir: func [
 ]
 
 
-; Up-to-date?
+; Checks version
 req-file: %.extern
 cur-file: extern/.version
 req-ver: read/lines req-file
@@ -61,9 +61,9 @@ remote: rejoin [host req-ver '.zip]
 either exists? local [
     print ["== [" req-ver "] found in cache!"]
 ][
-    attempt [make-dir cache]
+    attempt [make-dir/deep cache]
     print ["== [" req-ver "] not in cache"]
-    print ["== Downloading from [" host "], please wait!"]
+    print ["== Downloading [" remote "]" newline "== Please wait!"]
     call reform [to-local-file system/options/boot system/script/path/download.r remote system/options/home/:local]
     while [not exists? local][
         prin "."
@@ -81,7 +81,7 @@ if exists? extern [
 ]
 
 
-; Decompress
+; Decompresses
 do system/script/path/rebzip.r
 attempt [delete-dir temp]
 print ["== Decompressing [" local "] => [" extern "]"]
