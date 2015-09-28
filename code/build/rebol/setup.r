@@ -1,20 +1,35 @@
 REBOL [
-    title: "Orx setup"
-    author: "iarwain@orx-project.org"
-    date: 26-Sep-2015
-    file: %setup.r
+    title:      "orx setup"
+    author:     "iarwain@orx-project.org"
+    date:       26-Sep-2015
+    file:       %setup.r
 ]
 
 
 ; Default settings
-host:   https://bitbucket.org/orx/orx-extern/get/
-cache:  %cache/
-extern: %extern/
-temp:   %.temp/
+host:           https://bitbucket.org/orx/orx-extern/get/
+extern:         %extern/
+cache:          %cache/
+temp:           %.temp/
 
 
-; Change dir
+; Misc
 change-dir system/options/home
+
+delete-dir: func [
+    {Deletes a directory including all files and subdirectories.}
+    dir [file! url!]
+    /local files
+][
+    if all [
+        dir? dir
+        dir: dirize dir
+        attempt [files: load dir]
+    ][
+        foreach file files [delete-dir dir/:file]
+    ]
+    attempt [delete dir]
+]
 
 
 ; Up-to-date?
@@ -54,26 +69,12 @@ either exists? local [
         prin "."
         wait 0.5
     ]
-    print "."
-    print ["== [" local "] cached!"]
+    print newline
+    print ["== [" req-ver "] cached!"]
 ]
 
 
 ; Clears current version
-delete-dir: func [
-    {Deletes a directory including all files and subdirectories.}
-    dir [file! url!]
-    /local files
-][
-    if all [
-        dir? dir
-        dir: dirize dir
-        attempt [files: load dir]
-    ][
-        foreach file files [delete-dir dir/:file]
-    ]
-    attempt [delete dir]
-]
 if exists? extern [
     print ["== Deleting [" extern "]"]
     attempt [delete-dir extern]
@@ -82,8 +83,11 @@ if exists? extern [
 
 ; Decompress
 do system/script/path/rebzip.r
-print ["== Decompressing [" local "] -> [" extern "]"]
+attempt [delete-dir temp]
+print ["== Decompressing [" local "] => [" extern "]"]
+wait 0.5
 unzip/quiet temp local
+wait 0.5
 rename rejoin [temp load temp] extern
 attempt [delete-dir temp]
 
