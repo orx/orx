@@ -113,11 +113,14 @@ premake: read premake-path
 
 print ["== Copying [" premake "] to [" build "]"]
 write build/:premake read premake-path/:premake
+if not platform = "windows" [
+    call reform ["chmod +x" build/:premake]
+]
 
 print ["== Generating build files for [" platform "]"]
 change-dir build
 foreach config cur-premake/2 [
     print ["== Generating [" config "]"]
-    call/wait reform [premake config]
+    call/wait rejoin ["./" premake " " config]
 ]
 change-dir system/options/home
