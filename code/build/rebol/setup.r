@@ -7,13 +7,22 @@ REBOL [
 
 
 ; Default settings
-host:           https://bitbucket.org/orx/orx-extern/get/
+tag:            "<version>"
+host:           rejoin ["https://bitbucket.org/orx/orx-extern/get/" tag ".zip"]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
+premake-root:   dirize extern/premake/bin
+build:          %code/build
+premake-data:   [
+    "windows"   ["windows"      ["gmake" "codelite" "vs2012" "vs2013"]]
+    "mac"       ["mac"          ["gmake" "codelite" "xcode4"]]
+    "linux"     ["linux32"      ["gmake" "codelite"]]
+]
 
 
-; Misc
+; Inits
+platform: lowercase to-string system/platform/1
 change-dir system/options/home
 
 delete-dir: func [
@@ -57,7 +66,7 @@ if system/options/args [
 
 ; Updates cache
 local: rejoin [cache req-ver '.zip]
-remote: rejoin [host req-ver '.zip]
+remote: replace host tag req-ver
 either exists? local [
     print ["== [" req-ver "] found in cache!"]
 ][
@@ -95,3 +104,20 @@ attempt [delete-dir temp]
 ; Stores version
 write cur-file req-ver
 print ["== [" req-ver "] installed!"]
+
+
+; Runs premake
+cur-premake: select premake-data platform
+premake-path: dirize rejoin [premake-root cur-premake/1]
+premake: read premake-path
+
+print ["== Copying [" premake "] to [" build "]"]
+write build/:premake read premake-path/:premake
+
+print ["== Generating build files for [" platform "]"]
+change-dir build
+foreach config cur-premake/2 [
+    print ["== Generating [" config "]"]
+    call/wait reform [premake config]
+]
+change-dir system/options/home
