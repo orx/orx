@@ -23,6 +23,7 @@ platform-data:  [
 
 ; Inits
 platform: lowercase to-string system/platform/1
+if platform = "macintosh" [platform: "mac"]
 platform-info: select platform-data platform
 
 change-dir system/options/home
@@ -139,7 +140,7 @@ if platform = "linux" [
     print newline
     print ["== IMPORTANT - make sure the following libraries are installed on your system:"]
     foreach lib platform-info/3 [print ["==[" lib "]"]]
+    print newline
 ]
 
-print newline
 print ["== Setup successful!"]
