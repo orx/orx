@@ -875,6 +875,50 @@ void orxFASTCALL orxObject_CommandGetRepeat(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: SetGroup
+ */
+void orxFASTCALL orxObject_CommandSetGroup(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its Group */
+    orxObject_SetGroupID(pstObject, (_u32ArgNumber > 1) ? orxString_GetID(_astArgList[1].zValue) : sstObject.u32DefaultGroupID);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetGroup
+ */
+void orxFASTCALL orxObject_CommandGetGroup(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = (pstObject != orxNULL) ? orxString_GetFromID(orxObject_GetGroupID(pstObject)) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetName
  */
 void orxFASTCALL orxObject_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2321,6 +2365,11 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetRepeat */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRepeat, "Repeat", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: SetGroup */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetGroup, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Group = <default>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetGroup */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetGroup, "Group", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: GetName */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -2471,6 +2520,11 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetRepeat);
   /* Command: GetRepeat */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetRepeat);
+
+  /* Command: SetGroup */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetGroup);
+  /* Command: GetGroup */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetGroup);
 
   /* Command: GetName */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetName);
