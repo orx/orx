@@ -17,16 +17,16 @@ build:          %code/build
 hg-hook:        "update.orx"
 hg:             %.hg/
 platform-data:  [
-    "windows"   ["windows"  ["gmake" "codelite" "vs2012" "vs2013"]  %.hg/hgrc                                                                      ]
-    "mac"       ["mac"      ["gmake" "codelite" "xcode4"         ]  %.hg/.hgrc                                                                     ]
-    "linux"     ["linux32"  ["gmake" "codelite"                  ]  %.hg/.hgrc  ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013"] 'hg %.hg/hgrc                                                                           ]
+    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ] 'hg %.hg/.hgrc                                                                          ]
+    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'hg %.hg/.hgrc 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
 
 
 ; Inits
 platform: lowercase to-string system/platform/1
 if platform = "macintosh" [platform: "mac"]
-platform-info: select platform-data platform
+platform-info: platform-data/:platform
 
 change-dir system/options/home
 
@@ -56,7 +56,7 @@ cur-ver: either exists? cur-file [
     none
 ]
 either req-ver = cur-ver [
-    print ["== [" cur-ver "] already present, skipping fetching step!"]
+    print ["== [" cur-ver "] already installed, skipping!"]
 ] [
     print ["== [" req-ver "] needed, current [" cur-ver "]"]
 
@@ -111,7 +111,7 @@ either req-ver = cur-ver [
 
 
     ; Installs premake
-    premake-path: dirize rejoin [premake-root platform-info/1]
+    premake-path: dirize rejoin [premake-root platform-info/premake]
     premake: read premake-path
     print ["== Copying [" premake "] to [" build "]"]
     write build/:premake read premake-path/:premake
@@ -126,11 +126,11 @@ either req-ver = cur-ver [
 
 
 ; Runs premake
-premake-path: dirize rejoin [premake-root platform-info/1]
+premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: read premake-path
 print ["== Generating build files for [" platform "]"]
 change-dir build
-foreach config platform-info/2 [
+foreach config platform-info/config [
     print ["== Generating [" config "]"]
     call/wait rejoin ["./" premake " " config]
 ]
@@ -140,7 +140,7 @@ print ["== You can now build orx in [" build/:platform "]"]
 
 ; Mercurial hook
 if exists? hg [
-    hgrc: platform-info/3
+    hgrc: platform-info/hg
     hgrc-file: to-string read hgrc
 
     either find hgrc-file hg-hook [
@@ -156,6 +156,7 @@ if exists? hg [
             to-local-file system/options/boot
             " "
             system/options/script
+            newline
         ]
     ]
 ]
@@ -165,7 +166,7 @@ if exists? hg [
 if platform = "linux" [
     print newline
     print ["== IMPORTANT - make sure the following libraries are installed on your system:"]
-    foreach lib platform-info/4 [print ["==[" lib "]"]]
+    foreach lib platform-info/deps [print ["==[" lib "]"]]
     print newline
 ]
 
