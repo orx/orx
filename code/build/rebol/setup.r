@@ -214,7 +214,7 @@ if exists? git [
 
 
 ; Done!
-if platform = "linux" [
+if platform-info/deps [
     print newline
     print ["== IMPORTANT - make sure the following libraries are installed on your system:"]
     foreach lib platform-info/deps [print ["==[" lib "]"]]
