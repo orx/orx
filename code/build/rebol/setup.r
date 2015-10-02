@@ -14,12 +14,14 @@ cache:          %cache/
 temp:           %.temp/
 premake-root:   dirize extern/premake/bin
 build:          %code/build
-hg-hook:        "update.orx"
 hg:             %.hg/
+hg-hook:        "update.orx"
+git:            %.git/
+git-hooks:      [%post-checkout %post-merge]
 platform-data:  [
-    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013"] 'hg %.hg/hgrc                                                                           ]
-    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ] 'hg %.hg/.hgrc                                                                          ]
-    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'hg %.hg/.hgrc 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013"] 'hgrc %hgrc                                                                           ]
+    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ] 'hgrc %.hgrc                                                                          ]
+    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'hgrc %.hgrc 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
 
 
@@ -140,7 +142,7 @@ print ["== You can now build orx in [" build/:platform "]"]
 
 ; Mercurial hook
 if exists? hg [
-    hgrc: platform-info/hg
+    hgrc: rejoin [hg platform-info/hgrc]
     hgrc-file: to-string read hgrc
 
     either find hgrc-file hg-hook [
@@ -153,10 +155,59 @@ if exists? hg [
             newline
             hg-hook
             " = "
-            to-local-file system/options/boot
+            to-local-file either hook-rel: find/tail system/options/boot system/options/home [
+                hook-rel
+            ] [
+                system/options/boot
+            ]
             " "
             system/options/script
             newline
+        ]
+    ]
+]
+
+
+; Git hooks
+if exists? git [
+    foreach hook git-hooks [
+        hook-content: rejoin [
+            newline
+            either hook-rel: find/tail system/options/boot system/options/home [
+                hook-rel
+            ] [
+                system/options/boot
+            ]
+            " "
+            system/options/script
+            newline
+        ]
+        hook-path: git/hooks/:hook
+        either all [
+            exists? hook-path
+            not empty? read hook-path
+        ] [
+            hook-file: either find hook-file: to-string read hook-path system/options/script [
+                none
+            ] [
+                append hook-file hook-content
+            ]
+        ] [
+            hook-file: rejoin [
+                "#!/bin/sh"
+                newline
+                hook-content
+            ]
+        ]
+
+        either hook-file [
+            print ["== Installing git hook [" hook "]"]
+            write hook-path hook-file
+            if not platform = "windows" [
+                call reform ["chmod +x" hook-path]
+            ]
+        ] [
+            print ["== Git hook [" hook "] already installed"]
         ]
     ]
 ]
