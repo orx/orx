@@ -3633,6 +3633,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
+      /* Has FX? */
+      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
+      {
+        orxS32 i, s32DelayNumber;
+
+        /* Gets number of delays */
+        s32DelayNumber = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
+
+        /* For all defined FXs */
+        for(i = 0; i < s32Number; i++)
+        {
+          orxFLOAT fDelay;
+
+          /* Gets its delay */
+          fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
+          fDelay = orxMAX(fDelay, orxFLOAT_0);
+
+          /* Adds it */
+          orxObject_AddDelayedFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i), fDelay);
+        }
+
+        /* Success? */
+        if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+        {
+          orxCLOCK_INFO stClockInfo;
+
+          /* Applies FXs directly to prevent any potential 1-frame visual glitches */
+          orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
+          stClockInfo.fDT = orxMATH_KF_EPSILON;
+          orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+        }
+      }
+
       /* *** Spawner *** */
 
       /* Gets spawner name */
@@ -3669,6 +3702,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
       }
+
+      /* *** Position & rotation */
 
       /* Has a position? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
@@ -3785,39 +3820,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
       /* Sets angular velocity? */
       orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
-
-      /* Has FX? */
-      if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
-      {
-        orxS32 i, s32DelayNumber;
-
-        /* Gets number of delays */
-        s32DelayNumber = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
-
-        /* For all defined FXs */
-        for(i = 0; i < s32Number; i++)
-        {
-          orxFLOAT fDelay;
-
-          /* Gets its delay */
-          fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
-          fDelay = orxMAX(fDelay, orxFLOAT_0);
-
-          /* Adds it */
-          orxObject_AddDelayedFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i), fDelay);
-        }
-
-        /* Success? */
-        if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
-        {
-          orxCLOCK_INFO stClockInfo;
-
-          /* Applies FXs directly to prevent any potential 1-frame visual glitches */
-          orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
-          stClockInfo.fDT = orxMATH_KF_EPSILON;
-          orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
-        }
-      }
 
       /* Has sound? */
       if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
