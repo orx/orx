@@ -13,7 +13,7 @@ extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
 premake-root:   dirize extern/premake/bin
-build:          %code/build
+builds:         ['code %code/build 'tutorial %tutorial/build 'orxfontgen %tools/orxFontGen/build 'orxcrypt %tools/orxCrypt/build]
 hg:             %.hg/
 hg-hook:        "update.orx"
 git:            %.git/
@@ -26,6 +26,7 @@ platform-data:  [
 
 
 ; Inits
+begin: now/time
 platform: lowercase to-string system/platform/1
 if platform = "macintosh" [platform: "mac"]
 platform-info: platform-data/:platform
@@ -115,10 +116,13 @@ either req-ver = cur-ver [
     ; Installs premake
     premake-path: dirize rejoin [premake-root platform-info/premake]
     premake: read premake-path
-    print ["== Copying [" premake "] to [" build "]"]
-    write build/:premake read premake-path/:premake
-    if not platform = "windows" [
-        call reform ["chmod +x" build/:premake]
+    premake-file: read premake-path/:premake
+    forskip builds 2 [
+        print ["== Copying [" premake "] to [" builds/2 "]"]
+        write builds/2/:premake premake-file
+        if not platform = "windows" [
+            call reform ["chmod +x" builds/2/:premake]
+        ]
     ]
 
 
@@ -131,13 +135,15 @@ either req-ver = cur-ver [
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: read premake-path
 print ["== Generating build files for [" platform "]"]
-change-dir build
 foreach config platform-info/config [
     print ["== Generating [" config "]"]
-    call/wait rejoin ["./" premake " " config]
+    forskip builds 2 [
+        change-dir rejoin [system/options/home builds/2]
+        call/wait rejoin ["./" premake " " config]
+    ]
 ]
 change-dir system/options/home
-print ["== You can now build orx in [" build/:platform "]"]
+print ["== You can now build orx in [" builds/code/:platform "]"]
 
 
 ; Mercurial hook
@@ -216,9 +222,9 @@ if exists? git [
 ; Done!
 if platform-info/deps [
     print newline
-    print ["== IMPORTANT - make sure the following libraries are installed on your system:"]
+    print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
     foreach lib platform-info/deps [print ["==[" lib "]"]]
     print newline
 ]
-
-print ["== Setup successful!"]
+end: now/time
+print ["== [" (end - begin) "] Setup successfull!"]
