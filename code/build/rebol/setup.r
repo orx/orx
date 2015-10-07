@@ -79,17 +79,7 @@ either req-ver = cur-ver [
         attempt [make-dir/deep cache]
         print ["== [" req-ver "] not in cache"]
         print ["== Fetching [" remote "]" newline "== Please wait!"]
-        call reform [
-            to-local-file system/options/boot
-            system/script/path/download.r
-            remote
-            system/options/home/:local
-        ]
-        while [not exists? local] [
-            prin "."
-            wait 0.5
-        ]
-        print newline
+        write system/options/home/:local read to-url remote
         print ["== [" req-ver "] cached!"]
     ]
 
