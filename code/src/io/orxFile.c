@@ -1131,10 +1131,10 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   {
 #ifdef __orxWINDOWS__
 
-    struct _stat64 stStat;
+    struct _stati64 stStat;
 
     /* Gets file stats */
-    _fstat64(((FILE *)_pstFile)->_file, &stStat);
+    _fstati64(((FILE *)_pstFile)->_file, &stStat);
 
 #else /* __orxWINDOWS__ */
 
