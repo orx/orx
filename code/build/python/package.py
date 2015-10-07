@@ -89,8 +89,10 @@ vsfileinfolist = devfileinfolist + [
 tutorialvsfileinfolist = [
     {'src': 'lib/dynamic/orx*.lib',                                     'dst': 'lib'},
     {'src': 'lib/dynamic/orx*.pdb',                                     'dst': 'lib'},
-    {'src': '../tutorial/build/windows/' + platform[4:] + '/*proj*',    'dst': 'build/windows/' + platform[4:]},
-    {'src': '../tutorial/build/windows/' + platform[4:] + '/*.sln',     'dst': 'build/windows/' + platform[4:]}
+    {'src': '../extern/premake/bin/windows/premake4.exe',               'dst': 'build'},
+    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
+    {'src': '../tutorial/build/windows/' + platform[4:10] + '/*proj*',  'dst': 'build/windows/' + platform[4:10]},
+    {'src': '../tutorial/build/windows/' + platform[4:10] + '/*.sln',   'dst': 'build/windows/' + platform[4:10]}
 ]
 
 mingwfileinfolist = devfileinfolist + [
@@ -100,6 +102,8 @@ mingwfileinfolist = devfileinfolist + [
 
 tutorialmingwfileinfolist = [
     {'src': 'lib/dynamic/liborx*.a',                                    'dst': 'lib'},
+    {'src': '../extern/premake/bin/windows/premake4.exe',               'dst': 'build'},
+    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
     {'src': '../tutorial/build/windows/codeblocks/*.cbp',               'dst': 'build/windows/codeblocks'},
     {'src': '../tutorial/build/windows/codeblocks/*.workspace',         'dst': 'build/windows/codeblocks'},
     {'src': '../tutorial/build/windows/codelite/*.project',             'dst': 'build/windows/codelite'},
@@ -114,6 +118,8 @@ macfileinfolist = devfileinfolist + [
 
 tutorialmacfileinfolist = [
     {'src': 'lib/dynamic/liborx*.dylib',                                'dst': 'lib'},
+    {'src': '../extern/premake/bin/mac/premake4',                       'dst': 'build'},
+    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
     {'src': '../tutorial/build/mac/codeblocks/*.cbp',                   'dst': 'build/mac/codeblocks'},
     {'src': '../tutorial/build/mac/codeblocks/*.workspace',             'dst': 'build/mac/codeblocks'},
     {'src': '../tutorial/build/mac/codelite/*.project',                 'dst': 'build/mac/codelite'},
@@ -129,6 +135,8 @@ linuxfileinfolist = devfileinfolist + [
 
 tutoriallinuxfileinfolist = [
     {'src': 'lib/dynamic/liborx*.so',                                   'dst': 'lib'},
+    {'src': '../extern/premake/bin/' + platform[4:] + '/premake4',      'dst': 'build/' + platform[4:]},
+    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
     {'src': '../tutorial/build/linux/codeblocks/*.cbp',                 'dst': 'build/linux/codeblocks'},
     {'src': '../tutorial/build/linux/codeblocks/*.workspace',           'dst': 'build/linux/codeblocks'},
     {'src': '../tutorial/build/linux/codelite/*.project',               'dst': 'build/linux/codelite'},
