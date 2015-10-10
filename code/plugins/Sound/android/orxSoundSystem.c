@@ -799,6 +799,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_Android_LinkSampleTask(void *_pConte
   /* Gets sound */
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
 
+  /* Updates duration */
+  pstSound->fDuration = pstSound->pstSample->fDuration;
+
   /* Links buffer to source */
   alSourcei(pstSound->uiSource, AL_BUFFER, pstSound->pstSample->uiBuffer);
   alASSERT();
@@ -1365,9 +1368,6 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const 
     /* Links sample */
     pstResult->pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pstSample;
 
-    /* Updates duration */
-    pstResult->fDuration = _pstSample->fDuration;
-
     /* Updates status */
     pstResult->bIsStream = orxFALSE;
 
@@ -1384,11 +1384,17 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateFromSample(const 
     /* Not finished loading? */
     if(_pstSample->uiBuffer == 0)
     {
+      /* Clears duration */
+      pstResult->fDuration = orx2F(-1.0f);
+
       /* Runs link task */
       orxThread_RunTask(&orxSoundSystem_Android_LinkSampleTask, orxNULL, orxNULL, pstResult);
     }
     else
     {
+      /* Updates duration */
+      pstResult->fDuration = _pstSample->fDuration;
+
       /* Links it to data buffer */
       alSourcei(pstResult->uiSource, AL_BUFFER, _pstSample->uiBuffer);
       alASSERT();
