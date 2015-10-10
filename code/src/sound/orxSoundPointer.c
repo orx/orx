@@ -662,6 +662,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Pause(orxSOUNDPOINTER *_pstSoundPointer)
     /* Valid? */
     if(pstSound != orxNULL)
     {
+      /* Updates its flags */
+      orxFLAG_SET(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY);
+
       /* Pauses it */
       orxSound_Pause(pstSound);
     }
@@ -695,6 +698,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer)
     /* Valid? */
     if(pstSound != orxNULL)
     {
+      /* Updates its flags */
+      orxFLAG_SET(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY);
+
       /* Stops it */
       orxSound_Stop(pstSound);
     }
