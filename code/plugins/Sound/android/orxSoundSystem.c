@@ -286,7 +286,7 @@ static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstDat
   orxU32 u32Result, u32RequestBytes, u32BytesRead, u32FrameSize;
   char *pBuffer;
   int current_section;
-  
+
   /* Checks */
   orxASSERT(_pstData != orxNULL);
 
@@ -299,7 +299,7 @@ static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstDat
 
     /* Reads frames */
     u32Result = 0;
-    
+
     do {
       u32BytesRead = ov_read(&_pstData->stVf, pBuffer, u32RequestBytes, &current_section);
       u32Result += (u32BytesRead / u32FrameSize);
@@ -372,7 +372,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
   orxASSERT(_pstSound != orxNULL);
 
   /* Valid? */
-  if(_pstSound->fDuration > orxFLOAT_0)
+  if(_pstSound->fDuration != orxFLOAT_0)
   {
     /* Not stopped? */
     if(_pstSound->bStop == orxFALSE)

@@ -602,7 +602,7 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT(_pstSound != orxNULL);
 
   /* Valid? */
-  if(_pstSound->fDuration > orxFLOAT_0)
+  if(_pstSound->fDuration != orxFLOAT_0)
   {
     /* Not stopped? */
     if(_pstSound->bStop == orxFALSE)

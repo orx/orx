@@ -68,7 +68,7 @@
 
 /** Misc defines
  */
-#define orxSOUNDSYSTEM_KU32_BANK_SIZE                     32
+#define orxSOUNDSYSTEM_KU32_BANK_SIZE                     128
 #define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER  4
 #define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
 #define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   44100
@@ -588,7 +588,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
   orxASSERT(_pstSound != orxNULL);
 
   /* Valid? */
-  if(_pstSound->fDuration > orxFLOAT_0)
+  if(_pstSound->fDuration != orxFLOAT_0)
   {
     /* Not stopped? */
     if(_pstSound->bStop == orxFALSE)
