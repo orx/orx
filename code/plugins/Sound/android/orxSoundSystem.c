@@ -134,11 +134,12 @@ struct __orxSOUNDSYSTEM_SOUND_t
     struct
     {
       orxLINKLIST_NODE        stNode;
-      orxBOOL                 bDelete;
-      orxBOOL                 bLoop;
-      orxBOOL                 bStop;
-      orxBOOL                 bPause;
       const orxSTRING         zReference;
+      orxBOOL                 bDelete       : 1;
+      orxBOOL                 bLoop         : 1;
+      orxBOOL                 bStop         : 1;
+      orxBOOL                 bStopping     : 1;
+      orxBOOL                 bPause        : 1;
       orxS32                  s32PacketID;
       orxSOUNDSYSTEM_DATA     stData;
 
@@ -395,20 +396,42 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
       }
       else
       {
+        ALint iProcessedBufferNumber;
+
         /* Gets number of processed buffers */
-        iBufferNumber = 0;
-        alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iBufferNumber);
+        iProcessedBufferNumber = 0;
+        alGetSourcei(_pstSound->uiSource, AL_BUFFERS_PROCESSED, &iProcessedBufferNumber);
         alASSERT();
 
-        /* Found any? */
-        if(iBufferNumber > 0)
+        /* Stopping? */
+        if(_pstSound->bStopping != orxFALSE)
         {
-          /* Uses local list */
-          puiBufferList = sstSoundSystem.auiWorkBufferList;
+          /* Last buffers? */
+          if(iProcessedBufferNumber == iBufferNumber)
+          {
+            /* Updates status */
+            _pstSound->bStop      = orxTRUE;
+            _pstSound->bStopping  = orxFALSE;
+          }
 
-          /* Unqueues them all */
-          alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iBufferNumber, sstSoundSystem.s32StreamBufferNumber), puiBufferList);
-          alASSERT();
+          /* Updates buffer number */
+          iBufferNumber = 0;
+        }
+        else
+        {
+          /* Updates buffer number */
+          iBufferNumber = iProcessedBufferNumber;
+
+          /* Found any? */
+          if(iBufferNumber > 0)
+          {
+            /* Uses local list */
+            puiBufferList = sstSoundSystem.auiWorkBufferList;
+
+            /* Unqueues them all */
+            alSourceUnqueueBuffers(_pstSound->uiSource, orxMIN(iBufferNumber, sstSoundSystem.s32StreamBufferNumber), puiBufferList);
+            alASSERT();
+          }
         }
       }
 
@@ -495,8 +518,8 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
               /* Not looping? */
               if(_pstSound->bLoop == orxFALSE)
               {
-                /* Stops */
-                _pstSound->bStop = orxTRUE;
+                /* Asks for stopping */
+                _pstSound->bStopping = orxTRUE;
                 break;
               }
             }
@@ -1448,8 +1471,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream(orxU32 _u3
 
       /* Updates status */
       pstResult->bIsStream  = orxTRUE;
-      pstResult->bStop      = orxTRUE;
       pstResult->zReference = _zReference;
+      pstResult->bStop      = orxTRUE;
+      pstResult->bStopping  = orxFALSE;
       pstResult->s32PacketID= 0;
 
       /* Adds it to the list */
@@ -1511,8 +1535,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStreamFromFile(co
 
         /* Updates status */
         pstResult->bIsStream  = orxTRUE;
-        pstResult->bStop      = orxTRUE;
         pstResult->zReference = _zReference;
+        pstResult->bStop      = orxTRUE;
+        pstResult->bStopping  = orxFALSE;
         pstResult->s32PacketID= 0;
 
         /* Generates openAL source */
@@ -1671,8 +1696,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Stop(orxSOUNDSYSTEM_SOUND *_pstSoun
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Updates status */
-    _pstSound->bStop  = orxTRUE;
-    _pstSound->bPause = orxFALSE;
+    _pstSound->bStop      = orxTRUE;
+    _pstSound->bStopping  = orxFALSE;
+    _pstSound->bPause     = orxFALSE;
   }
   else
   {
