@@ -7840,34 +7840,30 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32G
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      /* Has graphic? */
-      if(orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC) != orxNULL)
+      orxVECTOR vObjectPos;
+
+      /* Gets object position */
+      orxObject_GetWorldPosition(pstObject, &vObjectPos);
+
+      /* Is under position? */
+      if(vObjectPos.fZ >= _pvPosition->fZ)
       {
-        orxVECTOR vObjectPos;
-
-        /* Gets object position */
-        orxObject_GetWorldPosition(pstObject, &vObjectPos);
-
-        /* Is under position? */
-        if(vObjectPos.fZ >= _pvPosition->fZ)
+        /* No selection or above it? */
+        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
         {
-          /* No selection or above it? */
-          if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+          orxOBOX stObjectBox;
+
+          /* Gets its bounding box */
+          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
           {
-            orxOBOX stObjectBox;
-
-            /* Gets its bounding box */
-            if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+            /* Is position in 2D box? */
+            if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
             {
-              /* Is position in 2D box? */
-              if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
-              {
-                /* Updates result */
-                pstResult = pstObject;
+              /* Updates result */
+              pstResult = pstObject;
 
-                /* Updates selected position */
-                fSelectedZ = vObjectPos.fZ;
-              }
+              /* Updates selected position */
+              fSelectedZ = vObjectPos.fZ;
             }
           }
         }
@@ -7901,31 +7897,27 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32Grou
     /* Is enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      /* Has graphic? */
-      if(orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC) != orxNULL)
+      orxVECTOR vObjectPos;
+
+      /* Gets object position */
+      orxObject_GetWorldPosition(pstObject, &vObjectPos);
+
+      /* No selection or above it? */
+      if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
       {
-        orxVECTOR vObjectPos;
+        orxOBOX stObjectBox;
 
-        /* Gets object position */
-        orxObject_GetWorldPosition(pstObject, &vObjectPos);
-
-        /* No selection or above it? */
-        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+        /* Gets its bounding box */
+        if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
         {
-          orxOBOX stObjectBox;
-
-          /* Gets its bounding box */
-          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          /* Does it intersect with box? */
+          if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
           {
-            /* Does it intersect with box? */
-            if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
-            {
-              /* Updates result */
-              pstResult = pstObject;
+            /* Updates result */
+            pstResult = pstObject;
 
-              /* Updates selected position */
-              fSelectedZ = vObjectPos.fZ;
-            }
+            /* Updates selected position */
+            fSelectedZ = vObjectPos.fZ;
           }
         }
       }
