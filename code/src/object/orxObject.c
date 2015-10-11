@@ -3431,6 +3431,24 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
       }
 
+      /* *** Pivot/Size *** */
+
+      /* Has pivot? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vValue) != orxNULL)
+      {
+        /* Updates object pivot */
+        orxObject_SetPivot(pstResult, &vValue);
+      }
+
+      /* Has size? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
+      {
+        /* Updates object size */
+        orxObject_SetSize(pstResult, &vValue);
+      }
+
+      /* *** Scale *** */
+
       /* Has scale? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SCALE) != orxFALSE)
       {
@@ -3475,6 +3493,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Updates object scale */
         orxObject_SetScale(pstResult, &vValue);
       }
+
+      /* *** Color *** */
 
       /* Inits color */
       orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
@@ -3536,22 +3556,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       {
         /* Updates color */
         orxObject_SetColor(pstResult, &stColor);
-      }
-
-      /* *** Pivot/Size *** */
-
-      /* Has pivot? */
-      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vValue) != orxNULL)
-      {
-        /* Updates object pivot */
-        orxObject_SetPivot(pstResult, &vValue);
-      }
-
-      /* Has size? */
-      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
-      {
-        /* Updates object size */
-        orxObject_SetSize(pstResult, &vValue);
       }
 
       /* *** Body *** */
