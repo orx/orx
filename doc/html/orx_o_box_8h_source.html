@@ -304,7 +304,7 @@ $(document).ready(function(){initNavTree('orx_o_box_8h_source.html','');});
 <div class="line"><a name="l00251"></a><span class="lineno"><a class="code" href="group__orx_o_box.html#gab1e89423c8ad01b76aa9ea7c3425d633">  251</a></span>&#160;<span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_o_box.html#gab1e89423c8ad01b76aa9ea7c3425d633">orxOBox_2DIsInside</a>(<span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;{</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  <span class="keyword">register</span> orxBOOL bResult = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  orxFLOAT            fProj;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  orxFLOAT            fProj, fSize;</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>           vToPos;</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  <span class="comment">/* Checks */</span></div>
@@ -316,116 +316,118 @@ $(document).ready(function(){initNavTree('orx_o_box_8h_source.html','');});
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  <span class="comment">/* X-axis test */</span></div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <span class="keywordflow">if</span>(((fProj = <a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">orxVector_Dot</a>(&amp;vToPos, &amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#a76009f7c7c5f72ec49ad62e13ef05684">vX</a>))) &gt;= <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  &amp;&amp; (fProj &lt;= <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(&amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#a76009f7c7c5f72ec49ad62e13ef05684">vX</a>))))</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  {</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="comment">/* Y-axis test */</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordflow">if</span>(((fProj = <a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">orxVector_Dot</a>(&amp;vToPos, &amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#aa82d0e8e3f0e14e114a8f94da061f3a4">vY</a>))) &gt;= <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    &amp;&amp; (fProj &lt;= <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(&amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#aa82d0e8e3f0e14e114a8f94da061f3a4">vY</a>))))</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    {</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;      <span class="comment">/* Updates result */</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      bResult = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    }</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  }</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  <span class="comment">/* Done! */</span></div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  <span class="keywordflow">return</span> bResult;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;}</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
-<div class="line"><a name="l00286"></a><span class="lineno"><a class="code" href="group__orx_o_box.html#gadb5a7a411d0213b95613ef31bf0bffed">  286</a></span>&#160;<span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_o_box.html#gadb5a7a411d0213b95613ef31bf0bffed">orxOBox_ZAlignedTestIntersection</a>(<span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox1, <span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox2)</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;{</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="keyword">register</span> orxBOOL bResult;</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  <span class="comment">/* Checks */</span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1 != orxNULL);</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox2 != orxNULL);</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &gt;= <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;  <span class="comment">/* Z intersected? */</span></div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="keywordflow">if</span>((_pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> + _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &gt;= _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>)</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  &amp;&amp; (_pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &lt;= _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> + _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>))</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  {</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    orxU32          i;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>       vOrigin1, vOrigin2, *pvOrigin1 = &amp;vOrigin1, *pvOrigin2 = &amp;vOrigin2, *pvTemp;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a>  *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="comment">/* Computes boxes origins */</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    vOrigin1.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> - pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545">vPivot</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    vOrigin1.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> - pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545">vPivot</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    vOrigin2.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> - pstBox2-&gt;vPivot.fX;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    vOrigin2.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> - pstBox2-&gt;vPivot.fY;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="comment">/* Test each box against the other */</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="keywordflow">for</span>(i = 2, bResult = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        i != 0;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        i--, pstTemp = pstBox1, pstBox1 = pstBox2, pstBox2 = pstTemp, pvTemp = pvOrigin1, pvOrigin1 = pvOrigin2, pvOrigin2 = pvTemp)</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;      <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>           vToCorner[4];</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;      <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *pvAxis;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      orxU32              j;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;      <span class="comment">/* Gets to-corner vectors */</span></div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;      vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = pvOrigin2-&gt;fX - pvOrigin1-&gt;fX;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;      vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = pvOrigin2-&gt;fY - pvOrigin1-&gt;fY;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vX.fX;</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vX.fY;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;      vToCorner[2].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vY.fX;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;      vToCorner[2].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vY.fY;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;      vToCorner[3].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vY.fX;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;      vToCorner[3].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vY.fY;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;      <span class="comment">/* For both axis */</span></div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;      <span class="keywordflow">for</span>(j = 2, pvAxis = &amp;(pstBox1-&gt;vX);</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;          j != 0;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;          j--, pvAxis++)</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;      {</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        orxFLOAT  fMin, fMax, fProj;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        orxU32    k;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        <span class="comment">/* Gets initial projected values */</span></div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        fMin = fMax = fProj = <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(&amp;vToCorner[0], pvAxis);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="comment">/* For all remaining corners */</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keywordflow">for</span>(k = 1; k &lt; 4; k++)</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        {</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;          <span class="comment">/* Gets projected value */</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;          fProj = <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(&amp;vToCorner[k], pvAxis);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;          <span class="comment">/* Updates extrema */</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;          <span class="keywordflow">if</span>(fProj &gt; fMax)</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;          {</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            fMax = fProj;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;          }</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;          <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fProj &lt; fMin)</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;          {</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;            fMin = fProj;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;          }</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        }</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <span class="comment">/* Not intersecting? */</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordflow">if</span>((fMax &lt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        || (fMin &gt; <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(pvAxis)))</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        {</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;          <span class="comment">/* Updates result */</span></div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;          bResult = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;          <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        }</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;      }</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    }</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  }</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  {</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="comment">/* Updates result */</span></div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    bResult = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;  }</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  <span class="comment">/* Done! */</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;  <span class="keywordflow">return</span> bResult;</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxOBOX_H_ */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  &amp;&amp; ((fSize = <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(&amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#a76009f7c7c5f72ec49ad62e13ef05684">vX</a>))) &gt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  &amp;&amp; (fProj &lt;= fSize))</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="comment">/* Y-axis test */</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">if</span>(((fProj = <a class="code" href="group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165">orxVector_Dot</a>(&amp;vToPos, &amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#aa82d0e8e3f0e14e114a8f94da061f3a4">vY</a>))) &gt;= <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    &amp;&amp; ((fSize = <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(&amp;(_pstBox-&gt;<a class="code" href="structorx_o_b_o_x.html#aa82d0e8e3f0e14e114a8f94da061f3a4">vY</a>))) &gt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    &amp;&amp; (fProj &lt;= fSize))</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    {</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;      <span class="comment">/* Updates result */</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;      bResult = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    }</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  }</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;  <span class="comment">/* Done! */</span></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  <span class="keywordflow">return</span> bResult;</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;</div>
+<div class="line"><a name="l00288"></a><span class="lineno"><a class="code" href="group__orx_o_box.html#gadb5a7a411d0213b95613ef31bf0bffed">  288</a></span>&#160;<span class="keyword">static</span> orxINLINE orxBOOL                      <a class="code" href="group__orx_o_box.html#gadb5a7a411d0213b95613ef31bf0bffed">orxOBox_ZAlignedTestIntersection</a>(<span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox1, <span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox2)</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;{</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  <span class="keyword">register</span> orxBOOL bResult;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="comment">/* Checks */</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1 != orxNULL);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox2 != orxNULL);</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> == <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;  <a class="code" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>(_pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &gt;= <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>);</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  <span class="comment">/* Z intersected? */</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="keywordflow">if</span>((_pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> + _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &gt;= _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>)</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  &amp;&amp; (_pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> &lt;= _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a> + _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#af99a5319e9bbaa5463b900895459546c">vZ</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97">fZ</a>))</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    orxU32          i;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>       vOrigin1, vOrigin2, *pvOrigin1 = &amp;vOrigin1, *pvOrigin2 = &amp;vOrigin2, *pvTemp;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keyword">const</span> <a class="code" href="structorx_o_b_o_x.html">orxOBOX</a>  *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="comment">/* Computes boxes origins */</span></div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    vOrigin1.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> - pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545">vPivot</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a>;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    vOrigin1.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = _pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> - pstBox1-&gt;<a class="code" href="structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545">vPivot</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    vOrigin2.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> - pstBox2-&gt;vPivot.fX;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    vOrigin2.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = _pstBox2-&gt;<a class="code" href="structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7">vPosition</a>.<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> - pstBox2-&gt;vPivot.fY;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="comment">/* Test each box against the other */</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordflow">for</span>(i = 2, bResult = <a class="code" href="group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a">orxTRUE</a>;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        i != 0;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        i--, pstTemp = pstBox1, pstBox1 = pstBox2, pstBox2 = pstTemp, pvTemp = pvOrigin1, pvOrigin1 = pvOrigin2, pvOrigin2 = pvTemp)</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    {</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>           vToCorner[4];</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;      <span class="keyword">const</span> <a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *pvAxis;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;      orxU32              j;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;      <span class="comment">/* Gets to-corner vectors */</span></div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = pvOrigin2-&gt;fX - pvOrigin1-&gt;fX;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = pvOrigin2-&gt;fY - pvOrigin1-&gt;fY;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;      vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vX.fX;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;      vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vX.fY;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;      vToCorner[2].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vY.fX;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;      vToCorner[2].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[1].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vY.fY;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;      vToCorner[3].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc">fX</a> + pstBox2-&gt;vY.fX;</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;      vToCorner[3].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> = vToCorner[0].<a class="code" href="structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9">fY</a> + pstBox2-&gt;vY.fY;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;      <span class="comment">/* For both axis */</span></div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;      <span class="keywordflow">for</span>(j = 2, pvAxis = &amp;(pstBox1-&gt;vX);</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;          j != 0;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;          j--, pvAxis++)</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;      {</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        orxFLOAT  fMin, fMax, fProj;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        orxU32    k;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <span class="comment">/* Gets initial projected values */</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        fMin = fMax = fProj = <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(&amp;vToCorner[0], pvAxis);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="comment">/* For all remaining corners */</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="keywordflow">for</span>(k = 1; k &lt; 4; k++)</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        {</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;          <span class="comment">/* Gets projected value */</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;          fProj = <a class="code" href="group__orx_vector.html#ga0d14352e51599167da56d705b97087c6">orxVector_2DDot</a>(&amp;vToCorner[k], pvAxis);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;          <span class="comment">/* Updates extrema */</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;          <span class="keywordflow">if</span>(fProj &gt; fMax)</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;          {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;            fMax = fProj;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;          }</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;          <span class="keywordflow">else</span> <span class="keywordflow">if</span>(fProj &lt; fMin)</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;          {</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            fMin = fProj;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;          }</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        }</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <span class="comment">/* Not intersecting? */</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <span class="keywordflow">if</span>((fMax &lt; <a class="code" href="group__orx_type.html#gad7be3fa68f9c7280e208fc7a65b80e9a">orxFLOAT_0</a>)</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        || (fMin &gt; <a class="code" href="group__orx_vector.html#ga6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a>(pvAxis)))</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;          <span class="comment">/* Updates result */</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;          bResult = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;          <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        }</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;      }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  }</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;  <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  {</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="comment">/* Updates result */</span></div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    bResult = <a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  }</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;  <span class="comment">/* Done! */</span></div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;  <span class="keywordflow">return</span> bResult;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;}</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _orxOBOX_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>
