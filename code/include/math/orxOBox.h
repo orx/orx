@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxOBox
- * 
+ *
  * Oriented box module
  * Module that handles oriented boxes
  *
@@ -251,7 +251,7 @@ static orxINLINE orxBOOL                      orxOBox_IsInside(const orxOBOX *_p
 static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *_pstBox, const orxVECTOR *_pvPosition)
 {
   register orxBOOL bResult = orxFALSE;
-  orxFLOAT            fProj;
+  orxFLOAT            fProj, fSize;
   orxVECTOR           vToPos;
 
   /* Checks */
@@ -263,11 +263,13 @@ static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *
 
   /* X-axis test */
   if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vX))) >= orxFLOAT_0)
-  && (fProj <= orxVector_GetSquareSize(&(_pstBox->vX))))
+  && ((fSize = orxVector_GetSquareSize(&(_pstBox->vX))) > orxFLOAT_0)
+  && (fProj <= fSize))
   {
     /* Y-axis test */
     if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vY))) >= orxFLOAT_0)
-    && (fProj <= orxVector_GetSquareSize(&(_pstBox->vY))))
+    && ((fSize = orxVector_GetSquareSize(&(_pstBox->vY))) > orxFLOAT_0)
+    && (fProj <= fSize))
     {
       /* Updates result */
       bResult = orxTRUE;
