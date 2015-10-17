@@ -97,8 +97,7 @@ either req-ver = cur-ver [
     print ["== Decompressing [" local "] => [" extern "]"]
     wait 0.5
     unzip/quiet temp local
-    wait 0.5
-    rename rejoin [temp load temp] extern
+    until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
     attempt [delete-dir temp]
     print ["== [" req-ver "] installed!"]
 
