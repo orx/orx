@@ -4052,6 +4052,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           /* Generates frame buffer */
           glGenFramebuffers(1, &(sstDisplay.uiFrameBuffer));
           glASSERT();
+
+          /* Clears frame buffer cache */
+          sstDisplay.uiLastFrameBuffer = 0;
         }
 
         /* Has VBO support? */
@@ -4252,6 +4255,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
     glLoadIdentity();
     glASSERT();
+
+    /* Clears cache */
+    sstDisplay.stLastColor          = orx2RGBA(0x00, 0x00, 0x00, 0x00);
+    sstDisplay.iLastViewportX       = 0;
+    sstDisplay.iLastViewportY       = 0;
+    sstDisplay.iLastViewportWidth   = 0;
+    sstDisplay.iLastViewportHeight  = 0;
 
     /* Has VBO support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
@@ -4592,6 +4602,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           }
           else
           {
+            /* Terminates GLFW */
+            glfwTerminate();
+
             /* Frees screen bitmap */
             orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
 

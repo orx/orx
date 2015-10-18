@@ -3979,6 +3979,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
   : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
+  /* Clears cache */
+  sstDisplay.stLastColor          = orx2RGBA(0x00, 0x00, 0x00, 0x00);
+  sstDisplay.iLastViewportX       = 0;
+  sstDisplay.iLastViewportY       = 0;
+  sstDisplay.iLastViewportWidth   = 0;
+  sstDisplay.iLastViewportHeight  = 0;
+
   /* Passes it to shader */
   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
@@ -4180,10 +4187,16 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       else
       {
         /* Deletes banks */
-        orxBank_Delete(sstDisplay.pstBitmapBank);
-        sstDisplay.pstBitmapBank = orxNULL;
-        orxBank_Delete(sstDisplay.pstShaderBank);
-        sstDisplay.pstShaderBank = orxNULL;
+        if(sstDisplay.pstBitmapBank != orxNULL)
+        {
+          orxBank_Delete(sstDisplay.pstBitmapBank);
+          sstDisplay.pstBitmapBank = orxNULL;
+        }
+        if(sstDisplay.pstShaderBank != orxNULL)
+        {
+          orxBank_Delete(sstDisplay.pstShaderBank);
+          sstDisplay.pstShaderBank = orxNULL;
+        }
 
         /* Unregisters update function */
         orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
