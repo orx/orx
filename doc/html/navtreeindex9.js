@@ -1,5 +1,7 @@
 var NAVTREEINDEX9 =
 {
+"group__orx_spawner.html#ga9f821cd2b5583684fea57ecd2c80841d":[1,48,43],
+"group__orx_spawner.html#gaa6fd783070023ab4b65477ded61aac5e":[1,48,48],
 "group__orx_spawner.html#gaa7f0d86452eeff556ff5ec4638381887":[1,48,45],
 "group__orx_spawner.html#gaacc4ba128377d1617c203696cf724332":[1,48,5],
 "group__orx_spawner.html#gab7326aa893f19ace86d9f9f72d66993e":[1,48,32],
@@ -247,7 +249,5 @@ var NAVTREEINDEX9 =
 "group__orx_thread.html#ga2cd157a0a33f4ac0308d3141e7730a9e":[1,54,6],
 "group__orx_thread.html#ga2ce455a4c7ee3057afd787cb6d435451":[1,54,0],
 "group__orx_thread.html#ga3417c93f35516c8b00cf38973bcff158":[1,54,14],
-"group__orx_thread.html#ga369a388efc103482ba95cf1ebba39e75":[1,54,4],
-"group__orx_thread.html#ga482e0f9ff5876f6e9a85575a83486f05":[1,54,7],
-"group__orx_thread.html#ga548739aa3308c7e9fe677a2ace23a940":[1,54,13]
+"group__orx_thread.html#ga369a388efc103482ba95cf1ebba39e75":[1,54,4]
 };
