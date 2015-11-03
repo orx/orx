@@ -2652,12 +2652,20 @@ static orxINLINE void orxObject_DeleteAll()
  */
 static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxBOOL     bDeleted = orxFALSE;
-  orxOBJECT  *pstResult;
+  orxBOOL       bDeleted = orxFALSE;
+  orxU32        u32UpdateFlags;
+  orxSTRUCTURE *pstStructure;
+  orxOBJECT    *pstResult;
+
+  /* Gets object's structure */
+  pstStructure = (orxSTRUCTURE *)_pstObject;
+
+  /* Gets object's enabled, paused and death row flags */
+  u32UpdateFlags = orxFLAG_GET(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_ENABLED | orxOBJECT_KU32_FLAG_PAUSED | orxOBJECT_KU32_FLAG_DEATH_ROW);
 
   /* Is object enabled and not paused or in death row? */
-  if((orxObject_IsEnabled(_pstObject) != orxFALSE) && (orxObject_IsPaused(_pstObject) == orxFALSE)
-  || (orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW)))
+  if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
+  || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
     orxU32                i;
     orxCLOCK             *pstClock;
@@ -2682,7 +2690,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     _pstObject->fActiveTime += pstClockInfo->fDT;
 
     /* Has life time? */
-    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
+    if(orxFLAG_TEST(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
     {
       /* Updates its life time */
       _pstObject->fLifeTime -= pstClockInfo->fDT;
@@ -2762,13 +2770,13 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
         else
         {
           /* Should detach? */
-          if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD))
+          if(orxFLAG_TEST(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD))
           {
             /* Detaches it */
             orxObject_Detach(_pstObject);
 
             /* Updates status */
-            orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
+            orxFLAG_SET(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
           }
         }
       }
@@ -7613,12 +7621,12 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
     _pstObject->fLifeTime = _fLifeTime;
 
     /* Updates status */
-    orxStructure_SetFlags(_pstObject, (_fLifeTime == orxFLOAT_0) ? orxOBJECT_KU32_FLAG_HAS_LIFETIME|orxOBJECT_KU32_FLAG_DEATH_ROW : orxOBJECT_KU32_FLAG_HAS_LIFETIME, orxOBJECT_KU32_FLAG_DEATH_ROW);
+    orxStructure_SetFlags(_pstObject, (_fLifeTime == orxFLOAT_0) ? orxOBJECT_KU32_FLAG_HAS_LIFETIME | orxOBJECT_KU32_FLAG_DEATH_ROW : orxOBJECT_KU32_FLAG_HAS_LIFETIME, orxOBJECT_KU32_FLAG_DEATH_ROW);
   }
   else
   {
     /* Updates status */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME|orxOBJECT_KU32_FLAG_DEATH_ROW);
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME | orxOBJECT_KU32_FLAG_DEATH_ROW);
   }
 
   /* Done! */
