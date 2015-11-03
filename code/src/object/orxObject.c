@@ -75,6 +75,7 @@
 #define orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN  0x04000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
 #define orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD  0x00100000  /**< Detach joint child flag */
+#define orxOBJECT_KU32_FLAG_DEATH_ROW           0x00200000  /**< Death row flag */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -278,9 +279,6 @@ void orxFASTCALL orxObject_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     /* Marks it for deletion */
     orxObject_SetLifeTime(pstObject, orxFLOAT_0);
-
-    /* Makes sure it's enabled */
-    orxObject_Enable(pstObject, orxTRUE);
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2657,8 +2655,9 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   orxBOOL     bDeleted = orxFALSE;
   orxOBJECT  *pstResult;
 
-  /* Is object enabled and not paused? */
-  if((orxObject_IsEnabled(_pstObject) != orxFALSE) && (orxObject_IsPaused(_pstObject) == orxFALSE))
+  /* Is object enabled and not paused or in death row? */
+  if((orxObject_IsEnabled(_pstObject) != orxFALSE) && (orxObject_IsPaused(_pstObject) == orxFALSE)
+  || (orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW)))
   {
     orxU32                i;
     orxCLOCK             *pstClock;
@@ -3079,9 +3078,6 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
           pstChild != orxNULL;
           pstChild = _pstObject->pstChild)
       {
-        /* Reenables it for immediate deletion */
-        orxObject_Enable(pstChild, orxTRUE);
-
         /* Removes its owner */
         orxObject_SetOwner(pstChild, orxNULL);
 
@@ -7617,12 +7613,12 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
     _pstObject->fLifeTime = _fLifeTime;
 
     /* Updates status */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME, orxOBJECT_KU32_FLAG_NONE);
+    orxStructure_SetFlags(_pstObject, (_fLifeTime == orxFLOAT_0) ? orxOBJECT_KU32_FLAG_HAS_LIFETIME|orxOBJECT_KU32_FLAG_DEATH_ROW : orxOBJECT_KU32_FLAG_HAS_LIFETIME, orxOBJECT_KU32_FLAG_DEATH_ROW);
   }
   else
   {
     /* Updates status */
-    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME);
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME|orxOBJECT_KU32_FLAG_DEATH_ROW);
   }
 
   /* Done! */
