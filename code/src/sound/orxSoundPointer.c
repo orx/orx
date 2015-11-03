@@ -615,6 +615,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Play(orxSOUNDPOINTER *_pstSoundPointer)
     {
       /* Plays it */
       orxSound_Play(pstSound);
+
+      /* Delegates update to the sound */
+      orxStructure_Update(pstSound, orxStructure_GetOwner(_pstSoundPointer), orxNULL);
     }
   }
 
@@ -687,6 +690,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer)
 
       /* Stops it */
       orxSound_Stop(pstSound);
+
+      /* Delegates update to the sound */
+      orxStructure_Update(pstSound, orxStructure_GetOwner(_pstSoundPointer), orxNULL);
     }
   }
 

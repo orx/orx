@@ -663,7 +663,6 @@ orxSTATUS orxFASTCALL orxStructure_Update(void *_pStructure, const void *_pCalle
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(_pstClockInfo != orxNULL);
 
   /* Gets structure ID */
   u32ID = orxStructure_GetID(_pStructure);
