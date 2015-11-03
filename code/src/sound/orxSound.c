@@ -113,7 +113,8 @@ struct __orxSOUND_t
   const orxSTRING       zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
   orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
-  orxFLOAT              fPitch;                         /**< Sound pitch : 32 */
+  orxSOUND_STATUS       eStatus;                        /**< Sound status : 32 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 36 */
 };
 
 /** Static structure
@@ -714,11 +715,11 @@ static orxINLINE void orxSound_DeleteAll()
  */
 static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxVECTOR   vPosition;
-  orxFLOAT    fPitchCoef;
-  orxSOUND   *pstSound;
-  orxOBJECT  *pstObject;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxVECTOR       vPosition;
+  orxSOUND       *pstSound;
+  orxOBJECT      *pstObject;
+  orxSOUND_STATUS eNewStatus;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSound_Update");
@@ -732,17 +733,66 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   /* Gets calling object */
   pstObject = orxOBJECT(_pstCaller);
 
-  /* Gets pitch coef */
-  fPitchCoef = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
-
   /* Gets sound */
   pstSound = orxSOUND(_pstStructure);
 
   /* Updates its position */
   orxSoundSystem_SetPosition(pstSound->pstData, orxObject_GetWorldPosition(pstObject, &vPosition));
 
-  /* Updates its pitch */
-  orxSoundSystem_SetPitch(pstSound->pstData, pstSound->fPitch * fPitchCoef);
+  /* Has clock? */
+  if(_pstClockInfo != orxNULL)
+  {
+    orxFLOAT fPitchCoef;
+
+    /* Gets pitch coef */
+    fPitchCoef = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
+
+    /* Updates its pitch */
+    orxSoundSystem_SetPitch(pstSound->pstData, pstSound->fPitch * fPitchCoef);
+  }
+
+  /* Gets new status */
+  eNewStatus = orxSound_GetStatus(pstSound);
+
+  /* Changed? */
+  if(eNewStatus != pstSound->eStatus)
+  {
+    /* Stores new status */
+    pstSound->eStatus = eNewStatus;
+
+    /* Depending on status */
+    switch(eNewStatus)
+    {
+      orxSOUND_EVENT_PAYLOAD stPayload;
+
+      case orxSOUND_STATUS_PLAY:
+      {
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+        stPayload.pstSound = pstSound;
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstObject, pstObject, &stPayload);
+
+        break;
+      }
+      case orxSOUND_STATUS_STOP:
+      {
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+        stPayload.pstSound = pstSound;
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstObject, pstObject, &stPayload);
+
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -898,6 +948,9 @@ orxSOUND *orxFASTCALL orxSound_Create()
   {
     /* Increases counter */
     orxStructure_IncreaseCounter(pstResult);
+
+    /* Clears its status */
+    pstResult->eStatus = orxSOUND_STATUS_NONE;
   }
   else
   {
