@@ -110,7 +110,7 @@ static orxTEXT_STATIC sstText;
  * @param[in]   _zProperty  Property to get
  * @return      orxSTRING / orxNULL
  */
-static orxINLINE const orxSTRING orxText_GetLocalKey(const orxTEXT *_pstText, const orxSTRING _zProperty)
+static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText, const orxSTRING _zProperty)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -192,7 +192,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't set font (%s) for text (%s).", zName, _pstText->zReference);
 
         /* Sets default font */
-        orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont())); 
+        orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
       }
     }
     else
@@ -201,13 +201,13 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create font (%s) for text (%s).", zName, _pstText->zReference);
 
       /* Sets default font */
-      orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont())); 
+      orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
     }
   }
   else
   {
     /* Sets default font */
-    orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont())); 
+    orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
   }
 
   /* Gets its string */
@@ -253,28 +253,37 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           pstText != orxNULL;
           pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        const orxSTRING zLocaleValue;
+        const orxSTRING zLocaleKey;
 
         /* Gets its corresponding locale string */
-        zLocaleValue = orxText_GetLocalKey(pstText, orxTEXT_KZ_CONFIG_STRING);
+        zLocaleKey = orxText_GetLocaleKey(pstText, orxTEXT_KZ_CONFIG_STRING);
 
         /* Valid? */
-        if(zLocaleValue != orxNULL)
+        if(zLocaleKey != orxNULL)
         {
-          /* Updates text */
-          orxText_SetString(pstText, orxLocale_GetString(zLocaleValue));
+          const orxSTRING zText;
+
+          /* Gets its localized value */
+          zText = orxLocale_GetString(zLocaleKey);
+
+          /* Valid? */
+          if(*zText != orxCHAR_NULL)
+          {
+            /* Updates text */
+            orxText_SetString(pstText, zText);
+          }
         }
 
         /* Gets its corresponding locale font */
-        zLocaleValue = orxText_GetLocalKey(pstText, orxTEXT_KZ_CONFIG_FONT);
+        zLocaleKey = orxText_GetLocaleKey(pstText, orxTEXT_KZ_CONFIG_FONT);
 
         /* Valid? */
-        if(zLocaleValue != orxNULL)
+        if(zLocaleKey != orxNULL)
         {
           orxFONT *pstFont;
 
           /* Creates font */
-          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleValue));
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey));
 
           /* Valid? */
           if(pstFont != orxNULL)
@@ -291,13 +300,8 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             else
             {
               /* Sets default font */
-              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont())); 
+              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
             }
-          }
-          else
-          {
-            /* Sets default font */
-            orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont())); 
           }
         }
       }
@@ -349,7 +353,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstText);
-  
+
   /* Has string and font? */
   if((_pstText->zString != orxNULL) && (_pstText->zString != orxSTRING_EMPTY) && (_pstText->pstFont != orxNULL))
   {
@@ -721,7 +725,7 @@ const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
   return zResult;
 }
 
-/** Gets text string 
+/** Gets text string
  * @param[in]   _pstText      Concerned text
  * @return      Text string / orxSTRING_EMPTY
  */
@@ -768,7 +772,7 @@ orxFONT *orxFASTCALL orxText_GetFont(const orxTEXT *_pstText)
   return pstResult;
 }
 
-/** Sets text string 
+/** Sets text string
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zString      String to contain
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
