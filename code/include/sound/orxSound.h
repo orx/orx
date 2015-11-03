@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxSound
- * 
+ *
  * Sound module
  * Module that handles sound
  *
@@ -80,6 +80,8 @@ typedef enum __orxSOUND_EVENT_t
 {
   orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
   orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
+  orxSOUND_EVENT_ADD,                         /**< Event sent when a sound is added */
+  orxSOUND_EVENT_REMOVE,                      /**< Event sent when a sound is removed */
   orxSOUND_EVENT_PACKET,                      /**< Event sent when a sound packet is streamed. IMPORTANT: this event can be sent from a worker thread, do not call any orx API when handling it */
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
@@ -116,14 +118,13 @@ typedef struct __orxSOUND_STREAM_PACKET_t
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  const orxSTRING               zSoundName;   /**< Sound name : 4 */
-
   union
   {
-    orxSOUND                   *pstSound;     /**< Sound reference : 8 */
+    orxSOUND                   *pstSound;     /**< Sound reference : 4 */
 
     struct
     {
+      const orxSTRING           zSoundName;   /**< Sound name : 4 */
       orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
       orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
     } stStream;

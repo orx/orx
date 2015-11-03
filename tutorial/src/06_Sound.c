@@ -91,18 +91,18 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   /* Depending on event type */
   switch(_pstEvent->eID)
   {
-    case orxSOUND_EVENT_START:
+    case orxSOUND_EVENT_ADD:
     {
       /* Logs info */
-      orxLOG("Sound <%s>@<%s> has started!", pstPayload->zSoundName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      orxLOG("Sound [%s]@[%s] was added!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }
 
-    case orxSOUND_EVENT_STOP:
+    case orxSOUND_EVENT_REMOVE:
     {
       /* Logs info */
-      orxLOG("Sound <%s>@<%s> has stopped!", pstPayload->zSoundName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      orxLOG("Sound [%s]@[%s] was removed!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }

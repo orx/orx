@@ -802,11 +802,10 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-    stPayload.pstSound    = _pstSound;
-    stPayload.zSoundName  = orxSound_GetName(_pstSound);
+    stPayload.pstSound = _pstSound;
 
     /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstOwner, pstOwner, &stPayload);
+    orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_ADD, pstOwner, pstOwner, &stPayload);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -861,14 +860,13 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-        stPayload.pstSound    = pstSound;
-        stPayload.zSoundName  = orxSound_GetName(pstSound);
+        stPayload.pstSound = pstSound;
 
         /* Gets owner */
         pstOwner = orxStructure_GetOwner(_pstSoundPointer);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstOwner, pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstSound);
@@ -934,14 +932,13 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSound
 
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-      stPayload.pstSound    = pstSound;
-      stPayload.zSoundName  = orxSound_GetName(pstSound);
+      stPayload.pstSound = pstSound;
 
       /* Gets owner */
       pstOwner = orxStructure_GetOwner(_pstSoundPointer);
 
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstOwner, pstOwner, &stPayload);
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
       /* Decreases its reference counter */
       orxStructure_DecreaseCounter(pstSound);
@@ -1078,11 +1075,10 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
 
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-      stPayload.pstSound    = pstSound;
-      stPayload.zSoundName  = orxSound_GetName(pstSound);
+      stPayload.pstSound = pstSound;
 
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstOwner, pstOwner, &stPayload);
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_ADD, pstOwner, pstOwner, &stPayload);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -1149,14 +1145,13 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
 
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-        stPayload.pstSound    = pstSound;
-        stPayload.zSoundName  = orxSound_GetName(pstSound);
+        stPayload.pstSound = pstSound;
 
         /* Gets owner */
         pstOwner = orxStructure_GetOwner(_pstSoundPointer);
 
         /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstOwner, pstOwner, &stPayload);
+        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstSound);
