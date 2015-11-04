@@ -41,7 +41,7 @@
   #ifdef __orxMSVC__
     #pragma message("!!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of GLFW!")
   #else /* __orxMSVC__ */
-    #warning !!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of SDL!
+    #warning !!WARNING!! This plugin will only work in non-embedded mode when linked against a *DYNAMIC* version of GLFW!
   #endif /* __orxMSVC__ */
 #endif /* __orxEMBEDDED__ */
 

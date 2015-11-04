@@ -473,11 +473,13 @@ project "orxLIB"
         configuration {}
     end
 
+    links {"webpdecoder"}
+
     configuration {"*Debug*"}
-        links {"Box2Dd", "webpdecoder"}
+        links {"Box2Dd"}
 
     configuration {"not *Debug*"}
-        links {"Box2D", "webpdecoder"}
+        links {"Box2D"}
 
 
 -- Linux

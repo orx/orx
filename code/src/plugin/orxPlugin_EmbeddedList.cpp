@@ -73,28 +73,6 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
-/* SFML (bad/incomplete shader support, no rendering to texture) & Box2D */
-//#include "../plugins/Display/SFML/orxDisplay.cpp"
-//#include "../plugins/Joystick/SFML/orxJoystick.cpp"
-//#include "../plugins/Keyboard/SFML/orxKeyboard.cpp"
-//#include "../plugins/Mouse/SFML/orxMouse.cpp"
-//#include "../plugins/Physics/Box2D/orxPhysics.cpp"
-//#include "../plugins/Render/Home/orxRender.c"
-//#include "../plugins/Sound/SFML/orxSoundSystem.cpp"
-
-#ifndef __orxMAC__
-
-/* SDL (no mac support, no rendering to texture, not optimized, deprecated), Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
-//#include "../plugins/Display/SDL/orxDisplay.c"
-//#include "../plugins/Joystick/SDL/orxJoystick.c"
-//#include "../plugins/Keyboard/SDL/orxKeyboard.c"
-//#include "../plugins/Mouse/SDL/orxMouse.c"
-//#include "../plugins/Physics/Box2D/orxPhysics.cpp"
-//#include "../plugins/Render/Home/orxRender.c"
-//#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
-
-#endif /* !__orxMAC__ */
-
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxEMBEDDED__ */
