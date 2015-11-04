@@ -30,33 +30,15 @@ function islinux64 ()
 end
 
 function initconfigurations ()
-    if os.is ("macosx") then
-        return
-        {
-            "Embedded Dynamic Debug",
-            "Embedded Dynamic Profile",
-            "Embedded Dynamic Release",
-            "Dynamic Debug",
-            "Dynamic Profile",
-            "Dynamic Release"
-        }
-    else
-        return
-        {
-            "Embedded Dynamic Debug",
-            "Embedded Dynamic Profile",
-            "Embedded Dynamic Release",
-            "Embedded Static Debug",
-            "Embedded Static Profile",
-            "Embedded Static Release",
-            "Dynamic Debug",
-            "Dynamic Profile",
-            "Dynamic Release",
-            "Static Debug",
-            "Static Profile",
-            "Static Release"
-        }
-    end
+    return
+    {
+        "Debug",
+        "Profile",
+        "Release",
+        "Core Debug",
+        "Core Profile",
+        "Core Release"
+    }
 end
 
 function initplatforms ()
@@ -351,14 +333,8 @@ project "orx"
 
     links {"orxLIB"}
 
-    configuration {"*Static*"}
+    configuration {"not xcode*", "*Core*"}
         defines {"__orxSTATIC__"}
-
-    configuration {"*Static*", "*Debug*"}
-        links {"Box2Dd", "webpdecoder"}
-
-    configuration {"*Static*", "not *Debug*"}
-        links {"Box2D", "webpdecoder"}
 
 
 -- Linux
@@ -366,16 +342,10 @@ project "orx"
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
 
-    configuration {"linux", "*Static*"}
+    configuration {"linux", "*Core*"}
         linkoptions {"-Wl,--no-whole-archive"}
         links
         {
-            "glfw",
-            "openal",
-            "sndfile",
-            "GL",
-            "X11",
-            "Xrandr",
             "dl",
             "m",
             "rt",
@@ -389,36 +359,26 @@ project "orx"
 
 -- Mac OS X
 
-    configuration {"macosx", "*Static*"}
+    configuration {"macosx", "not xcode*", "*Core*"}
         links
         {
             "Foundation.framework",
             "IOKit.framework",
             "AppKit.framework",
-            "glfw",
-            "sndfile",
-            "pthread",
-            "OpenAL.framework",
-            "OpenGL.framework"
+            "pthread"
         }
 
 
 -- Windows
 
-    configuration {"windows", "*Static*"}
+    configuration {"windows", "*Core*"}
         implibdir ("../lib/static")
         implibname ("imporx")
         implibextension (".lib")
         links
         {
-            "glfw",
-            "openal32",
-            "winmm",
-            "sndfile"
+            "winmm"
         }
-
-    configuration {"windows", "vs*", "*Static*"}
-        links {"OpenGL32"}
 
 
 --
@@ -438,7 +398,7 @@ project "orxLIB"
 
     targetname ("orx")
 
-    configuration {"*Embedded*"}
+    configuration {"not *Core*"}
         defines
         {
             "__orxEMBEDDED__",
@@ -449,31 +409,32 @@ project "orxLIB"
     configuration {"codelite"}
         kind ("StaticLib")
 
-    configuration {"*Static*"}
-        targetdir ("../lib/static")
-        kind ("StaticLib")
-
-    configuration {"*Dynamic*"}
+    configuration {}
         targetdir ("../lib/dynamic")
         kind ("SharedLib")
 
+    configuration {"not xcode*", "*Core*"}
+        targetdir ("../lib/static")
+        kind ("StaticLib")
+
     if _OPTIONS["split-platforms"] then
-        configuration {"*Static*", "x32"}
+        configuration {"x32"}
+        targetdir ("../lib/dynamic/x32")
+
+        configuration {"not xcode*", "*Core*", "x32"}
             targetdir ("../lib/static/x32")
 
-        configuration {"*Dynamic*", "x32"}
-            targetdir ("../lib/dynamic/x32")
+        configuration {"x64"}
+        targetdir ("../lib/dynamic/x64")
 
-        configuration {"*Static*", "x64"}
+        configuration {"not xcode*", "*Core*", "x64"}
             targetdir ("../lib/static/x64")
-
-        configuration {"*Dynamic*", "x64"}
-            targetdir ("../lib/dynamic/x64")
 
         configuration {}
     end
 
-    links {"webpdecoder"}
+    configuration {}
+        links {"webpdecoder"}
 
     configuration {"*Debug*"}
         links {"Box2Dd"}
@@ -500,22 +461,22 @@ project "orxLIB"
         }
         defines {"_GNU_SOURCE"}
 
-    configuration {"linux", "*Static*"}
+    configuration {"linux", "*Core*"}
         buildoptions {"-fPIC"}
 
     if _OPTIONS["split-platforms"] then
-        configuration {"linux", "*Dynamic*", "x32"}
+        configuration {"linux", "not *Core*", "x32"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.so " .. copybase .. "/bin/x32"}
 
-        configuration {"linux", "*Dynamic*", "x64"}
+        configuration {"linux", "not *Core*", "x64"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.so " .. copybase .. "/bin/x64"}
 
-        configuration {"linux", "*Dynamic*", "not x32", "not x64"}
+        configuration {"linux", "not *Core*", "not x32", "not x64"}
             postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
         configuration {}
     else
-        configuration {"linux", "*Dynamic*"}
+        configuration {"linux", "not *Core*"}
             postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
     end
 
@@ -548,18 +509,27 @@ project "orxLIB"
         linkoptions {"-install_name @executable_path/liborx.dylib"}
 
     if _OPTIONS["split-platforms"] then
-        configuration {"macosx", "*Dynamic*", "x32"}
+        configuration {"macosx", "xcode*", "x32"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
 
-        configuration {"macosx", "*Dynamic*", "x64"}
+        configuration {"macosx", "not xcode*", "not *Core*", "x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
+
+        configuration {"macosx", "xcode*", "x64"}
             postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.dylib " .. copybase .. "/bin/x64"}
 
-        configuration {"macosx", "*Dynamic*", "not x32", "not x64"}
+        configuration {"macosx", "not xcode*", "not *Core*", "x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.dylib " .. copybase .. "/bin/x64"}
+
+        configuration {"macosx", "xcode*", "not x32", "not x64"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+
+        configuration {"macosx", "not xcode*", "not *Core*", "not x32", "not x64"}
             postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
         configuration {}
     else
-        configuration {"macosx", "*Dynamic*"}
+        configuration {"macosx", "xcode*"}
             postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
     end
 
@@ -581,7 +551,7 @@ project "orxLIB"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
 
-    configuration {"windows", "*Dynamic*"}
+    configuration {"windows", "not *Core*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
@@ -630,12 +600,12 @@ project "Bounce"
 
 -- Windows
 
-    configuration {"windows", "*Static*"}
+    configuration {"windows", "*Core*"}
         libdirs {"../lib/static"}
 
-    configuration {"windows", "*Static*", "*Debug*"}
+    configuration {"windows", "*Core*", "*Debug*"}
         links {"imporxd"}
-    configuration {"windows", "*Static*", "*Profile*"}
+    configuration {"windows", "*Core*", "*Profile*"}
         links {"imporxp"}
-    configuration {"windows", "*Static*", "*Release*"}
+    configuration {"windows", "*Core*", "*Release*"}
         links {"imporx"}
