@@ -445,7 +445,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
         /* Stores recording name */
-        stPayload.zSoundName = _pstSound->zReference;
+        stPayload.stStream.zSoundName = _pstSound->zReference;
 
         /* Stores stream info */
         stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stData.stInfo.u32SampleRate;
