@@ -16,3 +16,7 @@ end_of_line               = lf
 
 [*.r]
 indent_size               = 4
+
+[*.sh]
+indent_size               = 4
+end_of_line               = lf

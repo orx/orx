@@ -8,4 +8,4 @@ else
     REBOL=code/build/rebol/r3-linux
 fi
 
-${REBOL} code/build/rebol/setup.r
+${REBOL} code/build/rebol/setup.r "$@"

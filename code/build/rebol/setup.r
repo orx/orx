@@ -27,6 +27,7 @@ platform-data:  [
 
 ; Inits
 begin: now/time
+skip-hook: false
 platform: lowercase to-string system/platform/1
 if platform = "macintosh" [platform: "mac"]
 platform-info: platform-data/:platform
@@ -64,9 +65,10 @@ either req-ver = cur-ver [
     print ["== [" req-ver "] needed, current [" cur-ver "]"]
 
 
-    ; Updates host
+    ; Updates cache
     if system/options/args [
-        host: to-url system/options/args/1
+        print ["== Overriding cache [" cache "] => [" cache: dirize to-file system/options/args/1 "]"]
+        skip-hook: true
     ]
 
 
@@ -137,27 +139,31 @@ print ["== You can now build orx in [" builds/code/:platform "]"]
 
 ; Mercurial hook
 if exists? hg [
-    hgrc: rejoin [hg platform-info/hgrc]
-    hgrc-file: to-string read hgrc
-
-    either find hgrc-file hg-hook [
-        print "== Mercurial hook already installed"
+    either skip-hook [
+        print "== Skipping Mercurial hook installation"
     ] [
-        print "== Installing mercurial hook"
-        write hgrc append hgrc-file rejoin [
-            newline
-            "[hooks]"
-            newline
-            hg-hook
-            " = "
-            to-local-file either hook-rel: find/tail system/options/boot system/options/home [
-                hook-rel
-            ] [
-                system/options/boot
+        hgrc: rejoin [hg platform-info/hgrc]
+        hgrc-file: to-string read hgrc
+
+        either find hgrc-file hg-hook [
+            print "== Mercurial hook already installed"
+        ] [
+            print "== Installing mercurial hook"
+            write hgrc append hgrc-file rejoin [
+                newline
+                "[hooks]"
+                newline
+                hg-hook
+                " = "
+                to-local-file either hook-rel: find/tail system/options/boot system/options/home [
+                    hook-rel
+                ] [
+                    system/options/boot
+                ]
+                " "
+                system/options/script
+                newline
             ]
-            " "
-            system/options/script
-            newline
         ]
     ]
 ]
@@ -165,44 +171,48 @@ if exists? hg [
 
 ; Git hooks
 if exists? git [
-    foreach hook git-hooks [
-        hook-content: rejoin [
-            newline
-            either hook-rel: find/tail system/options/boot system/options/home [
-                hook-rel
-            ] [
-                system/options/boot
-            ]
-            " "
-            system/options/script
-            newline
-        ]
-        hook-path: git/hooks/:hook
-        either all [
-            exists? hook-path
-            not empty? read hook-path
-        ] [
-            hook-file: either find hook-file: to-string read hook-path system/options/script [
-                none
-            ] [
-                append hook-file hook-content
-            ]
-        ] [
-            hook-file: rejoin [
-                "#!/bin/sh"
+    either skip-hook [
+        print "== Skipping Git hook installation"
+    ] [
+        foreach hook git-hooks [
+            hook-content: rejoin [
                 newline
-                hook-content
+                either hook-rel: find/tail system/options/boot system/options/home [
+                    hook-rel
+                ] [
+                    system/options/boot
+                ]
+                " "
+                system/options/script
+                newline
             ]
-        ]
+            hook-path: git/hooks/:hook
+            either all [
+                exists? hook-path
+                not empty? read hook-path
+            ] [
+                hook-file: either find hook-file: to-string read hook-path system/options/script [
+                    none
+                ] [
+                    append hook-file hook-content
+                ]
+            ] [
+                hook-file: rejoin [
+                    "#!/bin/sh"
+                    newline
+                    hook-content
+                ]
+            ]
 
-        either hook-file [
-            print ["== Installing git hook [" hook "]"]
-            write hook-path hook-file
-            if not platform = "windows" [
-                call reform ["chmod +x" hook-path]
+            either hook-file [
+                print ["== Installing git hook [" hook "]"]
+                write hook-path hook-file
+                if not platform = "windows" [
+                    call reform ["chmod +x" hook-path]
+                ]
+            ] [
+                print ["== Git hook [" hook "] already installed"]
             ]
-        ] [
-            print ["== Git hook [" hook "] already installed"]
         ]
     ]
 ]
