@@ -706,6 +706,7 @@ var searchData=
   ['orxobject_5fgetspeed',['orxObject_GetSpeed',['../group__orx_object.html#ga98fb27718a387312368073241f7de424',1,'orxObject.h']]],
   ['orxobject_5fgettextstring',['orxObject_GetTextString',['../group__orx_object.html#ga72185092787846d790ebb9e2d91daffc',1,'orxObject.h']]],
   ['orxobject_5fgetuserdata',['orxObject_GetUserData',['../group__orx_object.html#ga06c9691b77444ab8dcb70fc809405a02',1,'orxObject.h']]],
+  ['orxobject_5fgetworkinggraphic',['orxObject_GetWorkingGraphic',['../group__orx_object.html#gaf71f917729e3e311a59b4cd3ef5a54bd',1,'orxObject.h']]],
   ['orxobject_5fgetworkingtexture',['orxObject_GetWorkingTexture',['../group__orx_object.html#ga3ae56cd449d690621f6062d044dbd9de',1,'orxObject.h']]],
   ['orxobject_5fgetworldposition',['orxObject_GetWorldPosition',['../group__orx_object.html#ga7588acf1390e57c8915dc84aecb8f37a',1,'orxObject.h']]],
   ['orxobject_5fgetworldrotation',['orxObject_GetWorldRotation',['../group__orx_object.html#ga36e3983274c47c012a7043856e8160ef',1,'orxObject.h']]],

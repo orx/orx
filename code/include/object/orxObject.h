@@ -49,8 +49,9 @@
 
 #include "anim/orxAnimSet.h"
 #include "core/orxClock.h"
-#include "display/orxTexture.h"
 #include "display/orxDisplay.h"
+#include "display/orxGraphic.h"
+#include "display/orxTexture.h"
 #include "math/orxOBox.h"
 #include "memory/orxBank.h"
 #include "object/orxStructure.h"
@@ -817,6 +818,12 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const or
 
 /** @name graphic
  * @{ */
+/** Gets object working graphic
+ * @param[in]   _pstObject     Concerned object
+ * @return orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL    orxObject_GetWorkingGraphic(const orxOBJECT *_pstObject);
+
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
