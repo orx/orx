@@ -1,5 +1,6 @@
 var NAVTREEINDEX11 =
 {
+"orx_anim_8h.html#ga4d651010d0c8cff85aa5c641a16f0097":[3,0,0,0,0,6],
 "orx_anim_8h.html#ga4ea007379c0c16774e2c7db73d68964f":[3,0,0,0,0,3],
 "orx_anim_8h.html#ga4f50f36eafa77217a827b5d6f4e1705e":[3,0,0,0,0,8],
 "orx_anim_8h.html#ga507824bc2f1f7ca266b505503f0a5177":[3,0,0,0,0,24],
@@ -248,6 +249,5 @@ var NAVTREEINDEX11 =
 "orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791daddd9902df89d032e193f2de1c8da0c0f":[3,0,0,2,0,5,3],
 "orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7a6c31ce89039d103b99a6ba57c8c24282":[3,0,0,2,0,8,1],
 "orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7a789ac9e1f4746dfa1ec2b03cf0bbe2cb":[3,0,0,2,0,8,3],
-"orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7aadbaec96d1f059b7735e9bab3b1e3d52":[3,0,0,2,0,8,2],
-"orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7ab1f10735dae8ed95572b041836f98744":[3,0,0,2,0,8,4]
+"orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7aadbaec96d1f059b7735e9bab3b1e3d52":[3,0,0,2,0,8,2]
 };
