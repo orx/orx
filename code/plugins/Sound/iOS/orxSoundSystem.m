@@ -211,10 +211,10 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
   orxSTATUS                   eResult;
 
   /* Gets file name's length */
-  u32Length = orxString_GetLength(sstSoundSystem.stRecordingPayload.zSoundName);
+  u32Length = orxString_GetLength(sstSoundSystem.stRecordingPayload.stStream.zSoundName);
 
   /* Gets extension */
-  zExtension = (u32Length > 4) ? sstSoundSystem.stRecordingPayload.zSoundName + u32Length - 4 : orxSTRING_EMPTY;
+  zExtension = (u32Length > 4) ? sstSoundSystem.stRecordingPayload.stStream.zSoundName + u32Length - 4 : orxSTRING_EMPTY;
 
   /* WAV? */
   if(orxString_ICompare(zExtension, ".wav") == 0)
@@ -272,7 +272,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
   }
 
   /* Gets NSString */
-  poName = [NSString stringWithCString:sstSoundSystem.stRecordingPayload.zSoundName encoding:NSUTF8StringEncoding];
+  poName = [NSString stringWithCString:sstSoundSystem.stRecordingPayload.stStream.zSoundName encoding:NSUTF8StringEncoding];
 
   /* Gets associated URL */
   poURL = [NSURL fileURLWithPath:poName];
@@ -305,7 +305,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_iOS_OpenRecordingFile()
     eResult = orxSTATUS_FAILURE;
 
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data. Sound recording is still in progress.", sstSoundSystem.stRecordingPayload.zSoundName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data. Sound recording is still in progress.", sstSoundSystem.stRecordingPayload.stStream.zSoundName);
   }
 
   /* Done! */
@@ -675,7 +675,7 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
         /* Stores recording name */
-        stPayload.zSoundName = _pstSound->zReference;
+        stPayload.stStream.zSoundName = _pstSound->zReference;
 
         /* Stores stream info */
         stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stData.stInfo.u32SampleRate;
@@ -2031,7 +2031,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_StartRecording(const orxSTRING _zName, 
       orxMemory_Zero(&(sstSoundSystem.stRecordingPayload), sizeof(orxSOUND_EVENT_PAYLOAD));
 
       /* Stores recording name */
-      sstSoundSystem.stRecordingPayload.zSoundName = orxString_Duplicate(_zName);
+      sstSoundSystem.stRecordingPayload.stStream.zSoundName = orxString_Duplicate(_zName);
 
       /* Stores stream info */
       sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate    = (_u32SampleRate > 0) ? _u32SampleRate : orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY;
@@ -2108,7 +2108,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_StartRecording(const orxSTRING _zName, 
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s> as the recording of <%s> is still in progress.", _zName, sstSoundSystem.stRecordingPayload.zSoundName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s> as the recording of <%s> is still in progress.", _zName, sstSoundSystem.stRecordingPayload.stStream.zSoundName);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2157,8 +2157,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_StopRecording()
     orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_STOP, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
 
     /* Deletes name */
-    orxString_Delete((orxSTRING)sstSoundSystem.stRecordingPayload.zSoundName);
-    sstSoundSystem.stRecordingPayload.zSoundName = orxNULL;
+    orxString_Delete((orxSTRING)sstSoundSystem.stRecordingPayload.stStream.zSoundName);
+    sstSoundSystem.stRecordingPayload.stStream.zSoundName = orxNULL;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
