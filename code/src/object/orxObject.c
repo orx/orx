@@ -39,7 +39,6 @@
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "anim/orxAnimPointer.h"
-#include "display/orxGraphic.h"
 #include "display/orxText.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
@@ -7266,16 +7265,59 @@ orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObj
   return eResult;
 }
 
+/** Gets object working texture
+ * @param[in]   _pstObject     Concerned object
+ * @return orxTEXTURE / orxNULL
+ */
 orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
 {
   orxGRAPHIC *pstGraphic;
   orxTEXTURE *pstResult = orxNULL;
 
-  /* Gets its graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstObject), GRAPHIC);
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its working graphic */
+  pstGraphic = orxObject_GetWorkingGraphic(_pstObject);
 
   /* Valid? */
   if(pstGraphic != orxNULL)
+  {
+    /* Text? */
+    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+    {
+      /* Updates result */
+      pstResult = orxFont_GetTexture(orxText_GetFont(orxTEXT(orxGraphic_GetData(pstGraphic))));
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets object working graphic
+ * @param[in]   _pstObject     Concerned object
+ * @return orxGRAPHIC / orxNULL
+ */
+orxGRAPHIC *orxFASTCALL orxObject_GetWorkingGraphic(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its graphic */
+  pstResult = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstObject), GRAPHIC);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
     orxANIMPOINTER *pstAnimPointer;
 
@@ -7293,21 +7335,9 @@ orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
       /* Valid? */
       if(pstTemp != orxNULL)
       {
-        /* Uses it */
-        pstGraphic = pstTemp;
+        /* Updates result */
+        pstResult = pstTemp;
       }
-    }
-
-    /* Text? */
-    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
-    {
-      /* Updates result */
-      pstResult = orxFont_GetTexture(orxText_GetFont(orxTEXT(orxGraphic_GetData(pstGraphic))));
-    }
-    else
-    {
-      /* Updates result */
-      pstResult = orxTEXTURE(orxGraphic_GetData(pstGraphic));
     }
   }
 
