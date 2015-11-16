@@ -86,6 +86,7 @@
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
 #define orxCONFIG_KU32_BUFFER_SIZE                8192        /**< Buffer size */
+#define orxCONFIG_KU32_LARGE_BUFFER_SIZE          524288      /**< Large buffer size */
 
 #define orxCONFIG_KU32_COMMAND_BUFFER_SIZE        128         /**< Command buffer size */
 
@@ -238,6 +239,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
   orxCHAR             acCommandBuffer[orxCONFIG_KU32_COMMAND_BUFFER_SIZE]; /**< Command buffer */
   orxCHAR             zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH]; /**< Base file name */
+  orxCHAR             acValueBuffer[orxCONFIG_KU32_LARGE_BUFFER_SIZE]; /**< Value buffer */
 
 } orxCONFIG_STATIC;
 
@@ -410,73 +412,83 @@ static orxINLINE void orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue)
 
 static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
-  orxBOOL   bNeedDuplication = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_BUFFER_SIZE);
+  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_LARGE_BUFFER_SIZE);
 
   /* Not in block mode? */
   if(_bBlockMode == orxFALSE)
   {
-    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
-    const orxCHAR  *pcInput;
+    orxBOOL bNeedDuplication = orxFALSE;
 
-    /* For all characters */
-    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL;)
+    /* Buffer not already prepared? */
+    if(sstConfig.acValueBuffer[0] == orxCHAR_NULL)
     {
-      /* Not a space? */
-      if((*pcInput != ' ') && (*pcInput != '\t'))
+      orxCHAR        *pcOutput;
+      const orxCHAR  *pcInput;
+
+      /* For all characters */
+      for(pcInput = _zValue, pcOutput = sstConfig.acValueBuffer; *pcInput != orxCHAR_NULL;)
       {
-        /* Copies it */
-        *pcOutput++ = *pcInput++;
-
-        /* Is a list separator? */
-        if(*(pcInput - 1) == orxCONFIG_KC_LIST_SEPARATOR)
+        /* Not a space? */
+        if((*pcInput != ' ') && (*pcInput != '\t'))
         {
-          /* Asks for duplication */
-          bNeedDuplication = orxTRUE;
+          /* Copies it */
+          *pcOutput++ = *pcInput++;
 
-          /* Skips all trailing and leading spaces */
-          while((*pcInput == ' ') || (*pcInput == '\t'))
+          /* Is a list separator? */
+          if(*(pcInput - 1) == orxCONFIG_KC_LIST_SEPARATOR)
           {
-            pcInput++;
+            /* Asks for duplication */
+            bNeedDuplication = orxTRUE;
+
+            /* Skips all trailing and leading spaces */
+            while((*pcInput == ' ') || (*pcInput == '\t'))
+            {
+              pcInput++;
+            }
           }
-        }
-      }
-      else
-      {
-        const orxCHAR *pcTest;
-
-        /* Scans all the spaces */
-        for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
-
-        /* Is a list separator or end of string? */
-        if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
-        {
-          /* Skips all trailing spaces */
-          pcInput = pcTest;
         }
         else
         {
-          /* For all spaces */
-          for(; pcInput < pcTest; pcInput++, pcOutput++)
+          const orxCHAR *pcTest;
+
+          /* Scans all the spaces */
+          for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+
+          /* Is a list separator or end of string? */
+          if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
           {
-            /* Copies it */
-            *pcOutput = *pcInput;
+            /* Skips all trailing spaces */
+            pcInput = pcTest;
+          }
+          else
+          {
+            /* For all spaces */
+            for(; pcInput < pcTest; pcInput++, pcOutput++)
+            {
+              /* Copies it */
+              *pcOutput = *pcInput;
+            }
           }
         }
       }
-    }
 
-    /* Ends string */
-    *pcOutput = orxCHAR_NULL;
+      /* Ends string */
+      *pcOutput = orxCHAR_NULL;
+    }
+    else
+    {
+      /* Needs duplication */
+      bNeedDuplication = orxTRUE;
+    }
 
     /* Needs duplication? */
     if(bNeedDuplication != orxFALSE)
     {
       /* Duplicates string */
-      _pstValue->zValue = orxString_Duplicate(acBuffer);
+      _pstValue->zValue = orxString_Duplicate(sstConfig.acValueBuffer);
 
       /* Valid? */
       if(_pstValue->zValue != orxNULL)
@@ -493,7 +505,7 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
     else
     {
       /* Stores value */
-      _pstValue->zValue = (orxSTRING)orxString_Store(acBuffer);
+      _pstValue->zValue = (orxSTRING)orxString_Store(sstConfig.acValueBuffer);
 
       /* Computes working value */
       orxConfig_ComputeWorkingValue(_pstValue);
@@ -501,11 +513,11 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   }
   else
   {
-    orxCHAR         acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcOutput;
+    orxCHAR        *pcOutput;
     const orxCHAR  *pcInput;
 
     /* For all characters */
-    for(pcInput = _zValue, pcOutput = acBuffer; *pcInput != orxCHAR_NULL; pcInput++, pcOutput++)
+    for(pcInput = _zValue, pcOutput = sstConfig.acValueBuffer; *pcInput != orxCHAR_NULL; pcInput++, pcOutput++)
     {
       /* Copies it */
       *pcOutput = *pcInput;
@@ -522,12 +534,15 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
     *pcOutput = orxCHAR_NULL;
 
     /* Stores value */
-    _pstValue->zValue = (orxSTRING)orxString_Store(acBuffer);
+    _pstValue->zValue = (orxSTRING)orxString_Store(sstConfig.acValueBuffer);
 
     /* Block mode, no list nor random allowed */
     _pstValue->u16Flags       = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
     _pstValue->u16ListCounter = 1;
   }
+
+  /* Clears value buffer */
+  sstConfig.acValueBuffer[0] = orxCHAR_NULL;
 
   /* Done! */
   return eResult;
@@ -2149,40 +2164,49 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
         s32Index = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCounter - 1);
       }
 
-      /* Gets string value */
-      if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
+      /* Is index valid? */
+      if(s32Index < (orxS32)pstValue->u16ListCounter)
       {
-        orxVECTOR vResult;
-        orxBOOL   bConfigLevelEnabled;
-
-        /* Gets config debug level state */
-        bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-
-        /* Deactivates config debug level */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-        /* Not hexadecimal, binary or octal?? */
-        if((_pstResult->zValue[0] == orxCHAR_EOL)
-        || (_pstResult->zValue[0] != '0')
-        || (_pstResult->zValue[1] == orxCHAR_EOL)
-        || (((_pstResult->zValue[1] | 0x20) != 'x')
-         && ((_pstResult->zValue[1] | 0x20) != 'b')
-         && ((_pstResult->zValue[1] < '0')
-          || (_pstResult->zValue[1] > '9'))))
+        /* Gets string value */
+        if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
         {
-          /* Gets vector value */
-          if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
+          orxVECTOR vResult;
+          orxBOOL   bConfigLevelEnabled;
+
+          /* Gets config debug level state */
+          bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+
+          /* Deactivates config debug level */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+          /* Not hexadecimal, binary or octal?? */
+          if((_pstResult->zValue[0] == orxCHAR_EOL)
+          || (_pstResult->zValue[0] != '0')
+          || (_pstResult->zValue[1] == orxCHAR_EOL)
+          || (((_pstResult->zValue[1] | 0x20) != 'x')
+           && ((_pstResult->zValue[1] | 0x20) != 'b')
+           && ((_pstResult->zValue[1] < '0')
+            || (_pstResult->zValue[1] > '9'))))
           {
-            /* Prints it */
-            orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+            /* Gets vector value */
+            if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
+            {
+              /* Prints it */
+              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
-            /* Updates result */
-            _pstResult->zValue = sstConfig.acCommandBuffer;
+              /* Updates result */
+              _pstResult->zValue = sstConfig.acCommandBuffer;
+            }
           }
-        }
 
-        /* Restores config debug level state */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+          /* Restores config debug level state */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+        }
+        else
+        {
+          /* Updates result */
+          _pstResult->zValue = orxSTRING_EMPTY;
+        }
       }
       else
       {
@@ -5780,7 +5804,6 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
  */
 orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
 {
-  orxCHAR   acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
   orxU32    u32Index, i;
   orxSTATUS eResult;
 
@@ -5794,26 +5817,26 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
   if((_u32Number > 0) && (_u32Number < 0xFFFF))
   {
     /* For all values */
-    for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_BUFFER_SIZE - 1); i++)
+    for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); i++)
     {
       const orxCHAR *pc;
 
       /* For all characters */
-      for(pc = _azValue[i]; (*pc != orxCHAR_NULL) && (u32Index < orxCONFIG_KU32_BUFFER_SIZE - 1); pc++)
+      for(pc = _azValue[i]; (*pc != orxCHAR_NULL) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); pc++)
       {
         /* Copies it */
-        acBuffer[u32Index++] = *pc;
+        sstConfig.acValueBuffer[u32Index++] = *pc;
       }
 
       /* Adds separator */
-      acBuffer[u32Index++] = orxCONFIG_KC_LIST_SEPARATOR;
+      sstConfig.acValueBuffer[u32Index++] = orxCONFIG_KC_LIST_SEPARATOR;
     }
 
     /* Ran out of memory? */
-    if(u32Index >= orxCONFIG_KU32_BUFFER_SIZE - 1)
+    if(u32Index >= orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot write config string list as the list would exceed %d bytes in memory.", orxCONFIG_KU32_BUFFER_SIZE);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot write config string list as the list would exceed %d bytes in memory.", orxCONFIG_KU32_LARGE_BUFFER_SIZE);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -5823,12 +5846,15 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
       /* Removes last separator */
       if(u32Index > 0)
       {
-        acBuffer[u32Index - 1] = orxCHAR_NULL;
+        sstConfig.acValueBuffer[u32Index - 1] = orxCHAR_NULL;
       }
 
       /* Adds/replaces new entry */
-      eResult = orxConfig_SetEntry(_zKey, acBuffer, orxFALSE);
+      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE);
     }
+
+    /* Clears value buffer */
+    sstConfig.acValueBuffer[0] = orxCHAR_NULL;
   }
   else
   {
