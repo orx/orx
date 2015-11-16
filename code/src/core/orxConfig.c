@@ -2850,8 +2850,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         u32Size > 0;
         u32Size = (orxU32)orxResource_Read(hResource, (orxS64)(orxCONFIG_KU32_BUFFER_SIZE - u32Offset), acBuffer + u32Offset, orxNULL, orxNULL) + u32Offset, bFirstTime = orxFALSE)
     {
-      orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
-      orxBOOL   bBlockMode;
+      orxCHAR *pcLineStart;
 
       /* First time? */
       if(bFirstTime != orxFALSE)
@@ -2913,6 +2912,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        orxCHAR  *pc, *pcKeyEnd, *pcValueStart;
+        orxBOOL   bBlockMode;
+
         /* Uses encryption? */
         if(bUseEncryption != orxFALSE)
         {
