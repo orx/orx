@@ -541,11 +541,13 @@ static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
     /* Is a list? */
     if(_pstValue->u16ListCounter != 1)
     {
-      /* Restore literal value */
-      orxConfig_RestoreLiteralValue(_pstValue);
-
-      /* Deletes it */
+      /* Deletes string */
       orxString_Delete(_pstValue->zValue);
+
+      /* Cleans list status */
+      _pstValue->u16Flags      &= ~orxCONFIG_VALUE_KU16_FLAG_LIST;
+      _pstValue->u16ListCounter = 1;
+      _pstValue->u16CacheIndex  = 0;
     }
   }
 
