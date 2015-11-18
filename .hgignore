@@ -68,3 +68,8 @@ obj/**.cache
 *.opensdf
 *.unsuccessfulbuild
 cache/
+extern/**
+code/build/**
+tools/orxCrypt/build/**
+tools/orxFontGen/build/**
+tutorial/build/**
