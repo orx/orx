@@ -175,8 +175,9 @@ void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
 #ifdef __orxANDROID_NATIVE__
-#define          LOOPER_ID_SENSOR        LOOPER_ID_USER
-ANativeActivity* orxAndroid_GetNativeActivity();
+#define              LOOPER_ID_SENSOR        LOOPER_ID_USER
+ANativeActivity*     orxAndroid_GetNativeActivity();
+struct android_app*  orxAndroid_GetAndroidApp();
 #endif /* __orxANDROID_NATIVE__ */
 
 #if defined(__cplusplus)

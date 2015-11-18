@@ -54,8 +54,6 @@
 #include "orxKernel.h"
 #include "main/orxAndroid.h"
 
-struct android_app;
-
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
@@ -67,7 +65,7 @@ typedef struct __orxANDROID_STATIC_t {
         int32_t lastHeight;
         orxFLOAT fSurfaceScale;
 
-        android_app* app_;
+        struct android_app* app_;
 } orxANDROID_STATIC;
 
 static orxANDROID_STATIC sstAndroid;
@@ -145,6 +143,11 @@ extern "C" void *orxAndroid_GetJNIEnv()
 extern "C" jobject orxAndroid_GetActivity()
 {
   return sstAndroid.app_->activity->clazz;
+}
+
+extern "C" struct android_app* orxAndroid_GetAndroidApp()
+{
+  return sstAndroid.app_;
 }
 
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
@@ -361,7 +364,7 @@ void handleCmd( struct android_app* app, int32_t cmd )
         break;
     case APP_CMD_DESTROY:
         LOGI("APP_CMD_DESTROY");
-        
+
         orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
         break;
     case APP_CMD_GAINED_FOCUS:
