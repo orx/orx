@@ -1,6 +1,7 @@
 Orx - Portable Game Engine (Version 1.6)
 ========================================
 
+
 Email iarwain [at] orx-project.org to contact the author; or, better,
 check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
 
@@ -14,7 +15,7 @@ Summary
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is the first release candidate for orx v1.6. If you find any bugs,
+This is the stable release for orx v1.6. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
@@ -89,8 +90,7 @@ also make orx run considerably faster.
 
 From the download page you'll find precompiled binaries for Windows (x86), Linux (x86/x86-64), MacOS X (ppc/x86/x86-64),
 iOS and Android, using the dynamic embedded versions only.
-If you want to use the non-embedded versions (to use with your own plugins)
-or the static ones, you'll need to compile orx yourself from the source.
+If you want to use the non-embedded versions (to use with your own plugins), you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
@@ -166,13 +166,18 @@ All the `*-tutorial-*` packages above include:
 Compiling
 ---------
 
-The easiest way to learn how to compile your project using orx for a given platform
-is to look at the tutorial build project files. If you want to use another version
-(tutorials use the dynamic embedded versions of orx), please look at
-orx's launcher (main executable) build project file from the src package.
+###Important - first step:
 
-The debug version is far slower than the release one, but will output all the warning
-and error messages useful for debugging.
+**If you just cloned orx with mercurial or git, you will need to run the setup.bat/setup.sh script
+that's located at its root before being able to compile the engine.
+This script will download all the needed dependencies and generate all the project files for your platform.
+The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulling.**
+
+The easiest way to learn how to compile your project using orx for a given platform
+is to look at the tutorial build project files.
+
+NB: The debug version is far slower than the release one, but will output all the warning
+and error messages useful during development.
 
 Here's a quick list of the available compile preprocessor flags:
 
@@ -203,29 +208,30 @@ However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:
 
-  Flag                  | Description
-:----------------------:|--------------------------------------------------------
-  `__orxARM__`          | orx is being compiled for an ARM architecture
-  `__orxPPC__`          | orx is being compiled for a PowerPC architecture
-  `__orxPPC64__`        | orx is being compiled for a PowerPC 64 architecture
-  `__orxX86__`          | orx is being compiled for a x86 architecture
-  `__orxX86_64__`       | orx is being compiled for a x86-64 architecture
-  `__orxLITTLE_ENDIAN__`| orx is being compiled for a little endian architecture
-  `__orxBIG_ENDIAN__`   | orx is being compiled for a big endian architecture
-  `__orxGCC__`          | orx is being compiled with gcc
-  `__orxMSVC__`         | orx is being compiled with visual studio C/C
-  `__orxLLVM__`         | orx is being compiled with llvm/clang
-  `__orxWINDOWS__`      | orx is being compiled for Windows (x86
-  `__orxMAC__`          | orx is being compiled for MacOS X (ppc/x86/x86-64
-  `__orxLINUX__`        | orx is being compiled for Linux (x86/x86-64
-  `__orxIOS__`          | orx is being compiled for iOS
-  `__orxANDROID__`      | orx is being compiled for Android
-  `__orxRASPBERRY_PI__` | orx is being compiled for Raspberry Pi
-  `__orxCPP__`          | orx is being compiled with a C++ compiler
-  `__orxOBJC__`         | orx is being compiled with an Objective-C compiler
-  `__orxFREEBASIC__`    | orx is being compiled for FreeBasic, WIP
-  `__orxPLUGIN__`       | a plugin for orx is being compiled
-  `__orxEXTERN__`       | code using orx's library is being compiled
+  Flag                    | Description
+:------------------------:|--------------------------------------------------------
+  `__orxARM__`            | orx is being compiled for an ARM architecture
+  `__orxPPC__`            | orx is being compiled for a PowerPC architecture
+  `__orxPPC64__`          | orx is being compiled for a PowerPC 64 architecture
+  `__orxX86__`            | orx is being compiled for a x86 architecture
+  `__orxX86_64__`         | orx is being compiled for a x86-64 architecture
+  `__orxLITTLE_ENDIAN__`  | orx is being compiled for a little endian architecture
+  `__orxBIG_ENDIAN__`     | orx is being compiled for a big endian architecture
+  `__orxGCC__`            | orx is being compiled with gcc
+  `__orxMSVC__`           | orx is being compiled with visual studio C/C
+  `__orxLLVM__`           | orx is being compiled with llvm/clang
+  `__orxWINDOWS__`        | orx is being compiled for Windows (x86
+  `__orxMAC__`            | orx is being compiled for MacOS X (ppc/x86/x86-64
+  `__orxLINUX__`          | orx is being compiled for Linux (x86/x86-64
+  `__orxIOS__`            | orx is being compiled for iOS
+  `__orxANDROID__`        | orx is being compiled for Android
+  `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
+  `__orxRASPBERRY_PI__`   | orx is being compiled for Raspberry Pi
+  `__orxCPP__`            | orx is being compiled with a C++ compiler
+  `__orxOBJC__`           | orx is being compiled with an Objective-C compiler
+  `__orxFREEBASIC__`      | orx is being compiled for FreeBasic, WIP
+  `__orxPLUGIN__`         | a plugin for orx is being compiled
+  `__orxEXTERN__`         | code using orx's library is being compiled
 
 
 Comments
