@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxInput
- * 
+ *
  * Input module
  * Module that handles generalized inputs (keyboard, mouse, joystick, ...)
  *
@@ -274,7 +274,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBinding(const orxS
  * @param[in]   _zName          Concerned input name
  * @param[out]  _aeTypeList     List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
  * @param[out]  _aeIDList       List of binding IDs (button/key/axis)
- * @param[out]  _aeMode         List of modes (only used for axis inputs)
+ * @param[out]  _aeModeList     List of modes (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER], orxINPUT_MODE _aeModeList[orxINPUT_KU32_BINDING_NUMBER]);
