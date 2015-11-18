@@ -19,9 +19,9 @@ hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 platform-data:  [
-    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013"] 'hgrc %hgrc                                                                           ]
-    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ] 'hgrc %.hgrc                                                                          ]
-    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'hgrc %.hgrc 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013"]                                                                           ]
+    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ]                                                                          ]
+    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
 
 
@@ -142,7 +142,7 @@ if exists? hg [
     either skip-hook [
         print "== Skipping Mercurial hook installation"
     ] [
-        hgrc: rejoin [hg platform-info/hgrc]
+        hgrc: hg/hgrc
         hgrc-file: to-string read hgrc
 
         either find hgrc-file hg-hook [
