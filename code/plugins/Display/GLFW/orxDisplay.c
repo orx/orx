@@ -47,6 +47,7 @@
 #include "webp/decode.h"
 #endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
+#pragma warning(disable : 4312)
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_PSD
@@ -62,6 +63,7 @@
 #undef STBI_NO_PSD
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
+#pragma warning(default : 4312)
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"

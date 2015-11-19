@@ -1129,21 +1129,21 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-#ifdef __orxWINDOWS__
+#if defined(__orxWINDOWS__) && (_MSC_VER < 1900)
 
     struct _stati64 stStat;
 
     /* Gets file stats */
     _fstati64(((FILE *)_pstFile)->_file, &stStat);
 
-#else /* __orxWINDOWS__ */
+#else /* __orxWINDOWS__ && _MSC_VER < 1900 */
 
     struct stat stStat;
 
     /* Gets file stats */
     fstat(fileno((FILE *)_pstFile), &stStat);
 
-#endif /* __orxWINDOWS__ */
+#endif /* __orxWINDOWS__ && _MSC_VER < 1900 */
 
     /* Updates result */
     s64Result = (orxS64)stStat.st_size;
@@ -1173,17 +1173,17 @@ orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-#ifdef __orxMSVC__
+#if defined(__orxMSVC__) && (_MSC_VER < 1900)
 
     /* Gets file stats */
     fstat(((FILE *)_pstFile)->_file, &stStat);
 
-#else /* __orxMSVC__ */
+#else /* __orxMSVC__ && _MSC_VER < 1900 */
 
     /* Gets file stats */
     fstat(fileno((FILE *)_pstFile), &stStat);
 
-#endif /* __orxMSVC__ */
+#endif /* __orxMSVC__ && _MSC_VER < 1900 */
 
     /* Updates result */
     s64Result = (orxS64)stStat.st_mtime;

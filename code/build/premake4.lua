@@ -551,6 +551,9 @@ project "orxLIB"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
 
+    configuration {"windows", "vs*"}
+        buildoptions {"/wd\"4577\""}
+
     configuration {"windows", "not *Core*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
