@@ -230,19 +230,19 @@
 
   /* Assert */
   #if defined(__orxGCC__) || defined(__orxLLVM__)
-    #define orxASSERT(TEST, ...)                                                                  \
-      if(!(TEST))                                                                                 \
-      {                                                                                           \
+    #define orxASSERT(TEST, ...)                                                        \
+      if(!(TEST))                                                                       \
+      {                                                                                 \
         orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", ##__VA_ARGS__); \
-        orxBREAK();                                                                               \
+        orxBREAK();                                                                     \
       }
   #else /* __orxGCC__ || __orxLLVM__ */
     #ifdef __orxMSVC__
-      #define orxASSERT(TEST, ...)                                                                \
-        if(!(TEST))                                                                               \
-        {                                                                                         \
+      #define orxASSERT(TEST, ...)                                                      \
+        if(!(TEST))                                                                     \
+        {                                                                               \
           orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", __VA_ARGS__); \
-          orxBREAK();                                                                             \
+          orxBREAK();                                                                   \
         }
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ || __orxLLVM__ */

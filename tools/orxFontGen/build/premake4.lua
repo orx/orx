@@ -296,9 +296,6 @@ project "orxFontGen"
             "m",
             "z",
             "rt",
-            "bz2",
-            "png16",
-            "harfbuzz",
             "pthread"
         }
 
