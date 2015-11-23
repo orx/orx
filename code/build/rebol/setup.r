@@ -226,4 +226,4 @@ if platform-info/deps [
     print newline
 ]
 end: now/time
-print ["== [" (end - begin) "] Setup successfull!"]
+print ["== [" (end - begin) "] Setup successful!"]
