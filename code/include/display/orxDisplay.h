@@ -82,6 +82,21 @@ typedef struct __orxRGBA_t
 typedef struct __orxBITMAP_t        orxBITMAP;
 
 
+/** Orientation enum
+ */
+typedef enum __orxDISPLAY_ORIENTATION_t
+{
+  orxDISPLAY_ORIENTATION_UP = 0,
+  orxDISPLAY_ORIENTATION_LEFT,
+  orxDISPLAY_ORIENTATION_DOWN,
+  orxDISPLAY_ORIENTATION_RIGHT,
+
+  orxDISPLAY_ORIENTATION_NUMBER,
+
+  orxDISPLAY_ORIENTATION_NONE = orxENUM_NONE
+
+} orxDISPLAY_ORIENTATION;
+
 /** Vertex info structure
  */
 typedef struct __orxDISPLAY_VERTEX_t
@@ -96,11 +111,12 @@ typedef struct __orxDISPLAY_VERTEX_t
  */
 typedef struct __orxDISPLAY_TRANSFORM_t
 {
-  orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
-  orxFLOAT  fRepeatX, fRepeatY;
-  orxFLOAT  fScaleX;
-  orxFLOAT  fScaleY;
-  orxFLOAT  fRotation;
+  orxFLOAT                fSrcX, fSrcY, fDstX, fDstY;
+  orxFLOAT                fRepeatX, fRepeatY;
+  orxFLOAT                fScaleX;
+  orxFLOAT                fScaleY;
+  orxFLOAT                fRotation;
+  orxDISPLAY_ORIENTATION  eOrientation;
 
 } orxDISPLAY_TRANSFORM;
 

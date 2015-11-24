@@ -437,9 +437,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fHueDelta = orxRENDER_KF_PROFILER_HUE_STACK_RANGE / orxS2F(s32MarkerCounter + 1);
 
   /* Inits transform */
-  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
-  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
-  stTransform.fRotation = orxFLOAT_0;
+  stTransform.fSrcX         = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX      = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation     = orxFLOAT_0;
+  stTransform.eOrientation  = orxDISPLAY_ORIENTATION_UP;
 
   /* Selects black color */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x99));
@@ -1145,9 +1146,10 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
 
   /* Inits transform */
-  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
-  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
-  stTransform.fRotation = orxFLOAT_0;
+  stTransform.fSrcX         = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX      = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation     = orxFLOAT_0;
+  stTransform.eOrientation  = orxDISPLAY_ORIENTATION_UP;
 
   /* Selects black color */
   orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0x00, 0x00, 0x00, 0x33));
@@ -1327,6 +1329,9 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
     /* Cleans event payload */
     orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_PAYLOAD));
 
+    /* Updates transform with orientation */
+    _pstTransform->eOrientation = orxGraphic_GetOrientation(pstGraphic);
+
     /* Inits it */
     stPayload.stObject.pstTransform = _pstTransform;
 
@@ -1452,7 +1457,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         }
         else
         {
-          /* Transfomrs text */
+          /* Transforms text */
           eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, _eSmoothing, _eBlendMode);
         }
       }

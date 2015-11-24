@@ -88,6 +88,7 @@
 #define orxGRAPHIC_KZ_CONFIG_REPEAT               "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE           "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_ORIENTATION          "Orientation"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
 #define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"
@@ -99,6 +100,10 @@
 #define orxGRAPHIC_KZ_X                           "x"
 #define orxGRAPHIC_KZ_Y                           "y"
 #define orxGRAPHIC_KZ_BOTH                        "both"
+#define orxGRAPHIC_KZ_UP_ORIENTATION              "up"
+#define orxGRAPHIC_KZ_LEFT_ORIENTATION            "left"
+#define orxGRAPHIC_KZ_DOWN_ORIENTATION            "down"
+#define orxGRAPHIC_KZ_RIGHT_ORIENTATION           "right"
 
 #define orxGRAPHIC_KU32_BANK_SIZE                 1024
 
@@ -111,17 +116,18 @@
  */
 struct __orxGRAPHIC_t
 {
-  orxSTRUCTURE    stStructure;              /**< Public structure, first structure member : 32 */
-  orxSTRUCTURE   *pstData;                  /**< Data structure : 20 */
-  orxVECTOR       vPivot;                   /**< Pivot : 32 */
-  orxCOLOR        stColor;                  /**< Color : 48 */
-  orxFLOAT        fTop;                     /**< Top coordinate : 52 */
-  orxFLOAT        fLeft;                    /**< Left coordinate : 56 */
-  orxFLOAT        fWidth;                   /**< Width : 60 */
-  orxFLOAT        fHeight;                  /**< Height : 64 */
-  orxFLOAT        fRepeatX;                 /**< X-axis repeat counter : 68 */
-  orxFLOAT        fRepeatY;                 /**< Y-axis repeat counter : 72 */
-  const orxSTRING zReference;               /**< Reference : 76 */
+  orxSTRUCTURE            stStructure;      /**< Public structure, first structure member : 32 */
+  orxSTRUCTURE           *pstData;          /**< Data structure : 20 */
+  orxVECTOR               vPivot;           /**< Pivot : 32 */
+  orxCOLOR                stColor;          /**< Color : 48 */
+  orxFLOAT                fTop;             /**< Top coordinate : 52 */
+  orxFLOAT                fLeft;            /**< Left coordinate : 56 */
+  orxFLOAT                fWidth;           /**< Width : 60 */
+  orxFLOAT                fHeight;          /**< Height : 64 */
+  orxFLOAT                fRepeatX;         /**< X-axis repeat counter : 68 */
+  orxFLOAT                fRepeatY;         /**< Y-axis repeat counter : 72 */
+  orxDISPLAY_ORIENTATION  eOrientation;     /**< Orientation : 76 */
+  const orxSTRING         zReference;       /**< Reference : 80 */
 };
 
 /** Static structure
@@ -391,6 +397,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if(pstTexture != orxNULL)
         {
+          const orxSTRING zOrientation;
+
           /* Links it */
           if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
@@ -435,6 +443,34 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             {
               /* Updates size */
               orxGraphic_UpdateSize(pstResult);
+            }
+
+            /* Gets orientation */
+            zOrientation = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_ORIENTATION);
+
+            /* Left? */
+            if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_LEFT_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_LEFT;
+            }
+            /* Down? */
+            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_DOWN_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_DOWN;
+            }
+            /* Right? */
+            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_RIGHT_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_RIGHT;
+            }
+            /* Up */
+            else
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_UP;
             }
           }
           else
@@ -1641,7 +1677,26 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
 
       break;
     }
+  }
+
+  /* Done! */
+  return eResult;
 }
+
+/** Gets graphic orientation
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic)
+{
+  orxDISPLAY_ORIENTATION eResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  eResult = _pstGraphic->eOrientation;
 
   /* Done! */
   return eResult;
