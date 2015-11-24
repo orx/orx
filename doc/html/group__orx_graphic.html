@@ -113,8 +113,6 @@ $(document).ready(function(){initNavTree('group__orx_graphic.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga4052190ffa545c60c6391940b189b269"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga4052190ffa545c60c6391940b189b269">orxGRAPHIC_KU32_FLAG_2D</a>&#160;&#160;&#160;0x00000001</td></tr>
-<tr class="separator:ga4052190ffa545c60c6391940b189b269"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7d07c15fae0da64fa3039e4bb22a0c5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga7d07c15fae0da64fa3039e4bb22a0c5b">orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM</a>&#160;&#160;&#160;0x00000080</td></tr>
 <tr class="separator:ga7d07c15fae0da64fa3039e4bb22a0c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8740ea5b0c094102f8a04cf4ab95423f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga8740ea5b0c094102f8a04cf4ab95423f">orxGRAPHIC_KU32_FLAG_ALIGN_CENTER</a>&#160;&#160;&#160;0x00000000</td></tr>
@@ -135,8 +133,12 @@ Macros</h2></td></tr>
 <tr class="separator:gac0105b93b7499249af3d967fcefb21d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga71fdf8276ba78400fd9286613901507c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga71fdf8276ba78400fd9286613901507c">orxGRAPHIC_KU32_FLAG_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
 <tr class="separator:ga71fdf8276ba78400fd9286613901507c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga70d74fd2b8525685364c2ed29df34e18"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga70d74fd2b8525685364c2ed29df34e18">orxGRAPHIC_KU32_FLAG_QUAD</a>&#160;&#160;&#160;0x00000001</td></tr>
+<tr class="separator:ga70d74fd2b8525685364c2ed29df34e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga429feecaa5e1169e1facf295b8204a2f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga429feecaa5e1169e1facf295b8204a2f">orxGRAPHIC_KU32_FLAG_TEXT</a>&#160;&#160;&#160;0x00000002</td></tr>
 <tr class="separator:ga429feecaa5e1169e1facf295b8204a2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaccd0ec470033a9166ae50070d261db6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gaccd0ec470033a9166ae50070d261db6e">orxGRAPHIC_KU32_MASK_2D</a>&#160;&#160;&#160;0x00000003</td></tr>
+<tr class="separator:gaccd0ec470033a9166ae50070d261db6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac11cc36b783832c0d1d32d44c741d49f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gac11cc36b783832c0d1d32d44c741d49f">orxGRAPHIC_KU32_MASK_FLIP_BOTH</a>&#160;&#160;&#160;0x0000000C</td></tr>
 <tr class="separator:gac11cc36b783832c0d1d32d44c741d49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9927d2032328f4f33900b365cdb1101a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#ga9927d2032328f4f33900b365cdb1101a">orxGRAPHIC_KU32_MASK_TYPE</a>&#160;&#160;&#160;0x00000003</td></tr>
@@ -217,21 +219,6 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Graphic Module. Allows to creates and handle 2D/3D Graphics. They are used as texture/animation container, with associated properties. 2D Graphics are used by objects. They thus can be referenced by objects as structures. </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="ga4052190ffa545c60c6391940b189b269"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxGRAPHIC_KU32_FLAG_2D&#160;&#160;&#160;0x00000001</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>2D type graphic flag </p>
-
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00060">60</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="ga7d07c15fae0da64fa3039e4bb22a0c5b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +230,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Bottom vertical alignment </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00073">73</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00075">75</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -258,7 +245,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Center vertical / horizontal alignment </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00069">69</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00071">71</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -273,7 +260,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Left horizontal alignment </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00070">70</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00072">72</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +275,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Right horizontal alignment </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00071">71</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00073">73</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -303,7 +290,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Round alignment value </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00075">75</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00077">77</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +305,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Top vertical alignment </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00072">72</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00074">74</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -333,7 +320,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Truncate alignment value </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00074">74</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00076">76</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -348,7 +335,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>X axis flipping flag </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00065">65</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00067">67</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -363,7 +350,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Y axis flipping flag </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00066">66</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00068">68</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -382,6 +369,21 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="ga70d74fd2b8525685364c2ed29df34e18"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_QUAD&#160;&#160;&#160;0x00000001</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Quad type graphic flag </p>
+
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00060">60</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga429feecaa5e1169e1facf295b8204a2f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -397,6 +399,21 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="gaccd0ec470033a9166ae50070d261db6e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_MASK_2D&#160;&#160;&#160;0x00000003</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>2D type graphic mask </p>
+
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00063">63</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="gac11cc36b783832c0d1d32d44c741d49f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -408,7 +425,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Both axis flipping mask </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00067">67</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00069">69</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -423,7 +440,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Type mask </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00063">63</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00065">65</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -438,7 +455,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>User all ID mask </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00077">77</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00079">79</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>
@@ -454,7 +471,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 <p>Internal Graphic structure </p>
 
-<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00082">82</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_graphic_8h_source.html#l00084">84</a> of file <a class="el" href="orx_graphic_8h_source.html">orxGraphic.h</a>.</p>
 
 </div>
 </div>

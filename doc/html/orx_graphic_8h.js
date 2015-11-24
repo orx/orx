@@ -1,6 +1,5 @@
 var orx_graphic_8h =
 [
-    [ "orxGRAPHIC_KU32_FLAG_2D", "orx_graphic_8h.html#ga4052190ffa545c60c6391940b189b269", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM", "orx_graphic_8h.html#ga7d07c15fae0da64fa3039e4bb22a0c5b", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_CENTER", "orx_graphic_8h.html#ga8740ea5b0c094102f8a04cf4ab95423f", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_LEFT", "orx_graphic_8h.html#gae784d5f05049b6e71d1a42e541e11e5a", null ],
@@ -11,7 +10,9 @@ var orx_graphic_8h =
     [ "orxGRAPHIC_KU32_FLAG_FLIP_X", "orx_graphic_8h.html#ga8859736ea173e43e859dd14aa18206ba", null ],
     [ "orxGRAPHIC_KU32_FLAG_FLIP_Y", "orx_graphic_8h.html#gac0105b93b7499249af3d967fcefb21d7", null ],
     [ "orxGRAPHIC_KU32_FLAG_NONE", "orx_graphic_8h.html#ga71fdf8276ba78400fd9286613901507c", null ],
+    [ "orxGRAPHIC_KU32_FLAG_QUAD", "orx_graphic_8h.html#ga70d74fd2b8525685364c2ed29df34e18", null ],
     [ "orxGRAPHIC_KU32_FLAG_TEXT", "orx_graphic_8h.html#ga429feecaa5e1169e1facf295b8204a2f", null ],
+    [ "orxGRAPHIC_KU32_MASK_2D", "orx_graphic_8h.html#gaccd0ec470033a9166ae50070d261db6e", null ],
     [ "orxGRAPHIC_KU32_MASK_FLIP_BOTH", "orx_graphic_8h.html#gac11cc36b783832c0d1d32d44c741d49f", null ],
     [ "orxGRAPHIC_KU32_MASK_TYPE", "orx_graphic_8h.html#ga9927d2032328f4f33900b365cdb1101a", null ],
     [ "orxGRAPHIC_KU32_MASK_USER_ALL", "orx_graphic_8h.html#gaf2ee05ab7323f433c9a195c382532d49", null ],
