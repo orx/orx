@@ -399,8 +399,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates its owner */
             orxStructure_SetOwner(pstTexture, pstResult);
 
-            /* Inits default 2D flags */
-            u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
+            /* Inits default quad flags */
+            u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_QUAD;
 
             /* Has size? */
             if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) != orxNULL)
@@ -837,8 +837,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
       /* Removes its owner */
       orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
 
-      /* 2D data? */
-      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+      /* Quad data? */
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD))
       {
         /* Deletes it */
         orxTexture_Delete(orxTEXTURE(_pstGraphic->pstData));
@@ -879,7 +879,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     if(orxTEXTURE(_pstData) != orxNULL)
     {
       /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_MASK_TYPE);
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD, orxGRAPHIC_KU32_MASK_TYPE);
     }
     /* Is data a text? */
     else if(orxTEXT(_pstData) != orxNULL)
@@ -1182,8 +1182,8 @@ orxVECTOR *orxFASTCALL orxGraphic_GetSize(const orxGRAPHIC *_pstGraphic, orxVECT
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize != orxNULL);
 
-  /* Valid 2D or text data? */
-  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
+  /* Valid 2D? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_2D) != orxFALSE)
   {
     /* Gets its size */
     orxVector_Set(_pvSize, _pstGraphic->fWidth, _pstGraphic->fHeight, orxFLOAT_0);

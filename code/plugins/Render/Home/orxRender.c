@@ -1298,22 +1298,22 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
 
   /* Valid? */
   if((pstGraphic != orxNULL)
-  && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
+  && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_2D)))
   {
     orxANIMPOINTER         *pstAnimPointer;
     orxTEXTURE             *pstTexture;
     orxTEXT                *pstText;
     orxFONT                *pstFont;
     orxBITMAP              *pstBitmap = orxNULL;
-    orxBOOL                 bIs2D;
+    orxBOOL                 bIsQuad;
     orxEVENT                stEvent;
     orxRENDER_EVENT_PAYLOAD stPayload;
 
     /* Stores type */
-    bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
+    bIsQuad = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD);
 
-    /* Is 2D? */
-    if(bIs2D != orxFALSE)
+    /* Is quad? */
+    if(bIsQuad != orxFALSE)
     {
       /* Profiles */
       orxPROFILER_PUSH_MARKER("RenderObject <2D>");
@@ -1352,8 +1352,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
       }
     }
 
-    /* Is 2D? */
-    if(bIs2D != orxFALSE)
+    /* Is quad? */
+    if(bIsQuad != orxFALSE)
     {
       orxVECTOR vClipTL, vClipBR, vSize;
 
@@ -1444,8 +1444,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
           orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
         }
 
-        /* Is 2D? */
-        if(bIs2D != orxFALSE)
+        /* Is quad? */
+        if(bIsQuad != orxFALSE)
         {
           /* Transforms bitmap */
           eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.stObject.pstTransform, _eSmoothing, _eBlendMode);
@@ -1715,7 +1715,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
 
                     /* Valid 2D graphic? */
                     if((pstGraphic != orxNULL)
-                    && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE))
+                    && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_2D) != orxFALSE))
                     {
                       orxFRAME     *pstFrame;
                       orxSTRUCTURE *pstData;
