@@ -41,6 +41,14 @@ var orx_display_8h =
       [ "orxDISPLAY_EVENT_NUMBER", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "orx_display_8h.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
     ] ],
+    [ "orxDISPLAY_ORIENTATION", "orx_display_8h.html#ga6f6093ca383ea024e7687aa04aa48464", [
+      [ "orxDISPLAY_ORIENTATION_UP", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464a675a8a5319f06508b9239f06c6b746e8", null ],
+      [ "orxDISPLAY_ORIENTATION_LEFT", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464afcc1c1a31f471e53aa41fca692f7318d", null ],
+      [ "orxDISPLAY_ORIENTATION_DOWN", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464a2da313bab5af26c4fabe67f651037625", null ],
+      [ "orxDISPLAY_ORIENTATION_RIGHT", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464a6358e5a31d04422178014a00724d4315", null ],
+      [ "orxDISPLAY_ORIENTATION_NUMBER", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464a89a890b5b0404551f83e80762b1bca75", null ],
+      [ "orxDISPLAY_ORIENTATION_NONE", "orx_display_8h.html#gga6f6093ca383ea024e7687aa04aa48464a11d770a9f2b2df2c0b97e7ab5a608efb", null ]
+    ] ],
     [ "orxDISPLAY_SMOOTHING", "orx_display_8h.html#ga06d1a571694db550938b75f1c66cd331", [
       [ "orxDISPLAY_SMOOTHING_DEFAULT", "orx_display_8h.html#gga06d1a571694db550938b75f1c66cd331ad3caa8b13c52378a4e39235285f82be1", null ],
       [ "orxDISPLAY_SMOOTHING_ON", "orx_display_8h.html#gga06d1a571694db550938b75f1c66cd331a01a725709f5f8b09ea2ecb4ba518d8a0", null ],

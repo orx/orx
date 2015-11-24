@@ -10,6 +10,7 @@ var searchData=
   ['orxdebug_5flevel',['orxDEBUG_LEVEL',['../group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb',1,'orxDebug.h']]],
   ['orxdisplay_5fblend_5fmode',['orxDISPLAY_BLEND_MODE',['../group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent',['orxDISPLAY_EVENT',['../group__orx_display.html#ga28840e9c6ef7b5e7eaf61f0108e806a4',1,'orxDisplay.h']]],
+  ['orxdisplay_5forientation',['orxDISPLAY_ORIENTATION',['../group__orx_display.html#ga6f6093ca383ea024e7687aa04aa48464',1,'orxDisplay.h']]],
   ['orxdisplay_5fsmoothing',['orxDISPLAY_SMOOTHING',['../group__orx_display.html#ga06d1a571694db550938b75f1c66cd331',1,'orxDisplay.h']]],
   ['orxevent_5ftype',['orxEVENT_TYPE',['../group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8',1,'orxEvent.h']]],
   ['orxframe_5fspace',['orxFRAME_SPACE',['../group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7',1,'orxFrame.h']]],

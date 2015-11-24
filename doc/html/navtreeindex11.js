@@ -1,5 +1,13 @@
 var NAVTREEINDEX11 =
 {
+"orx_anim_8h.html#ga1c5dd06056fb50465d577913a3e0aed8":[3,0,0,0,0,26],
+"orx_anim_8h.html#ga240c6df3111297726e4b3ef0164ed912":[3,0,0,0,0,2],
+"orx_anim_8h.html#ga29bd78ea7025d50a8767da6b45fd9a6c":[3,0,0,0,0,4],
+"orx_anim_8h.html#ga2f5d16d134a708037091d0a64c1f490e":[3,0,0,0,0,19],
+"orx_anim_8h.html#ga34af9e6bbcc1d1b4f65b81cf78f2cef9":[3,0,0,0,0,9],
+"orx_anim_8h.html#ga350480df9b149d33bd146f6b9ac4cf92":[3,0,0,0,0,1],
+"orx_anim_8h.html#ga35c8d85da4576521adb85018dd46f3e0":[3,0,0,0,0,7],
+"orx_anim_8h.html#ga3a0ffbc775811de6ce7a771300a54038":[3,0,0,0,0,22],
 "orx_anim_8h.html#ga40c54d816dd6b4ed0da4c0b967ddbc8e":[3,0,0,0,0,21],
 "orx_anim_8h.html#ga4d651010d0c8cff85aa5c641a16f0097":[3,0,0,0,0,6],
 "orx_anim_8h.html#ga4ea007379c0c16774e2c7db73d68964f":[3,0,0,0,0,3],
@@ -241,13 +249,5 @@ var NAVTREEINDEX11 =
 "orx_clock_8h.html#gaeb933c20c95d9c8a42a9afb40312f3b5":[3,0,0,2,0,37],
 "orx_clock_8h.html#gaf96e5f8bbc774b945ee16858f59a7715":[3,0,0,2,0,35],
 "orx_clock_8h.html#gafa14b59e3a6e6312a40bfb535431b008":[3,0,0,2,0,18],
-"orx_clock_8h.html#gaffde552ec5eb3e198164e15a5f651c6a":[3,0,0,2,0,31],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791da2f29c49771425564483dece719f38a05":[3,0,0,2,0,5,2],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791da41630991614af985a9d377a1e90cdc35":[3,0,0,2,0,5,0],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791da50713812454a2a348fa091d04a64ee35":[3,0,0,2,0,5,4],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791da9148967775d49709621a41aa3c4efe97":[3,0,0,2,0,5,1],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791dad2c2a028497b40243a3d52eb20f4b0fa":[3,0,0,2,0,5,5],
-"orx_clock_8h.html#gga5d61e2fc9dcad950bc23ff7a5525791daddd9902df89d032e193f2de1c8da0c0f":[3,0,0,2,0,5,3],
-"orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7a6c31ce89039d103b99a6ba57c8c24282":[3,0,0,2,0,8,1],
-"orx_clock_8h.html#gga8e27772673f124fc5d31b8596539e8d7a789ac9e1f4746dfa1ec2b03cf0bbe2cb":[3,0,0,2,0,8,3]
+"orx_clock_8h.html#gaffde552ec5eb3e198164e15a5f651c6a":[3,0,0,2,0,31]
 };
