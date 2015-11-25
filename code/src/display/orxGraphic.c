@@ -1071,9 +1071,28 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   {
     orxFLOAT fHeight, fWidth;
 
-    /* Gets graphic size */
-    fWidth  = vSize.fX;
-    fHeight = vSize.fY;
+    /* Depending on orientation */
+    switch(_pstGraphic->eOrientation)
+    {
+      default:
+      case orxDISPLAY_ORIENTATION_UP:
+      case orxDISPLAY_ORIENTATION_DOWN:
+      {
+        /* Gets graphic size */
+        fWidth  = vSize.fX;
+        fHeight = vSize.fY;
+        break;
+      }
+
+      case orxDISPLAY_ORIENTATION_LEFT:
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        /* Gets graphic size */
+        fWidth  = vSize.fY;
+        fHeight = vSize.fX;
+        break;
+      }
+    }
 
     /* Pivot left? */
     if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))

@@ -4736,6 +4736,28 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   {
     /* Gets its size */
     pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
+
+    /* Depending on orientation */
+    switch(orxGraphic_GetOrientation(pstGraphic))
+    {
+      case orxDISPLAY_ORIENTATION_LEFT:
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        orxFLOAT fTemp;
+
+        /* Swap values */
+        fTemp       = _pvSize->fX;
+        _pvSize->fX = _pvSize->fY;
+        _pvSize->fY = fTemp;
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
   }
   else
   {
