@@ -8047,7 +8047,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   if(pstGraphic != orxNULL)
   {
     /* Gets its pivot */
-     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
+    pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
   }
   else
   {
@@ -8119,6 +8119,28 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   {
     /* Gets its size */
     pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
+
+    /* Depending on orientation */
+    switch(orxGraphic_GetOrientation(pstGraphic))
+    {
+      case orxDISPLAY_ORIENTATION_LEFT:
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        orxFLOAT fTemp;
+
+        /* Swap values */
+        fTemp       = _pvSize->fX;
+        _pvSize->fX = _pvSize->fY;
+        _pvSize->fY = fTemp;
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
   }
   else
   {

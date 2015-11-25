@@ -58,8 +58,10 @@
  */
 #define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
-#define orxGRAPHIC_KU32_FLAG_TEXT             0x00000002  /**< Text type graphic flag  */
+#define orxGRAPHIC_KU32_FLAG_QUAD             0x00000001  /**< Quad type graphic flag */
+#define orxGRAPHIC_KU32_FLAG_TEXT             0x00000002  /**< Text type graphic flag */
+
+#define orxGRAPHIC_KU32_MASK_2D               0x00000003  /**< 2D type graphic mask */
 
 #define orxGRAPHIC_KU32_MASK_TYPE             0x00000003  /**< Type mask */
 
@@ -330,6 +332,13 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasBlendMode(const orxG
  * @return Blend mode (alpha, multiply, add or none)
  */
 extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pstGraphic);
+
+
+/** Gets graphic orientation
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+extern orxDLLAPI orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic);
 
 #endif /* _orxGRAPHIC_H_ */
 

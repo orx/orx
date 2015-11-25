@@ -75,6 +75,7 @@
 /** Misc defines
  */
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER       "TextureCorner" /**< Kept for retro-compatibility reason */
+#define orxGRAPHIC_KZ_CONFIG_ORIENTATION          "Orientation"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
 #define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"
@@ -86,6 +87,10 @@
 #define orxGRAPHIC_KZ_X                           "x"
 #define orxGRAPHIC_KZ_Y                           "y"
 #define orxGRAPHIC_KZ_BOTH                        "both"
+#define orxGRAPHIC_KZ_UP_ORIENTATION              "up"
+#define orxGRAPHIC_KZ_LEFT_ORIENTATION            "left"
+#define orxGRAPHIC_KZ_DOWN_ORIENTATION            "down"
+#define orxGRAPHIC_KZ_RIGHT_ORIENTATION           "right"
 
 #define orxGRAPHIC_KU32_BANK_SIZE                 1024
 
@@ -100,26 +105,27 @@
  */
 struct __orxGRAPHIC_t
 {
-  orxSTRUCTURE    stStructure;              /**< Public structure, first structure member : 32 */
-  orxSTRUCTURE   *pstData;                  /**< Data structure : 20 */
-  orxSTRINGID     stLocaleNameID;           /**< Locale name ID : 28 */
-  orxVECTOR       vPivot;                   /**< Pivot : 40 */
-  orxCOLOR        stColor;                  /**< Color : 56 */
-  orxFLOAT        fTop;                     /**< Top coordinate : 60 */
-  orxFLOAT        fLeft;                    /**< Left coordinate : 64 */
-  orxFLOAT        fWidth;                   /**< Width : 68 */
-  orxFLOAT        fHeight;                  /**< Height : 72 */
-  orxFLOAT        fRepeatX;                 /**< X-axis repeat count : 76 */
-  orxFLOAT        fRepeatY;                 /**< Y-axis repeat count : 80 */
-  const orxSTRING zReference;               /**< Reference : 84 */
-  const orxSTRING zDataReference;           /**< Data reference : 88 */
+  orxSTRUCTURE            stStructure;            /**< Public structure, first structure member : 32 */
+  orxSTRUCTURE           *pstData;                /**< Data structure : 20 */
+  orxSTRINGID             stLocaleNameID;         /**< Locale name ID : 28 */
+  orxVECTOR               vPivot;                 /**< Pivot : 40 */
+  orxCOLOR                stColor;                /**< Color : 56 */
+  orxFLOAT                fTop;                   /**< Top coordinate : 60 */
+  orxFLOAT                fLeft;                  /**< Left coordinate : 64 */
+  orxFLOAT                fWidth;                 /**< Width : 68 */
+  orxFLOAT                fHeight;                /**< Height : 72 */
+  orxFLOAT                fRepeatX;               /**< X-axis repeat count : 76 */
+  orxFLOAT                fRepeatY;               /**< Y-axis repeat count : 80 */
+  orxDISPLAY_ORIENTATION  eOrientation;           /**< Orientation : 84 */
+  const orxSTRING         zReference;             /**< Reference : 88 */
+  const orxSTRING         zDataReference;         /**< Data reference : 92 */
 };
 
 /** Static structure
  */
 typedef struct __orxGRAPHIC_STATIC_t
 {
-  orxU32 u32Flags;                          /**< Control flags : 4 */
+  orxU32 u32Flags;                                /**< Control flags : 4 */
 
 } orxGRAPHIC_STATIC;
 
@@ -156,8 +162,8 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
       /* Removes its owner */
       orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
 
-      /* 2D data? */
-      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+      /* Quad data? */
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD))
       {
         /* Deletes it */
         orxTexture_Delete(orxTEXTURE(_pstGraphic->pstData));
@@ -197,7 +203,7 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
     if(orxTEXTURE(_pstData) != orxNULL)
     {
       /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_MASK_TYPE);
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD, orxGRAPHIC_KU32_MASK_TYPE);
     }
     /* Is data a text? */
     else if(orxTEXT(_pstData) != orxNULL)
@@ -312,8 +318,8 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
                 pstGraphic->zDataReference = orxString_Store(zName);
               }
 
-              /* Has 2D data? */
-              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+              /* Has quad data? */
+              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD))
               {
                 /* Loads texture */
                 pstTexture = orxTexture_Load(zName, orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE) ? orxTRUE : orxFALSE);
@@ -741,6 +747,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if(pstTexture != orxNULL)
         {
+          const orxSTRING zOrientation;
+
           /* Stores its data reference */
           pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
 
@@ -771,6 +779,34 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
               /* Applies it */
               pstResult->fWidth   = vValue.fX;
               pstResult->fHeight  = vValue.fY;
+            }
+
+            /* Gets orientation */
+            zOrientation = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_ORIENTATION);
+
+            /* Left? */
+            if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_LEFT_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_LEFT;
+            }
+            /* Down? */
+            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_DOWN_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_DOWN;
+            }
+            /* Right? */
+            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_RIGHT_ORIENTATION))
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_RIGHT;
+            }
+            /* Up */
+            else
+            {
+              /* Sets orientation */
+              pstResult->eOrientation = orxDISPLAY_ORIENTATION_UP;
             }
           }
           else
@@ -1047,7 +1083,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
       orxStructure_SetFlags(pstResult, orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_ALL), orxGRAPHIC_KU32_MASK_ALL);
 
       /* Has texture? */
-      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD) != orxFALSE)
       {
         /* Checks */
         orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
@@ -1324,6 +1360,27 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     /* Inits box top left corner */
     orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
 
+    /* Depending on orientation */
+    switch(_pstGraphic->eOrientation)
+    {
+      case orxDISPLAY_ORIENTATION_LEFT:
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        orxFLOAT fTemp;
+
+        /* Exchange width & height */
+        fTemp         = stBox.vBR.fX;
+        stBox.vBR.fX  = stBox.vBR.fY;
+        stBox.vBR.fY  = fTemp;
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
+
     /* Updates pivot */
     orxGraphic_AlignVector(_u32AlignFlags, &stBox, &(_pstGraphic->vPivot));
 
@@ -1441,8 +1498,8 @@ orxVECTOR *orxFASTCALL orxGraphic_GetSize(const orxGRAPHIC *_pstGraphic, orxVECT
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize != orxNULL);
 
-  /* Valid 2D or text data? */
-  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
+  /* Valid 2D? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_2D) != orxFALSE)
   {
     /* Gets its size */
     orxVector_Set(_pvSize, _pstGraphic->fWidth, _pstGraphic->fHeight, orxFLOAT_0);
@@ -1680,7 +1737,7 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Is data a texture? */
-  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD))
   {
     /* Checks */
     orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
@@ -1969,6 +2026,25 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
     /* Clears result */
     eResult = orxDISPLAY_BLEND_MODE_NONE;
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets graphic orientation
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic)
+{
+  orxDISPLAY_ORIENTATION eResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  eResult = _pstGraphic->eOrientation;
 
   /* Done! */
   return eResult;

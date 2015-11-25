@@ -118,14 +118,15 @@
 
 typedef struct __orxRENDER_RENDER_NODE_t
 {
-  orxLINKLIST_NODE      stNode;                     /**< Linklist node : 12 */
-  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 16 */
-  const orxSHADER      *pstShader;                  /**< Shader pointer : 20 */
-  orxOBJECT            *pstObject;                  /**< Object pointer : 24 */
-  orxFLOAT              fZ;                         /**< Z coordinate : 28 */
-  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 32 */
-  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 36 */
-  orxFLOAT              fDepthCoef;                 /**< Depth coef : 40 */
+  orxLINKLIST_NODE        stNode;                   /**< Linklist node : 12 */
+  orxTEXTURE             *pstTexture;               /**< Texture pointer : 16 */
+  const orxSHADER        *pstShader;                /**< Shader pointer : 20 */
+  orxOBJECT              *pstObject;                /**< Object pointer : 24 */
+  orxFLOAT                fZ;                       /**< Z coordinate : 28 */
+  orxDISPLAY_BLEND_MODE   eBlendMode;               /**< Blend mode : 32 */
+  orxDISPLAY_SMOOTHING    eSmoothing;               /**< Smoothing : 36 */
+  orxFLOAT                fDepthCoef;               /**< Depth coef : 40 */
+  orxDISPLAY_ORIENTATION  eOrientation;             /**< Orientation : 44 */
 
 } orxRENDER_NODE;
 
@@ -522,9 +523,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fHueDelta = orxRENDER_KF_PROFILER_HUE_STACK_RANGE / orxS2F(s32MarkerCount + 1);
 
   /* Inits transform */
-  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
-  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
-  stTransform.fRotation = orxFLOAT_0;
+  stTransform.fSrcX         = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX      = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation     = orxFLOAT_0;
+  stTransform.eOrientation  = orxDISPLAY_ORIENTATION_UP;
 
   /* Draws background */
   stTransform.fDstX   = orxFLOAT_0;
@@ -1266,9 +1268,10 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
 
   /* Inits transform */
-  stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
-  stTransform.fRepeatX  = stTransform.fRepeatY  = orxFLOAT_1;
-  stTransform.fRotation = orxFLOAT_0;
+  stTransform.fSrcX         = stTransform.fSrcY     = orxFLOAT_0;
+  stTransform.fRepeatX      = stTransform.fRepeatY  = orxFLOAT_1;
+  stTransform.fRotation     = orxFLOAT_0;
+  stTransform.eOrientation  = orxDISPLAY_ORIENTATION_UP;
 
   /* Pushes config section */
   orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
@@ -1493,16 +1496,16 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
     orxTEXT    *pstText;
     orxFONT    *pstFont;
     orxBITMAP  *pstBitmap = orxNULL;
-    orxBOOL     bIs2D;
+    orxBOOL     bIsQuad;
 
     /* Gets object's working graphic */
     pstGraphic = orxObject_GetWorkingGraphic(pstObject);
 
     /* Stores type */
-    bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
+    bIsQuad = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_QUAD);
 
-    /* Is 2D? */
-    if(bIs2D != orxFALSE)
+    /* Is quad? */
+    if(bIsQuad != orxFALSE)
     {
       orxVECTOR vClipTL, vClipBR, vSize;
 
@@ -1614,8 +1617,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
           orxColor_SetRGBA(&stColor, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
         }
 
-        /* Is 2D? */
-        if(bIs2D != orxFALSE)
+        /* Is quad? */
+        if(bIsQuad != orxFALSE)
         {
           /* Transforms bitmap */
           eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.stObject.pstTransform, orxColor_ToRGBA(&stColor), _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
@@ -1889,7 +1892,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
 
                     /* Valid 2D graphic? */
                     if((pstGraphic != orxNULL)
-                    && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE))
+                    && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_2D) != orxFALSE))
                     {
                       orxFRAME     *pstFrame;
                       orxSTRUCTURE *pstData;
@@ -2067,12 +2070,13 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             /* Cleans its internal node */
                             orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));
 
-                            /* Stores object */
-                            pstRenderNode->pstObject  = pstObject;
-                            pstRenderNode->pstTexture = pstTexture;
-                            pstRenderNode->pstShader  = pstShader;
-                            pstRenderNode->eSmoothing = eSmoothing;
-                            pstRenderNode->eBlendMode = eBlendMode;
+                            /* Updates render node */
+                            pstRenderNode->pstObject    = pstObject;
+                            pstRenderNode->pstTexture   = pstTexture;
+                            pstRenderNode->pstShader    = pstShader;
+                            pstRenderNode->eSmoothing   = eSmoothing;
+                            pstRenderNode->eBlendMode   = eBlendMode;
+                            pstRenderNode->eOrientation = orxGraphic_GetOrientation(pstGraphic);
 
                             /* Stores its Z coordinate */
                             pstRenderNode->fZ = vObjectPos.fZ;
@@ -2211,15 +2215,16 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                   }
 
                   /* Sets transformation values */
-                  stTransform.fSrcX     = orxFLOAT_0;
-                  stTransform.fSrcY     = orxFLOAT_0;
-                  stTransform.fDstX     = vRenderPos.fX;
-                  stTransform.fDstY     = vRenderPos.fY;
-                  stTransform.fRepeatX  = fRepeatX;
-                  stTransform.fRepeatY  = fRepeatY;
-                  stTransform.fScaleX   = vObjectScale.fX * fObjectScaleX;
-                  stTransform.fScaleY   = vObjectScale.fY * fObjectScaleY;
-                  stTransform.fRotation = fObjectRotation - fRenderRotation;
+                  stTransform.fSrcX         = orxFLOAT_0;
+                  stTransform.fSrcY         = orxFLOAT_0;
+                  stTransform.fDstX         = vRenderPos.fX;
+                  stTransform.fDstY         = vRenderPos.fY;
+                  stTransform.fRepeatX      = fRepeatX;
+                  stTransform.fRepeatY      = fRepeatY;
+                  stTransform.fScaleX       = vObjectScale.fX * fObjectScaleX;
+                  stTransform.fScaleY       = vObjectScale.fY * fObjectScaleY;
+                  stTransform.fRotation     = fObjectRotation - fRenderRotation;
+                  stTransform.eOrientation  = pstRenderNode->eOrientation;
 
                   /* Renders it */
                   if(orxRender_Home_RenderObject(pstRenderNode, &stTransform) == orxSTATUS_FAILURE)
