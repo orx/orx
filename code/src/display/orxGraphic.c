@@ -1069,7 +1069,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   /* Valid size? */
   if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
   {
-    orxFLOAT  fHeight, fWidth;
+    orxFLOAT fHeight, fWidth;
 
     /* Gets graphic size */
     fWidth  = vSize.fX;

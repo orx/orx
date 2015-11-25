@@ -4664,7 +4664,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   if(pstGraphic != orxNULL)
   {
     /* Gets its pivot */
-     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
+    pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
   }
   else
   {
