@@ -286,16 +286,8 @@ static orxINLINE orxU32 orxConsole_PrintLastResult(orxCHAR *_acBuffer, orxU32 _u
  */
 static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  const orxSTRING zPreviousSet;
-
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConsole_Update");
-
-  /* Backups previous input set */
-  zPreviousSet = orxInput_GetCurrentSet();
-
-  /* Selects console set */
-  orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
 
   /* Is enabled? */
   if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
@@ -757,9 +749,6 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
       orxFLAG_SWAP(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE);
     }
   }
-
-  /* Restores previous set */
-  orxInput_SelectSet(zPreviousSet);
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
