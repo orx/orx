@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxClock.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxThread.h"
@@ -902,6 +903,130 @@ static void orxResource_UpdatePostInit()
   }
 }
 
+/** Command: AddStorage
+ */
+void orxFASTCALL orxResource_CommandAddStorage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxResource_AddStorage(_astArgList[0].zValue, _astArgList[1].zValue, ((_u32ArgNumber < 3) || (_astArgList[2].bValue == orxFALSE)) ? orxFALSE : orxTRUE) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveStorage
+ */
+void orxFASTCALL orxResource_CommandRemoveStorage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxResource_RemoveStorage(_astArgList[0].zValue, _astArgList[1].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: ReloadStorage
+ */
+void orxFASTCALL orxResource_CommandReloadStorage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxResource_ReloadStorage() != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Locate
+ */
+void orxFASTCALL orxResource_CommandLocate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Has given storage? */
+  if(_u32ArgNumber > 2)
+  {
+    /* Updates result */
+    _pstResult->zValue = orxResource_LocateInStorage(_astArgList[0].zValue, _astArgList[2].zValue, _astArgList[1].zValue);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxResource_Locate(_astArgList[0].zValue, _astArgList[1].zValue);
+  }
+
+  /* Not found? */
+  if(_pstResult->zValue == orxNULL)
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetPath
+ */
+void orxFASTCALL orxResource_CommandGetPath(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxResource_GetPath(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetTotalPendingOpCounter
+ */
+void orxFASTCALL orxResource_CommandGetTotalPendingOpCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = orxResource_GetTotalPendingOpCounter();
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the resource commands
+ */
+static orxINLINE void orxResource_RegisterCommands()
+{
+  /* Command: AddStorage */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, AddStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING}, {"First = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: RemoveStorage */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, RemoveStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: ReloadStorage */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, ReloadStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+
+  /* Command: Locate */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, Locate, "Location", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Name", orxCOMMAND_VAR_TYPE_STRING}, {"Storage = <all>", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: GetPath */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetPath, "Path", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Location", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: GetTotalPendingOpCounter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCounter, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+}
+
+/** Unregisters all the resource commands
+ */
+static orxINLINE void orxResource_UnregisterCommands()
+{
+  /* Command: AddStorage */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, AddStorage);
+  /* Command: RemoveStorage */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, RemoveStorage);
+  /* Command: ReloadStorage */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, ReloadStorage);
+
+  /* Command: Locate */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, Locate);
+
+  /* Command: GetPath */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, GetPath);
+
+  /* Command: GetTotalPendingOpCounter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCounter);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -919,6 +1044,7 @@ void orxFASTCALL orxResource_Setup()
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_COMMAND);
 
   /* Done! */
   return;
@@ -1000,6 +1126,10 @@ orxSTATUS orxFASTCALL orxResource_Init()
           /* Success? */
           if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
           {
+
+            /* Registers commands */
+            orxResource_RegisterCommands();
+
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
             /* Registers APK type */
@@ -1085,6 +1215,9 @@ void orxFASTCALL orxResource_Exit()
   {
     orxRESOURCE_GROUP      *pstGroup;
     orxRESOURCE_OPEN_INFO  *pstOpenInfo;
+
+    /* Unregisters commands */
+    orxResource_UnregisterCommands();
 
     /* Makes sure resource thread is enabled */
     orxThread_Enable(orxTHREAD_GET_FLAG_FROM_ID(sstResource.u32RequestThreadID), orxTHREAD_KU32_FLAG_NONE);
