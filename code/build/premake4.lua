@@ -529,7 +529,7 @@ project "orxLIB"
 
         configuration {}
     else
-        configuration {"macosx", "xcode*"}
+        configuration {"macosx", "not *Core*"}
             postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
     end
 
