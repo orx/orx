@@ -261,7 +261,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
         /* Is F12 pressed? */
         if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) != orxFALSE)
         {
-          /* Toggles vsync */
+          /* Captures a screenshot */
           orxScreenshot_Capture();
 
           /* Updates key status */
