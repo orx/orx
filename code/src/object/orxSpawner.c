@@ -58,6 +58,7 @@
 #define orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT         0x40000000  /**< Active limit flag */
 #define orxSPAWNER_KU32_FLAG_WAVE_MODE            0x80000000  /**< Wave mode flag */
 #define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x01000000  /**< Speed flag */
+#define orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE    0x02000000  /**< Clean interpolation flag */
 
 #define orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED  0x00100000  /**< Random object speed flag */
 #define orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE     0x00200000  /**< Random wave size flag */
@@ -335,15 +336,10 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     }
 
     /* Should interpolate? */
-    if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_INTERPOLATE) != orxFALSE))
+    if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_INTERPOLATE) != orxFALSE) && (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_INTERPOLATE) != orxFALSE))
     {
-      /* Stores last values */
-      orxSpawner_GetWorldPosition(_pstSpawner, &(_pstSpawner->vLastPosition));
-      orxSpawner_GetWorldScale(_pstSpawner, &(_pstSpawner->vLastScale));
-      _pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(_pstSpawner);
-
       /* Updates status */
-      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
     }
 
     /* Updates result */
@@ -864,8 +860,8 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
 
-        /* Is in interpolate mode with a valid wave delay? */
-        if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE)
+        /* Is in active interpolate mode with a valid wave delay? */
+        if((orxStructure_GetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE) == orxSPAWNER_KU32_FLAG_INTERPOLATE)
         && (pstSpawner->fWaveDelay > orxFLOAT_0))
         {
           orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
@@ -900,8 +896,19 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         }
         else
         {
+          /* Should clean interpolation values? */
+          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE))
+          {
+            /* Stores last values */
+            orxSpawner_GetWorldPosition(pstSpawner, &(pstSpawner->vLastPosition));
+            orxSpawner_GetWorldScale(pstSpawner, &(pstSpawner->vLastScale));
+            pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(pstSpawner);
+
+            /* Updates status */
+            orxStructure_SetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE);
+          }
           /* Is in interpolate mode? */
-          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+          else if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
           {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Spawner <%s>: Ignoring interpolate mode as its WaveDelay isn't strictly positive.", orxSpawner_GetName(pstSpawner));
@@ -1214,10 +1221,8 @@ void orxFASTCALL    orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
     /* Is in interpolate mode and wasn't enabled? */
     if(orxStructure_GetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_ENABLED) == orxSPAWNER_KU32_FLAG_INTERPOLATE)
     {
-      /* Stores last values */
-      orxSpawner_GetWorldPosition(_pstSpawner, &(_pstSpawner->vLastPosition));
-      orxSpawner_GetWorldScale(_pstSpawner, &(_pstSpawner->vLastScale));
-      _pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(_pstSpawner);
+      /* Asks for interpolation clean */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
     }
 
     /* Updates status flags */
