@@ -2989,6 +2989,12 @@ void orxFASTCALL orxObject_Exit()
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
 
+    /* Deletes group table */
+    orxHashTable_Delete(sstObject.pstGroupTable);
+
+    /* Deletes group bank */
+    orxBank_Delete(sstObject.pstGroupBank);
+
     /* Updates flags */
     sstObject.u32Flags &= ~orxOBJECT_KU32_STATIC_FLAG_READY;
   }
