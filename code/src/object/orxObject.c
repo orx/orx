@@ -4278,9 +4278,9 @@ void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
 /** Sets owner for an object. Ownership in Orx is only about lifetime management. That is, when an object
  * dies, it also kills its children. Compare this with orxObject_SetParent().
  *
- * Note that the "ChildList" field of an object's config section implies two things; that the object is both 
- * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an 
- * exception to this though; when an object's child has a parent camera, the object is only the owner, and 
+ * Note that the "ChildList" field of an object's config section implies two things; that the object is both
+ * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an
+ * exception to this though; when an object's child has a parent camera, the object is only the owner, and
  * the camera is the parent.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Owner to set / orxNULL, if owner is an orxOBJECT, the owned object will be added to it as a children
@@ -4378,12 +4378,12 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetOwner(const orxOBJECT *_pstObject)
 
 /** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
  * see orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
- * 
+ *
  * This function is typically used to iterate over the owned children of an object. For example;
- * @code 
- * for (orxOBJECT * pstChild = orxObject_GetOwnedChild(pstObject);
- *      pstChild;
- *      pstChild = orxObject_GetOwnedSibling(pstChild)) 
+ * @code
+ * for(orxOBJECT * pstChild = orxObject_GetOwnedChild(pstObject);
+ *     pstChild;
+ *     pstChild = orxObject_GetOwnedSibling(pstChild))
  * {
  *     do_something(pstChild);
  * } @endcode
@@ -4634,12 +4634,12 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
 }
 
 /** Sets object size. For objects that have a graphic attached it's simply a convenience wrapper for orxGraphic_SetSize(),
- * but an object can also have a size without a graphic. 
- * 
- * Note the difference between "Scale" and "Size". The size of an object with a non-text graphic is the sprite size in 
- * pixels on its texture. The object's effective size for rendering and intersection purposes (see orxObject_Pick() 
+ * but an object can also have a size without a graphic.
+ *
+ * Note the difference between "Scale" and "Size". The size of an object with a non-text graphic is the sprite size in
+ * pixels on its texture. The object's effective size for rendering and intersection purposes (see orxObject_Pick()
  * and friends) is proportional to its "size" multiplied by its "scale". Another important distinction is that the
- * scale of an object also affects its children (see orxObject_SetParent() and note the distinction between 
+ * scale of an object also affects its children (see orxObject_SetParent() and note the distinction between
  * parenthood and ownership).
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvSize         Object size
@@ -4897,7 +4897,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
   return eResult;
 }
 
-/** Sets object rotation in its parent's reference frame. See orxObject_SetWorldRotation() for setting an object's 
+/** Sets object rotation in its parent's reference frame. See orxObject_SetWorldRotation() for setting an object's
  * rotation in the global reference frame.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fRotation      Object rotation (radians)
@@ -5315,13 +5315,13 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxV
   return pvResult;
 }
 
-/** Sets an object parent (in the frame hierarchy). Parenthood in orx is about the transformation (position, 
- * rotation, scale) of objects. Transformation of objects are compounded in a frame hierarchy. Compare this 
+/** Sets an object parent (in the frame hierarchy). Parenthood in orx is about the transformation (position,
+ * rotation, scale) of objects. Transformation of objects are compounded in a frame hierarchy. Compare this
  * with orxObject_SetOwner()
  *
- * Note that the "ChildList" field of an object's config section implies two things; that the object is both 
- * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an 
- * exception to this though; when an object's child has a parent camera, the object is only the owner, and 
+ * Note that the "ChildList" field of an object's config section implies two things; that the object is both
+ * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an
+ * exception to this though; when an object's child has a parent camera, the object is only the owner, and
  * the camera is the parent.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
@@ -5451,14 +5451,14 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
-/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of 
+/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
- * 
+ *
  * This function is typically used to iterate over the children of an object. For example;
- * @code 
- * for (orxOBJECT * pstChild = orxObject_GetChild(pstObject);
- *      pstChild;
- *      pstChild = orxObject_GetSibling(pstChild))
+ * @code
+ * for(orxOBJECT * pstChild = orxObject_GetChild(pstObject);
+ *     pstChild;
+ *     pstChild = orxObject_GetSibling(pstChild))
  * {
  *     do_something(pstChild);
  * } @endcode
@@ -6454,7 +6454,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
   return eResult;
 }
 
-/** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this 
+/** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this
  * function is the same as it with the delay argument set to 0.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
@@ -7196,7 +7196,7 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
  *
  * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox);
  * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i) 
+ *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i)
  *     {
  *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
  *         do_something_with(pstObject);
