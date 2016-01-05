@@ -7883,7 +7883,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstO
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstObject == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstObject) < orxSTRUCTURE_ID_NUMBER));
-  orxASSERT((_pstObject == orxNULL) || (_u32GroupID == orxU32_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stGroupNode)) == orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID)))
+  orxASSERT((_pstObject == orxNULL) || (_u32GroupID == orxU32_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stGroupNode)) == orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID)));
 
   /* Has group? */
   if(_u32GroupID != orxU32_UNDEFINED)

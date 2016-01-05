@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
@@ -44,6 +45,7 @@
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
+#include "utils/orxTree.h"
 
 
 /** Module flags
@@ -79,6 +81,9 @@
 #define orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER       1
 #define orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE          44100
 
+#define orxSOUND_KU32_BUS_BANK_SIZE                     64
+#define orxSOUND_KU32_BUS_TABLE_SIZE                    64
+
 #define orxSOUND_KZ_CONFIG_SOUND                        "Sound"
 #define orxSOUND_KZ_CONFIG_MUSIC                        "Music"
 #define orxSOUND_KZ_CONFIG_LOOP                         "Loop"
@@ -88,11 +93,26 @@
 #define orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE           "RefDistance"
 #define orxSOUND_KZ_CONFIG_ATTENUATION                  "Attenuation"
 #define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
+#define orxSOUND_KZ_CONFIG_BUS                          "Bus"
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Sound bus structure
+ */
+typedef struct __orxSOUND_BUS_t
+{
+  orxTREE_NODE            stNode;                       /**< Tree node : 8/12 */
+  orxLINKLIST             stList;                       /**< Sound list : 20/32 */
+  orxU32                  u32ID;                        /**< ID : 24/36 */
+  orxFLOAT                fGlobalVolume;                /**< Global volume : 28/40 */
+  orxFLOAT                fGlobalPitch;                 /**< Global pitch : 32/44 */
+  orxFLOAT                fLocalVolume;                 /**< Local volume : 36/48 */
+  orxFLOAT                fLocalPitch;                  /**< Local pitch : 40/52 */
+
+} orxSOUND_BUS;
 
 /** Sound sample structure
  */
@@ -110,19 +130,28 @@ typedef struct __orxSOUND_SAMPLE_t
 struct __orxSOUND_t
 {
   orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 32 */
-  const orxSTRING       zReference;                     /**< Sound reference : 20 */
-  orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
-  orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
-  orxSOUND_STATUS       eStatus;                        /**< Sound status : 32 */
-  orxFLOAT              fPitch;                         /**< Sound pitch : 36 */
+  orxLINKLIST_NODE      stBusNode;                      /**< Bus node : 44/56 */
+  const orxSTRING       zReference;                     /**< Sound reference : 48/64 */
+  orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 52/72 */
+  orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 56/80 */
+  orxU32                u32BusID;                       /**< Sound bus ID: 60/84 */
+  orxSOUND_STATUS       eStatus;                        /**< Sound status : 64/88 */
+  orxFLOAT              fVolume;                        /**< Sound volume : 68/92 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 72/96 */
+  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 76/100 */
 };
 
 /** Static structure
  */
 typedef struct __orxSOUND_STATIC_t
 {
-  orxHASHTABLE *pstSampleTable;                         /**< Sample hash table */
   orxBANK      *pstSampleBank;                          /**< Sample bank */
+  orxHASHTABLE *pstSampleTable;                         /**< Sample hash table */
+  orxBANK      *pstBusBank;                             /**< Bus bank */
+  orxHASHTABLE *pstBusTable;                            /**< Bus table */
+  orxTREE       stBusTree;                              /**< Bus tree */
+  orxSOUND_BUS *pstCachedBus;                           /**< Bus cache */
+  orxU32        u32MasterBusID;                         /**< Master bus ID */
   orxU32        u32Flags;                               /**< Control flags */
 
 } orxSOUND_STATIC;
@@ -301,6 +330,9 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         _pstSound->pstSample = orxNULL;
       }
 
+      /* Inits pitch modifier */
+      _pstSound->fPitchModifier = orxFLOAT_1;
+
       /* Updates flags */
       orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_FLAG_HAS_SAMPLE | orxSOUND_KU32_FLAG_HAS_STREAM);
 
@@ -381,6 +413,32 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
     /* Valid content? */
     if(_pstSound->pstData != orxNULL)
     {
+      /* Has bus? */
+      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_BUS) != orxFALSE)
+      {
+        const orxSTRING zBus;
+
+        /* Gets it */
+        zBus = orxConfig_GetString(orxSOUND_KZ_CONFIG_BUS);
+
+        /* Valid? */
+        if(*zBus != orxCHAR_NULL)
+        {
+          /* Sets it */
+          orxSound_SetBusID(_pstSound, orxString_GetID(zBus));
+        }
+        else
+        {
+          /* Sets master bus */
+          orxSound_SetBusID(_pstSound, sstSound.u32MasterBusID);
+        }
+      }
+      else
+      {
+        /* Sets master bus */
+        orxSound_SetBusID(_pstSound, sstSound.u32MasterBusID);
+      }
+
       /* Should loop? */
       if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_LOOP) != orxFALSE)
       {
@@ -397,12 +455,12 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_VOLUME) != orxFALSE)
       {
         /* Updates volume */
-        orxSoundSystem_SetVolume(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_VOLUME));
+        orxSound_SetVolume(_pstSound, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_VOLUME));
       }
       else
       {
         /* Updates volume */
-        orxSoundSystem_SetVolume(_pstSound->pstData, orxFLOAT_1);
+        orxSound_SetVolume(_pstSound, orxFLOAT_1);
       }
 
       /* Has pitch? */
@@ -742,13 +800,20 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   /* Has clock? */
   if(_pstClockInfo != orxNULL)
   {
-    orxFLOAT fPitchCoef;
+    orxFLOAT fPitchModifier;
 
-    /* Gets pitch coef */
-    fPitchCoef = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
+    /* Gets pitch modifier */
+    fPitchModifier = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
 
-    /* Updates its pitch */
-    orxSoundSystem_SetPitch(pstSound->pstData, pstSound->fPitch * fPitchCoef);
+    /* Should update? */
+    if(fPitchModifier != pstSound->fPitchModifier)
+    {
+      /* Stores it */
+      pstSound->fPitchModifier = fPitchModifier;
+
+      /* Updates sound */
+      orxSound_SetPitch(pstSound, pstSound->fPitch);
+    }
   }
 
   /* Gets new status */
@@ -801,6 +866,350 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   return eResult;
 }
 
+static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxU32 _u32BusID, orxBOOL _bCreate)
+{
+  orxSOUND_BUS *pstResult;
+
+  /* Is cached bus? */
+  if((sstSound.pstCachedBus != orxNULL)
+  && (sstSound.pstCachedBus->u32ID == _u32BusID))
+  {
+    /* Updates result */
+    pstResult = sstSound.pstCachedBus;
+  }
+  else
+  {
+    /* Gets bus */
+    pstResult = (orxSOUND_BUS *)orxHashTable_Get(sstSound.pstBusTable, _u32BusID);
+
+    /* Not found and should create? */
+    if((pstResult == orxNULL) && (_bCreate != orxFALSE))
+    {
+      /* Allocates it */
+      pstResult = (orxSOUND_BUS *)orxBank_Allocate(sstSound.pstBusBank);
+
+      /* Checks */
+      orxASSERT(pstResult != orxNULL);
+
+      /* Inits it */
+      orxMemory_Zero(pstResult, sizeof(orxSOUND_BUS));
+      pstResult->u32ID          = _u32BusID;
+      pstResult->fGlobalVolume  =
+      pstResult->fGlobalPitch   =
+      pstResult->fLocalVolume   =
+      pstResult->fLocalPitch    = orxFLOAT_1;
+
+      /* Master? */
+      if(orxTree_GetRoot(&(sstSound.stBusTree)) == orxNULL)
+      {
+        /* Adds it as root */
+        orxTree_AddRoot(&(sstSound.stBusTree), &(pstResult->stNode));
+      }
+      else
+      {
+        /* Adds it to root */
+        orxTree_AddChild(orxTree_GetRoot(&(sstSound.stBusTree)), &(pstResult->stNode));
+      }
+
+      /* Stores it */
+      orxHashTable_Add(sstSound.pstBusTable, _u32BusID, pstResult);
+    }
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      /* Updates cached bus */
+      sstSound.pstCachedBus = pstResult;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+static orxSTATUS orxFASTCALL orxSound_UpdateBus(orxSOUND_BUS *pstBus)
+{
+  orxTREE_NODE *pstNode, *pstParentNode;
+  orxFLOAT      fNewVolume, fNewPitch;
+  orxBOOL       bHasNewVolume, bHasNewPitch;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+  /* Gets bus & parent nodes */
+  pstNode       = &(pstBus->stNode);
+  pstParentNode = orxTree_GetParent(pstNode);
+
+  /* Found? */
+  if(pstParentNode != orxNULL)
+  {
+    orxSOUND_BUS *pstParentBus;
+
+    /* Gets parent bus */
+    pstParentBus = orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstParentNode);
+
+    /* Computes new volume & pitch */
+    fNewVolume  = pstParentBus->fGlobalVolume * pstBus->fLocalVolume;
+    fNewPitch   = pstParentBus->fGlobalPitch * pstBus->fLocalPitch;
+  }
+  else
+  {
+    /* Computes new volume & pitch */
+    fNewVolume  = pstBus->fLocalVolume;
+    fNewPitch   = pstBus->fLocalPitch;
+  }
+
+  /* Updates status */
+  bHasNewVolume = (fNewVolume != pstBus->fGlobalVolume) ? orxTRUE : orxFALSE;
+  bHasNewPitch  = (fNewPitch != pstBus->fGlobalPitch) ? orxTRUE : orxFALSE;
+
+  /* Needs update? */
+  if((bHasNewVolume != orxFALSE)
+  || (bHasNewPitch != orxFALSE))
+  {
+    orxTREE_NODE     *pstChildNode;
+    orxLINKLIST_NODE *pstSoundNode;
+
+    /* Stores new values */
+    pstBus->fGlobalVolume = fNewVolume;
+    pstBus->fGlobalPitch  = fNewPitch;
+
+    /* For all its sound */
+    for(pstSoundNode = orxLinkList_GetFirst(&(pstBus->stList));
+        pstSoundNode != orxNULL;
+        pstSoundNode = orxLinkList_GetNext(pstSoundNode))
+    {
+      orxSOUND *pstSound;
+
+      /* Gets it */
+      pstSound = orxSTRUCT_GET_FROM_FIELD(orxSOUND, stBusNode, pstSoundNode);
+
+      /* Has data? */
+      if(pstSound->pstData != orxNULL)
+      {
+        /* New volume? */
+        if(bHasNewVolume != orxFALSE)
+        {
+          /* Updates its volume */
+          orxSoundSystem_SetVolume(pstSound->pstData, fNewVolume * pstSound->fVolume);
+        }
+
+        /* New pitch? */
+        if(bHasNewPitch != orxFALSE)
+        {
+          /* Updates its pitch */
+          orxSoundSystem_SetPitch(pstSound->pstData, fNewPitch * pstSound->fPitchModifier * pstSound->fPitch);
+        }
+      }
+    }
+
+    /* Updates all children */
+    for(pstChildNode = orxTree_GetChild(pstNode);
+        pstChildNode != orxNULL;
+        pstChildNode = orxTree_GetSibling(pstChildNode))
+    {
+      /* Updates it */
+      orxSound_UpdateBus(orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstChildNode));
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Command: SetBusParent
+ */
+void orxFASTCALL orxSound_CommandSetBusParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID, u32ParentID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_GetID(_astArgList[0].zValue);
+
+  /* Gets parent ID */
+  u32ParentID = ((_u32ArgNumber > 1) && (*_astArgList[1].zValue != orxCHAR_NULL)) ? orxString_GetID(_astArgList[1].zValue) : orxSound_GetMasterBusID();
+
+  /* Set bus parent */
+  orxSound_SetBusParent(u32BusID, u32ParentID);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetBusParent
+ */
+void orxFASTCALL orxSound_CommandGetBusParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID, u32ParentID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Gets parent ID */
+  u32ParentID = orxSound_GetBusParent(u32BusID);
+
+  /* Updates result */
+  _pstResult->zValue = (u32ParentID != orxU32_UNDEFINED) ? orxString_GetFromID(u32ParentID) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetBusChild
+ */
+void orxFASTCALL orxSound_CommandGetBusChild(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID, u32ChildID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Gets child ID */
+  u32ChildID = orxSound_GetBusChild(u32BusID);
+
+  /* Updates result */
+  _pstResult->zValue = (u32ChildID != orxU32_UNDEFINED) ? orxString_GetFromID(u32ChildID) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetBusSibling
+ */
+void orxFASTCALL orxSound_CommandGetBusSibling(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID, u32SiblingID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Gets sibling ID */
+  u32SiblingID = orxSound_GetBusSibling(u32BusID);
+
+  /* Updates result */
+  _pstResult->zValue = (u32SiblingID != orxU32_UNDEFINED) ? orxString_GetFromID(u32SiblingID) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetBusVolume
+ */
+void orxFASTCALL orxSound_CommandSetBusVolume(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_GetID(_astArgList[0].zValue);
+
+  /* Sets its volume */
+  orxSound_SetBusVolume(u32BusID, _astArgList[1].fValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetBusPitch
+ */
+void orxFASTCALL orxSound_CommandSetBusPitch(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_GetID(_astArgList[0].zValue);
+
+  /* Sets its pitch */
+  orxSound_SetBusPitch(u32BusID, _astArgList[1].fValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetBusVolume
+ */
+void orxFASTCALL orxSound_CommandGetBusVolume(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->fValue = orxSound_GetBusVolume(u32BusID);
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetBusPitch
+ */
+void orxFASTCALL orxSound_CommandGetBusPitch(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32BusID;
+
+  /* Gets bus ID */
+  u32BusID = orxString_ToCRC(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->fValue = orxSound_GetBusPitch(u32BusID);
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the sound commands
+ */
+static orxINLINE void orxSound_RegisterCommands()
+{
+  /* Command: SetBusParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, SetBusParent, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Bus", orxCOMMAND_VAR_TYPE_STRING}, {"Parent = <master>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetBusParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusParent, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetBusChild */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusChild, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetBusSibling */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusSibling, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: SetBusVolume */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, SetBusVolume, "Bus", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING}, {"Volume", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: SetBusPitch */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, SetBusPitch, "Bus", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: GetBusVolume */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusVolume, "Volume", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetBusPitch */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusPitch, "Pitch", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+}
+
+/** Unregisters all the sound commands
+ */
+static orxINLINE void orxSound_UnregisterCommands()
+{
+  /* Command: SetBusParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, SetBusParent);
+  /* Command: GetBusParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusParent);
+  /* Command: GetBusChild */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusChild);
+  /* Command: GetBusSibling */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusSibling);
+
+  /* Command: SetBusVolume */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, SetBusVolume);
+  /* Command: SetBusPitch */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, SetBusPitch);
+  /* Command: GetBusVolume */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusVolume);
+  /* Command: GetBusPitch */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusPitch);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -821,6 +1230,7 @@ void orxFASTCALL orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_COMMAND);
 
   /* Done! */
   return;
@@ -851,11 +1261,83 @@ orxSTATUS orxFASTCALL orxSound_Init()
       /* Valid? */
       if(sstSound.pstSampleBank != orxNULL)
       {
-        /* Registers structure type */
-        eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUND_KU32_BANK_SIZE, &orxSound_Update);
+        /* Creates bus bank */
+        sstSound.pstBusBank = orxBank_Create(orxSOUND_KU32_BUS_BANK_SIZE, sizeof(orxSOUND_BUS), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-        /* Adds event handler */
-        orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
+        /* Success? */
+        if(sstSound.pstBusBank != orxNULL)
+        {
+          /* Creates bus table */
+          sstSound.pstBusTable = orxHashTable_Create(orxSOUND_KU32_BUS_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+          /* Success? */
+          if(sstSound.pstBusTable != orxNULL)
+          {
+            /* Registers structure type */
+            eResult = orxSTRUCTURE_REGISTER(SOUND, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUND_KU32_BANK_SIZE, &orxSound_Update);
+
+            /* Success? */
+            if(eResult != orxSTATUS_FAILURE)
+            {
+              /* Stores master bus ID */
+              sstSound.u32MasterBusID = orxString_GetID(orxSOUND_KZ_MASTER_BUS);
+
+              /* Creates master bus */
+              orxSound_GetBus(sstSound.u32MasterBusID, orxTRUE);
+
+              /* Adds event handler */
+              orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
+
+              /* Inits Flags */
+              orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY, orxSOUND_KU32_STATIC_FLAG_NONE);
+
+              /* Registers commands */
+              orxSound_RegisterCommands();
+            }
+            else
+            {
+              /* Deletes sample table */
+              orxHashTable_Delete(sstSound.pstSampleTable);
+
+              /* Deletes sample bank */
+              orxBank_Delete(sstSound.pstSampleBank);
+
+              /* Deletes bus bank */
+              orxBank_Delete(sstSound.pstBusBank);
+
+              /* Deletes bus table */
+              orxHashTable_Delete(sstSound.pstBusTable);
+
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to register sound structure.");
+            }
+          }
+          else
+          {
+            /* Deletes sample table */
+            orxHashTable_Delete(sstSound.pstSampleTable);
+
+            /* Deletes sample bank */
+            orxBank_Delete(sstSound.pstSampleBank);
+
+            /* Deletes bus bank */
+            orxBank_Delete(sstSound.pstBusBank);
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to create bus table.");
+          }
+        }
+        else
+        {
+          /* Deletes sample table */
+          orxHashTable_Delete(sstSound.pstSampleTable);
+
+          /* Deletes sample bank */
+          orxBank_Delete(sstSound.pstSampleBank);
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to create bus bank.");
+        }
       }
       else
       {
@@ -881,13 +1363,6 @@ orxSTATUS orxFASTCALL orxSound_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Initialized? */
-  if(eResult != orxSTATUS_FAILURE)
-  {
-    /* Inits Flags */
-    orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY, orxSOUND_KU32_STATIC_FLAG_NONE);
-  }
-
   /* Done! */
   return eResult;
 }
@@ -899,6 +1374,9 @@ void orxFASTCALL orxSound_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY))
   {
+    /* Unregisters commands */
+    orxSound_UnregisterCommands();
+
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
 
@@ -913,6 +1391,12 @@ void orxFASTCALL orxSound_Exit()
 
     /* Deletes sample bank */
     orxBank_Delete(sstSound.pstSampleBank);
+
+    /* Deletes bus table */
+    orxHashTable_Delete(sstSound.pstBusTable);
+
+    /* Deletes bus bank */
+    orxBank_Delete(sstSound.pstBusBank);
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_SOUND);
@@ -948,6 +1432,9 @@ orxSOUND *orxFASTCALL orxSound_Create()
   {
     /* Increases counter */
     orxStructure_IncreaseCounter(pstResult);
+
+    /* Sets master bus ID */
+    orxSound_SetBusID(pstResult, sstSound.u32MasterBusID);
 
     /* Clears its status */
     pstResult->eStatus = orxSOUND_STATUS_NONE;
@@ -1092,6 +1579,12 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
     {
       /* Unloads it */
       orxSound_UnloadSample(_pstSound->pstSample);
+    }
+
+    /* Removes sound from its current bus */
+    if(orxLinkList_GetList(&(_pstSound->stBusNode)) != orxNULL)
+    {
+      orxLinkList_Remove(&(_pstSound->stBusNode));
     }
 
     /* Deletes structure */
@@ -1566,8 +2059,23 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
     /* Has sound? */
     if(_pstSound->pstData != orxNULL)
     {
-      /* Sets its volume */
-      eResult = orxSoundSystem_SetVolume(_pstSound->pstData, _fVolume);
+      orxSOUND_BUS *pstBus;
+
+      /* Gets bus */
+      pstBus = orxSound_GetBus(_pstSound->u32BusID, orxFALSE);
+
+      /* Checks */
+      orxASSERT(pstBus != orxNULL);
+
+      /* Sets its internal volume */
+      eResult = orxSoundSystem_SetVolume(_pstSound->pstData, pstBus->fGlobalVolume * _fVolume);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Stores it */
+        _pstSound->fVolume = _fVolume;
+      }
     }
     else
     {
@@ -1604,8 +2112,16 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
+    orxSOUND_BUS *pstBus;
+
+    /* Gets bus */
+    pstBus = orxSound_GetBus(_pstSound->u32BusID, orxFALSE);
+
+    /* Checks */
+    orxASSERT(pstBus != orxNULL);
+
     /* Sets its pitch */
-    eResult = orxSoundSystem_SetPitch(_pstSound->pstData, _fPitch);
+    eResult = orxSoundSystem_SetPitch(_pstSound->pstData, pstBus->fGlobalPitch * _pstSound->fPitchModifier * _fPitch);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
@@ -1757,7 +2273,7 @@ orxFLOAT orxFASTCALL orxSound_GetVolume(const orxSOUND *_pstSound)
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    fResult = orxSoundSystem_GetVolume(_pstSound->pstData);
+    fResult = _pstSound->fVolume;
   }
   else
   {
@@ -2010,4 +2526,453 @@ const orxSTRING orxFASTCALL orxSound_GetName(const orxSOUND *_pstSound)
 
   /* Done! */
   return zResult;
+}
+
+/** Gets master bus ID
+ * @return      Master bus ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL orxSound_GetMasterBusID()
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  u32Result = sstSound.u32MasterBusID;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets sound's bus ID
+ * @param[in]   _pstSound      Concerned sound
+ * @return      Sound's bus ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL orxSound_GetBusID(const orxSOUND *_pstSound)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Updates result */
+  u32Result = _pstSound->u32BusID;
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Sets sound's bus ID
+ * @param[in]   _pstSound      Concerned sound
+ * @param[in]   _u32BusID      Bus ID to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Removes sound from its current bus */
+  if(orxLinkList_GetList(&(_pstSound->stBusNode)) != orxNULL)
+  {
+    orxLinkList_Remove(&(_pstSound->stBusNode));
+  }
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxTRUE);
+
+  /* Adds sound to end of list */
+  orxLinkList_AddEnd(&(pstBus->stList), &(_pstSound->stBusNode));
+
+  /* Stores bus ID */
+  _pstSound->u32BusID = _u32BusID;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets next sound in bus
+ * @param[in]   _pstSound     Concerned sound, orxNULL to get the first one
+ * @param[in]   _u32BusID     Bus ID to consider, orxU32_UNDEFINED for all
+ * @return      orxSOUND / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL orxSound_GetNext(const orxSOUND *_pstSound, orxU32 _u32BusID)
+{
+  orxSOUND *pstResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstSound == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstSound) < orxSTRUCTURE_ID_NUMBER));
+  orxASSERT((_pstSound == orxNULL) || (_u32BusID == orxU32_UNDEFINED) || (_pstSound->u32BusID == _u32BusID));
+
+  /* Has bus? */
+  if(_u32BusID != orxU32_UNDEFINED)
+  {
+    orxSOUND_BUS *pstBus;
+
+    /* Gets bus */
+    pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+    /* Valid? */
+    if(pstBus != orxNULL)
+    {
+      orxLINKLIST_NODE *pstNode;
+
+      /* Checks */
+      orxASSERT((_pstSound == orxNULL) || (orxLinkList_GetList(&(_pstSound->stBusNode)) == &(pstBus->stList)));
+
+      /* Gets node */
+      pstNode = (_pstSound == orxNULL) ? orxLinkList_GetFirst(&(pstBus->stList)) : orxLinkList_GetNext(&(_pstSound->stBusNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Updates result */
+        pstResult = orxSTRUCT_GET_FROM_FIELD(orxSOUND, stBusNode, pstNode);
+      }
+      else
+      {
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = (_pstSound == orxNULL) ? orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND)) : orxSOUND(orxStructure_GetNext(_pstSound));
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets bus parent
+ * @param[in]   _u32BusID     Concerned bus ID
+ * @return      Parent bus ID / orxU32_UNDEFINED
+ */
+extern orxDLLAPI orxU32 orxFASTCALL orxSound_GetBusParent(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxU32       u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    orxTREE_NODE *pstParentNode;
+
+    /* Gets its parent node */
+    pstParentNode = orxTree_GetParent(&(pstBus->stNode));
+
+    /* Found? */
+    if(pstParentNode != orxNULL)
+    {
+      /* Updates result */
+      u32Result = orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstParentNode)->u32ID;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets bus child
+ * @param[in]   _u32BusID     Concerned bus ID
+ * @return      Child bus ID / orxU32_UNDEFINED
+ */
+extern orxDLLAPI orxU32 orxFASTCALL orxSound_GetBusChild(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxU32       u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    orxTREE_NODE *pstChildNode;
+
+    /* Gets its child node */
+    pstChildNode = orxTree_GetChild(&(pstBus->stNode));
+
+    /* Found? */
+    if(pstChildNode != orxNULL)
+    {
+      /* Updates result */
+      u32Result = orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstChildNode)->u32ID;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets bus sibling
+ * @param[in]   _u32BusID     Concerned bus ID
+ * @return      Sibling bus ID / orxU32_UNDEFINED
+ */
+extern orxDLLAPI orxU32 orxFASTCALL orxSound_GetBusSibling(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxU32       u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    orxTREE_NODE *pstSiblingNode;
+
+    /* Gets its sibling node */
+    pstSiblingNode = orxTree_GetSibling(&(pstBus->stNode));
+
+    /* Found? */
+    if(pstSiblingNode != orxNULL)
+    {
+      /* Updates result */
+      u32Result = orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstSiblingNode)->u32ID;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Sets a bus parent
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _u32ParentBusID ID of the bus to use as parent, will create it if not already existing
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusParent(orxU32 _u32BusID, orxU32 _u32ParentBusID)
+{
+  orxSOUND_BUS *pstBus, *pstParentBus;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+  orxASSERT((_u32ParentBusID != 0) && (_u32ParentBusID != orxU32_UNDEFINED));
+
+  /* Gets buses */
+  pstParentBus = orxSound_GetBus(_u32ParentBusID, orxTRUE);
+  pstBus = orxSound_GetBus(_u32BusID, orxTRUE);
+
+  /* Sets its parent */
+  if(orxTree_MoveAsChild(&(pstParentBus->stNode), &(pstBus->stNode)) != orxSTATUS_FAILURE)
+  {
+    /* Updates it */
+    eResult = orxSound_UpdateBus(pstBus);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets bus volume (local, ie. unaffected by the whole bus hierarchy)
+ * @param[in]   _pstSound     Concerned Sound
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusVolume(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxFLOAT      fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    /* Updates result */
+    fResult = pstBus->fLocalVolume;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets bus pitch (local, ie. unaffected by the whole bus hierarchy)
+ * @param[in]   _pstSound     Concerned Sound
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusPitch(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxFLOAT      fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    /* Updates result */
+    fResult = pstBus->fLocalPitch;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets bus volume
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _fVolume      Desired volume (0.0 - 1.0)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusVolume(orxU32 _u32BusID, orxFLOAT _fVolume)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxTRUE);
+
+  /* New volume? */
+  if(_fVolume != pstBus->fLocalVolume)
+  {
+    /* Stores it */
+    pstBus->fLocalVolume = _fVolume;
+
+    /* Updates bus */
+    eResult = orxSound_UpdateBus(pstBus);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets bus pitch
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _fPitch       Desired pitch
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusPitch(orxU32 _u32BusID, orxFLOAT _fPitch)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxTRUE);
+
+  /* New pitch? */
+  if(_fPitch != pstBus->fLocalPitch)
+  {
+    /* Stores it */
+    pstBus->fLocalPitch = _fPitch;
+
+    /* Updates bus */
+    eResult = orxSound_UpdateBus(pstBus);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets bus global volume, ie. taking into account the whole bus hierarchy
+ * @param[in]   _pstSound     Concerned Sound
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalVolume(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxFLOAT      fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    /* Updates result */
+    fResult = pstBus->fGlobalVolume;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets bus global pitch, ie. taking into account the whole bus hierarchy
+ * @param[in]   _pstSound     Concerned Sound
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalPitch(orxU32 _u32BusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxFLOAT      fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32BusID != 0) && (_u32BusID != orxU32_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_u32BusID, orxFALSE);
+
+  /* Found? */
+  if(pstBus != orxNULL)
+  {
+    /* Updates result */
+    fResult = pstBus->fGlobalPitch;
+  }
+
+  /* Done! */
+  return fResult;
 }
