@@ -53,7 +53,7 @@ var group__orx_object =
     [ "orxObject_GetMass", "group__orx_object.html#ga8e201485c8da94fbb55a71828d54b1af", null ],
     [ "orxObject_GetMassCenter", "group__orx_object.html#gaf75085ea1999ed1adb461d9ddabb45fe", null ],
     [ "orxObject_GetName", "group__orx_object.html#gaf6057aef62392d8ad9da2db34242cc4a", null ],
-    [ "orxObject_GetNext", "group__orx_object.html#ga8b4031eaa626dd8f3b2c83029a979d28", null ],
+    [ "orxObject_GetNext", "group__orx_object.html#ga9efaf9369b3ed5edfa3ee67e37b3194d", null ],
     [ "orxObject_GetOrigin", "group__orx_object.html#ga5281d5b25fc332ca30172165bb18cbda", null ],
     [ "orxObject_GetOwnedChild", "group__orx_object.html#ga8be99631afb0f1cbd91684b78596ca33", null ],
     [ "orxObject_GetOwnedSibling", "group__orx_object.html#gac60bf5ef1a20705b64ada55597510665", null ],

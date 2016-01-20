@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2015 Orx-Project
+ * Copyright (c) 2008-2016 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -261,7 +261,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
         /* Is F12 pressed? */
         if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) != orxFALSE)
         {
-          /* Toggles vsync */
+          /* Captures a screenshot */
           orxScreenshot_Capture();
 
           /* Updates key status */

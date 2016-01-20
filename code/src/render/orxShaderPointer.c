@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2015 Orx-Project
+ * Copyright (c) 2008-2016 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -548,6 +548,7 @@ orxBOOL orxFASTCALL orxShaderPointer_IsEnabled(const orxSHADERPOINTER *_pstShade
 orxSTATUS orxFASTCALL orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader)
 {
   orxU32    u32Index;
+  orxBOOL   bPresent;
   orxSTATUS eResult;
 
   /* Checks */
@@ -556,22 +557,43 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPoi
   orxSTRUCTURE_ASSERT(_pstShader);
 
   /* Finds an empty slot */
-  for(u32Index = 0; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++);
+  for(u32Index = 0, bPresent = orxFALSE; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++)
+  {
+    /* Already present? */
+    if(_pstShaderPointer->astShaderList[u32Index].pstShader == _pstShader)
+    {
+      /* Updates status */
+      bPresent = orxTRUE;
+      break;
+    }
+  }
 
   /* Found? */
   if(u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER)
   {
-    /* Increases its reference counter */
-    orxStructure_IncreaseCounter(_pstShader);
+    /* Not already present? */
+    if(bPresent == orxFALSE)
+    {
+      /* Increases its reference counter */
+      orxStructure_IncreaseCounter(_pstShader);
 
-    /* Adds it to holder */
-    _pstShaderPointer->astShaderList[u32Index].pstShader = _pstShader;
+      /* Adds it to holder */
+      _pstShaderPointer->astShaderList[u32Index].pstShader = _pstShader;
 
-    /* Updates its flags */
-    orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_NONE, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
+      /* Updates its flags */
+      orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_NONE, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader already present, aborting.");
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
@@ -672,6 +694,7 @@ const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *
 orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
 {
   orxU32    u32Index;
+  orxBOOL   bPresent;
   orxSTATUS eResult;
 
   /* Checks */
@@ -680,38 +703,59 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Finds an empty slot */
-  for(u32Index = 0; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++);
+  for(u32Index = 0, bPresent = orxFALSE; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++)
+  {
+    /* Already present? */
+    if(orxString_Compare(orxShader_GetName(_pstShaderPointer->astShaderList[u32Index].pstShader), _zShaderConfigID) == 0)
+    {
+      /* Updates status */
+      bPresent = orxTRUE;
+      break;
+    }
+  }
 
   /* Found? */
   if(u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER)
   {
-    orxSHADER *pstShader;
-
-    /* Creates Shader */
-    pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
-
-    /* Valid? */
-    if(pstShader != orxNULL)
+    /* Not already present? */
+    if(bPresent == orxFALSE)
     {
-      /* Increases its reference counter */
-      orxStructure_IncreaseCounter(pstShader);
+      orxSHADER *pstShader;
 
-      /* Adds it to holder */
-      _pstShaderPointer->astShaderList[u32Index].pstShader = pstShader;
+      /* Creates Shader */
+      pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
 
-      /* Updates its owner */
-      orxStructure_SetOwner(pstShader, _pstShaderPointer);
+      /* Valid? */
+      if(pstShader != orxNULL)
+      {
+        /* Increases its reference counter */
+        orxStructure_IncreaseCounter(pstShader);
 
-      /* Updates its flags */
-      orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
+        /* Adds it to holder */
+        _pstShaderPointer->astShaderList[u32Index].pstShader = pstShader;
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+        /* Updates its owner */
+        orxStructure_SetOwner(pstShader, _pstShaderPointer);
+
+        /* Updates its flags */
+        orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading shader <%s> from config failed.", _zShaderConfigID);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading shader <%s> from config failed.", _zShaderConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader <%s> already present, aborting.", _zShaderConfigID);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -746,7 +790,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zShaderConfigID); 
+  u32ID = orxString_ToCRC(_zShaderConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)

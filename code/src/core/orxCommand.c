@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2015 Orx-Project
+ * Copyright (c) 2008-2016 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -2016,6 +2016,7 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
+  orxCommand_AddAlias("?", "Command.Help", orxNULL);
 
   /* Alias: Exit */
   orxCommand_AddAlias("Exit", "Command.Exit", orxNULL);
@@ -2119,6 +2120,7 @@ static orxINLINE void orxCommand_UnregisterCommands()
 {
   /* Alias: Help */
   orxCommand_RemoveAlias("Help");
+  orxCommand_RemoveAlias("?");
 
   /* Alias: Exit */
   orxCommand_RemoveAlias("Exit");

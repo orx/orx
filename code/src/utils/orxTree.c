@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2015 Orx-Project
+ * Copyright (c) 2008-2016 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -507,17 +507,13 @@ orxSTATUS orxFASTCALL orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *
 orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxTREE  *pstTree;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
-  /* Gets tree */
-  pstTree = _pstRefNode->pstTree;
-
-  /* Is already in the tree? */
-  if(_pstNode->pstTree == pstTree)
+  /* Is already in the same tree? */
+  if(_pstNode->pstTree == _pstRefNode->pstTree)
   {
     orxTREE_NODE *pstTest;
 
@@ -560,7 +556,7 @@ orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NOD
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Attempted to move node into tree its already in.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Attempted to move node between two different trees.");
 
     /* Not already in the tree */
     eResult = orxSTATUS_FAILURE;

@@ -437,8 +437,8 @@ Group</h2></td></tr>
 <tr class="separator:ga0e49127ca680b84696e726cfe964292b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62fcdaa867f31be6230742326d4da91a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga62fcdaa867f31be6230742326d4da91a">orxObject_SetGroupID</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32GroupID)</td></tr>
 <tr class="separator:ga62fcdaa867f31be6230742326d4da91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8b4031eaa626dd8f3b2c83029a979d28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga8b4031eaa626dd8f3b2c83029a979d28">orxObject_GetNext</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32GroupID)</td></tr>
-<tr class="separator:ga8b4031eaa626dd8f3b2c83029a979d28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9efaf9369b3ed5edfa3ee67e37b3194d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga9efaf9369b3ed5edfa3ee67e37b3194d">orxObject_GetNext</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga9efaf9369b3ed5edfa3ee67e37b3194d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Picking</h2></td></tr>
@@ -569,7 +569,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Structure used by an object get accessor, given its structure ID. Structure must then be cast correctly (see helper macro) </p>
+<p>Structure used by an object get accessor, given its structure ID. Structure must then be cast correctly. (see helper macro <a class="el" href="group__orx_object.html#ga327727f4ebf89729d8518e90c918fddd">orxOBJECT_GET_STRUCTURE()</a>) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -610,7 +610,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a delayed FX using its config ID </p>
+<p>Adds a delayed FX using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -646,7 +646,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds an FX using its config ID </p>
+<p>Adds an FX using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -681,7 +681,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a shader to an object using its config ID </p>
+<p>Adds a shader to an object using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -716,7 +716,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a sound using its config ID </p>
+<p>Adds a sound using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -751,7 +751,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a timeline track to an object using its config ID </p>
+<p>Adds a timeline track to an object using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -792,7 +792,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a unique delayed FX using its config ID </p>
+<p>Adds a unique delayed FX using its config ID. The difference between this function and <a class="el" href="group__orx_object.html#ga2147a7d2e2a692f7b63059292a9c04ee">orxObject_AddDelayedFX()</a> is that this one does not add the specified FX, if the object already has an FX with the same config ID attached. note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the FX start (i.e. after the delay). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -828,7 +828,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds a unique FX using its config ID </p>
+<p>Adds a unique FX using its config ID. Refer to <a class="el" href="group__orx_object.html#gaa15184b90128aa973c7328a2839c2b0f">orxObject_AddUniqueDelayedFX()</a> for details, since this function is the same as it with the delay argument set to 0. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -869,7 +869,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Applies a force </p>
+<p>Applies a force. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -911,7 +911,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Applies an impulse </p>
+<p>Applies an impulse. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -947,7 +947,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Applies a torque </p>
+<p>Applies a torque. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -982,7 +982,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Attaches an object to a parent while maintaining the object's world position </p>
+<p>Attaches an object to a parent while maintaining the object's world position. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1017,7 +1017,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with graphic in contact with the given box, withing a given group </p>
+<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a> to get all the objects in the box. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box to use for picking </td></tr>
@@ -1042,7 +1042,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Clears object color </p>
+<p>Clears object color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1065,7 +1065,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates an empty object </p>
+<p>Creates an empty object. </p>
 <dl class="section return"><dt>Returns</dt><dd>orxOBJECT / orxNULL </dd></dl>
 
 </div>
@@ -1083,7 +1083,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates an object from config </p>
+<p>Creates an object from config. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zConfigID</td><td>Config ID @ return orxOBJECT / orxNULL </td></tr>
@@ -1106,8 +1106,27 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box) </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box). The following is an example for iterating over a neighbor list: </p>
+<div class="fragment"><div class="line"><a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> vPosition; <span class="comment">// The world position of the neighborhood area</span></div>
+<div class="line"><span class="comment">// set_position(vPosition);</span></div>
+<div class="line"><a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> vSize; <span class="comment">// The size of the neighborhood area</span></div>
+<div class="line"><span class="comment">// set_size(vSize);</span></div>
+<div class="line"><a class="code" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> vPivot; <span class="comment">// The pivot of the neighborhood area</span></div>
+<div class="line"><span class="comment">// set_pivot(vPivot);</span></div>
+<div class="line"></div>
+<div class="line"><a class="code" href="structorx_o_b_o_x.html">orxOBOX</a> stBox;</div>
+<div class="line"><a class="code" href="group__orx_o_box.html#ga667a5d563aeab011b05e09d2f02d06f0">orxOBox_2DSet</a>(&amp;stBox, &amp;vPosition, &amp;vPivot, &amp;vSize, 0);</div>
+<div class="line"></div>
+<div class="line"><a class="code" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> * pstBank = <a class="code" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList</a>(&amp;stBox);</div>
+<div class="line"><span class="keywordflow">if</span>(pstBank) {</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i=0; i &lt; <a class="code" href="group__orx_bank.html#ga2d51c38d4cd273bcb7308180afc6a3ce">orxBank_GetCounter</a>(pstBank); ++i)</div>
+<div class="line">    {</div>
+<div class="line">        <a class="code" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> * pstObject = *((<a class="code" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> **) <a class="code" href="group__orx_bank.html#gaf95868757d6eabc89dfb66491253cf86">orxBank_GetAtIndex</a>(pstBank, i));</div>
+<div class="line">        do_something_with(pstObject);</div>
+<div class="line">    }</div>
+<div class="line">    <a class="code" href="group__orx_object.html#gaeac04e584788022c4bfb0e0e72ac0533">orxObject_DeleteNeighborList</a>(pstBank);</div>
+<div class="line">}</div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with </td></tr>
   </table>
@@ -1154,7 +1173,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Deletes an object list created with orxObject_CreateNeighborList </p>
+<p>Deletes an object list created with <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObjectList</td><td>Concerned object list </td></tr>
@@ -1177,7 +1196,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Detaches an object from a parent while maintaining the object's world position </p>
+<p>Detaches an object from a parent while maintaining the object's world position. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1211,7 +1230,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enables/disables an object </p>
+<p>Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1245,7 +1264,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enables an object's shader </p>
+<p>Enables an object's shader. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1279,7 +1298,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enables an object's timeline </p>
+<p>Enables an object's timeline. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1302,7 +1321,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Exits from the object module </p>
+<p>Exits from the object module. </p>
 
 </div>
 </div>
@@ -1319,7 +1338,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object active time </p>
+<p>Gets object active time, i.e. the amount of time that the object has been alive taking into account. the object's clock multiplier and object's periods of pause. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1343,7 +1362,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object angular velocity </p>
+<p>Gets an object angular velocity. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1367,7 +1386,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object blend mode </p>
+<p>Gets object blend mode. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1401,7 +1420,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's bounding box (OBB) </p>
+<p>Gets object's bounding box (OBB). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1426,8 +1445,15 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's first child </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Gets object's first child. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx.</p>
+<p>This function is typically used to iterate over the children of an object. For example; </p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<a class="code" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> * pstChild = <a class="code" href="group__orx_object.html#ga704d2951756ea95748fc48429a726611">orxObject_GetChild</a>(pstObject);</div>
+<div class="line">    pstChild;</div>
+<div class="line">    pstChild = <a class="code" href="group__orx_object.html#ga596144d94bca0814dc292dbc1a561807">orxObject_GetSibling</a>(pstChild))</div>
+<div class="line">{</div>
+<div class="line">    do_something(pstChild);</div>
+<div class="line">} </div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
@@ -1450,7 +1476,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's clock </p>
+<p>Gets object's clock. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1484,7 +1510,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object color </p>
+<p>Gets object color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1519,7 +1545,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object custom gravity </p>
+<p>Gets an object custom gravity. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1543,7 +1569,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets default group ID </p>
+<p>Gets default group ID. </p>
 <dl class="section return"><dt>Returns</dt><dd>Default group ID </dd></dl>
 
 </div>
@@ -1577,7 +1603,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object flipping </p>
+<p>Gets object flipping. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1603,14 +1629,14 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's group ID </p>
+<p>Gets object's group ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Object's group ID </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Object's group ID. This is the string ID (see <a class="el" href="group__orx_string.html#gae091c7e34dce2c46b5262a9d78e2faa9">orxString_GetFromID()</a>) of the object's group name. </dd></dl>
 
 </div>
 </div>
@@ -1627,7 +1653,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets last added sound (Do <em>NOT</em> destroy it directly before removing it!!!) </p>
+<p>Gets last added sound (Do <em>NOT</em> destroy it directly before removing it!!!). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1651,7 +1677,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object lifetime </p>
+<p>Gets object lifetime. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1675,7 +1701,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object mass </p>
+<p>Gets an object mass. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1709,7 +1735,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object center of mass (object space) </p>
+<p>Gets an object center of mass (object space). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1734,7 +1760,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object config name </p>
+<p>Gets object config name. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1745,14 +1771,14 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga8b4031eaa626dd8f3b2c83029a979d28"></a>
+<a class="anchor" id="ga9efaf9369b3ed5edfa3ee67e37b3194d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_GetNext </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
           <td class="paramname"><em>_pstObject</em>, </td>
         </tr>
         <tr>
@@ -1768,7 +1794,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets next object in group </p>
+<p>Gets next object in group. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object, orxNULL to get the first one </td></tr>
@@ -1803,7 +1829,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object origin </p>
+<p>Get object origin. See <a class="el" href="group__orx_object.html#gaba6395e153b0e580949380fc06112acc">orxObject_SetOrigin()</a> for a more detailed explanation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1828,8 +1854,15 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner) </p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner) see <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx.</p>
+<p>This function is typically used to iterate over the owned children of an object. For example; </p>
+<div class="fragment"><div class="line"><span class="keywordflow">for</span>(<a class="code" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> * pstChild = <a class="code" href="group__orx_object.html#ga8be99631afb0f1cbd91684b78596ca33">orxObject_GetOwnedChild</a>(pstObject);</div>
+<div class="line">    pstChild;</div>
+<div class="line">    pstChild = <a class="code" href="group__orx_object.html#gac60bf5ef1a20705b64ada55597510665">orxObject_GetOwnedSibling</a>(pstChild))</div>
+<div class="line">{</div>
+<div class="line">    do_something(pstChild);</div>
+<div class="line">} </div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
@@ -1852,7 +1885,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's next owned sibling (only if created with a config ChildList / has an owner set with orxObject_SetOwner) </p>
+<p>Gets object's next owned sibling (only if created with a config ChildList / has an owner set with orxObject_SetOwner) This function is typically used to iterate over the owned children of an object, see <a class="el" href="group__orx_object.html#ga8be99631afb0f1cbd91684b78596ca33">orxObject_GetOwnedChild()</a> for an example. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1876,7 +1909,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's owner </p>
+<p>Gets object's owner. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1900,7 +1933,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's parent </p>
+<p>Gets object's parent. See <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a more detailed explanation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1934,7 +1967,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object pivot </p>
+<p>Get object pivot. See <a class="el" href="group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3">orxObject_SetPivot()</a> for a more detailed explanation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -1969,7 +2002,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object position </p>
+<p>Get object position. See <a class="el" href="group__orx_object.html#ga7f4cf74a30aa02d5d589f3bd238c7986">orxObject_SetPosition()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2004,7 +2037,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object relative speed </p>
+<p>Gets an object relative speed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2045,7 +2078,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object repeat (wrap) values </p>
+<p>Gets object repeat (wrap) values. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2071,7 +2104,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object rotation </p>
+<p>Get object rotation. See <a class="el" href="group__orx_object.html#gabdcaee14a478db176742221062c1f495">orxObject_SetRotation()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2105,7 +2138,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object scale </p>
+<p>Get object scale. See <a class="el" href="group__orx_object.html#gaa544cfd6d9db515d6ef46429b101bc4c">orxObject_SetScale()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2130,7 +2163,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's next sibling </p>
+<p>Gets object's next sibling. This function is typically used for iterating over the children of an object, see <a class="el" href="group__orx_object.html#ga704d2951756ea95748fc48429a726611">orxObject_GetChild()</a> for an iteration example. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2164,7 +2197,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object size </p>
+<p>Gets object size. See <a class="el" href="group__orx_object.html#gad38576090bef5ed7eaede3b8b62fe209">orxObject_SetSize()</a> for a more detailed explanation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2189,7 +2222,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object smoothing </p>
+<p>Gets object smoothing. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2223,7 +2256,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets an object speed </p>
+<p>Gets an object speed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2248,7 +2281,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object text string, if object is associated to a text </p>
+<p>Gets object text string, if object is associated to a text. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2272,7 +2305,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's user data </p>
+<p>Gets object's user data. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2296,7 +2329,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object working graphic </p>
+<p>Gets object working graphic. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2320,7 +2353,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object working texture </p>
+<p>Gets object working texture. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2354,7 +2387,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object world position </p>
+<p>Get object world position. See <a class="el" href="group__orx_object.html#ga99ce45e8e97e79f8f13682b9cd356b2a">orxObject_SetWorldPosition()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2379,7 +2412,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get object world rotation </p>
+<p>Get object world rotation. See <a class="el" href="group__orx_object.html#gab083b96e18a265a0c7eb80df771adc5b">orxObject_SetWorldRotation()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2413,7 +2446,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object world scale </p>
+<p>Gets object world scale. See <a class="el" href="group__orx_object.html#ga43592e3d1c1e6e2c5e763d58ff444b63">orxObject_SetWorldScale()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2438,7 +2471,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Object has color accessor </p>
+<p>Object has color accessor? </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2461,7 +2494,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Inits the object module </p>
+<p>Inits the object module. </p>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
@@ -2489,7 +2522,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Is current animation test </p>
+<p>Is current animation test. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2596,7 +2629,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Is target animation test </p>
+<p>Is target animation test. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2655,7 +2688,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Links a structure to an object </p>
+<p>Links a structure to an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2690,7 +2723,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Pauses/unpauses an object </p>
+<p>Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2724,7 +2757,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with graphic "under" the given position, within a given group </p>
+<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#ga51ca82e2024e8cb619fb25b384b5e101">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a> and orxObject_Raycast for other ways of picking objects. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
@@ -2789,7 +2822,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Issues a raycast to test for potential objects in the way </p>
+<p>Issues a raycast to test for potential objects in the way. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvStart</td><td>Start of raycast </td></tr>
@@ -2829,7 +2862,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Removes an FX using its config ID </p>
+<p>Removes an FX using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2864,7 +2897,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Removes a shader using its config ID </p>
+<p>Removes a shader using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2899,7 +2932,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Removes a sound using its config ID </p>
+<p>Removes a sound using its config ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -2969,7 +3002,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object angular velocity </p>
+<p>Sets an object angular velocity. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3004,7 +3037,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object animation frequency </p>
+<p>Sets an object animation frequency. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3039,7 +3072,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object animset </p>
+<p>Sets an object animset. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3074,7 +3107,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object blend mode </p>
+<p>Sets object blend mode. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3109,7 +3142,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets associated clock for an object </p>
+<p>Sets associated clock for an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3144,7 +3177,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object color </p>
+<p>Sets object color. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3179,7 +3212,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets current animation for object </p>
+<p>Sets current animation for object. This function switches the currently displayed animation of the object immediately. Compare this with <a class="el" href="group__orx_object.html#ga129785899c1ff6f7f0686916f30849c1">orxObject_SetTargetAnim()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3214,7 +3247,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object custom gravity </p>
+<p>Sets an object custom gravity. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3255,7 +3288,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object flipping </p>
+<p>Sets object flipping. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3291,11 +3324,11 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object's group ID </p>
+<p>Sets object's group ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to set. This is the string ID (see <a class="el" href="group__orx_string.html#ga5216a1e7197fc8ca6b4861f48863d095">orxString_GetID()</a>) of the object's group name. </td></tr>
   </table>
   </dd>
 </dl>
@@ -3326,7 +3359,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object lifetime </p>
+<p>Sets object lifetime. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3361,7 +3394,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object origin </p>
+<p>Sets object origin. This is a convenience wrapper around <a class="el" href="group__orx_graphic.html#gaf0ebcdad776565802a07c76c4b2d7efa">orxGraphic_SetOrigin()</a>. The "origin" of a graphic is essentially what is indicated by the "TextureOrigin" field of a config graphic section. The "origin" together with "size" (see <a class="el" href="group__orx_object.html#gad38576090bef5ed7eaede3b8b62fe209">orxObject_SetSize()</a>) defines the sprite of an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3396,7 +3429,8 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets owner for an object </p>
+<p>Sets owner for an object. Ownership in Orx is only about lifetime management. That is, when an object dies, it also kills its children. Compare this with <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a>.</p>
+<p>Note that the "ChildList" field of an object's config section implies two things; that the object is both the owner (<a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a>) and the parent (<a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a>) of its children. There is an exception to this though; when an object's child has a parent camera, the object is only the owner, and the camera is the parent. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3430,7 +3464,8 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object parent (in the frame hierarchy) </p>
+<p>Sets an object parent (in the frame hierarchy). Parenthood in orx is about the transformation (position, rotation, scale) of objects. Transformation of objects are compounded in a frame hierarchy. Compare this with <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a></p>
+<p>Note that the "ChildList" field of an object's config section implies two things; that the object is both the owner (<a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a>) and the parent (<a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a>) of its children. There is an exception to this though; when an object's child has a parent camera, the object is only the owner, and the camera is the parent. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3465,7 +3500,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets pitch for all sounds of an object </p>
+<p>Sets pitch for all sounds of an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3500,7 +3535,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object pivot </p>
+<p>Sets object pivot. This is a convenience wrapper around <a class="el" href="group__orx_graphic.html#gae01be2a3f442614d270efa856c469797">orxGraphic_SetPivot()</a>. The "pivot" is essentially what is indicated by the "Pivot" field of a config graphic section. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3535,7 +3570,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object position </p>
+<p>Sets object position in its parent's reference frame. See <a class="el" href="group__orx_object.html#ga99ce45e8e97e79f8f13682b9cd356b2a">orxObject_SetWorldPosition()</a> for setting an object's position in the global reference frame. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3570,7 +3605,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object speed relative to its rotation/scale </p>
+<p>Sets an object speed relative to its rotation/scale. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3611,7 +3646,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object repeat (wrap) values </p>
+<p>Sets object repeat (wrap) values. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3647,7 +3682,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object rotation </p>
+<p>Sets object rotation in its parent's reference frame. See <a class="el" href="group__orx_object.html#gab083b96e18a265a0c7eb80df771adc5b">orxObject_SetWorldRotation()</a> for setting an object's rotation in the global reference frame. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3682,7 +3717,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object scale </p>
+<p>Sets object scale in its parent's reference frame. See <a class="el" href="group__orx_object.html#ga43592e3d1c1e6e2c5e763d58ff444b63">orxObject_SetWorldScale()</a> for setting an object's scale in the global reference frame. See <a class="el" href="group__orx_object.html#gad38576090bef5ed7eaede3b8b62fe209">orxObject_SetSize()</a> for a deeper explanation of the "size" of an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3717,7 +3752,8 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object size </p>
+<p>Sets object size. For objects that have a graphic attached it's simply a convenience wrapper for <a class="el" href="group__orx_graphic.html#ga899220edd157cb0c05fbcb541101246f">orxGraphic_SetSize()</a>, but an object can also have a size without a graphic.</p>
+<p>Note the difference between "Scale" and "Size". The size of an object with a non-text graphic is the sprite size in pixels on its texture. The object's effective size for rendering and intersection purposes (see <a class="el" href="group__orx_object.html#gaa7f5946ded728ecc944e0f38b4d73676">orxObject_Pick()</a> and friends) is proportional to its "size" multiplied by its "scale". Another important distinction is that the scale of an object also affects its children (see <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> and note the distinction between parenthood and ownership). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3752,7 +3788,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object smoothing </p>
+<p>Sets object smoothing. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3787,7 +3823,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets an object speed </p>
+<p>Sets an object speed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3822,7 +3858,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets target animation for object </p>
+<p>Sets target animation for object. The animations are sequenced on an object according to the animation link graph defined by its AnimationSet. The sequence follows the graph and tries to reach the target animation. Use <a class="el" href="group__orx_object.html#gadce3e7887f764197d8a03aa9a8eaaae4">orxObject_SetCurrentAnim()</a> to switch the animation without using the link graph. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3857,7 +3893,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object text string, if object is associated to a text </p>
+<p>Sets object text string, if object is associated to a text. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3908,7 +3944,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets user data for an object </p>
+<p>Sets user data for an object. Orx ignores the user data, this is a mechanism for attaching custom data to be used later by user code. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3942,7 +3978,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets volume for all sounds of an object </p>
+<p>Sets volume for all sounds of an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -3977,7 +4013,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object world position </p>
+<p>Sets object position in the global reference frame. See <a class="el" href="group__orx_object.html#ga7f4cf74a30aa02d5d589f3bd238c7986">orxObject_SetPosition()</a> for setting an object's position in its parent's reference frame. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -4012,7 +4048,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object world rotation </p>
+<p>Sets object rotation in the global reference frame. See <a class="el" href="group__orx_object.html#gabdcaee14a478db176742221062c1f495">orxObject_SetRotation()</a> for setting an object's rotation in its parent's reference frame. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -4047,7 +4083,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object world scale </p>
+<p>Sets object scale in the global reference frame. See <a class="el" href="group__orx_object.html#gaa544cfd6d9db515d6ef46429b101bc4c">orxObject_SetScale()</a> for setting an object's scale in its parent's reference frame. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -4082,7 +4118,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined) </p>
+<p>Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -4117,7 +4153,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Unlinks structure from an object, given its structure ID </p>
+<p>Unlinks structure from an object, given its structure ID. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
@@ -4151,7 +4187,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Updates an object </p>
+<p>Updates an object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>

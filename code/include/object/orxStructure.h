@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2015 Orx-Project
+ * Copyright (c) 2008-2016 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -167,7 +167,6 @@ typedef struct __orxSTRUCTURE_t
   orxU64          u64OwnerGUID;   /**< Owner's GUID : 16 */
   orxHANDLE       hStorageNode;   /**< Internal storage node handle : 20/24 */
   orxU32          u32Flags;       /**< Flags : 24/28 */
-
 
 #if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
 
