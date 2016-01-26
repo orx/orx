@@ -489,33 +489,57 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       u32Height = 0;
       fScale = orxFLOAT_1;
 
-      orxConfig_PushSection(KZ_CONFIG_ANDROID);
+      /* Pushes config section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-      if (orxConfig_HasValue(KZ_CONFIG_MAX_SURFACE_WIDTH))
+      /* Has ScreenWidth? */
+      if (orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH))
       {
-        u32Width = orxConfig_GetU32(KZ_CONFIG_MAX_SURFACE_WIDTH);
+        u32Width = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
         if ( windowWidth > u32Width )
         {
           fScale = orx2F(u32Width) / orx2F(windowWidth);
           u32Height = windowHeight * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
         }
+
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT))
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "WARNING, Display.ScreenHeight ignored.");
+        }
+
+        /* Updates ScreenHeight value */
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Height);
       }
-      else if (orxConfig_HasValue(KZ_CONFIG_MAX_SURFACE_HEIGHT))
+      else
+      /* Has ScreenHeight? */
+      if (orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT))
       {
-        u32Height = orxConfig_GetU32(KZ_CONFIG_MAX_SURFACE_HEIGHT);
+        u32Height = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
         if ( windowHeight > u32Height )
         {
           fScale = orx2F(u32Height) / orx2F(windowHeight);
           u32Width = windowWidth * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
         }
+
+        /* Updates ScreenWidth value */
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Width);
       }
 
-      orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
-
+      /* Pops config section */
       orxConfig_PopSection();
 
+      /* Pushes config section */
+      orxConfig_PushSection(KZ_CONFIG_ANDROID);
+
+      /* Save scaling */
+      orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
+      /* Set framebuffer size */
       ANativeWindow_setBuffersGeometry(window, u32Width, u32Height, sstDisplay.format);
 
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Surface");
@@ -1024,7 +1048,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
   {
     unsigned char  *pu8ImageData;
     GLuint          uiBytesPerPixel;
-  
+
     /* Loads image */
     pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
@@ -1065,10 +1089,10 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
     /* Frees original source from resource */
     orxMemory_Free(pstInfo->pu8ImageSource);
     pstInfo->pu8ImageSource = orxNULL;
- 
+
     /* Frees load info */
     orxMemory_Free(pstInfo);
- 
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -3665,16 +3689,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       sstDisplay.pstScreen->fRecRealHeight  = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealHeight);
       sstDisplay.pstScreen->u32DataSize     = sstDisplay.pstScreen->u32RealWidth * sstDisplay.pstScreen->u32RealHeight * 4 * sizeof(orxU8);
 
-      /* Pushes display section */
-      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-      /* Updates config info */
-      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
-      orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
-
-      /* Pops config section */
-      orxConfig_PopSection();
-
       /* Updates bound texture */
       sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
@@ -3979,8 +3993,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glASSERT();
 
         /* Updates config info */
-        orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
-        orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
         orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.u32Depth);
 
         /* Pops config section */

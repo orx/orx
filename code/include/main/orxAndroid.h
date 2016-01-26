@@ -47,8 +47,6 @@
 #include <stdlib.h>
 
 #define KZ_CONFIG_ANDROID                        "Android"
-#define KZ_CONFIG_MAX_SURFACE_WIDTH              "MaxSurfaceWidth"
-#define KZ_CONFIG_MAX_SURFACE_HEIGHT             "MaxSurfaceHeight"
 #define KZ_CONFIG_SURFACE_SCALE                  "SurfaceScale"
 #define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
 #define KZ_CONFIG_USE_JOYSTICK                   "UseJoystick"
