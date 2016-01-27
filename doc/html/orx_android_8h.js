@@ -2,8 +2,6 @@ var orx_android_8h =
 [
     [ "KZ_CONFIG_ACCELEROMETER_FREQUENCY", "orx_android_8h.html#gafd41769b5b852fdf9ee270202f526806", null ],
     [ "KZ_CONFIG_ANDROID", "orx_android_8h.html#gaaa7cf34e35cd184548f6b11f2124c00c", null ],
-    [ "KZ_CONFIG_MAX_SURFACE_HEIGHT", "orx_android_8h.html#gafd0e0df12f37a3b496eca968cdcdfdcf", null ],
-    [ "KZ_CONFIG_MAX_SURFACE_WIDTH", "orx_android_8h.html#ga6669dafdc217c2c6805057b3e38d0718", null ],
     [ "KZ_CONFIG_SURFACE_SCALE", "orx_android_8h.html#gab716135367c8f2c971827d19e46a2e5a", null ],
     [ "KZ_CONFIG_USE_JOYSTICK", "orx_android_8h.html#ga1364bcd555a5bde53904d1e77ea4352c", null ],
     [ "orxANDROID_EVENT_JOYSTICK_ADDED", "orx_android_8h.html#ga311a7e9ea1448a85c65bc13f828cd97c", null ],
