@@ -653,7 +653,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets bus global pitch, ie. taking into account the whole bus hierarchy </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID </td></tr>
   </table>
   </dd>
 </dl>
@@ -677,7 +677,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets bus global volume, ie. taking into account the whole bus hierarchy </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID </td></tr>
   </table>
   </dd>
 </dl>
@@ -749,7 +749,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets bus pitch (local, ie. unaffected by the whole bus hierarchy) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID </td></tr>
   </table>
   </dd>
 </dl>
@@ -797,7 +797,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Gets bus volume (local, ie. unaffected by the whole bus hierarchy) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID </td></tr>
   </table>
   </dd>
 </dl>
@@ -1356,8 +1356,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Sets a bus parent </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32ParentBusID</td><td>ID of the bus to use as parent </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID, will create it if not already existing </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32ParentBusID</td><td>ID of the bus to use as parent, will create it if not already existing </td></tr>
   </table>
   </dd>
 </dl>
@@ -1391,7 +1391,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Sets bus pitch </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID, will create it if not already existing </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fPitch</td><td>Desired pitch </td></tr>
   </table>
   </dd>
@@ -1426,7 +1426,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Sets bus volume </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32BusID</td><td>Concerned bus ID, will create it if not already existing </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fVolume</td><td>Desired volume (0.0 - 1.0) </td></tr>
   </table>
   </dd>
