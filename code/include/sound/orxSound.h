@@ -399,46 +399,46 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusChild(orxU32 _u32Bu
 extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusSibling(orxU32 _u32BusID);
 
 /** Sets a bus parent
- * @param[in]   _u32BusID     Concerned bus ID
- * @param[in]   _u32ParentBusID ID of the bus to use as parent
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _u32ParentBusID ID of the bus to use as parent, will create it if not already existing
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusParent(orxU32 _u32BusID, orxU32 _u32ParentBusID);
 
 /** Gets bus volume (local, ie. unaffected by the whole bus hierarchy)
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusVolume(orxU32 _u32BusID);
 
 /** Gets bus pitch (local, ie. unaffected by the whole bus hierarchy)
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusPitch(orxU32 _u32BusID);
 
 /** Sets bus volume
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
  * @param[in]   _fVolume      Desired volume (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusVolume(orxU32 _u32BusID, orxFLOAT _fVolume);
 
 /** Sets bus pitch
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
  * @param[in]   _fPitch       Desired pitch
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusPitch(orxU32 _u32BusID, orxFLOAT _fPitch);
 
 /** Gets bus global volume, ie. taking into account the whole bus hierarchy
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalVolume(orxU32 _u32BusID);
 
 /** Gets bus global pitch, ie. taking into account the whole bus hierarchy
- * @param[in]   _pstSound     Concerned Sound
+ * @param[in]   _u32BusID     Concerned bus ID
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalPitch(orxU32 _u32BusID);
