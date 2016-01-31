@@ -1,5 +1,48 @@
-Orx - Portable Game Engine  (Version 1.6)
+Orx - Portable Game Engine  (Version 1.7)
 =========================================
+
+orx 1.7
+-----
+* IMPORTANT: Simplified compile targets to: Debug, Profile and Release (the Core targets are used for tools and don't embed the plugins)
+* IMPORTANT: New lighter-weight hg/git repository of orx, setup.bat/setup.sh needs to be called (the first time only) to gather dependencies
+* IMPORTANT: Added sound bus feature (for grouped volume & pitch control)
+* IMPORTANT: Renamed orxRENDER_EVENT_OBJECT_PAYLOAD to orxRENDER_EVENT_PAYLOAD + modified its layout to use struct hierarchy
+* IMPORTANT: Added orxConfig_SetBootstrap() that allow user code to be executed after config module init but *before* any config file has been loaded
+* IMPORTANT: Added Webp support (load) to all platforms
+* IMPORTANT: Android's target surface is now driven by Display.ScreenWidth or Display.ScreenHeight properties but will maintain device's aspect ratio
+* IMPORTANT: Engine will now pause/resume when receiving focus events (Android)
+* IMPORTANT: Owner-less shaders are not supported anymore (for full screen shaders, use viewport-attached ones instead)
+* IMPORTANT: orxDisplay_SetVideoMode(orxNULL) will now reinit client states/arrays to help with a Steam overlay bug on some Mac computers
+* IMPORTANT: orxRENDER_EVENT_STOP is now sent after all extra rendering (FPS, console, profiler)
+* IMPORTANT: Added half-axis support to input module
+* IMPORTANT: Added optional "sub-frame" interpolation to spawners, off by default
+* IMPORTANT: Simplified module dependency scheme (will affect users that do not use the orx_Execute*() helpers)
+* IMPORTANT: Physics update now uses absolute fix step update, based on Physics.StepFrequency property, adaptable update is still optionally available
+* IMPORTANT: Added Size/Pivot support to objects that do not have graphics, compatible with picking functions
+* IMPORTANT: Removed OpenGL ES 1.x support on iOS
+
+* orxHashtable can now use 64bit keys
+* Reactivated Neon support in stb_image (iOS, device only)
+* Android's external dependencies are now compiled with gcc 4.9
+* Added support for iOS 64bit
+* Added orxAnimSet_GetName()
+* Added orx_LogAllStructures(), for tracking purposes
+* Added commands Command.IsGreater and Command.IsLesser
+* Added command Config.ClearValue
+* Added orxTexture_GetLoadCounter + associated command
+* Fixed scale propagation for physical bodies in object hierarchies
+* Fixed CRC32 to use the actual CRC32B reference algorithm + added slice-by-8 optimization
+* Fixed Win64 support in file module
+* orxFile_GetSize() now support 64bit sizes on all platforms
+* Added commands to access object colors in all supported color spaces
+* Added resource commands
+* Added orxVECTOR constants for secondary colors (RGB)
+* Removed all manual CPU/GPU sync points -> no more calls to glFinish()/glFlush()
+* Updated all display plugins with VS2013BO-based optimizations
+* SoundPointers can now be paused/stopped right after creation
+* When a localized string/font isn't found when switching to a different language, the text won't get modified
+* Renamed default font -=DefaultFont=- to default
+* Misc fixes, optimizations and additions
 
 orx 1.6
 -----
@@ -321,7 +364,7 @@ orx 1.2
 * *** Added new platform with full support: iPhone (iPod Touch/iPad). ***
 * *** Orx is now published under the zlib license, please see the LICENSE file. ***
 * IMPORTANT: Added Unicode support with UTF-8. Config files now should be encoded with either plain ANSI or UTF-8: extended ASCII characters (ISO-Latin-1) won't be recognized any longer.
-* IMPORTANT: Added custom bitmap font support in orx with Jørgen 'Jibs' Ibsen's Dina font as default.
+* IMPORTANT: Added custom bitmap font support in orx with JÃ¸rgen 'Jibs' Ibsen's Dina font as default.
 * IMPORTANT: Added the orxFontGen tool to create orx-compatible bitmap fonts (.tga/.ini) from TrueType (.ttf) font files, using reference texts to define the list of characters to export.
 * IMPORTANT: Joystick buttons/axes are now suffixed with the corresponding joystick's ID (JOY_X_1, JOY_1_2, ...).
 * IMPORTANT: Added new plugins for embedded versions: SDL plugins for win/linux (35-40% than the SFML ones) and GLFW plugins for win/linux/osx (~2% faster than SDL ones).

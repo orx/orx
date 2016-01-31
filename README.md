@@ -1,4 +1,4 @@
-Orx - Portable Game Engine (Version 1.6)
+Orx - Portable Game Engine (Version 1.7)
 ========================================
 
 
@@ -15,7 +15,7 @@ Summary
 Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is the stable release for orx v1.6. If you find any bugs,
+This is the stable release for orx v1.7. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
@@ -117,35 +117,35 @@ Packages
 You can download all the packages from [sourceforge](http://orx.sf.net) or [bitbucket](https://bitbucket.org/orx/orx/downloads).
 Here is a list with a small description for each package.
 
-- orx-doc-1.6.zip: orx's API doxygen documentation
-- orx-src-1.6.zip: orx's source code including build projects for
+- orx-doc-1.7.zip: orx's API doxygen documentation
+- orx-src-1.7.zip: orx's source code including build projects for
     - codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
     - codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
     - GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
     - vs2012 & vs2013 (Windows Visual Studio, all versions)
     - xcode (3.2+, for MacOS X, non-static versions; SDK 8.1 for iOS, static embedded versions)
     - ndk build files for Android (static embedded versions)
-NB: You'll need orx-extern-1.6.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
-- orx-extern-1.6.zip: orx's external dependencies. You will *only NEED* these if you
-  use orx-src-1.6.zip and you plan on compiling orx yourself. They are not needed otherwise.
+NB: You'll need orx-extern-1.7.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
+- orx-extern-1.7.zip: orx's external dependencies. You will *only NEED* these if you
+  use orx-src-1.7.zip and you plan on compiling orx yourself. They are not needed otherwise.
   The external libraries are usually modified versions of the original ones.  
   __VERY IMPORTANT__: If you want to compile orx yourself, you'll need these versions and not the official ones.
-- orx-dev-linux32-1.6.tar.bz2       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- orx-dev-linux64-1.6.tar.bz2       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- orx-dev-mac-1.6.zip               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- orx-dev-mingw-1.6.zip             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- orx-dev-vs2012-1.6.zip            : dynamic embedded binaries for Windows (Visual Studio 2012), release/profile/debug + tools.
-- orx-dev-vs2013-32-1.6.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- orx-dev-vs2013-64-1.6.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
-- orx-full-ios-1.6.zip              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- orx-dev-android-1.6.zip           : static embedded binaries for Android, release/profile/debug (device).
-- orx-dev-android-native-1.6.zip    : static embedded binaries for Android Native, release/profile/debug (device).
-- orx-tutorial-linux32-1.6.tar.bz2  : tutorials for Linux (x86)
-- orx-tutorial-linux64-1.6.tar.bz2  : tutorials for Linux (x86-64)
-- orx-tutorial-mac-1.6.zip          : tutorials for MacOS X (x86/x86-64)
-- orx-tutorial-mingw-1.6.zip        : tutorials for Windows (mingw)
-- orx-tutorial-vs2012-1.6.zip       : tutorials for Windows (Visual Studio 2012)
-- orx-tutorial-vs2013-1.6.zip       : tutorials for Windows (Visual Studio 2013)
+- orx-dev-linux32-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- orx-dev-linux64-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- orx-dev-mac-1.7.zip               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- orx-dev-mingw-1.7.zip             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
+- orx-dev-vs2012-1.7.zip            : dynamic embedded binaries for Windows (Visual Studio 2012), release/profile/debug + tools.
+- orx-dev-vs2013-32-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
+- orx-dev-vs2013-64-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
+- orx-full-ios-1.7.zip              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- orx-dev-android-1.7.zip           : static embedded binaries for Android, release/profile/debug (device).
+- orx-dev-android-native-1.7.zip    : static embedded binaries for Android Native, release/profile/debug (device).
+- orx-tutorial-linux32-1.7.tar.bz2  : tutorials for Linux (x86)
+- orx-tutorial-linux64-1.7.tar.bz2  : tutorials for Linux (x86-64)
+- orx-tutorial-mac-1.7.zip          : tutorials for MacOS X (x86/x86-64)
+- orx-tutorial-mingw-1.7.zip        : tutorials for Windows (mingw)
+- orx-tutorial-vs2012-1.7.zip       : tutorials for Windows (Visual Studio 2012)
+- orx-tutorial-vs2013-1.7.zip       : tutorials for Windows (Visual Studio 2013)
 
 All the `*-dev-*` packages above include:
 
