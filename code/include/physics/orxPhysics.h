@@ -70,8 +70,10 @@
 #define orxBODY_PART_DEF_KU32_FLAG_SPHERE             0x00000001  /**< Sphere body part def flag */
 #define orxBODY_PART_DEF_KU32_FLAG_BOX                0x00000002  /**< Box body part def flag */
 #define orxBODY_PART_DEF_KU32_FLAG_MESH               0x00000004  /**< Mesh body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_EDGE               0x00000008  /**< Edge body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_CHAIN              0x00000010  /**< Chain body part def flag */
 
-#define orxBODY_PART_DEF_KU32_MASK_TYPE               0x00000007 /**< Type body part def mask */
+#define orxBODY_PART_DEF_KU32_MASK_TYPE               0x0000001F /**< Type body part def mask */
 
 #define orxBODY_PART_DEF_KU32_FLAG_SOLID              0x10000000  /**< Solid body part def flag */
 
@@ -151,6 +153,28 @@ typedef struct __orxBODY_PART_DEF_t
       orxVECTOR avVertices[orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER]; /**< Mesh vertices : 132 */
 
     } stMesh;
+
+    struct
+    {
+      orxVECTOR v0;                                   /**< Edge v0 (ghost): 44 */
+      orxVECTOR v1;                                   /**< Edge v1 : 56 */
+      orxVECTOR v2;                                   /**< Edge v2 : 68 */
+      orxVECTOR v3;                                   /**< Edge v3 (ghost): 80 */
+      orxBOOL   bHasVertex0;                          /**< Edge Has v0 : 84 */
+      orxBOOL   bHasVertex3;                          /**< Edge Has v3 : 88 */
+
+    } stEdge;
+
+    struct
+    {
+      orxU32    u32VertexCounter;                     /**< Chain vertex counter : 36 */
+      orxVECTOR *avVertices;                          /**< Chain vertices : 38 */
+      orxVECTOR vNext;                                /**< Chain Next vertex (ghost) : 50 */
+      orxVECTOR vPrev;                                /**< Chain Prev vertex (ghost) : 62 */
+      orxBOOL   bHasNext;                             /**< Has Next vertex : 66 */
+      orxBOOL   bHasPrev;                             /**< Has Prev vertex : 70 */
+
+    } stChain;
 
   };                                                  /**< Part : 132 */
 
@@ -298,6 +322,7 @@ typedef struct __orxPHYSICS_BODY_JOINT_t              orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY           "StepFrequency"
 #define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG               "ShowDebug"
 #define orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST      "CollisionFlagList"
+#define orxPHYSICS_KZ_CONFIG_INTERPOLATE              "Interpolate"
 
 
 /***************************************************************************

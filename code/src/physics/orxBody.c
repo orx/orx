@@ -87,6 +87,12 @@
 #define orxBODY_KZ_CONFIG_CENTER              "Center"
 #define orxBODY_KZ_CONFIG_RADIUS              "Radius"
 #define orxBODY_KZ_CONFIG_VERTEX_LIST         "VertexList"
+#define orxBODY_KZ_CONFIG_PREVIOUS_VERTEX     "PreviousVertex"
+#define orxBODY_KZ_CONFIG_NEXT_VERTEX         "NextVertex"
+#define orxBODY_KZ_CONFIG_VERTEX_0            "Vertex0"
+#define orxBODY_KZ_CONFIG_VERTEX_1            "Vertex1"
+#define orxBODY_KZ_CONFIG_VERTEX_2            "Vertex2"
+#define orxBODY_KZ_CONFIG_VERTEX_3            "Vertex0"
 #define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
 #define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
@@ -119,6 +125,8 @@
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
 #define orxBODY_KZ_TYPE_BOX                   "box"
 #define orxBODY_KZ_TYPE_MESH                  "mesh"
+#define orxBODY_KZ_TYPE_EDGE                  "edge"
+#define orxBODY_KZ_TYPE_CHAIN                 "chain"
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
 #define orxBODY_KZ_TYPE_SPRING                "spring"
@@ -951,6 +959,87 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or less than 3 vertices).", _zConfigID);
+
+        /* Updates status */
+        bSuccess = orxFALSE;
+      }
+    }
+    /* Edge */
+    else if(orxString_ICompare(zBodyPartType, orxBODY_KZ_TYPE_EDGE) == 0)
+    {
+      /* Updates edge specific info */
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_EDGE;
+
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_1) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_2) != orxFALSE))
+      {
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_1, &stBodyPartDef.stEdge.v1);
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_2, &stBodyPartDef.stEdge.v2);
+
+        if((stBodyPartDef.stEdge.bHasVertex0 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_0)) != orxFALSE)
+        {
+          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_0, &stBodyPartDef.stEdge.v0);
+        }
+
+        if((stBodyPartDef.stEdge.bHasVertex3 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_3)) != orxFALSE)
+        {
+          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_3, &stBodyPartDef.stEdge.v3);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex1 or Vertex2 for ceating edge body <%s> is missing.", _zConfigID);
+
+        /* Updates status */
+        bSuccess = orxFALSE;
+      }
+    }
+    /* Chain */
+    else if(orxString_ICompare(zBodyPartType, orxBODY_KZ_TYPE_CHAIN) == 0)
+    {
+      /* Updates chain specific info */
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_CHAIN;
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
+      && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
+      {
+        orxU32 i;
+
+        stBodyPartDef.stChain.avVertices = (orxVECTOR*) orxMemory_Allocate(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_PHYSICS);
+
+        /* Valid? */
+        if(stBodyPartDef.stChain.avVertices != orxNULL)
+        {
+          /* For all defined vertices */
+          for(i = 0; i < stBodyPartDef.stChain.u32VertexCounter; i++)
+          {
+            /* Gets its vector */
+            orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i]));
+          }
+
+          if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX)) != orxFALSE)
+          {
+            orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &stBodyPartDef.stChain.vNext);
+          }
+
+          if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX)) != orxFALSE)
+          {
+            orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &stBodyPartDef.stChain.vPrev);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Could not allocate memory for vertex array", _zConfigID);
+
+          /* Updates status */
+          bSuccess = orxFALSE;
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating chain body <%s> is invalid (missing or less than 2 vertices).", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
