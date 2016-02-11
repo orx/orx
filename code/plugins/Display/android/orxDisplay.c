@@ -507,9 +507,6 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
         {
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "WARNING, Display.ScreenHeight ignored.");
         }
-
-        /* Updates ScreenHeight value */
-        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Height);
       }
       else
       /* Has ScreenHeight? */
@@ -522,10 +519,12 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
           u32Width = windowWidth * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
         }
-
-        /* Updates ScreenWidth value */
-        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Width);
       }
+
+      /* Updates ScreenHeight value */
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Height);
+      /* Updates ScreenWidth value */
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Width);
 
       /* Pops config section */
       orxConfig_PopSection();
