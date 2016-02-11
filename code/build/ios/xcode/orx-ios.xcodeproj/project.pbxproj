@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		152BA7921C6D00650002F9F6 /* libliquidfun.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 152BA7911C6D00650002F9F6 /* libliquidfun.a */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -26,7 +27,6 @@
 		E05455AB15172B9500917458 /* orxIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559A15172B9500917458 /* orxIcon.png */; };
 		E05455AC15172B9500917458 /* wall.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559B15172B9500917458 /* wall.png */; };
 		E05455AE15172B9500917458 /* orxTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = E054559D15172B9500917458 /* orxTest.mm */; };
-		E05455FE15172DFA00917458 /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E059C5711116B9330086879B /* libBox2D.a */; };
 		E0562E5A11361B13003EEFAE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0562E5911361B13003EEFAE /* AudioToolbox.framework */; };
 		E0562E5C11361B13003EEFAE /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0562E5B11361B13003EEFAE /* OpenAL.framework */; };
 		E059C6361116BC430086879B /* liborxd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E059C62D1116BB240086879B /* liborxd.a */; };
@@ -100,6 +100,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		152BA7911C6D00650002F9F6 /* libliquidfun.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libliquidfun.a; path = "../../../../extern/LiquidFun-1.1.0/lib/ios/libliquidfun.a"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* orxTestd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = orxTestd.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -173,7 +174,6 @@
 		E059C5351116B8E70086879B /* orxLinkList.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxLinkList.c; sourceTree = "<group>"; };
 		E059C5371116B8E70086879B /* orxString.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxString.c; sourceTree = "<group>"; };
 		E059C5381116B8E70086879B /* orxTree.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxTree.c; sourceTree = "<group>"; };
-		E059C5711116B9330086879B /* libBox2D.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBox2D.a; path = ../../../../extern/Box2D_2.1.3/lib/ios/libBox2D.a; sourceTree = SOURCE_ROOT; };
 		E059C58E1116BABE0086879B /* orxAnim.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxAnim.h; sourceTree = "<group>"; };
 		E059C58F1116BABE0086879B /* orxAnimPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxAnimPointer.h; sourceTree = "<group>"; };
 		E059C5901116BABE0086879B /* orxAnimSet.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxAnimSet.h; sourceTree = "<group>"; };
@@ -284,7 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0FCA0791A77473D007BB701 /* libwebpdecoder.a in Frameworks */,
-				E05455FE15172DFA00917458 /* libBox2D.a in Frameworks */,
+				152BA7921C6D00650002F9F6 /* libliquidfun.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,7 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				E0FCA0781A77473D007BB701 /* libwebpdecoder.a */,
-				E059C5711116B9330086879B /* libBox2D.a */,
+				152BA7911C6D00650002F9F6 /* libliquidfun.a */,
 				E0562E5911361B13003EEFAE /* AudioToolbox.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -1263,7 +1263,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,
-					../../../../extern/Box2D_2.1.3/lib/ios,
+					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-ffast-math";
@@ -1276,7 +1276,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/Box2D_2.1.3/include ../../../../extern/dlmalloc ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/dlmalloc ../../../include";
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Debug;
@@ -1315,7 +1315,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,
-					../../../../extern/Box2D_2.1.3/lib/ios,
+					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
 				OTHER_CFLAGS = "-ffast-math";
 				OTHER_LDFLAGS = "-ObjC";
@@ -1327,7 +1327,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/Box2D_2.1.3/include ../../../../extern/dlmalloc ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/dlmalloc ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",
@@ -1441,7 +1441,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,
-					../../../../extern/Box2D_2.1.3/lib/ios,
+					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
 				OTHER_CFLAGS = "-ffast-math";
 				OTHER_LDFLAGS = "-ObjC";
@@ -1453,7 +1453,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/Box2D_2.1.3/include ../../../../extern/dlmalloc ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/dlmalloc ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",
