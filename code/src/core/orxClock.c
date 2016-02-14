@@ -415,7 +415,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register link list structure.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Failed to register link list structure.");
     }
   }
   else
@@ -779,7 +779,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot find config section named (%s).", _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Cannot find config section named (%s).", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -922,7 +922,7 @@ orxSTATUS orxFASTCALL orxClock_ResyncAll()
   {
     /* Not already failed? */
     if(eResult != orxSTATUS_FAILURE)
-    {    
+    {
       /* Resyncs clock */
       eResult = orxClock_Resync(pstClock);
     }
