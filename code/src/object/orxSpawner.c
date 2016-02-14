@@ -554,8 +554,12 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
             orxObject_Update(pstObject, &stClockInfo);
           }
 
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
+          /* Still alive? */
+          if(((orxSTRUCTURE *)pstObject)->u64GUID != orxSTRUCTURE_GUID_MAGIC_TAG_DELETED)
+          {
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
+          }
         }
       }
 
