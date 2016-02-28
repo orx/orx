@@ -2631,6 +2631,9 @@ void orxFASTCALL orxConfig_Exit()
     /* Deletes stack bank */
     orxBank_Delete(sstConfig.pstStackBank);
 
+    /* Deletes encryption key */
+    orxConfig_SetEncryptionKey(orxNULL);
+
     /* Cleans control structure */
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
   }

@@ -2394,7 +2394,7 @@ orxSTATUS orxFASTCALL orxFX_AddPitch(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
-  
+
   /* Done! */
   return eResult;
 }
