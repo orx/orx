@@ -912,8 +912,17 @@ void orxFASTCALL orxObject_CommandSetGroup(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Sets its Group */
-    orxObject_SetGroupID(pstObject, (_u32ArgNumber > 1) ? orxString_GetID(_astArgList[1].zValue) : sstObject.u32DefaultGroupID);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Updates it */
+      orxObject_SetGroupIDRecursive(pstObject, orxString_GetID(_astArgList[1].zValue));
+    }
+    else
+    {
+      /* Sets its Group */
+      orxObject_SetGroupID(pstObject, (_u32ArgNumber > 1) ? orxString_GetID(_astArgList[1].zValue) : sstObject.u32DefaultGroupID);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1040,6 +1049,31 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
 
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all its children */
+      for(pstChild = orxObject_GetOwnedChild(pstObject);
+          pstChild != orxNULL;
+          pstChild = orxObject_GetOwnedSibling(pstChild))
+      {
+        /* Gets its current color */
+        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        {
+          /* Sets its alpha to opaque */
+          stColor.fAlpha = orxFLOAT_1;
+        }
+
+        /* Sets its color */
+        orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
+
+        /* Updates object */
+        orxObject_SetColor(pstChild, &stColor);
+      }
+    }
+
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
@@ -1115,6 +1149,31 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
 
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
+
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all its children */
+      for(pstChild = orxObject_GetOwnedChild(pstObject);
+          pstChild != orxNULL;
+          pstChild = orxObject_GetOwnedSibling(pstChild))
+      {
+        /* Gets its current color */
+        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        {
+          /* Sets its alpha to opaque */
+          stColor.fAlpha = orxFLOAT_1;
+        }
+
+        /* Sets its color */
+        orxVector_Copy(&(stColor.vRGB), &(_astArgList[1].vValue));
+
+        /* Updates object */
+        orxObject_SetColor(pstChild, &stColor);
+      }
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1193,6 +1252,34 @@ void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_
 
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
+
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all its children */
+      for(pstChild = orxObject_GetOwnedChild(pstObject);
+          pstChild != orxNULL;
+          pstChild = orxObject_GetOwnedSibling(pstChild))
+      {
+        /* Gets its current color */
+        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        {
+          /* Sets its alpha to opaque */
+          stColor.fAlpha = orxFLOAT_1;
+        }
+
+        /* Inits color with HSL values */
+        orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
+
+        /* Converts color to RGB  */
+        orxColor_FromHSLToRGB(&stColor, &stColor);
+
+        /* Updates object */
+        orxObject_SetColor(pstChild, &stColor);
+      }
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1273,6 +1360,34 @@ void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
 
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all its children */
+      for(pstChild = orxObject_GetOwnedChild(pstObject);
+          pstChild != orxNULL;
+          pstChild = orxObject_GetOwnedSibling(pstChild))
+      {
+        /* Gets its current color */
+        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        {
+          /* Sets its alpha to opaque */
+          stColor.fAlpha = orxFLOAT_1;
+        }
+
+        /* Inits color with HSV values */
+        orxVector_Copy(&stColor.vHSV, &(_astArgList[1].vValue));
+
+        /* Converts color to RGB  */
+        orxColor_FromHSVToRGB(&stColor, &stColor);
+
+        /* Updates object */
+        orxObject_SetColor(pstChild, &stColor);
+      }
+    }
+
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
@@ -1349,6 +1464,31 @@ void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
     /* Updates object */
     orxObject_SetColor(pstObject, &stColor);
 
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      orxOBJECT *pstChild;
+
+      /* For all its children */
+      for(pstChild = orxObject_GetOwnedChild(pstObject);
+          pstChild != orxNULL;
+          pstChild = orxObject_GetOwnedSibling(pstChild))
+      {
+        /* Gets its current color */
+        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        {
+          /* Sets its color to white */
+          orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+        }
+
+        /* Sets its alpha */
+        stColor.fAlpha = _astArgList[1].fValue;
+
+        /* Updates object */
+        orxObject_SetColor(pstChild, &stColor);
+      }
+    }
+
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
@@ -1410,8 +1550,17 @@ void orxFASTCALL orxObject_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Updates it */
-    orxObject_Enable(pstObject, _astArgList[1].bValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Updates it */
+      orxObject_EnableRecursive(pstObject, _astArgList[1].bValue);
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_Enable(pstObject, _astArgList[1].bValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1438,8 +1587,17 @@ void orxFASTCALL orxObject_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_V
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Updates it */
-    orxObject_Pause(pstObject, _astArgList[1].bValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Updates it */
+      orxObject_PauseRecursive(pstObject, _astArgList[1].bValue);
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_Pause(pstObject, _astArgList[1].bValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2391,7 +2549,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRepeat, "Repeat", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetGroup */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetGroup, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Group = <default>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetGroup, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Group = <default>", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetGroup */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetGroup, "Group", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -2404,7 +2562,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetLifeTime, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetColor */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetRGB */
@@ -2412,22 +2570,22 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetRGB */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRGB, "RGB", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetHSL */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSL", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSL", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetHSL */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSL, "HSL", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSL, "HSL", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetHSV */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSV, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSV", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSV, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSV", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetHSV */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSV, "HSV", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetAlpha */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAlpha, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Alpha", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAlpha, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Alpha", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetAlpha */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAlpha, "Alpha", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Enable */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Enable, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: Pause */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
