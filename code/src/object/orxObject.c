@@ -2566,13 +2566,13 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetRGB */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRGB, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"RGB", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetRGB, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"RGB", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetRGB */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetRGB, "RGB", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetHSL */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSL, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSL", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetHSL */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSL, "HSL", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetHSL, "HSL", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetHSV */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetHSV, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"HSV", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetHSV */
