@@ -128,11 +128,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObje
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo);
 
-/** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected.
+/** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected, see orxObject_EnableRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Enables/disables an object and all its children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bEnable      Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_EnableRecursive(orxOBJECT *_pstObject, orxBOOL _bEnable);
 
 /** Is object enabled?
  * @param[in]   _pstObject    Concerned object
@@ -140,11 +146,17 @@ extern orxDLLAPI void orxFASTCALL           orxObject_Enable(orxOBJECT *_pstObje
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(const orxOBJECT *_pstObject);
 
-/** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected.
+/** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected, see orxObject_PauseRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause);
+
+/** Pauses/unpauses an object and its children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bPause       Pause / unpause
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_PauseRecursive(orxOBJECT *_pstObject, orxBOOL _bPause);
 
 /** Is object paused?
  * @param[in]   _pstObject    Concerned object
@@ -909,16 +921,16 @@ extern orxDLLAPI orxGRAPHIC *orxFASTCALL    orxObject_GetWorkingGraphic(const or
 
 /** Sets object color.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
 
-/** Clears object color.
+/** Sets color of an object and all its children.
  * @param[in]   _pstObject      Concerned object
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetColorRecursive(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
 
 /** Object has color accessor?
  * @param[in]   _pstObject      Concerned object
@@ -1008,6 +1020,12 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+
+/** Sets group ID of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32GroupID     Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJECT *_pstObject, orxU32 _u32GroupID);
 
 /** Gets next object in group.
  * @param[in]   _pstObject      Concerned object, orxNULL to get the first one

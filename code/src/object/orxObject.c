@@ -140,6 +140,34 @@
 #define orxOBJECT_KZ_POSITION                   "position"
 
 
+/** Helpers
+ */
+#define orxOBJECT_MAKE_RECURSIVE(FUNCTION, PARAM_TYPE)                                      \
+void orxFASTCALL orxObject_##FUNCTION##Recursive(orxOBJECT *_pstObject, PARAM_TYPE _Param)  \
+{                                                                                           \
+  orxOBJECT *pstChild;                                                                      \
+                                                                                            \
+  /* Checks */                                                                              \
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);                         \
+  orxSTRUCTURE_ASSERT(_pstObject);                                                          \
+                                                                                            \
+  /* Updates object */                                                                      \
+  orxObject_##FUNCTION(_pstObject, _Param);                                                 \
+                                                                                            \
+  /* For all its children */                                                                \
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);                                       \
+      pstChild != orxNULL;                                                                  \
+      pstChild = orxObject_GetOwnedSibling(pstChild))                                       \
+  {                                                                                         \
+    /* Updates it */                                                                        \
+    orxObject_##FUNCTION(pstChild, _Param);                                                 \
+  }                                                                                         \
+                                                                                            \
+  /* Done! */                                                                               \
+  return;                                                                                   \
+}
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -4132,9 +4160,9 @@ orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(const orxOBJECT *_pstObject, o
   return pstStructure;
 }
 
-/** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected.
+/** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected, see orxObject_EnableRecursive().
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _bEnable      enable / disable
+ * @param[in]   _bEnable      Enable / disable
  */
 void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
@@ -4172,6 +4200,12 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
   return;
 }
 
+/** Enables/disables an object and all its children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bEnable      Enable / disable
+ */
+orxOBJECT_MAKE_RECURSIVE(Enable, orxBOOL);
+
 /** Is object enabled?
  * @param[in]   _pstObject    Concerned object
  * @return      orxTRUE if enabled, orxFALSE otherwise
@@ -4186,7 +4220,7 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(const orxOBJECT *_pstObject)
   return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
 }
 
-/** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected.
+/** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected, see orxObject_PauseRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
  */
@@ -4224,6 +4258,12 @@ void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
 
   return;
 }
+
+/** Pauses/unpauses an object and all its children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bPause       Pause / unpause
+ */
+orxOBJECT_MAKE_RECURSIVE(Pause, orxBOOL);
 
 /** Is object paused?
  * @param[in]   _pstObject    Concerned object
@@ -7436,7 +7476,7 @@ orxGRAPHIC *orxFASTCALL orxObject_GetWorkingGraphic(const orxOBJECT *_pstObject)
 
 /** Sets object color.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor)
@@ -7455,7 +7495,7 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   if(pstGraphic != orxNULL)
   {
     /* Sets its color */
-    eResult = orxGraphic_SetColor(pstGraphic, _pstColor);
+    eResult = (_pstColor != orxNULL) ? orxGraphic_SetColor(pstGraphic, _pstColor) : orxGraphic_ClearColor(pstGraphic);
   }
   else
   {
@@ -7470,40 +7510,11 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   return eResult;
 }
 
-/** Clears object color.
+/** Sets color of an object and all its children.
  * @param[in]   _pstObject      Concerned object
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  */
-orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
-{
-  orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
-  {
-    /* Clears its color */
-    eResult = orxGraphic_ClearColor(pstGraphic);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't clear color.", orxObject_GetName(_pstObject));
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
+orxOBJECT_MAKE_RECURSIVE(SetColor, const orxCOLOR *);
 
 /** Object has color accessor?
  * @param[in]   _pstObject      Concerned object
@@ -7870,6 +7881,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
   /* Done! */
   return eResult;
 }
+
+/** Sets group ID of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32GroupID     Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ */
+orxOBJECT_MAKE_RECURSIVE(SetGroupID, orxU32);
 
 /** Gets next object in group.
  * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
