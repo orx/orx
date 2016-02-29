@@ -1258,6 +1258,11 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
   if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
   && (orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
   {
+    orxINPUT_SET *pstPreviousSet;
+
+    /* Stores current set */
+    pstPreviousSet = sstInput.pstCurrentSet;
+
     /* Gets joystick threshold */
     sstInput.fJoystickAxisThreshold = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) != orxFALSE) ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) : orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD;
 
@@ -1289,6 +1294,13 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
           eResult = orxSTATUS_SUCCESS;
         }
       }
+    }
+
+    /* Should restore previous set? */
+    if(pstPreviousSet != orxNULL)
+    {
+      /* Restores it */
+      sstInput.pstCurrentSet = pstPreviousSet;
     }
 
     /* Pops previous section */
@@ -1509,6 +1521,11 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
         orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_SELECT_SET, orxNULL, orxNULL, &stPayload);
       }
     }
+  }
+  else
+  {
+    /* Clears current set */
+    sstInput.pstCurrentSet = orxNULL;
   }
 
   /* Done! */
