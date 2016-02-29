@@ -1,5 +1,8 @@
 var NAVTREEINDEX10 =
 {
+"group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a":[1,53,18],
+"group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299":[1,53,14],
+"group__orx_texture.html#gaf4b625f49855b667995b2ed8b9887a75":[1,53,4],
 "group__orx_texture.html#gafc422f0de3be1db48dce8abc82591bc6":[1,53,10],
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9":[1,53,4,3],
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809":[1,53,4,1],
@@ -246,8 +249,5 @@ var NAVTREEINDEX10 =
 "orx_android_8h.html#gae61fe62bd38977850791da3eb9522237":[3,0,0,6,0,20],
 "orx_android_8h.html#gaf51bfa3c5118859198b0cd74a5003809":[3,0,0,6,0,21],
 "orx_android_8h.html#gaf58cbf6efdf1f84d0d307885a44158d2":[3,0,0,6,0,14],
-"orx_android_8h.html#gafd41769b5b852fdf9ee270202f526806":[3,0,0,6,0,0],
-"orx_android_8h_source.html":[3,0,0,6,0],
-"orx_anim_8h.html":[3,0,0,0,0],
-"orx_anim_8h.html#ga024213648a185234bd60311b96c4fb8e":[3,0,0,0,0,25]
+"orx_android_8h.html#gafd41769b5b852fdf9ee270202f526806":[3,0,0,6,0,0]
 };
