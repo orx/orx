@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
+#include "core/orxClock.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
@@ -123,6 +124,7 @@ typedef struct __orxSHADER_STATIC_t
 {
   orxU32        u32Flags;                                 /**< Control flags */
   orxHASHTABLE *pstReferenceTable;                        /**< Reference hash table */
+  const orxCLOCK_INFO *pstClockInfo;                      /**< Core clock info */
 
 } orxSHADER_STATIC;
 
@@ -453,6 +455,7 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
@@ -489,8 +492,44 @@ orxSTATUS orxFASTCALL orxShader_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Adds event handler */
-        orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxShader_EventHandler);
+        orxCLOCK *pstClock;
+
+        /* Gets core clock */
+        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+        /* Valid? */
+        if(pstClock != orxNULL)
+        {
+          /* Stores its info */
+          sstShader.pstClockInfo = orxClock_GetInfo(pstClock);
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxShader_EventHandler);
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+
+          /* Unregisters structure type */
+          orxStructure_Unregister(orxSTRUCTURE_ID_SHADER);
+
+          /* Deletes reference table */
+          orxHashTable_Delete(sstShader.pstReferenceTable);
+          sstShader.pstReferenceTable = orxNULL;
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to retrieve core clock.");
+        }
+      }
+      else
+      {
+        /* Deletes reference table */
+        orxHashTable_Delete(sstShader.pstReferenceTable);
+        sstShader.pstReferenceTable = orxNULL;
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register shader structure.");
       }
     }
     else
@@ -824,6 +863,9 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
         {
           /* Updates owner texture */
           orxViewport_GetTextureList(orxVIEWPORT(_pstOwner), 1, &pstOwnerTexture);
+
+          /* Gets core time */
+          fTime = sstShader.pstClockInfo->fTime;
 
           break;
         }
