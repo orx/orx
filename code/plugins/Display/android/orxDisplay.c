@@ -4291,7 +4291,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
           }
 
           /* Adds code */
-          s32Offset = orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+          s32Offset = orxString_NPrint(pc, s32Free, "#line 0\n%s\n", _zCode);
           pc       += s32Offset;
           s32Free  -= s32Offset;
 

@@ -4887,7 +4887,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         }
 
         /* Adds code */
-        orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+        orxString_NPrint(pc, s32Free, "#line 0\n%s\n", _zCode);
 
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
