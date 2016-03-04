@@ -1288,7 +1288,7 @@ static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
-  static const orxCHAR *szVertexShaderSource =
+  static const orxSTRING szVertexShaderSource =
     "void main()"
     "{"
     "  gl_TexCoord[0] = gl_MultiTexCoord0;"
@@ -4759,6 +4759,70 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
             pc       += s32Offset;
             s32Free  -= s32Offset;
           }
+        }
+
+        /* Has shader extension list? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
+        {
+          orxU32 i, iCount;
+
+          /* For all extensions */
+          for(i = 0, iCount = orxConfig_GetListCounter(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST);
+              i < iCount;
+              i++)
+          {
+            orxS32          s32Offset;
+            orxBOOL         bAdd;
+            const orxSTRING zExtension;
+
+            /* Gets it */
+            zExtension = orxConfig_GetListString(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST, i);
+
+            /* Depending on character */
+            switch(*zExtension)
+            {
+              case orxDISPLAY_KC_SHADER_EXTENSION_REMOVE:
+              {
+                /* Updates extension string */
+                zExtension++;
+
+                /* Sets action */
+                bAdd = orxFALSE;
+
+                break;
+              }
+
+              case orxDISPLAY_KC_SHADER_EXTENSION_ADD:
+              {
+                /* Updates extension string */
+                zExtension++;
+
+                /* Fallthrough */
+              }
+
+              default:
+              {
+                /* Sets action */
+                bAdd = orxTRUE;
+
+                break;
+              }
+            }
+
+            /* Prints it */
+            s32Offset = orxString_NPrint(pc, s32Free, "#extension %s : %s\n", zExtension, (bAdd != orxFALSE) ? "enable" : "disable");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+          }
+        }
+        else
+        {
+          orxS32 s32Offset;
+
+          /* Uses GPU shader 4 extension by default */
+          s32Offset  = orxString_NPrint(pc, s32Free, "#extension GL_EXT_gpu_shader4 : enable\n");
+          pc        += s32Offset;
+          s32Free   -= s32Offset;
         }
 
         /* Pops config section */

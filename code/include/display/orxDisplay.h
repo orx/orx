@@ -192,6 +192,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
 #define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
 #define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
+#define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
 
 
 /** Shader texture suffixes
@@ -200,6 +201,12 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
+
+
+/** Shader extension actions
+ */
+#define orxDISPLAY_KC_SHADER_EXTENSION_ADD  '+'
+#define orxDISPLAY_KC_SHADER_EXTENSION_REMOVE '-'
 
 
 /** Event enum
