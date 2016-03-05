@@ -524,7 +524,7 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Updates ScreenHeight value */
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Height);
       /* Updates ScreenWidth value */
-      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Width);
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_WIDTH, u32Width);
 
       /* Pops config section */
       orxConfig_PopSection();
