@@ -111,7 +111,7 @@
 
 #define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 2048)  /**< 2048 items batch capacity */
 #define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 2048)  /**< 2048 items batch capacity */
-#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
+#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
@@ -4031,8 +4031,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           }
 
           /* Creates default & no texture shaders */
-          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
+          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE);
 
           /* Should restore shader version? */
           if(u32ShaderVersion != orxU32_UNDEFINED)
@@ -4709,7 +4709,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_HasShaderSupport()
   return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -4720,7 +4720,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
     /* Valid? */
-    if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
+    if((_azCodeList != orxNULL) && (_u32Size > 0))
     {
       orxDISPLAY_SHADER *pstShader;
 
@@ -4731,7 +4731,8 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
       if(pstShader != orxNULL)
       {
         orxCHAR  *pc;
-        orxS32    s32Free;
+        orxS32    s32Offset, s32Free;
+        orxU32    i;
 
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
@@ -4752,8 +4753,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
           /* Valid? */
           if(u32ShaderVersion != 0)
           {
-            orxS32 s32Offset;
-
             /* Prints shader version */
             s32Offset = orxString_NPrint(pc, s32Free, "#version %u\n", u32ShaderVersion);
             pc       += s32Offset;
@@ -4764,11 +4763,11 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
         {
-          orxU32 i, iCount;
+          orxS32 i, s32Count;
 
           /* For all extensions */
-          for(i = 0, iCount = orxConfig_GetListCounter(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST);
-              i < iCount;
+          for(i = 0, s32Count = orxConfig_GetListCounter(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST);
+              i < s32Count;
               i++)
           {
             orxS32          s32Offset;
@@ -4817,8 +4816,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
         }
         else
         {
-          orxS32 s32Offset;
-
           /* Uses GPU shader 4 extension by default */
           s32Offset  = orxString_NPrint(pc, s32Free, "#extension GL_EXT_gpu_shader4 : enable\n");
           pc        += s32Offset;
@@ -4844,8 +4841,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
               case orxSHADER_PARAM_TYPE_FLOAT:
               case orxSHADER_PARAM_TYPE_TIME:
               {
-                orxS32 s32Offset;
-
                 /* Adds its literal value */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
                 pc       += s32Offset;
@@ -4856,8 +4851,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
 
               case orxSHADER_PARAM_TYPE_TEXTURE:
               {
-                orxS32 s32Offset;
-
                 /* Adds its literal value and automated coordinates */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform sampler2D %s[%d];\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP "[%d];\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT "[%d];\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM "[%d];\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT "[%d];\n", pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize, pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform sampler2D %s;\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP ";\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT ";\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM ";\nuniform float %s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT ";\n", pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName, pstParam->zName);
                 pc       += s32Offset;
@@ -4868,8 +4861,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
 
               case orxSHADER_PARAM_TYPE_VECTOR:
               {
-                orxS32 s32Offset;
-
                 /* Adds its literal value */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform vec3 %s[%d];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform vec3 %s;\n", pstParam->zName);
                 pc       += s32Offset;
@@ -4886,8 +4877,18 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING _zCode, const
           }
         }
 
-        /* Adds code */
-        orxString_NPrint(pc, s32Free, "#line 0\n%s\n", _zCode);
+        /* Adds line directive */
+        s32Offset = orxString_NPrint(pc, s32Free, "#line 0\n");
+        pc       += s32Offset;
+        s32Free  -= s32Offset;
+
+        /* Adds all code fragments */
+        for(i = 0; i < _u32Size; i++)
+        {
+          s32Offset = orxString_NPrint(pc, s32Free, "%s\n", _azCodeList[i]);
+          pc       += s32Offset;
+          s32Free  -= s32Offset;
+        }
 
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));

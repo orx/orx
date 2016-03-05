@@ -49,7 +49,7 @@
 
   #pragma warning(disable : 4200)
 
-  #include "malloc.h"
+  #include <malloc.h>
 
 #endif /* __orxMSVC__ */
 

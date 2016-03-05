@@ -44,7 +44,7 @@
 
 #ifdef __orxMSVC__
 
-  #include "malloc.h"
+  #include <malloc.h>
   #pragma warning(disable : 4200)
 
 #endif /* __orxMSVC__ */

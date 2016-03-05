@@ -46,7 +46,7 @@
 
 #ifdef __orxMSVC__
 
-  #include "malloc.h"
+  #include <malloc.h>
 
 #endif /* __orxMSVC__ */
 

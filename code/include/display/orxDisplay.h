@@ -1056,12 +1056,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const 
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_HasShaderSupport();
 
 /** Creates (compiles) a shader
- * @param[in]   _zCode                                Shader code to compile
+ * @param[in]   _azCodeList                           List of shader code to compile, in order
+ * @param[in]   _u32Size                              Size of the shader code list
  * @param[in]   _pstParamList                         Shader parameters (should be a link list of orxSHADER_PARAM)
  * @param[in]   _bUseCustomParam                      Shader uses custom parameters
  * @return orxHANDLE of the compiled shader is successful, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam);
 
 /** Deletes a compiled shader
  * @param[in]   _hShader                              Shader to delete

@@ -67,11 +67,11 @@
 
 /** Module flags
  */
-#define orxDISPLAY_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
+#define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000  /**< No flags */
 
-#define orxDISPLAY_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_SHADER        0x00000002  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER   0x00000004  /**< Has depth buffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000002  /**< Shader support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000004  /**< Has depth buffer support flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -87,7 +87,7 @@
 
 #define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 1024)  /**< 1024 items batch capacity */
 #define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 1024)  /**< 1024 items batch capacity */
-#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      65536
+#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
@@ -4073,8 +4073,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
         /* Creates default shaders */
-        sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szFragmentShaderSource, orxNULL, orxFALSE);
-        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(szNoTextureFragmentShaderSource, orxNULL, orxTRUE);
+        sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE);
+        sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*) orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE);
 
         /* Generates index buffer object (VBO/IBO) */
         glGenBuffers(1, &(sstDisplay.uiVertexBuffer));
@@ -4204,7 +4204,7 @@ orxBOOL orxFASTCALL orxDisplay_Android_HasShaderSupport()
   return orxTRUE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -4215,7 +4215,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
     /* Valid? */
-    if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
+    if((_azCodeList != orxNULL) && (_u32Size > 0))
     {
       orxDISPLAY_SHADER *pstShader;
 
@@ -4225,8 +4225,9 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
       /* Successful? */
       if(pstShader != orxNULL)
       {
-        orxCHAR  *pc;
+        orxCHAR  *pc, *pcReplace;
         orxS32    s32Free, s32Offset;
+        orxU32    i;
 
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
@@ -4236,8 +4237,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
         /* Has parameters? */
         if(_pstParamList != orxNULL)
         {
-          orxCHAR          *pcReplace;
-          orxSHADER_PARAM  *pstParam;
+          orxSHADER_PARAM *pstParam;
 
           /* Adds wrapping code */
           s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
@@ -4289,34 +4289,37 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING _zCode, co
               }
             }
           }
+        }
 
-          /* Adds code */
-          s32Offset = orxString_NPrint(pc, s32Free, "#line 0\n%s\n", _zCode);
+        /* Adds line directive */
+        s32Offset = orxString_NPrint(pc, s32Free, "#line 0\n");
+        pc       += s32Offset;
+        s32Free  -= s32Offset;
+
+        /* Adds all code fragments */
+        for(i = 0; i < _u32Size; i++)
+        {
+          s32Offset = orxString_NPrint(pc, s32Free, "%s\n", _azCodeList[i]);
           pc       += s32Offset;
           s32Free  -= s32Offset;
-
-          /* For all gl_TexCoord[0] */
-          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
-              pcReplace != orxNULL;
-              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
-          {
-            /* Replaces it */
-            orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
-          }
-
-          /* For all gl_Color */
-          for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
-              pcReplace != orxNULL;
-              pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
-          {
-            /* Replaces it */
-            orxMemory_Copy(pcReplace, "_Color0_", 8 * sizeof(orxCHAR));
-          }
         }
-        else
+
+        /* For all gl_TexCoord[0] */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
         {
-          /* Adds code */
-          orxString_NPrint(pc, s32Free, "%s\n", _zCode);
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
+        }
+
+        /* For all gl_Color */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
+        {
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "_Color0_", 8 * sizeof(orxCHAR));
         }
 
         /* Inits shader */

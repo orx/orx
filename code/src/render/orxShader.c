@@ -47,6 +47,12 @@
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
+#ifdef __orxMSVC__
+
+  #include <malloc.h>
+
+#endif /* __orxMSVC__ */
+
 
 /** Module flags
  */
@@ -75,6 +81,7 @@
 #define orxSHADER_KU32_BANK_SIZE              32          /**< Bank size */
 
 #define orxSHADER_KZ_CONFIG_CODE              "Code"
+#define orxSHADER_KZ_CONFIG_CODE_LIST         "CodeList"
 #define orxSHADER_KZ_CONFIG_PARAM_LIST        "ParamList"
 #define orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM  "UseCustomParam"
 #define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
@@ -115,7 +122,6 @@ struct __orxSHADER_t
   orxHANDLE       hData;                                  /**< Compiled shader data : 48 */
   orxBANK        *pstParamValueBank;                      /**< Parameter value bank : 52 */
   orxBANK        *pstParamBank;                           /**< Parameter bank : 56 */
-  orxU32          u32CodeID;                              /**< Code ID : 60 */
 };
 
 /** Static structure
@@ -147,7 +153,6 @@ static orxSHADER_STATIC sstShader;
 static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
 {
   orxS32                  i, s32Number;
-  const orxSTRING         zCode;
   orxSHADER_PARAM_VALUE  *pstParamValue;
   orxSTATUS               eResult = orxSTATUS_FAILURE;
 
@@ -353,21 +358,46 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     }
   }
 
-  /* Gets code */
-  zCode = orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE);
-
-  /* Valid? */
-  if(zCode != orxSTRING_EMPTY)
+  /* Has code list? */
+  if(orxConfig_HasValue(orxSHADER_KZ_CONFIG_CODE_LIST) != orxFALSE)
   {
-    /* Sets it */
-    if((eResult = orxShader_CompileCode(_pstShader, zCode)) != orxSTATUS_FAILURE)
+    orxS32 s32Count;
+
+    /* Gets its counter */
+    s32Count = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_CODE_LIST);
+
     {
-      /* Stores code ID */
-      _pstShader->u32CodeID = orxString_ToCRC(zCode);
+      orxS32 i;
+
+#ifdef __orxMSVC__
+      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING *));
+#else /* __orxMSVC__ */
+      const orxSTRING azCodeList[s32Count];
+#endif /* __orxMSVC__ */
+
+      /* For all code entries */
+      for(i = 0; i < s32Count; i++)
+      {
+        /* Gets it */
+        azCodeList[i] = orxConfig_GetString(orxConfig_GetListString(orxSHADER_KZ_CONFIG_CODE_LIST, i));
+      }
+
+      /* Compiles code */
+      orxShader_CompileCode(_pstShader, azCodeList, s32Count);
     }
-    else
+  }
+  else
+  {
+    const orxSTRING zCode;
+
+    /* Gets code */
+    zCode = orxConfig_GetString(orxSHADER_KZ_CONFIG_CODE);
+
+    /* Valid? */
+    if(zCode != orxSTRING_EMPTY)
     {
-      _pstShader->u32CodeID = 0;
+      /* Compiles it */
+      eResult = orxShader_CompileCode(_pstShader, &zCode, 1);
     }
   }
 
@@ -1596,12 +1626,13 @@ orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxS
   return eResult;
 }
 
-/** Sets shader code (& compiles it)
+/** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
- * @param[in] _zCode                  Shader's code (will be compiled immediately)
+ * @param[in] _azCodeList             List of shader codes to compile (parameters need to be set beforehand), will be processed in order
+ * @param[in] _u32Size                Size of the shader code list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRING _zCode)
+orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRING *_azCodeList, orxU32 _u32Size)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1623,10 +1654,10 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
   }
 
   /* Valid? */
-  if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
+  if((_azCodeList != orxNULL) && (_u32Size > 0))
   {
     /* Creates compiled shader */
-    _pstShader->hData = orxDisplay_CreateShader(_zCode, &(_pstShader->stParamList), orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM) ? orxTRUE : orxFALSE);
+    _pstShader->hData = orxDisplay_CreateShader(_azCodeList, _u32Size, &(_pstShader->stParamList), orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM) ? orxTRUE : orxFALSE);
 
     /* Success? */
     if(_pstShader->hData != orxHANDLE_UNDEFINED)
