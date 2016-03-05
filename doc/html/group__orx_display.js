@@ -126,7 +126,7 @@ var group__orx_display =
     [ "orxColor_ToRGBA", "group__orx_display.html#ga3a2b947697a399f021b75c94d7cfd1b6", null ],
     [ "orxDisplay_ClearBitmap", "group__orx_display.html#ga497ef75237b5ba9a4fad420e761be164", null ],
     [ "orxDisplay_CreateBitmap", "group__orx_display.html#gacfe7630f589a37750b8a64611b5fcedc", null ],
-    [ "orxDisplay_CreateShader", "group__orx_display.html#ga0587d98e18d1172f0e2af286f447a89c", null ],
+    [ "orxDisplay_CreateShader", "group__orx_display.html#ga6e1743b5e60a33798e324bb101755a1e", null ],
     [ "orxDisplay_DeleteBitmap", "group__orx_display.html#gaf17f6bda43eee81dd41e66acb61478c2", null ],
     [ "orxDisplay_DeleteShader", "group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2", null ],
     [ "orxDisplay_DrawCircle", "group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332", null ],

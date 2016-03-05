@@ -18,7 +18,7 @@ var orx_shader_8h =
     [ "orxShader_AddTextureParam", "orx_shader_8h.html#ga82b3b438d904bd790dfb062ae77d31aa", null ],
     [ "orxShader_AddTimeParam", "orx_shader_8h.html#ga4a302c1f77503f9da2376807f7e8edb9", null ],
     [ "orxShader_AddVectorParam", "orx_shader_8h.html#ga49da9795481144df82fc146aa777e499", null ],
-    [ "orxShader_CompileCode", "orx_shader_8h.html#ga80c39a9086eab3bd3e1b143c27cfb87e", null ],
+    [ "orxShader_CompileCode", "orx_shader_8h.html#ga85854ca01130cf5376ac3dbb18ebf6b7", null ],
     [ "orxShader_Create", "orx_shader_8h.html#ga797b23fe634e863a7c3befd9cda7d13b", null ],
     [ "orxShader_CreateFromConfig", "orx_shader_8h.html#ga96e4a893c541b945d05aae98a08b1f46", null ],
     [ "orxShader_Delete", "orx_shader_8h.html#ga87e4282c60db4362287cc0c2e8e40c72", null ],

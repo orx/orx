@@ -153,8 +153,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga4a302c1f77503f9da2376807f7e8edb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga49da9795481144df82fc146aa777e499"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga49da9795481144df82fc146aa777e499">orxShader_AddVectorParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avValueList)</td></tr>
 <tr class="separator:ga49da9795481144df82fc146aa777e499"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga80c39a9086eab3bd3e1b143c27cfb87e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga80c39a9086eab3bd3e1b143c27cfb87e">orxShader_CompileCode</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zCode)</td></tr>
-<tr class="separator:ga80c39a9086eab3bd3e1b143c27cfb87e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga85854ca01130cf5376ac3dbb18ebf6b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga85854ca01130cf5376ac3dbb18ebf6b7">orxShader_CompileCode</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING *_azCodeList, orxU32 _u32Size)</td></tr>
+<tr class="separator:ga85854ca01130cf5376ac3dbb18ebf6b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga797b23fe634e863a7c3befd9cda7d13b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga797b23fe634e863a7c3befd9cda7d13b">orxShader_Create</a> ()</td></tr>
 <tr class="separator:ga797b23fe634e863a7c3befd9cda7d13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga96e4a893c541b945d05aae98a08b1f46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga96e4a893c541b945d05aae98a08b1f46">orxShader_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
@@ -444,7 +444,7 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
-<a class="anchor" id="ga80c39a9086eab3bd3e1b143c27cfb87e"></a>
+<a class="anchor" id="ga85854ca01130cf5376ac3dbb18ebf6b7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -457,8 +457,14 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zCode</em>&#160;</td>
+          <td class="paramtype">const orxSTRING *&#160;</td>
+          <td class="paramname"><em>_azCodeList</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Size</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -471,7 +477,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstShader</td><td>Concerned Shader </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zCode</td><td>Shader's code to compile (parameters need to be set beforehand) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_azCodeList</td><td>List of shader codes to compile (parameters need to be set beforehand), will be processed in order </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the shader code list </td></tr>
   </table>
   </dd>
 </dl>

@@ -63,7 +63,7 @@ var orx_display_8h =
     [ "orxColor_ToRGBA", "orx_display_8h.html#ga3a2b947697a399f021b75c94d7cfd1b6", null ],
     [ "orxDisplay_ClearBitmap", "orx_display_8h.html#ga497ef75237b5ba9a4fad420e761be164", null ],
     [ "orxDisplay_CreateBitmap", "orx_display_8h.html#gacfe7630f589a37750b8a64611b5fcedc", null ],
-    [ "orxDisplay_CreateShader", "orx_display_8h.html#ga0587d98e18d1172f0e2af286f447a89c", null ],
+    [ "orxDisplay_CreateShader", "orx_display_8h.html#ga6e1743b5e60a33798e324bb101755a1e", null ],
     [ "orxDisplay_DeleteBitmap", "orx_display_8h.html#gaf17f6bda43eee81dd41e66acb61478c2", null ],
     [ "orxDisplay_DeleteShader", "orx_display_8h.html#ga37a6f1e12616eca46dac46f8ff81a9d2", null ],
     [ "orxDisplay_DrawCircle", "orx_display_8h.html#gae54539ad1fb9d830e14995d4ec17e332", null ],
