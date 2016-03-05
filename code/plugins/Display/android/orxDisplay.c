@@ -485,8 +485,8 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
     if(windowWidth > 0 && windowHeight > 0)
     {
       /* default to native window size */
-      u32Width = 0;
-      u32Height = 0;
+      u32Width = windowWidth;
+      u32Height = windowHeight;
       fScale = orxFLOAT_1;
 
       /* Pushes config section */
