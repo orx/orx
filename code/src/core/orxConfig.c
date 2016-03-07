@@ -111,6 +111,8 @@
 #define orxCONFIG_KZ_UTF8_BOM                     "\xEF\xBB\xBF" /**< UTF-8 BOM */
 #define orxCONFIG_KU32_UTF8_BOM_LENGTH            3           /**< UTF-8 BOM length */
 
+#define orxCONFIG_KZ_CONFIG_MEMORY                "Memory"    /**< Memory buffer name */
+
 #if defined(__orxDEBUG__)
 
   #define orxCONFIG_KZ_DEFAULT_FILE               "orxd.ini"  /**< Default config file name */
@@ -2444,10 +2446,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
   if((pcLineStart != _acBuffer) && (pc > pcLineStart))
   {
     /* Updates result */
-    u32Result = (orxU32)(orxMIN(pc, _acBuffer + _u32Size) - pcLineStart);
-
-    /* Copies it at the beginning of the buffer */
-    orxMemory_Copy(_acBuffer, pcLineStart, u32Result);
+    u32Result = (orxU32)(_acBuffer + _u32Size - pcLineStart);
   }
   else
   {
@@ -3383,6 +3382,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
           /* Updates offset */
           u32Offset = orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+
+          /* Decrypts all new characters */
+          orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
         }
         else
         {
@@ -3422,7 +3424,8 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Uses encryption? */
-        if(bUseEncryption != orxFALSE)
+        if((bUseEncryption != orxFALSE)
+        && (bFirstTime == orxFALSE))
         {
           /* Decrypts all new characters */
           orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
@@ -3440,6 +3443,14 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
         /* Processes buffer */
         u32Offset = orxConfig_ProcessBuffer(_zFileName, acBuffer, u32Size, u32Offset);
+
+        /* Should keep remainder of buffer? */
+        if(u32Offset != 0)
+        {
+          /* Moves it at the beginning of the buffer */
+          orxMemory_Move(acBuffer, acBuffer + u32Size - u32Offset, u32Offset);
+          acBuffer[u32Offset] = orxCHAR_NULL;
+        }
       }
     }
 
@@ -3475,6 +3486,94 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 
     /* Profiles */
     orxPROFILER_POP_MARKER();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Loads config data from a memory buffer. NB: the buffer will be modified during processing!
+ * @param[in] _acBuffer         Buffer to process, will be modified during processing
+ * @param[in] _u32BufferSize    Size of the buffer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
+{
+  orxU32    u32Offset;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(_acBuffer != orxNULL);
+  orxASSERT(_u32BufferSize > 0);
+
+  /* Valid? */
+  if((_acBuffer != orxNULL)
+  && (_u32BufferSize > 0))
+  {
+    orxBOOL bProcess = orxTRUE;
+
+    /* Has encryption tag? */
+    if(orxString_NCompare(_acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+    {
+      /* Updates offset */
+      u32Offset = orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+
+      /* Valid? */
+      if(u32Offset < _u32BufferSize)
+      {
+        /* Decrypts all new characters */
+        orxConfig_CryptBuffer(_acBuffer + u32Offset, _u32BufferSize - u32Offset);
+      }
+      else
+      {
+        /* Stops processing */
+        bProcess = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Clears offset */
+      u32Offset = 0;
+    }
+
+    /* Has UTF-8 BOM? */
+    if(orxString_NCompare(_acBuffer + u32Offset, orxCONFIG_KZ_UTF8_BOM, orxCONFIG_KU32_UTF8_BOM_LENGTH) == 0)
+    {
+      /* Skips it */
+      u32Offset += orxCONFIG_KU32_UTF8_BOM_LENGTH;
+    }
+    else
+    {
+      orxU32 i;
+
+      /* For all invalid BOMs */
+      for(i = 0; i < sizeof(sastUnsupportedBOMList) / sizeof(struct __orxCONFIG_BOM_DEFINITION_t); i++)
+      {
+        /* Matches? */
+        if(orxString_NCompare(_acBuffer + u32Offset, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load memory buffer, invalid text encoding. Only ANSI & UTF-8 are supported.");
+
+          /* Don't process */
+          bProcess = orxFALSE;
+
+          break;
+        }
+      }
+    }
+
+    /* Success? */
+    if((bProcess != orxFALSE)
+    && (u32Offset <= _u32BufferSize))
+    {
+      /* Loads it */
+      if(orxConfig_ProcessBuffer(orxCONFIG_KZ_CONFIG_MEMORY, _acBuffer, _u32BufferSize, u32Offset) == 0)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
   }
 
   /* Done! */

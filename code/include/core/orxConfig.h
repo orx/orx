@@ -125,6 +125,13 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetMainFileName();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Load(const orxSTRING _zFileName);
 
+/** Loads config data from a memory buffer. NB: the buffer will be modified during processing!
+ * @param[in] _acBuffer         Buffer to process, will be modified during processing
+ * @param[in] _u32BufferSize    Size of the buffer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32BufferSize);
+
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
