@@ -1081,13 +1081,16 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   /* Not protected? */
   if(_pstSection->s32ProtectionCounter == 0)
   {
-    orxCONFIG_STACK_ENTRY *pstStackEntry;
+    orxCONFIG_STACK_ENTRY *pstStackEntry, *pstNextStackEntry;
 
     /* For all stack entries */
     for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
         pstStackEntry != orxNULL;
-        pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode)))
+        pstStackEntry = pstNextStackEntry)
     {
+      /* Gets next entry */
+      pstNextStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode));
+
       /* Is deleted section? */
       if(pstStackEntry->pstSection == _pstSection)
       {
