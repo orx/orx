@@ -280,6 +280,7 @@ var searchData=
   ['orxconfig_5fislist',['orxConfig_IsList',['../group__orx_config.html#gab7d1fdec8e820cd684cef7987cf73ba0',1,'orxConfig.h']]],
   ['orxconfig_5fisrandomvalue',['orxConfig_IsRandomValue',['../group__orx_config.html#gaa0a1cc968946c9743e15dfe4adba66b7',1,'orxConfig.h']]],
   ['orxconfig_5fload',['orxConfig_Load',['../group__orx_config.html#gaf36ad6ebff7b59ac6d6c03647786d174',1,'orxConfig.h']]],
+  ['orxconfig_5floadfrommemory',['orxConfig_LoadFromMemory',['../group__orx_config.html#ga75b35018162183cd8e353a4c92d581be',1,'orxConfig.h']]],
   ['orxconfig_5fpopsection',['orxConfig_PopSection',['../group__orx_config.html#ga9bfdc91a8ec4fafb71209bb87fafa60e',1,'orxConfig.h']]],
   ['orxconfig_5fprotectsection',['orxConfig_ProtectSection',['../group__orx_config.html#gaf974a34a8848238975665df234042c0c',1,'orxConfig.h']]],
   ['orxconfig_5fpushsection',['orxConfig_PushSection',['../group__orx_config.html#gac1e65aaecdc7d8349ca76bee0d54f38d',1,'orxConfig.h']]],
