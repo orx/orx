@@ -2495,7 +2495,7 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
-orxU32 orxFASTCALL orxResource_GetTypeCounter(const orxSTRING _zGroup)
+orxU32 orxFASTCALL orxResource_GetTypeCounter()
 {
   orxU32 u32Result = 0;
 

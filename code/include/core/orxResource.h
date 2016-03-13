@@ -282,7 +282,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterTy
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCounter(const orxSTRING _zGroup);
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCounter();
 
 /** Gets registered type info at given index
  * @param[in] _u32Index         Index of storage
