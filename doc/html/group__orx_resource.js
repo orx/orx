@@ -52,7 +52,7 @@ var group__orx_resource =
     [ "orxResource_GetTime", "group__orx_resource.html#ga80ce68bed4694865fb8c383697c11408", null ],
     [ "orxResource_GetTotalPendingOpCounter", "group__orx_resource.html#gaec6ee06345229deba6d980e0d6f1a000", null ],
     [ "orxResource_GetType", "group__orx_resource.html#ga7bcd55bc36a9760dae50fb847dc31b20", null ],
-    [ "orxResource_GetTypeCounter", "group__orx_resource.html#ga5dc1c95c114879026d628f0cfb35aca6", null ],
+    [ "orxResource_GetTypeCounter", "group__orx_resource.html#ga65678f6dafd3aec77443b0d8ddaa33e3", null ],
     [ "orxResource_GetTypeTag", "group__orx_resource.html#gabb7dd6d3cdc8db7d725d0f0904e4fa2e", null ],
     [ "orxResource_Init", "group__orx_resource.html#ga8a058c9512ae7ebbc7cbb62956e95f34", null ],
     [ "orxResource_Locate", "group__orx_resource.html#ga0318f5abe598c70018a72aa0cb5952a5", null ],
