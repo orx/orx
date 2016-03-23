@@ -910,6 +910,9 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_SetEntry");
+
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
@@ -986,6 +989,9 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       }
     }
   }
+
+  /* Pops marker */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
