@@ -2842,6 +2842,9 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   orxSTRUCTURE *pstStructure;
   orxOBJECT    *pstResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_Update");
+
   /* Gets object's structure */
   pstStructure = (orxSTRUCTURE *)_pstObject;
 
@@ -2913,7 +2916,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
             if(orxStructure_Update(_pstObject->astStructureList[i].pstStructure, _pstObject, pstClockInfo) == orxSTATUS_FAILURE)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure #%d for object <%s>.", i, orxObject_GetName(_pstObject));
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure [%s] for object <%s>.", orxStructure_GetIDString((orxSTRUCTURE_ID)i), orxObject_GetName(_pstObject));
             }
           }
         }
@@ -2974,6 +2977,9 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     /* Gets next object */
     pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
