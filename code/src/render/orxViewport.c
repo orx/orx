@@ -881,9 +881,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
-
-      /* Protects it */
-      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
     }
 
     /* Pops previous section */
@@ -945,13 +942,6 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
         /* Deletes it */
         orxShaderPointer_Delete(_pstViewport->pstShaderPointer);
       }
-    }
-
-    /* Has reference? */
-    if(_pstViewport->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstViewport->zReference, orxFALSE);
     }
 
     /* Deletes structure */

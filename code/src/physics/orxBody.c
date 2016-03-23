@@ -567,9 +567,6 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
 
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
-
-      /* Protects it */
-      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
     }
 
     /* Pops previous section */
@@ -640,13 +637,6 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
     {
       /* Deletes physics body */
       orxPhysics_DeleteBody(_pstBody->pstData);
-    }
-
-    /* Has reference? */
-    if(_pstBody->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstBody->zReference, orxFALSE);
     }
 
     /* Deletes structure */
@@ -977,9 +967,6 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       {
         /* Stores its reference */
         pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
       }
     }
     else
@@ -1162,13 +1149,6 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY_PART *_pstBodyPart)
 
     /* Deletes its data */
     orxPhysics_DeletePart(_pstBodyPart->pstData);
-
-    /* Has reference? */
-    if(_pstBodyPart->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstBodyPart->zReference, orxFALSE);
-    }
 
     /* Frees part def */
     orxBank_Free(sstBody.pstPartDefBank, _pstBodyPart->pstDef);
@@ -1499,9 +1479,6 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       {
         /* Stores its reference */
         pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
       }
     }
 
@@ -1617,13 +1594,6 @@ orxSTATUS orxFASTCALL orxBody_RemoveJoint(orxBODY_JOINT *_pstBodyJoint)
 
     /* Deletes its data */
     orxPhysics_DeleteJoint(_pstBodyJoint->pstData);
-
-    /* Has reference? */
-    if(_pstBodyJoint->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstBodyJoint->zReference, orxFALSE);
-    }
 
     /* Frees joint */
     orxBank_Free(sstBody.pstJointBank, _pstBodyJoint);

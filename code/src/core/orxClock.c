@@ -763,9 +763,6 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* Adds it to reference table */
         orxHashTable_Add(sstClock.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
 
@@ -833,13 +830,6 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
       {
         /* Removes it from reference table */
         orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
-      }
-
-      /* Has reference? */
-      if(_pstClock->zReference != orxNULL)
-      {
-        /* Unprotects it */
-        orxConfig_ProtectSection(_pstClock->zReference, orxFALSE);
       }
 
       /* Deletes clock */

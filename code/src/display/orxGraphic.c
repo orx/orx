@@ -718,9 +718,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags, orxGRAPHIC_KU32_FLAG_NONE);
       }
@@ -772,13 +769,6 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   {
     /* Cleans data */
     orxGraphic_SetData(_pstGraphic, orxNULL);
-
-    /* Has reference? */
-    if(_pstGraphic->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstGraphic->zReference, orxFALSE);
-    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstGraphic);

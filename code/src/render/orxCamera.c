@@ -906,9 +906,6 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* Adds it to reference table */
         orxHashTable_Add(sstCamera.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
 
@@ -965,13 +962,6 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
     {
       /* Removes it from reference table */
       orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_ToCRC(_pstCamera->zReference));
-    }
-
-    /* Has reference? */
-    if(_pstCamera->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstCamera->zReference, orxFALSE);
     }
 
     /* Deletes structure */

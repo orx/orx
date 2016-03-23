@@ -3306,13 +3306,6 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     /* Removes owner */
     orxObject_SetOwner(_pstObject, orxNULL);
 
-    /* Has reference? */
-    if(_pstObject->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstObject->zReference, orxFALSE);
-    }
-
     /* Removes object from its current group */
     if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
     {
@@ -3406,9 +3399,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
-
-      /* Protects it */
-      orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
 
       /* *** Frame *** */
 

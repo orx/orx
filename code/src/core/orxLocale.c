@@ -243,9 +243,6 @@ void orxFASTCALL orxLocale_Exit()
     /* Has selected language? */
     if(sstLocale.zCurrentLanguage != orxNULL)
     {
-      /* Unprotects its config section */
-      orxConfig_ProtectSection(sstLocale.zCurrentLanguage, orxFALSE);
-
       /* Clears internal reference */
       sstLocale.zCurrentLanguage = orxNULL;
     }
@@ -288,45 +285,26 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
         /* Found? */
         if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
         {
-          /* Protects it */
-          eResult = orxConfig_ProtectSection(_zLanguage, orxTRUE);
+          /* Pushes its section */
+          eResult = orxConfig_PushSection(_zLanguage);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-            /* Pushes its section */
-            eResult = orxConfig_PushSection(_zLanguage);
+            orxLOCALE_EVENT_PAYLOAD stPayload;
 
-            /* Success? */
-            if(eResult != orxSTATUS_FAILURE)
-            {
-              orxLOCALE_EVENT_PAYLOAD stPayload;
+            /* Stores its reference */
+            sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
 
-              /* Has selected language? */
-              if(sstLocale.zCurrentLanguage != orxNULL)
-              {
-                /* Unprotects its config section */
-                orxConfig_ProtectSection(sstLocale.zCurrentLanguage, orxFALSE);
-              }
+            /* Pops config section */
+            orxConfig_PopSection();
 
-              /* Stores its reference */
-              sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
+            /* Inits event payload */
+            orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+            stPayload.zLanguage = sstLocale.zCurrentLanguage;
 
-              /* Pops config section */
-              orxConfig_PopSection();
-
-              /* Inits event payload */
-              orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
-              stPayload.zLanguage = sstLocale.zCurrentLanguage;
-
-              /* Sends it */
-              orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
-            }
-            else
-            {
-              /* Unprotects it */
-              eResult = orxConfig_ProtectSection(_zLanguage, orxFALSE);
-            }
+            /* Sends it */
+            orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
           }
 
           break;

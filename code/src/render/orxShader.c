@@ -728,9 +728,6 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           /* Stores its reference */
           pstResult->zReference = orxConfig_GetCurrentSection();
 
-          /* Protects it */
-          orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
           /* Should keep it in cache? */
           if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
           {
@@ -797,9 +794,6 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
 
       /* Removes from hashtable */
       orxHashTable_Remove(sstShader.pstReferenceTable, orxString_ToCRC(_pstShader->zReference));
-
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstShader->zReference, orxFALSE);
 
       /* Has data? */
       if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_COMPILED))

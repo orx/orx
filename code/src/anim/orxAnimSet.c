@@ -1480,9 +1480,6 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Protects it */
-        orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
         /* For all animations */
         for(i = 0; i < u32AnimCounter; i++)
         {
@@ -1652,13 +1649,6 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
 
     /* Frees anim pointer array */
     orxMemory_Free(_pstAnimSet->pastAnim);
-
-    /* Has reference? */
-    if(_pstAnimSet->zReference != orxNULL)
-    {
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstAnimSet->zReference, orxFALSE);
-    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstAnimSet);

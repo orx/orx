@@ -599,9 +599,6 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
           /* Processes its data */
           if(orxFX_ProcessData(pstResult) != orxSTATUS_FAILURE)
           {
-            /* Protects it */
-            orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-
             /* Should keep it in cache? */
             if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
             {
@@ -675,9 +672,6 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
     {
       /* Removes from hashtable */
       orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
-
-      /* Unprotects it */
-      orxConfig_ProtectSection(_pstFX->zReference, orxFALSE);
     }
 
     /* Deletes structure */
