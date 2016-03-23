@@ -48,6 +48,8 @@
 
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
+#include "utils/orxLinkList.h"
+#include "utils/orxTree.h"
 
 
 /** Structure pointer get helpers
@@ -163,21 +165,16 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
  */
 typedef struct __orxSTRUCTURE_t
 {
-  orxU64          u64GUID;        /**< Structure GUID : 8 */
-  orxU64          u64OwnerGUID;   /**< Owner's GUID : 16 */
-  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 20/24 */
-  orxU32          u32Flags;       /**< Flags : 24/28 */
+  orxU64              u64GUID;        /**< Structure GUID : 8 */
+  orxU64              u64OwnerGUID;   /**< Owner's GUID : 16 */
 
-#if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
+  union
+  {
+    orxLINKLIST_NODE  stLinkListNode; /**< Linklist node : 28/40 */
+    orxTREE_NODE      stTreeNode;     /**< Tree node : 32/48 */
+  } stStorage;                        /**< Storage node union : 32/48 */
 
-  orxU8           au8Padding[4]; /**< Extra padding to be 32-bytes aligned on 64bit architectures */
-
-#else /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
-
-  orxU8           au8Padding[8]; /**< Extra padding to be 32-bytes aligned on 32bit architectures */
-
-#endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
-
+  orxU32              u32Flags;       /**< Flags : 36/52 */
 } orxSTRUCTURE;
 
 
