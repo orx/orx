@@ -120,10 +120,13 @@ $(document).ready(function(){initNavTree('structorx_s_t_r_u_c_t_u_r_e.html','');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:acb0e1b5a9d4cfdce5dc767c51a4f0910"><td class="memItemLeft" align="right" valign="top">orxU8&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#acb0e1b5a9d4cfdce5dc767c51a4f0910">au8Padding</a> [8]</td></tr>
-<tr class="separator:acb0e1b5a9d4cfdce5dc767c51a4f0910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0886fdaeff45e0fcce2e0f8691f6723"><td class="memItemLeft" align="right" valign="top">orxHANDLE&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ab0886fdaeff45e0fcce2e0f8691f6723">hStorageNode</a></td></tr>
-<tr class="separator:ab0886fdaeff45e0fcce2e0f8691f6723"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21e1bd51a7eb4ccfb3f00a7b4b29c52e"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:acdc9919d17382abfa6d16583b84585d3"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structorx_l_i_n_k_l_i_s_t___n_o_d_e.html">orxLINKLIST_NODE</a>&#160;&#160;&#160;<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#aba362d7edbcd10cc38cf779ffc011d40">stLinkListNode</a></td></tr>
+<tr class="separator:acdc9919d17382abfa6d16583b84585d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96a134449238f4fcf45eaf41577c990f"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structorx_t_r_e_e___n_o_d_e.html">orxTREE_NODE</a>&#160;&#160;&#160;<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#a58dd3768243ac8325fa4a267512f4317">stTreeNode</a></td></tr>
+<tr class="separator:a96a134449238f4fcf45eaf41577c990f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21e1bd51a7eb4ccfb3f00a7b4b29c52e"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#a21e1bd51a7eb4ccfb3f00a7b4b29c52e">stStorage</a></td></tr>
+<tr class="separator:a21e1bd51a7eb4ccfb3f00a7b4b29c52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8d2ddfc9af63e37ccf5b6b11f3501ef"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef">u32Flags</a></td></tr>
 <tr class="separator:ae8d2ddfc9af63e37ccf5b6b11f3501ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a508a6624fe49b7127dfaf84a50c4968b"><td class="memItemLeft" align="right" valign="top">orxU64&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a></td></tr>
@@ -134,35 +137,48 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Public structure (Must be first derived structure member!) </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00164">164</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00166">166</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="acb0e1b5a9d4cfdce5dc767c51a4f0910"></a>
+<a class="anchor" id="aba362d7edbcd10cc38cf779ffc011d40"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxU8 orxSTRUCTURE::au8Padding[8]</td>
+          <td class="memname"><a class="el" href="structorx_l_i_n_k_l_i_s_t___n_o_d_e.html">orxLINKLIST_NODE</a> orxSTRUCTURE::stLinkListNode</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Extra padding to be 32-bytes aligned on 32bit architectures </p>
+<p>Linklist node : 28/40 </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00177">177</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00173">173</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ab0886fdaeff45e0fcce2e0f8691f6723"></a>
+<a class="anchor" id="a21e1bd51a7eb4ccfb3f00a7b4b29c52e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxHANDLE orxSTRUCTURE::hStorageNode</td>
+          <td class="memname">union { ... }   orxSTRUCTURE::stStorage</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Internal storage node handle : 20/24 </p>
+<p>Storage node union : 32/48 </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00168">168</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+</div>
+</div>
+<a class="anchor" id="a58dd3768243ac8325fa4a267512f4317"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structorx_t_r_e_e___n_o_d_e.html">orxTREE_NODE</a> orxSTRUCTURE::stTreeNode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Tree node : 32/48 </p>
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00174">174</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -175,9 +191,9 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Flags : 24/28 </p>
+<p>Flags : 36/52 </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00169">169</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00177">177</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -192,7 +208,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure GUID : 8 </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00166">166</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00168">168</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +223,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Owner's GUID : 16 </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00167">167</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00169">169</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
