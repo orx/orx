@@ -56,7 +56,6 @@
 
 #define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001  /**< Ready static flag */
 #define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002  /**< Clock static flag */
-#define orxOBJECT_KU32_STATIC_FLAG_INTERNAL     0x00000004  /**< Internal static flag */
 
 #define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF  /**< Internal static mask */
 
@@ -2809,6 +2808,39 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
 }
 
+/** Creates an empty object
+ */
+static orxINLINE orxOBJECT *orxObject_CreateInternal()
+{
+  orxOBJECT *pstResult;
+
+  /* Creates object */
+  pstResult = orxOBJECT(orxStructure_Create(orxSTRUCTURE_ID_OBJECT));
+
+  /* Created? */
+  if(pstResult != orxNULL)
+  {
+    /* Inits flags */
+    orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
+
+    /* Inits active time */
+    pstResult->fActiveTime = orxFLOAT_0;
+
+    /* Sets default group ID */
+    orxObject_SetGroupID(pstResult, sstObject.u32DefaultGroupID);
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstResult);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object.");
+  }
+
+  return pstResult;
+}
+
 /** Deletes all the objects
  */
 static orxINLINE void orxObject_DeleteAll()
@@ -3204,43 +3236,23 @@ void orxFASTCALL orxObject_Exit()
  */
 orxOBJECT *orxFASTCALL orxObject_Create()
 {
-  orxOBJECT *pstObject;
+  orxOBJECT *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
 
   /* Creates object */
-  pstObject = orxOBJECT(orxStructure_Create(orxSTRUCTURE_ID_OBJECT));
+  pstResult = orxObject_CreateInternal();
 
-  /* Created? */
-  if(pstObject != orxNULL)
+  /* Success? */
+  if(pstResult != orxNULL)
   {
-    /* Inits flags */
-    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
-
-    /* Inits active time */
-    pstObject->fActiveTime = orxFLOAT_0;
-
-    /* Sets default group ID */
-    orxObject_SetGroupID(pstObject, sstObject.u32DefaultGroupID);
-
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstObject);
-
-    /* Not creating it internally? */
-    if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL))
-    {
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
-    }
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object.");
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstResult, orxNULL, orxNULL);
   }
 
-  return pstObject;
+  /* Done! */
+  return pstResult;
 }
 
 /** Deletes an object, *unsafe* when called from an event handler: call orxObject_SetLifeTime(orxFLOAT_0) instead.
@@ -3357,14 +3369,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    /* Sets internal flag */
-    orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL, orxOBJECT_KU32_STATIC_FLAG_NONE);
-
     /* Creates object */
-    pstResult = orxObject_Create();
-
-    /* Removes internal flag */
-    orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_NONE, orxOBJECT_KU32_STATIC_FLAG_INTERNAL);
+    pstResult = orxObject_CreateInternal();
 
     /* Valid? */
     if(pstResult != orxNULL)
