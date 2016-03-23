@@ -4261,7 +4261,7 @@ orxBOOL orxFASTCALL orxDisplay_iOS_HasShaderSupport()
   return orxTRUE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING _azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
