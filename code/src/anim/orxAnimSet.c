@@ -2374,7 +2374,7 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index in animset.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: index [%u] is invalid <max = %u>.", _pstAnimSet->zReference, _u32AnimID, orxAnimSet_GetAnimCounter(_pstAnimSet));
   }
 
   /* Done! */
