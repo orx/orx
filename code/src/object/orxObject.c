@@ -1035,8 +1035,13 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     orxCOLOR stColor;
 
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    /* Has color? */
+    if(orxObject_HasColor(pstObject) != orxFALSE)
+    {
+      /* Gets it */
+      orxObject_GetColor(pstObject, &stColor);
+    }
+    else
     {
       /* Sets its alpha to opaque */
       stColor.fAlpha = orxFLOAT_1;
@@ -1058,8 +1063,13 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
           pstChild != orxNULL;
           pstChild = orxObject_GetOwnedSibling(pstChild))
       {
-        /* Gets its current color */
-        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        /* Has color? */
+        if(orxObject_HasColor(pstChild) != orxFALSE)
+        {
+          /* Gets it */
+          orxObject_GetColor(pstChild, &stColor);
+        }
+        else
         {
           /* Sets its alpha to opaque */
           stColor.fAlpha = orxFLOAT_1;
@@ -1136,8 +1146,13 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    /* Has color? */
+    if(orxObject_HasColor(pstObject) != orxFALSE)
+    {
+      /* Gets it */
+      orxObject_GetColor(pstObject, &stColor);
+    }
+    else
     {
       /* Sets its alpha to opaque */
       stColor.fAlpha = orxFLOAT_1;
@@ -1159,8 +1174,13 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
           pstChild != orxNULL;
           pstChild = orxObject_GetOwnedSibling(pstChild))
       {
-        /* Gets its current color */
-        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        /* Has color? */
+        if(orxObject_HasColor(pstChild) != orxFALSE)
+        {
+          /* Gets it */
+          orxObject_GetColor(pstChild, &stColor);
+        }
+        else
         {
           /* Sets its alpha to opaque */
           stColor.fAlpha = orxFLOAT_1;
@@ -1236,8 +1256,13 @@ void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    /* Has color? */
+    if(orxObject_HasColor(pstObject) != orxFALSE)
+    {
+      /* Gets it */
+      orxObject_GetColor(pstObject, &stColor);
+    }
+    else
     {
       /* Sets its alpha to opaque */
       stColor.fAlpha = orxFLOAT_1;
@@ -1262,8 +1287,13 @@ void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_
           pstChild != orxNULL;
           pstChild = orxObject_GetOwnedSibling(pstChild))
       {
-        /* Gets its current color */
-        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        /* Has color? */
+        if(orxObject_HasColor(pstChild) != orxFALSE)
+        {
+          /* Gets it */
+          orxObject_GetColor(pstChild, &stColor);
+        }
+        else
         {
           /* Sets its alpha to opaque */
           stColor.fAlpha = orxFLOAT_1;
@@ -1343,8 +1373,13 @@ void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    /* Has color? */
+    if(orxObject_HasColor(pstObject) != orxFALSE)
+    {
+      /* Gets it */
+      orxObject_GetColor(pstObject, &stColor);
+    }
+    else
     {
       /* Sets its alpha to opaque */
       stColor.fAlpha = orxFLOAT_1;
@@ -1369,8 +1404,13 @@ void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_
           pstChild != orxNULL;
           pstChild = orxObject_GetOwnedSibling(pstChild))
       {
-        /* Gets its current color */
-        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        /* Has color? */
+        if(orxObject_HasColor(pstChild) != orxFALSE)
+        {
+          /* Gets it */
+          orxObject_GetColor(pstChild, &stColor);
+        }
+        else
         {
           /* Sets its alpha to opaque */
           stColor.fAlpha = orxFLOAT_1;
@@ -1450,8 +1490,13 @@ void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     orxCOLOR stColor;
 
-    /* Gets its current color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
+    /* Has color? */
+    if(orxObject_HasColor(pstObject) != orxFALSE)
+    {
+      /* Gets it */
+      orxObject_GetColor(pstObject, &stColor);
+    }
+    else
     {
       /* Sets its color to white */
       orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
@@ -1473,8 +1518,13 @@ void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
           pstChild != orxNULL;
           pstChild = orxObject_GetOwnedSibling(pstChild))
       {
-        /* Gets its current color */
-        if(orxObject_GetColor(pstChild, &stColor) == orxNULL)
+        /* Has color? */
+        if(orxObject_HasColor(pstChild) != orxFALSE)
+        {
+          /* Gets it */
+          orxObject_GetColor(pstChild, &stColor);
+        }
+        else
         {
           /* Sets its color to white */
           orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
