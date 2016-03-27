@@ -1351,6 +1351,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zStorage != orxNULL);
+  orxASSERT(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0);
 
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
@@ -1393,8 +1394,11 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
         /* Should be added first? */
         if(_bAddFirst != orxFALSE)
         {
+          /* Checks */
+          orxASSERT(orxLinkList_GetCounter(&(pstGroup->stStorageList)) != 0);
+
           /* Adds it first */
-          orxLinkList_AddStart(&(pstGroup->stStorageList), &(pstStorage->stNode));
+          orxLinkList_AddAfter(orxLinkList_GetFirst(&(pstGroup->stStorageList)), &(pstStorage->stNode));
         }
         else
         {
@@ -1435,6 +1439,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zStorage != orxNULL);
+  orxASSERT(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0);
 
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
