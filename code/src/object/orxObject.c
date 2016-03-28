@@ -3324,46 +3324,62 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstObject) == 0)
   {
-    orxU32 i;
+    orxEVENT  stEvent;
+    orxU32    i;
+
+    /* Inits event */
+    orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
 
     /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
-
-    /* Unlink all structures */
-    for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+    if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
     {
-      orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
-    }
-
-    /* Has children? */
-    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
-    {
-      orxOBJECT *pstChild;
-
-      /* For all children */
-      for(pstChild = _pstObject->pstChild;
-          pstChild != orxNULL;
-          pstChild = _pstObject->pstChild)
+      /* Unlink all structures */
+      for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
       {
-        /* Removes its owner */
-        orxObject_SetOwner(pstChild, orxNULL);
-
-        /* Marks it for deletion */
-        orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+        orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
       }
+
+      /* Has children? */
+      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+      {
+        orxOBJECT *pstChild;
+
+        /* For all children */
+        for(pstChild = _pstObject->pstChild;
+            pstChild != orxNULL;
+            pstChild = _pstObject->pstChild)
+        {
+          /* Removes its owner */
+          orxObject_SetOwner(pstChild, orxNULL);
+
+          /* Marks it for deletion */
+          orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+        }
+      }
+
+      /* Removes owner */
+      orxObject_SetOwner(_pstObject, orxNULL);
+
+      /* Removes object from its current group */
+      if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+      {
+        orxLinkList_Remove(&(_pstObject->stGroupNode));
+      }
+
+      /* Deletes structure */
+      orxStructure_Delete(_pstObject);
     }
-
-    /* Removes owner */
-    orxObject_SetOwner(_pstObject, orxNULL);
-
-    /* Removes object from its current group */
-    if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+    else
     {
-      orxLinkList_Remove(&(_pstObject->stGroupNode));
-    }
+      /* Increases counter */
+      orxStructure_IncreaseCounter(_pstObject);
 
-    /* Deletes structure */
-    orxStructure_Delete(_pstObject);
+      /* Resets its active time: going undead */
+      _pstObject->fActiveTime = orxFLOAT_0;
+
+      /* Disables it */
+      orxObject_Enable(_pstObject, orxFALSE);
+    }
   }
   else
   {
