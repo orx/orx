@@ -249,6 +249,73 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u6
   return (pstCell != orxNULL) ? pstCell->pData : orxNULL;
 }
 
+/** Retrieves the bucket of an item in a hash table, if the item wasn't present, a new bucket will be created.
+ * @param[in] _pstHashTable   Concerned hashtable
+ * @param[in] _u64Key         Key to find
+ * @return The bucket associated to the given key if success, orxNULL otherwise
+ */
+void **orxFASTCALL orxHashTable_Retrieve(orxHASHTABLE *_pstHashTable, orxU64 _u64Key)
+{
+  orxU32              u32Index;
+  orxHASHTABLE_CELL  *pstCell;
+  void              **ppResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxHashTable_Retrieve");
+
+  /* Checks */
+  orxASSERT(_pstHashTable != orxNULL);
+
+  /* Gets the index from the key */
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);
+
+  /* Finds the corresponding cell */
+  for(pstCell = _pstHashTable->apstCell[u32Index];
+      (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
+      pstCell = pstCell->pstNext);
+
+  /* Not found ? */
+  if(pstCell == orxNULL)
+  {
+    /* Creates a new cell */
+    pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
+
+    /* Success? */
+    if(pstCell != orxNULL)
+    {
+      /* Inits cell */
+      pstCell->u64Key   = _u64Key;
+      pstCell->pData    = orxNULL;
+      pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
+
+      /* Updates counter */
+      _pstHashTable->u32Counter++;
+
+      /* Inserts it */
+      _pstHashTable->apstCell[u32Index] = pstCell;
+
+      /* Updates result */
+      ppResult = &(pstCell->pData);
+    }
+    else
+    {
+      /* Updates result */
+      ppResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    ppResult = &(pstCell->pData);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return ppResult;
+}
+
 /** Set an item value.
  * @param[in] _pstHashTable The hash table where set.
  * @param[in] _u64Key      Key to assign.
@@ -258,7 +325,7 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u6
 orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64Key, void *_pData)
 {
   orxU32              u32Index;
-  orxHASHTABLE_CELL  *pstCell = orxNULL;
+  orxHASHTABLE_CELL  *pstCell;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxHashTable_Set");

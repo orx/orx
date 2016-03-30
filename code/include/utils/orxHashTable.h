@@ -92,6 +92,13 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(const or
  */
 extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u64Key);
 
+/** Retrieves the bucket of an item in a hash table, if the item wasn't present, a new bucket will be created.
+ * @param[in] _pstHashTable   Concerned hashtable
+ * @param[in] _u64Key         Key to find
+ * @return The bucket associated to the given key if success, orxNULL otherwise
+ */
+extern orxDLLAPI void **orxFASTCALL             orxHashTable_Retrieve(orxHASHTABLE *_pstHashTable, orxU64 _u64Key);
+
 /** Set an item value.
  * @param[in] _pstHashTable The hash table where set.
  * @param[in] _u64Key      Key to assign.

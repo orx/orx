@@ -8071,6 +8071,7 @@ extern orxDLLAPI orxU32 orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID)
 {
+  orxLINKLIST **ppstBucket;
   orxLINKLIST  *pstGroupList;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
@@ -8085,17 +8086,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
     orxLinkList_Remove(&(_pstObject->stGroupNode));
   }
 
-  /* Gets group list */
-  pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _u32GroupID);
+  /* Gets group list bucker*/
+  ppstBucket = (orxLINKLIST **)orxHashTable_Retrieve(sstObject.pstGroupTable, _u32GroupID);
+
+  /* Checks */
+  orxASSERT(ppstBucket != orxNULL);
 
   /* Not found? */
-  if(pstGroupList == orxNULL)
+  if(*ppstBucket == orxNULL)
   {
     /* Allocates it */
     pstGroupList = (orxLINKLIST *)orxBank_Allocate(sstObject.pstGroupBank);
 
     /* Stores it */
-    orxHashTable_Add(sstObject.pstGroupTable, _u32GroupID, pstGroupList);
+    *ppstBucket = pstGroupList;
+  }
+  else
+  {
+    /* Gets it */
+    pstGroupList = *ppstBucket;
   }
 
   /* Adds object to end of list */

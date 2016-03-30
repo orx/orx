@@ -158,10 +158,17 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
         s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
     {
-      orxCHARACTER_GLYPH *pstGlyph;
+      orxCHARACTER_GLYPH  **ppstBucket;
+      orxCHARACTER_GLYPH   *pstGlyph;
+
+      /* Gets glyph's bucket */
+      ppstBucket = (orxCHARACTER_GLYPH **)orxHashTable_Retrieve(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint);
+
+      /* Checks */
+      orxASSERT(ppstBucket != orxNULL);
 
       /* Not already defined? */
-      if((pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint)) == orxNULL)
+      if(*ppstBucket == orxNULL)
       {
         /* Allocates it */
         pstGlyph = (orxCHARACTER_GLYPH *)orxBank_Allocate(_pstFont->pstMap->pstCharacterBank);
@@ -170,7 +177,12 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         orxASSERT(pstGlyph != orxNULL);
 
         /* Adds it to table */
-        orxHashTable_Add(_pstFont->pstMap->pstCharacterTable, u32CharacterCodePoint, pstGlyph);
+        *ppstBucket = pstGlyph;
+      }
+      else
+      {
+        /* Gets it */
+        pstGlyph = *ppstBucket;
       }
 
       /* Stores its width */

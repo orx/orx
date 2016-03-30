@@ -229,8 +229,8 @@ void orxFASTCALL orxString_Exit()
  */
 orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
 {
-  const orxSTRING zStoredString;
-  orxU32          u32Result = 0;
+  const orxSTRING  *pzBucket;
+  orxU32            u32Result = 0;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_GetID");
@@ -242,20 +242,26 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
   /* Gets its ID */
   u32Result = orxString_ToCRC(_zString);
 
+  /* Gets stored string bucket */
+  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, u32Result);
+
+  /* Checks */
+  orxASSERT(pzBucket != orxNULL);
+
   /* Not already stored? */
-  if((zStoredString = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32Result)) == orxNULL)
+  if(*pzBucket == orxNULL)
   {
     /* Adds it */
-    orxHashTable_Add(sstString.pstIDTable, u32Result, orxString_Duplicate(_zString));
+    *pzBucket = orxString_Duplicate(_zString);
   }
 #ifdef __orxDEBUG__
   else
   {
     /* Different strings? */
-    if(orxString_Compare(_zString, zStoredString) != 0)
+    if(orxString_Compare(_zString, *pzBucket) != 0)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: string ID collision detected between <%s> and <%s>: please modify one of them or you might end up with undefined result.", zStoredString, _zString);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: string ID collision detected between <%s> and <%s>: please modify one of them or you might end up with undefined result.", *pzBucket, _zString);
     }
   }
 #endif /* __orxDEBUG__ */
@@ -301,8 +307,9 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
  */
 const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
 {
-  orxU32          u32ID;
-  const orxSTRING zResult;
+  const orxSTRING  *pzBucket;
+  const orxSTRING   zResult;
+  orxU32            u32ID;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_Store");
@@ -314,29 +321,35 @@ const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
   /* Gets its ID */
   u32ID = orxString_ToCRC(_zString);
 
-  /* Gets stored string */
-  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, u32ID);
+  /* Gets stored string bucket */
+  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, u32ID);
+
+  /* Checks */
+  orxASSERT(pzBucket != orxNULL);
 
   /* Not already stored? */
-  if(zResult == orxNULL)
+  if(*pzBucket == orxNULL)
   {
     /* Updates result */
     zResult = orxString_Duplicate(_zString);
 
     /* Adds it to table */
-    orxHashTable_Add(sstString.pstIDTable, u32ID, (orxSTRING)zResult);
+    *pzBucket = zResult;
   }
-#ifdef __orxDEBUG__
   else
   {
+    /* Gets it */
+    zResult = *pzBucket;
+
+#ifdef __orxDEBUG__
     /* Different strings? */
     if(orxString_Compare(_zString, zResult) != 0)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Error: string ID collision detected between <%s> and <%s>: please modify one of them or you might end up with undefined result.", zResult, _zString);
     }
-  }
 #endif /* __orxDEBUG__ */
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();

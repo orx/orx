@@ -879,11 +879,19 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxU32 _u32BusID, orxBOOL _bCre
   }
   else
   {
-    /* Gets bus */
-    pstResult = (orxSOUND_BUS *)orxHashTable_Get(sstSound.pstBusTable, _u32BusID);
+    orxSOUND_BUS **ppstBucket;
+
+    /* Gets bus bucket */
+    ppstBucket = (orxSOUND_BUS **)orxHashTable_Retrieve(sstSound.pstBusTable, _u32BusID);
+
+    /* Checks */
+    orxASSERT(ppstBucket != orxNULL);
+
+    /* Updates result */
+    pstResult = *ppstBucket;
 
     /* Not found and should create? */
-    if((pstResult == orxNULL) && (_bCreate != orxFALSE))
+    if((*ppstBucket == orxNULL) && (_bCreate != orxFALSE))
     {
       /* Allocates it */
       pstResult = (orxSOUND_BUS *)orxBank_Allocate(sstSound.pstBusBank);
@@ -912,7 +920,7 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxU32 _u32BusID, orxBOOL _bCre
       }
 
       /* Stores it */
-      orxHashTable_Add(sstSound.pstBusTable, _u32BusID, pstResult);
+      *ppstBucket = pstResult;
     }
 
     /* Valid? */

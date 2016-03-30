@@ -468,11 +468,16 @@ static orxINLINE orxSTATUS orx_LogAllStructures()
         /* Is owner-less? */
         if(orxStructure_GetOwner(pstStructure) == orxNULL)
         {
-          /* Not already logged? */
-          if(orxHashTable_Get(pstTable, orxStructure_GetGUID(pstStructure)) == orxNULL)
+          orxSTRUCTURE **ppstBucket;
+
+          /* Retrieves hashtable bucket */
+          ppstBucket = (orxSTRUCTURE **)orxHashTable_Retrieve(pstTable, orxStructure_GetGUID(pstStructure));
+
+          /* Valid and not already logged? */
+          if((ppstBucket != orxNULL) && (*ppstBucket == orxNULL))
           {
             /* Adds it to table */
-            orxHashTable_Set(pstTable, orxStructure_GetGUID(pstStructure), pstStructure);
+            *ppstBucket = pstStructure;
 
             /* Logs it */
             if(sastStructureInfoList[i].pfnGetName != orxNULL)
