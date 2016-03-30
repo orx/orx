@@ -527,55 +527,60 @@ $(document).ready(function(){initNavTree('orx_8h_source.html','');});
 <div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;        <span class="comment">/* Is owner-less? */</span></div>
 <div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="group__orx_structure.html#gae7fd7c3caf111fe23c2c27e72dbecb29">orxStructure_GetOwner</a>(pstStructure) == orxNULL)</div>
 <div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;        {</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;          <span class="comment">/* Not already logged? */</span></div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;          <span class="keywordflow">if</span>(<a class="code" href="group__orx_hash_table.html#gafba7999c3056e5898db26612493fa255">orxHashTable_Get</a>(pstTable, <a class="code" href="group__orx_structure.html#ga4001dcfa377190d36739cf4029ef1814">orxStructure_GetGUID</a>(pstStructure)) == orxNULL)</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;          {</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;            <span class="comment">/* Adds it to table */</span></div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;            <a class="code" href="group__orx_hash_table.html#ga13d7c0478ce150000289f6ae17540bc7">orxHashTable_Set</a>(pstTable, <a class="code" href="group__orx_structure.html#ga4001dcfa377190d36739cf4029ef1814">orxStructure_GetGUID</a>(pstStructure), pstStructure);</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;            <span class="comment">/* Logs it */</span></div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            <span class="keywordflow">if</span>(sastStructureInfoList[i].pfnGetName != orxNULL)</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            {</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;              orxU32 u32Offset;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;              u32Offset = <a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a>(acBuffer, <span class="keyword">sizeof</span>(acBuffer) - 1, <span class="stringliteral">&quot;%-8s \&quot;%s\&quot;&quot;</span>, <a class="code" href="group__orx_structure.html#ga0d1cf03298bed1a9f071e49966d87d0d">orxStructure_GetIDString</a>(sastStructureInfoList[i].eID), sastStructureInfoList[i].pfnGetName(pstStructure));</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;              orxLOG(<span class="stringliteral">&quot;%s%*s[% 016llX]\n&quot;</span>, acBuffer, <a class="code" href="group__orx_math.html#gaf7bab637bbec0e6f43776a7c67c7e956">orxMAX</a>(0, <a class="code" href="orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d">orx_MAX_NAME_LENGTH</a> + 12 - u32Offset), <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>, pstStructure-&gt;<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a>);</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;            }</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;            {</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;              orxLOG(<span class="stringliteral">&quot;%-8s %*s [%016llX]\n&quot;</span>, <a class="code" href="group__orx_structure.html#ga0d1cf03298bed1a9f071e49966d87d0d">orxStructure_GetIDString</a>(sastStructureInfoList[i].eID), <a class="code" href="orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d">orx_MAX_NAME_LENGTH</a> + 2, <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>, pstStructure-&gt;<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a>);</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            }</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;          }</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        }</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;      }</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;    }</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    <span class="comment">/* Logs footer */</span></div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;    orxLOG(<span class="stringliteral">&quot;*** END STRUCTURE LOG ***&quot;</span>);</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    <span class="comment">/* Restores debug flags */</span></div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    <a class="code" href="group__orx_debug.html#gab284f9d327c58c19d1b9bc2191b05258">orxDEBUG_SET_FLAGS</a>(u32DebugFlags, <a class="code" href="group__orx_debug.html#ga924cc20bb75527707b25a19e857aa2d1">orxDEBUG_KU32_STATIC_MASK_USER_ALL</a>);</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    <span class="comment">/* Updates result */</span></div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    <span class="comment">/* Deletes table */</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    <a class="code" href="group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585">orxHashTable_Delete</a>(pstTable);</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;  }</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="preprocessor">#undef orx_DECLARE_STRUCTURE_INFO</span></div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#undef orx_MAX_NAME_LENGTH</span></div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;  <span class="comment">/* Done! */</span></div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;  <span class="keywordflow">return</span> eResult;</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;}</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;          <a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> **ppstBucket;</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;          <span class="comment">/* Retrieves hashtable bucket */</span></div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;          ppstBucket = (<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> **)<a class="code" href="group__orx_hash_table.html#gaefbee430e1062d8b84ab0b509bd39481">orxHashTable_Retrieve</a>(pstTable, <a class="code" href="group__orx_structure.html#ga4001dcfa377190d36739cf4029ef1814">orxStructure_GetGUID</a>(pstStructure));</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;          <span class="comment">/* Valid and not already logged? */</span></div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;          <span class="keywordflow">if</span>((ppstBucket != orxNULL) &amp;&amp; (*ppstBucket == orxNULL))</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;          {</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            <span class="comment">/* Adds it to table */</span></div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;            *ppstBucket = pstStructure;</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;            <span class="comment">/* Logs it */</span></div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;            <span class="keywordflow">if</span>(sastStructureInfoList[i].pfnGetName != orxNULL)</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;            {</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;              orxU32 u32Offset;</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;              u32Offset = <a class="code" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a>(acBuffer, <span class="keyword">sizeof</span>(acBuffer) - 1, <span class="stringliteral">&quot;%-8s \&quot;%s\&quot;&quot;</span>, <a class="code" href="group__orx_structure.html#ga0d1cf03298bed1a9f071e49966d87d0d">orxStructure_GetIDString</a>(sastStructureInfoList[i].eID), sastStructureInfoList[i].pfnGetName(pstStructure));</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;              orxLOG(<span class="stringliteral">&quot;%s%*s[% 016llX]\n&quot;</span>, acBuffer, <a class="code" href="group__orx_math.html#gaf7bab637bbec0e6f43776a7c67c7e956">orxMAX</a>(0, <a class="code" href="orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d">orx_MAX_NAME_LENGTH</a> + 12 - u32Offset), <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>, pstStructure-&gt;<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a>);</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            }</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            {</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;              orxLOG(<span class="stringliteral">&quot;%-8s %*s [%016llX]\n&quot;</span>, <a class="code" href="group__orx_structure.html#ga0d1cf03298bed1a9f071e49966d87d0d">orxStructure_GetIDString</a>(sastStructureInfoList[i].eID), <a class="code" href="orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d">orx_MAX_NAME_LENGTH</a> + 2, <a class="code" href="group__orx_type.html#gae0dd893e1923389b75dd6f2130996c16">orxSTRING_EMPTY</a>, pstStructure-&gt;<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html#a508a6624fe49b7127dfaf84a50c4968b">u64GUID</a>);</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            }</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;          }</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;        }</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;      }</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    }</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    <span class="comment">/* Logs footer */</span></div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    orxLOG(<span class="stringliteral">&quot;*** END STRUCTURE LOG ***&quot;</span>);</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    <span class="comment">/* Restores debug flags */</span></div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    <a class="code" href="group__orx_debug.html#gab284f9d327c58c19d1b9bc2191b05258">orxDEBUG_SET_FLAGS</a>(u32DebugFlags, <a class="code" href="group__orx_debug.html#ga924cc20bb75527707b25a19e857aa2d1">orxDEBUG_KU32_STATIC_MASK_USER_ALL</a>);</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="comment">/* Updates result */</span></div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>;</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    <span class="comment">/* Deletes table */</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    <a class="code" href="group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585">orxHashTable_Delete</a>(pstTable);</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;  }</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;<span class="preprocessor">#undef orx_DECLARE_STRUCTURE_INFO</span></div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#undef orx_MAX_NAME_LENGTH</span></div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;  <span class="comment">/* Done! */</span></div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;  <span class="keywordflow">return</span> eResult;</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;}</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_orx_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* __cplusplus */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;<span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <hr size="1"><address style="text-align: right;"><small>

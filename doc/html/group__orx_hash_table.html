@@ -143,6 +143,8 @@ HashTable creation/destruction.</h2></td></tr>
 HashTable key manipulation.</h2></td></tr>
 <tr class="memitem:gafba7999c3056e5898db26612493fa255"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gafba7999c3056e5898db26612493fa255">orxHashTable_Get</a> (const <a class="el" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU64 _u64Key)</td></tr>
 <tr class="separator:gafba7999c3056e5898db26612493fa255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaefbee430e1062d8b84ab0b509bd39481"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> **orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gaefbee430e1062d8b84ab0b509bd39481">orxHashTable_Retrieve</a> (<a class="el" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU64 _u64Key)</td></tr>
+<tr class="separator:gaefbee430e1062d8b84ab0b509bd39481"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga13d7c0478ce150000289f6ae17540bc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#ga13d7c0478ce150000289f6ae17540bc7">orxHashTable_Set</a> (<a class="el" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU64 _u64Key, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pData)</td></tr>
 <tr class="separator:ga13d7c0478ce150000289f6ae17540bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac2b15c7adbd972eea139d22b31db71fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gac2b15c7adbd972eea139d22b31db71fe">orxHashTable_Add</a> (<a class="el" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU64 _u64Key, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pData)</td></tr>
@@ -502,6 +504,41 @@ HashTable iteration.</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns the status of the operation. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaefbee430e1062d8b84ab0b509bd39481"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>** orxFASTCALL orxHashTable_Retrieve </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&#160;</td>
+          <td class="paramname"><em>_pstHashTable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU64&#160;</td>
+          <td class="paramname"><em>_u64Key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Retrieves the bucket of an item in a hash table, if the item wasn't present, a new bucket will be created. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstHashTable</td><td>Concerned hashtable </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u64Key</td><td>Key to find </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The bucket associated to the given key if success, orxNULL otherwise </dd></dl>
 
 </div>
 </div>

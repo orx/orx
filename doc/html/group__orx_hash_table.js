@@ -12,5 +12,6 @@ var group__orx_hash_table =
     [ "orxHashTable_GetNext", "group__orx_hash_table.html#gac18bbcfe1ea91dc145b92d2c146e9286", null ],
     [ "orxHashTable_Optimize", "group__orx_hash_table.html#ga4c7dc1294ce43ca8854946bd388be572", null ],
     [ "orxHashTable_Remove", "group__orx_hash_table.html#gad18920165a34e79646e2b0dde49e28be", null ],
+    [ "orxHashTable_Retrieve", "group__orx_hash_table.html#gaefbee430e1062d8b84ab0b509bd39481", null ],
     [ "orxHashTable_Set", "group__orx_hash_table.html#ga13d7c0478ce150000289f6ae17540bc7", null ]
 ];

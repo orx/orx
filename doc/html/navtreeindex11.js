@@ -1,5 +1,6 @@
 var NAVTREEINDEX11 =
 {
+"orx_android_8h.html#gae1fe3d56113fcf936fd4ef5fc20e9d81":[3,0,0,6,0,18],
 "orx_android_8h.html#gae61fe62bd38977850791da3eb9522237":[3,0,0,6,0,20],
 "orx_android_8h.html#gaf51bfa3c5118859198b0cd74a5003809":[3,0,0,6,0,21],
 "orx_android_8h.html#gaf58cbf6efdf1f84d0d307885a44158d2":[3,0,0,6,0,14],
@@ -248,6 +249,5 @@ var NAVTREEINDEX11 =
 "orx_clock_8h.html#gac6daebe5994b3120859ef148b1eda1f4":[3,0,0,2,0,38],
 "orx_clock_8h.html#gac7e3bed26af64a3b844f0e0ba0500032":[3,0,0,2,0,4],
 "orx_clock_8h.html#gacc6d6f1fa2b7fe3c2fb1d83351359262":[3,0,0,2,0,3],
-"orx_clock_8h.html#gacf7c640799de113b93a02b540befe4d7":[3,0,0,2,0,1],
-"orx_clock_8h.html#gad1d377c0cfe953d16d614b44bae42e6c":[3,0,0,2,0,10]
+"orx_clock_8h.html#gacf7c640799de113b93a02b540befe4d7":[3,0,0,2,0,1]
 };
