@@ -1771,7 +1771,8 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
           /* Updates result */
           fResult = pstEntry->fExternalValue;
         }
-        else
+        /* Is active? */
+        else if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
         {
           /* For all bindings */
           for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
