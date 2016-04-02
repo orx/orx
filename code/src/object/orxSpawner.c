@@ -59,6 +59,7 @@
 #define orxSPAWNER_KU32_FLAG_WAVE_MODE            0x80000000  /**< Wave mode flag */
 #define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x01000000  /**< Speed flag */
 #define orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE    0x02000000  /**< Clean interpolation flag */
+#define orxSPAWNER_KU32_FLAG_IMMEDIATE            0x04000000  /**< Immediate flag */
 
 #define orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED  0x00100000  /**< Random object speed flag */
 #define orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE     0x00200000  /**< Random wave size flag */
@@ -89,6 +90,7 @@
 #define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
 #define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
 #define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
+#define orxSPAWNER_KZ_CONFIG_IMMEDIATE            "Immediate"
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
 
@@ -340,6 +342,16 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     {
       /* Updates status */
       orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE, orxSPAWNER_KU32_FLAG_NONE);
+    }
+
+    /* Is immediate? */
+    if((orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_IMMEDIATE) != orxFALSE) && (orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_IMMEDIATE) != orxFALSE))
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_IMMEDIATE, orxSPAWNER_KU32_FLAG_NONE);
+
+      /* Updates timer */
+      _pstSpawner->fWaveTimer = orxFLOAT_0;
     }
 
     /* Updates result */
@@ -1255,7 +1267,7 @@ orxBOOL orxFASTCALL orxSpawner_IsEnabled(const orxSPAWNER *_pstSpawner)
   return(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED));
 }
 
-/** Resets (and re-enables) a spawner
+/** Resets (and disables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
  */
 void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
@@ -1275,7 +1287,7 @@ void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   /* Resets counters */
   _pstSpawner->u32ActiveObjectCounter = 0;
   _pstSpawner->u32TotalObjectCounter  = 0;
-  _pstSpawner->fWaveTimer             = orxFLOAT_0;
+  _pstSpawner->fWaveTimer             = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_IMMEDIATE) ? orxFLOAT_0 : _pstSpawner->fWaveDelay;
 
   /* For all objects */
   for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
