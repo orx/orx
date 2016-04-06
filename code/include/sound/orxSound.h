@@ -174,6 +174,11 @@ extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateWithEmptyStream(orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Delete(orxSOUND *_pstSound);
 
+/** Clears cache (if any sound sample is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_ClearCache();
+
 
 /** Creates a sample
  * @param[in] _u32ChannelNumber Number of channels of the sample

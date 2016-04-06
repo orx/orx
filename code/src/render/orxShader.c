@@ -70,6 +70,7 @@
 #define orxSHADER_KU32_FLAG_ENABLED           0x10000000  /**< Enabled flag */
 #define orxSHADER_KU32_FLAG_COMPILED          0x20000000  /**< Compiled flag */
 #define orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM  0x40000000  /**< No custom param flag */
+#define orxSHADER_KU32_FLAG_CACHED            0x80000000  /**< Cached flag */
 
 #define orxSHADER_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
 
@@ -733,6 +734,9 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Increases its reference counter to keep it in cache table */
             orxStructure_IncreaseCounter(pstResult);
+
+            /* Updates its flags */
+            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_CACHED, orxSHADER_KU32_FLAG_NONE);
           }
 
           /* Processes its data */
@@ -836,6 +840,41 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
   /* Done! */
   return eResult;
 }
+
+/** Clears cache (if any shader is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShader_ClearCache()
+{
+  orxSHADER  *pstShader, *pstNextShader;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+
+  /* For all Shaders */
+  for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
+      pstShader != orxNULL;
+      pstShader = pstNextShader)
+  {
+    /* Gets next shader */
+    pstNextShader = orxSHADER(orxStructure_GetNext(pstShader));
+
+    /* Is cached? */
+    if(orxStructure_TestFlags(pstShader, orxSHADER_KU32_FLAG_CACHED))
+    {
+      /* Updates its flags */
+      orxStructure_SetFlags(pstShader, orxSHADER_KU32_FLAG_NONE, orxSHADER_KU32_FLAG_CACHED);
+
+      /* Deletes its extra reference */
+      orxShader_Delete(pstShader);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /** Starts a shader
  * @param[in] _pstShader              Concerned Shader

@@ -135,6 +135,11 @@ extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(const orx
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
 
+/** Clears cache (if any FX is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_ClearCache();
+
 /** Applies FX on object
  * @param[in] _pstFX            FX to apply
  * @param[in] _pstObject        Object on which to apply the FX

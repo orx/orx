@@ -106,6 +106,11 @@ extern orxDLLAPI orxTIMELINE *orxFASTCALL       orxTimeLine_Create();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_Delete(orxTIMELINE *_pstTimeLine);
 
+/** Clears cache (if any TimeLine track is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_ClearCache();
+
 /** Enables/disables a TimeLine
  * @param[in]   _pstTimeLine          Concerned TimeLine
  * @param[in]   _bEnable              Enable / disable

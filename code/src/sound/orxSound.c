@@ -71,6 +71,15 @@
 
 #define orxSOUND_KU32_MASK_ALL                          0xFFFFFFFF  /**< All mask */
 
+/** Sample flags
+ */
+#define orxSOUND_SAMPLE_KU32_FLAG_NONE                  0x00000000  /**< No flag */
+
+#define orxSOUND_SAMPLE_KU32_FLAG_INTERNAL              0x10000000  /**< Internal flag */
+#define orxSOUND_SAMPLE_KU32_FLAG_CACHED                0x20000000  /**< Cached flag */
+
+#define orxSOUND_SAMPLE_KU32_MASK_ALL                   0xFFFFFFFF  /**< All mask */
+
 
 /** Misc defines
  */
@@ -121,7 +130,7 @@ typedef struct __orxSOUND_SAMPLE_t
   orxSOUNDSYSTEM_SAMPLE  *pstData;                      /**< Sound data : 4 */
   orxU32                  u32ID;                        /**< Sample ID : 8 */
   orxU32                  u32Counter;                   /**< Reference counter : 12 */
-  orxBOOL                 bInternal;                    /**< Internal : 16 */
+  orxU32                  u32Flags;                     /**< Flags : 16 */
 
 } orxSOUND_SAMPLE;
 
@@ -208,14 +217,26 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
       if((pstResult->pstData != orxNULL)
       && (orxHashTable_Add(sstSound.pstSampleTable, u32ID, pstResult) != orxSTATUS_FAILURE))
       {
-        /* Inits its reference counter */
-        pstResult->u32Counter = (_bKeepInCache != orxFALSE) ? 1 : 0;
+        /* Should keep in cache? */
+        if(_bKeepInCache != orxFALSE)
+        {
+          /* Inits its reference counter */
+          pstResult->u32Counter = 1;
+
+          /* Stores its flags */
+          orxFLAG_SET(pstResult->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL | orxSOUND_SAMPLE_KU32_FLAG_CACHED, orxSOUND_SAMPLE_KU32_MASK_ALL);
+        }
+        else
+        {
+          /* Inits its reference counter */
+          pstResult->u32Counter = 0;
+
+          /* Stores its flags */
+          orxFLAG_SET(pstResult->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL, orxSOUND_SAMPLE_KU32_MASK_ALL);
+        }
 
         /* Stores its ID */
         pstResult->u32ID = u32ID;
-
-        /* Updates its status */
-        pstResult->bInternal = orxTRUE;
       }
       else
       {
@@ -247,7 +268,7 @@ static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
   if(_pstSample->u32Counter == 0)
   {
     /* Is internal? */
-    if(_pstSample->bInternal != orxFALSE)
+    if(orxFLAG_TEST(_pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL))
     {
       /* Has data? */
       if(_pstSample->pstData != orxNULL)
@@ -1608,6 +1629,40 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   return eResult;
 }
 
+/** Clears cache (if any sound sample is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_ClearCache()
+{
+  orxSOUND_SAMPLE *pstSample, *pstNextSample;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+
+  /* For all samples */
+  for(pstSample = (orxSOUND_SAMPLE*)orxBank_GetNext(sstSound.pstSampleBank, orxNULL);
+      pstSample != orxNULL;
+      pstSample = pstNextSample)
+  {
+    /* Gets next sample */
+    pstNextSample = (orxSOUND_SAMPLE*)orxBank_GetNext(sstSound.pstSampleBank, pstSample);
+
+    /* Is cached? */
+    if(orxFLAG_TEST(pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_CACHED))
+    {
+      /* Updates its flags */
+      orxFLAG_SET(pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_NONE, orxSOUND_SAMPLE_KU32_FLAG_CACHED);
+
+      /* Unloads its extra reference */
+      orxSound_UnloadSample(pstSample);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Creates a sample
  * @param[in] _u32ChannelNumber Number of channels of the sample
  * @param[in] _u32FrameNumber   Number of frame of the sample (number of "samples" = number of frames * number of channels)
@@ -1654,7 +1709,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
           pstSoundSample->pstData     = pstSample;
           pstSoundSample->u32Counter  = 0;
           pstSoundSample->u32ID       = u32ID;
-          pstSoundSample->bInternal   = orxFALSE;
+          orxFLAG_SET(pstSoundSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_NONE, orxSOUND_SAMPLE_KU32_MASK_ALL);
 
           /* Stores it */
           orxHashTable_Add(sstSound.pstSampleTable, u32ID, pstSoundSample);

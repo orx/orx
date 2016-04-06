@@ -58,6 +58,7 @@
 
 #define orxFX_KU32_FLAG_ENABLED                 0x10000000  /**< Enabled flag */
 #define orxFX_KU32_FLAG_LOOP                    0x20000000  /**< Loop flag */
+#define orxFX_KU32_FLAG_CACHED                  0x40000000  /**< Cached flag */
 
 #define orxFX_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
@@ -604,6 +605,9 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
             {
               /* Increases its reference counter to keep it in cache table */
               orxStructure_IncreaseCounter(pstResult);
+
+              /* Updates its flags */
+              orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_CACHED, orxFX_KU32_FLAG_NONE);
             }
           }
           else
@@ -681,6 +685,40 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   {
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Clears cache (if any FX is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_ClearCache()
+{
+  orxFX    *pstFX, *pstNextFX;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+
+  /* For all FXs */
+  for(pstFX = orxFX(orxStructure_GetFirst(orxSTRUCTURE_ID_FX));
+      pstFX != orxNULL;
+      pstFX = pstNextFX)
+  {
+    /* Gets next FX */
+    pstNextFX = orxFX(orxStructure_GetNext(pstFX));
+
+    /* Is cached? */
+    if(orxStructure_TestFlags(pstFX, orxFX_KU32_FLAG_CACHED))
+    {
+      /* Updates its flags */
+      orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_CACHED);
+
+      /* Deletes its extra reference */
+      orxFX_Delete(pstFX);
+    }
   }
 
   /* Done! */
