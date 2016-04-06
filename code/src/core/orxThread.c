@@ -842,7 +842,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     orxCHAR acBuffer[256];
 
     /* Prints name */
-    acBuffer[orxString_NPrint(acBuffer, 255, "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime())] = orxCHAR_NULL;
+    acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime())] = orxCHAR_NULL;
 
     /* Opens semaphore */
     pstResult = (orxTHREAD_SEMAPHORE *)sem_open(acBuffer, O_CREAT, 0644, _u32Value);
