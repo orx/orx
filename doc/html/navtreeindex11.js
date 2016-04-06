@@ -1,5 +1,10 @@
 var NAVTREEINDEX11 =
 {
+"orx_android_8h.html#gab372b49dfac5349b37b57b83a43fc12a":[3,0,0,6,0,8],
+"orx_android_8h.html#gab716135367c8f2c971827d19e46a2e5a":[3,0,0,6,0,2],
+"orx_android_8h.html#gabc76eaa5b17cbcf4e70dc1dcf58ef301":[3,0,0,6,0,23],
+"orx_android_8h.html#gaca0657d8a701bf22499cd348acce246d":[3,0,0,6,0,11],
+"orx_android_8h.html#gad9951d70481e342976d4d5b180579714":[3,0,0,6,0,9],
 "orx_android_8h.html#gae1fe3d56113fcf936fd4ef5fc20e9d81":[3,0,0,6,0,18],
 "orx_android_8h.html#gae61fe62bd38977850791da3eb9522237":[3,0,0,6,0,20],
 "orx_android_8h.html#gaf51bfa3c5118859198b0cd74a5003809":[3,0,0,6,0,21],
@@ -244,10 +249,5 @@ var NAVTREEINDEX11 =
 "orx_clock_8h.html#ga93f8fe8c1e9aa8d220c1513d280f20ba":[3,0,0,2,0,13],
 "orx_clock_8h.html#gaad1fb87c20e41fd7cc9ee2f7cbe346b8":[3,0,0,2,0,16],
 "orx_clock_8h.html#gaae909eff9a38f2e9c136f368d225f2be":[3,0,0,2,0,34],
-"orx_clock_8h.html#gab38bde2b21dca84dd29ef4c60531edb9":[3,0,0,2,0,29],
-"orx_clock_8h.html#gab9ee35cfa4682cf9b9dd65766a6dfb43":[3,0,0,2,0,24],
-"orx_clock_8h.html#gac6daebe5994b3120859ef148b1eda1f4":[3,0,0,2,0,38],
-"orx_clock_8h.html#gac7e3bed26af64a3b844f0e0ba0500032":[3,0,0,2,0,4],
-"orx_clock_8h.html#gacc6d6f1fa2b7fe3c2fb1d83351359262":[3,0,0,2,0,3],
-"orx_clock_8h.html#gacf7c640799de113b93a02b540befe4d7":[3,0,0,2,0,1]
+"orx_clock_8h.html#gab38bde2b21dca84dd29ef4c60531edb9":[3,0,0,2,0,29]
 };

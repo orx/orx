@@ -40,6 +40,7 @@ var group__orx_sound =
       [ "orxSOUND_STATUS_NUMBER", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a47648bdb7d91bddfa8710c3a4aeec28a", null ],
       [ "orxSOUND_STATUS_NONE", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ad01926e465f3d064b66da415799b3354", null ]
     ] ],
+    [ "orxSound_ClearCache", "group__orx_sound.html#gad21be0dc930d112b4205b3bdefa30ec4", null ],
     [ "orxSound_Create", "group__orx_sound.html#ga8a65a26127320ce61e7e37703080e1b7", null ],
     [ "orxSound_CreateFromConfig", "group__orx_sound.html#ga5cef112990ff5264c67eea94a66c7afe", null ],
     [ "orxSound_CreateSample", "group__orx_sound.html#gaeba832ec94a53adc3b805987ca095751", null ],

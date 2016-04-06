@@ -12,6 +12,7 @@ var orx_time_line_8h =
       [ "orxTIMELINE_EVENT_NONE", "orx_time_line_8h.html#gga0ec2c070cd57becb98a40507688ef0aca9d3ab902d68d8165fed10d3c7fc9c52e", null ]
     ] ],
     [ "orxTimeLine_AddTrackFromConfig", "orx_time_line_8h.html#ga1281081fa8cb1913b4b769a2a7343157", null ],
+    [ "orxTimeLine_ClearCache", "orx_time_line_8h.html#ga61e699828d85440590b3916cbef42d51", null ],
     [ "orxTimeLine_Create", "orx_time_line_8h.html#ga69003564f3a0d16b6a56936a0bec9720", null ],
     [ "orxTimeLine_Delete", "orx_time_line_8h.html#ga221374d361bbf39ff4b47d112612e24f", null ],
     [ "orxTimeLine_Enable", "orx_time_line_8h.html#ga28fd2c8804cf2d25ed38ca6a2968dbc7", null ],

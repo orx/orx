@@ -35,6 +35,7 @@ var orx_f_x_8h =
     [ "orxFX_AddSpeed", "orx_f_x_8h.html#gac0e2e42237710d2415674ad3fdb694ac", null ],
     [ "orxFX_AddVolume", "orx_f_x_8h.html#ga36a72c7b6f823bc478005138faafa0fc", null ],
     [ "orxFX_Apply", "orx_f_x_8h.html#ga0ca775d35b31f3aaf213b97bb5da3a54", null ],
+    [ "orxFX_ClearCache", "orx_f_x_8h.html#ga186536083b1a7c2d83d088bddb33e118", null ],
     [ "orxFX_Create", "orx_f_x_8h.html#gaee18582f78a97610b4e29e38ca13679d", null ],
     [ "orxFX_CreateFromConfig", "orx_f_x_8h.html#ga983fa3db4da40a54c7bb1963950f42e7", null ],
     [ "orxFX_Delete", "orx_f_x_8h.html#gad347030e4b5db33538155e49831b6945", null ],

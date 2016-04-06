@@ -47,6 +47,7 @@ var group__orx_config =
     [ "orxConfig_HasSection", "group__orx_config.html#gad42bd0a8612fbe43d17a887f7149e4a0", null ],
     [ "orxConfig_HasValue", "group__orx_config.html#gad57211f9017325df09ecc0fd4414eef3", null ],
     [ "orxConfig_Init", "group__orx_config.html#ga5f188331baaf549aa47f31375cb79016", null ],
+    [ "orxConfig_IsDynamicValue", "group__orx_config.html#gad79e4e0dd3a92d0a9ffad2bc85af2c80", null ],
     [ "orxConfig_IsInheritedValue", "group__orx_config.html#ga365019394fbad0e1d52f88edf4da7ab5", null ],
     [ "orxConfig_IsList", "group__orx_config.html#gab7d1fdec8e820cd684cef7987cf73ba0", null ],
     [ "orxConfig_IsRandomValue", "group__orx_config.html#gaa0a1cc968946c9743e15dfe4adba66b7", null ],

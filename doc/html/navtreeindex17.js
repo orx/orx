@@ -1,5 +1,12 @@
 var NAVTREEINDEX17 =
 {
+"orx_object_8h.html#gac869dede9fe8b5c3ed11df0fe11ff628":[3,0,0,9,3,14],
+"orx_object_8h.html#gacb3b162136b41dd80d79aef6d1fc7670":[3,0,0,9,3,86],
+"orx_object_8h.html#gacefe2923d93ac558007108546a6e1b72":[3,0,0,9,3,95],
+"orx_object_8h.html#gad1014f4b6314d00bde1da0cfce2cab50":[3,0,0,9,3,112],
+"orx_object_8h.html#gad1f7d4d8f6e9c207380bd2a78df2e7a6":[3,0,0,9,3,109],
+"orx_object_8h.html#gad38576090bef5ed7eaede3b8b62fe209":[3,0,0,9,3,107],
+"orx_object_8h.html#gad3b66ac32e71acb27c079057ee2c88a7":[3,0,0,9,3,17],
 "orx_object_8h.html#gad59c5a311d83f40cea6b27dccb4b1048":[3,0,0,9,3,33],
 "orx_object_8h.html#gad7e69150f8ba78a9e52309ca2f6d9a74":[3,0,0,9,3,104],
 "orx_object_8h.html#gad99b0892c7f5eb9847b906d24c8aae5d":[3,0,0,9,3,53],
@@ -242,12 +249,5 @@ var NAVTREEINDEX17 =
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faabcb4ec884c1904f969926ef13519220a":[3,0,0,11,0,4,0,6],
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458":[3,0,0,11,0,4,0,5],
 "orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f":[3,0,0,11,0,4,0,0],
-"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335":[3,0,0,11,0,4,0,1],
-"orx_plugin___keyboard_8h_source.html":[3,0,0,11,0,4],
-"orx_plugin___mouse_8h.html":[3,0,0,11,0,5],
-"orx_plugin___mouse_8h.html#ga3c6ff2e6204f4529b348ab5f74b6cc3d":[3,0,0,11,0,5,0],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da081dde4592a702bec680d79024e45d89":[3,0,0,11,0,5,0,0],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da306951297060a4dcbe1b8de59bcb00ba":[3,0,0,11,0,5,0,8],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da4b3696274cc5072ee56b1712174916f2":[3,0,0,11,0,5,0,9],
-"orx_plugin___mouse_8h.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da71cb8b8411f4707bd4d87b220681e5a1":[3,0,0,11,0,5,0,2]
+"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335":[3,0,0,11,0,4,0,1]
 };

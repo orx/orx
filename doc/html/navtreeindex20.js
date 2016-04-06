@@ -1,5 +1,14 @@
 var NAVTREEINDEX20 =
 {
+"orx_spawner_8h.html#ga94e4e78d9003e0d5f140230552953c95":[3,0,0,9,4,38],
+"orx_spawner_8h.html#ga9787936032dc7d434c0011c995c6873b":[3,0,0,9,4,1],
+"orx_spawner_8h.html#ga9dac3f048e3fd9117d296f24f281b88b":[3,0,0,9,4,10],
+"orx_spawner_8h.html#ga9f821cd2b5583684fea57ecd2c80841d":[3,0,0,9,4,43],
+"orx_spawner_8h.html#gaa6fd783070023ab4b65477ded61aac5e":[3,0,0,9,4,48],
+"orx_spawner_8h.html#gaa7f0d86452eeff556ff5ec4638381887":[3,0,0,9,4,45],
+"orx_spawner_8h.html#gaacc4ba128377d1617c203696cf724332":[3,0,0,9,4,5],
+"orx_spawner_8h.html#gab7326aa893f19ace86d9f9f72d66993e":[3,0,0,9,4,32],
+"orx_spawner_8h.html#gabdbe00e4edfe81e1861c8eb27a23280f":[3,0,0,9,4,41],
 "orx_spawner_8h.html#gacc4c15ae87339a10834da009dc85bb1a":[3,0,0,9,4,9],
 "orx_spawner_8h.html#gad08003006dc08bcb3f3916a2c234e9af":[3,0,0,9,4,49],
 "orx_spawner_8h.html#gad958a5a212705918dbb62446401306a1":[3,0,0,9,4,42],
@@ -240,14 +249,5 @@ var NAVTREEINDEX20 =
 "orx_texture_8h.html#gab25a63846495c29c1f3413118f90f93b":[3,0,0,4,5,16],
 "orx_texture_8h.html#gab750c77800d4ce0aa301678276b41af6":[3,0,0,4,5,7],
 "orx_texture_8h.html#gaca0712d36a90486d46a2d4c159e2444d":[3,0,0,4,5,1],
-"orx_texture_8h.html#gacdeb7b348fc4cb4910155013b459ea4a":[3,0,0,4,5,3],
-"orx_texture_8h.html#gacdebed04aa465b92f1d753497687f551":[3,0,0,4,5,0],
-"orx_texture_8h.html#gad52d9b8f91ea1f394474e077a34fd04a":[3,0,0,4,5,18],
-"orx_texture_8h.html#gaf2c3fbc73fb52abcf479cb8b76cc4299":[3,0,0,4,5,14],
-"orx_texture_8h.html#gaf4b625f49855b667995b2ed8b9887a75":[3,0,0,4,5,4],
-"orx_texture_8h.html#gafc422f0de3be1db48dce8abc82591bc6":[3,0,0,4,5,10],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9":[3,0,0,4,5,4,3],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809":[3,0,0,4,5,4,1],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678":[3,0,0,4,5,4,0],
-"orx_texture_8h.html#ggaf4b625f49855b667995b2ed8b9887a75a9d0f73d4e88d3664f1f3fb8657ba38cc":[3,0,0,4,5,4,2]
+"orx_texture_8h.html#gacdeb7b348fc4cb4910155013b459ea4a":[3,0,0,4,5,3]
 };
