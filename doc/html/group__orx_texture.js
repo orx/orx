@@ -11,8 +11,9 @@ var group__orx_texture =
       [ "orxTEXTURE_EVENT_NUMBER", "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9", null ],
       [ "orxTEXTURE_EVENT_NONE", "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29", null ]
     ] ],
+    [ "orxTexture_ClearCache", "group__orx_texture.html#ga04225363daa53b5135126794e4cf60de", null ],
     [ "orxTexture_Create", "group__orx_texture.html#ga0234c4923d3a53bd299c36bc9a96c60b", null ],
-    [ "orxTexture_CreateFromFile", "group__orx_texture.html#ga63311d2cc114a72436a2fbc6d3e15b0b", null ],
+    [ "orxTexture_CreateFromFile", "group__orx_texture.html#gad4d4f7570b466c3b053c6f1d55b0448e", null ],
     [ "orxTexture_Delete", "group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6", null ],
     [ "orxTexture_Exit", "group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688", null ],
     [ "orxTexture_GetBitmap", "group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c", null ],

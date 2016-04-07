@@ -39,19 +39,19 @@ var NAVTREEINDEX =
 "group__orx_resource.html#ga14f7244256f346dc788223dde5d2beab",
 "group__orx_spawner.html#ga41c76c081771932e9e5a2273e286d039",
 "group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c",
-"orx_android_8h.html#gab372b49dfac5349b37b57b83a43fc12a",
-"orx_clock_8h.html#gab9ee35cfa4682cf9b9dd65766a6dfb43",
-"orx_decl_8h.html#ga05d360cf9a5b757bf9bb062335546679",
-"orx_file_8h.html#ga58fad06e476d24fe45d96f42c304eb65",
-"orx_joystick_8h.html#ggab6cecefc4e8f1578ed021880bb9cc94ba00047beb2e98349d698a556c2c0510c6",
-"orx_math_8h.html#ga89c65ac6b19de8424297ce18c0ca93d0",
-"orx_object_8h.html#gac869dede9fe8b5c3ed11df0fe11ff628",
-"orx_plugin___keyboard_8h_source.html",
-"orx_resource_8h.html#gadbbf62141368ea35da893b69667fa289",
-"orx_spawner_8h.html#ga94e4e78d9003e0d5f140230552953c95",
-"orx_texture_8h.html#gacdebed04aa465b92f1d753497687f551",
-"structorx_b_o_d_y___d_e_f.html#a0b853cdf831ae23e61d59cc94457d379",
-"structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#acd885d48fd72357b40c0d19a48ef03f0"
+"orx_android_8h.html#gaaa7cf34e35cd184548f6b11f2124c00c",
+"orx_clock_8h.html#gab38bde2b21dca84dd29ef4c60531edb9",
+"orx_decl_8h.html",
+"orx_file_8h.html#ga5805808ea6ca32b9b4f559ca6ad96c82",
+"orx_joystick_8h.html#ggaac676f97aec33fc1dad588ae845d5642af46ac50052444612b728dd2fa0d8f73f",
+"orx_math_8h.html#ga898ed91e54ec35a53a5fee55fedfa7eb",
+"orx_object_8h.html#gac815dc87de5d4e260adc1f1cb7ef532d",
+"orx_plugin___keyboard_8h.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335",
+"orx_resource_8h.html#gadba8c905ff1d9f9f7a68858e8805d694",
+"orx_spawner_8h.html#ga92079497160c92dff118837b22c0ea31",
+"orx_texture_8h.html#gacdeb7b348fc4cb4910155013b459ea4a",
+"structorx_b_o_d_y___d_e_f.html",
+"structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a739d907a4b2e81877b6c1a5d4b052dc6"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

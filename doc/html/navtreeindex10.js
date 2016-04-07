@@ -1,18 +1,19 @@
 var NAVTREEINDEX10 =
 {
-"group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c":[1,53,9],
-"group__orx_texture.html#ga825ee63bf968b878456de7471d09e267":[1,53,12],
-"group__orx_texture.html#ga870a6e1969393ad770be7f6e6342bb6b":[1,53,13],
+"group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c":[1,53,10],
+"group__orx_texture.html#ga825ee63bf968b878456de7471d09e267":[1,53,13],
+"group__orx_texture.html#ga870a6e1969393ad770be7f6e6342bb6b":[1,53,14],
 "group__orx_texture.html#gaaf12ea9274ab61238614c097cafb790d":[1,53,2],
-"group__orx_texture.html#gab25a63846495c29c1f3413118f90f93b":[1,53,16],
-"group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6":[1,53,7],
+"group__orx_texture.html#gab25a63846495c29c1f3413118f90f93b":[1,53,17],
+"group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6":[1,53,8],
 "group__orx_texture.html#gaca0712d36a90486d46a2d4c159e2444d":[1,53,1],
 "group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a":[1,53,3],
 "group__orx_texture.html#gacdebed04aa465b92f1d753497687f551":[1,53,0],
-"group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a":[1,53,18],
-"group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299":[1,53,14],
+"group__orx_texture.html#gad4d4f7570b466c3b053c6f1d55b0448e":[1,53,7],
+"group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a":[1,53,19],
+"group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299":[1,53,15],
 "group__orx_texture.html#gaf4b625f49855b667995b2ed8b9887a75":[1,53,4],
-"group__orx_texture.html#gafc422f0de3be1db48dce8abc82591bc6":[1,53,10],
+"group__orx_texture.html#gafc422f0de3be1db48dce8abc82591bc6":[1,53,11],
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a5ccbd85fe71be95270fd248c714a1dc9":[1,53,4,3],
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a7c7973e946330fae3e3a2444d7c0f809":[1,53,4,1],
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678":[1,53,4,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "orx_android_8h.html#ga81c331de3a11851fcb0d88db8cc4b95e":[3,0,0,6,0,7],
 "orx_android_8h.html#ga82cec606cf0c51f2bf368bd3309db697":[3,0,0,6,0,5],
 "orx_android_8h.html#ga99cdd2f5977ceed457f9c88b36c1a30d":[3,0,0,6,0,25],
-"orx_android_8h.html#gaa096d9d24dd165d54a7b302af09267ff":[3,0,0,6,0,12],
-"orx_android_8h.html#gaaa7cf34e35cd184548f6b11f2124c00c":[3,0,0,6,0,1]
+"orx_android_8h.html#gaa096d9d24dd165d54a7b302af09267ff":[3,0,0,6,0,12]
 };

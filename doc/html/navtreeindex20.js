@@ -1,5 +1,6 @@
 var NAVTREEINDEX20 =
 {
+"orx_spawner_8h.html#ga92079497160c92dff118837b22c0ea31":[3,0,0,9,4,12],
 "orx_spawner_8h.html#ga94e4e78d9003e0d5f140230552953c95":[3,0,0,9,4,38],
 "orx_spawner_8h.html#ga9787936032dc7d434c0011c995c6873b":[3,0,0,9,4,1],
 "orx_spawner_8h.html#ga9dac3f048e3fd9117d296f24f281b88b":[3,0,0,9,4,10],
@@ -236,18 +237,17 @@ var NAVTREEINDEX20 =
 "orx_text_8h.html#gaf95fd8ed766cf9cd9ae3ba3f87881259":[3,0,0,4,4,3],
 "orx_text_8h_source.html":[3,0,0,4,4],
 "orx_texture_8h.html":[3,0,0,4,5],
-"orx_texture_8h.html#ga0234c4923d3a53bd299c36bc9a96c60b":[3,0,0,4,5,5],
-"orx_texture_8h.html#ga5d43b76a8d682b36f0331e281cb61788":[3,0,0,4,5,15],
-"orx_texture_8h.html#ga63311d2cc114a72436a2fbc6d3e15b0b":[3,0,0,4,5,6],
-"orx_texture_8h.html#ga63e6164791a9156560a7880ee2fc4941":[3,0,0,4,5,17],
-"orx_texture_8h.html#ga6693d5ec14b90cb8246d965a050d3688":[3,0,0,4,5,8],
-"orx_texture_8h.html#ga78eb3dd271806f3dedc5f606fc8e231b":[3,0,0,4,5,11],
-"orx_texture_8h.html#ga7d713a02b692a3765dfd89d3f585cd8c":[3,0,0,4,5,9],
-"orx_texture_8h.html#ga825ee63bf968b878456de7471d09e267":[3,0,0,4,5,12],
-"orx_texture_8h.html#ga870a6e1969393ad770be7f6e6342bb6b":[3,0,0,4,5,13],
+"orx_texture_8h.html#ga0234c4923d3a53bd299c36bc9a96c60b":[3,0,0,4,5,6],
+"orx_texture_8h.html#ga04225363daa53b5135126794e4cf60de":[3,0,0,4,5,5],
+"orx_texture_8h.html#ga5d43b76a8d682b36f0331e281cb61788":[3,0,0,4,5,16],
+"orx_texture_8h.html#ga63e6164791a9156560a7880ee2fc4941":[3,0,0,4,5,18],
+"orx_texture_8h.html#ga6693d5ec14b90cb8246d965a050d3688":[3,0,0,4,5,9],
+"orx_texture_8h.html#ga78eb3dd271806f3dedc5f606fc8e231b":[3,0,0,4,5,12],
+"orx_texture_8h.html#ga7d713a02b692a3765dfd89d3f585cd8c":[3,0,0,4,5,10],
+"orx_texture_8h.html#ga825ee63bf968b878456de7471d09e267":[3,0,0,4,5,13],
+"orx_texture_8h.html#ga870a6e1969393ad770be7f6e6342bb6b":[3,0,0,4,5,14],
 "orx_texture_8h.html#gaaf12ea9274ab61238614c097cafb790d":[3,0,0,4,5,2],
-"orx_texture_8h.html#gab25a63846495c29c1f3413118f90f93b":[3,0,0,4,5,16],
-"orx_texture_8h.html#gab750c77800d4ce0aa301678276b41af6":[3,0,0,4,5,7],
-"orx_texture_8h.html#gaca0712d36a90486d46a2d4c159e2444d":[3,0,0,4,5,1],
-"orx_texture_8h.html#gacdeb7b348fc4cb4910155013b459ea4a":[3,0,0,4,5,3]
+"orx_texture_8h.html#gab25a63846495c29c1f3413118f90f93b":[3,0,0,4,5,17],
+"orx_texture_8h.html#gab750c77800d4ce0aa301678276b41af6":[3,0,0,4,5,8],
+"orx_texture_8h.html#gaca0712d36a90486d46a2d4c159e2444d":[3,0,0,4,5,1]
 };
