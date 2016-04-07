@@ -532,7 +532,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
             /* Creates texture from file */
-            pstTexture = orxTexture_CreateFromFile(zTextureName);
+            pstTexture = orxTexture_CreateFromFile(zTextureName, orxFALSE);
 
             /* Restores display debug level state */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -681,7 +681,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates texture from file */
-          pstTexture = orxTexture_CreateFromFile(zTextureName);
+          pstTexture = orxTexture_CreateFromFile(zTextureName, orxFALSE);
 
           /* Restores display debug level state */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -709,7 +709,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
                 /* Links them */
                 if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName) != orxSTATUS_FAILURE)
                 {
-                  /* Updates  owner flags */
+                  /* Updates owner flags */
                   u32OwnerFlags = 1;
                 }
                 else

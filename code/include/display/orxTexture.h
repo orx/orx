@@ -97,16 +97,22 @@ extern orxDLLAPI void orxFASTCALL         orxTexture_Exit();
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Create();
 
 /** Creates a texture from a bitmap file
- * @param[in]   _zBitmapFileName  Name of the bitmap
+ * @param[in]   _zFileName      Name of the bitmap
+ * @param[in]   _bKeepInCache   Should be kept in cache after no more references exist?
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zBitmapFileName);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zFileName,      orxBOOL _bKeepInCache);
 
 /** Deletes a texture (and its referenced bitmap)
  * @param[in]   _pstTexture     Concerned texture
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_Delete(orxTEXTURE *_pstTexture);
+
+/** Clears cache (if any texture is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_ClearCache();
 
 /** Links a bitmap
  * @param[in]   _pstTexture     Concerned texture

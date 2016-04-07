@@ -2888,6 +2888,7 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object.");
   }
 
+  /* Done! */
   return pstResult;
 }
 
@@ -3419,6 +3420,9 @@ orxSTATUS orxFASTCALL orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INF
 orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxOBJECT *pstResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_CreateFromConfig");
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -4199,6 +4203,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Updates result */
     pstResult = orxNULL;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;

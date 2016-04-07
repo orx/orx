@@ -88,6 +88,7 @@
 #define orxGRAPHIC_KZ_CONFIG_REPEAT               "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE           "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE        "KeepInCache"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
 #define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"
@@ -386,7 +387,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         orxTEXTURE *pstTexture;
 
         /* Creates texture */
-        pstTexture = orxTexture_CreateFromFile(zName);
+        pstTexture = orxTexture_CreateFromFile(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
         /* Valid? */
         if(pstTexture != orxNULL)
