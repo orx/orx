@@ -2519,7 +2519,7 @@ var searchData=
   ['orxtexture_5fkz_5fpixel',['orxTEXTURE_KZ_PIXEL',['../group__orx_texture.html#gacdebed04aa465b92f1d753497687f551',1,'orxTexture.h']]],
   ['orxtexture_5fkz_5fresource_5fgroup',['orxTEXTURE_KZ_RESOURCE_GROUP',['../group__orx_texture.html#gaca0712d36a90486d46a2d4c159e2444d',1,'orxTexture.h']]],
   ['orxtexture_5fkz_5fscreen_5fname',['orxTEXTURE_KZ_SCREEN_NAME',['../group__orx_texture.html#gaaf12ea9274ab61238614c097cafb790d',1,'orxTexture.h']]],
-  ['orxtexture_5flinkbitmap',['orxTexture_LinkBitmap',['../group__orx_texture.html#ga5d43b76a8d682b36f0331e281cb61788',1,'orxTexture.h']]],
+  ['orxtexture_5flinkbitmap',['orxTexture_LinkBitmap',['../group__orx_texture.html#ga501b4c7fa170a0483a9b81bb775d867c',1,'orxTexture.h']]],
   ['orxtexture_5fsetcolor',['orxTexture_SetColor',['../group__orx_texture.html#gab25a63846495c29c1f3413118f90f93b',1,'orxTexture.h']]],
   ['orxtexture_5fsetup',['orxTexture_Setup',['../group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941',1,'orxTexture.h']]],
   ['orxtexture_5funlinkbitmap',['orxTexture_UnlinkBitmap',['../group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a',1,'orxTexture.h']]],

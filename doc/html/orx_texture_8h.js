@@ -22,7 +22,7 @@ var orx_texture_8h =
     [ "orxTexture_GetScreenTexture", "orx_texture_8h.html#ga825ee63bf968b878456de7471d09e267", null ],
     [ "orxTexture_GetSize", "orx_texture_8h.html#ga870a6e1969393ad770be7f6e6342bb6b", null ],
     [ "orxTexture_Init", "orx_texture_8h.html#gaf2c3fbc73fb52abcf479cb8b76cc4299", null ],
-    [ "orxTexture_LinkBitmap", "orx_texture_8h.html#ga5d43b76a8d682b36f0331e281cb61788", null ],
+    [ "orxTexture_LinkBitmap", "orx_texture_8h.html#ga501b4c7fa170a0483a9b81bb775d867c", null ],
     [ "orxTexture_SetColor", "orx_texture_8h.html#gab25a63846495c29c1f3413118f90f93b", null ],
     [ "orxTexture_Setup", "orx_texture_8h.html#ga63e6164791a9156560a7880ee2fc4941", null ],
     [ "orxTexture_UnlinkBitmap", "orx_texture_8h.html#gad52d9b8f91ea1f394474e077a34fd04a", null ]
