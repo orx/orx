@@ -258,7 +258,7 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       pstNMTexture = orxTexture_Create();
 
       /* Sets its bitmap */
-      orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName);
+      orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName, orxFALSE);
 
       /* Add it to the table using the CRC of the original as key */
       orxHashTable_Add(pstTextureTable, u32CRC, pstNMTexture);

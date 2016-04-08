@@ -118,9 +118,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_ClearCache();
  * @param[in]   _pstTexture     Concerned texture
  * @param[in]   _pstBitmap      Bitmap to link
  * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
+ * @param[in]   _bTransferOwnership If set to true, the texture will become the bitmap's owner and will have it deleted upon its own deletion
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName, orxBOOL _bTransferOwnership);
 
 /** Unlinks (and deletes if not used anymore) a bitmap
  * @param[in]   _pstTexture     Concerned texture

@@ -197,15 +197,8 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
           }
 
           /* Assigns given bitmap to it */
-          if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName) != orxSTATUS_FAILURE)
+          if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName, bInternal) != orxSTATUS_FAILURE)
           {
-            /* Was internal? */
-            if(bInternal != orxFALSE)
-            {
-              /* Updates flags */
-              orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
-            }
-
             /* Asynchronous loading? */
             if(orxDisplay_GetTempBitmap() != orxNULL)
             {
@@ -324,11 +317,8 @@ void orxFASTCALL orxTexture_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND
       if(pstBitmap != orxNULL)
       {
         /* Links them */
-        if(orxTexture_LinkBitmap(pstTexture, pstBitmap, _astArgList[0].zValue) != orxSTATUS_FAILURE)
+        if(orxTexture_LinkBitmap(pstTexture, pstBitmap, _astArgList[0].zValue, orxTRUE) != orxSTATUS_FAILURE)
         {
-          /* Updates its flag */
-          orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
-
           /* Updates result */
           _pstResult->u64Value = orxStructure_GetGUID(pstTexture);
         }
@@ -630,7 +620,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
           orxStructure_SetOwner(sstTexture.pstPixel, sstTexture.pstPixel);
 
           /* Links screen bitmap */
-          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME);
+          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME, orxFALSE);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
@@ -649,11 +639,8 @@ orxSTATUS orxFASTCALL orxTexture_Init()
               if(orxDisplay_SetBitmapData(pstBitmap, au8PixelBuffer, 4 * sizeof(orxU8)) != orxSTATUS_FAILURE)
               {
                 /* Links it */
-                if(orxTexture_LinkBitmap(sstTexture.pstPixel, pstBitmap, orxTEXTURE_KZ_PIXEL) != orxSTATUS_FAILURE)
+                if(orxTexture_LinkBitmap(sstTexture.pstPixel, pstBitmap, orxTEXTURE_KZ_PIXEL, orxTRUE) != orxSTATUS_FAILURE)
                 {
-                  /* Updates its flag */
-                  orxStructure_SetFlags(sstTexture.pstPixel, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
-
                   /* Sets it as temp bitmap for asynchronous operations */
                   orxDisplay_SetTempBitmap(pstBitmap);
 
@@ -848,7 +835,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
 
       /* Assigns given bitmap to it */
       if((pstBitmap != orxNULL)
-      && (orxTexture_LinkBitmap(pstResult, pstBitmap, _zFileName) != orxSTATUS_FAILURE))
+      && (orxTexture_LinkBitmap(pstResult, pstBitmap, _zFileName, orxTRUE) != orxSTATUS_FAILURE))
       {
         /* Should keep it in cache? */
         if(_bKeepInCache != orxFALSE)
@@ -857,12 +844,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
           orxStructure_IncreaseCounter(pstResult);
 
           /* Updates its flags */
-          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_INTERNAL | orxTEXTURE_KU32_FLAG_CACHED, orxTEXTURE_KU32_FLAG_NONE);
-        }
-        else
-        {
-          /* Updates its flags */
-          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_CACHED, orxTEXTURE_KU32_FLAG_NONE);
         }
 
         /* Sends event */
@@ -981,9 +963,10 @@ orxSTATUS orxFASTCALL orxTexture_ClearCache()
  * @param[in]   _pstTexture     Concerned texture
  * @param[in]   _pstBitmap      Bitmap to link
  * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
+ * @param[in]   _bTransferOwnership If set to true, the texture will become the bitmap's owner and will have it deleted upon its own deletion
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName)
+orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName, orxBOOL _bTransferOwnership)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -995,7 +978,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
   /* Unlink previous bitmap if needed */
   orxTexture_UnlinkBitmap(_pstTexture);
 
-  /* Has no texture now? */
+  /* Has currently no bitmap? */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) == orxFALSE)
   {
     orxTEXTURE *pstTexture;
@@ -1010,8 +993,17 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
     /* Not found? */
     if(pstTexture == orxNULL)
     {
-      /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
+      /* Transfers ownership? */
+      if(_bTransferOwnership != orxFALSE)
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE | orxTEXTURE_KU32_FLAG_INTERNAL, orxTEXTURE_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
+      }
 
       /* References bitmap */
       _pstTexture->hData = (orxHANDLE)_pstBitmap;
@@ -1070,7 +1062,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     }
 
     /* Updates flags */
-    orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, (orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE | orxTEXTURE_KU32_FLAG_INTERNAL));
+    orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE | orxTEXTURE_KU32_FLAG_INTERNAL);
 
     /* Cleans data */
     _pstTexture->hData = orxHANDLE_UNDEFINED;

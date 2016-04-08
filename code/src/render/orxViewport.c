@@ -85,6 +85,7 @@
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 #define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
 #define orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE       "AutoResize"
+#define orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
 #define orxVIEWPORT_KZ_RIGHT                    "right"
@@ -222,9 +223,6 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   /* Unlinks it */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
 
-                  /* Deletes it */
-                  orxDisplay_DeleteBitmap(pstBitmap);
-
                   /* Updates size */
                   fWidth  = orxMath_Round(fWidth * fWidthRatio);
                   fHeight = orxMath_Round(fHeight * fHeightRatio);
@@ -239,7 +237,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
 
                   /* Re-links it */
-                  (void)orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer);
+                  orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer, orxTRUE);
                 }
               }
 
@@ -532,7 +530,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
             /* Creates texture from file */
-            pstTexture = orxTexture_CreateFromFile(zTextureName, orxFALSE);
+            pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
             /* Restores display debug level state */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -558,7 +556,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
                 if(pstTexture != orxNULL)
                 {
                   /* Links them */
-                  if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName) != orxSTATUS_FAILURE)
+                  if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName, orxTRUE) != orxSTATUS_FAILURE)
                   {
                     /* Updates owner flags */
                     u32OwnerFlags |= 1 << i;
@@ -627,27 +625,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Wasn't stored? */
             if(bStored == orxFALSE)
             {
-              /* Was owned? */
-              if(u32OwnerFlags & (1 << j))
-              {
-                orxBITMAP *pstBitmap;
-
-                /* Gets linked bitmap */
-                pstBitmap = orxTexture_GetBitmap(apstTextureList[j]);
-
-                /* Unlinks it */
-                orxTexture_UnlinkBitmap(apstTextureList[j]);
-
-                /* Deletes it */
-                orxDisplay_DeleteBitmap(pstBitmap);
-
-                /* Updates owner flags */
-                u32OwnerFlags &= ~(1 << j);
-              }
-
-              /* Shifts owner flags to remove gap */
-              u32OwnerFlags = (u32OwnerFlags & ((1 << j) - 1)) | ((u32OwnerFlags & ~((1 << (j + 1)) - 1)) >> 1);
-
               /* Deletes it */
               orxTexture_Delete(apstTextureList[j]);
             }
@@ -681,7 +658,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates texture from file */
-          pstTexture = orxTexture_CreateFromFile(zTextureName, orxFALSE);
+          pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
           /* Restores display debug level state */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -707,7 +684,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
               if(pstTexture != orxNULL)
               {
                 /* Links them */
-                if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName) != orxSTATUS_FAILURE)
+                if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName, orxTRUE) != orxSTATUS_FAILURE)
                 {
                   /* Updates owner flags */
                   u32OwnerFlags = 1;
@@ -997,21 +974,6 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
     /* Was internally allocated? */
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
     {
-      /* Was bitmap owned? */
-      if(_pstViewport->u32TextureOwnerFlags & (1 << i))
-      {
-        orxBITMAP *pstBitmap;
-
-        /* Gets its linked bitmap */
-        pstBitmap = orxTexture_GetBitmap(_pstViewport->apstTextureList[i]);
-
-        /* Unlinks it */
-        orxTexture_UnlinkBitmap(_pstViewport->apstTextureList[i]);
-
-        /* Deletes it */
-        orxDisplay_DeleteBitmap(pstBitmap);
-      }
-
       /* Removes its owner */
       orxStructure_SetOwner(_pstViewport->apstTextureList[i], orxNULL);
 
