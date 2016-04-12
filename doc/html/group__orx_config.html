@@ -235,6 +235,8 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:gaf36ad6ebff7b59ac6d6c03647786d174"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga75b35018162183cd8e353a4c92d581be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga75b35018162183cd8e353a4c92d581be">orxConfig_LoadFromMemory</a> (orxCHAR *_acBuffer, orxU32 _u32BufferSize)</td></tr>
 <tr class="separator:ga75b35018162183cd8e353a4c92d581be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga70e0248b816ed217ca0954e7f5c597e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga70e0248b816ed217ca0954e7f5c597e3">orxConfig_MergeFiles</a> (const orxSTRING _zDstFileName, const orxSTRING *_azSrcFileName, orxU32 _u32Number, const orxSTRING _zEncryptionKey)</td></tr>
+<tr class="separator:ga70e0248b816ed217ca0954e7f5c597e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9bfdc91a8ec4fafb71209bb87fafa60e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9bfdc91a8ec4fafb71209bb87fafa60e">orxConfig_PopSection</a> ()</td></tr>
 <tr class="separator:ga9bfdc91a8ec4fafb71209bb87fafa60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf974a34a8848238975665df234042c0c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaf974a34a8848238975665df234042c0c">orxConfig_ProtectSection</a> (const orxSTRING _zSectionName, orxBOOL _bProtect)</td></tr>
@@ -1466,6 +1468,55 @@ orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_acBuffer</td><td>Buffer to process, will be modified during processing </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32BufferSize</td><td>Size of the buffer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga70e0248b816ed217ca0954e7f5c597e3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_MergeFiles </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zDstFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING *&#160;</td>
+          <td class="paramname"><em>_azSrcFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Number</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zEncryptionKey</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Merges multiple files into a single one, with optional encryption </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zDstFileName</td><td>Name of the destination file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_azSrcFileName</td><td>List of the names of the source files </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Number</td><td>Number of source file names </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zEncryptionKey</td><td>Encryption key to use when writing destination file, orxNULL for no encryption </td></tr>
   </table>
   </dd>
 </dl>
