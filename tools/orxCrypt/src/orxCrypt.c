@@ -404,7 +404,7 @@ static void Run()
     zOutputFile = (sstCrypt.zOutputFile) ? sstCrypt.zOutputFile : orxCRYPT_KZ_DEFAULT_OUTPUT;
 
     // Merge files
-    if(orxConfig_MergeFiles(zOutputFile, sstCrypt.azInputFile, sstCrypt.u32InputNumber, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
+    if(orxConfig_MergeFiles(zOutputFile, (const orxSTRING *)sstCrypt.azInputFile, sstCrypt.u32InputNumber, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
     {
       // Logs message
       orxCRYPT_LOG(SAVE, "==== %-24.24s SUCCESS%s%s", zOutputFile, (sstCrypt.u32InputNumber) ? " (MERGED)" : orxSTRING_EMPTY, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
