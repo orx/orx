@@ -37,9 +37,8 @@
  */
 #define orxCRYPT_KU32_STATIC_FLAG_NONE            0x00000000  /**< No flags */
 
-#define orxCRYPT_KU32_STATIC_FLAG_INPUT_LOADED    0x00000001  /**< Ready flag */
+#define orxCRYPT_KU32_STATIC_FLAG_INPUT_LOADED    0x00000001  /**< Input loaded flag */
 #define orxCRYPT_KU32_STATIC_FLAG_USE_ENCRYPTION  0x00000002  /**< Use encryption flag */
-#define orxCRYPT_KU32_STATIC_FLAG_MERGE           0x00000004  /**< Merge flag */
 
 #define orxCRYPT_KU32_STATIC_MASK_ALL             0xFFFFFFFF  /**< All mask */
 
@@ -69,9 +68,10 @@
  */
 typedef struct __orxCRYPT_STATIC_t
 {
-  orxSTRING zInputFile;
-  orxSTRING zOutputFile;
-  orxU32    u32Flags;
+  orxSTRING  *azInputFile;
+  orxSTRING   zOutputFile;
+  orxU32      u32InputNumber;
+  orxU32      u32Flags;
 
 } orxCRYPT_STATIC;
 
@@ -151,71 +151,57 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
 
 static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
-  orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   // Has a valid key parameter?
   if(_u32ParamCount > 1)
   {
-    // Should merge?
-    if(orxFLAG_TEST(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_MERGE))
+    orxU32 i;
+
+    // Stores input number
+    sstCrypt.u32InputNumber = _u32ParamCount - 1;
+
+    // Allocates input array
+    sstCrypt.azInputFile = (orxSTRING *)orxMemory_Allocate(sstCrypt.u32InputNumber * sizeof(orxSTRING *), orxMEMORY_TYPE_TEMP);
+
+    // Checks
+    orxASSERT(sstCrypt.azInputFile);
+
+    // For all config files
+    for(i = 1; i < _u32ParamCount; i++)
     {
-      // For all config files
-      for(i = 1; i < _u32ParamCount; i++)
+      // Loads input file
+      eResult = orxConfig_Load(_azParams[i]);
+
+      // Success?
+      if(eResult != orxSTATUS_FAILURE)
       {
-        // Loads input file
-        eResult = orxConfig_Load(_azParams[i]);
+        // Stores it
+        sstCrypt.azInputFile[i - 1] = orxString_Duplicate(_azParams[i]);
 
-        // Success?
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          // Logs message
-          orxCRYPT_LOG(LOAD, "%s: SUCCESS", _azParams[i]);
-        }
-        else
-        {
-          // Logs message
-          orxCRYPT_LOG(LOAD, "%s: FAILURE, aborting.", _azParams[i]);
-
-          break;
-        }
-      }
-    }
-    else
-    {
-      // Only one file?
-      if(_u32ParamCount == 2)
-      {
-        // Loads input file
-        eResult = orxConfig_Load(_azParams[1]);
-
-        // Success?
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          // Stores it
-          sstCrypt.zInputFile = orxString_Duplicate(_azParams[1]);
-
-          // Logs message
-          orxCRYPT_LOG(LOAD, "%s: SUCCESS", _azParams[1]);
-        }
-        else
-        {
-          // Logs message
-          orxCRYPT_LOG(LOAD, "%s: FAILURE, aborting.", _azParams[1]);
-        }
+        // Logs message
+        orxCRYPT_LOG(LOAD, "%3u: %-24.24s SUCCESS", i, _azParams[i]);
       }
       else
       {
         // Logs message
-        orxCRYPT_LOG(LOAD, "More than 1 input file provided in non-merge mode, aborting.");
+        orxCRYPT_LOG(LOAD, "%3u: %-24.24s FAILURE, aborting.", i, _azParams[i]);
+        break;
       }
     }
 
-    // Successful?
+    // Success?
     if(eResult != orxSTATUS_FAILURE)
     {
       // Updates status
       orxFLAG_SET(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_INPUT_LOADED, orxCRYPT_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      // Clears input values
+      orxMemory_Free(sstCrypt.azInputFile);
+      sstCrypt.azInputFile    = orxNULL;
+      sstCrypt.u32InputNumber = 0;
     }
   }
   else
@@ -291,7 +277,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       if(orxConfig_SetEncryptionKey(zKey) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxCRYPT_LOG(KEY, "Key set to '%s'", zKey);
+        orxCRYPT_LOG(KEY, "Key set to [%s]", zKey);
 
         // Updates result
         eResult = orxSTATUS_SUCCESS;
@@ -299,7 +285,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       else
       {
         // Logs message
-        orxCRYPT_LOG(KEY, "Couldn't set '%s' as encryption key, aborting", zKey);
+        orxCRYPT_LOG(KEY, "Couldn't set [%s] as encryption key, aborting", zKey);
       }
     }
   }
@@ -339,29 +325,6 @@ static orxSTATUS orxFASTCALL ProcessDecryptParams(orxU32 _u32ParamCount, const o
   return eResult;
 }
 
-static orxSTATUS orxFASTCALL ProcessMergeParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
-{
-  orxSTATUS eResult;
-
-  // Has a valid decrypt parameter?
-  if(_u32ParamCount >= 1)
-  {
-    // Updates status
-    orxFLAG_SET(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_MERGE, orxCRYPT_KU32_STATIC_FLAG_NONE);
-
-    // Updates result
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    // Updates result
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  // Done!
-  return eResult;
-}
-
 static void orxFASTCALL Setup()
 {
   // Adds module dependencies
@@ -378,7 +341,6 @@ static orxSTATUS orxFASTCALL Init()
   orxPARAM  astParamList[] =
   {
     orxCRYPT_DECLARE_PARAM("k", "key", "Key for decoding/encoding", "Key used for decoding/encoding provided config files", ProcessKeyParams)
-    orxCRYPT_DECLARE_PARAM("m", "merge", "merge mode", "If this switch is provided, the inclusions (@@file@@) found in the source file will be processed and all their contents will be merged in a single file", ProcessMergeParams)
     orxCRYPT_DECLARE_PARAM("f", "filelist", "Input file list", "List of root config files to decode/encode, only 1 input file is allowed in non-merge mode", ProcessInputParams)
     orxCRYPT_DECLARE_PARAM("o", "output", "Output file", "Single output file where decoded/encoded config info will be saved", ProcessOutputParams)
     orxCRYPT_DECLARE_PARAM("d", "decrypt", "decrypt mode", "If this switch is provided, the saved file will *NOT* be encrypted, otherwise it will, by default", ProcessDecryptParams)
@@ -404,10 +366,19 @@ static orxSTATUS orxFASTCALL Init()
 static void orxFASTCALL Exit()
 {
   // Has input file?
-  if(sstCrypt.zInputFile)
+  if(orxFLAG_TEST(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_INPUT_LOADED))
   {
-    // Frees its string
-    orxString_Delete(sstCrypt.zInputFile);
+    orxU32 i;
+
+    // For all inputs
+    for(i = 0; i < sstCrypt.u32InputNumber; i++)
+    {
+      // Frees its string
+      orxString_Delete(sstCrypt.azInputFile[i]);
+    }
+
+    // Frees input array
+    orxMemory_Free(sstCrypt.azInputFile);
   }
 
   // Has output file?
@@ -432,40 +403,22 @@ static void Run()
     // Selects correct output file
     zOutputFile = (sstCrypt.zOutputFile) ? sstCrypt.zOutputFile : orxCRYPT_KZ_DEFAULT_OUTPUT;
 
-    // Should merge?
-    if(orxFLAG_TEST(sstCrypt.u32Flags, orxCRYPT_KU32_STATIC_FLAG_MERGE))
+    // Merge files
+    if(orxConfig_MergeFiles(zOutputFile, sstCrypt.azInputFile, sstCrypt.u32InputNumber, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
     {
-      // Saves it
-      if(orxConfig_Save(zOutputFile, bEncrypt, SaveFilter) != orxSTATUS_FAILURE)
-      {
-        // Logs message
-        orxCRYPT_LOG(SAVE, "%s: SUCCESS (MERGED)%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
-      }
-      else
-      {
-        // Logs message
-        orxCRYPT_LOG(SAVE, "%s: FAILURE, aborting.", zOutputFile);
-      }
+      // Logs message
+      orxCRYPT_LOG(SAVE, "==== %-24.24s SUCCESS%s%s", zOutputFile, (sstCrypt.u32InputNumber) ? " (MERGED)" : orxSTRING_EMPTY, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
     }
     else
     {
-      // Copies it
-      if(orxConfig_CopyFile(zOutputFile, sstCrypt.zInputFile, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
-      {
-        // Logs message
-        orxCRYPT_LOG(SAVE, "%s: SUCCESS%s", zOutputFile, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
-      }
-      else
-      {
-        // Logs message
-        orxCRYPT_LOG(SAVE, "%s: FAILURE, aborting", zOutputFile);
-      }
+      // Logs message
+      orxCRYPT_LOG(SAVE, "==== %-24.24s FAILURE, aborting.", zOutputFile);
     }
   }
   else
   {
     // Logs message
-    orxCRYPT_LOG(PROCESS, "No files loaded, can't process");
+    orxCRYPT_LOG(PROCESS, "No loaded files, can't process.");
   }
 }
 
@@ -473,6 +426,9 @@ int main(int argc, char **argv)
 {
   // Inits the Debug System
   orxDEBUG_INIT();
+
+  // Sets debug flags
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP, orxDEBUG_KU32_STATIC_FLAG_FULL_TIMESTAMP | orxDEBUG_KU32_STATIC_FLAG_TYPE | orxDEBUG_KU32_STATIC_FLAG_TAGGED);
 
   // Registers main module
   orxModule_Register(orxMODULE_ID_MAIN, "MAIN", Setup, Init, Exit);

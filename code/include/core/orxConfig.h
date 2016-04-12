@@ -153,6 +153,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zF
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_CopyFile(const orxSTRING _zDstFileName, const orxSTRING _zSrcFileName, const orxSTRING _zEncryptionKey);
 
+/** Merges multiple files into a single one, with optional encryption
+ * @param[in] _zDstFileName     Name of the destination file
+ * @param[in] _azSrcFileName    List of the names of the source files
+ * @param[in] _u32Number        Number of source file names
+ * @param[in] _zEncryptionKey   Encryption key to use when writing destination file, orxNULL for no encryption
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_MergeFiles(const orxSTRING _zDstFileName, const orxSTRING *_azSrcFileName, orxU32 _u32Number, const orxSTRING _zEncryptionKey);
+
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
