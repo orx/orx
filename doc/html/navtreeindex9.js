@@ -1,5 +1,6 @@
 var NAVTREEINDEX9 =
 {
+"group__orx_spawner.html#ga3a2cdb23f680bae3192e36d6f3aede27":[1,48,24],
 "group__orx_spawner.html#ga3fd316d5e6209271c4362de0b925ee32":[1,48,23],
 "group__orx_spawner.html#ga41c76c081771932e9e5a2273e286d039":[1,48,17],
 "group__orx_spawner.html#ga447ab00a10c978925eaed817af28cddf":[1,48,39],
@@ -248,6 +249,5 @@ var NAVTREEINDEX9 =
 "group__orx_texture.html#ga0234c4923d3a53bd299c36bc9a96c60b":[1,53,6],
 "group__orx_texture.html#ga04225363daa53b5135126794e4cf60de":[1,53,5],
 "group__orx_texture.html#ga501b4c7fa170a0483a9b81bb775d867c":[1,53,16],
-"group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941":[1,53,18],
-"group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688":[1,53,9]
+"group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941":[1,53,18]
 };

@@ -633,6 +633,7 @@ var searchData=
   ['orxmemory_5fgettypename',['orxMemory_GetTypeName',['../group__orx_memory.html#ga23385dc3cafb19d8e25dd58ea4d30af2',1,'orxMemory.h']]],
   ['orxmemory_5finit',['orxMemory_Init',['../group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379',1,'orxMemory.h']]],
   ['orxmemory_5fmove',['orxMemory_Move',['../group__orx_memory.html#ga12cc30293a8637b811b731b445bc5c6c',1,'orxMemory.h']]],
+  ['orxmemory_5freallocate',['orxMemory_Reallocate',['../group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b',1,'orxMemory.h']]],
   ['orxmemory_5fset',['orxMemory_Set',['../group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d',1,'orxMemory.h']]],
   ['orxmemory_5fsetup',['orxMemory_Setup',['../group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0',1,'orxMemory.h']]],
   ['orxmemory_5fzero',['orxMemory_Zero',['../group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b',1,'orxMemory.h']]],
