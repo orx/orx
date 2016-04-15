@@ -1022,7 +1022,7 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(void *_pStructure, void *_pParent)
   pstStructure = orxSTRUCTURE(_pStructure);
   pstParent    = orxSTRUCTURE(_pParent);
 
-  /* Is storate type correct? */
+  /* Is storage type correct? */
   if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
   {
     /* Moves it */
