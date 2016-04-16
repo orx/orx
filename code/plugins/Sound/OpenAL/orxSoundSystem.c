@@ -688,7 +688,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
 
           /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxNULL, orxNULL, &stPayload);
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);
 
           /* Should proceed? */
           if(stPayload.stStream.stPacket.bDiscard == orxFALSE)

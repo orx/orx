@@ -216,7 +216,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     orxSpawner_SetWaveSize(_pstSpawner, orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE));
 
     /* Has list/random value? */
-    if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) != orxFALSE))
+    if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) != orxFALSE)
     {
       /* Updates status */
       orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_SIZE, orxSPAWNER_KU32_FLAG_NONE);
@@ -226,7 +226,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     orxSpawner_SetWaveDelay(_pstSpawner, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY));
 
     /* Has list/random value? */
-    if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) != orxFALSE))
+    if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) != orxFALSE)
     {
       /* Updates status */
       orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_WAVE_DELAY, orxSPAWNER_KU32_FLAG_NONE);
@@ -291,7 +291,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
       }
 
       /* Has list/random value? */
-      if((orxConfig_GetListCounter(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) > 1) || (orxConfig_IsRandomValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE))
+      if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE)
       {
         /* Updates status */
         orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
