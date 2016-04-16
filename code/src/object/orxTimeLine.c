@@ -1033,7 +1033,6 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     {
       orxTIMELINE_EVENT_PAYLOAD stPayload;
       orxSTRUCTURE             *pstOwner;
-      orxU32                    u32Flags = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
 
       /* Gets owner */
       pstOwner = orxStructure_GetOwner(_pstTimeLine);
