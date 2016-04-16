@@ -665,6 +665,28 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           break;
         }
 
+        case orxOBJECT_EVENT_ENABLE:
+        case orxOBJECT_EVENT_DISABLE:
+        {
+          orxOBJECT  *pstObject;
+          orxSPAWNER *pstSpawner;
+
+          /* Gets corresponding object */
+          pstObject = orxOBJECT(_pstEvent->hSender);
+
+          /* Gets its spawner */
+          pstSpawner = orxOBJECT_GET_STRUCTURE(pstObject, SPAWNER);
+
+          /* Found? */
+          if(pstSpawner != orxNULL)
+          {
+            /* Disables it */
+            orxSpawner_Enable(pstSpawner, (_pstEvent->eID == orxOBJECT_EVENT_ENABLE) ? orxTRUE : orxFALSE);
+          }
+
+          break;
+        }
+
         default:
         {
           break;
@@ -1225,7 +1247,7 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _bEnable      Enable / disable
  */
-void orxFASTCALL    orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
+void orxFASTCALL orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
@@ -1246,8 +1268,17 @@ void orxFASTCALL    orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
   }
   else
   {
-    /* Updates status flags */
-    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ENABLED);
+    /* Auto reset? */
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
+    {
+      /* Resets spawner */
+      orxSpawner_Reset(_pstSpawner);
+    }
+    else
+    {
+      /* Updates status flags */
+      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ENABLED);
+    }
   }
 
   return;
