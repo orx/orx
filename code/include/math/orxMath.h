@@ -193,7 +193,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Va
   };
 
   /* Done! */
-  return sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value & -(orxS32)_u32Value) * 0x077CB531U)) >> 27];
+  return sau32DeBruijnLUT[(((orxU32)((orxS32)_u32Value & -(orxS32)_u32Value)) * 0x077CB531U) >> 27];
 }
 
 /** Is value a power of two?

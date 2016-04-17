@@ -823,27 +823,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(const void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE);
 
   /* Gets structure */
   pstStructure = orxSTRUCTURE(_pStructure);
 
-  /* Is storate type correct? */
-  if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
-  {
-    /* Gets parent */
-    pstResult = (orxSTRUCTURE *)orxTree_GetParent(&(pstStructure->stStorage.stTreeNode));
+  /* Gets parent */
+  pstResult = (orxSTRUCTURE *)orxTree_GetParent(&(pstStructure->stStorage.stTreeNode));
 
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Updates result */
-      pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
-    }
-  }
-  else
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure [%s] is not stored as a tree.", orxStructure_GetIDString(orxStructure_GetID(pstStructure)));
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
   }
 
   /* Done! */
@@ -861,27 +853,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(const void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE);
 
   /* Gets structure */
   pstStructure = orxSTRUCTURE(_pStructure);
 
-  /* Is storate type correct? */
-  if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
-  {
-    /* Gets child */
-    pstResult = (orxSTRUCTURE *)orxTree_GetChild(&(pstStructure->stStorage.stTreeNode));
+  /* Gets child */
+  pstResult = (orxSTRUCTURE *)orxTree_GetChild(&(pstStructure->stStorage.stTreeNode));
 
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Updates result */
-      pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
-    }
-  }
-  else
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure [%s] is not stored as a tree.", orxStructure_GetIDString(orxStructure_GetID(pstStructure)));
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
   }
 
   /* Done! */
@@ -899,27 +883,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(const void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE);
 
   /* Gets structure */
   pstStructure = orxSTRUCTURE(_pStructure);
 
-  /* Is storate type correct? */
-  if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
-  {
-    /* Gets sibling */
-    pstResult = (orxSTRUCTURE *)orxTree_GetSibling(&(pstStructure->stStorage.stTreeNode));
+  /* Gets sibling */
+  pstResult = (orxSTRUCTURE *)orxTree_GetSibling(&(pstStructure->stStorage.stTreeNode));
 
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Updates result */
-      pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
-    }
-  }
-  else
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure [%s] is not stored as a tree.", orxStructure_GetIDString(orxStructure_GetID(pstStructure)));
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stTreeNode, pstResult);
   }
 
   /* Done! */
@@ -937,27 +913,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(const void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
 
   /* Gets structure */
   pstStructure = orxSTRUCTURE(_pStructure);
 
-  /* Is storate type correct? */
-  if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
-  {
-    /* Gets previous */
-    pstResult = (orxSTRUCTURE *)orxLinkList_GetPrevious(&(pstStructure->stStorage.stLinkListNode));
+  /* Gets previous */
+  pstResult = (orxSTRUCTURE *)orxLinkList_GetPrevious(&(pstStructure->stStorage.stLinkListNode));
 
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Updates result */
-      pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stLinkListNode, pstResult);
-    }
-  }
-  else
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure [%s] is not stored as a list.", orxStructure_GetIDString(orxStructure_GetID(pstStructure)));
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stLinkListNode, pstResult);
   }
 
   /* Done! */
@@ -975,27 +943,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(const void *_pStructure)
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
 
   /* Gets structure */
   pstStructure = orxSTRUCTURE(_pStructure);
 
-  /* Is storate type correct? */
-  if(sstStructure.astStorage[orxStructure_GetID(pstStructure)].eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
-  {
-    /* Gets next */
-    pstResult = (orxSTRUCTURE *)orxLinkList_GetNext(&(pstStructure->stStorage.stLinkListNode));
+  /* Gets next */
+  pstResult = (orxSTRUCTURE *)orxLinkList_GetNext(&(pstStructure->stStorage.stLinkListNode));
 
-    /* Valid? */
-    if(pstResult != orxNULL)
-    {
-      /* Updates result */
-      pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stLinkListNode, pstResult);
-    }
-  }
-  else
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure [%s] is not stored as a list.", orxStructure_GetIDString(orxStructure_GetID(pstStructure)));
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE, stStorage.stLinkListNode, pstResult);
   }
 
   /* Done! */

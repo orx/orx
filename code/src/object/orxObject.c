@@ -75,6 +75,8 @@
 #define orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD  0x00100000  /**< Detach joint child flag */
 #define orxOBJECT_KU32_FLAG_DEATH_ROW           0x00200000  /**< Death row flag */
 
+#define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x0000FFFF  /**< Linked structure mask */
+
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
 
@@ -2939,17 +2941,13 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
     orxU32                i;
-    orxCLOCK             *pstClock;
     const orxCLOCK_INFO  *pstClockInfo;
 
-    /* Gets associated clock */
-    pstClock = orxOBJECT_GET_STRUCTURE(_pstObject, CLOCK);
-
-    /* Valid? */
-    if(pstClock != orxNULL)
+    /* Has clock? */
+    if(orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_CLOCK))
     {
       /* Uses it */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      pstClockInfo = orxClock_GetInfo((orxCLOCK *)_pstObject->astStructureList[orxSTRUCTURE_ID_CLOCK].pstStructure);
     }
     else
     {
@@ -2993,7 +2991,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
         for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
         {
           /* Is structure linked? */
-          if(_pstObject->astStructureList[i].pstStructure != orxNULL)
+          if(orxStructure_TestFlags(_pstObject, 1 << i))
           {
             /* Updates it */
             if(orxStructure_Update(_pstObject->astStructureList[i].pstStructure, _pstObject, pstClockInfo) == orxSTATUS_FAILURE)
@@ -3005,13 +3003,16 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
         }
 
         /* Has no body? */
-        if(orxOBJECT_GET_STRUCTURE(_pstObject, BODY) == orxNULL)
+        if(!orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_BODY))
         {
-          orxFRAME *pstFrame;
-
           /* Has frame? */
-          if((pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME)) != orxNULL)
+          if(orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_FRAME))
           {
+            orxFRAME *pstFrame;
+
+            /* Gets it */
+            pstFrame = (orxFRAME *)_pstObject->astStructureList[orxSTRUCTURE_ID_FRAME].pstStructure;
+
             /* Has speed? */
             if(orxVector_IsNull(&(_pstObject->vSpeed)) == orxFALSE)
             {
@@ -3058,7 +3059,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if(bDeleted == orxFALSE)
   {
     /* Gets next object */
-    pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
+    pstResult = (orxOBJECT *)orxStructure_GetNext(_pstObject);
   }
 
   /* Profiles */
@@ -3080,7 +3081,7 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
 
   /* For all objects */
-  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+  for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
       pstObject != orxNULL;
       pstObject = pstNextObject)
   {
@@ -3135,6 +3136,9 @@ void orxFASTCALL orxObject_Setup()
 orxSTATUS orxFASTCALL orxObject_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxSTRUCTURE_ID_LINKABLE_NUMBER <= orxMath_GetBitCount(orxOBJECT_KU32_MASK_LINKED_STRUCTURE));
 
   /* Not already Initialized? */
   if(!(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY))
@@ -4235,6 +4239,9 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     /* Links new structure to object */
     _pstObject->astStructureList[eStructureID].pstStructure = _pstStructure;
     _pstObject->astStructureList[eStructureID].u32Flags     = orxOBJECT_KU32_STORAGE_FLAG_NONE;
+
+    /* Updates flags */
+    orxStructure_SetFlags(_pstObject, 1 << eStructureID, orxOBJECT_KU32_FLAG_NONE);
   }
   else
   {
@@ -4261,7 +4268,7 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER);
 
   /* Needs to be processed? */
-  if(_pstObject->astStructureList[_eStructureID].pstStructure != orxNULL)
+  if(orxStructure_TestFlags(_pstObject, 1 << _eStructureID))
   {
     orxSTRUCTURE *pstStructure;
 
@@ -4353,6 +4360,9 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
 
     /* Cleans it */
     orxMemory_Zero(&(_pstObject->astStructureList[_eStructureID]), sizeof(orxOBJECT_STORAGE));
+
+    /* Updates flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, 1 << _eStructureID);
   }
 
   return;
