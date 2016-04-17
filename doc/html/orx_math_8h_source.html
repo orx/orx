@@ -204,7 +204,7 @@ $(document).ready(function(){initNavTree('orx_math_8h_source.html','');});
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  };</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="comment">/* Done! */</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keywordflow">return</span> sau32DeBruijnLUT[((orxU32)(((orxS32)_u32Value &amp; -(orxS32)_u32Value) * 0x077CB531U)) &gt;&gt; 27];</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="keywordflow">return</span> sau32DeBruijnLUT[(((orxU32)((orxS32)_u32Value &amp; -(orxS32)_u32Value)) * 0x077CB531U) &gt;&gt; 27];</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;}</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
 <div class="line"><a name="l00203"></a><span class="lineno"><a class="code" href="group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b">  203</a></span>&#160;<span class="keyword">static</span> orxINLINE orxBOOL              <a class="code" href="group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b">orxMath_IsPowerOfTwo</a>(orxU32 _u32Value)</div>
