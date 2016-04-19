@@ -459,6 +459,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     {
       const orxSTRING zCameraName;
       orxS32          s32Number;
+      orxBOOL         bFixedSize, bFixedPosition;
 
       /* Has plain size */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
@@ -470,6 +471,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Applies it */
         orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+
+        /* Updates status */
+        bFixedSize = orxTRUE;
       }
       else
       {
@@ -478,6 +482,9 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
+
+        /* Updates status */
+        bFixedSize = orxFALSE;
       }
 
       /* Has plain position */
@@ -490,10 +497,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Applies it */
         orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
+
+        /* Updates status */
+        bFixedPosition = orxTRUE;
+      }
+      else
+      {
+        /* Updates status */
+        bFixedPosition = orxFALSE;
       }
 
       /* Auto resize */
-      if((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
+      if(((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
+       && (bFixedSize == orxFALSE))
       || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
       {
         /* Updates flags */
@@ -806,54 +822,72 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has relative size? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE) != orxFALSE)
       {
-        orxVECTOR vRelSize;
+        /* No fixed size? */
+        if(bFixedSize == orxFALSE)
+        {
+          orxVECTOR vRelSize;
 
-        /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize);
+          /* Gets it */
+          orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize);
 
-        /* Applies it */
-        orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+          /* Applies it */
+          orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring relative size as fixed size was also defined.", _zConfigID);
+        }
       }
 
       /* Has relative position? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
       {
-        orxCHAR   acBuffer[64];
-        orxSTRING zRelativePos;
-        orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
-
-        /* Gets it */
-        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-        zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1));
-
-        /* Left? */
-        if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+        /* No fixed position? */
+        if(bFixedPosition == orxFALSE)
         {
-          /* Updates alignment flags */
-          u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
-        }
-        /* Right? */
-        else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
-        {
-          /* Updates alignment flags */
-          u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
-        }
+          orxCHAR   acBuffer[64];
+          orxSTRING zRelativePos;
+          orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
-        /* Top? */
-        if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
-        {
-          /* Updates alignment flags */
-          u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
-        }
-        /* Bottom? */
-        else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
-        {
-          /* Updates alignment flags */
-          u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
-        }
+          /* Gets it */
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1));
 
-        /* Applies it */
-        orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+          /* Left? */
+          if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+          }
+          /* Right? */
+          else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+          }
+
+          /* Top? */
+          if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+          }
+          /* Bottom? */
+          else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+          }
+
+          /* Applies it */
+          orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring relative position as fixed position was also defined.", _zConfigID);
+        }
       }
 
       /* Stores its reference key */
