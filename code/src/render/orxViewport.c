@@ -58,6 +58,7 @@
 #define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
 #define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
 #define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
+#define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000020  /**< Fixed ratio flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x10000000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
@@ -82,6 +83,7 @@
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA  "BackgroundAlpha"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
+#define orxVIEWPORT_KZ_CONFIG_FIXED_RATIO       "FixedRatio"
 #define orxVIEWPORT_KZ_CONFIG_SHADER_LIST       "ShaderList"
 #define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
 #define orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE       "AutoResize"
@@ -101,19 +103,20 @@
  */
 struct __orxVIEWPORT_t
 {
-  orxSTRUCTURE          stStructure;                                          /**< Public structure, first structure member : 32 */
-  orxFLOAT              fX;                                                   /**< X position (top left corner) : 36 */
-  orxFLOAT              fY;                                                   /**< Y position (top left corner) : 40 */
-  orxFLOAT              fWidth;                                               /**< Width : 44 */
-  orxFLOAT              fHeight;                                              /**< Height : 48 */
-  orxCOLOR              stBackgroundColor;                                    /**< Background color : 64 */
-  orxU32                u32TextureCounter;                                    /**< Associated texture counter : 68 */
-  orxCAMERA            *pstCamera;                                            /**< Associated camera : 72 / 76 */
-  orxSHADERPOINTER     *pstShaderPointer;                                     /**< Shader pointer : 76 / 84 */
-  orxU32                u32TextureOwnerFlags;                                 /**< Texture owner flags : 80 / 88 */
-  orxDISPLAY_BLEND_MODE eBlendMode;                                           /**< Blend mode : 84 / 92 */
-  const orxSTRING       zReference;                                           /**< Reference : 88 / 100 */
-  orxTEXTURE           *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 152 / 228 */
+  orxSTRUCTURE          stStructure;                                          /**< Public structure, first structure member : 40 */
+  orxFLOAT              fX;                                                   /**< X position (top left corner) : 44 */
+  orxFLOAT              fY;                                                   /**< Y position (top left corner) : 48 */
+  orxFLOAT              fWidth;                                               /**< Width : 52 */
+  orxFLOAT              fHeight;                                              /**< Height : 56 */
+  orxCOLOR              stBackgroundColor;                                    /**< Background color : 72 */
+  orxCAMERA            *pstCamera;                                            /**< Associated camera : 80 */
+  orxSHADERPOINTER     *pstShaderPointer;                                     /**< Shader pointer : 88 */
+  orxFLOAT              fFixedRatio;                                          /**< Fixed ratio : 92 */
+  orxU32                u32TextureCounter;                                    /**< Associated texture counter : 96 */
+  orxU32                u32TextureOwnerFlags;                                 /**< Texture owner flags : 100 */
+  orxDISPLAY_BLEND_MODE eBlendMode;                                           /**< Blend mode : 104 */
+  const orxSTRING       zReference;                                           /**< Reference : 112 */
+  orxTEXTURE           *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 176 */
 };
 
 /** Static structure
@@ -797,6 +800,23 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
           /* Updates flags */
           orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
+        }
+      }
+      else
+      {
+        orxFLOAT fRatio;
+
+        /* Gets fixed ratio */
+        fRatio = orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_FIXED_RATIO);
+
+        /* Valid? */
+        if(fRatio > orxFLOAT_0)
+        {
+          /* Stores it */
+          pstResult->fFixedRatio = fRatio;
+
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_FIXED_RATIO, orxVIEWPORT_KU32_FLAG_NONE);
         }
       }
 
@@ -1830,6 +1850,15 @@ orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewp
 
     /* Updates result */
     fResult = (_pstViewport->fHeight * fCameraWidth) / ( _pstViewport->fWidth * fCameraHeight);
+  }
+  else
+  {
+    /* Has fixed ratio? */
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_FIXED_RATIO))
+    {
+      /* Updates result */
+      fResult = (_pstViewport->fHeight / _pstViewport->fWidth) * _pstViewport->fFixedRatio;
+    }
   }
 
   /* Done! */

@@ -63,7 +63,7 @@
 
 /** Misc defined
  */
-#define orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER   16
+#define orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER   8
 
 
 /** Internal Viewport structure */
