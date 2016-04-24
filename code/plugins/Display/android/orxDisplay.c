@@ -495,9 +495,12 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Has ScreenWidth? */
       if (orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH))
       {
-        u32Width = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
-        if ( windowWidth > u32Width )
+        orxU32 u32ConfigWidth;
+
+        u32ConfigWidth = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
+        if ( windowWidth > u32ConfigWidth )
         {
+          u32Width = u32ConfigWidth;
           fScale = orx2F(u32Width) / orx2F(windowWidth);
           u32Height = windowHeight * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
@@ -512,9 +515,12 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Has ScreenHeight? */
       if (orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT))
       {
-        u32Height = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
-        if ( windowHeight > u32Height )
+        orxU32 u32ConfigHeight;
+
+        u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+        if ( windowHeight > u32ConfigHeight )
         {
+          u32Height = u32ConfigHeight;
           fScale = orx2F(u32Height) / orx2F(windowHeight);
           u32Width = windowWidth * fScale;
           orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "scaled windows size: (%dx%d)", u32Width, u32Height);
