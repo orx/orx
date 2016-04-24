@@ -116,7 +116,11 @@ struct __orxVIEWPORT_t
   orxU32                u32TextureOwnerFlags;                                 /**< Texture owner flags : 100 */
   orxDISPLAY_BLEND_MODE eBlendMode;                                           /**< Blend mode : 104 */
   const orxSTRING       zReference;                                           /**< Reference : 112 */
-  orxTEXTURE           *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 176 */
+  orxFLOAT              fRealX;                                               /**< X position (top left corner) : 116 */
+  orxFLOAT              fRealY;                                               /**< Y position (top left corner) : 120 */
+  orxFLOAT              fRealWidth;                                           /**< Width : 124 */
+  orxFLOAT              fRealHeight;                                          /**< Height : 128 */
+  orxTEXTURE           *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER]; /**< Associated texture list : 192 */
 };
 
 /** Static structure
@@ -181,10 +185,8 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
           if(pstViewport->u32TextureCounter == 0)
           {
             /* Updates relative position & dimension */
-            pstViewport->fX       = orxMath_Round(pstViewport->fX * fWidthRatio);
-            pstViewport->fWidth   = orxMath_Round(pstViewport->fWidth * fWidthRatio);
-            pstViewport->fY       = orxMath_Round(pstViewport->fY * fHeightRatio);
-            pstViewport->fHeight  = orxMath_Round(pstViewport->fHeight * fHeightRatio);
+            orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
+            orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
 
             /* Sends event */
             orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
@@ -198,10 +200,8 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
               orxU32 i;
 
               /* Updates relative position & dimension */
-              pstViewport->fX       = orxMath_Round(pstViewport->fX * fWidthRatio);
-              pstViewport->fWidth   = orxMath_Round(pstViewport->fWidth * fWidthRatio);
-              pstViewport->fY       = orxMath_Round(pstViewport->fY * fHeightRatio);
-              pstViewport->fHeight  = orxMath_Round(pstViewport->fHeight * fHeightRatio);
+              orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
+              orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
 
               /* For all textures */
               for(i = 0; i < pstViewport->u32TextureCounter; i++)
@@ -210,28 +210,17 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                 if(pstViewport->u32TextureOwnerFlags & (1 << i))
                 {
                   orxBITMAP  *pstBitmap;
-                  orxFLOAT    fWidth, fHeight;
                   orxCHAR     acBuffer[256];
 
                   /* Gets its name */
                   orxString_NPrint(acBuffer, 255, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
                   acBuffer[255] = orxCHAR_NULL;
 
-                  /* Gets its linked bitmap */
-                  pstBitmap = orxTexture_GetBitmap(pstViewport->apstTextureList[i]);
-
-                  /* Gets its size */
-                  orxDisplay_GetBitmapSize(pstBitmap, &fWidth, &fHeight);
-
-                  /* Unlinks it */
+                  /* Unlinks its bitmap */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
 
-                  /* Updates size */
-                  fWidth  = orxMath_Round(fWidth * fWidthRatio);
-                  fHeight = orxMath_Round(fHeight * fHeightRatio);
-
                   /* Re-creates it as the right size */
-                  pstBitmap = orxDisplay_CreateBitmap(orxF2U(fWidth), orxF2U(fHeight));
+                  pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstViewport->fWidth), orxF2U(pstViewport->fHeight));
 
                   /* Checks */
                   orxASSERT(pstBitmap != orxNULL);
@@ -417,7 +406,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_Create()
     orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_DEFAULT, orxVIEWPORT_KU32_FLAG_NONE);
 
     /* Inits vars */
-    pstViewport->fX = pstViewport->fY = orxFLOAT_0;
+    pstViewport->fX = pstViewport->fY = pstViewport->fRealX = pstViewport->fRealY = orxFLOAT_0;
 
     /* Sets default size */
     orxViewport_SetRelativeSize(pstViewport, orxFLOAT_1, orxFLOAT_1);
@@ -480,8 +469,13 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       }
       else
       {
+        orxFLOAT fWidth, fHeight;
+
         /* Defaults to screen size */
-        orxDisplay_GetScreenSize(&(pstResult->fWidth), &(pstResult->fHeight));
+        orxDisplay_GetScreenSize(&fWidth, &fHeight);
+
+        /* Applies it */
+        orxViewport_SetSize(pstResult, fWidth, fHeight);
 
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
@@ -1561,8 +1555,10 @@ void orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates position */
-  _pstViewport->fX = _fX;
-  _pstViewport->fY = _fY;
+  _pstViewport->fX      = orxMath_Round(_fX);
+  _pstViewport->fY      = orxMath_Round(_fY);
+  _pstViewport->fRealX  = _fX;
+  _pstViewport->fRealY  = _fY;
 
   return;
 }
@@ -1599,39 +1595,43 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_LEFT)
     {
       /* Updates x position */
-      _pstViewport->fX = orxFLOAT_0;
+      _pstViewport->fRealX = orxFLOAT_0;
     }
     /* Align right? */
     else if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT)
     {
       /* Updates x position */
-      _pstViewport->fX = fWidth - _pstViewport->fWidth;
+      _pstViewport->fRealX = fWidth - _pstViewport->fRealWidth;
     }
     /* Align center */
     else
     {
       /* Updates x position */
-      _pstViewport->fX = orx2F(0.5f) * (fWidth - _pstViewport->fWidth);
+      _pstViewport->fRealX = orx2F(0.5f) * (fWidth - _pstViewport->fRealWidth);
     }
 
     /* Align top? */
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_TOP)
     {
       /* Updates y position */
-      _pstViewport->fY = orxFLOAT_0;
+      _pstViewport->fRealY = orxFLOAT_0;
     }
     /* Align bottom? */
     else if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM)
     {
       /* Updates y position */
-      _pstViewport->fY = fHeight - _pstViewport->fHeight;
+      _pstViewport->fRealY = fHeight - _pstViewport->fRealHeight;
     }
     /* Align center */
     else
     {
       /* Updates y position */
-      _pstViewport->fY = orx2F(0.5f) * (fHeight - _pstViewport->fHeight);
+      _pstViewport->fRealY = orx2F(0.5f) * (fHeight - _pstViewport->fRealHeight);
     }
+
+    /* Updates rounded values */
+    _pstViewport->fX = orxMath_Round(_pstViewport->fRealX);
+    _pstViewport->fY = orxMath_Round(_pstViewport->fRealY);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1681,8 +1681,10 @@ void orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, or
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates size */
-  _pstViewport->fWidth  = _fW;
-  _pstViewport->fHeight = _fH;
+  _pstViewport->fWidth      = orxMath_Round(_fW);
+  _pstViewport->fHeight     = orxMath_Round(_fH);
+  _pstViewport->fRealWidth  = _fW;
+  _pstViewport->fRealHeight = _fH;
 
   /* Done! */
   return;
@@ -1712,9 +1714,13 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   if(pstTexture != orxNULL)
   {
     /* Updates viewport size */
-    orxTexture_GetSize(pstTexture, &(_pstViewport->fWidth), &(_pstViewport->fHeight));
-    _pstViewport->fWidth   *= _fW;
-    _pstViewport->fHeight  *= _fH;
+    orxTexture_GetSize(pstTexture, &(_pstViewport->fRealWidth), &(_pstViewport->fRealHeight));
+    _pstViewport->fRealWidth   *= _fW;
+    _pstViewport->fRealHeight  *= _fH;
+
+    /* Updates rounded values */
+    _pstViewport->fWidth  = orxMath_Round(_pstViewport->fRealWidth);
+    _pstViewport->fHeight = orxMath_Round(_pstViewport->fRealHeight);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
