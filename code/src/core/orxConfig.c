@@ -93,6 +93,7 @@
 #define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
 #define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
 #define orxCONFIG_KC_ASSIGN                       '='         /**< Assign character */
+#define orxCONFIG_KC_APPEND                       '+'         /**< Append character */
 #define orxCONFIG_KC_COMMENT                      ';'         /**< Comment character */
 #define orxCONFIG_KC_COMMAND                      '%'         /**< Command character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR             '~'         /**< Random number separator character */
@@ -594,13 +595,157 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   return eResult;
 }
 
+static orxINLINE orxSTATUS orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue)
+{
+  orxCHAR        *pcOutput;
+  const orxCHAR  *pcInput;
+  orxU32         *pu32Index;
+  orxU32          u32Size, u32BufferSize, i;
+  orxU32          au32IndexTable[orxCONFIG_KU32_BUFFER_SIZE / sizeof(orxU32)];
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_LARGE_BUFFER_SIZE);
+  orxASSERT(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE));
+
+  /* For all characters */
+  for(pcInput = _zValue, pcOutput = sstConfig.acValueBuffer, u32Size = 1, au32IndexTable[0] = 0;
+      (*pcInput != orxCHAR_NULL) && (u32Size < orxARRAY_GET_ITEM_COUNT(au32IndexTable));
+     )
+  {
+    /* Not a space? */
+    if((*pcInput != ' ') && (*pcInput != '\t'))
+    {
+      /* Is a list separator? */
+      if(*pcInput == orxCONFIG_KC_LIST_SEPARATOR)
+      {
+        /* Ends string */
+        *pcOutput++ = orxCHAR_NULL;
+
+        /* Stores index */
+        au32IndexTable[u32Size] = (orxU32)(pcOutput - sstConfig.acValueBuffer);
+
+        /* Updates size */
+        u32Size++;
+
+        /* Skips all trailing and leading spaces */
+        do
+        {
+          pcInput++;
+        } while((*pcInput == ' ') || (*pcInput == '\t'));
+      }
+      else
+      {
+        /* Copies it */
+        *pcOutput++ = *pcInput++;
+      }
+    }
+    else
+    {
+      const orxCHAR *pcTest;
+
+      /* Scans all the spaces */
+      for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+
+      /* Is a list separator or end of string? */
+      if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
+      {
+        /* Skips all trailing spaces */
+        pcInput = pcTest;
+      }
+      else
+      {
+        /* For all spaces */
+        for(; pcInput < pcTest; pcInput++, pcOutput++)
+        {
+          /* Copies it */
+          *pcOutput = *pcInput;
+        }
+      }
+    }
+  }
+
+  /* Didn't finish? */
+  if(pcInput != orxCHAR_NULL)
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Couldn't append all config list items from [%s]: only the first %u items were appended.", _zValue, orxARRAY_GET_ITEM_COUNT(au32IndexTable));
+  }
+
+  /* Ends string */
+  *pcOutput++ = orxCHAR_NULL;
+
+  /* Is current value a list? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+  {
+    /* Reallocates index table */
+    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCounter - 1) * sizeof(orxU32));
+
+    /* Computes buffer size */
+    u32BufferSize = _pstValue->au32ListIndexTable[_pstValue->u16ListCounter - 2] + orxString_GetLength(_pstValue->zValue + _pstValue->au32ListIndexTable[_pstValue->u16ListCounter - 2]) + 1;
+
+    /* Reallocates buffer */
+    _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer));
+
+    /* Checks */
+    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
+    orxASSERT(_pstValue->zValue != orxNULL);
+  }
+  else
+  {
+    orxSTRING zNewValue;
+
+    /* Allocates index table */
+    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Allocate(u32Size * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
+
+    /* Computes buffer size */
+    u32BufferSize = orxString_GetLength(_pstValue->zValue) + 1;
+
+    /* Allocates new buffer */
+    zNewValue = (orxSTRING)orxMemory_Allocate(u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
+
+    /* Checks */
+    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
+    orxASSERT(_pstValue->zValue != orxNULL);
+
+    /* Copies original content */
+    orxMemory_Copy(zNewValue, _pstValue->zValue, u32BufferSize);
+
+    /* Stores it */
+    _pstValue->zValue = zNewValue;
+  }
+
+  /* Copies new content */
+  orxMemory_Copy(_pstValue->zValue + u32BufferSize, sstConfig.acValueBuffer, (orxU32)(pcOutput - sstConfig.acValueBuffer));
+
+  /* For all new indices */
+  for(pu32Index = _pstValue->au32ListIndexTable + _pstValue->u16ListCounter - 1, i = 0;
+      i < u32Size;
+      i++, pu32Index++)
+  {
+    /* Copies it */
+    *pu32Index = au32IndexTable[i] + u32BufferSize;
+  }
+
+  /* Updates value */
+  _pstValue->u16ListCounter  += (orxU16)u32Size;
+  _pstValue->u16Flags        |= orxCONFIG_VALUE_KU16_FLAG_LIST;
+
+  /* Clears value buffer */
+  sstConfig.u32BufferListSize = 0;
+  sstConfig.acValueBuffer[0]  = orxCHAR_NULL;
+
+  /* Done! */
+  return eResult;
+}
+
 static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
 {
   /* Not in block mode? */
   if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
   {
     /* Is a list? */
-    if(_pstValue->u16ListCounter > 1)
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
     {
       /* Deletes string */
       orxString_Delete(_pstValue->zValue);
@@ -934,9 +1079,10 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
  * @param[in] _zKey             Entry key
  * @param[in] _zValue           Entry value
  * @param[in] _bBlockMode       Block mode (ie. ignore special characters)?
+ * @param[in] _bAppend          Append to list
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
+static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode, orxBOOL _bAppend)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -947,6 +1093,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zValue != orxNULL);
+  orxASSERT((_bBlockMode && _bAppend) == orxFALSE);
 
   /* Valid? */
   if(_zKey != orxSTRING_EMPTY)
@@ -964,8 +1111,12 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
     /* Found? */
     if(pstEntry != orxNULL)
     {
-      /* Deletes value */
-      orxConfig_CleanValue(&(pstEntry->stValue));
+      /* Not appending? */
+      if(_bAppend == orxFALSE)
+      {
+        /* Deletes value */
+        orxConfig_CleanValue(&(pstEntry->stValue));
+      }
 
       /* Updates status */
       bReuse = orxTRUE;
@@ -982,8 +1133,29 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
     /* Valid? */
     if(pstEntry != orxNULL)
     {
-      /* Inits value */
-      eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _bBlockMode);
+      /* Really appending? */
+      if((bReuse != orxFALSE) && (_bAppend != orxFALSE))
+      {
+        /* Not self or inheritance? */
+        if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+        {
+          /* Appends value */
+          eResult = orxConfig_AppendValue(&(pstEntry->stValue), _zValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+      else
+      {
+        /* Inits value */
+        eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _bBlockMode);
+      }
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
@@ -1004,18 +1176,22 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to init config entry <%s> with value <%s>.", _zKey, _zValue);
-
-        /* Reusing entry? */
-        if(bReuse != orxFALSE)
+        /* Not appending? */
+        if(_bAppend == orxFALSE)
         {
-          /* Removes it from list */
-          orxLinkList_Remove(&(pstEntry->stNode));
-        }
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to set value [%s] on config entry <%s.%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey);
 
-        /* Deletes entry */
-        orxBank_Free(sstConfig.pstEntryBank, pstEntry);
+          /* Reusing entry? */
+          if(bReuse != orxFALSE)
+          {
+            /* Removes it from list */
+            orxLinkList_Remove(&(pstEntry->stNode));
+          }
+
+          /* Deletes entry */
+          orxBank_Free(sstConfig.pstEntryBank, pstEntry);
+        }
       }
     }
   }
@@ -2011,11 +2187,11 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
 static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHAR *_acBuffer, orxU32 _u32Size, orxU32 _u32Offset)
 {
   orxCHAR  *pc, *pcKeyEnd, *pcLineStart, *pcValueStart;
-  orxBOOL   bBlockMode;
+  orxBOOL   bBlockMode, bAppend;
   orxU32    u32Result;
 
   /* For all buffered characters */
-  for(pc = pcLineStart = _acBuffer + _u32Offset, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
+  for(pc = pcLineStart = _acBuffer + _u32Offset, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE, bAppend = orxFALSE;
       pc < _acBuffer + _u32Size;
       pc++)
   {
@@ -2162,7 +2338,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
 #endif /* __orxDEBUG__ */
 
         /* Adds/replaces entry */
-        orxConfig_SetEntry(pcLineStart, pcValueStart, bBlockMode);
+        orxConfig_SetEntry(pcLineStart, pcValueStart, bBlockMode, bAppend);
 
         /* Updates pointers */
         pcKeyEnd = pcValueStart = orxNULL;
@@ -2422,8 +2598,24 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           /* Found? */
           if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_ASSIGN))
           {
+            orxCHAR *pcStart;
+
+            /* Append? */
+            if(*(pc - 1) == orxCONFIG_KC_APPEND)
+            {
+              /* Inits end of key search */
+              pcStart = pc - 2;
+              bAppend = orxTRUE;
+            }
+            else
+            {
+              /* Inits end of key search */
+              pcStart = pc - 1;
+              bAppend = orxFALSE;
+            }
+
             /* Finds end of key position */
-            for(pcKeyEnd = pc - 1;
+            for(pcKeyEnd = pcStart;
                 (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == orxCHAR_CR) || (*pcKeyEnd == orxCHAR_LF));
                 pcKeyEnd--);
 
@@ -3974,7 +4166,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
                 u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %s", zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue);
 
                 /* Is a list? */
-                if(pstEntry->stValue.u16ListCounter > 1)
+                if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
                 {
                   orxCHAR  *pcSrc;
                   orxU32    i;
@@ -5473,7 +5665,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
   orxString_Print(zValue, "%d", _s32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5501,7 +5693,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   orxString_Print(zValue, "%u", _u32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5529,7 +5721,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
   orxString_Print(zValue, "%lld", _s64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5557,7 +5749,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
   orxString_Print(zValue, "%llu", _u64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5585,7 +5777,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   orxString_Print(zValue, "%f", _fValue);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5607,7 +5799,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5629,7 +5821,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringBlock(const orxSTRING _zKey, const orxS
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, _zValue, orxTRUE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxTRUE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5650,7 +5842,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5679,7 +5871,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR
   orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -6114,7 +6306,7 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
       sstConfig.u32BufferListSize = _u32Number;
 
       /* Adds/replaces new entry */
-      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE);
+      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE, orxFALSE);
     }
 
     /* Clears value buffer */
