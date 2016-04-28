@@ -10,6 +10,7 @@ var orx_config_8h =
       [ "orxCONFIG_EVENT_NUMBER", "orx_config_8h.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad0606fb3b2c94f49ee8f7a502a6af6a5", null ],
       [ "orxCONFIG_EVENT_NONE", "orx_config_8h.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad9ae2558aad3b328688ae5fd9bf16230", null ]
     ] ],
+    [ "orxConfig_AppendListString", "orx_config_8h.html#ga3f470edfb16ff8e0382327fa8352df61", null ],
     [ "orxConfig_Clear", "orx_config_8h.html#ga7526b75f27415d1eff396fbaea6a3f97", null ],
     [ "orxConfig_ClearSection", "orx_config_8h.html#ga0ef471810ad2d2ed9ff5e0726cacc545", null ],
     [ "orxConfig_ClearValue", "orx_config_8h.html#gaa773c70b03b90b92246985029120c1eb", null ],

@@ -429,6 +429,7 @@ var searchData=
   ['orxcommand_5fvar_5ftype_5fvector',['orxCOMMAND_VAR_TYPE_VECTOR',['../group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec',1,'orxCommand.h']]],
   ['orxconfig',['OrxConfig',['../group__orx_config.html',1,'']]],
   ['orxconfig_2eh',['orxConfig.h',['../orx_config_8h.html',1,'']]],
+  ['orxconfig_5fappendliststring',['orxConfig_AppendListString',['../group__orx_config.html#ga3f470edfb16ff8e0382327fa8352df61',1,'orxConfig.h']]],
   ['orxconfig_5fbootstrap_5ffunction',['orxCONFIG_BOOTSTRAP_FUNCTION',['../group__orx_config.html#gad2079c5205e7d0ef04e34a7a6db3331a',1,'orxConfig.h']]],
   ['orxconfig_5fclear',['orxConfig_Clear',['../group__orx_config.html#ga7526b75f27415d1eff396fbaea6a3f97',1,'orxConfig.h']]],
   ['orxconfig_5fclearsection',['orxConfig_ClearSection',['../group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545',1,'orxConfig.h']]],
