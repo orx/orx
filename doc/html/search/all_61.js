@@ -7,5 +7,5 @@ var searchData=
   ['afvalues',['afValues',['../structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a.html#abfe8681f6dbfa8ab7410b5e8e48c0755',1,'orxANDROID_AXIS_DATA']]],
   ['as16samplelist',['as16SampleList',['../structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a658158c820d64531fda54286dbff2ba6',1,'orxSOUND_STREAM_PACKET']]],
   ['au8padding',['au8Padding',['../structorx_s_t_r_u_c_t_u_r_e.html#acb0e1b5a9d4cfdce5dc767c51a4f0910',1,'orxSTRUCTURE']]],
-  ['avvertices',['avVertices',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a38748bdfcfda7ada5413939ba16d593b',1,'orxBODY_PART_DEF']]]
+  ['avvertices',['avVertices',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a38748bdfcfda7ada5413939ba16d593b',1,'orxBODY_PART_DEF::avVertices()'],['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#ab820671d1b65058a520cad0eba97f3ef',1,'orxBODY_PART_DEF::avVertices()']]]
 ];
