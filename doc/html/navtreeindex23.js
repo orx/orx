@@ -1,7 +1,5 @@
 var NAVTREEINDEX23 =
 {
-"structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef":[1,50,0,2],
-"structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html":[1,51,0],
 "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e":[1,51,0,6],
 "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5a485dbc8abdd55a9e9984ddb00a3d8e":[1,51,0,2],
 "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f":[1,51,0,8],

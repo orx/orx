@@ -3,7 +3,6 @@ var orx_physics_8h =
     [ "orxBODY_DEF_KU32_FLAG_2D", "orx_physics_8h.html#gaf104e4a6f306d16cdddb76641f54d2dc", null ],
     [ "orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP", "orx_physics_8h.html#gacdad775a326cabdc10b2981370c47ba7", null ],
     [ "orxBODY_DEF_KU32_FLAG_CAN_MOVE", "orx_physics_8h.html#ga5ab64e31cffeaef6527da1e4f17368d4", null ],
-    [ "orxBODY_DEF_KU32_FLAG_CAN_SLIDE", "orx_physics_8h.html#gae102e9cf8729564fae8eddf8235fc4fa", null ],
     [ "orxBODY_DEF_KU32_FLAG_DYNAMIC", "orx_physics_8h.html#gace4f1fa556f4e92b3720f6912c67795a", null ],
     [ "orxBODY_DEF_KU32_FLAG_FIXED_ROTATION", "orx_physics_8h.html#ga48aed6f67825b568761a6954b8e39c1d", null ],
     [ "orxBODY_DEF_KU32_FLAG_HIGH_SPEED", "orx_physics_8h.html#ga498c7ddfd8832c49c934ffad44537321", null ],
