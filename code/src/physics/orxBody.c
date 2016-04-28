@@ -89,10 +89,11 @@
 #define orxBODY_KZ_CONFIG_VERTEX_LIST         "VertexList"
 #define orxBODY_KZ_CONFIG_PREVIOUS_VERTEX     "PreviousVertex"
 #define orxBODY_KZ_CONFIG_NEXT_VERTEX         "NextVertex"
+#define orxBODY_KZ_CONFIG_LOOP                "Loop"
 #define orxBODY_KZ_CONFIG_VERTEX_0            "Vertex0"
 #define orxBODY_KZ_CONFIG_VERTEX_1            "Vertex1"
 #define orxBODY_KZ_CONFIG_VERTEX_2            "Vertex2"
-#define orxBODY_KZ_CONFIG_VERTEX_3            "Vertex0"
+#define orxBODY_KZ_CONFIG_VERTEX_3            "Vertex3"
 #define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
 #define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
@@ -969,27 +970,31 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     {
       /* Updates edge specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_EDGE;
-
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_1) != orxFALSE)
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_2) != orxFALSE))
       {
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_1, &stBodyPartDef.stEdge.v1);
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_2, &stBodyPartDef.stEdge.v2);
+        /* Gets them */
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_1, &(stBodyPartDef.stEdge.v1));
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_2, &(stBodyPartDef.stEdge.v2));
 
+        /* Has vertex0? */
         if((stBodyPartDef.stEdge.bHasVertex0 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_0)) != orxFALSE)
         {
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_0, &stBodyPartDef.stEdge.v0);
+          /* Gets it */
+          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_0, &(stBodyPartDef.stEdge.v0));
         }
 
+        /* Has vertex3? */
         if((stBodyPartDef.stEdge.bHasVertex3 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_3)) != orxFALSE)
         {
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_3, &stBodyPartDef.stEdge.v3);
+          /* Gets it */
+          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_3, &(stBodyPartDef.stEdge.v3));
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex1 or Vertex2 for ceating edge body <%s> is missing.", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex1 and/or Vertex2 for creating edge body <%s> are missing.", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -1003,13 +1008,14 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
       && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
       {
-        orxU32 i;
-
-        stBodyPartDef.stChain.avVertices = (orxVECTOR*) orxMemory_Allocate(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_PHYSICS);
+        /* Allocates vertices */
+        stBodyPartDef.stChain.avVertices = (orxVECTOR *)orxMemory_Allocate(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_PHYSICS);
 
         /* Valid? */
         if(stBodyPartDef.stChain.avVertices != orxNULL)
         {
+          orxU32 i;
+
           /* For all defined vertices */
           for(i = 0; i < stBodyPartDef.stChain.u32VertexCounter; i++)
           {
@@ -1017,20 +1023,31 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
             orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i]));
           }
 
-          if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX)) != orxFALSE)
-          {
-            orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &stBodyPartDef.stChain.vNext);
-          }
+          /* Gets loop status */
+          stBodyPartDef.stChain.bIsLoop = orxConfig_GetBool(orxBODY_KZ_CONFIG_LOOP);
 
-          if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX)) != orxFALSE)
+          /* Not a loop? */
+          if(stBodyPartDef.stChain.bIsLoop == orxFALSE)
           {
-            orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &stBodyPartDef.stChain.vPrev);
+            /* Has previous vertex? */
+            if((stBodyPartDef.stChain.bHasPrevious = orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX)) != orxFALSE)
+            {
+              /* Gets it */
+              orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stChain.vPrevious));
+            }
+
+            /* Has next vertex? */
+            if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX)) != orxFALSE)
+            {
+              /* Gets it */
+              orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stChain.vNext));
+            }
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Could not allocate memory for vertex array", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Could not allocate vertex memory when creating chain body <%s>.", _zConfigID);
 
           /* Updates status */
           bSuccess = orxFALSE;
@@ -1069,6 +1086,15 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
 
         /* Protects it */
         orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
+      }
+      else
+      {
+        /* Is a chain? */
+        if(stBodyPartDef.u32Flags & orxBODY_PART_DEF_KU32_FLAG_CHAIN)
+        {
+          /* Frees vertices */
+          orxMemory_Free(stBodyPartDef.stChain.avVertices);
+        }
       }
     }
     else
@@ -1257,6 +1283,13 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY_PART *_pstBodyPart)
     {
       /* Unprotects it */
       orxConfig_ProtectSection(_pstBodyPart->zReference, orxFALSE);
+    }
+
+    /* Is a chain part? */
+    if(_pstBodyPart->pstDef->u32Flags & orxBODY_PART_DEF_KU32_FLAG_CHAIN)
+    {
+      /* Frees vertices */
+      orxMemory_Free(_pstBodyPart->pstDef->stChain.avVertices);
     }
 
     /* Frees part def */

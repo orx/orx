@@ -167,12 +167,13 @@ typedef struct __orxBODY_PART_DEF_t
 
     struct
     {
-      orxU32    u32VertexCounter;                     /**< Chain vertex counter : 36 */
-      orxVECTOR *avVertices;                          /**< Chain vertices : 38 */
-      orxVECTOR vNext;                                /**< Chain Next vertex (ghost) : 50 */
-      orxVECTOR vPrev;                                /**< Chain Prev vertex (ghost) : 62 */
-      orxBOOL   bHasNext;                             /**< Has Next vertex : 66 */
-      orxBOOL   bHasPrev;                             /**< Has Prev vertex : 70 */
+      orxVECTOR vPrevious;                            /**< Chain Previous vertex (ghost) : 44 */
+      orxVECTOR vNext;                                /**< Chain Next vertex (ghost) : 56 */
+      orxVECTOR*avVertices;                           /**< Chain vertices : 60 */
+      orxU32    u32VertexCounter;                     /**< Chain vertex counter : 64 */
+      orxBOOL   bIsLoop;                              /**< Loop chain : 68 */
+      orxBOOL   bHasPrevious;                         /**< Has Previous vertex : 72 */
+      orxBOOL   bHasNext;                             /**< Has Next vertex : 76 */
 
     } stChain;
 

@@ -45,12 +45,6 @@
 #endif /* __orxMSVC__ */
 
 
-#if defined(__orxWINDOWS__) && defined(__orxGCC__)
-
-  #define alloca __builtin_alloca
-
-#endif /* __orxWINDOWS__ && __orxGCC__ */
-
 #if defined(__orxDEBUG__) || defined(__orxPROFILER__)
 
   #define orxPHYSICS_ENABLE_DEBUG_DRAW
@@ -1447,15 +1441,24 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
   {
+    orxU32  i;
+
+#ifndef __orxMSVC__
+
+    b2Vec2 avVertexList[_pstBodyPartDef->stChain.u32VertexCounter];
+
+#else /* __orxMSVC__ */
+
+    b2Vec2 *avVertexList = (b2Vec2 *)_malloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
+
+#endif /* __orxMSVC__ */
+
     /* Checks */
     orxASSERT(_pstBodyPartDef->stChain.u32VertexCounter > 0);
     orxASSERT(_pstBodyPartDef->stChain.avVertices != orxNULL);
 
     /* Stores shape reference */
     stFixtureDef.shape = &stChainShape;
-
-    b2Vec2 *avVertexList = (b2Vec2*) alloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
-    orxU32 i;
 
     /* No mirroring? */
     if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
@@ -1465,26 +1468,6 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
       {
         /* Sets its vector */
         avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-      }
-
-      stChainShape.CreateChain(avVertexList, _pstBodyPartDef->stChain.u32VertexCounter);
-
-      /* Has Prev? */
-      if(_pstBodyPartDef->stChain.bHasPrev)
-      {
-        b2Vec2 vPrev;
-
-        vPrev.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrev.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrev.fY * _pstBodyPartDef->vScale.fY);
-        stChainShape.SetPrevVertex(vPrev);
-      }
-
-      /* Has Next? */
-      if(_pstBodyPartDef->stChain.bHasNext)
-      {
-        b2Vec2 vNext;
-
-        vNext.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fY * _pstBodyPartDef->vScale.fY);
-        stChainShape.SetNextVertex(vNext);
       }
     }
     else
@@ -1497,25 +1480,37 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
         /* Sets its vector */
         avVertexList[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
       }
+    }
 
+    /* Is loop? */
+    if(_pstBodyPartDef->stChain.bIsLoop != orxFALSE)
+    {
+      /* Creates loop chain */
+      stChainShape.CreateLoop(avVertexList, _pstBodyPartDef->stChain.u32VertexCounter);
+    }
+    else
+    {
+      /* Creates chain */
       stChainShape.CreateChain(avVertexList, _pstBodyPartDef->stChain.u32VertexCounter);
 
-      /* Has Prev? */
-      if(_pstBodyPartDef->stChain.bHasPrev)
+      /* Has Previous? */
+      if(_pstBodyPartDef->stChain.bHasPrevious != orxFALSE)
       {
-        b2Vec2 vPrev;
+        b2Vec2 vPrevious;
 
-        vPrev.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrev.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrev.fY * _pstBodyPartDef->vScale.fY);
-        stChainShape.SetNextVertex(vPrev);
+        /* Sets previous vertex */
+        vPrevious.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fY * _pstBodyPartDef->vScale.fY);
+        stChainShape.SetPrevVertex(vPrevious);
       }
 
       /* Has Next? */
-      if(_pstBodyPartDef->stChain.bHasNext)
+      if(_pstBodyPartDef->stChain.bHasNext != orxFALSE)
       {
         b2Vec2 vNext;
 
+        /* Sets next vertex */
         vNext.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fY * _pstBodyPartDef->vScale.fY);
-        stChainShape.SetPrevVertex(vNext);
+        stChainShape.SetNextVertex(vNext);
       }
     }
   }
