@@ -597,83 +597,112 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
 
 static orxINLINE orxSTATUS orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue)
 {
-  orxCHAR        *pcOutput;
-  const orxCHAR  *pcInput;
-  orxU32         *pu32Index;
-  orxU32          u32Size, u32BufferSize, i;
-  orxU32          au32IndexTable[orxCONFIG_KU32_BUFFER_SIZE / sizeof(orxU32)];
-  orxSTATUS       eResult = orxSTATUS_SUCCESS;
+  orxCHAR  *pcOutput;
+  orxU32   *pu32Index;
+  orxU32    u32Size, u32BufferSize, i;
+  orxU32    au32IndexTable[orxCONFIG_KU32_BUFFER_SIZE / sizeof(orxU32)];
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxString_GetLength(_zValue) < orxCONFIG_KU32_LARGE_BUFFER_SIZE);
   orxASSERT(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE));
 
-  /* For all characters */
-  for(pcInput = _zValue, pcOutput = sstConfig.acValueBuffer, u32Size = 1, au32IndexTable[0] = 0;
-      (*pcInput != orxCHAR_NULL) && (u32Size < orxARRAY_GET_ITEM_COUNT(au32IndexTable));
-     )
+  /* Buffer not already prepared? */
+  if(sstConfig.acValueBuffer[0] == orxCHAR_NULL)
   {
-    /* Not a space? */
-    if((*pcInput != ' ') && (*pcInput != '\t'))
+    const orxCHAR *pcInput;
+
+    /* For all characters */
+    for(pcInput = _zValue, pcOutput = sstConfig.acValueBuffer, u32Size = 1, au32IndexTable[0] = 0;
+        (*pcInput != orxCHAR_NULL) && (u32Size < orxARRAY_GET_ITEM_COUNT(au32IndexTable));
+       )
     {
-      /* Is a list separator? */
-      if(*pcInput == orxCONFIG_KC_LIST_SEPARATOR)
+      /* Not a space? */
+      if((*pcInput != ' ') && (*pcInput != '\t'))
       {
-        /* Ends string */
-        *pcOutput++ = orxCHAR_NULL;
-
-        /* Stores index */
-        au32IndexTable[u32Size] = (orxU32)(pcOutput - sstConfig.acValueBuffer);
-
-        /* Updates size */
-        u32Size++;
-
-        /* Skips all trailing and leading spaces */
-        do
+        /* Is a list separator? */
+        if(*pcInput == orxCONFIG_KC_LIST_SEPARATOR)
         {
-          pcInput++;
-        } while((*pcInput == ' ') || (*pcInput == '\t'));
-      }
-      else
-      {
-        /* Copies it */
-        *pcOutput++ = *pcInput++;
-      }
-    }
-    else
-    {
-      const orxCHAR *pcTest;
+          /* Ends string */
+          *pcOutput++ = orxCHAR_NULL;
 
-      /* Scans all the spaces */
-      for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+          /* Stores index */
+          au32IndexTable[u32Size] = (orxU32)(pcOutput - sstConfig.acValueBuffer);
 
-      /* Is a list separator or end of string? */
-      if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
-      {
-        /* Skips all trailing spaces */
-        pcInput = pcTest;
-      }
-      else
-      {
-        /* For all spaces */
-        for(; pcInput < pcTest; pcInput++, pcOutput++)
+          /* Updates size */
+          u32Size++;
+
+          /* Skips all trailing and leading spaces */
+          do
+          {
+            pcInput++;
+          } while((*pcInput == ' ') || (*pcInput == '\t'));
+        }
+        else
         {
           /* Copies it */
-          *pcOutput = *pcInput;
+          *pcOutput++ = *pcInput++;
+        }
+      }
+      else
+      {
+        const orxCHAR *pcTest;
+
+        /* Scans all the spaces */
+        for(pcTest = pcInput + 1; (*pcTest == ' ') || (*pcTest == '\t'); pcTest++);
+
+        /* Is a list separator or end of string? */
+        if((*pcTest == orxCONFIG_KC_LIST_SEPARATOR) || (*pcTest == orxCHAR_NULL))
+        {
+          /* Skips all trailing spaces */
+          pcInput = pcTest;
+        }
+        else
+        {
+          /* For all spaces */
+          for(; pcInput < pcTest; pcInput++, pcOutput++)
+          {
+            /* Copies it */
+            *pcOutput = *pcInput;
+          }
         }
       }
     }
+
+    /* Ends string */
+    *pcOutput++ = orxCHAR_NULL;
+  }
+  else
+  {
+    /* For all characters */
+    for(pcOutput = sstConfig.acValueBuffer, u32Size = 1, au32IndexTable[0] = 0;
+        (*pcOutput != orxCHAR_NULL) && (u32Size < orxARRAY_GET_ITEM_COUNT(au32IndexTable));
+        pcOutput++)
+    {
+      /* Is a list separator? */
+      if(*pcOutput == orxCONFIG_KC_LIST_SEPARATOR)
+      {
+        /* Ends string */
+        *pcOutput = orxCHAR_NULL;
+
+        /* Stores index */
+        au32IndexTable[u32Size] = (orxU32)(pcOutput + 1 - sstConfig.acValueBuffer);
+
+        /* Updates size */
+        u32Size++;
+      }
+    }
+
+    /* Updates pointer */
+    pcOutput++;
   }
 
   /* Didn't finish? */
-  if(pcInput != orxCHAR_NULL)
+  if(u32Size == orxARRAY_GET_ITEM_COUNT(au32IndexTable))
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Couldn't append all config list items from [%s]: only the first %u items were appended.", _zValue, orxARRAY_GET_ITEM_COUNT(au32IndexTable));
   }
-
-  /* Ends string */
-  *pcOutput++ = orxCHAR_NULL;
 
   /* Is current value a list? */
   if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
@@ -6307,6 +6336,83 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
 
       /* Adds/replaces new entry */
       eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE, orxFALSE);
+    }
+
+    /* Clears value buffer */
+    sstConfig.u32BufferListSize = 0;
+    sstConfig.acValueBuffer[0]  = orxCHAR_NULL;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot write config string list as no or too many item(s) are provided.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Appends string values to a config list (will create a new entry if not already present)
+ * @param[in] _zKey             Key name
+ * @param[in] _azValue          Values
+ * @param[in] _u32Number        Number of values
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
+{
+  orxU32    u32Index, i;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(_azValue != orxNULL);
+
+  /* Valid? */
+  if((_u32Number > 0) && (_u32Number < 0xFFFF))
+  {
+    /* For all values */
+    for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); i++)
+    {
+      const orxCHAR *pc;
+
+      /* For all characters */
+      for(pc = _azValue[i]; (*pc != orxCHAR_NULL) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); pc++)
+      {
+        /* Copies it */
+        sstConfig.acValueBuffer[u32Index++] = *pc;
+      }
+
+      /* Adds separator */
+      sstConfig.acValueBuffer[u32Index++] = orxCONFIG_KC_LIST_SEPARATOR;
+    }
+
+    /* Ran out of memory? */
+    if(u32Index >= orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Cannot append config string list as the list would exceed %d bytes in memory.", orxCONFIG_KU32_LARGE_BUFFER_SIZE);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Removes last separator */
+      if(u32Index > 0)
+      {
+        sstConfig.acValueBuffer[u32Index - 1] = orxCHAR_NULL;
+      }
+
+      /* Stores buffer list size */
+      sstConfig.u32BufferListSize = _u32Number;
+
+      /* Appends to existing entry */
+      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE, orxTRUE);
     }
 
     /* Clears value buffer */

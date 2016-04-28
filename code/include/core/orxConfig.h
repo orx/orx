@@ -491,6 +491,14 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListVector(const orxS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
+/** Appends string values to a config list (will create a new entry if not already present)
+ * @param[in] _zKey             Key name
+ * @param[in] _azValue          Values
+ * @param[in] _u32Number        Number of values
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_AppendListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
+
 /** Gets key counter of the current section
  * @return Key counter of the current section if valid, 0 otherwise
  */
