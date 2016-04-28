@@ -1088,37 +1088,6 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
         case orxPHYSICS_EVENT_CONTACT_ADD:
         case orxPHYSICS_EVENT_CONTACT_REMOVE:
         {
-          /* New contact? */
-          if(pstEventStorage->eID == orxPHYSICS_EVENT_CONTACT_ADD)
-          {
-            b2Vec2 vPos;
-
-            /* Source can't slide and destination is static? */
-            if(!pstEventStorage->poSource->CanSlide() && (pstEventStorage->poDestination->GetType() != b2_dynamicBody))
-            {
-              /* Gets current position */
-              vPos = pstEventStorage->poSource->GetPosition();
-
-              /* Grounds it*/
-              vPos.y += 0.01f;
-
-              /* Updates it */
-              pstEventStorage->poSource->SetTransform(vPos, pstEventStorage->poSource->GetAngle());
-            }
-            /* Destination can't slide and source is static? */
-            else if(!pstEventStorage->poDestination->CanSlide() && (pstEventStorage->poSource->GetType() != b2_dynamicBody))
-            {
-              /* Gets current position */
-              vPos = pstEventStorage->poDestination->GetPosition();
-
-              /* Grounds it*/
-              vPos.y += 0.01f;
-
-              /* Updates it */
-              pstEventStorage->poDestination->SetTransform(vPos, pstEventStorage->poDestination->GetAngle());
-            }
-          }
-
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxStructure_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxStructure_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
 
@@ -1165,7 +1134,6 @@ extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_LiquidFun_CreateBody(const or
     stBodyDef.bullet            = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.allowSleep        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP);
     stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
-    stBodyDef.canSlide          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_SLIDE);
     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */

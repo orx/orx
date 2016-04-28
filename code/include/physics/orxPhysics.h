@@ -57,9 +57,8 @@
 #define orxBODY_DEF_KU32_FLAG_DYNAMIC                 0x00000002  /**< Dynamic type body def flag */
 #define orxBODY_DEF_KU32_FLAG_HIGH_SPEED              0x00000004  /**< High speed type body def flag */
 #define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION          0x00000008  /**< Body can't be rotated by physics */
-#define orxBODY_DEF_KU32_FLAG_CAN_SLIDE               0x00000010  /**< Body is allowed to slide */
-#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000020  /**< Static body is allowed to move by user direct access */
-#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000040  /**< Allow sleep body def flag */
+#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000010  /**< Static body is allowed to move by user direct access */
+#define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000020  /**< Allow sleep body def flag */
 
 #define orxBODY_DEF_KU32_MASK_ALL                     0xFFFFFFFF  /**< Body def all mask */
 
