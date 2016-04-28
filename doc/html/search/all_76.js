@@ -17,7 +17,7 @@ var searchData=
   ['void',['void',['../group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86',1,'orxModule.h']]],
   ['vpivot',['vPivot',['../structorx_o_b_o_x.html#aea308767d378576f26e5028b34e25545',1,'orxOBOX']]],
   ['vposition',['vPosition',['../structorx_o_b_o_x.html#aa486156686180512f839290a2d4395e7',1,'orxOBOX::vPosition()'],['../structorx_b_o_d_y___d_e_f.html#a73e0989000d470a5ebbc48d57a1c13bb',1,'orxBODY_DEF::vPosition()'],['../structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a5a034f9d2b63543355d36d2231899e04',1,'orxPHYSICS_EVENT_PAYLOAD::vPosition()']]],
-  ['vprev',['vPrev',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#ae98a5f76d1cb78eae152e6b0b44b57ad',1,'orxBODY_PART_DEF']]],
+  ['vprevious',['vPrevious',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#acd38735e3510a913eb0a80e3ec249b23',1,'orxBODY_PART_DEF']]],
   ['vrgb',['vRGB',['../structorx_c_o_l_o_r.html#aa5b80a4cd29c306189c13a62850ae949',1,'orxCOLOR']]],
   ['vscale',['vScale',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e',1,'orxBODY_PART_DEF']]],
   ['vsrcanchor',['vSrcAnchor',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#afff1134b806637890bac3f862ca075a7',1,'orxBODY_JOINT_DEF']]],

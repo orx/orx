@@ -53,9 +53,10 @@ var group__orx_physics =
       [ "avVertices", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a38748bdfcfda7ada5413939ba16d593b", null ],
       [ "avVertices", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#ab820671d1b65058a520cad0eba97f3ef", null ],
       [ "bHasNext", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#ab07f7d7014398e1b395f1facaad7ee7f", null ],
-      [ "bHasPrev", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a056e22e1eda4a43ff3b1a5dbcaecba46", null ],
+      [ "bHasPrevious", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#ae436002393031208c09125ee5e89b59f", null ],
       [ "bHasVertex0", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a8606d864ee0dbf98ed5620ffd375c79a", null ],
       [ "bHasVertex3", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a1923828164b78aa0cb5bf95bff5de086", null ],
+      [ "bIsLoop", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a9d3f7f070e56f2db8d94eb231be2d00e", null ],
       [ "fDensity", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#aac514621c48e50eac5a497a99b896329", null ],
       [ "fFriction", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a66f606bf936468f2a55fabb67a601b97", null ],
       [ "fRadius", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#adc5836790791c559495209f647d14b88", null ],
@@ -76,7 +77,7 @@ var group__orx_physics =
       [ "v3", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#af215b8d541e7b5ba349c865d2204e15f", null ],
       [ "vCenter", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a2caddebb84b5626223b5606bc32e7000", null ],
       [ "vNext", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a685d2f42193399fc7ae715689a777f44", null ],
-      [ "vPrev", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#ae98a5f76d1cb78eae152e6b0b44b57ad", null ],
+      [ "vPrevious", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#acd38735e3510a913eb0a80e3ec249b23", null ],
       [ "vScale", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e", null ]
     ] ],
     [ "orxPHYSICS_EVENT_PAYLOAD", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html", [
