@@ -364,7 +364,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
 
 #else /* __orxMSVC__ */
 
-  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+  orxVECTOR *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
 
 #endif /* __orxMSVC__ */
 
@@ -431,7 +431,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
 
 #else /* __orxMSVC__ */
 
-  orxVECTOR *avVertexList = (orxVECTOR *)_malloca(_s32VertexNumber * sizeof(orxVECTOR));
+  orxVECTOR *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
 
 #endif /* __orxMSVC__ */
 
@@ -1417,7 +1417,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
 
 #else /* __orxMSVC__ */
 
-    b2Vec2 *avVertexList = (b2Vec2 *)_malloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
+    b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
 
 #endif /* __orxMSVC__ */
 

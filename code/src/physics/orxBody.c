@@ -41,6 +41,7 @@
 #include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 
+#include "malloc.h"
 
 /** Body flags
  */
@@ -784,6 +785,24 @@ orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_
       /* Copies def */
       orxMemory_Copy(pstLocalBodyPartDef, _pstBodyPartDef, sizeof(orxBODY_PART_DEF));
 
+      /* Chain? */
+      if(_pstBodyPartDef->u32Flags & orxBODY_PART_DEF_KU32_FLAG_CHAIN)
+      {
+        orxU32 u32Size;
+
+        /* Gets vertex buffer size */
+        u32Size = _pstBodyPartDef->stChain.u32VertexCounter * sizeof(orxVECTOR);
+
+        /* Allocates vertex list */
+        pstLocalBodyPartDef->stChain.avVertices = (orxVECTOR *)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_PHYSICS);
+
+        /* Checks */
+        orxASSERT(pstLocalBodyPartDef->stChain.avVertices != orxNULL);
+
+        /* Copies vertices */
+        orxMemory_Copy(pstLocalBodyPartDef->stChain.avVertices, _pstBodyPartDef->stChain.avVertices, u32Size);
+      }
+
       /* Stores def */
       pstResult->pstDef = pstLocalBodyPartDef;
 
@@ -1004,7 +1023,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
       {
         /* Allocates vertices */
-        stBodyPartDef.stChain.avVertices = (orxVECTOR *)orxMemory_Allocate(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR), orxMEMORY_TYPE_PHYSICS);
+        stBodyPartDef.stChain.avVertices = (orxVECTOR *)alloca(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR));
 
         /* Valid? */
         if(stBodyPartDef.stChain.avVertices != orxNULL)
@@ -1081,15 +1100,6 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
 
         /* Protects it */
         orxConfig_ProtectSection(pstResult->zReference, orxTRUE);
-      }
-      else
-      {
-        /* Is a chain? */
-        if(stBodyPartDef.u32Flags & orxBODY_PART_DEF_KU32_FLAG_CHAIN)
-        {
-          /* Frees vertices */
-          orxMemory_Free(stBodyPartDef.stChain.avVertices);
-        }
       }
     }
     else
