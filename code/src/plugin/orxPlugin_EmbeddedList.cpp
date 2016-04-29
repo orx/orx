@@ -42,7 +42,7 @@
 
 /* Display, joystick, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
-#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 
 #pragma GCC visibility pop
@@ -54,7 +54,7 @@
 #include "../plugins/Joystick/android/orxJoystick.c"
 #include "../plugins/Keyboard/android/orxKeyboard.cpp"
 #include "../plugins/Mouse/android/orxMouse.c"
-#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/android/orxSoundSystem.c"
 
@@ -69,7 +69,7 @@
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"
-#include "../plugins/Physics/Box2D/orxPhysics.cpp"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/OpenAL/orxSoundSystem.c"
 
