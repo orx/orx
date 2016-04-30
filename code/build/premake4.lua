@@ -43,7 +43,8 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013" then
+        if string.lower(_ACTION) == "vs2013"
+        or string.lower(_ACTION) == "vs2015" then
             return
             {
                 "x64",
@@ -90,7 +91,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2013")
+defaultaction ("windows", "vs2015")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -170,7 +171,7 @@ solution "orx"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013"}
+    configuration {"not vs2013", "not vs2015"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -280,6 +281,26 @@ solution "orx"
             "../../extern/libsndfile-1.0.22/lib/vc2013/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2013/64",
             "../../extern/libwebp/lib/vc2013/64"
+        }
+
+    configuration {"vs2015", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2015/32",
+            "../../extern/openal-soft/lib/vc2015/32",
+            "../../extern/libsndfile-1.0.22/lib/vc2015/32",
+            "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
+            "../../extern/libwebp/lib/vc2015/32"
+        }
+
+    configuration {"vs2015", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-2.7/lib/vc2015/64",
+            "../../extern/openal-soft/lib/vc2015/64",
+            "../../extern/libsndfile-1.0.22/lib/vc2015/64",
+            "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
+            "../../extern/libwebp/lib/vc2015/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
