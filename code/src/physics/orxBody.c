@@ -41,7 +41,16 @@
 #include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 
-#include "malloc.h"
+#ifdef __orxWINDOWS__
+
+  #include <malloc.h>
+
+#else /* __orxWINDOWS__ */
+
+  #include <alloca.h>
+
+#endif /* __orxWINDOWS__ */
+
 
 /** Body flags
  */
