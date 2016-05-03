@@ -1411,15 +1411,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   {
     orxU32  i;
 
-#ifndef __orxMSVC__
-
-    b2Vec2 avVertexList[_pstBodyPartDef->stChain.u32VertexCounter];
-
-#else /* __orxMSVC__ */
-
     b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
-
-#endif /* __orxMSVC__ */
 
     /* Checks */
     orxASSERT(_pstBodyPartDef->stChain.u32VertexCounter > 0);
