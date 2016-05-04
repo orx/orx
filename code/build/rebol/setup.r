@@ -59,7 +59,7 @@ cur-ver: either exists? cur-file [
 ] [
     none
 ]
-print ["== Checking version: [ extern ]"]
+print ["== Checking version: [" extern "]"]
 either req-ver = cur-ver [
     print ["== [" cur-ver "] already installed, skipping!"]
 ] [
