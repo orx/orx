@@ -44,6 +44,14 @@
 
 #endif /* __orxMSVC__ */
 
+#if defined(__orxWINDOWS__) && !defined(__orxMSVC__)
+
+#ifndef alloca
+  #define alloca(x) __builtin_alloca((x))
+#endif
+
+#endif /* __orxWINDOWS__ && !__orxMSVC__ */
+
 
 #if defined(__orxDEBUG__) || defined(__orxPROFILER__)
 
@@ -357,16 +365,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
   orxVIEWPORT  *pstViewport;
   orxCOLOR      stColor;
   orxS32        i;
-
-#ifndef __orxMSVC__
-
-  orxVECTOR avVertexList[_s32VertexNumber];
-
-#else /* __orxMSVC__ */
-
-  orxVECTOR *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
-
-#endif /* __orxMSVC__ */
+  orxVECTOR    *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -424,16 +423,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
   orxVIEWPORT  *pstViewport;
   orxCOLOR      stColor;
   orxS32        i;
-
-#ifndef __orxMSVC__
-
-  orxVECTOR avVertexList[_s32VertexNumber];
-
-#else /* __orxMSVC__ */
-
-  orxVECTOR *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
-
-#endif /* __orxMSVC__ */
+  orxVECTOR    *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -3245,6 +3235,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_Raycast, PHYSICS, RAYCAST)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
+
+#if defined(__orxWINDOWS__) && !defined(__orxMSVC__)
+
+  #undef alloca
+
+#endif /* __orxWINDOWS__ && !__orxMSVC__ */
 
 #ifdef __orxMSVC__
 
