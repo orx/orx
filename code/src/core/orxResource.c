@@ -2063,7 +2063,8 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
       u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
 
       /* Match tag? */
-      if(orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
+      if((orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
+      && (*(_zLocation + u32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR))
       {
         /* Selects it */
         break;
