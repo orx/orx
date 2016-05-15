@@ -95,8 +95,8 @@ either req-ver = cur-ver [
 
 
     ; Decompresses
-    do system/script/path/rebzip.r
     attempt [delete-dir temp]
+    do system/script/path/rebzip.r
     print ["== Decompressing [" local "] => [" extern "]"]
     wait 0.5
     unzip/quiet temp local
