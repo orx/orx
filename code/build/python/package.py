@@ -17,6 +17,10 @@ platformlist = [
     'tutovs2013-32',
     'vs2013-64',
     'tutovs2013-64',
+    'vs2015-32',
+    'tutovs2015-32',
+    'vs2015-64',
+    'tutovs2015-64',
     'mingw',
     'tutomingw',
     'mac',
@@ -269,6 +273,7 @@ codefolderinfolist = [
     {'src': 'build/windows/vs2010',                                     'dst': None},
     {'src': 'build/windows/vs2012',                                     'dst': None},
     {'src': 'build/windows/vs2013',                                     'dst': None},
+    {'src': 'build/windows/vs2015',                                     'dst': None},
     {'src': 'build/windows/codeblocks',                                 'dst': None},
     {'src': 'build/windows/codelite',                                   'dst': None},
     {'src': 'build/windows/gmake',                                      'dst': None},
@@ -364,6 +369,38 @@ platforminfolist = {
     'tutovs2013-64': {
         'foldername':       'tutorial-vs2013-64',
         'filename':         'tutorial-vs2013-64',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'vs2015-32': {
+        'foldername':       'dev-vs2015-32',
+        'filename':         'dev-vs2015-32',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'vs2015-64': {
+        'foldername':       'dev-vs2015-64',
+        'filename':         'dev-vs2015-64',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutovs2015-32': {
+        'foldername':       'tutorial-vs2015-32',
+        'filename':         'tutorial-vs2015-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutovs2015-64': {
+        'foldername':       'tutorial-vs2015-64',
+        'filename':         'tutorial-vs2015-64',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
