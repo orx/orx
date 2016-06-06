@@ -313,11 +313,11 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_SYSTEM,                      /**< System Debug */
   orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
 
-  orxDEBUG_LEVEL_USER,                        /**< User Debug */
-
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
 
   orxDEBUG_LEVEL_ASSERT,                      /**< Assert Debug */
+
+  orxDEBUG_LEVEL_USER,                        /**< User Debug */
 
   orxDEBUG_LEVEL_NUMBER,
 

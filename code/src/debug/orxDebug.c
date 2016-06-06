@@ -550,7 +550,7 @@ void orxFASTCALL _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable)
     else
     {
       /* Checks */
-      orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+      orxASSERT(_eLevel < orxDEBUG_LEVEL_MAX_NUMBER);
 
       /* Updates level flags */
       orxFLAG_SET(sstDebug.u32LevelFlags, 1 << _eLevel, 0);
@@ -567,7 +567,7 @@ void orxFASTCALL _orxDebug_EnableLevel(orxDEBUG_LEVEL _eLevel, orxBOOL _bEnable)
     else
     {
       /* Checks */
-      orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+      orxASSERT(_eLevel < orxDEBUG_LEVEL_MAX_NUMBER);
 
       /* Updates level flags */
       orxFLAG_SET(sstDebug.u32LevelFlags, 0, 1 << _eLevel);
@@ -594,7 +594,7 @@ orxBOOL orxFASTCALL _orxDebug_IsLevelEnabled(orxDEBUG_LEVEL _eLevel)
   else
   {
     /* Checks */
-    orxASSERT(_eLevel < orxDEBUG_LEVEL_NUMBER);
+    orxASSERT(_eLevel < orxDEBUG_LEVEL_MAX_NUMBER);
 
     /* Updates result */
     bResult = orxFLAG_TEST(sstDebug.u32LevelFlags, 1 << _eLevel) ? orxTRUE : orxFALSE;
