@@ -1244,6 +1244,10 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   b2Body         *poBody;
   b2Fixture      *poResult = 0;
   b2FixtureDef    stFixtureDef;
+  b2CircleShape   stCircleShape;
+  b2PolygonShape  stPolygonShape;
+  b2EdgeShape     stEdgeShape;
+  b2ChainShape    stChainShape;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -1257,8 +1261,6 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   /* Circle? */
   if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
   {
-    b2CircleShape stCircleShape;
-
     /* Stores shape reference */
     stFixtureDef.shape = &stCircleShape;
 
@@ -1269,8 +1271,6 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   /* Polygon? */
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX | orxBODY_PART_DEF_KU32_FLAG_MESH))
   {
-    b2PolygonShape stPolygonShape;
-
     /* Stores shape reference */
     stFixtureDef.shape = &stPolygonShape;
 
@@ -1337,7 +1337,6 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
   {
-    b2EdgeShape stEdgeShape;
     b2Vec2      v1, v2;
 
     /* Stores shape reference */
@@ -1372,7 +1371,6 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
   {
-    b2ChainShape  stChainShape;
     b2Vec2       *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCounter * sizeof(b2Vec2));
     orxU32        i;
 
