@@ -778,7 +778,8 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Looks for it in registered groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Found? */
     if(pstGroup != orxNULL)
@@ -1324,7 +1325,8 @@ const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
     /* Finds requested group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         _u32Index > 0;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup), _u32Index--);
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup), _u32Index--)
+    ;
 
     /* Checks */
     orxASSERT(pstGroup != orxNULL);
@@ -1365,7 +1367,8 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -1453,7 +1456,8 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -1515,7 +1519,8 @@ orxU32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -1554,7 +1559,8 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -1567,7 +1573,8 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
         /* Finds requested storage */
         for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
             _u32Index > 0;
-            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)), _u32Index--);
+            pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)), _u32Index--)
+        ;
 
         /* Checks */
         orxASSERT(pstStorage != orxNULL);
@@ -1616,7 +1623,8 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
       /* Finds it */
       for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
           (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-          pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+          pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+      ;
 
       /* For all storages in list */
       for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
@@ -1705,7 +1713,8 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -1822,7 +1831,8 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         (pstGroup != orxNULL) && (pstGroup->u32ID != u32GroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup));
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    ;
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -2457,7 +2467,8 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
     /* For all registered types */
     for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
         (pstType != orxNULL) && (orxString_ICompare(pstType->stInfo.zTag, _pstInfo->zTag) != 0);
-        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)));
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+    ;
 
     /* Not already registered? */
     if(pstType == orxNULL)
@@ -2534,7 +2545,8 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
     /* Finds requested group */
     for(pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, orxNULL);
         _u32Index > 0;
-        pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, pstType), _u32Index--);
+        pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, pstType), _u32Index--)
+    ;
 
     /* Checks */
     orxASSERT(pstType != orxNULL);

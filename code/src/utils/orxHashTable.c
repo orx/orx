@@ -240,7 +240,8 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU64 _u6
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
       (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
-      pstCell = pstCell->pstNext);
+      pstCell = pstCell->pstNext)
+  ;
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -272,7 +273,8 @@ void **orxFASTCALL orxHashTable_Retrieve(orxHASHTABLE *_pstHashTable, orxU64 _u6
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
       (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
-      pstCell = pstCell->pstNext);
+      pstCell = pstCell->pstNext)
+  ;
 
   /* Not found ? */
   if(pstCell == orxNULL)
@@ -339,7 +341,8 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64K
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
       (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
-      pstCell = pstCell->pstNext);
+      pstCell = pstCell->pstNext)
+  ;
 
   /* Found ? */
   if(pstCell != orxNULL)
@@ -401,7 +404,8 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU64 _u64K
   /* Finds the corresponding cell */
   for(pstCell = _pstHashTable->apstCell[u32Index];
       (pstCell != orxNULL) && (pstCell->u64Key != _u64Key);
-      pstCell = pstCell->pstNext);
+      pstCell = pstCell->pstNext)
+  ;
 
   /* Not found? */
   if(pstCell == orxNULL)
@@ -550,7 +554,8 @@ orxHANDLE orxFASTCALL orxHashTable_GetNext(const orxHASHTABLE *_pstHashTable, or
   }
 
   /* Finds next head cell if needed */
-  for(; (pstCell == orxNULL) && (u32Index < _pstHashTable->u32Size); pstCell = _pstHashTable->apstCell[u32Index++]);
+  for(; (pstCell == orxNULL) && (u32Index < _pstHashTable->u32Size); pstCell = _pstHashTable->apstCell[u32Index++])
+  ;
 
   /* Found? */
   if(pstCell != orxNULL)
