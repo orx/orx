@@ -4330,7 +4330,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
 
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
-        pstShader->uiProgram              = (GLuint)orxHANDLE_UNDEFINED;
+        pstShader->uiProgram              = (GLuint)orxU32_UNDEFINED;
         pstShader->iTextureCounter        = 0;
         pstShader->s32ParamCounter        = 0;
         pstShader->bPending               = orxFALSE;

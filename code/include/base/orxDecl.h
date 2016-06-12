@@ -80,7 +80,7 @@
     #define __orxARM__
 
   /* ARM64? */
-  #elif defined(__arm64)
+  #elif defined(__arm64) || defined(__aarch64__)
 
     #define __orxARM64__
 

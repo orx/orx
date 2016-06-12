@@ -160,6 +160,7 @@ androidfileinfolist = devfileinfolist + [
     {'src': 'build/android/*.sh',                                       'dst': None},
     {'src': 'build/android/*.properties',                               'dst': None},
     {'src': 'build/android/obj/local/armeabi-v7a/liborx*.a',            'dst': 'lib/static/android/armeabi-v7a'},
+    {'src': 'build/android/obj/local/arm64-v8a/liborx*.a',              'dst': 'lib/static/android/arm64-v8a'},
     {'src': 'build/android/obj/local/x86/liborx*.a',                    'dst': 'lib/static/android/x86'}
 ]
 
@@ -167,6 +168,7 @@ androidnativefileinfolist = devfileinfolist + [
     {'src': 'build/android-native/*.sh',                                'dst': None},
     {'src': 'build/android-native/*.properties',                        'dst': None},
     {'src': 'build/android-native/obj/local/armeabi-v7a/liborx*.a',     'dst': 'lib/static/android-native/armeabi-v7a'},
+    {'src': 'build/android-native/obj/local/arm64-v8a/liborx*.a',       'dst': 'lib/static/android-native/arm64-v8a'},
     {'src': 'build/android-native/obj/local/x86/liborx*.a',             'dst': 'lib/static/android-native/x86'}
 ]
 
