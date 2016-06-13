@@ -1127,7 +1127,6 @@ orxSTATUS orxFASTCALL orxResource_Init()
           /* Success? */
           if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
           {
-
             /* Registers commands */
             orxResource_RegisterCommands();
 

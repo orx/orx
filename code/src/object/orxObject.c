@@ -2063,6 +2063,104 @@ void orxFASTCALL orxObject_CommandGetOwnedSibling(orxU32 _u32ArgNumber, const or
   return;
 }
 
+/** Command: SetClock
+ */
+void orxFASTCALL orxObject_CommandSetClock(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Has clock? */
+    if(_u32ArgNumber > 1)
+    {
+      orxCLOCK *pstClock;
+
+      /* Creates clock */
+      pstClock = orxClock_CreateFromConfig(_astArgList[1].zValue);
+
+      /* Valid? */
+      if(pstClock != orxNULL)
+      {
+        /* Links it */
+        if(orxObject_LinkStructure(pstObject, orxSTRUCTURE(pstClock)) != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(pstObject->astStructureList[orxSTRUCTURE_ID_CLOCK].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstClock, pstObject);
+        }
+        else
+        {
+          /* Deletes it */
+          orxClock_Delete(pstClock);
+          pstClock = orxNULL;
+        }
+      }
+    }
+    else
+    {
+      /* Removes clock */
+      orxObject_SetClock(pstObject, orxNULL);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetClock
+ */
+void orxFASTCALL orxObject_CommandGetClock(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->zValue = orxClock_GetName(pstClock);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->zValue = orxSTRING_EMPTY;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddTrack
  */
 void orxFASTCALL orxObject_CommandAddTrack(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2389,6 +2487,34 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/** Command: SetAnimFrequency
+ */
+void orxFASTCALL orxObject_CommandSetAnimFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its target anim */
+    orxObject_SetAnimFrequency(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].fValue : orxFLOAT_1);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOrigin
  */
 void orxFASTCALL orxObject_CommandSetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2661,6 +2787,10 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetOwnedSibling */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedSibling, "Owned Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: SetClock */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetClock, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Clock = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetClock */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetClock, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddTrack */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
@@ -2689,6 +2819,8 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: SetAnimFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT});
 
   /* Command: SetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOrigin, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Origin", orxCOMMAND_VAR_TYPE_VECTOR});
@@ -2817,6 +2949,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   /* Command: GetOwnedSibling */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwnedSibling);
 
+  /* Command: SetClock */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetClock);
+  /* Command: GetClock */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetClock);
 
   /* Command: AddTrack */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddTrack);
@@ -2845,6 +2981,8 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnim);
+  /* Command: SetAnimFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnimFrequency);
 
   /* Command: SetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOrigin);
@@ -5942,9 +6080,9 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   return eResult;
 }
 
-/** Sets an object animation frequency.
+/** Sets an object's relative animation frequency.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fFrequency     Frequency to set
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency)

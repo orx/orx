@@ -33,6 +33,7 @@
 #include "core/orxClock.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxBank.h"
@@ -307,6 +308,130 @@ static orxINLINE void orxClock_DeleteAll()
   return;
 }
 
+/** Command: SetFrequency
+ */
+void orxFASTCALL orxClock_CommandSetFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    orxFLOAT fTickSize;
+
+    /* Gets tick size */
+    fTickSize = ((_u32ArgNumber > 1) && (_astArgList[1].fValue > orxFLOAT_0)) ? orxFLOAT_1 / _astArgList[1].fValue : orxFLOAT_0;
+
+    /* Sets it */
+    _pstResult->bValue = (orxClock_SetTickSize(pstClock, fTickSize) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetModifier
+ */
+void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    orxCLOCK_MOD_TYPE eModifierType = orxCLOCK_MOD_TYPE_NONE;
+    orxFLOAT          fModifierValue;
+
+    /* Gets modifier value */
+    fModifierValue = _astArgList[2].fValue;
+
+    /* Is modifier value valid? */
+    if(fModifierValue > orxFLOAT_0)
+    {
+      /* Capped? */
+      if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
+      {
+        /* Updates modifier value */
+        fModifierValue = orxFLOAT_1 / fModifierValue;
+
+        /* Updates modifier type */
+        eModifierType = orxCLOCK_MOD_TYPE_MAXED;
+      }
+      /* Fixed? */
+      else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+      {
+        /* Updates modifier value */
+        fModifierValue = orxFLOAT_1 / fModifierValue;
+
+        /* Updates modifier type */
+        eModifierType = orxCLOCK_MOD_TYPE_FIXED;
+      }
+      /* Multiply? */
+      else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+      {
+        /* Updates modifier type */
+        eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
+      }
+    }
+
+    /* Updates clock */
+    _pstResult->bValue = (orxClock_SetModifier(pstClock, eModifierType, fModifierValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the clock commands
+ */
+static orxINLINE void orxClock_RegisterCommands()
+{
+  /* Command: SetFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = 0.0", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: SetModifier */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetModifier, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 3, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Type", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT});
+}
+
+/** Unregisters all the clock commands
+ */
+static orxINLINE void orxClock_UnregisterCommands()
+{
+  /* Command: SetFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetFrequency);
+  /* Command: SetModifier */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetModifier);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -323,6 +448,7 @@ void orxFASTCALL orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_CONFIG);
 
   return;
@@ -384,6 +510,9 @@ orxSTATUS orxFASTCALL orxClock_Init()
             /* Sets it as its own owner */
             orxStructure_SetOwner(pstClock, pstClock);
 
+            /* Registers commands */
+            orxClock_RegisterCommands();
+
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
           }
@@ -438,6 +567,9 @@ void orxFASTCALL orxClock_Exit()
   /* Initialized? */
   if(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxClock_UnregisterCommands();
+
     /* Deletes all the clocks */
     orxClock_DeleteAll();
 
