@@ -40,7 +40,8 @@ end
 
 function initplatforms ()
     if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013" then
+        if string.lower(_ACTION) == "vs2013"
+        or string.lower(_ACTION) == "vs2015" then
             return
             {
                 "x64",
@@ -87,7 +88,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2013")
+defaultaction ("windows", "vs2015")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -159,7 +160,7 @@ solution "orxFontGen"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013"}
+    configuration {"not vs2013", "not vs2015"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -236,18 +237,6 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
-    configuration {"vs2008"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2008"
-        }
-
-    configuration {"vs2010"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2010"
-        }
-
     configuration {"vs2012"}
         libdirs
         {
@@ -264,6 +253,18 @@ solution "orxFontGen"
         libdirs
         {
             "../../../extern/freetype/lib/vc2013/64"
+        }
+
+    configuration {"vs2015", "x32"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2015/32"
+        }
+
+    configuration {"vs2015", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2015/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
