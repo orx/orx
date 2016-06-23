@@ -14,6 +14,8 @@ matrix:
   exclude:
     - os: osx
       compiler: gcc
+    - os: linux
+      compiler: clang
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
