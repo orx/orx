@@ -19,7 +19,7 @@ matrix:
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo apt-get -qq update
+      sudo apt-get -qq update &&
       sudo apt-get install freeglut3-dev libsndfile1-dev libopenal-dev libxrandr-dev
     fi
 
