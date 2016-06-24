@@ -1,36 +1,65 @@
 language: c++
 
-os:
-  - linux
-  - osx
-
-compiler:
-  - gcc
-  - clang
-
-osx_image: xcode7.3
-
 matrix:
-  exclude:
-    - os: osx
+  include:
+    - os: linux
       compiler: gcc
+      sudo: required
     - os: linux
       compiler: clang
+      sudo: required
+    - os: osx
+      compiler: clang
+      osx_image: xcode7.3
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sudo apt-get -qq update &&
-      sudo apt-get -y install freeglut3-dev libsndfile1-dev libopenal-dev libxrandr-dev ;
+      sudo apt-get -y install freeglut3-dev libsndfile1-dev libopenal-dev libxrandr-dev &&
+      sudo apt-get -y install libc6:i386 libstdc++6:i386 ;
     fi
 
-install: ./setup.sh
+install:
+  - ./setup.sh
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd code/build/mac/gmake ;
+      cd ~/build/orx/orx/code/build/mac/gmake ;
     else
-      cd code/build/linux/gmake ;
+      cd ~/build/orx/orx/code/build/linux/gmake ;
     fi
-  - make --config=debug64
-  - make --config=profile64
-  - make --config=release64
+  - make config=debug64
+  - make config=profile64
+  - make config=release64
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      cd ~/build/orx/orx/tutorial/build/mac/gmake ;
+    else
+      cd ~/build/orx/orx/tutorial/build/linux/gmake ;
+    fi
+  - make config=release64
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      cd ~/build/orx/orx/code/build/mac/gmake ;
+    else
+      cd ~/build/orx/orx/code/build/linux/gmake ;
+    fi
+  - make config=core_release64
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      cd ~/build/orx/orx/tools/orxCrypt/build/mac/gmake ;
+    else
+      cd ~/build/orx/orx/tools/orxCrypt/build/linux/gmake ;
+    fi
+  - make config=release64
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      cd ~/build/orx/orx/tools/orxFontGen/build/mac/gmake ;
+    else
+      cd ~/build/orx/orx/tools/orxFontGen/build/linux/gmake ;
+    fi
+  - make config=release64
+  - cd ~/build/orx/orx/code/build/python
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      python package.py -p mac -v test &&
+      python package.py -p tutomac -v test ;
+    else
+      python package.py -p linux64 -v test &&
+      python package.py -p tutolinux64 -v test ;
+    fi
