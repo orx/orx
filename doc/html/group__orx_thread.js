@@ -1,11 +1,11 @@
 var group__orx_thread =
 [
-    [ "orxTHREAD_GET_FLAG_FROM_ID", "group__orx_thread.html#ga2ce455a4c7ee3057afd787cb6d435451", null ],
+    [ "orxTHREAD_GET_FLAG_FROM_ID", "group__orx_thread.html#ga048cef6c2967af39da46f406bff39508", null ],
     [ "orxTHREAD_KU32_FLAG_NONE", "group__orx_thread.html#ga18c3695048664697fcf1a823516f79b0", null ],
     [ "orxTHREAD_KU32_MAIN_THREAD_ID", "group__orx_thread.html#gabd3d4c3162d2b1312722b987ad41973f", null ],
     [ "orxTHREAD_KU32_MASK_ALL", "group__orx_thread.html#gaf3cfa78f0aec1732483c5d78c0b34c41", null ],
     [ "orxTHREAD_KU32_MAX_THREAD_NUMBER", "group__orx_thread.html#ga369a388efc103482ba95cf1ebba39e75", null ],
-    [ "orxTHREAD_FUNCTION", "group__orx_thread.html#ga5856905451ce04149e4e31b67fb87feb", null ],
+    [ "orxTHREAD_FUNCTION", "group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e", null ],
     [ "orxTHREAD_SEMAPHORE", "group__orx_thread.html#ga2cd157a0a33f4ac0308d3141e7730a9e", null ],
     [ "orxThread_CreateSemaphore", "group__orx_thread.html#ga482e0f9ff5876f6e9a85575a83486f05", null ],
     [ "orxThread_DeleteSemaphore", "group__orx_thread.html#ga59b6f7828c4c1f23acf433003e276506", null ],

@@ -12,7 +12,7 @@ var group__orx_clock =
     [ "orxCLOCK_KU32_FUNCTION_BANK_SIZE", "group__orx_clock.html#gacf7c640799de113b93a02b540befe4d7", null ],
     [ "orxCLOCK_KU32_TIMER_BANK_SIZE", "group__orx_clock.html#ga02b0d4ee74c3f16cea7c87cb30e73533", null ],
     [ "orxCLOCK", "group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262", null ],
-    [ "orxCLOCK_FUNCTION", "group__orx_clock.html#gac7e3bed26af64a3b844f0e0ba0500032", null ],
+    [ "orxCLOCK_FUNCTION", "group__orx_clock.html#ga27fdca4bcf0b179960879606460314d0", null ],
     [ "orxCLOCK_EVENT", "group__orx_clock.html#ga5d61e2fc9dcad950bc23ff7a5525791d", [
       [ "orxCLOCK_EVENT_RESTART", "group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da41630991614af985a9d377a1e90cdc35", null ],
       [ "orxCLOCK_EVENT_RESYNC", "group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da9148967775d49709621a41aa3c4efe97", null ],

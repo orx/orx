@@ -1,9 +1,9 @@
 var group__orx_joystick =
 [
-    [ "orxJOYSTICK_GET_AXIS_FOR_PLAYER", "group__orx_joystick.html#gaba48214ed8a0a4c7601d68d4bdd75be8", null ],
+    [ "orxJOYSTICK_GET_AXIS_FOR_PLAYER", "group__orx_joystick.html#ga4ed84fe48884a92869e7b3c18fb76a0b", null ],
     [ "orxJOYSTICK_GET_BUTTON_FOR_PLAYER", "group__orx_joystick.html#gad8902abd753c78b918deacfeacdab4c5", null ],
-    [ "orxJOYSTICK_GET_PLAYER_FROM_AXIS", "group__orx_joystick.html#ga779713e175b7febb6a95ff83a66d1ae4", null ],
-    [ "orxJOYSTICK_GET_PLAYER_FROM_BUTTON", "group__orx_joystick.html#ga50bf1beacf213496c7512f90a027ce6c", null ],
+    [ "orxJOYSTICK_GET_PLAYER_FROM_AXIS", "group__orx_joystick.html#gac81888d6b46dcde7d481a4d19292b99d", null ],
+    [ "orxJOYSTICK_GET_PLAYER_FROM_BUTTON", "group__orx_joystick.html#ga14729988d1cb33795d874ed0a054651c", null ],
     [ "orxJOYSTICK_AXIS", "group__orx_joystick.html#gaac676f97aec33fc1dad588ae845d5642", [
       [ "orxJOYSTICK_AXIS_X_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a5885213a8f24f370e7465cec7be914bf", null ],
       [ "orxJOYSTICK_AXIS_Y_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a40fe7fc2eb538abe00c366c07c849c13", null ],

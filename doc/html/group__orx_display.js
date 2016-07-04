@@ -64,7 +64,7 @@ var group__orx_display =
       [ "u8G", "structorx_r_g_b_a.html#a697171c71dba0363cc82d22868550c93", null ],
       [ "u8R", "structorx_r_g_b_a.html#a572a6b83dbc3dd6007d48dd137797f3f", null ]
     ] ],
-    [ "orx2RGBA", "group__orx_display.html#gaae5504c40f1e53363e9184cbcf0e76f2", null ],
+    [ "orx2RGBA", "group__orx_display.html#ga893a18170f371e8bb402277cc39d15fa", null ],
     [ "orxCOLOR_DENORMALIZER", "group__orx_display.html#ga4c6e0944dd96095ef654b764c93346f3", null ],
     [ "orxCOLOR_NORMALIZER", "group__orx_display.html#ga016ec946d3256a431fb1d267955670e8", null ],
     [ "orxDISPLAY_KC_SHADER_EXTENSION_ADD", "group__orx_display.html#ga34697a5e408ccb6977ea4b7e963cb3b1", null ],
@@ -88,10 +88,10 @@ var group__orx_display =
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_LEFT", "group__orx_display.html#ga98c23e98dd889ded3df024dba4f4b136", null ],
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT", "group__orx_display.html#gac7c00862a44ea6807d9cb3ae2daed091", null ],
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_TOP", "group__orx_display.html#ga0d9a06196c1582c71d23acc93e1fd0c2", null ],
-    [ "orxRGBA_A", "group__orx_display.html#ga7fa359660d9c77056030146c0fa7dd98", null ],
-    [ "orxRGBA_B", "group__orx_display.html#ga12afc061feff0993ee3cbff9ffed989d", null ],
-    [ "orxRGBA_G", "group__orx_display.html#ga924f29dca5169a0bb652055181973844", null ],
-    [ "orxRGBA_R", "group__orx_display.html#ga4cb83fc6ae094cb493ac85d030a818e3", null ],
+    [ "orxRGBA_A", "group__orx_display.html#gaa0b977754ed1bcf598f2ab3ec1efb555", null ],
+    [ "orxRGBA_B", "group__orx_display.html#ga5c9ce41d85e0950b0a4b75a86151125a", null ],
+    [ "orxRGBA_G", "group__orx_display.html#ga969eaf9e6d435511f92c0d51e78de239", null ],
+    [ "orxRGBA_R", "group__orx_display.html#gafbff51854ab04dbe5b67320b7a457004", null ],
     [ "orxBITMAP", "group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415", null ],
     [ "orxDISPLAY_BLEND_MODE", "group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc", [
       [ "orxDISPLAY_BLEND_MODE_ALPHA", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca109031a2954c14e60394b49532675c84", null ],

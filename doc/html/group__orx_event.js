@@ -9,8 +9,8 @@ var group__orx_event =
       [ "pstPayload", "structorx_e_v_e_n_t.html#aed283fb8a616b4c4254ddf76f7de909f", null ]
     ] ],
     [ "orxEVENT_INIT", "group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf", null ],
-    [ "orxEVENT_SEND", "group__orx_event.html#ga2f729cf409fa798b17fd3a26df94c345", null ],
-    [ "orxEVENT_HANDLER", "group__orx_event.html#ga30a8b5c0b1b466b6db9da6d6e17497b9", null ],
+    [ "orxEVENT_SEND", "group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607", null ],
+    [ "orxEVENT_HANDLER", "group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5", null ],
     [ "orxEVENT_TYPE", "group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8", [
       [ "orxEVENT_TYPE_ANIM", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a30fb817733e3b2e80de4040437fc1f0a", null ],
       [ "orxEVENT_TYPE_CLOCK", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aaa3f462f615e766d1e106016f1a3c944", null ],
