@@ -921,7 +921,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
 #ifdef __orxDEBUG__
-    putenv("ALSOFT_LOGLEVEL=3");
+    putenv((char *)"ALSOFT_LOGLEVEL=3");
 #endif
 
     /* Cleans static controller */
