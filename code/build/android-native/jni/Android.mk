@@ -67,7 +67,7 @@ ORX_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/Tremolo \
                     $(LOCAL_PATH)/../../extern/libwebp/include
 
-ORX_CFLAGS := -DNO_MALLINFO=1 -D__orxANDROID_NATIVE__
+ORX_CFLAGS := -DNO_MALLINFO=1 -DTARGET_OS_ANDROID_NATIVE
 
 include $(CLEAR_VARS)
 

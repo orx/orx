@@ -7,7 +7,7 @@ LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt Tremolo-prebuilt OpenAL-prebuilt We
 
 TARGET_PLATFORM = android-9
 
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__
+LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID_NATIVE
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
@@ -20,7 +20,7 @@ LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt Tremolo-prebuilt OpenAL-prebuilt We
 
 TARGET_PLATFORM = android-9
 
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxDEBUG__
+LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID_NATIVE -D__orxDEBUG__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
@@ -33,7 +33,7 @@ LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt Tremolo-prebuilt OpenAL-prebuilt We
 
 TARGET_PLATFORM = android-9
 
-LOCAL_EXPORT_CFLAGS := -D__orxANDROID_NATIVE__ -D__orxPROFILER__
+LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID_NATIVE -D__orxPROFILER__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
