@@ -55,7 +55,6 @@
 #define orxCOMMAND_KU32_STATIC_FLAG_NONE              0x00000000                      /**< No flags */
 
 #define orxCOMMAND_KU32_STATIC_FLAG_READY             0x00000001                      /**< Ready flag */
-#define orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT  0x10000000                      /** <Processing event flag */
 
 #define orxCOMMAND_KU32_STATIC_MASK_ALL               0xFFFFFFFF                      /**< All mask */
 
@@ -445,7 +444,7 @@ static orxINLINE const orxCOMMAND *orxCommand_FindNext(const orxCOMMAND_TRIE_NOD
   return pstResult;
 }
 
-static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandLine, const orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
+static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandLine, const orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult, orxBOOL _bSilent)
 {
   const orxSTRING zCommand;
   orxCOMMAND_VAR *pstResult = orxNULL;
@@ -893,8 +892,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       /* Restores command end */
       *(orxCHAR *)pcCommandEnd = cBackupChar;
 
-      /* Not processing event? */
-      if(!orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT))
+      /* Not silent? */
+      if(_bSilent == orxFALSE)
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
@@ -979,14 +978,8 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       /* Gets payload */
       pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Updates internal status */
-      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT, orxCOMMAND_KU32_STATIC_FLAG_NONE);
-
       /* Processes command */
-      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult);
-
-      /* Updates internal status */
-      orxFLAG_SET(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_NONE, orxCOMMAND_KU32_STATIC_FLAG_PROCESSING_EVENT);
+      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
 
       break;
     }
@@ -3078,7 +3071,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
   if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
   {
     /* Processes it */
-    pstResult = orxCommand_Process(_zCommandLine, orxU64_UNDEFINED, _pstResult);
+    pstResult = orxCommand_Process(_zCommandLine, orxU64_UNDEFINED, _pstResult, orxFALSE);
   }
 
   /* Done! */
