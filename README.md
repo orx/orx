@@ -168,7 +168,7 @@ Compiling
 
 ###Important - first step:
 
-**If you just cloned orx with mercurial or git, you will need to run the setup.bat/setup.sh script
+**If you just cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
 This script will download all the needed dependencies and generate all the project files for your platform.
 The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulls.**
