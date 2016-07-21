@@ -192,12 +192,12 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
         {
           /* Logs info */
-          orxLOG("[%s::%s] is %s (%s/v=%g + %s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]), pstPayload->afValue[1]);
+          orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " is %s (" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "/v=%g + " orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? orxANSI_KZ_COLOR_FG_GREEN "ON " orxANSI_KZ_COLOR_FG_DEFAULT : orxANSI_KZ_COLOR_FG_RED "OFF" orxANSI_KZ_COLOR_FG_DEFAULT, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]), pstPayload->afValue[1]);
         }
         else
         {
           /* Logs info */
-          orxLOG("[%s::%s] is %s (%s/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), pstPayload->afValue[0]);
+          orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " is %s (" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "/v=%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? orxANSI_KZ_COLOR_FG_GREEN  "ON " orxANSI_KZ_COLOR_FG_DEFAULT : orxANSI_KZ_COLOR_FG_RED "OFF" orxANSI_KZ_COLOR_FG_DEFAULT, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), pstPayload->afValue[0]);
         }
       }
 
@@ -348,7 +348,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Logs info */
-        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s:%s:%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
       }
 
       break;
