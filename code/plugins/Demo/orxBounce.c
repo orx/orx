@@ -348,7 +348,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Logs info */
-        orxLOG("[%s::%s::%s] has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s:%s:%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
       }
 
       break;

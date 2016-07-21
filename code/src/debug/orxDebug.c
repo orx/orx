@@ -167,6 +167,111 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
   return zResult;
 }
 
+/** Gets debug level format
+ * @param[in]   _eLevel                       Concerned debug level
+ *@return      Corresponding literal format
+ */
+static orxINLINE const orxSTRING orxDebug_GetLevelFormat(orxDEBUG_LEVEL _eLevel)
+{
+  const orxSTRING zResult;
+
+  /* Depending on level */
+  switch(_eLevel)
+  {
+    case orxDEBUG_LEVEL_ANIM:
+    case orxDEBUG_LEVEL_CONFIG:
+    case orxDEBUG_LEVEL_CLOCK:
+    case orxDEBUG_LEVEL_DISPLAY:
+    case orxDEBUG_LEVEL_FILE:
+    case orxDEBUG_LEVEL_INPUT:
+    case orxDEBUG_LEVEL_JOYSTICK:
+    case orxDEBUG_LEVEL_KEYBOARD:
+    case orxDEBUG_LEVEL_MEMORY:
+    case orxDEBUG_LEVEL_MOUSE:
+    case orxDEBUG_LEVEL_OBJECT:
+    case orxDEBUG_LEVEL_PARAM:
+    case orxDEBUG_LEVEL_PHYSICS:
+    case orxDEBUG_LEVEL_PLUGIN:
+    case orxDEBUG_LEVEL_PROFILER:
+    case orxDEBUG_LEVEL_RENDER:
+    case orxDEBUG_LEVEL_SCREENSHOT:
+    case orxDEBUG_LEVEL_SOUND:
+    case orxDEBUG_LEVEL_SYSTEM:
+    case orxDEBUG_LEVEL_TIMER:
+    case orxDEBUG_LEVEL_USER:
+
+    case orxDEBUG_LEVEL_ALL:
+
+      zResult = orxDEBUG_KZ_TYPE_WARNING_FORMAT " ";
+      break;
+
+    case orxDEBUG_LEVEL_LOG:
+
+      zResult = orxDEBUG_KZ_TYPE_LOG_FORMAT " ";
+      break;
+
+    case orxDEBUG_LEVEL_ASSERT:
+
+      zResult = orxDEBUG_KZ_TYPE_ERROR_FORMAT " ";
+      break;
+
+    default: zResult = "INVALID DEBUG LEVEL"; break;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Clears ANSI codes from a buffer
+ * @param[in]   _zBuffer                      Concerned buffer
+ */
+static orxINLINE void orxDebug_ClearANSICodes(orxSTRING _zBuffer)
+{
+  orxCHAR *pc, *pcDst;
+
+  /* For all characters */
+  for(pcDst = pc = _zBuffer; *pc != orxCHAR_NULL; pc++)
+  {
+    /* ANSI escape code? */
+    if(*pc == orxANSI_KC_MARKER)
+    {
+      /* Skips code */
+      for(;
+          (((*pc | 0x20) < 'a')
+        || ((*pc | 0x20) > 'z'))
+       && (*pc != orxCHAR_NULL);
+          pc++)
+        ;
+
+      /* Valid? */
+      if(*pc != orxCHAR_NULL)
+      {
+        /* Skips end of code */
+        continue;
+      }
+      else
+      {
+        /* Stops */
+        break;
+      }
+    }
+    else
+    {
+      /* Should copy? */
+      if(pcDst != pc)
+      {
+        *pcDst = *pc;
+      }
+
+      /* Updates destination */
+      pcDst++;
+    }
+  }
+
+  /* Ends string */
+  *pcDst = orxCHAR_NULL;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -181,6 +286,12 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Init dependencies */
+#ifdef __orxWINDOWS__
+
+  /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
+  SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7);
+
+#endif /* __orxWINDOWS__ */
 
   /* Correct parameters ? */
   if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
@@ -361,7 +472,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       /* Inits Log Time */
       time(&u32Time);
 
-      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FULL_FORMAT, localtime(&u32Time));
+      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FULL_FORMAT " ", localtime(&u32Time));
     }
     /* Time Stamp? */
     else if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
@@ -371,7 +482,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       /* Inits Log Time */
       time(&u32Time);
 
-      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
+      pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT " ", localtime(&u32Time));
     }
 
     /* Log Type? */
@@ -380,11 +491,11 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #ifdef __orxMSVC__
 
-      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s]", orxDebug_GetLevelString(_eLevel));
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), orxDebug_GetLevelFormat(_eLevel), orxDebug_GetLevelString(_eLevel));
 
 #else /* __orxMSVC__ */
 
-      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s]", orxDebug_GetLevelString(_eLevel));
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), orxDebug_GetLevelFormat(_eLevel), orxDebug_GetLevelString(_eLevel));
 
 #endif /* __orxMSVC__ */
 
@@ -401,12 +512,12 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 #ifdef __orxMSVC__
 
       /* Writes info */
-      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", zFile, _zFunction, _u32Line);
+      pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), orxDEBUG_KZ_FILE_FORMAT " ", zFile, _zFunction, _u32Line);
 
 #else /* __orxMSVC__ */
 
       /* Writes info */
-      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), " [%s:%s():%u]", zFile, _zFunction, (unsigned int)_u32Line);
+      pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), orxDEBUG_KZ_FILE_FORMAT " ", zFile, _zFunction, (unsigned int)_u32Line);
 
 #endif /* __orxMSVC__ */
     }
@@ -419,17 +530,58 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #ifdef __orxMSVC__
 
-    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), (pcBuffer == zBuffer) ? "%s%s" : " %s%s", zLog, orxSTRING_EOL);
+    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, orxANSI_KZ_COLOR_RESET, orxSTRING_EOL);
 
 #else /* __orxMSVC__ */
 
-    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), (pcBuffer == zBuffer) ? "%s%s" : " %s%s", zLog, orxSTRING_EOL);
+    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, orxANSI_KZ_COLOR_RESET, orxSTRING_EOL);
 
 #endif /* __orxMSVC__ */
 
     pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
 
-    /* Use file? */
+    /* Terminal display? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
+    {
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+#define  LOG_TAG    "orxDebug"
+#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+
+      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      {
+        LOGI(zBuffer);
+      }
+      else
+      {
+        LOGD(zBuffer);
+      }
+
+#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+      FILE *pstFile;
+
+      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      {
+        pstFile = stdout;
+      }
+      else
+      {
+        pstFile = stderr;
+      }
+
+      fprintf(pstFile, "%s", zBuffer);
+      fflush(pstFile);
+
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+    }
+
+    /* Clears ANSI codes */
+    orxDebug_ClearANSICodes(zBuffer);
+
+    /* File print? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
     {
       FILE *pstFile;
@@ -475,45 +627,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       }
     }
 
-    /* Terminal Display? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
-    {
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-#define  LOG_TAG    "orxDebug"
-#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
-
-      if(_eLevel == orxDEBUG_LEVEL_LOG)
-      {
-        LOGI(zBuffer);
-      }
-      else
-      {
-        LOGD(zBuffer);
-      }
-
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-      FILE *pstFile;
-
-      if(_eLevel == orxDEBUG_LEVEL_LOG)
-      {
-        pstFile = stdout;
-      }
-      else
-      {
-        pstFile = stderr;
-      }
-
-      fprintf(pstFile, "%s", zBuffer);
-      fflush(pstFile);
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-    }
-
-    /* Console Display? */
+    /* Console display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
     {
       /* Is console initialized? */

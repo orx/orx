@@ -230,19 +230,19 @@
 
   /* Assert */
   #if defined(__orxGCC__) || defined(__orxLLVM__)
-    #define orxASSERT(TEST, ...)                                                        \
-      if(!(TEST))                                                                       \
-      {                                                                                 \
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", ##__VA_ARGS__); \
-        orxBREAK();                                                                     \
+    #define orxASSERT(TEST, ...)                                                                                                                                          \
+      if(!(TEST))                                                                                                                                                         \
+      {                                                                                                                                                                   \
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", ##__VA_ARGS__); \
+        orxBREAK();                                                                                                                                                       \
       }
   #else /* __orxGCC__ || __orxLLVM__ */
     #ifdef __orxMSVC__
-      #define orxASSERT(TEST, ...)                                                      \
-        if(!(TEST))                                                                     \
-        {                                                                               \
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[ASSERT] : <" #TEST ">", __VA_ARGS__); \
-          orxBREAK();                                                                   \
+      #define orxASSERT(TEST, ...)                                                                                                                                        \
+        if(!(TEST))                                                                                                                                                       \
+        {                                                                                                                                                                 \
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", __VA_ARGS__); \
+          orxBREAK();                                                                                                                                                     \
         }
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ || __orxLLVM__ */
@@ -283,8 +283,14 @@
 
 #define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      2048
 
-#define orxDEBUG_KZ_DATE_FORMAT               "[%H:%M:%S]"
-#define orxDEBUG_KZ_DATE_FULL_FORMAT          "[%Y-%m-%d %H:%M:%S]"
+#define orxDEBUG_KZ_DATE_FORMAT               orxANSI_KZ_COLOR_FG_CYAN "[%H:%M:%S]" orxANSI_KZ_COLOR_RESET
+#define orxDEBUG_KZ_DATE_FULL_FORMAT          orxANSI_KZ_COLOR_FG_CYAN "[%Y-%m-%d %H:%M:%S]"  orxANSI_KZ_COLOR_RESET
+
+#define orxDEBUG_KZ_TYPE_LOG_FORMAT           orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_RESET
+#define orxDEBUG_KZ_TYPE_WARNING_FORMAT       orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_RESET
+#define orxDEBUG_KZ_TYPE_ERROR_FORMAT         orxANSI_KZ_COLOR_FG_RED "[%s]" orxANSI_KZ_COLOR_RESET
+
+#define orxDEBUG_KZ_FILE_FORMAT               orxANSI_KZ_COLOR_FG_MAGENTA "[%s:%s(%u)]" orxANSI_KZ_COLOR_RESET
 
 
 /*****************************************************************************/
