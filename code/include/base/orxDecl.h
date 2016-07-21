@@ -446,6 +446,48 @@ do                            \
  */
 #define orxFLAG_SWAP(X, S) ((X) ^= (S))
 
+
+/** ANSI macros */
+
+#define orxANSI_KC_MARKER                   '\x1b'
+
+#define orxANSI_KZ_COLOR_RESET              "\x1b[0m"
+
+#define orxANSI_KZ_COLOR_BOLD_ON            "\x1b[1m"
+#define orxANSI_KZ_COLOR_ITALICS_ON         "\x1b[3m"
+#define orxANSI_KZ_COLOR_UNDERLINE_ON       "\x1b[4m"
+#define orxANSI_KZ_COLOR_BLINK_ON           "\x1b[5m"
+#define orxANSI_KZ_COLOR_INVERSE_ON         "\x1b[7m"
+#define orxANSI_KZ_COLOR_STRIKETHROUGH_ON   "\x1b[9m"
+
+#define orxANSI_KZ_COLOR_BOLD_OFF           "\x1b[22m"
+#define orxANSI_KZ_COLOR_ITALICS_OFF        "\x1b[23m"
+#define orxANSI_KZ_COLOR_UNDERLINE_OFF      "\x1b[24m"
+#define orxANSI_KZ_COLOR_BLINK_OFF          "\x1b[25m"
+#define orxANSI_KZ_COLOR_INVERSE_OFF        "\x1b[27m"
+#define orxANSI_KZ_COLOR_STRIKETHROUGH_OFF  "\x1b[29m"
+
+#define orxANSI_KZ_COLOR_FG_BLACK           "\x1b[30m"
+#define orxANSI_KZ_COLOR_FG_RED             "\x1b[31m"
+#define orxANSI_KZ_COLOR_FG_GREEN           "\x1b[32m"
+#define orxANSI_KZ_COLOR_FG_YELLOW          "\x1b[33m"
+#define orxANSI_KZ_COLOR_FG_BLUE            "\x1b[34m"
+#define orxANSI_KZ_COLOR_FG_MAGENTA         "\x1b[35m"
+#define orxANSI_KZ_COLOR_FG_CYAN            "\x1b[36m"
+#define orxANSI_KZ_COLOR_FG_WHITE           "\x1b[37m"
+#define orxANSI_KZ_COLOR_FG_DEFAULT         "\x1b[39m"
+
+#define orxANSI_KZ_COLOR_BG_BLACK           "\x1b[40m"
+#define orxANSI_KZ_COLOR_BG_RED             "\x1b[41m"
+#define orxANSI_KZ_COLOR_BG_GREEN           "\x1b[42m"
+#define orxANSI_KZ_COLOR_BG_YELLOW          "\x1b[43m"
+#define orxANSI_KZ_COLOR_BG_BLUE            "\x1b[44m"
+#define orxANSI_KZ_COLOR_BG_MAGENTA         "\x1b[45m"
+#define orxANSI_KZ_COLOR_BG_CYAN            "\x1b[46m"
+#define orxANSI_KZ_COLOR_BG_WHITE           "\x1b[47m"
+#define orxANSI_KZ_COLOR_BG_DEFAULT         "\x1b[49m"
+
+
 #endif /*_orxDECL_H_*/
 
 /** @} */
