@@ -61,6 +61,7 @@
 #define orxDEBUG_KU32_STATIC_FLAG_NONE          0x00000000
 
 #define orxDEBUG_KU32_STATIC_FLAG_READY         0x10000000
+#define orxDEBUG_KU32_STATIC_FLAG_ANSI          0x20000000
 
 #define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
@@ -286,12 +287,6 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Init dependencies */
-#ifdef __orxWINDOWS__
-
-  /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
-  SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-
-#endif /* __orxWINDOWS__ */
 
   /* Correct parameters ? */
   if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
@@ -301,9 +296,9 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
 
     eResult = orxSTATUS_FAILURE;
   }
+  /* Already Initialized? */
   else if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
-    /* Already Initialized? */
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize debug module when it was already initialized.");
 
@@ -324,11 +319,22 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
     /* Set module as initialized */
-    sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY;
+    sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY | orxDEBUG_KU32_STATIC_FLAG_ANSI;
 
     /* Inits default files */
     _orxDebug_SetDebugFile(orxDEBUG_KZ_DEFAULT_DEBUG_FILE);
     _orxDebug_SetLogFile(orxDEBUG_KZ_DEFAULT_LOG_FILE);
+
+#ifdef __orxWINDOWS__
+
+    /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
+    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7))
+    {
+      /* Removes ANSI flag */
+      sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
+    }
+
+#endif /* __orxWINDOWS__ */
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -540,6 +546,13 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
     pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
 
+    /* Doesn't have ANSI support? */
+    if(!orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
+    {
+      /* Clears ANSI codes */
+      orxDebug_ClearANSICodes(zBuffer);
+    }
+
     /* Terminal display? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
     {
@@ -578,8 +591,12 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
     }
 
-    /* Clears ANSI codes */
-    orxDebug_ClearANSICodes(zBuffer);
+    /* Has ANSI support? */
+    if(orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
+    {
+      /* Clears ANSI codes */
+      orxDebug_ClearANSICodes(zBuffer);
+    }
 
     /* File print? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
