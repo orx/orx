@@ -31,7 +31,7 @@
  *
  */
 
-#if defined(__orxANDROID_NATIVE__)
+#if defined(TARGET_OS_ANDROID_NATIVE)
 
 #include <android/log.h>
 #include <android_native_app_glue.h>

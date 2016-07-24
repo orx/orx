@@ -31,7 +31,7 @@
  *
  */
 
-#if defined(__orxANDROID__)
+#if defined(TARGET_OS_ANDROID)
 
 #include <jni.h>
 #include <android/log.h>
