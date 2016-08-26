@@ -29,7 +29,9 @@ platform-data:  [
 begin: now/time
 skip-hook: false
 platform: lowercase to-string system/platform/1
-if platform = "macintosh" [platform: "mac"]
+switch platform [
+    "macintosh" [platform: "mac"]
+    "linux" [if find to-string system/platform/2 "x64" [platform-data/:platform/premake: "linux64"]]]
 platform-info: platform-data/:platform
 
 change-dir system/options/home
