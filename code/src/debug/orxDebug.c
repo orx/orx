@@ -318,7 +318,7 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
     sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
-#if defined(__orxANDROID__) || (__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
     /* Sets module as initialized */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY;
