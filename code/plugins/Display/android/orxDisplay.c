@@ -1938,6 +1938,10 @@ static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber
     sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NONE;
   }
 
+  /* Copies vertex buffer */
+  glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizei)(_u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX)), &(sstDisplay.astVertexList));
+  glASSERT();
+
   /* Only 2 vertices? */
   if(_u32VertexNumber == 2)
   {
