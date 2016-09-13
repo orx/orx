@@ -171,20 +171,10 @@ typedef struct __orxSTRUCTURE_t
   union
   {
     orxLINKLIST_NODE  stLinkListNode; /**< Linklist node : 28/40 */
-    orxTREE_NODE      stTreeNode;     /**< Tree node : 32/48 */
-  } stStorage;                        /**< Storage node union : 32/48 */
+    orxTREE_NODE      stTreeNode;     /**< Tree node : 36/56 */
+  } stStorage;                        /**< Storage node union : 36/56 */
 
-  orxU32              u32Flags;       /**< Flags : 36/52 */
-
-#if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
-
-  orxU8               au8Padding[4];  /**< Padding : 40 */
-
-#else /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
-
-  orxU8               au8Padding[4];  /**< Padding : 56 */
-
-#endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
+  orxU32              u32Flags;       /**< Flags : 40/60 */
 
 } orxSTRUCTURE;
 

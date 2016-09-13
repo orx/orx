@@ -56,7 +56,8 @@ typedef struct __orxTREE_NODE_t
   struct __orxTREE_NODE_t *pstParent;           /**< Parent node pointer : 4/8 */
   struct __orxTREE_NODE_t *pstChild;            /**< First child node pointer : 8/16 */
   struct __orxTREE_NODE_t *pstSibling;          /**< Next sibling node pointer : 12/24 */
-  struct __orxTREE_t      *pstTree;             /**< Associated tree pointer : 16/32 */
+  struct __orxTREE_NODE_t *pstPrevious;         /**< Previous sibling node pointer : 16/32 */
+  struct __orxTREE_t      *pstTree;             /**< Associated tree pointer : 20/40 */
 
 } orxTREE_NODE;
 
@@ -160,7 +161,7 @@ static orxINLINE orxTREE_NODE *                 orxTree_GetChild(const orxTREE_N
   return((_pstNode->pstTree != orxNULL) ? _pstNode->pstChild : (orxTREE_NODE *)orxNULL);
 }
 
-/** Gets sibling node
+/** Gets (next) sibling node
  * @param[in]   _pstNode                        Concerned node
  * @return orxTREE_NODE / orxNULL
  */
@@ -171,6 +172,19 @@ static orxINLINE orxTREE_NODE *                 orxTree_GetSibling(const orxTREE
 
   /* Returns it */
   return((_pstNode->pstTree != orxNULL) ? _pstNode->pstSibling : (orxTREE_NODE *)orxNULL);
+}
+
+/** Gets previous sibling node
+* @param[in]   _pstNode                        Concerned node
+* @return orxTREE_NODE / orxNULL
+*/
+static orxINLINE orxTREE_NODE *                 orxTree_GetPrevious(const orxTREE_NODE *_pstNode)
+{
+  /* Checks */
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Returns it */
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstPrevious : (orxTREE_NODE *)orxNULL);
 }
 
 
