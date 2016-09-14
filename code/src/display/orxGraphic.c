@@ -192,6 +192,119 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Sets graphic data
+ * @param[in]   _pstGraphic     Graphic concerned
+ * @param[in]   _pstData        Data structure to set / orxNULL
+ * @param[in]   _bInternal      Internal call
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *_pstData, orxBOOL _bInternal)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Had previous data? */
+  if(_pstGraphic->pstData != orxNULL)
+  {
+    /* Internally handled? */
+    if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_INTERNAL))
+    {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
+
+      /* 2D data? */
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+      {
+        /* Deletes it */
+        orxTexture_Delete(orxTEXTURE(_pstGraphic->pstData));
+      }
+      /* Text data? */
+      else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+      {
+        /* Deletes it */
+        orxText_Delete(orxTEXT(_pstGraphic->pstData));
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Non-2d (texture/text) graphics not supported yet.");
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_INTERNAL);
+    }
+    else
+    {
+      /* Updates structure reference counter */
+      orxStructure_DecreaseCounter(_pstGraphic->pstData);
+    }
+
+    /* Cleans reference */
+    _pstGraphic->pstData = orxNULL;
+  }
+
+  /* Valid & sets new data? */
+  if((eResult != orxSTATUS_FAILURE) && (_pstData != orxNULL))
+  {
+    /* Is data a texture? */
+    if(orxTEXTURE(_pstData) != orxNULL)
+    {
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_MASK_TYPE);
+    }
+    /* Is data a text? */
+    else if(orxTEXT(_pstData) != orxNULL)
+    {
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT, orxGRAPHIC_KU32_MASK_TYPE);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Data given is not a texture nor a text.");
+
+      /* Updates flags */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Stores data */
+      _pstGraphic->pstData = _pstData;
+
+      /* Internal call? */
+      if(_bInternal != orxFALSE)
+      {
+        /* Updates its owner */
+        orxStructure_SetOwner(_pstData, _pstGraphic);
+
+        /* Updates flags */
+        orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_INTERNAL, orxGRAPHIC_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Updates structure reference counter */
+        orxStructure_IncreaseCounter(_pstData);
+      }
+    }
+  }
+  else
+  {
+    /* Updates flags */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+
 /** Deletes all graphics
  */
 static orxINLINE void orxGraphic_DeleteAll()
@@ -393,15 +506,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstTexture != orxNULL)
         {
           /* Links it */
-          if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
+          if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstTexture, orxTRUE) != orxSTATUS_FAILURE)
           {
             orxVECTOR vTextureSize;
-
-            /* Updates its owner */
-            orxStructure_SetOwner(pstTexture, pstResult);
-
-            /* Inits default 2D flags */
-            u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
             /* Has size? */
             if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) != orxNULL)
@@ -467,14 +574,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           if(pstText != orxNULL)
           {
             /* Links it */
-            if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstText) != orxSTATUS_FAILURE)
+            if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstText, orxTRUE) != orxSTATUS_FAILURE)
             {
-              /* Sets its owner */
-              orxStructure_SetOwner(pstText, pstResult);
-
-              /* Inits default text flags */
-              u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_TEXT;
-
               /* Updates size */
               orxGraphic_UpdateSize(pstResult);
             }
@@ -769,7 +870,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   if(orxStructure_GetRefCounter(_pstGraphic) == 0)
   {
     /* Cleans data */
-    orxGraphic_SetData(_pstGraphic, orxNULL);
+    orxGraphic_SetDataInternal(_pstGraphic, orxNULL, orxFALSE);
 
     /* Deletes structure */
     orxStructure_Delete(_pstGraphic);
@@ -816,85 +917,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Had previous data? */
-  if(_pstGraphic->pstData != orxNULL)
-  {
-    /* Updates structure reference counter */
-    orxStructure_DecreaseCounter(_pstGraphic->pstData);
-
-    /* Internally handled? */
-    if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_INTERNAL))
-    {
-      /* Removes its owner */
-      orxStructure_SetOwner(_pstGraphic->pstData, orxNULL);
-
-      /* 2D data? */
-      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
-      {
-        /* Deletes it */
-        orxTexture_Delete(orxTEXTURE(_pstGraphic->pstData));
-      }
-      /* Text data? */
-      else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
-      {
-        /* Deletes it */
-        orxText_Delete(orxTEXT(_pstGraphic->pstData));
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Non-2d (texture/text) graphics not supported yet.");
-
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
-
-      /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_INTERNAL);
-    }
-
-    /* Cleans reference */
-    _pstGraphic->pstData = orxNULL;
-  }
-
-  /* Valid & sets new data? */
-  if((eResult != orxSTATUS_FAILURE) && (_pstData != orxNULL))
-  {
-    /* Stores it */
-    _pstGraphic->pstData = _pstData;
-
-    /* Updates structure reference counter */
-    orxStructure_IncreaseCounter(_pstData);
-
-    /* Is data a texture? */
-    if(orxTEXTURE(_pstData) != orxNULL)
-    {
-      /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_MASK_TYPE);
-    }
-    /* Is data a text? */
-    else if(orxTEXT(_pstData) != orxNULL)
-    {
-      /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT, orxGRAPHIC_KU32_MASK_TYPE);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Data given is not a texture nor a text.");
-
-      /* Updates flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
-  }
-  else
-  {
-    /* Updates flags */
-    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
-  }
+  /* Updates result */
+  eResult = orxGraphic_SetDataInternal(_pstGraphic, _pstData, orxFALSE);
 
   /* Done! */
   return eResult;
