@@ -1234,6 +1234,7 @@ var searchData=
   ['orxtree_5fgetchild',['orxTree_GetChild',['../group__orx_tree.html#gaeba32cfd9a5a4930b721aeb0829384ba',1,'orxTree.h']]],
   ['orxtree_5fgetcounter',['orxTree_GetCounter',['../group__orx_tree.html#gaeff1423931d056d7248f16daf4a86c38',1,'orxTree.h']]],
   ['orxtree_5fgetparent',['orxTree_GetParent',['../group__orx_tree.html#gac479b2f7c343405752d5031a20a24f1f',1,'orxTree.h']]],
+  ['orxtree_5fgetprevious',['orxTree_GetPrevious',['../group__orx_tree.html#ga4d51e08a64164f8c451e82b2457b9bb1',1,'orxTree.h']]],
   ['orxtree_5fgetroot',['orxTree_GetRoot',['../group__orx_tree.html#ga9e30cca8dce436b7a6d74b6f2c4705e3',1,'orxTree.h']]],
   ['orxtree_5fgetsibling',['orxTree_GetSibling',['../group__orx_tree.html#ga8187d0532bb9c8a1727e4171f2d4f8b3',1,'orxTree.h']]],
   ['orxtree_5fgettree',['orxTree_GetTree',['../group__orx_tree.html#ga8a11078ef1c414d846550f3e55d4d029',1,'orxTree.h']]],

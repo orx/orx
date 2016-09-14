@@ -49,9 +49,9 @@ var NAVTREEINDEX =
 "group__orx_spawner.html#ga757d724e3601950fccbb85d625991400",
 "group__orx_structure.html#ga6b3a6ce62693fdf1f1b230a1677cc487",
 "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29",
-"group__orx_vector.html#gab20d9cfbfd0c1fcc33eed217002e2e2d",
-"orx_shader_pointer_8h_source.html",
-"structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a532745a46c44d576c975c80d9a5a8af0"
+"group__orx_vector.html#gaa9269252d414e37fa6b994752443b384",
+"orx_shader_8h_source.html",
+"structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

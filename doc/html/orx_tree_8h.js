@@ -8,6 +8,7 @@ var orx_tree_8h =
     [ "orxTree_GetChild", "group__orx_tree.html#gaeba32cfd9a5a4930b721aeb0829384ba", null ],
     [ "orxTree_GetCounter", "group__orx_tree.html#gaeff1423931d056d7248f16daf4a86c38", null ],
     [ "orxTree_GetParent", "group__orx_tree.html#gac479b2f7c343405752d5031a20a24f1f", null ],
+    [ "orxTree_GetPrevious", "group__orx_tree.html#ga4d51e08a64164f8c451e82b2457b9bb1", null ],
     [ "orxTree_GetRoot", "group__orx_tree.html#ga9e30cca8dce436b7a6d74b6f2c4705e3", null ],
     [ "orxTree_GetSibling", "group__orx_tree.html#ga8187d0532bb9c8a1727e4171f2d4f8b3", null ],
     [ "orxTree_GetTree", "group__orx_tree.html#ga8a11078ef1c414d846550f3e55d4d029", null ],
