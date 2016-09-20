@@ -146,6 +146,7 @@ typedef struct __orxMODULE_STATIC_t
 {
   orxMODULE_INFO            astModuleInfo[orxMODULE_ID_NUMBER];
   orxU32                    u32InitLoopCounter;
+  orxU32                    u32InitCounter;
 
 } orxMODULE_STATIC;
 
@@ -237,16 +238,6 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zM
   /* Updates module status flags */
   sstModule.astModuleInfo[_eModuleID].u32StatusFlags = orxMODULE_KU32_STATUS_FLAG_REGISTERED;
 
-  /* Main module? */
-  if(_eModuleID == orxMODULE_ID_MAIN)
-  {
-    /* Registers all other modules */
-    orxModule_RegisterAll();
-
-    /* Setups all modules */
-    orxModule_SetupAll();
-  }
-
   /* Done! */
   return;
 }
@@ -292,6 +283,16 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   /* Checks */
   orxASSERT(orxMODULE_ID_NUMBER <= orxMODULE_ID_MAX_NUMBER);
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+
+  /* First init? */
+  if((sstModule.u32InitLoopCounter == 0) && (sstModule.u32InitCounter == 0))
+  {
+    /* Registers all other modules */
+    orxModule_RegisterAll();
+
+    /* Setups all modules */
+    orxModule_SetupAll();
+  }
 
   /* Increases loop counter */
   sstModule.u32InitLoopCounter++;
@@ -369,6 +370,9 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
           {
             /* Updates initialized flag */
             sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
+
+            /* Updates count */
+            sstModule.u32InitCounter++;
           }
           else
           {
@@ -495,6 +499,9 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
         }
       }
     }
+
+    /* Updates counter */
+    sstModule.u32InitCounter--;
   }
 
   return;
