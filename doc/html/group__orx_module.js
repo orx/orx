@@ -49,8 +49,9 @@ var group__orx_module =
       [ "orxMODULE_ID_THREAD", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a17b390ccbdc4ea4bc109f3173156aa16", null ],
       [ "orxMODULE_ID_TIMELINE", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a9bad17bdd034daf9b5daaeac3ba9ea0b", null ],
       [ "orxMODULE_ID_VIEWPORT", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a0dcac02f924f00d04f246747460f1286", null ],
-      [ "orxMODULE_ID_NUMBER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2f515e313a4217d32d5037c714f4641d", null ],
-      [ "orxMODULE_ID_MAX_NUMBER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a31508cb1039bfdd3651a118f2c302fdc", null ],
+      [ "orxMODULE_ID_CORE_NUMBER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a82b13a3fd73b0301cdbf5d5b8c9875a1", null ],
+      [ "orxMODULE_ID_USER_DEFINED", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a1f7a066d01cbe0fee1bbb97c43d5fe1c", null ],
+      [ "orxMODULE_ID_TOTAL_NUMBER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a572192fa4d5ce3d3da6b4ae18899e6fa", null ],
       [ "orxMODULE_ID_NONE", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a64582956b0fd503bbb81e25f452e1e66", null ]
     ] ],
     [ "orxModule_AddDependency", "group__orx_module.html#ga3f7ed5e5d444f7ee30407ad190d44b3f", null ],
