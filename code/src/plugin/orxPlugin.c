@@ -683,7 +683,7 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable == orxNULL);
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
-  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+  orxASSERT(_eModuleID < orxMODULE_ID_CORE_NUMBER);
   orxASSERT(_astCoreFunction != orxNULL);
 
   /* Stores info */
