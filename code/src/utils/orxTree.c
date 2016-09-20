@@ -167,6 +167,13 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
         pstNewChild = _pstNode->pstSibling;
       }
 
+      /* Has new child? */
+      if(pstNewChild != orxNULL)
+      {
+        /* Updates its previous */
+        pstNewChild->pstPrevious = _pstNode->pstPrevious;
+      }
+
       /* Had previous sibling? */
       if(_pstNode->pstPrevious != orxNULL)
       {
