@@ -59,9 +59,9 @@
 #define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
 #define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
 #define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000020  /**< Fixed ratio flag */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x10000000  /**< Internal texture handling flag  */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x40000000  /**< Internal camera handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x00100000  /**< Internal texture handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x00200000  /**< Internal shader pointer handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00400000  /**< Internal camera handling flag  */
 
 #define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000009  /**< Default flags */
 
@@ -88,6 +88,7 @@
 #define orxVIEWPORT_KZ_CONFIG_BLEND_MODE        "BlendMode"
 #define orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE       "AutoResize"
 #define orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
+#define orxVIEWPORT_KZ_CONFIG_NO_DEBUG          "NoDebug"
 
 #define orxVIEWPORT_KZ_LEFT                     "left"
 #define orxVIEWPORT_KZ_RIGHT                    "right"
@@ -452,6 +453,13 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       const orxSTRING zCameraName;
       orxS32          s32Number;
       orxBOOL         bFixedSize, bFixedPosition;
+
+      /* No debug? */
+      if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_NO_DEBUG) != orxFALSE)
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
+      }
 
       /* Has plain size */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)

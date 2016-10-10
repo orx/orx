@@ -59,6 +59,7 @@
 #define orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT     0x20000000  /**< Right horizontal alignment */
 #define orxVIEWPORT_KU32_FLAG_ALIGN_TOP       0x40000000  /**< Top vertical alignment */
 #define orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM    0x80000000  /**< Bottom vertical alignment */
+#define orxVIEWPORT_KU32_FLAG_NO_DEBUG        0x01000000  /**< No debug flag */
 
 
 /** Misc defined

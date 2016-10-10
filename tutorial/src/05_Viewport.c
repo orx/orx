@@ -48,11 +48,11 @@
  *
  * The top right viewport (2) is based on another camera (2) which frustum is narrower than the first one,
  * resulting in a display twice as big. You can't affect this viewport through keys for this tutorial.
- * 
+ *
  * The last viewport (3) is based on another camera (3) which has the exact same settings than the first one.
  * This viewport will display what you originally had in the viewport 1 & 4.
  * You can also interact directly with the first viewport properties, using WASD to move it and 'Q' & 'E' to resize it.
- * 
+ *
  * When two viewports overlap, the oldest one (ie. the one created before the other) will be displayed on top.
  *
  * Lastly, we have a box that doesn't move at all, and a little soldier whose world position will be determined
