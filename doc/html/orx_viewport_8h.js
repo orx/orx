@@ -5,6 +5,7 @@ var orx_viewport_8h =
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_LEFT", "group__orx_viewport.html#ga62cc1ead8c95201bf187d58c1d14452a", null ],
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT", "group__orx_viewport.html#gad5e97420fe63dd9b0281b363f977484c", null ],
     [ "orxVIEWPORT_KU32_FLAG_ALIGN_TOP", "group__orx_viewport.html#ga62aa2bbe77727231dcd39d60cb6c9d63", null ],
+    [ "orxVIEWPORT_KU32_FLAG_NO_DEBUG", "group__orx_viewport.html#gaf97b6d6aedb7a33a03449fac06e3c313", null ],
     [ "orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER", "group__orx_viewport.html#gab13349a38f8c432cce7f247abe4f20c6", null ],
     [ "orxVIEWPORT", "group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a", null ],
     [ "orxVIEWPORT_EVENT", "group__orx_viewport.html#gac676aca97feb0f2591e9b7b1fa793c7b", [
