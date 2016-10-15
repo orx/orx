@@ -51,11 +51,11 @@
 
 #if defined(__orxGCC__) || defined(__orxLLVM__)
 
-  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG("%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", ##__VA_ARGS__)
+  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", ##__VA_ARGS__)
 
 #else // __orxGCC__ || __orxLLVM__
 
-  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG("%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", __VA_ARGS__)
+  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", __VA_ARGS__)
 
 #endif //__orxGCC__ || __orxLLVM__
 
@@ -407,7 +407,7 @@ static void Run()
     if(orxConfig_MergeFiles(zOutputFile, (const orxSTRING *)sstCrypt.azInputFile, sstCrypt.u32InputNumber, bEncrypt ? orxConfig_GetEncryptionKey() : orxNULL) != orxSTATUS_FAILURE)
     {
       // Logs message
-      orxCRYPT_LOG(SAVE, "==== %-24.24s SUCCESS%s%s", zOutputFile, (sstCrypt.u32InputNumber) ? " (MERGED)" : orxSTRING_EMPTY, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
+      orxCRYPT_LOG(SAVE, "==== %-24.24s SUCCESS%s%s", zOutputFile, (sstCrypt.u32InputNumber > 1) ? " (MERGED)" : orxSTRING_EMPTY, bEncrypt ? " (ENCRYPTED)" : orxSTRING_EMPTY);
     }
     else
     {
