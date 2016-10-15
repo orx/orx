@@ -69,11 +69,11 @@
 
 #if defined(__orxGCC__) || defined(__orxLLVM__)
 
-  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG("%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", ##__VA_ARGS__)
+  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", ##__VA_ARGS__)
 
 #else // __orxGCC__ || __orxLLVM__
 
-  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG("%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" FORMAT, "[" #TAG "]", __VA_ARGS__)
+  #define orxFONTGEN_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxFONTGEN_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", __VA_ARGS__)
 
 #endif //__orxGCC__ || __orxLLVM__
 
