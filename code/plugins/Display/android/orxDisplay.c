@@ -51,7 +51,13 @@
 #define STBI_NO_HDR
 #define STBI_NO_PIC
 #define STBI_NO_PNM
+#define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_VIDEO)
+#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz)
+#define STBI_FREE(p)            orxMemory_Free(p)
 #include "stb_image.h"
+#undef STBI_FREE
+#undef STBI_REALLOC
+#undef STBI_MALLOC
 #undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
@@ -61,7 +67,15 @@
 #undef STBI_NO_STDIO
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)
+#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz)
+#define STBIW_FREE(p)           orxMemory_Free(p)
+#define STBIW_MEMMOVE(a, b, sz) orxMemory_Move(a, b, sz)
 #include "stb_image_write.h"
+#undef STBIW_MEMMOVE
+#undef STBIW_FREE
+#undef STBIW_REALLOC
+#undef STBIW_MALLOC
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 
 

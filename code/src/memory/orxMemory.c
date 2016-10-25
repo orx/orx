@@ -311,11 +311,18 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 
   /* Checks */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pMem != orxNULL);
+
+  /* Null? */
+  if(_pMem == orxNULL)
+  {
+    /* Allocates it */
+    pResult = orxMemory_Allocate(_u32Size, orxMEMORY_TYPE_TEMP);
+  }
+  else
+  {
 
 #ifdef __orxPROFILER__
 
-  {
     orxMEMORY_TYPE eMemType;
     size_t         uMemoryChunkSize;
 
@@ -344,14 +351,14 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
       /* Updates result */
       pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
     }
-  }
 
 #else /* __orxPROFILER__ */
 
-  /* Reallocates memory */
-  pResult = dlrealloc(_pMem, (size_t)_u32Size);
+    /* Reallocates memory */
+    pResult = dlrealloc(_pMem, (size_t)_u32Size);
 
 #endif /* __orxPROFILER__ */
+  }
 
   /* Done! */
   return pResult;
