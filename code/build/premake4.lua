@@ -460,7 +460,8 @@ project "orxLIB"
             "dl",
             "m",
             "rt",
-            "pthread"
+            "pthread",
+            "gcc"
         }
         defines {"_GNU_SOURCE"}
 
