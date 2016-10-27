@@ -45,6 +45,14 @@
 #include "math/orxVector.h"
 
 
+/** Misc
+ */
+#define orxCOMMAND_KC_BLOCK_MARKER                    '"'                             /**< Block marker character */
+#define orxCOMMAND_KC_PUSH_MARKER                     '>'                             /**< Push marker character */
+#define orxCOMMAND_KC_POP_MARKER                      '<'                             /**< Pop marker character */
+#define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
+
+
 /** Variable type enum
  */
 typedef enum __orxCOMMAND_VAR_TYPE_t

@@ -324,8 +324,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Updates cursor index */
           pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
         }
-        /* Ask for unstacking? */
-        else if(u32CharacterCodePoint == '<')
+        /* Ask for unstacking, block or GUID? */
+        else if((u32CharacterCodePoint == orxCOMMAND_KC_POP_MARKER)
+             || (u32CharacterCodePoint == orxCOMMAND_KC_GUID_MARKER)
+             || (u32CharacterCodePoint == orxCOMMAND_KC_BLOCK_MARKER))
         {
           /* Updates cursor index */
           pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);

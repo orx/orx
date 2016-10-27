@@ -61,12 +61,6 @@
 
 /** Misc
  */
-#define orxCOMMAND_KC_BLOCK_MARKER                    '"'                             /**< Block marker character */
-#define orxCOMMAND_KC_PUSH_MARKER                     '>'                             /**< Push marker character */
-#define orxCOMMAND_KC_POP_MARKER                      '<'                             /**< Pop marker character */
-#define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
-
-
 #define orxCOMMAND_KU32_BANK_SIZE                     512
 #define orxCOMMAND_KU32_TRIE_BANK_SIZE                4096
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              32
