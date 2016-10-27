@@ -97,6 +97,9 @@
 
 #define orxRENDER_KU32_MAX_MARKER_DEPTH             16
 
+#define orxRENDER_KC_CONSOLE_INSERT_MARKER          '_'
+#define orxRENDER_KC_CONSOLE_OVERTYPE_MARKER        '#'
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -1256,12 +1259,12 @@ static orxINLINE void orxRender_Home_RenderConsole()
       orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Overrides characters at cursor position */
-      ((orxCHAR*)zText)[u32CursorIndex] = '_';
+      ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_INSERT_MARKER;
     }
     else
     {
       /* Overrides characters at cursor position */
-      ((orxCHAR*)zText)[u32CursorIndex] = '#';
+      ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_OVERTYPE_MARKER;
 
       /* Displays full input, including auto-completion */
       orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
