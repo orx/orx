@@ -48,7 +48,6 @@
 
 /** Inputs
  */
-
 #define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
 
 #define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
@@ -63,6 +62,8 @@
 #define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
 #define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
 #define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
+#define orxCONSOLE_KZ_INPUT_SCROLL_DOWN               "ScrollDown"                    /**< Log scroll down */
+#define orxCONSOLE_KZ_INPUT_SCROLL_UP                 "ScrollUp"                      /**< Log scroll up */
 
 
 /** Console module setup
@@ -114,7 +115,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_Log(const orxST
 
 /** Sets the console font
  * @param[in]   _pstFont      Font to use
- * @return orxSTATUS_SUCCESS/ orxSTATUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetFont(const orxFONT *_pstFont);
 
@@ -126,7 +127,7 @@ extern orxDLLAPI const orxFONT *orxFASTCALL           orxConsole_GetFont();
 
 /** Sets the console log line length
  * @param[in]   _u32LineLength Line length to use
- * @return orxSTATUS_SUCCESS/ orxSTATUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetLogLineLength(orxU32 _u32LineLength);
 
@@ -150,11 +151,16 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetCompletionCo
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *_pbActive);
 
 
-/** Gets log line from the end (trail)
+/** Gets log line from the end (trail), using internal offset
  * @param[in]   _u32TrailLineIndex Index of the line starting from end
  * @return orxTRING / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex);
+
+/** Gets log line offset from the end
+ * @return Log line offset from the end
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetTrailLogLineOffset();
 
 /** Gets input text
  * @param[out]  _pu32CursorIndex Index (ie. character position) of the cursor (any character past it has not been validated)

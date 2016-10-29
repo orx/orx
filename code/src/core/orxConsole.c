@@ -69,6 +69,7 @@
 #define orxCONSOLE_KZ_CONFIG_SECTION                  "Console"                       /**< Config section name */
 #define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
 #define orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST       "InputHistoryList"              /**< Input history list */
+#define orxCONSOLE_KZ_CONFIG_SCROLL_SIZE              "ScrollSize"                    /**< Scroll size */
 
 #define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension */
 
@@ -86,6 +87,12 @@
 #define orxCONSOLE_KE_KEY_RIGHT                       orxKEYBOARD_KEY_RIGHT           /**< Right key */
 #define orxCONSOLE_KE_KEY_START                       orxKEYBOARD_KEY_HOME            /**< Start key */
 #define orxCONSOLE_KE_KEY_END                         orxKEYBOARD_KEY_END             /**< End key */
+#define orxCONSOLE_KE_KEY_SCROLL_UP                   orxKEYBOARD_KEY_PAGEUP          /**< Scroll up key */
+#define orxCONSOLE_KE_KEY_SCROLL_DOWN                 orxKEYBOARD_KEY_PAGEDOWN        /**< Scroll down key */
+#define orxCONSOLE_KE_BUTTON_SCROLL_UP                orxMOUSE_BUTTON_WHEEL_UP        /**< Scroll up button */
+#define orxCONSOLE_KE_BUTTON_SCROLL_DOWN              orxMOUSE_BUTTON_WHEEL_DOWN      /**< Scroll down button */
+
+#define orxCONSOLE_KU32_SCROLL_SIZE                   3
 
 #define orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY         orx2F(0.25f)
 #define orxCONSOLE_KF_INPUT_RESET_DELAY               orx2F(0.05f)
@@ -113,6 +120,7 @@ typedef struct __orxCONSOLE_STATIC_t
   orxU32                    u32LogIndex;                                              /**< Log buffer index */
   orxU32                    u32LogEndIndex;                                           /**< Log end index */
   orxU32                    u32LogLineLength;                                         /**< Log line length */
+  orxU32                    u32LogLineOffset;                                         /**< Log line offset */
   orxU32                    u32InputIndex;                                            /**< Input index */
   orxU32                    u32HistoryIndex;                                          /**< History index */
   orxCOMMAND_VAR            stLastResult;                                             /**< Last command result */
@@ -156,6 +164,7 @@ static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, voi
     orxInput_SetValue(zInput, orxFLOAT_0);
 
     /* Re-adds input reset timer */
+    orxClock_RemoveGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, _pContext);
     orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_DELAY, 1, zInput);
   }
 }
@@ -630,6 +639,9 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Clears ends of buffer */
           for(i = 1; pstEntry->acBuffer[pstEntry->u32CursorIndex + i] != orxCHAR_NULL; pstEntry->acBuffer[pstEntry->u32CursorIndex + i++] = orxCHAR_NULL);
         }
+
+        /* Adds input reset timer */
+        orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_AUTOCOMPLETE);
       }
     }
 
@@ -742,6 +754,41 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
 
       /* Adds input reset timer */
       orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_RIGHT);
+    }
+
+    /* Scroll up? */
+    if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_SCROLL_UP) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_SCROLL_UP) != orxFALSE))
+    {
+      orxU32 u32ScrollSize;
+
+      /* Gets scroll size */
+      orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+      u32ScrollSize = orxConfig_GetU32(orxCONSOLE_KZ_CONFIG_SCROLL_SIZE);
+      u32ScrollSize = orxMAX(u32ScrollSize, 1);
+      orxConfig_PopSection();
+
+      /* Updates offset */
+      sstConsole.u32LogLineOffset = (sstConsole.u32LogLineOffset <= 0xFFFFFFFF - u32ScrollSize) ? sstConsole.u32LogLineOffset + u32ScrollSize : 0xFFFFFFFF;
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_SCROLL_UP);
+    }
+    /* Scroll down? */
+    else if((orxInput_IsActive(orxCONSOLE_KZ_INPUT_SCROLL_DOWN) != orxFALSE) && (orxInput_HasNewStatus(orxCONSOLE_KZ_INPUT_SCROLL_DOWN) != orxFALSE))
+    {
+      orxU32 u32ScrollSize;
+
+      /* Gets scroll size */
+      orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
+      u32ScrollSize = orxConfig_GetU32(orxCONSOLE_KZ_CONFIG_SCROLL_SIZE);
+      u32ScrollSize = orxMAX(u32ScrollSize, 1);
+      orxConfig_PopSection();
+
+      /* Updates offset */
+      sstConsole.u32LogLineOffset = (sstConsole.u32LogLineOffset >= u32ScrollSize) ? sstConsole.u32LogLineOffset - u32ScrollSize : 0;
+
+      /* Adds input reset timer */
+      orxClock_AddGlobalTimer(orxConsole_ResetInput, orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY, 1, (void *)orxCONSOLE_KZ_INPUT_SCROLL_DOWN);
     }
 
     /* Toggles mode? */
@@ -1066,6 +1113,13 @@ orxSTATUS orxFASTCALL orxConsole_Init()
       }
     }
 
+    /* Doesn't have scroll size? */
+    if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) == orxFALSE)
+    {
+      /* Uses default value */
+      orxConfig_SetU32(orxCONSOLE_KZ_CONFIG_SCROLL_SIZE, orxCONSOLE_KU32_SCROLL_SIZE);
+    }
+
     /* Pops config section */
     orxConfig_PopSection();
 
@@ -1100,6 +1154,10 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT, orxINPUT_MODE_FULL);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START, orxINPUT_MODE_FULL);
         orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_UP, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_DOWN, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_UP, orxINPUT_MODE_FULL);
+        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_DOWN, orxINPUT_MODE_FULL);
 
         /* Enables set */
         orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
@@ -1269,6 +1327,9 @@ void orxFASTCALL orxConsole_Enable(orxBOOL _bEnable)
   {
     /* Starts console */
     orxConsole_Start();
+
+    /* Resets log offset */
+    sstConsole.u32LogLineOffset = 0;
 
     /* Updates status flags */
     orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED, orxCONSOLE_KU32_STATIC_FLAG_NONE);
@@ -1567,6 +1628,9 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
 {
   orxU32 u32Length = 0, u32Result;
 
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
   /* Has completion? */
   if(sstConsole.zCompletedCommand != orxNULL)
   {
@@ -1619,6 +1683,9 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
 const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *_pbActive)
 {
   const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
   /* Has completion? */
   if(sstConsole.zCompletedCommand != orxNULL)
@@ -1676,7 +1743,7 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
   /* For all lines */
-  for(i = 0, u32LogIndex = (sstConsole.u32LogIndex != 0) ? sstConsole.u32LogIndex - 1 : 0, bWrapped = orxFALSE; i <= _u32TrailLineIndex; i++)
+  for(i = 0, u32LogIndex = (sstConsole.u32LogIndex != 0) ? sstConsole.u32LogIndex - 1 : 0, bWrapped = orxFALSE; i <= _u32TrailLineIndex + sstConsole.u32LogLineOffset; i++)
   {
     /* Not wrapped yet? */
     if(bWrapped == orxFALSE)
@@ -1728,7 +1795,7 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
   }
 
   /* Found? */
-  if(i > _u32TrailLineIndex)
+  if(i > _u32TrailLineIndex + sstConsole.u32LogLineOffset)
   {
     /* Updates result */
     zResult = &sstConsole.acLogBuffer[(u32LogIndex != 0) ? u32LogIndex + 1 : u32LogIndex];
@@ -1738,6 +1805,23 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
   return zResult;
 }
 
+/** Gets log line offset from the end
+ * @return Log line offset from the end
+ */
+orxU32 orxFASTCALL orxConsole_GetTrailLogLineOffset()
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  u32Result = sstConsole.u32LogLineOffset;
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Gets input text
  * @param[out]  _pu32CursorIndex Index (ie. character position) of the cursor (any character past it has not been validated)
  * @return orxTRING / orxSTRING_EMPTY
@@ -1745,6 +1829,9 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
 const orxSTRING orxFASTCALL orxConsole_GetInput(orxU32 *_pu32CursorIndex)
 {
   const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
   /* Asked for base length? */
   if(_pu32CursorIndex != orxNULL)

@@ -1150,9 +1150,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight, fBackupY;
-  orxU32                  u32CursorIndex, i, u32Counter, u32MaxLength;
+  orxU32                  u32CursorIndex, i, u32Counter, u32MaxLength, u32Offset;
   orxCHAR                 acBackup[2];
-  orxFLOAT                fCharacterHeight;
+  orxFLOAT                fCharacterHeight, fCharacterWidth;
   orxCOLOR                stColor;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
@@ -1173,8 +1173,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Gets its map */
   pstMap = orxFont_GetMap(pstFont);
 
-  /* Gets character height */
-  fCharacterHeight = orxFont_GetCharacterHeight(pstFont);
+  /* Gets character size */
+  fCharacterHeight  = orxFont_GetCharacterHeight(pstFont);
+  fCharacterWidth   = orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
   /* Creates pixel texture */
   pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL, orxFALSE);
@@ -1304,14 +1305,33 @@ static orxINLINE void orxRender_Home_RenderConsole()
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
+  /* Gets log offset */
+  u32Offset = orxConsole_GetTrailLogLineOffset();
+
+  /* Has offset? */
+  if(u32Offset != 0)
+  {
+    orxCHAR   acBuffer[32];
+    orxFLOAT  fBackupX;
+
+    /* Displays it */
+    orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_INPUT_COLOR);
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "+%u %s", u32Offset, (u32Offset == 1) ? "line" : "lines");
+    fBackupX = stTransform.fDstX;
+    stTransform.fDstX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) - (orxString_GetLength(acBuffer) * fCharacterWidth);
+    stTransform.fDstY = fBackupY;
+    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    stTransform.fDstX = fBackupX;
+  }
+
   /* Gets completion counter */
   u32Counter = orxConsole_GetCompletionCounter(&u32MaxLength);
 
   /* Draws overlay */
-  stColor.fAlpha = 0.9f;
+  stColor.fAlpha      = 0.9f;
   orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(&stColor));
   stTransform.fDstY   = fBackupY - (u32Counter - 1) * fCharacterHeight;
-  stTransform.fScaleX = u32MaxLength * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
+  stTransform.fScaleX = u32MaxLength * fCharacterWidth;
   stTransform.fScaleY = u32Counter * fCharacterHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
