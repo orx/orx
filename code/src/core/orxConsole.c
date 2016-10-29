@@ -1559,6 +1559,109 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
   return u32Result;
 }
 
+/** Gets current completions counter
+ * @param[out]  _pu32MaxLength Max completion length, orxNULL to ignore
+ * @return Current completions counter
+ */
+orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
+{
+  orxU32 u32Length = 0, u32Result;
+
+  /* Has completion? */
+  if(sstConsole.zCompletedCommand != orxNULL)
+  {
+    orxCONSOLE_INPUT_ENTRY *pstEntry;
+    const orxSTRING         zCommand;
+    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
+
+    /* Gets entry */
+    pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
+
+    /* Gets start of line */
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
+
+    /* Gets completion counter */
+    for(u32Result = 0, zCommand = orxCommand_GetNext(acBuffer, orxNULL, orxNULL);
+        zCommand != orxNULL;
+        u32Result++, zCommand = orxCommand_GetNext(acBuffer, zCommand, orxNULL))
+    {
+      orxU32 u32NewLength;
+
+      /* Gets new length */
+      u32NewLength = orxString_GetLength(zCommand);
+
+      /* Updates length */
+      u32Length = orxMAX(u32Length, u32NewLength);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = 0;
+  }
+
+  /* Asked for max length? */
+  if(_pu32MaxLength != orxNULL)
+  {
+    /* Updates it */
+    *_pu32MaxLength = u32Length;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets completion
+ * @param[in]   _u32Index     Index of the active completion
+ * @param[out]  _pbActive     Is completion active, orxNULL to ignore
+ * @return Completion string if found, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *_pbActive)
+{
+  const orxSTRING zResult;
+
+  /* Has completion? */
+  if(sstConsole.zCompletedCommand != orxNULL)
+  {
+    orxCONSOLE_INPUT_ENTRY *pstEntry;
+    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
+    orxU32                  u32CompletionIndex;
+
+    /* Gets entry */
+    pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
+
+    /* Gets start of line */
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
+
+    /* Finds requested completion */
+    for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(acBuffer, orxNULL, orxNULL);
+        (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
+        u32CompletionIndex++, zResult = orxCommand_GetNext(acBuffer, zResult, orxNULL))
+      ;
+
+    /* Not found? */
+    if(zResult == orxNULL)
+    {
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+  else
+  {
+    /* Clears result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Asked for active status? */
+  if(_pbActive != orxNULL)
+  {
+    *_pbActive = (zResult == sstConsole.zCompletedCommand) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets log line from the end (trail)
  * @param[in]   _u32TrailLineIndex Index of the line starting from end
  * @return orxTRING / orxSTRING_EMPTY

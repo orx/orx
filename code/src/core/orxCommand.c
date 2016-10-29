@@ -2878,7 +2878,7 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
 /** Gets next command using an optional base
 * @param[in]   _zBase             Base name, can be set to orxNULL for no base
 * @param[in]   _zPrevious         Previous command, orxNULL to get the first command
-* @param[out]  _pu32CommonLength  Length of the common prefix of all potential results
+* @param[out]  _pu32CommonLength  Length of the common prefix of all potential results, orxNULL to ignore
 * @return      Next command found, orxNULL if none
 */
 const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious, orxU32 *_pu32CommonLength)

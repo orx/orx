@@ -136,6 +136,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxConsole_SetLogLineLengt
 extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetLogLineLength();
 
 
+/** Gets current completions counter
+ * @param[out]  _pu32MaxLength Max completion length, orxNULL to ignore
+ * @return Current completions counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength);
+
+/** Gets completion
+ * @param[in]   _u32Index     Index of the active completion
+ * @param[out]  _pbActive     Is completion active, orxNULL to ignore
+ * @return Completion string if found, orxSTRING_EMPTY otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *_pbActive);
+
+
 /** Gets log line from the end (trail)
  * @param[in]   _u32TrailLineIndex Index of the line starting from end
  * @return orxTRING / orxSTRING_EMPTY

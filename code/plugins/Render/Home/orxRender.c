@@ -1149,8 +1149,8 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
-  orxFLOAT                fScreenWidth, fScreenHeight;
-  orxU32                  u32CursorIndex, i;
+  orxFLOAT                fScreenWidth, fScreenHeight, fBackupY;
+  orxU32                  u32CursorIndex, i, u32Counter, u32MaxLength;
   orxCHAR                 acBackup[2];
   orxFLOAT                fCharacterHeight;
   orxCOLOR                stColor;
@@ -1212,6 +1212,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
   {
     /* Updates background color */
     orxDisplay_SetBitmapColor(pstBitmap, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+
+    /* Updates color */
+    orxColor_SetRGBA(&stColor, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
   }
 
   /* Pops config section */
@@ -1293,10 +1296,42 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* While there are log lines to display */
   orxDisplay_SetBitmapColor(pstFontBitmap, orxRENDER_KST_CONSOLE_LOG_COLOR);
-  for(i = 0, stTransform.fDstY -= orx2F(2.0f) * fCharacterHeight;
+  for(i = 0, stTransform.fDstY -= orx2F(2.0f) * fCharacterHeight, fBackupY = stTransform.fDstY;
       (stTransform.fDstY >= sstRender.fConsoleOffset - fCharacterHeight) && ((zText = orxConsole_GetTrailLogLine(i)) != orxSTRING_EMPTY);
       i++, stTransform.fDstY -= fCharacterHeight)
   {
+    /* Displays it */
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  }
+
+  /* Gets completion counter */
+  u32Counter = orxConsole_GetCompletionCounter(&u32MaxLength);
+
+  /* Draws overlay */
+  stColor.fAlpha = 0.9f;
+  orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(&stColor));
+  stTransform.fDstY   = fBackupY - (u32Counter - 1) * fCharacterHeight;
+  stTransform.fScaleX = u32MaxLength * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
+  stTransform.fScaleY = u32Counter * fCharacterHeight;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
+
+  /* For all current completions */
+  for(i = 0;
+      i < u32Counter;
+      i++)
+  {
+    orxBOOL bActive;
+
+    /* Gets it */
+    zText = orxConsole_GetCompletion(i, &bActive);
+
+    /* Sets color */
+    orxDisplay_SetBitmapColor(pstFontBitmap, (bActive != orxFALSE) ? orxRENDER_KST_CONSOLE_INPUT_COLOR : orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR);
+
+    /* Updates position */
+    stTransform.fDstY = fBackupY - ((u32Counter - i - 1) * fCharacterHeight);
+
     /* Displays it */
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
