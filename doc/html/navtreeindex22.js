@@ -1,5 +1,13 @@
 var NAVTREEINDEX22 =
 {
+"orx_plugin___display_8h_source.html":[3,0,0,11,0,2],
+"orx_plugin___joystick_8h.html":[3,0,0,11,0,3],
+"orx_plugin___joystick_8h_source.html":[3,0,0,11,0,3],
+"orx_plugin___keyboard_8h.html":[3,0,0,11,0,4],
+"orx_plugin___keyboard_8h_source.html":[3,0,0,11,0,4],
+"orx_plugin___mouse_8h.html":[3,0,0,11,0,5],
+"orx_plugin___mouse_8h_source.html":[3,0,0,11,0,5],
+"orx_plugin___physics_8h.html":[3,0,0,11,0,6],
 "orx_plugin___physics_8h_source.html":[3,0,0,11,0,6],
 "orx_plugin___render_8h.html":[3,0,0,11,0,7],
 "orx_plugin___render_8h_source.html":[3,0,0,11,0,7],
@@ -241,13 +249,5 @@ var NAVTREEINDEX22 =
 "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a7f926a090e7f4930b448a83b77e2ec8c":[1,15,4,6],
 "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#aabce29f786fcf92b79507c596990c886":[1,15,4,8],
 "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#ae53a9736f1e76f092d0dec336672c0a4":[1,15,4,7],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html":[1,15,5],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#a3993f6f12422b28e5252bcaac7759fee":[1,15,5,0],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#a45e72efa75f7322e82e283e59197aaf3":[1,15,5,1],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#a532187272201cfb0496289d5ec06a030":[1,15,5,4],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#a970babd2a06e37dc017a4edd4d089f00":[1,15,5,3],
-"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html#abf62884379a40f165d692985802730da":[1,15,5,2],
-"structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html":[1,15,6],
-"structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#a2c2c632e5b79ae139080986155c6724d":[1,15,6,4],
-"structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#a2f2a2bfc180013f76bb2dcecaf0b9f17":[1,15,6,3]
+"structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html":[1,15,5]
 };
