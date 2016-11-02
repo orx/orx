@@ -161,7 +161,7 @@ void orxFASTCALL orxObject_##FUNCTION##Recursive(orxOBJECT *_pstObject, PARAM_TY
       pstChild = orxObject_GetOwnedSibling(pstChild))                                       \
   {                                                                                         \
     /* Updates it */                                                                        \
-    orxObject_##FUNCTION(pstChild, _Param);                                                 \
+    orxObject_##FUNCTION##Recursive(pstChild, _Param);                                      \
   }                                                                                         \
                                                                                             \
   /* Done! */                                                                               \
