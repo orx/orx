@@ -945,6 +945,32 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(const orxOBJECT *
  */
 extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor);
 
+/** Sets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvRGB          RGB values to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB);
+
+/** Sets color of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvRGB          RGB values to set
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetRGBRecursive(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB);
+
+/** Sets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fAlpha         Alpha value to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha);
+
+/** Sets alpha of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fAlpha         Alpha value to set
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAlphaRecursive(orxOBJECT *_pstObject, orxFLOAT _fAlpha);
+
 
 /** Sets object repeat (wrap) values.
  * @param[in]   _pstObject      Concerned object

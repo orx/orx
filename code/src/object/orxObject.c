@@ -1037,52 +1037,20 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     orxCOLOR stColor;
 
-    /* Has color? */
-    if(orxObject_HasColor(pstObject) != orxFALSE)
-    {
-      /* Gets it */
-      orxObject_GetColor(pstObject, &stColor);
-    }
-    else
-    {
-      /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
-    }
-
-    /* Sets its color */
+    /* Inits color */
     orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
-
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
+    stColor.fAlpha = orxFLOAT_1;
 
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      orxOBJECT *pstChild;
-
-      /* For all its children */
-      for(pstChild = orxObject_GetOwnedChild(pstObject);
-          pstChild != orxNULL;
-          pstChild = orxObject_GetOwnedSibling(pstChild))
-      {
-        /* Has color? */
-        if(orxObject_HasColor(pstChild) != orxFALSE)
-        {
-          /* Gets it */
-          orxObject_GetColor(pstChild, &stColor);
-        }
-        else
-        {
-          /* Sets its alpha to opaque */
-          stColor.fAlpha = orxFLOAT_1;
-        }
-
-        /* Sets its color */
-        orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
-
-        /* Updates object */
-        orxObject_SetColor(pstChild, &stColor);
-      }
+      /* Updates it */
+      orxObject_SetRGBRecursive(pstObject, &(stColor.vRGB));
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_SetRGB(pstObject, &(stColor.vRGB));
     }
 
     /* Updates result */
@@ -1148,52 +1116,19 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Has color? */
-    if(orxObject_HasColor(pstObject) != orxFALSE)
-    {
-      /* Gets it */
-      orxObject_GetColor(pstObject, &stColor);
-    }
-    else
-    {
-      /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
-    }
-
-    /* Sets its color */
-    orxVector_Copy(&(stColor.vRGB), &(_astArgList[1].vValue));
-
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
+    /* Inits color with RGB values */
+    orxColor_Set(&stColor, &(_astArgList[1].vValue), orxFLOAT_1);
 
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      orxOBJECT *pstChild;
-
-      /* For all its children */
-      for(pstChild = orxObject_GetOwnedChild(pstObject);
-          pstChild != orxNULL;
-          pstChild = orxObject_GetOwnedSibling(pstChild))
-      {
-        /* Has color? */
-        if(orxObject_HasColor(pstChild) != orxFALSE)
-        {
-          /* Gets it */
-          orxObject_GetColor(pstChild, &stColor);
-        }
-        else
-        {
-          /* Sets its alpha to opaque */
-          stColor.fAlpha = orxFLOAT_1;
-        }
-
-        /* Sets its color */
-        orxVector_Copy(&(stColor.vRGB), &(_astArgList[1].vValue));
-
-        /* Updates object */
-        orxObject_SetColor(pstChild, &stColor);
-      }
+      /* Updates it */
+      orxObject_SetRGBRecursive(pstObject, &(stColor.vRGB));
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_SetRGB(pstObject, &(stColor.vRGB));
     }
 
     /* Updates result */
@@ -1258,58 +1193,22 @@ void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Has color? */
-    if(orxObject_HasColor(pstObject) != orxFALSE)
-    {
-      /* Gets it */
-      orxObject_GetColor(pstObject, &stColor);
-    }
-    else
-    {
-      /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
-    }
-
     /* Inits color with HSL values */
-    orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
+    orxColor_Set(&stColor, &(_astArgList[1].vValue), orxFLOAT_1);
 
     /* Converts color to RGB  */
     orxColor_FromHSLToRGB(&stColor, &stColor);
 
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
-
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      orxOBJECT *pstChild;
-
-      /* For all its children */
-      for(pstChild = orxObject_GetOwnedChild(pstObject);
-          pstChild != orxNULL;
-          pstChild = orxObject_GetOwnedSibling(pstChild))
-      {
-        /* Has color? */
-        if(orxObject_HasColor(pstChild) != orxFALSE)
-        {
-          /* Gets it */
-          orxObject_GetColor(pstChild, &stColor);
-        }
-        else
-        {
-          /* Sets its alpha to opaque */
-          stColor.fAlpha = orxFLOAT_1;
-        }
-
-        /* Inits color with HSL values */
-        orxVector_Copy(&stColor.vHSL, &(_astArgList[1].vValue));
-
-        /* Converts color to RGB  */
-        orxColor_FromHSLToRGB(&stColor, &stColor);
-
-        /* Updates object */
-        orxObject_SetColor(pstChild, &stColor);
-      }
+      /* Updates it */
+      orxObject_SetRGBRecursive(pstObject, &(stColor.vRGB));
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_SetRGB(pstObject, &(stColor.vRGB));
     }
 
     /* Updates result */
@@ -1375,58 +1274,22 @@ void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_
   {
     orxCOLOR stColor;
 
-    /* Has color? */
-    if(orxObject_HasColor(pstObject) != orxFALSE)
-    {
-      /* Gets it */
-      orxObject_GetColor(pstObject, &stColor);
-    }
-    else
-    {
-      /* Sets its alpha to opaque */
-      stColor.fAlpha = orxFLOAT_1;
-    }
-
     /* Inits color with HSV values */
-    orxVector_Copy(&stColor.vHSV, &(_astArgList[1].vValue));
+    orxColor_Set(&stColor, &(_astArgList[1].vValue), orxFLOAT_1);
 
     /* Converts color to RGB  */
     orxColor_FromHSVToRGB(&stColor, &stColor);
 
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
-
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      orxOBJECT *pstChild;
-
-      /* For all its children */
-      for(pstChild = orxObject_GetOwnedChild(pstObject);
-          pstChild != orxNULL;
-          pstChild = orxObject_GetOwnedSibling(pstChild))
-      {
-        /* Has color? */
-        if(orxObject_HasColor(pstChild) != orxFALSE)
-        {
-          /* Gets it */
-          orxObject_GetColor(pstChild, &stColor);
-        }
-        else
-        {
-          /* Sets its alpha to opaque */
-          stColor.fAlpha = orxFLOAT_1;
-        }
-
-        /* Inits color with HSV values */
-        orxVector_Copy(&stColor.vHSV, &(_astArgList[1].vValue));
-
-        /* Converts color to RGB  */
-        orxColor_FromHSVToRGB(&stColor, &stColor);
-
-        /* Updates object */
-        orxObject_SetColor(pstChild, &stColor);
-      }
+      /* Updates it */
+      orxObject_SetRGBRecursive(pstObject, &(stColor.vRGB));
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_SetRGB(pstObject, &(stColor.vRGB));
     }
 
     /* Updates result */
@@ -1490,54 +1353,16 @@ void orxFASTCALL orxObject_CommandSetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    orxCOLOR stColor;
-
-    /* Has color? */
-    if(orxObject_HasColor(pstObject) != orxFALSE)
-    {
-      /* Gets it */
-      orxObject_GetColor(pstObject, &stColor);
-    }
-    else
-    {
-      /* Sets its color to white */
-      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
-    }
-
-    /* Sets its alpha */
-    stColor.fAlpha = _astArgList[1].fValue;
-
-    /* Updates object */
-    orxObject_SetColor(pstObject, &stColor);
-
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      orxOBJECT *pstChild;
-
-      /* For all its children */
-      for(pstChild = orxObject_GetOwnedChild(pstObject);
-          pstChild != orxNULL;
-          pstChild = orxObject_GetOwnedSibling(pstChild))
-      {
-        /* Has color? */
-        if(orxObject_HasColor(pstChild) != orxFALSE)
-        {
-          /* Gets it */
-          orxObject_GetColor(pstChild, &stColor);
-        }
-        else
-        {
-          /* Sets its color to white */
-          orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
-        }
-
-        /* Sets its alpha */
-        stColor.fAlpha = _astArgList[1].fValue;
-
-        /* Updates object */
-        orxObject_SetColor(pstChild, &stColor);
-      }
+      /* Updates it */
+      orxObject_SetAlphaRecursive(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Updates it */
+      orxObject_SetAlpha(pstObject, _astArgList[1].fValue);
     }
 
     /* Updates result */
@@ -7958,6 +7783,125 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *
   /* Done! */
   return pstResult;
 }
+
+/** Sets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvRGB          RGB values to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvRGB != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Has color? */
+    if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+    {
+      /* Gets it */
+      orxGraphic_GetColor(pstGraphic, &stColor);
+    }
+    else
+    {
+      /* Sets its alpha to opaque */
+      stColor.fAlpha = orxFLOAT_1;
+    }
+
+    /* Updates its RGB values */
+    orxVector_Copy(&(stColor.vRGB), _pvRGB);
+
+    /* Sets graphic's color */
+    eResult = orxGraphic_SetColor(pstGraphic, &stColor);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set RGB values.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets color of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvRGB          RGB values to set
+ */
+orxOBJECT_MAKE_RECURSIVE(SetRGB, const orxVECTOR *);
+
+/** Sets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fAlpha         Alpha value to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Has color? */
+    if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+    {
+      /* Gets it */
+      orxGraphic_GetColor(pstGraphic, &stColor);
+    }
+    else
+    {
+      /* Sets its color to white */
+      orxVector_Copy(&(stColor.vRGB), &orxVECTOR_WHITE);
+    }
+
+    /* Updates its alpha */
+    stColor.fAlpha = _fAlpha;
+
+    /* Sets graphic's color */
+    eResult = orxGraphic_SetColor(pstGraphic, &stColor);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set RGB values.", orxObject_GetName(_pstObject));
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets alpha of an object and all its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fAlpha         Alpha value to set
+ */
+orxOBJECT_MAKE_RECURSIVE(SetAlpha, orxFLOAT);
 
 /** Sets object repeat (wrap) values.
  * @param[in]   _pstObject      Concerned object
