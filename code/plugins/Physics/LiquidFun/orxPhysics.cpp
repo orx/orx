@@ -46,6 +46,14 @@
 
 #if defined(__orxWINDOWS__) && !defined(__orxMSVC__)
 
+#ifdef __orxGCC__
+
+#if (__GNUC__ != 5) || (__GNUC_MINOR__ != 3)
+  #warning The customized LiquidFun library shipping with orx was compiled with MinGW 5.3.0, using any other version might result in compiling and/or linking errors! Please either upgrade to MinGW 5.3.0 or recompile extern/LiquidFun-1.1.0
+#endif /* (__GNUC__ != 5) || (__GNUC_MINOR != 3) */
+
+#endif /* __orxGCC__ */
+
 #ifndef alloca
   #define alloca(x) __builtin_alloca((x))
 #endif
