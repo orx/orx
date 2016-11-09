@@ -156,6 +156,12 @@ Functions</h2></td></tr>
 <tr class="separator:gae1ae3f9be6749dda433622a0060a4a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad0379fde6ecee8fba3a24a8e018debeb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxDOUBLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#gad0379fde6ecee8fba3a24a8e018debeb">orxSystem_GetTime</a> ()</td></tr>
 <tr class="separator:gad0379fde6ecee8fba3a24a8e018debeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1519911ac0329f5ff67531ea074d99ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_r_s_i_o_n.html">orxVERSION</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#ga1519911ac0329f5ff67531ea074d99ce">orxSystem_GetVersion</a> (<a class="el" href="structorx_v_e_r_s_i_o_n.html">orxVERSION</a> *_pstVersion)</td></tr>
+<tr class="separator:ga1519911ac0329f5ff67531ea074d99ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf94e2630cf8c78766c3ac24c6e9f81ff"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#gaf94e2630cf8c78766c3ac24c6e9f81ff">orxSystem_GetVersionNumeric</a> ()</td></tr>
+<tr class="separator:gaf94e2630cf8c78766c3ac24c6e9f81ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadda64c2d6b400caf3d7e511aed3ca6e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#gadda64c2d6b400caf3d7e511aed3ca6e0">orxSystem_GetVersionString</a> ()</td></tr>
+<tr class="separator:gadda64c2d6b400caf3d7e511aed3ca6e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8f8e70a14127981e4a4632b3442c9ee4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#ga8f8e70a14127981e4a4632b3442c9ee4">orxSystem_Init</a> ()</td></tr>
 <tr class="separator:ga8f8e70a14127981e4a4632b3442c9ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga70faf0fe659b66de0cd0249a14b462c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem_Setup</a> ()</td></tr>
@@ -293,6 +299,61 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Gets current time (elapsed from the beginning of the application, in seconds) </p><dl class="section return"><dt>Returns</dt><dd>Current time </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga1519911ac0329f5ff67531ea074d99ce"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_r_s_i_o_n.html">orxVERSION</a>* orxFASTCALL orxSystem_GetVersion </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_r_s_i_o_n.html">orxVERSION</a> *&#160;</td>
+          <td class="paramname"><em>_pstVersion</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets orx version (compiled) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pstVersion</td><td>Structure to fill with current version </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Compiled version </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaf94e2630cf8c78766c3ac24c6e9f81ff"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxSystem_GetVersionNumeric </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets orx version absolute numeric value (compiled) </p><dl class="section return"><dt>Returns</dt><dd>Absolute numeric value of compiled version </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gadda64c2d6b400caf3d7e511aed3ca6e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxSystem_GetVersionString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets orx version literal (compiled) </p><dl class="section return"><dt>Returns</dt><dd>Compiled version literal </dd></dl>
 
 </div>
 </div>

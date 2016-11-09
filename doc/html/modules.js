@@ -59,5 +59,6 @@ var modules =
     [ "OrxTree", "group__orx_tree.html", "group__orx_tree" ],
     [ "OrxType", "group__orx_type.html", "group__orx_type" ],
     [ "OrxVector", "group__orx_vector.html", "group__orx_vector" ],
+    [ "OrxVersion", "group__orx_version.html", "group__orx_version" ],
     [ "OrxViewport", "group__orx_viewport.html", "group__orx_viewport" ]
 ];

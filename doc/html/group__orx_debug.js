@@ -5,7 +5,7 @@ var group__orx_debug =
     [ "orxDEBUG_ENABLE_LEVEL", "group__orx_debug.html#ga4ae2aec5538fb1013f591cfc377ecc35", null ],
     [ "orxDEBUG_EXIT", "group__orx_debug.html#ga7b2950316e5683e01a2e8670d4a3b2f0", null ],
     [ "orxDEBUG_GET_FLAGS", "group__orx_debug.html#gaed495952193ca60dd7ab5b7c5e4c9c4d", null ],
-    [ "orxDEBUG_INIT", "group__orx_debug.html#ga612f6714fc024f8768a8e479078bc8ad", null ],
+    [ "orxDEBUG_INIT", "group__orx_debug.html#ga433c07645f10b00f0b859670d1163352", null ],
     [ "orxDEBUG_IS_LEVEL_ENABLED", "group__orx_debug.html#ga697867e95a050e42382f7ca7ee713e7b", null ],
     [ "orxDEBUG_KS32_BUFFER_OUTPUT_SIZE", "group__orx_debug.html#gaa926078fe1ff0af68e746861de4f5992", null ],
     [ "orxDEBUG_KU32_STATIC_FLAG_CONSOLE", "group__orx_debug.html#gaab3cd7862497cad837a89b74049d9fe8", null ],

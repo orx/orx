@@ -1,5 +1,6 @@
 var group__orx_type =
 [
+    [ "_orxSTRINGIFY", "group__orx_type.html#gaffaecf095a8d27771d76c40c84627f34", null ],
     [ "orxCHAR_ASCII_NUMBER", "group__orx_type.html#ga4d349445a40afddcddc979ae95d18a91", null ],
     [ "orxCHAR_CR", "group__orx_type.html#ga3c6a34e6acad7009dda01358aa90d2c0", null ],
     [ "orxCHAR_DIRECTORY_SEPARATOR_LINUX", "group__orx_type.html#gae411f0589bfd492bd54d2dd1547fe508", null ],
@@ -8,6 +9,7 @@ var group__orx_type =
     [ "orxCHAR_LF", "group__orx_type.html#gab6ea2000756d61485e55aa1031d8cf73", null ],
     [ "orxCHAR_NULL", "group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c", null ],
     [ "orxFALSE", "group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14", null ],
+    [ "orxSTRINGIFY", "group__orx_type.html#ga29d78aacc5af864dfee06981362b770e", null ],
     [ "orxTRUE", "group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a", null ],
     [ "orxSEEK_OFFSET_WHENCE", "group__orx_type.html#ga08815b27cb2e29018e06e3d847116915", [
       [ "orxSEEK_OFFSET_WHENCE_START", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba", null ],
