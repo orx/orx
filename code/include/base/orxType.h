@@ -217,6 +217,9 @@ extern orxDLLAPI const orxSTRING  orxSTRING_EOL;
 #define orxCHAR_EOL               '\n'
 #define orxCHAR_ASCII_NUMBER      128
 
+#define _orxSTRINGIFY(X)          #X
+#define orxSTRINGIFY(X)           _orxSTRINGIFY(X)
+
 
 /* *** Directory separators *** */
 

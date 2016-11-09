@@ -46,7 +46,7 @@
 #define _orxMODULE_H_
 
 
-#include "base/orxType.h"
+#include "base/orxVersion.h"
 
 
 /** Module enum */

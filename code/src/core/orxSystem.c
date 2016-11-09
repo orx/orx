@@ -368,3 +368,49 @@ void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
   /* Done! */
   return;
 }
+
+/** Gets orx version (compiled)
+ * @param[out] _pstVersion          Structure to fill with current version
+ * @return Compiled version
+ */
+orxVERSION *orxFASTCALL orxSystem_GetVersion(orxVERSION *_pstVersion)
+{
+  /* Checks */
+  orxASSERT(_pstVersion != orxNULL);
+
+  /* Updates result */
+  _pstVersion->u32Major = __orxVERSION_MAJOR__;
+  _pstVersion->u32Minor = __orxVERSION_MINOR__;
+  _pstVersion->zPatch   = orxSTRINGIFY(__orxVERSION_PATCH__);
+
+  /* Done! */
+  return _pstVersion;
+}
+
+/** Gets orx version literal (compiled)
+ * @return Compiled version literal
+ */
+const orxSTRING orxFASTCALL orxSystem_GetVersionString()
+{
+  const orxSTRING zResult;
+
+  /* Updates result */
+  zResult = __orxVERSION_STRING__;
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets orx version absolute numeric value (compiled)
+ * @return Absolute numeric value of compiled version
+ */
+orxU32 orxFASTCALL orxSystem_GetVersionNumeric()
+{
+  orxU32 u32Result;
+
+  /* Updates result */
+  u32Result = __orxVERSION__;
+
+  /* Done! */
+  return u32Result;
+}

@@ -171,7 +171,34 @@
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ || __orxLLVM__ */
 
-#define orxDEBUG_INIT()                       _orxDebug_Init()
+#define orxDEBUG_INIT()                                                                                           \
+do                                                                                                                \
+{                                                                                                                 \
+  orxU32 u32DebugFlags;                                                                                           \
+  _orxDebug_Init();                                                                                               \
+  u32DebugFlags = _orxDebug_GetFlags();                                                                           \
+  _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_MASK_DEBUG, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                        \
+  if(orxSystem_GetVersionNumeric() < __orxVERSION__)                                                              \
+  {                                                                                                               \
+    orxLOG("The version of the runtime library [" orxANSI_KZ_COLOR_FG_GREEN "%s"                                  \
+    orxANSI_KZ_COLOR_FG_DEFAULT "] is " orxANSI_KZ_COLOR_FG_RED orxANSI_KZ_COLOR_BLINK_ON "older"                 \
+    orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_BLINK_OFF " than the version used when compiling this program [" \
+    orxANSI_KZ_COLOR_FG_GREEN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]."                                               \
+    orxANSI_KZ_COLOR_FG_RED orxANSI_KZ_COLOR_BLINK_ON " Problems will likely ensue!",                             \
+    orxSystem_GetVersionString(), __orxVERSION_STRING__);                                                         \
+  }                                                                                                               \
+  else if(orxSystem_GetVersionNumeric() > __orxVERSION__)                                                         \
+  {                                                                                                               \
+    orxLOG("The version of the runtime library [" orxANSI_KZ_COLOR_FG_GREEN "%s"                                  \
+    orxANSI_KZ_COLOR_FG_DEFAULT "] is " orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_BLINK_ON "more recent"        \
+    orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_BLINK_OFF " than the version used when compiling this program [" \
+    orxANSI_KZ_COLOR_FG_GREEN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]."                                               \
+    orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_BLINK_ON " Problems may arise due to possible incompatibilities!",\
+    orxSystem_GetVersionString(), __orxVERSION_STRING__);                                                         \
+  }                                                                                                               \
+  _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                          \
+}                                                                                                                 \
+while(orxFALSE)
 #define orxDEBUG_EXIT()                       _orxDebug_Exit()
 
 #ifdef __orxDEBUG__

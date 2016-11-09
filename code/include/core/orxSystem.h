@@ -101,36 +101,53 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 
 /** System module setup
  */
-extern orxDLLAPI void orxFASTCALL       orxSystem_Setup();
+extern orxDLLAPI void orxFASTCALL             orxSystem_Setup();
 
 /** Inits the system module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxSystem_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSystem_Init();
 
 /** Exits from the system module
  */
-extern orxDLLAPI void orxFASTCALL       orxSystem_Exit();
+extern orxDLLAPI void orxFASTCALL             orxSystem_Exit();
 
 /** Gets current time (elapsed from the beginning of the application, in seconds)
  * @return Current time
  */
-extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetTime();
+extern orxDLLAPI orxDOUBLE orxFASTCALL        orxSystem_GetTime();
 
 /** Gets real time (in seconds)
  * @return Returns the amount of seconds elapsed since reference time (epoch)
  */
-extern orxDLLAPI orxU64 orxFASTCALL     orxSystem_GetRealTime();
+extern orxDLLAPI orxU64 orxFASTCALL           orxSystem_GetRealTime();
 
 /** Gets current internal system time (in seconds)
  * @return Current internal system time
  */
-extern orxDLLAPI orxDOUBLE orxFASTCALL  orxSystem_GetSystemTime();
+extern orxDLLAPI orxDOUBLE orxFASTCALL        orxSystem_GetSystemTime();
 
 /** Delay the program for given number of seconds
  * @param[in] _fSeconds             Number of seconds to wait
  */
-extern orxDLLAPI void orxFASTCALL       orxSystem_Delay(orxFLOAT _fSeconds);
+extern orxDLLAPI void orxFASTCALL             orxSystem_Delay(orxFLOAT _fSeconds);
+
+/** Gets orx version (compiled)
+ * @param[out] _pstVersion          Structure to fill with current version
+ * @return Compiled version
+ */
+extern orxDLLAPI orxVERSION *orxFASTCALL      orxSystem_GetVersion(orxVERSION *_pstVersion);
+
+/** Gets orx version literal (compiled)
+ * @return Compiled version literal
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionString();
+
+/** Gets orx version absolute numeric value (compiled)
+ * @return Absolute numeric value of compiled version
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxSystem_GetVersionNumeric();
+
 
 #endif /* _orxSYSTEM_H_ */
 
