@@ -1460,7 +1460,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
     && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
-      orxU32  u32AnimCounter;
+      orxU32 u32AnimCounter;
 
       /* Gets animation counter */
       u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
@@ -1592,6 +1592,18 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Was created? */
+        if(pstResult != orxNULL)
+        {
+          /* Deletes it */
+          orxAnimSet_Delete(pstResult);
+
+          /* Updates result */
+          pstResult = orxNULL;
+        }
       }
 
       /* Pops previous section */

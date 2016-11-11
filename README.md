@@ -64,9 +64,8 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86 with vs2012, vs2013 (x86/x86-64) and mingw32 with codelite, codeblocks and GNU makefile)
-- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile),  
-  version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support)
+- Windows (x86 with vs2012, x86/x86-64 with vs2013 & vs2015 and mingw32 (5.3.0) with codelite, codeblocks and GNU makefile)
+- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
 
