@@ -1859,6 +1859,7 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
         || (pstStorage->u32StorageID == u32StorageID))
         {
           orxRESOURCE_TYPE *pstType;
+          const orxSTRING   zStorage = orxString_GetFromID(pstStorage->u32StorageID);
 
           /* For all registered types */
           for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
@@ -1868,7 +1869,7 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstType->stInfo.pfnLocate(orxString_GetFromID(pstStorage->u32StorageID), _zName, orxFALSE);
+            zLocation = pstType->stInfo.pfnLocate(zStorage, _zName, orxFALSE);
 
             /* Success? */
             if(zLocation != orxNULL)
