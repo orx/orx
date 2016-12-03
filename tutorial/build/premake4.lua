@@ -134,7 +134,8 @@ solution "Tutorial"
     includedirs
     {
         "../include",
-        "../../code/include"
+        "../../code/include",
+        "$(ORX)/include"
     }
 
     configuration{"not macosx"}
@@ -143,7 +144,8 @@ solution "Tutorial"
 
     libdirs
     {
-        "../../code/lib/dynamic"
+        "../../code/lib/dynamic",
+        "$(ORX)/lib/dynamic"
     }
 
     targetdir ("../bin")

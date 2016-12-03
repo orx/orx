@@ -134,14 +134,24 @@ solution "orxCrypt"
     includedirs
     {
         "../include",
-        "../../../code/include"
+        "../../../code/include",
+        "$(ORX)/include"
     }
 
     configuration {"not macosx"}
-        libdirs {"../lib", "../../../code/lib/static"}
+        libdirs
+        {
+            "../lib",
+            "../../../code/lib/static",
+            "$(ORX)/lib/static"
+        }
 
     configuration {"macosx"}
-        libdirs {"../../../code/lib/dynamic"}
+        libdirs
+        {
+            "../../../code/lib/dynamic",
+            "$(ORX)/lib/dynamic"
+        }
 
     configuration {}
 

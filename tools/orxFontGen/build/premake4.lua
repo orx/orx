@@ -135,15 +135,25 @@ solution "orxFontGen"
     {
         "../include",
         "../../../code/include",
+        "$(ORX)/include",
         "../../../extern/stb_image",
         "../../../extern/freetype/include"
     }
 
     configuration {"not macosx"}
-        libdirs {"../lib", "../../../code/lib/static"}
+        libdirs
+        {
+            "../lib",
+            "../../../code/lib/static",
+            "$(ORX)/lib/static"
+        }
 
     configuration {"macosx"}
-        libdirs {"../../../code/lib/dynamic"}
+        libdirs
+        {
+            "../../../code/lib/dynamic",
+            "$(ORX)/lib/dynamic"
+        }
 
     configuration {}
 
