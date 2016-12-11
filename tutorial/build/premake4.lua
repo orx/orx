@@ -138,9 +138,9 @@ solution "Tutorial"
         "$(ORX)/include"
     }
 
-    configuration{"not macosx"}
-        libdirs{"../lib"}
-    configuration{}
+    configuration {"not macosx"}
+        libdirs {"../lib"}
+    configuration {}
 
     libdirs
     {

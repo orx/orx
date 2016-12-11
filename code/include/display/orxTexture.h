@@ -51,7 +51,7 @@
 
 /** Defines
  */
-#define orxTEXTURE_KZ_SCREEN_NAME         "-=Screen=-"
+#define orxTEXTURE_KZ_SCREEN_NAME         "screen"
 
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 
@@ -101,7 +101,7 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Create();
  * @param[in]   _bKeepInCache   Should be kept in cache after no more references exist?
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zFileName,      orxBOOL _bKeepInCache);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zFileName, orxBOOL _bKeepInCache);
 
 /** Deletes a texture (and its referenced bitmap)
  * @param[in]   _pstTexture     Concerned texture
