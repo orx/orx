@@ -122,12 +122,15 @@
 #define orxANIMSET_KZ_CONFIG_LINK_PROPERTY            "Property"
 #define orxANIMSET_KZ_CONFIG_LINK_PRIORITY            "Priority"
 
+#define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
+
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
 
-#define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
-#define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          32          /**< Reference table size */
-#define orxANIMSET_KU32_BANK_SIZE                     64          /**< Bank size */
+#define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
+#define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
+#define orxANIMSET_KU32_CREATION_TABLE_SIZE           64          /**< Creation table size */
+#define orxANIMSET_KU32_BANK_SIZE                     128         /**< Bank size */
 
 
 /***************************************************************************
@@ -171,8 +174,9 @@ struct __orxANIMSET_t
  */
 typedef struct __orxANIMSET_STATIC_t
 {
-  orxU32        u32Flags;                             /**< Control flags : 4 */
-  orxHASHTABLE *pstReferenceTable;                    /**< Table to avoid animation set duplication when creating through config file : 8 */
+  orxU32        u32Flags;                             /**< Control flags */
+  orxHASHTABLE *pstCreationTable;                     /**< Creation table */
+  orxHASHTABLE *pstReferenceTable;                    /**< Table to avoid animation set duplication when creating through config file */
 
 } orxANIMSET_STATIC;
 
@@ -1259,6 +1263,362 @@ static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *
   return eResult;
 }
 
+static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRING _zConfigID)
+{
+  orxU32      u32AnimCounter;
+  orxANIMSET *pstResult;
+
+  /* Gets animation counter */
+  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
+
+  /* Creates animation set */
+  pstResult = orxAnimSet_Create(u32AnimCounter);
+
+  /* Valid? */
+  if((pstResult != orxNULL)
+  && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+  {
+    orxU32 i, u32LinkCounter;
+
+    /* Updates status flags */
+    orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
+
+    /* Stores its reference key */
+    pstResult->zReference = orxConfig_GetCurrentSection();
+
+    /* For all animations */
+    for(i = 0; i < u32AnimCounter; i++)
+    {
+      const orxSTRING zAnimName;
+
+      /* Gets its name */
+      zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
+
+      /* Valid? */
+      if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
+      {
+        orxANIM  *pstAnim;
+        orxU32    u32AnimID;
+
+        /* Creates it */
+        pstAnim = orxAnim_CreateFromConfig(zAnimName);
+
+        /* Valid? */
+        if(pstAnim != orxNULL)
+        {
+          /* Adds it to set */
+          u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+          /* Sets its owner */
+          orxStructure_SetOwner(pstAnim, pstResult);
+
+          /* Adds it to ID table */
+          orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        }
+      }
+    }
+
+    /* Optimizes its ID table */
+    orxHashTable_Optimize(pstResult->pstIDTable);
+
+    /* For all links */
+    for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
+    {
+      const orxSTRING zLinkName;
+
+      /* Gets link name */
+      orxConfig_SelectSection(_zConfigID);
+      zLinkName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_LINK_LIST, i);
+
+      /* Valid? */
+      if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
+      {
+        const orxSTRING zSrcAnim;
+        const orxSTRING zDstAnim;
+        orxU32          u32SrcAnim, u32DstAnim, u32Link;
+
+        /* Selects corresponding section */
+        orxConfig_SelectSection(zLinkName);
+
+        /* Gets source & destination anim names */
+        zSrcAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_SOURCE);
+        zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
+
+        /* Gets source & destination anim IDs */
+        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+
+        /* Valid? */
+        if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
+        {
+          /* Adds link */
+          u32Link = orxAnimSet_AddLink(pstResult, u32SrcAnim, u32DstAnim);
+
+          /* Valid? */
+          if(u32Link != orxU32_UNDEFINED)
+          {
+            orxCHAR   acBuffer[64];
+            orxSTRING zProperty;
+
+            /* Gets lower case property */
+            acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+            zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
+
+            /* Immediate link? */
+            if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
+            {
+              /* Updates link property */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+            }
+            /* Auto reset? */
+            if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
+            {
+              /* Updates link property */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
+            }
+
+            /* Has priority? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_LINK_PRIORITY) != orxFALSE)
+            {
+              /* Updates link priority */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(orxANIMSET_KZ_CONFIG_LINK_PRIORITY));
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
+        }
+      }
+    }
+
+    /* Adds it to reference table */
+    orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+    /* Updates status flags */
+    orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Was created? */
+    if(pstResult != orxNULL)
+    {
+      /* Deletes it */
+      orxAnimSet_Delete(pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Pops previous section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return pstResult;
+}
+
+static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
+{
+  orxU32 i, u32Counter;
+
+  /* For all linked animations */
+  for(i = 0, u32Counter = orxConfig_GetListCounter(_zAnim);
+      i < u32Counter;
+      i++)
+  {
+    const orxSTRING   zLinkedAnim;
+    const orxSTRING  *pzTableBucket;
+
+    /* Gets linked anim */
+    zLinkedAnim = orxConfig_GetListString(_zAnim, i);
+
+    /* Retrieves its entry from the creation table */
+    pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(zLinkedAnim));
+
+    /* Not already referenced? */
+    if(*pzTableBucket == orxNULL)
+    {
+      /* Stores it */
+      *pzTableBucket = zLinkedAnim;
+
+      /* References its linked anims */
+      orxAnimSet_ReferenceAnim(zLinkedAnim);
+    }
+  }
+}
+
+static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING _zConfigID)
+{
+  const orxSTRING zStartAnim;
+  orxANIMSET     *pstResult = orxNULL;
+
+  /* Gets start anim */
+  zStartAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_START_ANIM);
+
+  /* Found? */
+  if(zStartAnim != orxSTRING_EMPTY)
+  {
+    orxU32 u32AnimCounter;
+
+    /* References it */
+    orxHashTable_Add(sstAnimSet.pstCreationTable, orxString_ToCRC(zStartAnim), (void *)zStartAnim);
+
+    /* References all anims linked from it */
+    orxAnimSet_ReferenceAnim(zStartAnim);
+
+    /* Gets animation counter */
+    u32AnimCounter = orxHashTable_GetCounter(sstAnimSet.pstCreationTable);
+
+    /* Creates animation set */
+    pstResult = orxAnimSet_Create(u32AnimCounter);
+
+    /* Valid? */
+    if((pstResult != orxNULL)
+    && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+    {
+      //! TODO
+
+      // orxU32 i, u32LinkCounter;
+
+      // /* Updates status flags */
+      // orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
+
+      // /* Stores its reference key */
+      // pstResult->zReference = orxConfig_GetCurrentSection();
+
+      // /* For all animations */
+      // for(i = 0; i < u32AnimCounter; i++)
+      // {
+      //   const orxSTRING zAnimName;
+
+      //   /* Gets its name */
+      //   zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
+
+      //   /* Valid? */
+      //   if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
+      //   {
+      //     orxANIM  *pstAnim;
+      //     orxU32    u32AnimID;
+
+      //     /* Creates it */
+      //     pstAnim = orxAnim_CreateFromConfig(zAnimName);
+
+      //     /* Valid? */
+      //     if(pstAnim != orxNULL)
+      //     {
+      //       /* Adds it to set */
+      //       u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+      //       /* Sets its owner */
+      //       orxStructure_SetOwner(pstAnim, pstResult);
+
+      //       /* Adds it to ID table */
+      //       orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+      //     }
+      //   }
+      // }
+
+      // /* Optimizes its ID table */
+      // orxHashTable_Optimize(pstResult->pstIDTable);
+
+      // /* For all links */
+      // for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
+      // {
+      //   const orxSTRING zLinkName;
+
+      //   /* Gets link name */
+      //   orxConfig_SelectSection(_zConfigID);
+      //   zLinkName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_LINK_LIST, i);
+
+      //   /* Valid? */
+      //   if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
+      //   {
+      //     const orxSTRING zSrcAnim;
+      //     const orxSTRING zDstAnim;
+      //     orxU32          u32SrcAnim, u32DstAnim, u32Link;
+
+      //     /* Selects corresponding section */
+      //     orxConfig_SelectSection(zLinkName);
+
+      //     /* Gets source & destination anim names */
+      //     zSrcAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_SOURCE);
+      //     zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
+
+      //     /* Gets source & destination anim IDs */
+      //     u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+      //     u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+
+      //     /* Valid? */
+      //     if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
+      //     {
+      //       /* Adds link */
+      //       u32Link = orxAnimSet_AddLink(pstResult, u32SrcAnim, u32DstAnim);
+
+      //       /* Valid? */
+      //       if(u32Link != orxU32_UNDEFINED)
+      //       {
+      //         orxCHAR   acBuffer[64];
+      //         orxSTRING zProperty;
+
+      //         /* Gets lower case property */
+      //         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+      //         zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
+
+      //         /* Immediate link? */
+      //         if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
+      //         {
+      //           /* Updates link property */
+      //           orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+      //         }
+      //         /* Auto reset? */
+      //         if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
+      //         {
+      //           /* Updates link property */
+      //           orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
+      //         }
+
+      //         /* Has priority? */
+      //         if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_LINK_PRIORITY) != orxFALSE)
+      //         {
+      //           /* Updates link priority */
+      //           orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(orxANIMSET_KZ_CONFIG_LINK_PRIORITY));
+      //         }
+      //       }
+      //     }
+      //     else
+      //     {
+      //       /* Logs message */
+      //       orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
+      //     }
+      //   }
+      // }
+
+      // /* Adds it to reference table */
+      // orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+      // /* Updates status flags */
+      // orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+    }
+    else
+    {
+      /* Was created? */
+      if(pstResult != orxNULL)
+      {
+        /* Deletes it */
+        orxAnimSet_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1298,8 +1658,21 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
     /* Valid? */
     if(sstAnimSet.pstReferenceTable != orxNULL)
     {
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMSET_KU32_BANK_SIZE, orxNULL);
+      /* Creates creation table */
+      sstAnimSet.pstCreationTable = orxHashTable_Create(orxANIMSET_KU32_CREATION_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if(sstAnimSet.pstCreationTable != orxNULL)
+      {
+        /* Registers structure type */
+        eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMSET_KU32_BANK_SIZE, orxNULL);
+      }
+      else
+      {
+        /* Deletes reference table */
+        orxHashTable_Delete(sstAnimSet.pstReferenceTable);
+        sstAnimSet.pstReferenceTable = orxNULL;
+      }
     }
   }
   else
@@ -1339,6 +1712,9 @@ void orxFASTCALL orxAnimSet_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_ANIMSET);
+
+    /* Deletes creation table */
+    orxHashTable_Delete(sstAnimSet.pstCreationTable);
 
     /* Deletes reference table */
     orxHashTable_Delete(sstAnimSet.pstReferenceTable);
@@ -1460,154 +1836,15 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
     && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
-      orxU32 u32AnimCounter;
+      /* Creates a simplified animation set */
+      pstResult = orxAnimSet_CreateSimpleFromConfig(_zConfigID);
 
-      /* Gets animation counter */
-      u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
-
-      /* Creates animation set */
-      pstResult = orxAnimSet_Create(u32AnimCounter);
-
-      /* Valid? */
-      if((pstResult != orxNULL)
-      && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+      /* Invalid? */
+      if(pstResult == orxNULL)
       {
-        orxU32 i, u32LinkCounter;
-
-        /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
-
-        /* Stores its reference key */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* For all animations */
-        for(i = 0; i < u32AnimCounter; i++)
-        {
-          const orxSTRING zAnimName;
-
-          /* Gets its name */
-          zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
-
-          /* Valid? */
-          if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
-          {
-            orxANIM  *pstAnim;
-            orxU32    u32AnimID;
-
-            /* Creates it */
-            pstAnim = orxAnim_CreateFromConfig(zAnimName);
-
-            /* Valid? */
-            if(pstAnim != orxNULL)
-            {
-              /* Adds it to set */
-              u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
-
-              /* Sets its owner */
-              orxStructure_SetOwner(pstAnim, pstResult);
-
-              /* Adds it to ID table */
-              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
-            }
-          }
-        }
-
-        /* Optimizes its ID table */
-        orxHashTable_Optimize(pstResult->pstIDTable);
-
-        /* For all links */
-        for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
-        {
-          const orxSTRING zLinkName;
-
-          /* Gets link name */
-          orxConfig_SelectSection(_zConfigID);
-          zLinkName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_LINK_LIST, i);
-
-          /* Valid? */
-          if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
-          {
-            const orxSTRING zSrcAnim;
-            const orxSTRING zDstAnim;
-            orxU32          u32SrcAnim, u32DstAnim, u32Link;
-
-            /* Selects corresponding section */
-            orxConfig_SelectSection(zLinkName);
-
-            /* Gets source & destination anim names */
-            zSrcAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_SOURCE);
-            zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
-
-            /* Gets source & destination anim IDs */
-            u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
-            u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
-
-            /* Valid? */
-            if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
-            {
-              /* Adds link */
-              u32Link = orxAnimSet_AddLink(pstResult, u32SrcAnim, u32DstAnim);
-
-              /* Valid? */
-              if(u32Link != orxU32_UNDEFINED)
-              {
-                orxCHAR   acBuffer[64];
-                orxSTRING zProperty;
-
-                /* Gets lower case property */
-                acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-                zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
-
-                /* Immediate link? */
-                if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
-                {
-                  /* Updates link property */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
-                }
-                /* Auto reset? */
-                if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
-                {
-                  /* Updates link property */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
-                }
-
-                /* Has priority? */
-                if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_LINK_PRIORITY) != orxFALSE)
-                {
-                  /* Updates link priority */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(orxANIMSET_KZ_CONFIG_LINK_PRIORITY));
-                }
-              }
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
-            }
-          }
-        }
-
-        /* Adds it to reference table */
-        orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
-
-        /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+        /* Creates an old school classic animation set */
+        pstResult = orxAnimSet_CreateClassicFromConfig(_zConfigID);
       }
-      else
-      {
-        /* Was created? */
-        if(pstResult != orxNULL)
-        {
-          /* Deletes it */
-          orxAnimSet_Delete(pstResult);
-
-          /* Updates result */
-          pstResult = orxNULL;
-        }
-      }
-
-      /* Pops previous section */
-      orxConfig_PopSection();
     }
     else
     {
