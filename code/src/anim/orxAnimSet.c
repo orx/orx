@@ -126,6 +126,10 @@
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
+#define orxANIMSET_KC_IMMEDIATE                       '.'
+#define orxANIMSET_KC_CLEAR_TARGET                    '!'
+#define orxANIMSET_KC_HIGH_PRIORITY                   '+'
+#define orxANIMSET_KC_LOW_PRIORITY                    '-'
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
@@ -1433,6 +1437,15 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
 
     /* Gets linked anim */
     zLinkedAnim = orxConfig_GetListString(_zAnim, i);
+
+    /* Skips all link modifiers */
+    while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
+       || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
+       || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
+       || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY))
+    {
+      zLinkedAnim++;
+    }
 
     /* Retrieves its entry from the creation table */
     pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(zLinkedAnim));
