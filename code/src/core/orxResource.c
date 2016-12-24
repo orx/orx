@@ -784,7 +784,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Found? */
     if(pstGroup != orxNULL)
     {
-      static orxHANDLE  hIterator;
+      static orxHANDLE  hIterator = orxHANDLE_UNDEFINED;
       orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 

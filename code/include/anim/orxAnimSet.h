@@ -193,7 +193,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(o
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_u32LinkID 												  ID of the concerned link
  * @param[in]		_u32Property												ID of the property to get
- * @return			Property value / orx32_Undefined
+ * @return			Property value / orxU32_UNDEFINED
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property);
 
