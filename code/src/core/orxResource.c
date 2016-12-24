@@ -784,7 +784,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Found? */
     if(pstGroup != orxNULL)
     {
-      static orxHANDLE  hIterator = orxHANDLE_UNDEFINED;
+      static orxHANDLE  shIterator;
       orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
@@ -792,16 +792,16 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
       if(u32GroupID != su32LastGroupID)
       {
         /* Resets iterator */
-        hIterator = orxHANDLE_UNDEFINED;
+        shIterator = orxHANDLE_UNDEFINED;
 
         /* Stores group ID */
         su32LastGroupID = u32GroupID;
       }
 
       /* For all its cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo);
-          hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+      for(shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, &u64Key, (void **)&pstResourceInfo);
+          shIterator != orxHANDLE_UNDEFINED;
+          shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, &u64Key, (void **)&pstResourceInfo))
       {
         /* Does its type support time? */
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
