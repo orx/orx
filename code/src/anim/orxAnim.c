@@ -336,6 +336,26 @@ static orxINLINE void orxAnim_DeleteAll()
   return;
 }
 
+/** Anim name set accessor, semi-private, internal use only
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _zName          Name to use
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnim);
+
+  /* Updates result */
+  _pstAnim->zName = _zName;
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *

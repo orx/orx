@@ -1466,6 +1466,18 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
   }
 }
 
+orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
+
+static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRING _zConfigID)
+{
+  orxANIM *pstResult = orxNULL;
+
+  //! TODO
+
+  /* Done! */
+  return pstResult;
+}
+
 static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING _zConfigID)
 {
   const orxSTRING zStartAnim;
@@ -1514,7 +1526,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxU32    u32AnimID;
 
         /* Creates it */
-        pstAnim = orxAnim_CreateFromConfig(zAnim);
+        pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zAnim);
 
         /* Valid? */
         if(pstAnim != orxNULL)
