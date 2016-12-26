@@ -73,22 +73,7 @@
 
 /** Misc defines
  */
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME         "Texture"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN       "TextureOrigin"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE         "TextureSize"
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER       "TextureCorner" /**< Kept for retro-compatibility reason */
-#define orxGRAPHIC_KZ_CONFIG_TEXT_NAME            "Text"
-#define orxGRAPHIC_KZ_CONFIG_PIVOT                "Pivot"
-#define orxGRAPHIC_KZ_CONFIG_COLOR                "Color"
-#define orxGRAPHIC_KZ_CONFIG_ALPHA                "Alpha"
-#define orxGRAPHIC_KZ_CONFIG_RGB                  "RGB"
-#define orxGRAPHIC_KZ_CONFIG_HSL                  "HSL"
-#define orxGRAPHIC_KZ_CONFIG_HSV                  "HSV"
-#define orxGRAPHIC_KZ_CONFIG_FLIP                 "Flip"
-#define orxGRAPHIC_KZ_CONFIG_REPEAT               "Repeat"
-#define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
-#define orxGRAPHIC_KZ_CONFIG_BLEND_MODE           "BlendMode"
-#define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE        "KeepInCache"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
 #define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"

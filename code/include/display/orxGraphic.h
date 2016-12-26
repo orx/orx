@@ -77,6 +77,25 @@
 #define orxGRAPHIC_KU32_MASK_USER_ALL         0x00000FFF  /**< User all ID mask */
 
 
+/** Misc defines
+ */
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME     "Texture"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN   "TextureOrigin"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE     "TextureSize"
+#define orxGRAPHIC_KZ_CONFIG_TEXT_NAME        "Text"
+#define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
+#define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
+#define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
+#define orxGRAPHIC_KZ_CONFIG_RGB              "RGB"
+#define orxGRAPHIC_KZ_CONFIG_HSL              "HSL"
+#define orxGRAPHIC_KZ_CONFIG_HSV              "HSV"
+#define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
+#define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
+#define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
+#define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
+
+
 /** Internal Graphic structure
  */
 typedef struct __orxGRAPHIC_t                 orxGRAPHIC;
