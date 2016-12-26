@@ -125,6 +125,8 @@
 #define orxANIMSET_KZ_CONFIG_LINK_PRIORITY            "Priority"
 
 #define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
+#define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
+#define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
@@ -138,6 +140,8 @@
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
 #define orxANIMSET_KU32_CREATION_TABLE_SIZE           64          /**< Creation table size */
 #define orxANIMSET_KU32_BANK_SIZE                     128         /**< Bank size */
+
+#define orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS     4
 
 
 /***************************************************************************
@@ -200,6 +204,11 @@ static orxANIMSET_STATIC sstAnimSet;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Semi-private, internal-use only forward declarations
+ */
+orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
+orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Link table set flag test accessor
  * @param[in]   _pstLinkTable	                Concerned LinkTable
@@ -1472,13 +1481,86 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
   }
 }
 
-orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
-
 static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRING _zConfigID)
 {
-  orxANIM *pstResult = orxNULL;
+  const orxSTRING zAnim = orxSTRING_EMPTY;
+  orxU32    u32Counter, u32FrameWidth = 0, u32FrameHeight = 0, u32FrameCounter = 0;
+  orxANIM  *pstResult = orxNULL;
 
-  //! TODO
+  /* Gets associated list size */
+  u32Counter = orxConfig_GetListCounter(_zConfigID);
+
+  /* Dependings on number of values */
+  switch(u32Counter)
+  {
+    case 0:
+    {
+      /* Uses self as name */
+      zAnim = _zConfigID;
+
+      break;
+    }
+
+    case 2:
+    {
+      orxVECTOR vFrameInfo;
+
+      /* Retrieves frame info */
+      orxConfig_GetListVector(_zConfigID, 1, &vFrameInfo);
+
+      /* Stores its values */
+      u32FrameWidth   = orxMAX(orxF2U(vFrameInfo.fX), 0);
+      u32FrameHeight  = orxMAX(orxF2U(vFrameInfo.fY), 0);
+      u32FrameCounter = orxMAX(orxF2U(vFrameInfo.fZ), 0);
+
+      /* Fallthrough */
+    }
+
+    case 1:
+    {
+      /* Gets name */
+      zAnim = orxConfig_GetListString(_zConfigID, 0);
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Valid? */
+  if(zAnim != orxSTRING_EMPTY)
+  {
+    const orxSTRING zPrefix;
+    orxU32          u32Digits;
+    orxCHAR         acBuffer[128] = {};
+
+    /* Gets number of digits */
+    u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
+
+    /* Gets prefix */
+    zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+
+    /* Has config section? */
+    if(orxConfig_HasSection(zAnim) != orxFALSE)
+    {
+      /* Pushes it */
+      orxConfig_PushSection(zAnim);
+
+      //! TODO
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+    else
+    {
+      //! TODO
+    }
+
+    //! TODO
+  }
 
   /* Done! */
   return pstResult;
@@ -1542,6 +1624,11 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
 
           /* Adds it to ID table */
           orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: couldn't create anim [%s].", _zConfigID, zAnim);
         }
       }
 
