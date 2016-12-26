@@ -132,6 +132,7 @@
 #define orxANIMSET_KC_CLEAR_TARGET                    '!'
 #define orxANIMSET_KC_HIGH_PRIORITY                   '+'
 #define orxANIMSET_KC_LOW_PRIORITY                    '-'
+#define orxANIMSET_KZ_LINK_SUFFIX                     "->"
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
@@ -1427,40 +1428,45 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
 
 static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
 {
-  orxU32 i, u32Counter;
+  const orxSTRING *pzTableBucket;
 
-  /* For all linked animations */
-  for(i = 0, u32Counter = orxConfig_GetListCounter(_zAnim);
-      i < u32Counter;
-      i++)
+  /* Retrieves its entry from the creation table */
+  pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(_zAnim));
+
+  /* Not already referenced? */
+  if(*pzTableBucket == orxNULL)
   {
-    const orxSTRING   zLinkedAnim;
-    const orxSTRING  *pzTableBucket;
+    orxU32  i, u32Counter;
+    orxCHAR acLinkName[64] = {};
 
-    /* Gets linked anim */
-    zLinkedAnim = orxConfig_GetListString(_zAnim, i);
+    /* Stores it */
+    *pzTableBucket = _zAnim;
 
-    /* Skips all link modifiers */
-    while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
-       || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
-       || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
-       || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY)
-       || (*zLinkedAnim == ' ')
-       || (*zLinkedAnim == '\t'))
+    /* Gets its link name */
+    orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
+
+    /* For all linked animations */
+    for(i = 0, u32Counter = orxConfig_GetListCounter(acLinkName);
+        i < u32Counter;
+        i++)
     {
-      zLinkedAnim++;
-    }
+      const orxSTRING zLinkedAnim;
 
-    /* Retrieves its entry from the creation table */
-    pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(zLinkedAnim));
+      /* Gets linked anim */
+      zLinkedAnim = orxConfig_GetListString(acLinkName, i);
 
-    /* Not already referenced? */
-    if(*pzTableBucket == orxNULL)
-    {
-      /* Stores it */
-      *pzTableBucket = zLinkedAnim;
+      /* Skips all link modifiers */
+      while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
+         || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
+         || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
+         || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY)
+         || (*zLinkedAnim == ' ')
+         || (*zLinkedAnim == '\t'))
+      {
+        zLinkedAnim++;
+      }
 
-      /* References its linked anims */
+      /* References it */
       orxAnimSet_ReferenceAnim(zLinkedAnim);
     }
   }
@@ -1491,10 +1497,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
   {
     orxU32 u32AnimCounter;
 
-    /* References it */
-    orxHashTable_Add(sstAnimSet.pstCreationTable, orxString_ToCRC(zStartAnim), (void *)zStartAnim);
-
-    /* References all anims linked from it */
+    /* References it and all anims linked from it */
     orxAnimSet_ReferenceAnim(zStartAnim);
 
     /* Gets animation counter */
@@ -1551,9 +1554,13 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
           hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, hIterator, &u64AnimCRC, (void **)&zAnim))
       {
         orxU32 u32LinkCounter, u32AnimID;
+        orxCHAR acLinkName[64] = {};
+
+        /* Gets link config property name */
+        orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
         /* Gets link counter */
-        u32LinkCounter = orxConfig_GetListCounter(zAnim);
+        u32LinkCounter = orxConfig_GetListCounter(acLinkName);
 
         /* Gets self anim ID */
         u32AnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
@@ -1580,7 +1587,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
             orxBOOL         bStop;
 
             /* Gets it */
-            zLink = orxConfig_GetListString(zAnim, i);
+            zLink = orxConfig_GetListString(acLinkName, i);
 
             /* Finds anim name */
             for(zDestAnim = zLink;
