@@ -1,7 +1,5 @@
 var NAVTREEINDEX22 =
 {
-"orx_memory_8h.html":[3,0,0,8,1],
-"orx_memory_8h_source.html":[3,0,0,8,1],
 "orx_module_8h.html":[3,0,0,1,1],
 "orx_module_8h_source.html":[3,0,0,1,1],
 "orx_mouse_8h.html":[3,0,0,5,4],
@@ -249,5 +247,7 @@ var NAVTREEINDEX22 =
 "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79":[1,10,1,1],
 "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html":[1,15,3],
 "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a09e8ddcd607dceacf8021000c0e857b4":[1,15,3,10],
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a":[1,15,3,9]
+"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a":[1,15,3,9],
+"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3":[1,15,3,5],
+"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f":[1,15,3,13]
 };

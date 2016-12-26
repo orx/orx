@@ -58,7 +58,6 @@ var searchData=
   ['orxanim_5faddevent',['orxAnim_AddEvent',['../group__orx_anim.html#ga4f50f36eafa77217a827b5d6f4e1705e',1,'orxAnim.h']]],
   ['orxanim_5faddkey',['orxAnim_AddKey',['../group__orx_anim.html#ga34af9e6bbcc1d1b4f65b81cf78f2cef9',1,'orxAnim.h']]],
   ['orxanim_5fcreate',['orxAnim_Create',['../group__orx_anim.html#ga905b2501e745a8c5f49b0e8293281d37',1,'orxAnim.h']]],
-  ['orxanim_5fcreatefromconfig',['orxAnim_CreateFromConfig',['../group__orx_anim.html#gad3d30b5a08f7fa4c6ff73f8deaf4cc5d',1,'orxAnim.h']]],
   ['orxanim_5fcustom_5fevent',['orxANIM_CUSTOM_EVENT',['../structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html',1,'']]],
   ['orxanim_5fdelete',['orxAnim_Delete',['../group__orx_anim.html#ga511df81510ed565dbba388a87b47ebfe',1,'orxAnim.h']]],
   ['orxanim_5fevent',['orxANIM_EVENT',['../group__orx_anim.html#ga35c8d85da4576521adb85018dd46f3e0',1,'orxAnim.h']]],
