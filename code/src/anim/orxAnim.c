@@ -352,6 +352,9 @@ orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName)
   /* Updates result */
   _pstAnim->zName = _zName;
 
+  /* Updates status */
+  orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
+
   /* Done! */
   return eResult;
 }
