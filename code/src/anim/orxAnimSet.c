@@ -1557,7 +1557,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   {
     orxVECTOR       vTextureOrigin = {}, vTextureSize = {};
     const orxSTRING zPrefix;
-    const orxSTRING zTexture = orxSTRING_EMPTY;
     orxU32          u32Digits;
     orxBOOL         bContinue = orxTRUE;
     orxCHAR         acBuffer[128] = {};
@@ -1571,56 +1570,43 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* Gets anim's section name */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s", zPrefix, zAnim);
 
-    /* Has config section? */
-    if(orxConfig_HasSection(acBuffer) != orxFALSE)
+    /* Pushes it */
+    orxConfig_PushSection(acBuffer);
+
+    /* From config? */
+    if(bFromConfig != orxFALSE)
     {
-      /* Pushes it */
-      orxConfig_PushSection(acBuffer);
+      /* Gets texture origin */
+      orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
 
-      /* Updates default key duration */
-      if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_KEY_DURATION) != orxFALSE)
+      /* Gets texture size */
+      if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
       {
-        fDefaultKeyDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
-      }
+        orxGRAPHIC *pstGraphic;
 
-      /* From config? */
-      if(bFromConfig != orxFALSE)
-      {
-        /* Gets texture */
-        zTexture = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
+        /* Creates graphic */
+        pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
 
-        /* Gets texture origin */
-        orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
-
-        /* Gets texture size */
-        if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
+        /* Valid? */
+        if(pstGraphic != orxNULL)
         {
-          orxGRAPHIC *pstGraphic;
+          /* Gets its size */
+          orxGraphic_GetSize(pstGraphic, &vTextureSize);
 
-          /* Creates graphic */
-          pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
+          /* Updates it */
+          orxVector_Sub(&vTextureSize, &vTextureSize, &vTextureOrigin);
 
-          /* Valid? */
-          if(pstGraphic != orxNULL)
-          {
-            /* Gets its size */
-            orxGraphic_GetSize(pstGraphic, &vTextureSize);
-
-            /* Deletes it */
-            orxGraphic_Delete(pstGraphic);
-          }
-        }
-
-        /* No texture size? */
-        if(orxVector_IsNull(&vTextureSize) != orxFALSE)
-        {
-          /* Stops */
-          bContinue = orxFALSE;
+          /* Deletes it */
+          orxGraphic_Delete(pstGraphic);
         }
       }
 
-      /* Pops config section */
-      orxConfig_PopSection();
+      /* No texture size? */
+      if(orxVector_IsNull(&vTextureSize) != orxFALSE)
+      {
+        /* Stops */
+        bContinue = orxFALSE;
+      }
     }
 
     /* Should continue? */
@@ -1659,13 +1645,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
           /* Pushes its section */
           orxConfig_PushSection(acBuffer);
-
-          /* Doesn't have texture? */
-          if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
-          {
-            /* Sets it */
-            orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, zTexture);
-          }
 
           /* No local size? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
@@ -1734,6 +1713,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Pops config section */
           orxConfig_PopSection();
         }
+
+        /* Sets section's parent */
+        orxConfig_SetParent(acBuffer, orxConfig_GetCurrentSection());
 
         /* Disables display logs */
         bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
@@ -1830,6 +1812,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: Failed to create anim [%s], couldn't retrieve associated texture's size.", orxConfig_GetCurrentSection(), _zConfigID);
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
   else
   {
