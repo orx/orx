@@ -1433,9 +1433,6 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
     }
   }
 
-  /* Pops previous section */
-  orxConfig_PopSection();
-
   /* Done! */
   return pstResult;
 }
@@ -1639,6 +1636,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           i++)
       {
         orxGRAPHIC *pstGraphic;
+        orxBOOL     bDebugLevelBackup;
 
         /* Gets frame name */
         orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt);
@@ -1737,8 +1735,15 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           orxConfig_PopSection();
         }
 
+        /* Disables display logs */
+        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
+
         /* Creates graphic */
         pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
+
+        /* Reenables display logs */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
         /* Success? */
         if(pstGraphic != orxNULL)
@@ -1814,6 +1819,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* Clears bank */
         orxBank_Clear(sstAnimSet.pstCreationBank);
       }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: Failed to create anim [%s], couldn't create any frames.", orxConfig_GetCurrentSection(), _zConfigID);
+      }
     }
     else
     {
@@ -1824,7 +1834,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: Failed to create anim [%s], invalid config setup!", orxConfig_GetCurrentSection(), _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: Failed to create anim [%s], invalid config data.", orxConfig_GetCurrentSection(), _zConfigID);
   }
 
   /* Done! */
@@ -1889,11 +1899,6 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
 
           /* Adds it to ID table */
           orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: couldn't create anim [%s].", _zConfigID, zAnim);
         }
       }
 
@@ -2298,6 +2303,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* Creates an old school classic animation set */
         pstResult = orxAnimSet_CreateClassicFromConfig(_zConfigID);
       }
+
+      /* Pops config section */
+      orxConfig_PopSection();
     }
     else
     {
