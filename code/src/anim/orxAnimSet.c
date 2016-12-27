@@ -1490,13 +1490,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   orxVECTOR       vFrameSize = {};
   const orxSTRING zAnim = orxSTRING_EMPTY;
   const orxSTRING zExt = orxSTRING_EMPTY;
-  orxFLOAT        fDefaultKeyDuration;
   orxS32          s32ValueCounter, s32MaxFrames = 0;
   orxBOOL         bFromConfig = orxFALSE;
   orxANIM        *pstResult = orxNULL;
-
-  /* Gets animset's default key duration */
-  fDefaultKeyDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
 
   /* Gets associated list size */
   s32ValueCounter = orxConfig_GetListCounter(_zConfigID);
@@ -1571,6 +1567,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
     /* Gets anim's section name */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s", zPrefix, zAnim);
+
+    /* Sets its parent */
+    orxConfig_SetParent(acBuffer, orxConfig_GetCurrentSection());
 
     /* Pushes it */
     orxConfig_PushSection(acBuffer);
@@ -1778,7 +1777,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             orxConfig_PushSection(zName);
 
             /* Updates its timestamp */
-            fTimeStamp += orxConfig_HasValue(orxANIMSET_KZ_CONFIG_KEY_DURATION) ? orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION) : fDefaultKeyDuration;
+            fTimeStamp += orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
 
             /* Pops config section */
             orxConfig_PopSection();
