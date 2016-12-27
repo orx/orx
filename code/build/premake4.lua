@@ -448,6 +448,9 @@ project "orxLIB"
 
 -- Linux
 
+    configuration {"linux"}
+        defines {"_GNU_SOURCE"}
+
     configuration {"linux", "not *Core*"}
         links
         {
@@ -463,7 +466,6 @@ project "orxLIB"
             "pthread",
             "gcc"
         }
-        defines {"_GNU_SOURCE"}
 
     configuration {"linux", "*Core*"}
         buildoptions {"-fPIC"}
