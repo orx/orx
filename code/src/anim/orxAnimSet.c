@@ -132,6 +132,7 @@
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
+#define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
@@ -185,6 +186,16 @@ struct __orxANIMSET_t
   orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */
   const orxSTRING         zReference;                 /**< Reference : 32 */
 };
+
+/** Frame info structure
+ */
+typedef struct __orxFRAME_INFO_t
+{
+  orxGRAPHIC             *pstGraphic;
+  const orxSTRING         zEventName;
+  orxFLOAT                fEventValue;
+
+} orxFRAME_INFO;
 
 
 /** Static structure
@@ -1626,37 +1637,41 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     {
       orxVECTOR vFrameOrigin;
       orxFLOAT  fMaxY;
-      orxU32    u32FrameCounter, i;
+      orxU32    u32FrameCounter, u32EventCounter, i;
 
       /* For all frames */
-      for(i = 0, orxVector_Copy(&vFrameOrigin, &vTextureOrigin), fMaxY = vFrameSize.fY;
+      for(i = 0, u32EventCounter = 0, orxVector_Copy(&vFrameOrigin, &vTextureOrigin), fMaxY = vFrameSize.fY;
           (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
           i++)
       {
-        orxGRAPHIC *pstGraphic;
-        orxBOOL     bDebugLevelBackup;
+        orxGRAPHIC     *pstGraphic;
+        const orxSTRING zEventName = orxNULL;
+        orxFLOAT        fEventValue = orxFLOAT_0;
+        orxS32          s32EventValueCounter;
+        orxBOOL         bDebugLevelBackup;
 
         /* Gets frame name */
         orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt);
+
+        /* From config and should auto-stop? */
+        if((s32MaxFrames == 0)
+        && (bFromConfig != orxFALSE))
+        {
+          /* Doesn't have a config section? */
+          if(orxConfig_HasSection(acBuffer) == orxFALSE)
+          {
+            /* Stops */
+            break;
+          }
+        }
+
+        /* Pushes its section */
+        orxConfig_PushSection(acBuffer);
 
         /* From config? */
         if(bFromConfig != orxFALSE)
         {
           orxVECTOR vCurrentOrigin, vCurrentSize;
-
-          /* Auto-stop? */
-          if(s32MaxFrames == 0)
-          {
-            /* Doesn't have a config section? */
-            if(orxConfig_HasSection(acBuffer) == orxFALSE)
-            {
-              /* Stops */
-              break;
-            }
-          }
-
-          /* Pushes its section */
-          orxConfig_PushSection(acBuffer);
 
           /* No local size? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
@@ -1706,25 +1721,33 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             /* Resets max vertical value */
             fMaxY             = vFrameSize.fY;
           }
-
-          /* Pops config section */
-          orxConfig_PopSection();
         }
         else
         {
-          /* Pushes its section */
-          orxConfig_PushSection(acBuffer);
-
           /* Doesn't have texture? */
           if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
           {
             /* Sets it */
             orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acBuffer);
           }
-
-          /* Pops config section */
-          orxConfig_PopSection();
         }
+
+        /* Gets event value counter */
+        s32EventValueCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+
+        /* Found event? */
+        if(s32EventValueCounter > 0)
+        {
+          /* Gets event info */
+          zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
+          fEventValue = (s32EventValueCounter > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
+
+          /* Updates event counter */
+          u32EventCounter++;
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
 
         /* Already has parent? */
         if(orxConfig_GetParent(acBuffer) != orxNULL)
@@ -1749,12 +1772,16 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* Success? */
         if(pstGraphic != orxNULL)
         {
-          orxGRAPHIC **ppstGraphic;
+          orxFRAME_INFO *pstFrameInfo;
 
-          /* Stores it */
-          ppstGraphic = (orxGRAPHIC **)orxBank_Allocate(sstAnimSet.pstCreationBank);
-          orxASSERT(ppstGraphic != orxNULL);
-          *ppstGraphic = pstGraphic;
+          /* Allocates frame info */
+          pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
+          orxASSERT(pstFrameInfo);
+
+          /* Stores info */
+          pstFrameInfo->pstGraphic  = pstGraphic;
+          pstFrameInfo->zEventName  = zEventName;
+          pstFrameInfo->fEventValue = fEventValue;
         }
         else
         {
@@ -1770,29 +1797,36 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       if(u32FrameCounter != 0)
       {
         /* Creates 2D animation */
-        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCounter, 0);
+        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCounter, u32EventCounter);
 
         /* Valid? */
         if(pstResult != orxNULL)
         {
-          orxGRAPHIC  **ppstGraphic;
-          orxFLOAT      fTimeStamp = orxFLOAT_0;
+          orxFRAME_INFO  *pstFrameInfo;
+          orxFLOAT        fTimeStamp = orxFLOAT_0;
 
           /* Stores its name */
           orxAnim_SetName(pstResult, orxString_Store(_zConfigID));
 
           /* For all frames */
-          for(ppstGraphic = (orxGRAPHIC **)orxBank_GetNext(sstAnimSet.pstCreationBank, orxNULL);
-              ppstGraphic != orxNULL;
-              ppstGraphic = (orxGRAPHIC **)orxBank_GetNext(sstAnimSet.pstCreationBank, ppstGraphic))
+          for(pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, orxNULL);
+              pstFrameInfo != orxNULL;
+              pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
           {
             const orxSTRING zName;
 
             /* Gets its name */
-            zName = orxGraphic_GetName(*ppstGraphic);
+            zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
 
             /* Pushes its section */
             orxConfig_PushSection(zName);
+
+            /* Has event? */
+            if(pstFrameInfo->zEventName != orxNULL)
+            {
+              /* Adds it */
+              orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
+            }
 
             /* Updates its timestamp */
             fTimeStamp += orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
@@ -1801,10 +1835,10 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             orxConfig_PopSection();
 
             /* Adds it */
-            if(orxAnim_AddKey(pstResult, orxSTRUCTURE(*ppstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+            if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
             {
               /* Updates graphic's owner */
-              orxStructure_SetOwner(*ppstGraphic, pstResult);
+              orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
             }
             else
             {
@@ -1812,7 +1846,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", zAnimSet, zName, _zConfigID);
 
               /* Deletes it */
-              orxGraphic_Delete(*ppstGraphic);
+              orxGraphic_Delete(pstFrameInfo->pstGraphic);
             }
           }
         }
@@ -2109,7 +2143,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
       if(sstAnimSet.pstCreationTable != orxNULL)
       {
         /* Creates creation bank */
-        sstAnimSet.pstCreationBank = orxBank_Create(orxANIMSET_KU32_CREATION_BANK_SIZE, sizeof(orxGRAPHIC *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        sstAnimSet.pstCreationBank = orxBank_Create(orxANIMSET_KU32_CREATION_BANK_SIZE, sizeof(orxFRAME_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
         /* Valid? */
         if(sstAnimSet.pstCreationBank != orxNULL)
@@ -2123,7 +2157,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
           orxHashTable_Delete(sstAnimSet.pstReferenceTable);
           orxHashTable_Delete(sstAnimSet.pstCreationTable);
           sstAnimSet.pstReferenceTable  = orxNULL;
-          sstAnimSet.pstCreationBank    = orxNULL;
+          sstAnimSet.pstCreationTable   = orxNULL;
         }
       }
       else
