@@ -4754,11 +4754,11 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
     /* Selects concerned section */
     if(orxConfig_SelectSection(_zSectionName) != orxSTATUS_FAILURE)
     {
-      /* Has valid parent? */
-      if((sstConfig.pstCurrentSection->pstParent != orxNULL) && (sstConfig.pstCurrentSection->pstParent != orxHANDLE_UNDEFINED))
+      /* Has parent? */
+      if(sstConfig.pstCurrentSection->pstParent != orxNULL)
       {
         /* Updates result */
-        zResult = sstConfig.pstCurrentSection->pstParent->zName;
+        zResult = (sstConfig.pstCurrentSection->pstParent != orxHANDLE_UNDEFINED) ? sstConfig.pstCurrentSection->pstParent->zName : orxSTRING_EMPTY;
       }
     }
 
