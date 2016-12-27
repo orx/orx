@@ -114,6 +114,11 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_CreateFromConfig(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_Delete(orxANIMSET *_pstAnimSet);
 
+/** Clears cache (if any animset is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ClearCache();
+
 /** Adds a reference to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */

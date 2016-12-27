@@ -75,6 +75,7 @@
 #define orxANIMSET_KU32_FLAG_INTERNAL                 0x10000000  /**< Internal structure handling flag  */
 #define orxANIMSET_KU32_FLAG_REFERENCED               0x20000000  /**< Referenced flag  */
 #define orxANIMSET_KU32_FLAG_ID_TABLE                 0x40000000  /**< Has an ID table flag  */
+#define orxANIMSET_KU32_FLAG_CACHED                   0x80000000  /**< Cached flag */
 
 #define orxANIMSET_KU32_MASK_SIZE                     0x000003FF  /**< ID mask for size */
 #define orxANIMSET_KU32_MASK_COUNTER                  0x000FFC00  /**< ID mask for counter */
@@ -125,6 +126,7 @@
 #define orxANIMSET_KZ_CONFIG_LINK_DESTINATION         "Destination"
 #define orxANIMSET_KZ_CONFIG_LINK_PROPERTY            "Property"
 #define orxANIMSET_KZ_CONFIG_LINK_PRIORITY            "Priority"
+#define orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
 
 #define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
@@ -2289,6 +2291,20 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult = orxAnimSet_CreateClassicFromConfig(_zConfigID);
       }
 
+      /* Success? */
+      if(pstResult != orxNULL)
+      {
+        /* Should keep it in cache? */
+        if(orxConfig_GetBool(orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+        {
+          /* Increases its reference counter to keep it in cache table */
+          orxStructure_IncreaseCounter(pstResult);
+
+          /* Updates its flags */
+          orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_CACHED, orxANIMSET_KU32_FLAG_NONE);
+        }
+      }
+
       /* Pops config section */
       orxConfig_PopSection();
     }
@@ -2352,6 +2368,40 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   {
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Clears cache (if any animset is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxAnimSet_ClearCache()
+{
+  orxANIMSET *pstAnimSet, *pstNextAnimSet;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+
+  /* For all animsets */
+  for(pstAnimSet = orxANIMSET(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET));
+      pstAnimSet != orxNULL;
+      pstAnimSet = pstNextAnimSet)
+  {
+    /* Gets next shader */
+    pstNextAnimSet = orxANIMSET(orxStructure_GetNext(pstAnimSet));
+
+    /* Is cached? */
+    if(orxStructure_TestFlags(pstAnimSet, orxANIMSET_KU32_FLAG_CACHED))
+    {
+      /* Updates its flags */
+      orxStructure_SetFlags(pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_CACHED);
+
+      /* Deletes its extra reference */
+      orxAnimSet_Delete(pstAnimSet);
+    }
   }
 
   /* Done! */
