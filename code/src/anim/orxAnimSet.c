@@ -2490,7 +2490,9 @@ void orxFASTCALL    orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
   orxStructure_DecreaseCounter(_pstAnimSet);
 
   /* No extra reference left? */
-  if(orxStructure_GetRefCounter(_pstAnimSet) <= 1)
+  if((orxStructure_GetRefCounter(_pstAnimSet) <= 1)
+  || (orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_CACHED)
+   && (orxStructure_GetRefCounter(_pstAnimSet) <= 2)))
   {
     /* Unlocks animset */
     orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_REFERENCE_LOCK);
