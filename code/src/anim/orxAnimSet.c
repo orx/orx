@@ -1553,8 +1553,33 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
     case 1:
     {
-      /* Gets name */
-      zAnim = orxConfig_GetListString(_zConfigID, 0);
+      /* Retrieves frame info */
+      if(orxConfig_GetListVector(_zConfigID, 0, &vFrameSize) != orxNULL)
+      {
+        /* Updates max frames */
+        s32MaxFrames  = orxF2S(vFrameSize.fZ);
+        vFrameSize.fZ = orxFLOAT_0;
+
+        /* Updates status */
+        bFromConfig = orxTRUE;
+
+        /* Invalid? */
+        if(orxVector_IsNull(&vFrameSize) != orxFALSE)
+        {
+          /* Stops */
+          break;
+        }
+        else
+        {
+          /* Gets name */
+          zAnim = _zConfigID;
+        }
+      }
+      else
+      {
+        /* Gets name */
+        zAnim = orxConfig_GetListString(_zConfigID, 0);
+      }
 
       break;
     }
