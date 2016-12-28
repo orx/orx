@@ -134,6 +134,7 @@
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
+#define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
@@ -142,6 +143,10 @@
 #define orxANIMSET_KC_HIGH_PRIORITY                   '+'
 #define orxANIMSET_KC_LOW_PRIORITY                    '-'
 #define orxANIMSET_KZ_LINK_SUFFIX                     "->"
+#define orxANIMSET_KZ_DIRECTION_LEFT                  "left"
+#define orxANIMSET_KZ_DIRECTION_RIGHT                 "right"
+#define orxANIMSET_KZ_DIRECTION_DOWN                  "down"
+#define orxANIMSET_KZ_DIRECTION_UP                    "up"
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
@@ -155,6 +160,21 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Internal direction enum
+ */
+typedef enum __orxDIRECTION_t
+{
+  orxDIRECTION_LEFT = 0,
+  orxDIRECTION_RIGHT,
+  orxDIRECTION_UP,
+  orxDIRECTION_DOWN,
+
+  orxDIRECTION_NUMBER,
+
+  orxDIRECTION_NONE = orxENUM_NONE
+
+} orxDIRECTION;
 
 /** Internal Link Update Info structure
  */
@@ -1595,6 +1615,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     const orxSTRING zPrefix;
     orxU32          u32Digits;
     orxBOOL         bContinue = orxTRUE;
+    orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
     orxCHAR         acBuffer[128] = {};
 
     /* Gets number of digits */
@@ -1629,6 +1650,65 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* Gets texture origin */
       orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
 
+      /* Has orientation? */
+      if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
+      {
+        /* Valid? */
+        if(orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
+        {
+          orxU32        i;
+          orxDIRECTION *aeDirections[] =
+          {
+            &eRowDirection,
+            &eColumnDirection
+          };
+
+          /* For all directions */
+          for(i = 0; i < 2; i++)
+          {
+            const orxSTRING zDirection;
+
+            /* Gets it */
+            zDirection = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, i);
+
+            /* Right? */
+            if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_RIGHT) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_RIGHT;
+            }
+            /* Left? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_LEFT) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_LEFT;
+            }
+            /* Down? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_DOWN) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_DOWN;
+            }
+            /* Up? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_UP) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_UP;
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction value" orxANSI_KZ_COLOR_FG_DEFAULT " [%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, zDirection, _zConfigID);
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction property" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, _zConfigID);
+        }
+      }
+
       /* Gets texture size */
       if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
       {
@@ -1662,12 +1742,127 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* Should continue? */
     if(bContinue != orxFALSE)
     {
-      orxVECTOR vFrameOrigin;
-      orxFLOAT  fMaxY;
-      orxU32    u32FrameCounter, u32EventCounter, i;
+      orxVECTOR       vFrameOrigin, vCurrentSize;
+      orxU32          u32FrameCounter, u32EventCounter, i;
+      orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
+      const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
+      orxFLOAT       *pfRowOrigin;
+      orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
+      const orxFLOAT *pfColumnDelta;
+      orxFLOAT       *pfColumnOrigin;
+
+      /* From config? */
+      if(bFromConfig != orxFALSE)
+      {
+        /* Inits default values */
+        fTextureRowOrigin = orxFLOAT_0;
+        fRowSign          = orxFLOAT_1;
+        fRowBoundary      = orxFLOAT_0;
+        pfOriginDeltaX    =
+        pfOriginDeltaY    =
+        pfColumnDelta     = &orxVECTOR_0.fX;
+
+        /* Inits values depending on row direction */
+        switch(eRowDirection)
+        {
+          case orxDIRECTION_LEFT:
+          {
+            pfOriginDeltaX    = &vCurrentSize.fX;
+            fTextureRowOrigin = vTextureSize.fX;
+            fRowBoundary      = -vTextureSize.fX;
+            fRowSign          = -orxFLOAT_1;
+
+            /* Fallthrough */
+          }
+
+          case orxDIRECTION_RIGHT:
+          {
+            fRowMaxWidth      =
+            fRowWidth         = vFrameSize.fY;
+            pfRowWidth        = &vCurrentSize.fY;
+            pfRowDelta        = &vCurrentSize.fX;
+            pfRowOrigin       = &vFrameOrigin.fX;
+            fTextureRowOrigin+= vTextureOrigin.fX;
+            fRowBoundary     += vTextureOrigin.fX + vTextureSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_UP:
+          {
+            pfOriginDeltaY    = &vCurrentSize.fY;
+            fTextureRowOrigin = vTextureSize.fY;
+            fRowBoundary      = -vTextureSize.fY;
+            fRowSign          = -orxFLOAT_1;
+
+            /* Fallthrough */
+          }
+
+          case orxDIRECTION_DOWN:
+          {
+            fRowMaxWidth      =
+            fRowWidth         = vFrameSize.fX;
+            pfRowWidth        = &vCurrentSize.fX;
+            pfRowDelta        = &vCurrentSize.fY;
+            pfRowOrigin       = &vFrameOrigin.fY;
+            fTextureRowOrigin+= vTextureOrigin.fY;
+            fRowBoundary     += vTextureOrigin.fY + vTextureSize.fY;
+
+            break;
+          }
+        }
+
+        /* Inits values depending on column direction */
+        switch(eColumnDirection)
+        {
+          case orxDIRECTION_LEFT:
+          {
+            fColumnSign       = -orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fX;
+            fTextureColumnOrigin = vTextureOrigin.fX + vTextureSize.fX;
+            fColumnBoundary   = vTextureOrigin.fX;
+            pfOriginDeltaX    = &vCurrentSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_RIGHT:
+          {
+            fColumnSign       = orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fX;
+            fTextureColumnOrigin = vTextureOrigin.fX;
+            fColumnBoundary   = vTextureOrigin.fX + vTextureSize.fX;
+            pfColumnDelta     = &vCurrentSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_UP:
+          {
+            fColumnSign       = -orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fY;
+            fTextureColumnOrigin = vTextureOrigin.fY + vTextureSize.fY;
+            fColumnBoundary   = vTextureOrigin.fY;
+            pfOriginDeltaY    = &vCurrentSize.fY;
+
+            break;
+          }
+
+          case orxDIRECTION_DOWN:
+          {
+            fColumnSign       = orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fY;
+            fTextureColumnOrigin = vTextureOrigin.fY;
+            fColumnBoundary   = vTextureOrigin.fY + vTextureSize.fY;
+            pfColumnDelta     = &vCurrentSize.fY;
+
+            break;
+          }
+        }
+      }
 
       /* For all frames */
-      for(i = 0, u32EventCounter = 0, orxVector_Copy(&vFrameOrigin, &vTextureOrigin), fMaxY = vFrameSize.fY;
+      for(i = 0, u32EventCounter = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
           (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
           i++)
       {
@@ -1698,7 +1893,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* From config? */
         if(bFromConfig != orxFALSE)
         {
-          orxVECTOR vCurrentOrigin, vCurrentSize;
+          orxVECTOR vCurrentOrigin;
 
           /* No local size? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
@@ -1722,18 +1917,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           }
 
           /* Should go to next row? */
-          if(vFrameOrigin.fX + vCurrentSize.fX > vTextureOrigin.fX + vTextureSize.fX)
+          if(fRowSign * *pfRowOrigin + *pfRowDelta > fRowSign * fRowBoundary)
           {
             /* Updates frame's origin */
-            vFrameOrigin.fX   = vTextureOrigin.fX;
-            vFrameOrigin.fY  += fMaxY;
+            *pfRowOrigin      = fTextureRowOrigin;
+            *pfColumnOrigin  += fColumnSign * fRowMaxWidth;
 
             /* Resets max vertical value */
-            fMaxY             = vFrameSize.fY;
+            fRowMaxWidth      = fRowWidth;
           }
-
-          /* Updates max vertical value */
-          fMaxY = orxMAX(fMaxY, vCurrentSize.fY);
+          else
+          {
+            /* Updates max width value */
+            fRowMaxWidth = orxMAX(fRowMaxWidth, *pfRowWidth);
+          }
 
           /* Has local origin? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vCurrentOrigin) != orxNULL)
@@ -1743,8 +1940,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           }
           else
           {
+            /* Gets actual frame origin */
+            vFrameOrigin.fX -= *pfOriginDeltaX;
+            vFrameOrigin.fY -= *pfOriginDeltaY;
+
             /* Inside boundaries? */
-            if(vFrameOrigin.fY + vCurrentSize.fY <= vTextureOrigin.fY + vTextureSize.fY)
+            if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
             {
               /* Stores computed one */
               orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
@@ -1757,8 +1958,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
           }
 
-          /* Updates frame's origin's horizontal value */
-          vFrameOrigin.fX += vCurrentSize.fX;
+          /* Updates frame origin */
+          vFrameOrigin.fX += *pfOriginDeltaX;
+          vFrameOrigin.fY += *pfOriginDeltaY;
+
+          /* Moves to next frame on same row */
+          *pfRowOrigin += fRowSign * *pfRowDelta;
         }
         else
         {
