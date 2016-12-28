@@ -1499,7 +1499,6 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
 
 static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRING _zConfigID)
 {
-  orxVECTOR       vFrameSize = {};
   const orxSTRING zAnim = orxSTRING_EMPTY;
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
@@ -1524,44 +1523,61 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       break;
     }
 
-    case 2:
-    {
-      /* Retrieves frame info */
-      if(orxConfig_GetListVector(_zConfigID, 1, &vFrameSize) != orxNULL)
-      {
-        /* Updates max frames */
-        s32MaxFrames  = orxF2S(vFrameSize.fZ);
-        vFrameSize.fZ = orxFLOAT_0;
-      }
-      else
-      {
-        /* Updates status */
-        bFromConfig = orxFALSE;
-
-        /* Gets file extension */
-        zExt = orxConfig_GetListString(_zConfigID, 1);
-      }
-
-      /* Fallthrough */
-    }
-
     case 1:
     {
-      /* Retrieves frame info */
-      if((zExt == orxSTRING_EMPTY) && (orxConfig_GetListVector(_zConfigID, 0, &vFrameSize) != orxNULL))
+      const orxSTRING zValue;
+      const orxSTRING zRemainder;
+      orxS32          s32Value;
+
+      /* Gets value */
+      zValue = orxConfig_GetListString(_zConfigID, 0);
+
+      /* Can get max frames? */
+      if((orxString_ToS32(zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+      && (*orxString_SkipWhiteSpaces(zRemainder) == orxCHAR_NULL))
       {
-        /* Updates max frames */
-        s32MaxFrames  = orxF2S(vFrameSize.fZ);
-        vFrameSize.fZ = orxFLOAT_0;
+        /* Stores it */
+        s32MaxFrames = s32Value;
 
         /* Uses self as name */
         zAnim = _zConfigID;
       }
       else
       {
-        /* Gets name */
-        zAnim = orxConfig_GetListString(_zConfigID, 0);
+        /* Gets anim name */
+        zAnim = zValue;
       }
+
+      break;
+    }
+
+    case 2:
+    {
+      const orxSTRING zValue;
+      const orxSTRING zRemainder;
+      orxS32          s32Value;
+
+      /* Gets second value */
+      zValue = orxConfig_GetListString(_zConfigID, 1);
+
+      /* Is max frames? */
+      if((orxString_ToS32(zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+      && (*orxString_SkipWhiteSpaces(zRemainder) == orxCHAR_NULL))
+      {
+        /* Stores it */
+        s32MaxFrames = s32Value;
+      }
+      else
+      {
+        /* Gets file extension */
+        zExt = zValue;
+
+        /* Updates status */
+        bFromConfig = orxFALSE;
+      }
+
+      /* Gets anim name */
+      zAnim = orxConfig_GetListString(_zConfigID, 0);
 
       break;
     }
@@ -1575,7 +1591,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   /* Valid? */
   if(zAnim != orxSTRING_EMPTY)
   {
-    orxVECTOR       vTextureOrigin = {}, vTextureSize = {};
+    orxVECTOR       vTextureOrigin = {}, vTextureSize = {}, vFrameSize = {};
     const orxSTRING zPrefix;
     orxU32          u32Digits;
     orxBOOL         bContinue = orxTRUE;
@@ -1606,13 +1622,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* From config? */
     if(bFromConfig != orxFALSE)
     {
-      /* No frame size? */
-      if(orxVector_IsNull(&vFrameSize) != orxFALSE)
-      {
-        /* Uses default frame size */
-        orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
-        vFrameSize.fZ = orxFLOAT_0;
-      }
+      /* Gets frame size */
+      orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
+      vFrameSize.fZ = orxFLOAT_0;
 
       /* Gets texture origin */
       orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
