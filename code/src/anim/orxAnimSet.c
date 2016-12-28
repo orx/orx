@@ -131,6 +131,7 @@
 #define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
+#define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 
@@ -1503,7 +1504,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
   orxS32          s32ValueCounter, s32MaxFrames = 0;
-  orxBOOL         bFromConfig = orxFALSE;
+  orxBOOL         bFromConfig = orxTRUE;
   orxANIM        *pstResult = orxNULL;
 
   /* Gets current anim set */
@@ -1531,19 +1532,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* Updates max frames */
         s32MaxFrames  = orxF2S(vFrameSize.fZ);
         vFrameSize.fZ = orxFLOAT_0;
-
-        /* Updates status */
-        bFromConfig = orxTRUE;
-
-        /* Invalid? */
-        if(orxVector_IsNull(&vFrameSize) != orxFALSE)
-        {
-          /* Stops */
-          break;
-        }
       }
       else
       {
+        /* Updates status */
+        bFromConfig = orxFALSE;
+
         /* Gets file extension */
         zExt = orxConfig_GetListString(_zConfigID, 1);
       }
@@ -1554,26 +1548,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     case 1:
     {
       /* Retrieves frame info */
-      if(orxConfig_GetListVector(_zConfigID, 0, &vFrameSize) != orxNULL)
+      if((zExt == orxSTRING_EMPTY) && (orxConfig_GetListVector(_zConfigID, 0, &vFrameSize) != orxNULL))
       {
         /* Updates max frames */
         s32MaxFrames  = orxF2S(vFrameSize.fZ);
         vFrameSize.fZ = orxFLOAT_0;
 
-        /* Updates status */
-        bFromConfig = orxTRUE;
-
-        /* Invalid? */
-        if(orxVector_IsNull(&vFrameSize) != orxFALSE)
-        {
-          /* Stops */
-          break;
-        }
-        else
-        {
-          /* Uses self as name */
-          zAnim = _zConfigID;
-        }
+        /* Uses self as name */
+        zAnim = _zConfigID;
       }
       else
       {
@@ -1624,6 +1606,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* From config? */
     if(bFromConfig != orxFALSE)
     {
+      /* No frame size? */
+      if(orxVector_IsNull(&vFrameSize) != orxFALSE)
+      {
+        /* Uses default frame size */
+        orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
+        vFrameSize.fZ = orxFLOAT_0;
+      }
+
       /* Gets texture origin */
       orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
 
@@ -1701,6 +1691,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* No local size? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
           {
+            /* No frame size? */
+            if(orxVector_IsNull(&vFrameSize) != orxFALSE)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acBuffer);
+
+              /* Stops */
+              orxConfig_PopSection();
+              break;
+            }
+
             /* Stores default one */
             orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
 
