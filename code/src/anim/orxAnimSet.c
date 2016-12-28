@@ -1571,7 +1571,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
         else
         {
-          /* Gets name */
+          /* Uses self as name */
           zAnim = _zConfigID;
         }
       }
