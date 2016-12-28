@@ -1721,6 +1721,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             orxVector_Copy(&vCurrentSize, &vFrameSize);
           }
 
+          /* Should go to next row? */
+          if(vFrameOrigin.fX + vCurrentSize.fX > vTextureOrigin.fX + vTextureSize.fX)
+          {
+            /* Updates frame's origin */
+            vFrameOrigin.fX   = vTextureOrigin.fX;
+            vFrameOrigin.fY  += fMaxY;
+
+            /* Resets max vertical value */
+            fMaxY             = vFrameSize.fY;
+          }
+
           /* Updates max vertical value */
           fMaxY = orxMAX(fMaxY, vCurrentSize.fY);
 
@@ -1748,17 +1759,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
           /* Updates frame's origin's horizontal value */
           vFrameOrigin.fX += vCurrentSize.fX;
-
-          /* Should go to next row? */
-          if(vFrameOrigin.fX + vFrameSize.fX > vTextureOrigin.fX + vTextureSize.fX)
-          {
-            /* Updates frame's origin */
-            vFrameOrigin.fX   = vTextureOrigin.fX;
-            vFrameOrigin.fY  += fMaxY;
-
-            /* Resets max vertical value */
-            fMaxY             = vFrameSize.fY;
-          }
         }
         else
         {
