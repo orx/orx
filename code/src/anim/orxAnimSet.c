@@ -129,6 +129,7 @@
 #define orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
 
 #define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
+#define orxANIMSET_KZ_CONFIG_START_ANIM_LIST          "StartAnimList"
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
@@ -2125,18 +2126,39 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING _zConfigID)
 {
   const orxSTRING zStartAnim;
+  orxU32          u32AnimCounter;
   orxANIMSET     *pstResult = orxNULL;
 
   /* Gets start anim */
   zStartAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_START_ANIM);
 
-  /* Found? */
-  if(zStartAnim != orxSTRING_EMPTY)
-  {
-    orxU32 u32AnimCounter;
+  /* Gets start anim list counter */
+  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
 
-    /* References it and all anims linked from it */
-    orxAnimSet_ReferenceAnim(zStartAnim);
+  /* Has start anim(s)? */
+  if((zStartAnim != orxSTRING_EMPTY)
+  || (u32AnimCounter > 0))
+  {
+    /* Has single start anim? */
+    if(zStartAnim != orxSTRING_EMPTY)
+    {
+      /* References it and all anims linked from it */
+      orxAnimSet_ReferenceAnim(zStartAnim);
+    }
+    else
+    {
+      orxU32 i;
+
+      /* Gets initial anim */
+      zStartAnim = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, 0);
+
+      /* For all listed start anims */
+      for(i = 0; i < u32AnimCounter; i++)
+      {
+        /* References it and all anims linked from it */
+        orxAnimSet_ReferenceAnim(orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, i));
+      }
+    }
 
     /* Gets animation counter */
     u32AnimCounter = orxHashTable_GetCounter(sstAnimSet.pstCreationTable);
@@ -2149,6 +2171,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
     && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
     {
       orxU64          u64AnimCRC;
+      orxANIM        *pstAnim;
       const orxSTRING zAnim;
       orxHANDLE       hIterator;
 
@@ -2158,28 +2181,49 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
+      /* Creates start anim */
+      pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zStartAnim);
+
+      /* Valid? */
+      if(pstAnim != orxNULL)
+      {
+        orxU32 u32AnimID;
+
+        /* Adds it to set */
+        u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+        /* Sets its owner */
+        orxStructure_SetOwner(pstAnim, pstResult);
+
+        /* Adds it to ID table */
+        orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+      }
+
       /* For all animations */
       for(hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, orxHANDLE_UNDEFINED, &u64AnimCRC, (void **)&zAnim);
           hIterator != orxHANDLE_UNDEFINED;
           hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, hIterator, &u64AnimCRC, (void **)&zAnim))
       {
-        orxANIM  *pstAnim;
-        orxU32    u32AnimID;
-
-        /* Creates it */
-        pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zAnim);
-
-        /* Valid? */
-        if(pstAnim != orxNULL)
+        /* Not start anim? */
+        if(zAnim != zStartAnim)
         {
-          /* Adds it to set */
-          u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+          /* Creates it */
+          pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zAnim);
 
-          /* Sets its owner */
-          orxStructure_SetOwner(pstAnim, pstResult);
+          /* Valid? */
+          if(pstAnim != orxNULL)
+          {
+            orxU32 u32AnimID;
 
-          /* Adds it to ID table */
-          orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+            /* Adds it to set */
+            u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+            /* Sets its owner */
+            orxStructure_SetOwner(pstAnim, pstResult);
+
+            /* Adds it to ID table */
+            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+          }
         }
       }
 
