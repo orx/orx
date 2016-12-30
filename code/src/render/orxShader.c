@@ -852,7 +852,7 @@ orxSTATUS orxFASTCALL orxShader_ClearCache()
   /* Checks */
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
 
-  /* For all Shaders */
+  /* For all shaders */
   for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
       pstShader != orxNULL;
       pstShader = pstNextShader)

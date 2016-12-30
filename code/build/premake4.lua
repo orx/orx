@@ -436,19 +436,22 @@ project "orxLIB"
         configuration {}
     end
 
-    configuration {}
+    configuration {"not *Core*"}
         links {"webpdecoder"}
 
-    configuration {"*Debug*"}
+    configuration {"*Debug*", "not *Core*"}
         links {"liquidfund"}
 
-    configuration {"not *Debug*"}
+    configuration {"not *Debug*", "not *Core*"}
         links {"liquidfun"}
 
 
 -- Linux
 
     configuration {"linux"}
+        defines {"_GNU_SOURCE"}
+
+    configuration {"linux", "not *Core*"}
         links
         {
             "glfw",
@@ -463,7 +466,6 @@ project "orxLIB"
             "pthread",
             "gcc"
         }
-        defines {"_GNU_SOURCE"}
 
     configuration {"linux", "*Core*"}
         buildoptions {"-fPIC"}
@@ -487,7 +489,7 @@ project "orxLIB"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not *Core*"}
         links
         {
             "Foundation.framework",
@@ -540,7 +542,7 @@ project "orxLIB"
 
 -- Windows
 
-    configuration {"windows"}
+    configuration {"windows", "not *Core*"}
         links
         {
             "glfw",
@@ -549,7 +551,7 @@ project "orxLIB"
             "sndfile"
         }
 
-    configuration {"windows", "vs*"}
+    configuration {"windows", "vs*", "not *Core*"}
         links {"OpenGL32"}
 
     configuration {"windows", "vs*", "*Debug*"}

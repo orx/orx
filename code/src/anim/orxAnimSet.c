@@ -35,6 +35,8 @@
 #include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "display/orxGraphic.h"
+#include "display/orxTexture.h"
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -73,6 +75,7 @@
 #define orxANIMSET_KU32_FLAG_INTERNAL                 0x10000000  /**< Internal structure handling flag  */
 #define orxANIMSET_KU32_FLAG_REFERENCED               0x20000000  /**< Referenced flag  */
 #define orxANIMSET_KU32_FLAG_ID_TABLE                 0x40000000  /**< Has an ID table flag  */
+#define orxANIMSET_KU32_FLAG_CACHED                   0x80000000  /**< Cached flag */
 
 #define orxANIMSET_KU32_MASK_SIZE                     0x000003FF  /**< ID mask for size */
 #define orxANIMSET_KU32_MASK_COUNTER                  0x000FFC00  /**< ID mask for counter */
@@ -100,7 +103,9 @@
 
 #define orxANIMSET_KU32_LINK_DEFAULT_NONE             0x00000000  /**< Link default : none */
 
+#define orxANIMSET_KU32_LINK_LOWEST_PRIORITY          0x00000000  /**< Link lowest priority */
 #define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY         0x00000008  /**< Link default priority */
+#define orxANIMSET_KU32_LINK_HIGHEST_PRIORITY         0x0000000D  /**< Link highest priority */
 
 
 /** Link table (status) flags
@@ -121,18 +126,56 @@
 #define orxANIMSET_KZ_CONFIG_LINK_DESTINATION         "Destination"
 #define orxANIMSET_KZ_CONFIG_LINK_PROPERTY            "Property"
 #define orxANIMSET_KZ_CONFIG_LINK_PRIORITY            "Priority"
+#define orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
+
+#define orxANIMSET_KZ_CONFIG_START_ANIM               "StartAnim"
+#define orxANIMSET_KZ_CONFIG_START_ANIM_LIST          "StartAnimList"
+#define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
+#define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
+#define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
+#define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
+#define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
+#define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
+#define orxANIMSET_KC_IMMEDIATE                       '.'
+#define orxANIMSET_KC_CLEAR_TARGET                    '!'
+#define orxANIMSET_KC_HIGH_PRIORITY                   '+'
+#define orxANIMSET_KC_LOW_PRIORITY                    '-'
+#define orxANIMSET_KZ_LINK_SUFFIX                     "->"
+#define orxANIMSET_KZ_DIRECTION_LEFT                  "left"
+#define orxANIMSET_KZ_DIRECTION_RIGHT                 "right"
+#define orxANIMSET_KZ_DIRECTION_DOWN                  "down"
+#define orxANIMSET_KZ_DIRECTION_UP                    "up"
 
-#define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
-#define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          32          /**< Reference table size */
-#define orxANIMSET_KU32_BANK_SIZE                     64          /**< Bank size */
+#define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
+#define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
+#define orxANIMSET_KU32_CREATION_TABLE_SIZE           64          /**< Creation table size */
+#define orxANIMSET_KU32_CREATION_BANK_SIZE            256         /**< Creation bank size */
+#define orxANIMSET_KU32_BANK_SIZE                     128         /**< Bank size */
+
+#define orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS     4
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Internal direction enum
+ */
+typedef enum __orxDIRECTION_t
+{
+  orxDIRECTION_LEFT = 0,
+  orxDIRECTION_RIGHT,
+  orxDIRECTION_UP,
+  orxDIRECTION_DOWN,
+
+  orxDIRECTION_NUMBER,
+
+  orxDIRECTION_NONE = orxENUM_NONE
+
+} orxDIRECTION;
 
 /** Internal Link Update Info structure
  */
@@ -166,13 +209,25 @@ struct __orxANIMSET_t
   const orxSTRING         zReference;                 /**< Reference : 32 */
 };
 
+/** Frame info structure
+ */
+typedef struct __orxFRAME_INFO_t
+{
+  orxGRAPHIC             *pstGraphic;
+  const orxSTRING         zEventName;
+  orxFLOAT                fEventValue;
+
+} orxFRAME_INFO;
+
 
 /** Static structure
  */
 typedef struct __orxANIMSET_STATIC_t
 {
-  orxU32        u32Flags;                             /**< Control flags : 4 */
-  orxHASHTABLE *pstReferenceTable;                    /**< Table to avoid animation set duplication when creating through config file : 8 */
+  orxU32        u32Flags;                             /**< Control flags */
+  orxBANK      *pstCreationBank;                      /**< Creation bank */
+  orxHASHTABLE *pstCreationTable;                     /**< Creation table */
+  orxHASHTABLE *pstReferenceTable;                    /**< Table to avoid animation set duplication when creating through config file */
 
 } orxANIMSET_STATIC;
 
@@ -189,6 +244,11 @@ static orxANIMSET_STATIC sstAnimSet;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Semi-private, internal-use only forward declarations
+ */
+orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
+orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Link table set flag test accessor
  * @param[in]   _pstLinkTable	                Concerned LinkTable
@@ -1259,6 +1319,1069 @@ static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *
   return eResult;
 }
 
+static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRING _zConfigID)
+{
+  orxU32      u32AnimCounter;
+  orxANIMSET *pstResult;
+
+  /* Gets animation counter */
+  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
+
+  /* Creates animation set */
+  pstResult = orxAnimSet_Create(u32AnimCounter);
+
+  /* Valid? */
+  if((pstResult != orxNULL)
+  && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+  {
+    orxU32 i, u32LinkCounter;
+
+    /* Updates status flags */
+    orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
+
+    /* Stores its reference key */
+    pstResult->zReference = orxConfig_GetCurrentSection();
+
+    /* For all animations */
+    for(i = 0; i < u32AnimCounter; i++)
+    {
+      const orxSTRING zAnimName;
+
+      /* Gets its name */
+      zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
+
+      /* Valid? */
+      if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
+      {
+        orxANIM  *pstAnim;
+        orxU32    u32AnimID;
+
+        /* Creates it */
+        pstAnim = orxAnim_CreateFromConfig(zAnimName);
+
+        /* Valid? */
+        if(pstAnim != orxNULL)
+        {
+          /* Adds it to set */
+          u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+          /* Sets its owner */
+          orxStructure_SetOwner(pstAnim, pstResult);
+
+          /* Adds it to ID table */
+          orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        }
+      }
+    }
+
+    /* Optimizes its ID table */
+    orxHashTable_Optimize(pstResult->pstIDTable);
+
+    /* For all links */
+    for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
+    {
+      const orxSTRING zLinkName;
+
+      /* Gets link name */
+      orxConfig_SelectSection(_zConfigID);
+      zLinkName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_LINK_LIST, i);
+
+      /* Valid? */
+      if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
+      {
+        const orxSTRING zSrcAnim;
+        const orxSTRING zDstAnim;
+        orxU32          u32SrcAnim, u32DstAnim, u32Link;
+
+        /* Selects corresponding section */
+        orxConfig_SelectSection(zLinkName);
+
+        /* Gets source & destination anim names */
+        zSrcAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_SOURCE);
+        zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
+
+        /* Gets source & destination anim IDs */
+        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+
+        /* Valid? */
+        if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
+        {
+          /* Adds link */
+          u32Link = orxAnimSet_AddLink(pstResult, u32SrcAnim, u32DstAnim);
+
+          /* Valid? */
+          if(u32Link != orxU32_UNDEFINED)
+          {
+            orxCHAR   acBuffer[64];
+            orxSTRING zProperty;
+
+            /* Gets lower case property */
+            acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+            zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
+
+            /* Immediate link? */
+            if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
+            {
+              /* Updates link property */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+            }
+            /* Auto reset? */
+            if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
+            {
+              /* Updates link property */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
+            }
+
+            /* Has priority? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_LINK_PRIORITY) != orxFALSE)
+            {
+              /* Updates link priority */
+              orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(orxANIMSET_KZ_CONFIG_LINK_PRIORITY));
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
+        }
+      }
+    }
+
+    /* Adds it to reference table */
+    orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+    /* Updates status flags */
+    orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Was created? */
+    if(pstResult != orxNULL)
+    {
+      /* Deletes it */
+      orxAnimSet_Delete(pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
+{
+  const orxSTRING *pzTableBucket;
+
+  /* Retrieves its entry from the creation table */
+  pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(_zAnim));
+
+  /* Not already referenced? */
+  if(*pzTableBucket == orxNULL)
+  {
+    orxU32  i, u32Counter;
+    orxCHAR acLinkName[64] = {};
+
+    /* Stores it */
+    *pzTableBucket = _zAnim;
+
+    /* Gets its link name */
+    orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
+
+    /* For all linked animations */
+    for(i = 0, u32Counter = orxConfig_GetListCounter(acLinkName);
+        i < u32Counter;
+        i++)
+    {
+      const orxSTRING zLinkedAnim;
+
+      /* Gets linked anim */
+      zLinkedAnim = orxConfig_GetListString(acLinkName, i);
+
+      /* Skips all link modifiers */
+      while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
+         || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
+         || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
+         || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY)
+         || (*zLinkedAnim == ' ')
+         || (*zLinkedAnim == '\t'))
+      {
+        zLinkedAnim++;
+      }
+
+      /* References it */
+      orxAnimSet_ReferenceAnim(zLinkedAnim);
+    }
+  }
+}
+
+static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRING _zConfigID)
+{
+  const orxSTRING zAnim = orxSTRING_EMPTY;
+  const orxSTRING zExt = orxSTRING_EMPTY;
+  const orxSTRING zAnimSet;
+  orxS32          s32ValueCounter, s32MaxFrames = 0;
+  orxBOOL         bFromConfig = orxTRUE;
+  orxANIM        *pstResult = orxNULL;
+
+  /* Gets current anim set */
+  zAnimSet = orxConfig_GetCurrentSection();
+
+  /* Gets associated list size */
+  s32ValueCounter = orxConfig_GetListCounter(_zConfigID);
+
+  /* Depending on number of values */
+  switch(s32ValueCounter)
+  {
+    case 0:
+    {
+      /* Uses self as name */
+      zAnim = _zConfigID;
+
+      break;
+    }
+
+    case 1:
+    {
+      const orxSTRING zValue;
+      const orxSTRING zRemainder;
+      orxS32          s32Value;
+
+      /* Gets value */
+      zValue = orxConfig_GetListString(_zConfigID, 0);
+
+      /* Can get max frames? */
+      if((orxString_ToS32(zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+      && (*orxString_SkipWhiteSpaces(zRemainder) == orxCHAR_NULL))
+      {
+        /* Stores it */
+        s32MaxFrames = s32Value;
+
+        /* Uses self as name */
+        zAnim = _zConfigID;
+      }
+      else
+      {
+        /* Gets anim name */
+        zAnim = zValue;
+      }
+
+      break;
+    }
+
+    case 2:
+    {
+      const orxSTRING zValue;
+      const orxSTRING zRemainder;
+      orxS32          s32Value;
+
+      /* Gets second value */
+      zValue = orxConfig_GetListString(_zConfigID, 1);
+
+      /* Is max frames? */
+      if((orxString_ToS32(zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+      && (*orxString_SkipWhiteSpaces(zRemainder) == orxCHAR_NULL))
+      {
+        /* Stores it */
+        s32MaxFrames = s32Value;
+      }
+      else
+      {
+        /* Gets file extension */
+        zExt = zValue;
+
+        /* Updates status */
+        bFromConfig = orxFALSE;
+      }
+
+      /* Gets anim name */
+      zAnim = orxConfig_GetListString(_zConfigID, 0);
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Valid? */
+  if(zAnim != orxSTRING_EMPTY)
+  {
+    orxVECTOR       vTextureOrigin = {}, vTextureSize = {}, vFrameSize = {};
+    const orxSTRING zPrefix;
+    orxU32          u32Digits;
+    orxBOOL         bContinue = orxTRUE;
+    orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
+    orxCHAR         acBuffer[128] = {};
+
+    /* Gets number of digits */
+    u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
+
+    /* Gets prefix */
+    zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+
+    /* Gets anim's section name */
+    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s", zPrefix, zAnim);
+
+    /* Already has parent? */
+    if(orxConfig_GetParent(acBuffer) != orxNULL)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acBuffer, (orxConfig_GetParent(acBuffer) == orxSTRING_EMPTY) ? "@" : orxConfig_GetParent(acBuffer), zAnimSet);
+    }
+
+    /* Sets its parent */
+    orxConfig_SetParent(acBuffer, zAnimSet);
+
+    /* Pushes it */
+    orxConfig_PushSection(acBuffer);
+
+    /* From config? */
+    if(bFromConfig != orxFALSE)
+    {
+      /* Gets frame size */
+      orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
+      vFrameSize.fZ = orxFLOAT_0;
+
+      /* Gets texture origin */
+      orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
+
+      /* Has orientation? */
+      if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
+      {
+        /* Valid? */
+        if(orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
+        {
+          orxU32        i;
+          orxDIRECTION *aeDirections[] =
+          {
+            &eRowDirection,
+            &eColumnDirection
+          };
+
+          /* For all directions */
+          for(i = 0; i < 2; i++)
+          {
+            const orxSTRING zDirection;
+
+            /* Gets it */
+            zDirection = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, i);
+
+            /* Right? */
+            if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_RIGHT) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_RIGHT;
+            }
+            /* Left? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_LEFT) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_LEFT;
+            }
+            /* Down? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_DOWN) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_DOWN;
+            }
+            /* Up? */
+            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_UP) == 0)
+            {
+              /* Sets direction */
+              *aeDirections[i] = orxDIRECTION_UP;
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction value" orxANSI_KZ_COLOR_FG_DEFAULT " [%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, zDirection, _zConfigID);
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction property" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, _zConfigID);
+        }
+      }
+
+      /* Gets texture size */
+      if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
+      {
+        orxGRAPHIC *pstGraphic;
+
+        /* Creates graphic */
+        pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
+
+        /* Valid? */
+        if(pstGraphic != orxNULL)
+        {
+          /* Gets its size */
+          orxGraphic_GetSize(pstGraphic, &vTextureSize);
+
+          /* Updates it */
+          orxVector_Sub(&vTextureSize, &vTextureSize, &vTextureOrigin);
+
+          /* Deletes it */
+          orxGraphic_Delete(pstGraphic);
+        }
+      }
+
+      /* No texture size? */
+      if(orxVector_IsNull(&vTextureSize) != orxFALSE)
+      {
+        /* Stops */
+        bContinue = orxFALSE;
+      }
+    }
+
+    /* Should continue? */
+    if(bContinue != orxFALSE)
+    {
+      orxVECTOR       vFrameOrigin, vCurrentSize;
+      orxU32          u32FrameCounter, u32EventCounter, i;
+      orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
+      const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
+      orxFLOAT       *pfRowOrigin;
+      orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
+      const orxFLOAT *pfColumnDelta;
+      orxFLOAT       *pfColumnOrigin;
+
+      /* From config? */
+      if(bFromConfig != orxFALSE)
+      {
+        /* Inits default values */
+        fTextureRowOrigin = orxFLOAT_0;
+        fRowSign          = orxFLOAT_1;
+        fRowBoundary      = orxFLOAT_0;
+        pfOriginDeltaX    =
+        pfOriginDeltaY    =
+        pfColumnDelta     = &orxVECTOR_0.fX;
+
+        /* Inits values depending on row direction */
+        switch(eRowDirection)
+        {
+          case orxDIRECTION_LEFT:
+          {
+            pfOriginDeltaX    = &vCurrentSize.fX;
+            fTextureRowOrigin = vTextureSize.fX;
+            fRowBoundary      = -vTextureSize.fX;
+            fRowSign          = -orxFLOAT_1;
+
+            /* Fallthrough */
+          }
+
+          case orxDIRECTION_RIGHT:
+          {
+            fRowMaxWidth      =
+            fRowWidth         = vFrameSize.fY;
+            pfRowWidth        = &vCurrentSize.fY;
+            pfRowDelta        = &vCurrentSize.fX;
+            pfRowOrigin       = &vFrameOrigin.fX;
+            fTextureRowOrigin+= vTextureOrigin.fX;
+            fRowBoundary     += vTextureOrigin.fX + vTextureSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_UP:
+          {
+            pfOriginDeltaY    = &vCurrentSize.fY;
+            fTextureRowOrigin = vTextureSize.fY;
+            fRowBoundary      = -vTextureSize.fY;
+            fRowSign          = -orxFLOAT_1;
+
+            /* Fallthrough */
+          }
+
+          case orxDIRECTION_DOWN:
+          {
+            fRowMaxWidth      =
+            fRowWidth         = vFrameSize.fX;
+            pfRowWidth        = &vCurrentSize.fX;
+            pfRowDelta        = &vCurrentSize.fY;
+            pfRowOrigin       = &vFrameOrigin.fY;
+            fTextureRowOrigin+= vTextureOrigin.fY;
+            fRowBoundary     += vTextureOrigin.fY + vTextureSize.fY;
+
+            break;
+          }
+        }
+
+        /* Inits values depending on column direction */
+        switch(eColumnDirection)
+        {
+          case orxDIRECTION_LEFT:
+          {
+            fColumnSign       = -orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fX;
+            fTextureColumnOrigin = vTextureOrigin.fX + vTextureSize.fX;
+            fColumnBoundary   = vTextureOrigin.fX;
+            pfOriginDeltaX    = &vCurrentSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_RIGHT:
+          {
+            fColumnSign       = orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fX;
+            fTextureColumnOrigin = vTextureOrigin.fX;
+            fColumnBoundary   = vTextureOrigin.fX + vTextureSize.fX;
+            pfColumnDelta     = &vCurrentSize.fX;
+
+            break;
+          }
+
+          case orxDIRECTION_UP:
+          {
+            fColumnSign       = -orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fY;
+            fTextureColumnOrigin = vTextureOrigin.fY + vTextureSize.fY;
+            fColumnBoundary   = vTextureOrigin.fY;
+            pfOriginDeltaY    = &vCurrentSize.fY;
+
+            break;
+          }
+
+          case orxDIRECTION_DOWN:
+          {
+            fColumnSign       = orxFLOAT_1;
+            pfColumnOrigin    = &vFrameOrigin.fY;
+            fTextureColumnOrigin = vTextureOrigin.fY;
+            fColumnBoundary   = vTextureOrigin.fY + vTextureSize.fY;
+            pfColumnDelta     = &vCurrentSize.fY;
+
+            break;
+          }
+        }
+      }
+
+      /* For all frames */
+      for(i = 0, u32EventCounter = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
+          (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
+          i++)
+      {
+        orxGRAPHIC     *pstGraphic;
+        const orxSTRING zEventName = orxNULL;
+        orxFLOAT        fEventValue = orxFLOAT_0;
+        orxS32          s32EventValueCounter;
+        orxBOOL         bDebugLevelBackup;
+
+        /* Gets frame name */
+        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt);
+
+        /* From config and should auto-stop? */
+        if((s32MaxFrames == 0)
+        && (bFromConfig != orxFALSE))
+        {
+          /* Doesn't have a config section? */
+          if(orxConfig_HasSection(acBuffer) == orxFALSE)
+          {
+            /* Stops */
+            break;
+          }
+        }
+
+        /* Pushes its section */
+        orxConfig_PushSection(acBuffer);
+
+        /* From config? */
+        if(bFromConfig != orxFALSE)
+        {
+          orxVECTOR vCurrentOrigin;
+
+          /* No local size? */
+          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
+          {
+            /* No frame size? */
+            if(orxVector_IsNull(&vFrameSize) != orxFALSE)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acBuffer);
+
+              /* Stops */
+              orxConfig_PopSection();
+              break;
+            }
+
+            /* Stores default one */
+            orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+
+            /* Copies to local */
+            orxVector_Copy(&vCurrentSize, &vFrameSize);
+          }
+
+          /* Should go to next row? */
+          if(fRowSign * *pfRowOrigin + *pfRowDelta > fRowSign * fRowBoundary)
+          {
+            /* Updates frame's origin */
+            *pfRowOrigin      = fTextureRowOrigin;
+            *pfColumnOrigin  += fColumnSign * fRowMaxWidth;
+
+            /* Resets max vertical value */
+            fRowMaxWidth      = fRowWidth;
+          }
+          else
+          {
+            /* Updates max width value */
+            fRowMaxWidth = orxMAX(fRowMaxWidth, *pfRowWidth);
+          }
+
+          /* Has local origin? */
+          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vCurrentOrigin) != orxNULL)
+          {
+            /* Overrides computed one with it */
+            orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
+          }
+          else
+          {
+            /* Gets actual frame origin */
+            vFrameOrigin.fX -= *pfOriginDeltaX;
+            vFrameOrigin.fY -= *pfOriginDeltaY;
+
+            /* Inside boundaries? */
+            if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
+            {
+              /* Stores computed one */
+              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
+            }
+            else
+            {
+              /* Stops */
+              orxConfig_PopSection();
+              break;
+            }
+          }
+
+          /* Updates frame origin */
+          vFrameOrigin.fX += *pfOriginDeltaX;
+          vFrameOrigin.fY += *pfOriginDeltaY;
+
+          /* Moves to next frame on same row */
+          *pfRowOrigin += fRowSign * *pfRowDelta;
+        }
+        else
+        {
+          /* Doesn't have texture? */
+          if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
+          {
+            /* Sets it */
+            orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acBuffer);
+          }
+        }
+
+        /* Gets event value counter */
+        s32EventValueCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+
+        /* Found event? */
+        if(s32EventValueCounter > 0)
+        {
+          /* Gets event info */
+          zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
+          fEventValue = (s32EventValueCounter > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
+
+          /* Updates event counter */
+          u32EventCounter++;
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Already has parent? */
+        if(orxConfig_GetParent(acBuffer) != orxNULL)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acBuffer, (orxConfig_GetParent(acBuffer) == orxSTRING_EMPTY) ? "@" : orxConfig_GetParent(acBuffer), orxConfig_GetCurrentSection());
+        }
+
+        /* Sets section's parent */
+        orxConfig_SetParent(acBuffer, orxConfig_GetCurrentSection());
+
+        /* Disables display logs */
+        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
+
+        /* Creates graphic */
+        pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
+
+        /* Reenables display logs */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
+
+        /* Success? */
+        if(pstGraphic != orxNULL)
+        {
+          orxFRAME_INFO *pstFrameInfo;
+
+          /* Allocates frame info */
+          pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
+          orxASSERT(pstFrameInfo);
+
+          /* Stores info */
+          pstFrameInfo->pstGraphic  = pstGraphic;
+          pstFrameInfo->zEventName  = zEventName;
+          pstFrameInfo->fEventValue = fEventValue;
+        }
+        else
+        {
+          /* Stops */
+          break;
+        }
+      }
+
+      /* Gets frame counter */
+      u32FrameCounter = orxBank_GetCounter(sstAnimSet.pstCreationBank);
+
+      /* Found frames? */
+      if(u32FrameCounter != 0)
+      {
+        /* Creates 2D animation */
+        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCounter, u32EventCounter);
+
+        /* Valid? */
+        if(pstResult != orxNULL)
+        {
+          orxFRAME_INFO  *pstFrameInfo;
+          orxFLOAT        fTimeStamp = orxFLOAT_0;
+
+          /* Stores its name */
+          orxAnim_SetName(pstResult, orxString_Store(_zConfigID));
+
+          /* For all frames */
+          for(pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, orxNULL);
+              pstFrameInfo != orxNULL;
+              pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
+          {
+            const orxSTRING zName;
+
+            /* Gets its name */
+            zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
+
+            /* Pushes its section */
+            orxConfig_PushSection(zName);
+
+            /* Has event? */
+            if(pstFrameInfo->zEventName != orxNULL)
+            {
+              /* Adds it */
+              orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
+            }
+
+            /* Updates its timestamp */
+            fTimeStamp += orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
+
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Adds it */
+            if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+            {
+              /* Updates graphic's owner */
+              orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", zAnimSet, zName, _zConfigID);
+
+              /* Deletes it */
+              orxGraphic_Delete(pstFrameInfo->pstGraphic);
+            }
+          }
+        }
+
+        /* Clears bank */
+        orxBank_Clear(sstAnimSet.pstCreationBank);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't create any frames.", zAnimSet, _zConfigID);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't retrieve associated texture's size.", zAnimSet, _zConfigID);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", invalid config data.", zAnimSet, _zConfigID);
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING _zConfigID)
+{
+  const orxSTRING zStartAnim;
+  orxU32          u32AnimCounter;
+  orxANIMSET     *pstResult = orxNULL;
+
+  /* Gets start anim */
+  zStartAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_START_ANIM);
+
+  /* Gets start anim list counter */
+  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
+
+  /* Has start anim(s)? */
+  if((zStartAnim != orxSTRING_EMPTY)
+  || (u32AnimCounter > 0))
+  {
+    /* Has single start anim? */
+    if(zStartAnim != orxSTRING_EMPTY)
+    {
+      /* References it and all anims linked from it */
+      orxAnimSet_ReferenceAnim(zStartAnim);
+    }
+    else
+    {
+      orxU32 i;
+
+      /* Gets initial anim */
+      zStartAnim = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, 0);
+
+      /* For all listed start anims */
+      for(i = 0; i < u32AnimCounter; i++)
+      {
+        /* References it and all anims linked from it */
+        orxAnimSet_ReferenceAnim(orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, i));
+      }
+    }
+
+    /* Gets animation counter */
+    u32AnimCounter = orxHashTable_GetCounter(sstAnimSet.pstCreationTable);
+
+    /* Creates animation set */
+    pstResult = orxAnimSet_Create(u32AnimCounter);
+
+    /* Valid? */
+    if((pstResult != orxNULL)
+    && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+    {
+      orxU64          u64AnimCRC;
+      orxANIM        *pstAnim;
+      const orxSTRING zAnim;
+      orxHANDLE       hIterator;
+
+      /* Updates status flags */
+      orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
+
+      /* Stores its reference key */
+      pstResult->zReference = orxConfig_GetCurrentSection();
+
+      /* Creates start anim */
+      pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zStartAnim);
+
+      /* Valid? */
+      if(pstAnim != orxNULL)
+      {
+        orxU32 u32AnimID;
+
+        /* Adds it to set */
+        u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+        /* Sets its owner */
+        orxStructure_SetOwner(pstAnim, pstResult);
+
+        /* Adds it to ID table */
+        orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+      }
+
+      /* For all animations */
+      for(hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, orxHANDLE_UNDEFINED, &u64AnimCRC, (void **)&zAnim);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, hIterator, &u64AnimCRC, (void **)&zAnim))
+      {
+        /* Not start anim? */
+        if(zAnim != zStartAnim)
+        {
+          /* Creates it */
+          pstAnim = orxAnimSet_CreateSimpleAnimFromConfig(zAnim);
+
+          /* Valid? */
+          if(pstAnim != orxNULL)
+          {
+            orxU32 u32AnimID;
+
+            /* Adds it to set */
+            u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
+
+            /* Sets its owner */
+            orxStructure_SetOwner(pstAnim, pstResult);
+
+            /* Adds it to ID table */
+            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+          }
+        }
+      }
+
+      /* Optimizes its ID table */
+      orxHashTable_Optimize(pstResult->pstIDTable);
+
+      /* For all animations */
+      for(hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, orxHANDLE_UNDEFINED, &u64AnimCRC, (void **)&zAnim);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, hIterator, &u64AnimCRC, (void **)&zAnim))
+      {
+        orxU32 u32LinkCounter, u32AnimID;
+        orxCHAR acLinkName[64] = {};
+
+        /* Gets link config property name */
+        orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX);
+
+        /* Gets link counter */
+        u32LinkCounter = orxConfig_GetListCounter(acLinkName);
+
+        /* Gets self anim ID */
+        u32AnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
+
+        /* Valid? */
+        if(u32AnimID != orxU32_UNDEFINED)
+        {
+          /* No link found? */
+          if(u32LinkCounter == 0)
+          {
+            /* Adds self as link */
+            orxAnimSet_AddLink(pstResult, u32AnimID, u32AnimID);
+          }
+          else
+          {
+            orxU32 i;
+
+            /* For all links */
+            for(i = 0; i < u32LinkCounter; i++)
+            {
+              const orxSTRING zLink;
+              const orxSTRING zDestAnim;
+              orxU32          u32DestAnimID, u32Link;
+
+              /* Gets it */
+              zLink = orxConfig_GetListString(acLinkName, i);
+
+              /* Finds anim name */
+              for(zDestAnim = zLink;
+                  (*zDestAnim == orxANIMSET_KC_IMMEDIATE)
+               || (*zDestAnim == orxANIMSET_KC_CLEAR_TARGET)
+               || (*zDestAnim == orxANIMSET_KC_HIGH_PRIORITY)
+               || (*zDestAnim == orxANIMSET_KC_LOW_PRIORITY)
+               || (*zDestAnim == ' ')
+               || (*zDestAnim == '\t');
+                  zDestAnim++)
+                ;
+
+              /* Gets its anim ID */
+              u32DestAnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDestAnim)) - 1);
+
+              /* Valid? */
+              if(u32DestAnimID != orxU32_UNDEFINED)
+              {
+                /* Adds link */
+                u32Link = orxAnimSet_AddLink(pstResult, u32AnimID, u32DestAnimID);
+
+                /* Success? */
+                if(u32Link != orxU32_UNDEFINED)
+                {
+                  /* For all markers */
+                  for(; zLink != zDestAnim; zLink++)
+                  {
+                    /* Depending on character */
+                    switch(*zLink)
+                    {
+                      case orxANIMSET_KC_IMMEDIATE:
+                      {
+                        /* Updates link property */
+                        orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+                        break;
+                      }
+
+                      case orxANIMSET_KC_CLEAR_TARGET:
+                      {
+                        /* Updates link property */
+                        orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
+                        break;
+                      }
+
+                      case orxANIMSET_KC_HIGH_PRIORITY:
+                      {
+                        /* Updates link priority */
+                        orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxANIMSET_KU32_LINK_HIGHEST_PRIORITY);
+                        break;
+                      }
+
+                      case orxANIMSET_KC_LOW_PRIORITY:
+                      {
+                        /* Updates link priority */
+                        orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxANIMSET_KU32_LINK_LOWEST_PRIORITY);
+                        break;
+                      }
+
+                      default:
+                      {
+                        break;
+                      }
+                    }
+                  }
+                }
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Couldn't add link [%s] -> [%s].", _zConfigID, zAnim, zDestAnim);
+                }
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Can't add link [%s] -> [%s]: destination anim is missing.", _zConfigID, zAnim, zDestAnim);
+              }
+            }
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Can't add link(s) starting from [%s]: source anim is missing.", _zConfigID, zAnim);
+        }
+      }
+
+      /* Adds anim set to the reference table */
+      orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+      /* Updates status flags */
+      orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+    }
+    else
+    {
+      /* Was created? */
+      if(pstResult != orxNULL)
+      {
+        /* Deletes it */
+        orxAnimSet_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+
+    /* Clears linked anim references */
+    orxHashTable_Clear(sstAnimSet.pstCreationTable);
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1275,7 +2398,9 @@ void orxFASTCALL orxAnimSet_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_GRAPHIC);
 
+  /* Done! */
   return;
 }
 
@@ -1298,8 +2423,36 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
     /* Valid? */
     if(sstAnimSet.pstReferenceTable != orxNULL)
     {
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMSET_KU32_BANK_SIZE, orxNULL);
+      /* Creates creation table */
+      sstAnimSet.pstCreationTable = orxHashTable_Create(orxANIMSET_KU32_CREATION_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Valid? */
+      if(sstAnimSet.pstCreationTable != orxNULL)
+      {
+        /* Creates creation bank */
+        sstAnimSet.pstCreationBank = orxBank_Create(orxANIMSET_KU32_CREATION_BANK_SIZE, sizeof(orxFRAME_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+        /* Valid? */
+        if(sstAnimSet.pstCreationBank != orxNULL)
+        {
+          /* Registers structure type */
+          eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxANIMSET_KU32_BANK_SIZE, orxNULL);
+        }
+        else
+        {
+          /* Deletes tables */
+          orxHashTable_Delete(sstAnimSet.pstReferenceTable);
+          orxHashTable_Delete(sstAnimSet.pstCreationTable);
+          sstAnimSet.pstReferenceTable  = orxNULL;
+          sstAnimSet.pstCreationTable   = orxNULL;
+        }
+      }
+      else
+      {
+        /* Deletes reference table */
+        orxHashTable_Delete(sstAnimSet.pstReferenceTable);
+        sstAnimSet.pstReferenceTable = orxNULL;
+      }
     }
   }
   else
@@ -1339,6 +2492,12 @@ void orxFASTCALL orxAnimSet_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_ANIMSET);
+
+    /* Deletes creation bank */
+    orxBank_Delete(sstAnimSet.pstCreationBank);
+
+    /* Deletes creation table */
+    orxHashTable_Delete(sstAnimSet.pstCreationTable);
 
     /* Deletes reference table */
     orxHashTable_Delete(sstAnimSet.pstReferenceTable);
@@ -1460,153 +2619,31 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
     && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
-      orxU32 u32AnimCounter;
+      /* Creates a simplified animation set */
+      pstResult = orxAnimSet_CreateSimpleFromConfig(_zConfigID);
 
-      /* Gets animation counter */
-      u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
-
-      /* Creates animation set */
-      pstResult = orxAnimSet_Create(u32AnimCounter);
-
-      /* Valid? */
-      if((pstResult != orxNULL)
-      && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
+      /* Invalid? */
+      if(pstResult == orxNULL)
       {
-        orxU32 i, u32LinkCounter;
-
-        /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
-
-        /* Stores its reference key */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* For all animations */
-        for(i = 0; i < u32AnimCounter; i++)
-        {
-          const orxSTRING zAnimName;
-
-          /* Gets its name */
-          zAnimName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_ANIM_LIST, i);
-
-          /* Valid? */
-          if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
-          {
-            orxANIM  *pstAnim;
-            orxU32    u32AnimID;
-
-            /* Creates it */
-            pstAnim = orxAnim_CreateFromConfig(zAnimName);
-
-            /* Valid? */
-            if(pstAnim != orxNULL)
-            {
-              /* Adds it to set */
-              u32AnimID = orxAnimSet_AddAnim(pstResult, pstAnim);
-
-              /* Sets its owner */
-              orxStructure_SetOwner(pstAnim, pstResult);
-
-              /* Adds it to ID table */
-              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
-            }
-          }
-        }
-
-        /* Optimizes its ID table */
-        orxHashTable_Optimize(pstResult->pstIDTable);
-
-        /* For all links */
-        for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
-        {
-          const orxSTRING zLinkName;
-
-          /* Gets link name */
-          orxConfig_SelectSection(_zConfigID);
-          zLinkName = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_LINK_LIST, i);
-
-          /* Valid? */
-          if((zLinkName != orxNULL) && (zLinkName != orxSTRING_EMPTY))
-          {
-            const orxSTRING zSrcAnim;
-            const orxSTRING zDstAnim;
-            orxU32          u32SrcAnim, u32DstAnim, u32Link;
-
-            /* Selects corresponding section */
-            orxConfig_SelectSection(zLinkName);
-
-            /* Gets source & destination anim names */
-            zSrcAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_SOURCE);
-            zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
-
-            /* Gets source & destination anim IDs */
-            u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
-            u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
-
-            /* Valid? */
-            if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
-            {
-              /* Adds link */
-              u32Link = orxAnimSet_AddLink(pstResult, u32SrcAnim, u32DstAnim);
-
-              /* Valid? */
-              if(u32Link != orxU32_UNDEFINED)
-              {
-                orxCHAR   acBuffer[64];
-                orxSTRING zProperty;
-
-                /* Gets lower case property */
-                acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-                zProperty = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY), sizeof(acBuffer) - 1));
-
-                /* Immediate link? */
-                if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
-                {
-                  /* Updates link property */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
-                }
-                /* Auto reset? */
-                if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
-                {
-                  /* Updates link property */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
-                }
-
-                /* Has priority? */
-                if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_LINK_PRIORITY) != orxFALSE)
-                {
-                  /* Updates link priority */
-                  orxAnimSet_SetLinkProperty(pstResult, u32Link, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(orxANIMSET_KZ_CONFIG_LINK_PRIORITY));
-                }
-              }
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link %s <[%s] -> [%s]>, please check its declaration.", _zConfigID, orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
-            }
-          }
-        }
-
-        /* Adds it to reference table */
-        orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
-
-        /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
+        /* Creates an old school classic animation set */
+        pstResult = orxAnimSet_CreateClassicFromConfig(_zConfigID);
       }
-      else
-      {
-        /* Was created? */
-        if(pstResult != orxNULL)
-        {
-          /* Deletes it */
-          orxAnimSet_Delete(pstResult);
 
-          /* Updates result */
-          pstResult = orxNULL;
+      /* Success? */
+      if(pstResult != orxNULL)
+      {
+        /* Should keep it in cache? */
+        if(orxConfig_GetBool(orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+        {
+          /* Increases its reference counter to keep it in cache table */
+          orxStructure_IncreaseCounter(pstResult);
+
+          /* Updates its flags */
+          orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_CACHED, orxANIMSET_KU32_FLAG_NONE);
         }
       }
 
-      /* Pops previous section */
+      /* Pops config section */
       orxConfig_PopSection();
     }
     else
@@ -1675,6 +2712,40 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   return eResult;
 }
 
+/** Clears cache (if any animset is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxAnimSet_ClearCache()
+{
+  orxANIMSET *pstAnimSet, *pstNextAnimSet;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+
+  /* For all animsets */
+  for(pstAnimSet = orxANIMSET(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET));
+      pstAnimSet != orxNULL;
+      pstAnimSet = pstNextAnimSet)
+  {
+    /* Gets next shader */
+    pstNextAnimSet = orxANIMSET(orxStructure_GetNext(pstAnimSet));
+
+    /* Is cached? */
+    if(orxStructure_TestFlags(pstAnimSet, orxANIMSET_KU32_FLAG_CACHED))
+    {
+      /* Updates its flags */
+      orxStructure_SetFlags(pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_CACHED);
+
+      /* Deletes its extra reference */
+      orxAnimSet_Delete(pstAnimSet);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds a reference to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */
@@ -1706,7 +2777,9 @@ void orxFASTCALL    orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
   orxStructure_DecreaseCounter(_pstAnimSet);
 
   /* No extra reference left? */
-  if(orxStructure_GetRefCounter(_pstAnimSet) <= 1)
+  if((orxStructure_GetRefCounter(_pstAnimSet) <= 1)
+  || (orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_CACHED)
+   && (orxStructure_GetRefCounter(_pstAnimSet) <= 2)))
   {
     /* Unlocks animset */
     orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_REFERENCE_LOCK);
@@ -2017,7 +3090,7 @@ orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAni
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s] is locked, couldn't add link.", _pstAnimSet->zReference);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " is locked, couldn't add link.", _pstAnimSet->zReference);
 
     /* Link not added */
     u32Result = orxU32_UNDEFINED;
@@ -2182,7 +3255,7 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_u32LinkID 												  ID of the concerned link
  * @param[in]		_u32Property												ID of the property to get
- * @return			Property value / orx32_Undefined
+ * @return			Property value / orxU32_UNDEFINED
  */
 orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property)
 {
@@ -2386,7 +3459,7 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet [%s]: index [%u] is invalid <max = %u>.", _pstAnimSet->zReference, _u32AnimID, orxAnimSet_GetAnimCounter(_pstAnimSet));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": index [%u] is invalid <max = %u>.", _pstAnimSet->zReference, _u32AnimID, orxAnimSet_GetAnimCounter(_pstAnimSet));
   }
 
   /* Done! */

@@ -149,12 +149,6 @@ extern orxDLLAPI void orxFASTCALL             orxAnim_Exit();
  */
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32KeyNumber, orxU32 _u32EventNumber);
 
-/** Creates an animation from config
- * @param[in]   _zConfigID                    Config ID
- * @return      orxANIMSET / orxNULL
- */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
-
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
