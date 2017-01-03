@@ -89,7 +89,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
   stFrame = [[UIScreen mainScreen] applicationFrame];
 
   /* Creates main window */
-  self.poWindow = [[UIWindow alloc] initWithFrame:stFrame]; 
+  self.poWindow = [[UIWindow alloc] initWithFrame:stFrame];
 
   /* Creates orx view */
   stFrame.origin.y = 0.0;
@@ -241,79 +241,75 @@ const orxSTRING orxiOS_GetDocumentsPath()
   /* Inits the engine */
   if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
   {
-    /* Displays help */
-    if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+    orxSTATUS               eClockStatus, eMainStatus;
+    orxBOOL                 bStop;
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+    /* Registers default event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxIOS_KZ_CONFIG_SECTION);
+
+    /* Has valid accelerometer frequency? */
+    if(orxConfig_HasValue(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
     {
-      orxSTATUS               eClockStatus, eMainStatus;
-      orxBOOL                 bStop;
-      orxSYSTEM_EVENT_PAYLOAD stPayload;
+      orxFLOAT fFrequency;
 
-      /* Registers default event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Pushes config section */
-      orxConfig_PushSection(orxIOS_KZ_CONFIG_SECTION);
-
-      /* Has valid accelerometer frequency? */
-      if(orxConfig_HasValue(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY) != orxFALSE)
+      /* Valid? */
+      if((fFrequency = orxConfig_GetFloat(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
       {
-        orxFLOAT fFrequency;
+        /* Applies it */
+        [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / fFrequency];
 
-        /* Valid? */
-        if((fFrequency = orxConfig_GetFloat(orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY)) > orxFLOAT_0)
-        {
-          /* Applies it */
-          [[UIAccelerometer sharedAccelerometer] setUpdateInterval: 1.0f / fFrequency];
-
-          /* Binds accelerometer */
-          [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
-        }
-      }
-      else
-      {
         /* Binds accelerometer */
         [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
       }
-
-      /* Pops config section */
-      orxConfig_PopSection();
-
-      /* Clears payload */
-      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-
-      /* Main loop */
-      for(bStop = orxFALSE;
-          bStop == orxFALSE;
-          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-      {
-        NSAutoreleasePool *poPool;
-
-        /* Allocates memory pool */
-        poPool = [[NSAutoreleasePool alloc] init];
-
-        /* Sends frame start event */
-        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
-
-        /* Runs the engine */
-        eMainStatus = spfnRun();
-
-        /* Updates clock system */
-        eClockStatus = orxClock_Update();
-
-        /* Sends frame stop event */
-        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
-
-        /* Updates frame counter */
-        su32FrameCounter++;
-        stPayload.u32FrameCounter = su32FrameCounter;
-
-        /* Releases memory pool */
-        [poPool release];
-      }
-
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
     }
+    else
+    {
+      /* Binds accelerometer */
+      [[UIAccelerometer sharedAccelerometer] setDelegate: (orxAppDelegate *)[[UIApplication sharedApplication] delegate]];
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
+    /* Clears payload */
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+    /* Main loop */
+    for(bStop = orxFALSE;
+        bStop == orxFALSE;
+        bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+    {
+      NSAutoreleasePool *poPool;
+
+      /* Allocates memory pool */
+      poPool = [[NSAutoreleasePool alloc] init];
+
+      /* Sends frame start event */
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+
+      /* Runs the engine */
+      eMainStatus = spfnRun();
+
+      /* Updates clock system */
+      eClockStatus = orxClock_Update();
+
+      /* Sends frame stop event */
+      orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
+
+      /* Updates frame counter */
+      su32FrameCounter++;
+      stPayload.u32FrameCounter = su32FrameCounter;
+
+      /* Releases memory pool */
+      [poPool release];
+    }
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
     /* Exits from engine */
     orxModule_Exit(orxMODULE_ID_MAIN);

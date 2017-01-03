@@ -220,49 +220,45 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+      orxSTATUS               eClockStatus, eMainStatus;
+      orxBOOL                 bStop;
+
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+      /* Main loop */
+      for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
+          bStop == orxFALSE;
+          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
       {
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
-        orxSTATUS               eClockStatus, eMainStatus;
-        orxBOOL                 bStop;
+        orxAndroid_PumpEvents();
 
-        /* Clears payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+        /* Sends frame start event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Main loop */
-        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
-            bStop == orxFALSE;
-            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-        {
-          orxAndroid_PumpEvents();
+        /* Runs the engine */
+        eMainStatus = _pfnRun();
 
-          /* Sends frame start event */
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+        /* Updates clock system */
+        eClockStatus = orxClock_Update();
 
-          /* Runs the engine */
-          eMainStatus = _pfnRun();
+        /* Sends frame stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
-          /* Updates clock system */
-          eClockStatus = orxClock_Update();
-
-          /* Sends frame stop event */
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
-
-          /* Updates frame counter */
-          stPayload.u32FrameCounter++;
-        }
+        /* Updates frame counter */
+        stPayload.u32FrameCounter++;
       }
-
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Exits from engine */
-      orxModule_Exit(orxMODULE_ID_MAIN);
     }
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+    /* Exits from engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */
@@ -297,47 +293,43 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
+      orxSYSTEM_EVENT_PAYLOAD stPayload;
+      orxSTATUS               eClockStatus, eMainStatus;
+      orxBOOL                 bStop;
+
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
-      /* Displays help */
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+
+      /* Main loop */
+      for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
+          bStop == orxFALSE;
+          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
       {
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
-        orxSTATUS               eClockStatus, eMainStatus;
-        orxBOOL                 bStop;
+        /* Sends frame start event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Clears payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+        /* Runs the engine */
+        eMainStatus = _pfnRun();
 
-        /* Main loop */
-        for(bStop = orxFALSE, sbStopByEvent = orxFALSE;
-            bStop == orxFALSE;
-            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
-        {
-          /* Sends frame start event */
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
+        /* Updates clock system */
+        eClockStatus = orxClock_Update();
 
-          /* Runs the engine */
-          eMainStatus = _pfnRun();
+        /* Sends frame stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
-          /* Updates clock system */
-          eClockStatus = orxClock_Update();
-
-          /* Sends frame stop event */
-          orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
-
-          /* Updates frame counter */
-          stPayload.u32FrameCounter++;
-        }
+        /* Updates frame counter */
+        stPayload.u32FrameCounter++;
       }
-
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-      /* Exits from engine */
-      orxModule_Exit(orxMODULE_ID_MAIN);
     }
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+    /* Exits from engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */

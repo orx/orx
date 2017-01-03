@@ -439,12 +439,8 @@ int main(int argc, char **argv)
     // Inits the engine
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
-      // Displays help
-      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
-      {
-        // Runs
-        Run();
-      }
+      // Runs
+      Run();
 
       // Exits from engine
       orxModule_Exit(orxMODULE_ID_MAIN);

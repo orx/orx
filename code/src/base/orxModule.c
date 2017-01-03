@@ -421,6 +421,9 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
+
+      /* Displays help */
+      eResult = orxParam_DisplayHelp();
     }
   }
 
