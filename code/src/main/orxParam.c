@@ -226,6 +226,22 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
   return orxSTATUS_FAILURE;
 }
 
+/** Version callback (for -v or --version)
+ * @param[in] _u32NbParam Number of extra parameters read for this option
+ * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS if read information is correct, orxSTATUS_FAILURE if a problem occurred
+ */
+static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRING _azParams[])
+{
+  orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Displays the current version */
+  orxPARAM_LOG("orx version " __orxVERSION_STRING__);
+
+  /* Version request always fail => Show version instead of starting the engine */
+  return orxSTATUS_FAILURE;
+}
+
 /** Process registered params
  * @return Returns the process status
  */
@@ -744,6 +760,21 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
 
   /* Register */
   eResult = orxParam_Register(&stParams);
+
+  /* Continue? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Everything seems ok. Register the module help function */
+    stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+    stParams.pfnParser  = orxParam_Version;
+    stParams.zShortName = "v";
+    stParams.zLongName  = "version";
+    stParams.zShortDesc = "Prints orx's version.";
+    stParams.zLongDesc  = "Prints orx's version.";
+
+    /* Register */
+    eResult = orxParam_Register(&stParams);
+  }
 
   /* Done! */
   return eResult;

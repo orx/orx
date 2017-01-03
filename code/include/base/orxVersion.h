@@ -50,7 +50,7 @@
  */
 
 #define __orxVERSION_MAJOR__      1
-#define __orxVERSION_MINOR__      7
+#define __orxVERSION_MINOR__      8
 
 #ifndef __orxVERSION_PATCH__
   #define __orxVERSION_PATCH__    dev
