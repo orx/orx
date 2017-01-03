@@ -1811,6 +1811,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             break;
           }
+
+          default:
+          {
+            break;
+          }
         }
 
         /* Inits values depending on column direction */
@@ -1857,6 +1862,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             fColumnBoundary   = vTextureOrigin.fY + vTextureSize.fY;
             pfColumnDelta     = &vCurrentSize.fY;
 
+            break;
+          }
+
+          default:
+          {
             break;
           }
         }
