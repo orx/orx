@@ -381,6 +381,7 @@ orxVERSION *orxFASTCALL orxSystem_GetVersion(orxVERSION *_pstVersion)
   /* Updates result */
   _pstVersion->u32Major = __orxVERSION_MAJOR__;
   _pstVersion->u32Minor = __orxVERSION_MINOR__;
+  _pstVersion->u32Build = __orxVERSION_BUILD__;
   _pstVersion->zPatch   = orxSTRINGIFY(__orxVERSION_PATCH__);
 
   /* Done! */

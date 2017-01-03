@@ -401,6 +401,13 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
       /* For all modules */
       for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
       {
+        /* Is param initialized? */
+        if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+        {
+          /* Displays help */
+          orxParam_DisplayHelp();
+        }
+
         /* Is temporary initialized? */
         if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_PENDING)
         {

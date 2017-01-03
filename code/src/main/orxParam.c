@@ -233,10 +233,23 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
  */
 static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
+  orxBOOL bShort = orxFALSE;
+
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Displays the current version */
-  orxPARAM_LOG("orx version " __orxVERSION_STRING__);
+  /* Short version? */
+  if((_u32NbParam > 1)
+  && (orxString_ToBool(_azParams[1], &bShort, orxNULL) != orxSTATUS_FAILURE)
+  && (bShort != orxFALSE))
+  {
+    /* Displays the current version */
+    orxPARAM_LOG("%s", orxSystem_GetVersionString());
+  }
+  else
+  {
+    /* Displays the current version */
+    orxPARAM_LOG("orx version %s", orxSystem_GetVersionString());
+  }
 
   /* Version request always fail => Show version instead of starting the engine */
   return orxSTATUS_FAILURE;
@@ -770,7 +783,7 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     stParams.zShortName = "v";
     stParams.zLongName  = "version";
     stParams.zShortDesc = "Prints orx's version.";
-    stParams.zLongDesc  = "Prints orx's version.";
+    stParams.zLongDesc  = "If a parameter is specified and evaluates to the boolean true, only the version number itself will be printed.";
 
     /* Register */
     eResult = orxParam_Register(&stParams);

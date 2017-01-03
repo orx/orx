@@ -1928,6 +1928,68 @@ void orxFASTCALL orxCommand_CommandGetStringFromID(orxU32 _u32ArgNumber, const o
   return;
 }
 
+/* Command: Version */
+void orxFASTCALL orxCommand_CommandVersion(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Full? */
+  if((_u32ArgNumber == 0)
+  || (!orxString_ICompare(_astArgList[0].zValue, "full")))
+  {
+    /* Prints value */
+    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", orxSystem_GetVersionString());
+  }
+  /* Numeric? */
+  else if(!orxString_ICompare(_astArgList[0].zValue, "numeric"))
+  {
+    /* Prints value */
+    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "0x%08X", orxSystem_GetVersionNumeric());
+  }
+  else
+  {
+    orxVERSION stVersion;
+
+    /* Retrieves version */
+    orxSystem_GetVersion(&stVersion);
+
+    /* Major? */
+    if(!orxString_ICompare(_astArgList[0].zValue, "major"))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Major);
+    }
+    /* Minor? */
+    else if(!orxString_ICompare(_astArgList[0].zValue, "minor"))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Minor);
+    }
+    /* Build? */
+    else if(!orxString_ICompare(_astArgList[0].zValue, "build"))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Build);
+    }
+    /* Patch? */
+    else if(!orxString_ICompare(_astArgList[0].zValue, "patch"))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", stVersion.zPatch);
+    }
+    /* Full */
+    else
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", orxSystem_GetVersionString());
+    }
+  }
+
+  /* Updates result */
+  _pstResult->zValue = sstCommand.acResultBuffer;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -2000,6 +2062,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringFromID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringFromID, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"ID", orxCOMMAND_VAR_TYPE_U32});
+
+  /* Command: Version */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Version, "String", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Type = full [minor|major|build|patch|numeric|full]", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
@@ -2099,6 +2164,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
   /* Alias: String.GetFromID */
   orxCommand_AddAlias("String.GetFromID", "Command.GetStringFromID", orxNULL);
+
+  /* Alias: Version */
+  orxCommand_AddAlias("Version", "Command.Version", orxNULL);
 }
 
 /** Unregisters all the command commands
@@ -2203,6 +2271,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: String.GetFromID */
   orxCommand_RemoveAlias("String.GetFromID");
 
+  /* Alias: Version */
+  orxCommand_RemoveAlias("Version");
+
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 
@@ -2271,6 +2342,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
   /* Command: GetStringFromID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringFromID);
+
+  /* Command: Version */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Version);
 }
 
 /***************************************************************************

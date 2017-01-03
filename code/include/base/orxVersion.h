@@ -49,16 +49,27 @@
 /** Version numbers
  */
 
-#define __orxVERSION_MAJOR__      1
-#define __orxVERSION_MINOR__      8
+#define __orxVERSION_MAJOR__        1
+#define __orxVERSION_MINOR__        8
 
 #ifndef __orxVERSION_PATCH__
-  #define __orxVERSION_PATCH__    dev
+  #define __orxVERSION_PATCH__      dev
 #endif /* __orxVERSION_PATCH__ */
 
-#define __orxVERSION_STRING__     orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_PATCH__)
+#ifndef __orxVERSION_BUILD__
+  #define __orxVERSION_BUILD__      0UL
+#endif /* __orxVERSION_BUILD__ */
 
-#define __orxVERSION__            (100 * __orxVERSION_MAJOR__ + __orxVERSION_MINOR__)
+#define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_PATCH__)
+
+#define __orxVERSION_MASK_MAJOR__   0xFF000000
+#define __orxVERSION_SHIFT_MAJOR__  24
+#define __orxVERSION_MASK_MINOR__   0x00FF0000
+#define __orxVERSION_SHIFT_MINOR__  16
+#define __orxVERSION_MASK_BUILD__   0x0000FFFF
+#define __orxVERSION_SHIFT_BUILD__  0
+
+#define __orxVERSION__            (((__orxVERSION_MAJOR__ << __orxVERSION_SHIFT_MAJOR__) & __orxVERSION_MASK_MAJOR__) | ((__orxVERSION_MINOR__ << __orxVERSION_SHIFT_MINOR__) & __orxVERSION_MASK_MINOR__) | ((__orxVERSION_BUILD__ << __orxVERSION_SHIFT_BUILD__) & __orxVERSION_MASK_BUILD__))
 
 
 /** Version structure
@@ -69,6 +80,7 @@ typedef struct __orxVERSION_t
   const orxSTRING zPatch;
   orxU32          u32Major;
   orxU32          u32Minor;
+  orxU32          u32Build;
 
 } orxVERSION;
 
