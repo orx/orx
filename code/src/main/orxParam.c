@@ -78,11 +78,11 @@
   do                                                                                                        \
   {                                                                                                         \
     orxU32 u32DebugFlags;                                                                                   \
-    u32DebugFlags = _orxDebug_GetFlags();                                                                   \
-    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                  \
+    u32DebugFlags = orxDEBUG_GET_FLAGS();                                                                   \
+    orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                  \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
-    _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
-    _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                  \
+    orxLOG(STRING, ##__VA_ARGS__);                                                                          \
+    orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                  \
   } while(orxFALSE)
 
 #else /* __orxGCC__ || __orxLLVM__ */
@@ -92,11 +92,11 @@
     do                                                                                                      \
     {                                                                                                       \
       orxU32 u32DebugFlags;                                                                                 \
-      u32DebugFlags = _orxDebug_GetFlags();                                                                 \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                \
+      u32DebugFlags = orxDEBUG_GET_FLAGS();                                                                 \
+      orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                \
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                               \
-      _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
-      _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                \
+      orxLOG(STRING, __VA_ARGS__);                                                                          \
+      orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                \
     } while(orxFALSE)
 
   #endif /* __orxMSVC__ */
@@ -247,8 +247,13 @@ static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRIN
   }
   else
   {
+    orxVERSION stVersion;
+
+    /* Gets version */
+    orxSystem_GetVersion(&stVersion);
+
     /* Displays the current version */
-    orxPARAM_LOG("orx version %s", orxSystem_GetVersionString());
+    orxPARAM_LOG("orx version %s (#%u)", orxSystem_GetVersionString(), stVersion.u32Build);
   }
 
   /* Version request always fail => Show version instead of starting the engine */

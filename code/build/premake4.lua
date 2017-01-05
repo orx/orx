@@ -415,6 +415,7 @@ project "orxLIB"
     configuration {}
         targetdir ("../lib/dynamic")
         kind ("SharedLib")
+        buildoptions {"$(ORXFLAGS)"}
 
     configuration {"not xcode*", "*Core*"}
         targetdir ("../lib/static")
@@ -450,6 +451,7 @@ project "orxLIB"
 
     configuration {"linux"}
         defines {"_GNU_SOURCE"}
+        prebuildcommands {"if [ -d " .. copybase .. "/../.hg ]; then hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. copybase .. "/include/base/orxBuild.h; fi"}
 
     configuration {"linux", "not *Core*"}
         links
@@ -504,6 +506,7 @@ project "orxLIB"
 
     configuration{"macosx"}
         buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
+        prebuildcommands {"if [ -d " .. copybase .. "/../.hg ]; then hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. copybase .. "/include/base/orxBuild.h; fi"}
 
     configuration {"macosx", "*Debug*"}
         linkoptions {"-install_name @executable_path/liborxd.dylib"}
@@ -541,6 +544,9 @@ project "orxLIB"
 
 
 -- Windows
+
+    configuration {"windows"}
+        prebuildcommands {"if exist " .. path.translate(copybase, "\\") .. "\\..\\.hg (hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. path.translate(copybase, "\\") .. "\\include\\base\\orxBuild.h)"}
 
     configuration {"windows", "not *Core*"}
         links

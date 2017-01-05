@@ -18,8 +18,9 @@ hg:             %.hg/
 hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
+build-file:     %code/include/base/orxBuild.h
 platform-data:  [
-    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2012" "vs2013" "vs2015"]                                                                 ]
+    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2013" "vs2015"]                                                                          ]
     "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"         ]                                                                          ]
     "linux"     ['premake "linux32" 'config ["gmake" "codelite"                  ] 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
@@ -123,6 +124,14 @@ either req-ver = cur-ver [
 
     ; Stores version
     write cur-file req-ver
+]
+
+
+; Build file placeholder
+if not exists? build-file [
+    attempt [
+        write build-file {}
+    ]
 ]
 
 

@@ -1,6 +1,6 @@
 ### Imports
 
-import glob, shutil, os, sys, argparse
+import glob, shutil, os, sys, argparse, subprocess
 
 
 ### Constants
@@ -49,11 +49,13 @@ workdir = 'workdir'
 # Gets parameters from command line arguments
 if __name__ == '__main__':
     parser      = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', default = 'latest')
+    parser.add_argument('-d', '--date', default = '')
     parser.add_argument('-p', '--platform', default = 'doxygen', choices = platformlist)
     args        = parser.parse_args()
-    version     = args.version
     platform    = args.platform
+    version     = subprocess.check_output(os.path.abspath('../../bin/orx') + ' -v true', shell = True).rstrip()
+    if args.date != '':
+      version += '-' + args.date
 
     # Logs
     print('Version: ' + version)
