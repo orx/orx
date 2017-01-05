@@ -56,15 +56,15 @@
 #define __orxVERSION_MAJOR__        1
 #define __orxVERSION_MINOR__        8
 
-#ifndef __orxVERSION_PATCH__
-  #define __orxVERSION_PATCH__      dev
-#endif /* __orxVERSION_PATCH__ */
+#ifndef __orxVERSION_RELEASE__
+  #define __orxVERSION_RELEASE__    dev
+#endif /* __orxVERSION_RELEASE__ */
 
 #ifndef __orxVERSION_BUILD__
   #define __orxVERSION_BUILD__      0UL
 #endif /* __orxVERSION_BUILD__ */
 
-#define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_PATCH__)
+#define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_RELEASE__)
 
 #define __orxVERSION_MASK_MAJOR__   0xFF000000
 #define __orxVERSION_SHIFT_MAJOR__  24
@@ -81,7 +81,7 @@
 
 typedef struct __orxVERSION_t
 {
-  const orxSTRING zPatch;
+  const orxSTRING zRelease;
   orxU32          u32Major;
   orxU32          u32Minor;
   orxU32          u32Build;
