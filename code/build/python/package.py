@@ -53,7 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--platform', default = 'doxygen', choices = platformlist)
     args        = parser.parse_args()
     platform    = args.platform
-    version     = subprocess.check_output('../../bin/orx -v true', shell = True).rstrip()
+    version     = subprocess.check_output(os.path.abspath('../../bin/orx') + ' -v true', shell = True).rstrip()
     if args.date != '':
       version += '-' + args.date
 
