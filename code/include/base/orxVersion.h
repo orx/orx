@@ -45,6 +45,10 @@
 
 #include "base/orxType.h"
 
+#ifndef __orxVERSION_BUILD__
+#include "base/orxBuild.h"
+#endif /* __orxVERSION_BUILD__ */
+
 
 /** Version numbers
  */

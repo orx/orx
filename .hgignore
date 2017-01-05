@@ -73,3 +73,4 @@ code/build/**
 tools/orxCrypt/build/**
 tools/orxFontGen/build/**
 tutorial/build/**
+code/include/base/orxBuild.h
