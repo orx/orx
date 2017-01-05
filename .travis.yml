@@ -57,9 +57,9 @@ script:
   - make config=release64
   - cd ~/build/orx/orx/code/build/python
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      python package.py -p mac -v test &&
-      python package.py -p tutomac -v test ;
+      python package.py -p mac &&
+      python package.py -p tutomac;
     else
-      python package.py -p linux64 -v test &&
-      python package.py -p tutolinux64 -v test ;
+      python package.py -p linux64 &&
+      python package.py -p tutolinux64;
     fi
