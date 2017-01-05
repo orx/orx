@@ -247,8 +247,13 @@ static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRIN
   }
   else
   {
+    orxVERSION stVersion;
+
+    /* Gets version */
+    orxSystem_GetVersion(&stVersion);
+
     /* Displays the current version */
-    orxPARAM_LOG("orx version %s", orxSystem_GetVersionString());
+    orxPARAM_LOG("orx version %s (#%u)", orxSystem_GetVersionString(), stVersion.u32Build);
   }
 
   /* Version request always fail => Show version instead of starting the engine */
