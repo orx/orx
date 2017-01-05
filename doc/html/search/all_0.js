@@ -10,7 +10,7 @@ var searchData=
   ['_5f_5forxversion_5fmask_5fmajor_5f_5f',['__orxVERSION_MASK_MAJOR__',['../group__orx_version.html#gadd9831eae921aac89149fc4b986f2e3c',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fmask_5fminor_5f_5f',['__orxVERSION_MASK_MINOR__',['../group__orx_version.html#ga6119452a0ba468b535df099d63558434',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fminor_5f_5f',['__orxVERSION_MINOR__',['../group__orx_version.html#ga96a82be6e1c5e9fc96b7b10dc140048a',1,'orxVersion.h']]],
-  ['_5f_5forxversion_5fpatch_5f_5f',['__orxVERSION_PATCH__',['../group__orx_version.html#gaea19f50aeddbe23472e9f8ec195d9107',1,'orxVersion.h']]],
+  ['_5f_5forxversion_5frelease_5f_5f',['__orxVERSION_RELEASE__',['../group__orx_version.html#gaa7fee88752ff33968ff590a1b2bb38c9',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fshift_5fbuild_5f_5f',['__orxVERSION_SHIFT_BUILD__',['../group__orx_version.html#ga2d3aaf4aa9aec954420e6f3f30f8332e',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fshift_5fmajor_5f_5f',['__orxVERSION_SHIFT_MAJOR__',['../group__orx_version.html#gaaf6bb9befe8fc212bd8e0dbf8ba83d71',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fshift_5fminor_5f_5f',['__orxVERSION_SHIFT_MINOR__',['../group__orx_version.html#ga0e519fd6e351c36d7e5fbe3d42a97f9d',1,'orxVersion.h']]],
