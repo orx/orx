@@ -114,10 +114,12 @@ either req-ver = cur-ver [
     premake: read premake-path
     premake-file: read premake-path/:premake
     forskip builds 2 [
-        print ["== Copying [" premake "] to [" builds/2 "]"]
-        write builds/2/:premake premake-file
-        if not platform = "windows" [
-            call reform ["chmod +x" builds/2/:premake]
+        if exists? builds/2 [
+            print ["== Copying [" premake "] to [" builds/2 "]"]
+            write builds/2/:premake premake-file
+            if not platform = "windows" [
+                call reform ["chmod +x" builds/2/:premake]
+            ]
         ]
     ]
 
@@ -142,11 +144,13 @@ print ["== Generating build files for [" platform "]"]
 foreach config platform-info/config [
     print ["== Generating [" config "]"]
     forskip builds 2 [
-        change-dir rejoin [system/options/home builds/2]
-        call/wait rejoin ["./" premake " " config]
+        if exists? builds/2 [
+            change-dir rejoin [system/options/home builds/2]
+            call/wait rejoin ["./" premake " " config]
+            change-dir system/options/home
+        ]
     ]
 ]
-change-dir system/options/home
 print ["== You can now build orx in [" builds/code/:platform "]"]
 
 

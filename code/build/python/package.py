@@ -33,8 +33,7 @@ platformlist = [
     'android',
     'android-native',
     'doxygen',
-    'src',
-    'extern'
+    'src'
 ]
 
 # Base source path
@@ -75,11 +74,11 @@ basefileinfolist = [
 
 docfileinfolist = basefileinfolist
 
-codefileinfolist = basefileinfolist + [
+srcfileinfolist = basefileinfolist + [
     {'src': 'build/premake4.lua',                                       'dst': None},
+    {'src': '../.extern',                                               'dst': None},
+    {'src': '../setup*',                                                'dst': None}
 ]
-
-externfileinfolist = basefileinfolist
 
 devfileinfolist = basefileinfolist + [
     {'src': 'bin/*Template.ini',                                        'dst': '.'}
@@ -94,8 +93,7 @@ vsfileinfolist = devfileinfolist + [
 tutorialvsfileinfolist = [
     {'src': 'lib/dynamic/orx*.lib',                                     'dst': 'lib'},
     {'src': 'lib/dynamic/orx*.pdb',                                     'dst': 'lib'},
-    {'src': '../extern/premake/bin/windows/premake4.exe',               'dst': 'build'},
-    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
+    {'src': '../tutorial/build/premake4*',                              'dst': 'build'},
     {'src': '../tutorial/build/windows/' + platform[4:10] + '/*proj*',  'dst': 'build/windows/' + platform[4:10]},
     {'src': '../tutorial/build/windows/' + platform[4:10] + '/*.sln',   'dst': 'build/windows/' + platform[4:10]}
 ]
@@ -107,8 +105,7 @@ mingwfileinfolist = devfileinfolist + [
 
 tutorialmingwfileinfolist = [
     {'src': 'lib/dynamic/liborx*.a',                                    'dst': 'lib'},
-    {'src': '../extern/premake/bin/windows/premake4.exe',               'dst': 'build'},
-    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
+    {'src': '../tutorial/build/premake4*',                              'dst': 'build'},
     {'src': '../tutorial/build/windows/codeblocks/*.cbp',               'dst': 'build/windows/codeblocks'},
     {'src': '../tutorial/build/windows/codeblocks/*.workspace',         'dst': 'build/windows/codeblocks'},
     {'src': '../tutorial/build/windows/codelite/*.project',             'dst': 'build/windows/codelite'},
@@ -123,8 +120,7 @@ macfileinfolist = devfileinfolist + [
 
 tutorialmacfileinfolist = [
     {'src': 'lib/dynamic/liborx*.dylib',                                'dst': 'lib'},
-    {'src': '../extern/premake/bin/mac/premake4',                       'dst': 'build'},
-    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
+    {'src': '../tutorial/build/premake4*',                              'dst': 'build'},
     {'src': '../tutorial/build/mac/codeblocks/*.cbp',                   'dst': 'build/mac/codeblocks'},
     {'src': '../tutorial/build/mac/codeblocks/*.workspace',             'dst': 'build/mac/codeblocks'},
     {'src': '../tutorial/build/mac/codelite/*.project',                 'dst': 'build/mac/codelite'},
@@ -140,8 +136,7 @@ linuxfileinfolist = devfileinfolist + [
 
 tutoriallinuxfileinfolist = [
     {'src': 'lib/dynamic/liborx*.so',                                   'dst': 'lib'},
-    {'src': '../extern/premake/bin/' + platform[4:] + '/premake4',      'dst': 'build/' + platform[4:]},
-    {'src': '../tutorial/build/premake4.lua',                           'dst': 'build'},
+    {'src': '../tutorial/build/premake4*',                              'dst': 'build'},
     {'src': '../tutorial/build/linux/codeblocks/*.cbp',                 'dst': 'build/linux/codeblocks'},
     {'src': '../tutorial/build/linux/codeblocks/*.workspace',           'dst': 'build/linux/codeblocks'},
     {'src': '../tutorial/build/linux/codelite/*.project',               'dst': 'build/linux/codelite'},
@@ -151,7 +146,7 @@ tutoriallinuxfileinfolist = [
 ]
 
 iosfileinfolist = devfileinfolist + [
-    {'src': '../extern/Box2D_2.1.3/License.txt',                        'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/License.txt','dst': None},
     {'src': '../liborx-fat-*',                                          'dst': None},
     {'src': 'build/ios/xcode/Info.plist',                               'dst': None},
     {'src': 'demo/iOS/ReadMe-iOS.html',                                 'dst': '..'}
@@ -191,24 +186,11 @@ tutorialfolderinfolist = [
     {'src': '../tutorial/src',                                          'dst': 'src'}
 ]
 
-externfolderinfolist = [
-    {'src': '../extern/Box2D_2.1.3',                                    'dst': None},
-    {'src': '../extern/dlmalloc',                                       'dst': None},
-    {'src': '../extern/freetype',                                       'dst': None},
-    {'src': '../extern/glfw-2.7',                                       'dst': None},
-    {'src': '../extern/libsndfile-1.0.22',                              'dst': None},
-    {'src': '../extern/libwebp',                                        'dst': None},
-    {'src': '../extern/openal-soft',                                    'dst': None},
-    {'src': '../extern/premake',                                        'dst': None},
-    {'src': '../extern/stb_image',                                      'dst': None},
-    {'src': '../extern/stb_vorbis',                                     'dst': None}
-]
-
 iosfolderinfolist = docfolderinfolist + [
-    {'src': '../extern/Box2D_2.1.3/build/Xcode/Box2D-ios.xcodeproj',    'dst': None},
-    {'src': '../extern/Box2D_2.1.3/include',                            'dst': None},
-    {'src': '../extern/Box2D_2.1.3/lib/ios',                            'dst': None},
-    {'src': '../extern/Box2D_2.1.3/src',                                'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/build/Xcode/Box2D-ios.xcodeproj','dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/include',                        'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/lib/ios',                        'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/Box2D',      'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/libwebp/include',                                'dst': None},
     {'src': '../extern/libwebp/lib/ios',                                'dst': None},
@@ -220,7 +202,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': 'plugins/Joystick/iOS',                                     'dst': None},
     {'src': 'plugins/Keyboard/Dummy',                                   'dst': None},
     {'src': 'plugins/Mouse/iOS',                                        'dst': None},
-    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
     {'src': 'plugins/Sound/iOS',                                        'dst': None},
     {'src': 'include',                                                  'dst': None},
@@ -231,7 +213,7 @@ androidfolderinfolist = devfolderinfolist + [
     {'src': 'build/android/jni',                                        'dst': None},
     {'src': 'lib/static/android',                                       'dst': None},
     {'src': '../extern/android',                                        'dst': None},
-    {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/lib/android',                    'dst': None},
     {'src': '../extern/libwebp/lib/android',                            'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/openal-soft/lib/android',                        'dst': None},
@@ -241,7 +223,7 @@ androidfolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Joystick/android',                                 'dst': None},
     {'src': 'plugins/Keyboard/android',                                 'dst': None},
     {'src': 'plugins/Mouse/android',                                    'dst': None},
-    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
     {'src': 'plugins/Sound/android',                                    'dst': None}
 ]
@@ -249,7 +231,7 @@ androidfolderinfolist = devfolderinfolist + [
 androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'build/android-native/jni',                                 'dst': None},
     {'src': 'lib/static/android-native',                                'dst': None},
-    {'src': '../extern/Box2D_2.1.3/lib/android',                        'dst': None},
+    {'src': '../extern/LiquidFun-1.1.0/lib/android',                    'dst': None},
     {'src': '../extern/libwebp/lib/android',                            'dst': None},
     {'src': '../extern/dlmalloc',                                       'dst': None},
     {'src': '../extern/openal-soft/lib/android',                        'dst': None},
@@ -259,34 +241,22 @@ androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Joystick/android',                                 'dst': None},
     {'src': 'plugins/Keyboard/android',                                 'dst': None},
     {'src': 'plugins/Mouse/android',                                    'dst': None},
-    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
     {'src': 'plugins/Sound/android',                                    'dst': None}
 ]
 
-codefolderinfolist = [
+srcfolderinfolist = [
     {'src': '../tools',                                                 'dst': None},
     {'src': 'bin',                                                      'dst': None},
-    {'src': 'build/linux',                                              'dst': None},
-    {'src': 'build/mac/xcode4/orx-embedded.xcodeproj',                  'dst': None},
-    {'src': 'build/mac/codeblocks',                                     'dst': None},
-    {'src': 'build/mac/codelite',                                       'dst': None},
-    {'src': 'build/mac/gmake',                                          'dst': None},
-    {'src': 'build/windows/vs2008',                                     'dst': None},
-    {'src': 'build/windows/vs2010',                                     'dst': None},
-    {'src': 'build/windows/vs2012',                                     'dst': None},
-    {'src': 'build/windows/vs2013',                                     'dst': None},
-    {'src': 'build/windows/vs2015',                                     'dst': None},
-    {'src': 'build/windows/codeblocks',                                 'dst': None},
-    {'src': 'build/windows/codelite',                                   'dst': None},
-    {'src': 'build/windows/gmake',                                      'dst': None},
+    {'src': 'build/rebol',                                              'dst': None},
     {'src': 'include',                                                  'dst': None},
     {'src': 'plugins/Demo',                                             'dst': None},
     {'src': 'plugins/Display/GLFW',                                     'dst': None},
     {'src': 'plugins/Joystick/GLFW',                                    'dst': None},
     {'src': 'plugins/Keyboard/GLFW',                                    'dst': None},
     {'src': 'plugins/Mouse/GLFW',                                       'dst': None},
-    {'src': 'plugins/Physics/Box2D',                                    'dst': None},
+    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
     {'src': 'plugins/Sound/OpenAL',                                     'dst': None},
     {'src': 'src',                                                      'dst': None}
@@ -509,17 +479,9 @@ platforminfolist = {
         'foldername':       'code',
         'filename':         'src',
         'format':           'zip',
-        'fileinfolist':     codefileinfolist,
-        'folderinfolist':   codefolderinfolist
-    },
-
-    'extern': {
-        'foldername':       'extern',
-        'filename':         'extern',
-        'format':           'zip',
-        'fileinfolist':     externfileinfolist,
-        'folderinfolist':   externfolderinfolist
-    },
+        'fileinfolist':     srcfileinfolist,
+        'folderinfolist':   srcfolderinfolist
+    }
 }
 
 
