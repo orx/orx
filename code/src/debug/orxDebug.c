@@ -273,6 +273,30 @@ static orxINLINE void orxDebug_ClearANSICodes(orxSTRING _zBuffer)
   *pcDst = orxCHAR_NULL;
 }
 
+/** Has ANSI codes>
+ * @param[in]   _zBuffer                      Concerned buffer
+ */
+static orxINLINE orxBOOL orxDebug_HasANSICodes(orxSTRING _zBuffer)
+{
+  orxCHAR  *pc;
+  orxBOOL   bResult = orxFALSE;
+
+  /* For all characters */
+  for(pc = _zBuffer; *pc != orxCHAR_NULL; pc++)
+  {
+    /* ANSI escape code? */
+    if(*pc == orxANSI_KC_MARKER)
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+      break;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -470,6 +494,8 @@ orxU32 orxFASTCALL _orxDebug_GetFlags()
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
+  orxBOOL bUseANSICodes = orxFALSE;
+
   /* Is level enabled? */
   if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)))
   {
@@ -488,6 +514,9 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       time(&u32Time);
 
       pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FULL_FORMAT " ", localtime(&u32Time));
+
+      /* Updates status */
+      bUseANSICodes = orxTRUE;
     }
     /* Time Stamp? */
     else if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
@@ -498,6 +527,9 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       time(&u32Time);
 
       pcBuffer += strftime(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT " ", localtime(&u32Time));
+
+      /* Updates status */
+      bUseANSICodes = orxTRUE;
     }
 
     /* Log Type? */
@@ -514,6 +546,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #endif /* __orxMSVC__ */
 
+      /* Updates status */
+      bUseANSICodes = orxTRUE;
     }
 
     /* Log FUNCTION, FILE & LINE? */
@@ -535,6 +569,9 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), orxDEBUG_KZ_FILE_FORMAT " ", zFile, _zFunction, (unsigned int)_u32Line);
 
 #endif /* __orxMSVC__ */
+
+      /* Updates status */
+      bUseANSICodes = orxTRUE;
     }
 
     /* Debug Log */
@@ -543,13 +580,20 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
     va_end(stArgs);
 
+    /* Doesn't implicitly use ANSI codes? */
+    if(bUseANSICodes == orxFALSE)
+    {
+      /* Updates status */
+      bUseANSICodes = orxDebug_HasANSICodes(zLog);
+    }
+
 #ifdef __orxMSVC__
 
-    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, orxANSI_KZ_COLOR_RESET, orxSTRING_EOL);
+    pcBuffer += _snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, (bUseANSICodes != orxFALSE) ? orxANSI_KZ_COLOR_RESET : orxSTRING_EMPTY, orxSTRING_EOL);
 
 #else /* __orxMSVC__ */
 
-    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, orxANSI_KZ_COLOR_RESET, orxSTRING_EOL);
+    pcBuffer += snprintf(pcBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), "%s%s%s", zLog, (bUseANSICodes != orxFALSE) ? orxANSI_KZ_COLOR_RESET : orxSTRING_EMPTY, orxSTRING_EOL);
 
 #endif /* __orxMSVC__ */
 
