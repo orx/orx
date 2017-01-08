@@ -129,14 +129,6 @@ either req-ver = cur-ver [
 ]
 
 
-; Build file placeholder
-if not exists? build-file [
-    attempt [
-        write build-file {}
-    ]
-]
-
-
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: read premake-path
@@ -155,7 +147,7 @@ print ["== You can now build orx in [" builds/code/:platform "]"]
 
 
 ; Mercurial hook
-if exists? hg [
+either exists? hg [
     either skip-hook [
         print "== Skipping Mercurial hook installation"
     ] [
@@ -182,6 +174,15 @@ if exists? hg [
                 newline
             ]
         ]
+    ]
+    ; Removes build file
+    if exists? build-file [
+        attempt [delete build-file]
+    ]
+] [
+    ; Creates build file placeholder
+    if not exists? build-file [
+        attempt [write build-file {}]
     ]
 ]
 
