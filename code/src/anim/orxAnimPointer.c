@@ -64,6 +64,7 @@
 #define orxANIMPOINTER_KU32_FLAG_ANIMSET              0x00000010  /**< Has animset flag */
 #define orxANIMPOINTER_KU32_FLAG_LINK_TABLE           0x00000020  /**< Has link table flag */
 #define orxANIMPOINTER_KU32_FLAG_PAUSED               0x00000040  /**< Pause flag */
+#define orxANIMPOINTER_KU32_FLAG_INIT                 0x00000080  /**< Init flag */
 #define orxANIMPOINTER_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
 
 #define orxANIMPOINTER_KU32_MASK_FLAGS                0xFFFFFFFF  /**< Flags ID mask */
@@ -413,8 +414,20 @@ static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, 
   /* Checks */
   orxSTRUCTURE_ASSERT(pstAnimPointer);
 
-  /* Computes animation pointer */
-  orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT);
+  /* Not already initialized? */
+  if(!orxStructure_TestFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT))
+  {
+    /* Sets its initial animation */
+    orxAnimPointer_SetCurrentAnim(pstAnimPointer, 0);
+
+    /* Updates its status */
+    orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT, orxANIMPOINTER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Computes animation pointer */
+    orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT);
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -534,7 +547,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_MASK_FLAGS);
 
     /* Inits value */
-    pstAnimPointer->u32CurrentAnim    = 0;
+    pstAnimPointer->u32CurrentAnim    = orxU32_UNDEFINED;
     pstAnimPointer->fCurrentAnimTime  = orxFLOAT_0;
     pstAnimPointer->fFrequency        = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
     pstAnimPointer->fTime             = orxFLOAT_0;

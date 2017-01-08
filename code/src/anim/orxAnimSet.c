@@ -2759,7 +2759,7 @@ orxSTATUS orxFASTCALL orxAnimSet_ClearCache()
 /** Adds a reference to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */
-void orxFASTCALL    orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
+void orxFASTCALL orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
@@ -2777,7 +2777,7 @@ void orxFASTCALL    orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
 /** Removes a reference from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */
-void orxFASTCALL    orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
+void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
@@ -2835,7 +2835,7 @@ orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(const orxANIMSET *_
 /** Deletes a Link Table
  * @param[in]		_pstAnimSet													AnimSet to delete (should have been created using the clone function)
  */
-void orxFASTCALL    orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
+void orxFASTCALL orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
