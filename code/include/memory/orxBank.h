@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2016 Orx-Project
+ * Copyright (c) 2008-2017 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxBank
- * 
+ *
  * Bank module
  * Bank are used to allocate a portion of memory.
  * Applications can get cell from this memory and use it. If the number of
@@ -43,15 +43,15 @@
  * @{
  */
 
- 
+
 #ifndef _orxBANK_H_
 #define _orxBANK_H_
 
- 
+
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
 
- 
+
 /* Internal Bank structure */
 typedef struct __orxBANK_t orxBANK;
 
