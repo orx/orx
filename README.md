@@ -1,9 +1,11 @@
-Orx - Portable Game Engine (Version 1.7)
+Orx - Portable Game Engine (Version 1.8)
 ========================================
 
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
 check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
+You can also come [chat with us](https://gitter.im/orx/orx)
+if you have any questions or comments.
 
 This engine is licensed under the very permissive [zlib license](http://en.wikipedia.org/wiki/Zlib_License),
 see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for details.
@@ -12,14 +14,14 @@ see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for de
 Summary
 -------
 
-Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
+[Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is the stable release for orx v1.7. If you find any bugs,
+This is the stable release for orx v1.8. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
-The current features of orx engine are:
+Some notable features of the engine are:
 
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
@@ -106,8 +108,8 @@ All the 11 basic and advanced official tutorials are shipped with the dev packag
 
 Some tools (precompiled binaries only) are also shipped with the dev packages:
 
-- orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files
-- orxFontGen: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
+- `orxCrypt`  : command line tool to encrypt/decrypt/merge multiple config files
+- `orxFontGen`: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
 
 
 Packages
@@ -116,35 +118,27 @@ Packages
 You can download all the packages from [sourceforge](http://orx.sf.net) or [bitbucket](https://bitbucket.org/orx/orx/downloads).
 Here is a list with a small description for each package.
 
-- orx-doc-1.7.zip: orx's API doxygen documentation
-- orx-src-1.7.zip: orx's source code including build projects for
-    - codelite (Windows and Linux, all versions, Mac OS X, non-static versions)
-    - codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)
-    - GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)
-    - vs2012 & vs2013 (Windows Visual Studio, all versions)
-    - xcode (3.2+, for MacOS X, non-static versions; SDK 8.1 for iOS, static embedded versions)
-    - ndk build files for Android (static embedded versions)
-NB: You'll need orx-extern-1.7.zip (orx plugins' external dependencies) if you intend to compile orx yourself.
-- orx-extern-1.7.zip: orx's external dependencies. You will *only NEED* these if you
-  use orx-src-1.7.zip and you plan on compiling orx yourself. They are not needed otherwise.
-  The external libraries are usually modified versions of the original ones.  
-  __VERY IMPORTANT__: If you want to compile orx yourself, you'll need these versions and not the official ones.
-- orx-dev-linux32-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- orx-dev-linux64-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- orx-dev-mac-1.7.zip               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- orx-dev-mingw-1.7.zip             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- orx-dev-vs2012-1.7.zip            : dynamic embedded binaries for Windows (Visual Studio 2012), release/profile/debug + tools.
-- orx-dev-vs2013-32-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- orx-dev-vs2013-64-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
-- orx-full-ios-1.7.zip              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- orx-dev-android-1.7.zip           : static embedded binaries for Android, release/profile/debug (device).
-- orx-dev-android-native-1.7.zip    : static embedded binaries for Android Native, release/profile/debug (device).
-- orx-tutorial-linux32-1.7.tar.bz2  : tutorials for Linux (x86)
-- orx-tutorial-linux64-1.7.tar.bz2  : tutorials for Linux (x86-64)
-- orx-tutorial-mac-1.7.zip          : tutorials for MacOS X (x86/x86-64)
-- orx-tutorial-mingw-1.7.zip        : tutorials for Windows (mingw)
-- orx-tutorial-vs2012-1.7.zip       : tutorials for Windows (Visual Studio 2012)
-- orx-tutorial-vs2013-1.7.zip       : tutorials for Windows (Visual Studio 2013)
+- `orx-doc-1.8-rc0.zip`                   : orx's API doxygen documentation
+- `orx-src-1.8-rc0.zip`                   : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.8-rc0.tar.bz2`       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.8-rc0.tar.bz2`       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.8-rc0.zip`               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-1.8-rc0.zip`             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
+- `orx-dev-vs2013-32-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
+- `orx-dev-vs2013-64-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2015-32-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
+- `orx-dev-vs2015-64-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.8-rc0.zip`              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.8-rc0.zip`           : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.8-rc0.zip`    : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.8-rc0.tar.bz2`  : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.8-rc0.tar.bz2`  : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.8-rc0.zip`          : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-1.8-rc0.zip`        : tutorials for Windows (mingw)
+- `orx-tutorial-vs2013-32-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2013, x86)
+- `orx-tutorial-vs2013-64-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2013, x86-64)
+- `orx-tutorial-vs2015-32-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2015, x86)
+- `orx-tutorial-vs2015-64-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2015, x86-64)
 
 All the `*-dev-*` packages above include:
 
@@ -158,7 +152,7 @@ All the `*-tutorial-*` packages above include:
 - heavily commented source code for 11 basic and advanced tutorials
 - precompiled binaries (orx link library, orx runtime library)
 - headers to include at compile time
-- template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
+- template files exposing which properties can be accessed using the config system (for user reference only, not needed by orx)
 - build/project files
 
 
@@ -167,7 +161,7 @@ Compiling
 
 ###Important - first step:
 
-**If you just cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
+**If you just downloaded the `src` package or cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
 This script will download all the needed dependencies and generate all the project files for your platform.
 The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulls.**
@@ -202,7 +196,7 @@ Here's a quick list of the available compile preprocessor flags:
 
 
 There are other preprocessor flags used when compiling the orx library,
-but those should be easy enough to decipher.  
+but those should be easy enough to decipher.  markdo
 However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:
@@ -236,7 +230,9 @@ for which you're compiling. Here's a quick list of these flags:
 Comments
 --------
 
-If you have any questions, comments, ideas or reviews, feel free to post them
-on [orx's forum](http://forum.orx-project.org) or send them directly by email to iarwain [at] orx-project.org
+If you have any questions, comments, ideas or reviews, feel free to either
+post them on [orx's forum](http://forum.orx-project.org),
+come [chat with us](https://gitter.im/orx/orx)
+or send them directly by email to iarwain [at] orx-project.org
 
 Enjoy!

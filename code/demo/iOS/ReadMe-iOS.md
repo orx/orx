@@ -1,12 +1,14 @@
-Orx - Portable Game Engine  (Version iOS 1.7)
+Orx - Portable Game Engine  (Version iOS 1.8)
 ================================================
 
 Email iarwain [at] orx-project -dot- org to contact the author; or better, check
 [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
+You can also come [chat with us](https://gitter.im/orx/orx)
+if you have any questions or comments.
 
 This engine is licensed under the zlib license, see the `LICENSE` file for details.
 
-Orx is a 2D-oriented, data-driven and portable game engine focused primarily on ease of use.
+[Orx](http://orx-project.org) is a 2D-oriented, data-driven and portable game engine focused primarily on ease of use.
 
 Please read the `README.md` file for general info about orx.
 
@@ -72,8 +74,10 @@ The precompiled libraries contain both device & simulator code for more convenie
 Comments
 --------
 
-If you have any questions, comments, ideas or bug reports, feel free to post them
-on [orx's forum](http://forum.orx-project.org) or send them directly by mail to iarwain [at] orx-project -dot- org
+If you have any questions, comments, ideas or reviews, feel free to either
+post them on [orx's forum](http://forum.orx-project.org),
+come [chat with us](https://gitter.im/orx/orx)
+or send them directly by email to iarwain [at] orx-project.org
 
 
 Enjoy!

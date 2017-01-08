@@ -1,34 +1,752 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>README.md—C:\workspace\orx</title>
-    <style type="text/css">
-    html{font-family: sans-serif;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%}body{margin: 0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display: block}audio,canvas,progress,video{display: inline-block;vertical-align: baseline}audio:not([controls]){display: none;height: 0}[hidden],template{display: none}a{background: transparent}a:active,a:hover{outline: 0}abbr[title]{border-bottom: 1px dotted}b,strong{font-weight: bold}dfn{font-style: italic}h1{font-size: 2em;margin: 0.67em 0}mark{background: #ff0;color: #000}small{font-size: 80%}sub,sup{font-size: 75%;line-height: 0;position: relative;vertical-align: baseline}sup{top: -0.5em}sub{bottom: -0.25em}img{border: 0}svg:not(:root){overflow: hidden}figure{margin: 1em 40px}hr{box-sizing: content-box;height: 0}pre{overflow: auto}code,kbd,pre,samp{font-family: monospace, monospace;font-size: 1em}button,input,optgroup,select,textarea{color: inherit;font: inherit;margin: 0}button{overflow: visible}button,select{text-transform: none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance: button;cursor: pointer}button[disabled],html input[disabled]{cursor: default}button::-moz-focus-inner,input::-moz-focus-inner{border: 0;padding: 0}input{line-height: normal}input[type="checkbox"],input[type="radio"]{box-sizing: border-box;padding: 0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height: auto}input[type="search"]{-webkit-appearance: textfield;box-sizing: content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance: none}fieldset{border: 1px solid #c0c0c0;margin: 0 2px;padding: 0.35em 0.625em 0.75em}legend{border: 0;padding: 0}textarea{overflow: auto}optgroup{font-weight: bold}table{border-collapse: collapse;border-spacing: 0}td,th{padding: 0}*{box-sizing: border-box}input,select,textarea,button{font: 13px/1.4 Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"}body{min-width: 1020px;font: 13px/1.4 Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";color: #333;background-color: #fff}a{color: #4183c4;text-decoration: none}a:hover,a:active{text-decoration: underline}hr,.rule{height: 0;margin: 15px 0;overflow: hidden;background: transparent;border: 0;border-bottom: 1px solid #ddd}hr:before,.rule:before{display: table;content: ""}hr:after,.rule:after{display: table;clear: both;content: ""}h1,h2,h3,h4,h5,h6{margin-top: 15px;margin-bottom: 15px;line-height: 1.1}h1{font-size: 30px}h2{font-size: 21px}h3{font-size: 16px}h4{font-size: 14px}h5{font-size: 12px}h6{font-size: 11px}small{font-size: 90%}blockquote{margin: 0}.lead{margin-bottom: 30px;font-size: 20px;font-weight: 300;color: #555}.text-muted{color: #999}.text-danger{color: #bd2c00}.text-emphasized{font-weight: bold;color: #333}ul,ol{padding: 0;margin-top: 0;margin-bottom: 0}ol ol,ul ol{list-style-type: lower-roman}ul ul ol,ul ol ol,ol ul ol,ol ol ol{list-style-type: lower-alpha}dd{margin-left: 0}tt,code{font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;font-size: 12px}pre{margin-top: 0;margin-bottom: 0;font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace}#realtime .status{overflow: visible;position: absolute;top: -5px;left: 0;background: url("/public/images/github-status.png");width: 26px;height: 26px;display: block;margin: 0 5px 0 0}#realtime .up{background-position: 0 0}#realtime .problem{background-position: 0 -53px}#realtime .down{background-position: 0 -26px}.container{max-width: 920px;margin: 0 auto 20px auto}#header{background: #FAFAFA;background: -moz-linear-gradient(#FAFAFA, #EAEAEA);background: -webkit-linear-gradient(#FAFAFA, #EAEAEA);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa', endColorstr='#eaeaea')";border-bottom: 1px solid #CACACA;box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4),0 0 10px rgba(0, 0, 0, 0.1)}#markup{padding: 3px}#markup article{padding-top: 30px}.markdown-body{overflow: hidden;font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;font-size: 16px;line-height: 1.6;word-wrap: break-word}.markdown-body>*:first-child{margin-top: 0 !important}.markdown-body>*:last-child{margin-bottom: 0 !important}.markdown-body .absent{color: #c00}.markdown-body .anchor{position: absolute;top: 0;left: 0;display: block;padding-right: 6px;padding-left: 30px;margin-left: -30px}.markdown-body .anchor:focus{outline: none}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{position: relative;margin-top: 1em;margin-bottom: 16px;font-weight: bold;line-height: 1.4}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{display: none;color: #000;vertical-align: middle}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{padding-left: 8px;margin-left: -30px;text-decoration: none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{display: inline-block}.markdown-body h1 tt,.markdown-body h1 code,.markdown-body h2 tt,.markdown-body h2 code,.markdown-body h3 tt,.markdown-body h3 code,.markdown-body h4 tt,.markdown-body h4 code,.markdown-body h5 tt,.markdown-body h5 code,.markdown-body h6 tt,.markdown-body h6 code{font-size: inherit}.markdown-body h1{padding-bottom: 0.3em;font-size: 2.25em;line-height: 1.2;border-bottom: 1px solid #eee}.markdown-body h1 .anchor{line-height: 1}.markdown-body h2{padding-bottom: 0.3em;font-size: 1.75em;line-height: 1.225;border-bottom: 1px solid #eee}.markdown-body h2 .anchor{line-height: 1}.markdown-body h3{font-size: 1.5em;line-height: 1.43}.markdown-body h3 .anchor{line-height: 1.2}.markdown-body h4{font-size: 1.25em}.markdown-body h4 .anchor{line-height: 1.2}.markdown-body h5{font-size: 1em}.markdown-body h5 .anchor{line-height: 1.1}.markdown-body h6{font-size: 1em;color: #777}.markdown-body h6 .anchor{line-height: 1.1}.markdown-body p,.markdown-body blockquote,.markdown-body ul,.markdown-body ol,.markdown-body dl,.markdown-body table,.markdown-body pre{margin-top: 0;margin-bottom: 16px}.markdown-body hr{height: 4px;padding: 0;margin: 16px 0;background-color: #e7e7e7;border: 0 none}.markdown-body ul,.markdown-body ol{padding-left: 2em}.markdown-body ul.no-list,.markdown-body ol.no-list{padding: 0;list-style-type: none}.markdown-body ul ul,.markdown-body ul ol,.markdown-body ol ol,.markdown-body ol ul{margin-top: 0;margin-bottom: 0}.markdown-body li>p{margin-top: 16px}.markdown-body dl{padding: 0}.markdown-body dl dt{padding: 0;margin-top: 16px;font-size: 1em;font-style: italic;font-weight: bold}.markdown-body dl dd{padding: 0 16px;margin-bottom: 16px}.markdown-body blockquote{padding: 0 15px;color: #777;border-left: 4px solid #ddd}.markdown-body blockquote>:first-child{margin-top: 0}.markdown-body blockquote>:last-child{margin-bottom: 0}.markdown-body table{display: block;width: 100%;overflow: auto;word-break: normal;word-break: keep-all}.markdown-body table th{font-weight: bold}.markdown-body table th,.markdown-body table td{padding: 6px 13px;border: 1px solid #ddd}.markdown-body table tr{background-color: #fff;border-top: 1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color: #f8f8f8}.markdown-body img{max-width: 100%;box-sizing: border-box}.markdown-body span.frame{display: block;overflow: hidden}.markdown-body span.frame>span{display: block;float: left;width: auto;padding: 7px;margin: 13px 0 0;overflow: hidden;border: 1px solid #ddd}.markdown-body span.frame span img{display: block;float: left}.markdown-body span.frame span span{display: block;padding: 5px 0 0;clear: both;color: #333}.markdown-body span.align-center{display: block;overflow: hidden;clear: both}.markdown-body span.align-center>span{display: block;margin: 13px auto 0;overflow: hidden;text-align: center}.markdown-body span.align-center span img{margin: 0 auto;text-align: center}.markdown-body span.align-right{display: block;overflow: hidden;clear: both}.markdown-body span.align-right>span{display: block;margin: 13px 0 0;overflow: hidden;text-align: right}.markdown-body span.align-right span img{margin: 0;text-align: right}.markdown-body span.float-left{display: block;float: left;margin-right: 13px;overflow: hidden}.markdown-body span.float-left span{margin: 13px 0 0}.markdown-body span.float-right{display: block;float: right;margin-left: 13px;overflow: hidden}.markdown-body span.float-right>span{display: block;margin: 13px auto 0;overflow: hidden;text-align: right}.markdown-body code,.markdown-body tt{padding: 0;padding-top: 0.2em;padding-bottom: 0.2em;margin: 0;font-size: 85%;background-color: rgba(0,0,0,0.04);border-radius: 3px}.markdown-body code:before,.markdown-body code:after,.markdown-body tt:before,.markdown-body tt:after{letter-spacing: -0.2em;content: "\00a0"}.markdown-body code br,.markdown-body tt br{display: none}.markdown-body del code{text-decoration: inherit}.markdown-body pre>code{padding: 0;margin: 0;font-size: 100%;word-break: normal;white-space: pre;background: transparent;border: 0}.markdown-body .highlight{margin-bottom: 16px}.markdown-body .highlight pre,.markdown-body pre{padding: 16px;overflow: auto;font-size: 85%;line-height: 1.45;background-color: #f7f7f7;border-radius: 3px}.markdown-body .highlight pre{margin-bottom: 0;word-break: normal}.markdown-body pre{word-wrap: normal}.markdown-body pre code,.markdown-body pre tt{display: inline;max-width: initial;padding: 0;margin: 0;overflow: initial;line-height: inherit;word-wrap: normal;background-color: transparent;border: 0}.markdown-body pre code:before,.markdown-body pre code:after,.markdown-body pre tt:before,.markdown-body pre tt:after{content: normal}.markdown-body kbd{display: inline-block;padding: 3px 5px;font-size: 11px;line-height: 10px;color: #555;vertical-align: middle;background-color: #fcfcfc;border: solid 1px #ccc;border-bottom-color: #bbb;border-radius: 3px;box-shadow: inset 0 -1px 0 #bbb}.codehilite{background: #ffffff}.codehilite .c{color: #999988;font-style: italic}.codehilite .err{color: #a61717;background-color: #e3d2d2}.codehilite .k{color: #000000;font-weight: bold}.codehilite .o{color: #000000;font-weight: bold}.codehilite .cm{color: #999988;font-style: italic}.codehilite .cp{color: #999999;font-weight: bold}.codehilite .c1{color: #999988;font-style: italic}.codehilite .cs{color: #999999;font-weight: bold;font-style: italic}.codehilite .gd{color: #000000;background-color: #ffdddd}.codehilite .gd .x{color: #000000;background-color: #ffaaaa}.codehilite .ge{color: #000000;font-style: italic}.codehilite .gr{color: #aa0000}.codehilite .gh{color: #999999}.codehilite .gi{color: #000000;background-color: #ddffdd}.codehilite .gi .x{color: #000000;background-color: #aaffaa}.codehilite .go{color: #888888}.codehilite .gp{color: #555555}.codehilite .gs{font-weight: bold}.codehilite .gu{color: #aaaaaa}.codehilite .gt{color: #aa0000}.codehilite .kc{color: #000000;font-weight: bold}.codehilite .kd{color: #000000;font-weight: bold}.codehilite .kp{color: #000000;font-weight: bold}.codehilite .kr{color: #000000;font-weight: bold}.codehilite .kt{color: #445588;font-weight: bold}.codehilite .m{color: #009999}.codehilite .s{color: #d14}.codehilite .na{color: #008080}.codehilite .nb{color: #0086B3}.codehilite .nc{color: #445588;font-weight: bold}.codehilite .no{color: #008080}.codehilite .ni{color: #800080}.codehilite .ne{color: #990000;font-weight: bold}.codehilite .nf{color: #990000;font-weight: bold}.codehilite .nn{color: #555555}.codehilite .nt{color: #000080}.codehilite .nv{color: #008080}.codehilite .ow{color: #000000;font-weight: bold}.codehilite .w{color: #bbbbbb}.codehilite .mf{color: #009999}.codehilite .mh{color: #009999}.codehilite .mi{color: #009999}.codehilite .mo{color: #009999}.codehilite .sb{color: #d14}.codehilite .sc{color: #d14}.codehilite .sd{color: #d14}.codehilite .s2{color: #d14}.codehilite .se{color: #d14}.codehilite .sh{color: #d14}.codehilite .si{color: #d14}.codehilite .sx{color: #d14}.codehilite .sr{color: #009926}.codehilite .s1{color: #d14}.codehilite .ss{color: #990073}.codehilite .bp{color: #999999}.codehilite .vc{color: #008080}.codehilite .vg{color: #008080}.codehilite .vi{color: #008080}.codehilite .il{color: #009999}
-    </style>
-    <style type="text/css">
-      .markdown-body hr{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC")}
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div id="markup">
-        <article id="content" class="markdown-body">
-          <h1>Orx - Portable Game Engine (Version 1.7)</h1>
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>@font-face {
+  font-family: octicons-anchor;
+  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    width: 980px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+body .markdown-body {
+    padding: 45px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    word-wrap: break-word;
+}
+
+pre {
+    font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+.markdown-body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  color: #333;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.markdown-body a {
+  background-color: transparent;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline: 0;
+}
+
+.markdown-body strong {
+  font-weight: bold;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+.markdown-body img {
+  border: 0;
+}
+
+.markdown-body hr {
+  box-sizing: content-box;
+  height: 0;
+}
+
+.markdown-body pre {
+  overflow: auto;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+.markdown-body input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+.markdown-body html input[disabled] {
+  cursor: default;
+}
+
+.markdown-body input {
+  line-height: normal;
+}
+
+.markdown-body input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body input {
+  font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.markdown-body a {
+  color: #4078c0;
+  text-decoration: none;
+}
+
+.markdown-body a:hover,
+.markdown-body a:active {
+  text-decoration: underline;
+}
+
+.markdown-body hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.markdown-body hr:before {
+  display: table;
+  content: "";
+}
+
+.markdown-body hr:after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+
+.markdown-body h1 {
+  font-size: 30px;
+}
+
+.markdown-body h2 {
+  font-size: 21px;
+}
+
+.markdown-body h3 {
+  font-size: 16px;
+}
+
+.markdown-body h4 {
+  font-size: 14px;
+}
+
+.markdown-body h5 {
+  font-size: 12px;
+}
+
+.markdown-body h6 {
+  font-size: 11px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body code {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+.markdown-body .select::-ms-expand {
+  opacity: 0;
+}
+
+.markdown-body .octicon {
+  font: normal normal normal 16px/1 octicons-anchor;
+  display: inline-block;
+  text-decoration: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.markdown-body .octicon-link:before {
+  content: '\f05c';
+}
+
+.markdown-body:before {
+  display: table;
+  content: "";
+}
+
+.markdown-body:after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body .anchor {
+  display: inline-block;
+  padding-right: 2px;
+  margin-left: -18px;
+}
+
+.markdown-body .anchor:focus {
+  outline: none;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 1em;
+  margin-bottom: 16px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+  color: #000;
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+  text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.markdown-body h1 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h1 .anchor {
+  line-height: 1;
+}
+
+.markdown-body h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h2 .anchor {
+  line-height: 1;
+}
+
+.markdown-body h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+
+.markdown-body h3 .anchor {
+  line-height: 1.2;
+}
+
+.markdown-body h4 {
+  font-size: 1.25em;
+}
+
+.markdown-body h4 .anchor {
+  line-height: 1.2;
+}
+
+.markdown-body h5 {
+  font-size: 1em;
+}
+
+.markdown-body h5 .anchor {
+  line-height: 1.1;
+}
+
+.markdown-body h6 {
+  font-size: 1em;
+  color: #777;
+}
+
+.markdown-body h6 .anchor {
+  line-height: 1.1;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body hr {
+  height: 4px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: #e7e7e7;
+  border: 0 none;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body blockquote {
+  padding: 0 15px;
+  color: #777;
+  border-left: 4px solid #ddd;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+}
+
+.markdown-body table th {
+  font-weight: bold;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid #ddd;
+}
+
+.markdown-body table tr {
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: #fff;
+}
+
+.markdown-body code {
+  padding: 0;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px;
+}
+
+.markdown-body code:before,
+.markdown-body code:after {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .highlight {
+  margin-bottom: 16px;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f7f7f7;
+  border-radius: 3px;
+}
+
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body pre {
+  word-wrap: normal;
+}
+
+.markdown-body pre code {
+  display: inline;
+  max-width: initial;
+  padding: 0;
+  margin: 0;
+  overflow: initial;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body pre code:before,
+.markdown-body pre code:after {
+  content: normal;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb;
+}
+
+.markdown-body .pl-c {
+  color: #969896;
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+  color: #0086b3;
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+  color: #795da3;
+}
+
+.markdown-body .pl-s .pl-s1,
+.markdown-body .pl-smi {
+  color: #333;
+}
+
+.markdown-body .pl-ent {
+  color: #63a35c;
+}
+
+.markdown-body .pl-k {
+  color: #a71d5d;
+}
+
+.markdown-body .pl-pds,
+.markdown-body .pl-s,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sra,
+.markdown-body .pl-sr .pl-sre {
+  color: #183691;
+}
+
+.markdown-body .pl-v {
+  color: #ed6a43;
+}
+
+.markdown-body .pl-id {
+  color: #b52a1d;
+}
+
+.markdown-body .pl-ii {
+  background-color: #b52a1d;
+  color: #f8f8f8;
+}
+
+.markdown-body .pl-sr .pl-cce {
+  color: #63a35c;
+  font-weight: bold;
+}
+
+.markdown-body .pl-ml {
+  color: #693a17;
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+  color: #1d3e81;
+  font-weight: bold;
+}
+
+.markdown-body .pl-mq {
+  color: #008080;
+}
+
+.markdown-body .pl-mi {
+  color: #333;
+  font-style: italic;
+}
+
+.markdown-body .pl-mb {
+  color: #333;
+  font-weight: bold;
+}
+
+.markdown-body .pl-md {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.markdown-body .pl-mi1 {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.markdown-body .pl-mdr {
+  color: #795da3;
+  font-weight: bold;
+}
+
+.markdown-body .pl-mo {
+  color: #1d3e81;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb;
+}
+
+.markdown-body .plan-price-unit {
+  color: #767676;
+  font-weight: normal;
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.markdown-body .task-list-item input {
+  margin: 0 0.35em 0.25em -1.6em;
+  vertical-align: middle;
+}
+
+.markdown-body .plan-choice {
+  padding: 15px;
+  padding-left: 40px;
+  display: block;
+  border: 1px solid #e0e0e0;
+  position: relative;
+  font-weight: normal;
+  background-color: #fafafa;
+}
+
+.markdown-body .plan-choice.open {
+  background-color: #fff;
+}
+
+.markdown-body .plan-choice.open .plan-choice-seat-breakdown {
+  display: block;
+}
+
+.markdown-body .plan-choice-free {
+  border-radius: 3px 3px 0 0;
+}
+
+.markdown-body .plan-choice-paid {
+  border-radius: 0 0 3px 3px;
+  border-top: 0;
+  margin-bottom: 20px;
+}
+
+.markdown-body .plan-choice-radio {
+  position: absolute;
+  left: 15px;
+  top: 18px;
+}
+
+.markdown-body .plan-choice-exp {
+  color: #999;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.markdown-body .plan-choice-seat-breakdown {
+  margin-top: 10px;
+  display: none;
+}
+
+.markdown-body :checked+.radio-label {
+  z-index: 1;
+  position: relative;
+  border-color: #4078c0;
+}
+</style><title>README</title></head><body><article class="markdown-body"><h1>
+<a id="user-content-orx---portable-game-engine-version-18" class="anchor" href="#orx---portable-game-engine-version-18" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Orx - Portable Game Engine (Version 1.8)</h1>
+
 <p>Email iarwain [at] orx-project.org to contact the author; or, better,
-check <a href="http://orx-project.org">orx's homepage</a> for the most up-to-date contact information.</p>
+check <a href="http://orx-project.org">orx's homepage</a> for the most up-to-date contact information.
+You can also come <a href="https://gitter.im/orx/orx">chat with us</a>
+if you have any questions or comments.</p>
+
 <p>This engine is licensed under the very permissive <a href="http://en.wikipedia.org/wiki/Zlib_License">zlib license</a>,
 see the <a href="https://bitbucket.org/orx/orx/src/default/LICENSE">LICENSE</a> file for details.</p>
-<h2>Summary</h2>
-<p>Orx is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
+
+<h2>
+<a id="user-content-summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h2>
+
+<p><a href="http://orx-project.org">Orx</a> is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.</p>
-<p>This is the stable release for orx v1.7. If you find any bugs,
+
+<p>This is the stable release for orx v1.8. If you find any bugs,
 please report them on the <a href="http://forum.orx-project.org">forum</a>, in the "Bug report - Feature request" board,
 or via orx's <a href="https://bitbucket.org/orx/orx/issues?status=new&amp;status=open">issue page/tracker</a>.</p>
-<p>The current features of orx engine are:</p>
+
+<p>Some notable features of the engine are:</p>
+
 <ul>
 <li>hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
-  transparency (alpha blending), different blending modes, coloring, tiling and mirroring</li>
+transparency (alpha blending), different blending modes, coloring, tiling and mirroring</li>
 <li>advanced rendering features such as MRT (Multiple Render Targets) support and easy compositing</li>
 <li>powerful config system that makes orx data-driven and provides an easy to use load/save system</li>
 <li>powerful resource management allowing for easy multi-platform data support and patching</li>
@@ -54,40 +772,53 @@ or via orx's <a href="https://bitbucket.org/orx/orx/issues?status=new&amp;status
 <li>plugin system</li>
 <li>screenshot capture tool (supports bmp, png, jpg, tga and dds)</li>
 </ul>
+
 <p>See the <a href="https://bitbucket.org/orx/orx/src/default/doc/html">doc/html</a> directory for the doxygen documentation of orx's API.
 The documentation for the latest release version is <a href="http://orx-project.org/orx/doc/html">available here</a> at orx's homepage.</p>
+
 <p>You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
 (ie. how to use the config system) on <a href="http://wiki.orx-project.org">orx's wiki</a>.<br>
 The English version is the most complete one.<br>
 Chinese and Spanish translations are entirely written and maintained by community members,
 and they might be less accurate/somewhat outdated.</p>
-<h2>Supported Platforms</h2>
+
+<h2>
+<a id="user-content-supported-platforms" class="anchor" href="#supported-platforms" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Platforms</h2>
+
 <p>The engine compiles and is tested for:</p>
+
 <ul>
 <li>Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)</li>
-<li>Windows (x86 with vs2012, vs2013 (x86/x86-64) and mingw32 with codelite, codeblocks and GNU makefile)</li>
-<li>MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile),<br>
-  version 10.5+ for GLFW plugins (default version) and 10.4+ for SFML ones (no joystick support)</li>
+<li>Windows (x86 with vs2012, x86/x86-64 with vs2013 &amp; vs2015 and mingw32 (5.3.0) with codelite, codeblocks and GNU makefile)</li>
+<li>MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+</li>
 <li>iOS (iPhone/iPod Touch/iPad, simulator &amp; device with xcode)</li>
 <li>Android (NDK build files, simulator &amp; device)</li>
 </ul>
-<h2>Versions</h2>
+
+<h2>
+<a id="user-content-versions" class="anchor" href="#versions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Versions</h2>
+
 <p>Those are not revision versions but link/run versions.
 Orx library can be compiled as a static or a dynamic library.
 In addition to these modes, orx can be compiled as an embedded version or not.</p>
+
 <p>Orx's core is basically platform-independent. All the platform/OS-dependent features
 are implemented via plugins. These plugins can be loaded at runtime (hotplug) or
 they can be embedded at linktime.</p>
+
 <p>If you use the non-embedded versions, you'll have to specify which plugins to use.
 This is more flexible but also requires additional files (the plugins themselves).
 The embedded version will store everything in orx's library, meaning you won't be able
 to choose which plugin to use at runtime, but will also be more compact. This will
 also make orx run considerably faster.</p>
+
 <p>From the download page you'll find precompiled binaries for Windows (x86), Linux (x86/x86-64), MacOS X (ppc/x86/x86-64),
 iOS and Android, using the dynamic embedded versions only.
 If you want to use the non-embedded versions (to use with your own plugins), you'll need to compile orx yourself from the source.
 Everything compiles out-of-the-box for the hardware platforms cited above.</p>
+
 <p>The embedded versions currently use:</p>
+
 <ul>
 <li>GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms</li>
 <li>OpenAL-based (+libsndfile/stb_vorbis/tremor) plugins for sound for all platforms</li>
@@ -97,105 +828,132 @@ Everything compiles out-of-the-box for the hardware platforms cited above.</p>
 <li>Touch/MultiTouch-based plugin for mouse on iOS and Android</li>
 <li>Accelerometer-based plugin for joystick on iOS and Android</li>
 </ul>
+
 <p>All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.</p>
+
 <p>Some tools (precompiled binaries only) are also shipped with the dev packages:</p>
+
 <ul>
-<li>orxCrypt  : command line tool to encrypt/decrypt/merge multiple config files</li>
-<li>orxFontGen: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture &amp; .ini config file) from TrueType fonts</li>
+<li>
+<code>orxCrypt</code>  : command line tool to encrypt/decrypt/merge multiple config files</li>
+<li>
+<code>orxFontGen</code>: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture &amp; .ini config file) from TrueType fonts</li>
 </ul>
-<h2>Packages</h2>
+
+<h2>
+<a id="user-content-packages" class="anchor" href="#packages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Packages</h2>
+
 <p>You can download all the packages from <a href="http://orx.sf.net">sourceforge</a> or <a href="https://bitbucket.org/orx/orx/downloads">bitbucket</a>.
 Here is a list with a small description for each package.</p>
+
 <ul>
-<li>orx-doc-1.7.zip: orx's API doxygen documentation</li>
-<li>orx-src-1.7.zip: orx's source code including build projects for<ul>
-<li>codelite (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
-<li>codeblocks (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
-<li>GNU makefiles (Windows and Linux, all versions, Mac OS X, non-static versions)</li>
-<li>vs2012 &amp; vs2013 (Windows Visual Studio, all versions)</li>
-<li>xcode (3.2+, for MacOS X, non-static versions; SDK 8.1 for iOS, static embedded versions)</li>
-<li>ndk build files for Android (static embedded versions)
-NB: You'll need orx-extern-1.7.zip (orx plugins' external dependencies) if you intend to compile orx yourself.</li>
+<li>
+<code>orx-doc-1.8-rc0.zip</code>                   : orx's API doxygen documentation</li>
+<li>
+<code>orx-src-1.8-rc0.zip</code>                   : orx's source code, ready for compile after running the setup script</li>
+<li>
+<code>orx-dev-linux32-1.8-rc0.tar.bz2</code>       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-linux64-1.8-rc0.tar.bz2</code>       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-mac-1.8-rc0.zip</code>               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-mingw-1.8-rc0.zip</code>             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-vs2013-32-1.8-rc0.zip</code>         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-vs2013-64-1.8-rc0.zip</code>         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-vs2015-32-1.8-rc0.zip</code>         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.</li>
+<li>
+<code>orx-dev-vs2015-64-1.8-rc0.zip</code>         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.</li>
+<li>
+<code>orx-full-ios-1.8-rc0.zip</code>              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
+<li>
+<code>orx-dev-android-1.8-rc0.zip</code>           : static embedded binaries for Android, release/profile/debug (device).</li>
+<li>
+<code>orx-dev-android-native-1.8-rc0.zip</code>    : static embedded binaries for Android Native, release/profile/debug (device).</li>
+<li>
+<code>orx-tutorial-linux32-1.8-rc0.tar.bz2</code>  : tutorials for Linux (x86)</li>
+<li>
+<code>orx-tutorial-linux64-1.8-rc0.tar.bz2</code>  : tutorials for Linux (x86-64)</li>
+<li>
+<code>orx-tutorial-mac-1.8-rc0.zip</code>          : tutorials for MacOS X (x86/x86-64)</li>
+<li>
+<code>orx-tutorial-mingw-1.8-rc0.zip</code>        : tutorials for Windows (mingw)</li>
+<li>
+<code>orx-tutorial-vs2013-32-1.8-rc0.zip</code>    : tutorials for Windows (Visual Studio 2013, x86)</li>
+<li>
+<code>orx-tutorial-vs2013-64-1.8-rc0.zip</code>    : tutorials for Windows (Visual Studio 2013, x86-64)</li>
+<li>
+<code>orx-tutorial-vs2015-32-1.8-rc0.zip</code>    : tutorials for Windows (Visual Studio 2015, x86)</li>
+<li>
+<code>orx-tutorial-vs2015-64-1.8-rc0.zip</code>    : tutorials for Windows (Visual Studio 2015, x86-64)</li>
 </ul>
-</li>
-<li>orx-extern-1.7.zip: orx's external dependencies. You will <em>only NEED</em> these if you
-  use orx-src-1.7.zip and you plan on compiling orx yourself. They are not needed otherwise.
-  The external libraries are usually modified versions of the original ones.<br>
-<strong>VERY IMPORTANT</strong>: If you want to compile orx yourself, you'll need these versions and not the official ones.</li>
-<li>orx-dev-linux32-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.</li>
-<li>orx-dev-linux64-1.7.tar.bz2       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.</li>
-<li>orx-dev-mac-1.7.zip               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.</li>
-<li>orx-dev-mingw-1.7.zip             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.</li>
-<li>orx-dev-vs2012-1.7.zip            : dynamic embedded binaries for Windows (Visual Studio 2012), release/profile/debug + tools.</li>
-<li>orx-dev-vs2013-32-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.</li>
-<li>orx-dev-vs2013-64-1.7.zip         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.</li>
-<li>orx-full-ios-1.7.zip              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
-<li>orx-dev-android-1.7.zip           : static embedded binaries for Android, release/profile/debug (device).</li>
-<li>orx-dev-android-native-1.7.zip    : static embedded binaries for Android Native, release/profile/debug (device).</li>
-<li>orx-tutorial-linux32-1.7.tar.bz2  : tutorials for Linux (x86)</li>
-<li>orx-tutorial-linux64-1.7.tar.bz2  : tutorials for Linux (x86-64)</li>
-<li>orx-tutorial-mac-1.7.zip          : tutorials for MacOS X (x86/x86-64)</li>
-<li>orx-tutorial-mingw-1.7.zip        : tutorials for Windows (mingw)</li>
-<li>orx-tutorial-vs2012-1.7.zip       : tutorials for Windows (Visual Studio 2012)</li>
-<li>orx-tutorial-vs2013-1.7.zip       : tutorials for Windows (Visual Studio 2013)</li>
-</ul>
+
 <p>All the <code>*-dev-*</code> packages above include:</p>
+
 <ul>
 <li>orx release/profile/debug libraries used for linking</li>
 <li>runtime release/profile/debug orx libraries</li>
 <li>headers to include at compile time</li>
 <li>template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)</li>
 </ul>
+
 <p>All the <code>*-tutorial-*</code> packages above include:</p>
+
 <ul>
 <li>heavily commented source code for 11 basic and advanced tutorials</li>
 <li>precompiled binaries (orx link library, orx runtime library)</li>
 <li>headers to include at compile time</li>
-<li>template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)</li>
+<li>template files exposing which properties can be accessed using the config system (for user reference only, not needed by orx)</li>
 <li>build/project files</li>
 </ul>
-<h2>Compiling</h2>
-<h3>Important - first step:</h3>
-<p><strong>If you just cloned orx with mercurial or git, you will need to run the setup.bat/setup.sh script
+
+<h2>
+<a id="user-content-compiling" class="anchor" href="#compiling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compiling</h2>
+
+<h3>
+<a id="user-content-important---first-step" class="anchor" href="#important---first-step" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Important - first step:</h3>
+
+<p><strong>If you just downloaded the <code>src</code> package or cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
 This script will download all the needed dependencies and generate all the project files for your platform.
 The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulls.</strong></p>
+
 <p>The easiest way to learn how to compile your project using orx for a given platform
 is to look at the tutorial build project files.</p>
+
 <p>NB: The debug version is far slower than the release one, but will output all the warning
 and error messages useful during development.</p>
+
 <p>Here's a quick list of the available compile preprocessor flags:</p>
+
 <ul>
-<li>
-<p><code>__orxDEBUG__</code>    : used to compile and link against the debug versions of orx library
-                    (liborxd.a / orxd.lib / liborxd.dylib), if not specified it refers to
-                    the release versions (liborx.a / orx.lib / liborx.dylib).<br>
-                    NB: If you want to link against the debug versions of orx library, you need
-                    to specify it to your compiler!</p>
-</li>
-<li>
-<p><code>__orxPROFILER__</code> : used to enable the profiling push/pop macros for release builds
-                    It's automatically enabled for debug builds and it has been enabled to
-                    build liborxp.a / orxp.lib / orxp.dll / liborxp.dylib / liborxp.so<br>
-                    NB: You can define it in your projects even when using regular release builds,
-                    but you won't be able to see orx's internal profiling markers!</p>
-</li>
-<li>
-<p><code>__orxSTATIC__</code>   : used to compile and link against the static versions of orx library.<br>
-                    NB: If you want to link against the static versions of orx library, you need
-                    to specify it to your compiler!</p>
-</li>
-<li>
-<p><code>__orxEMBEDDED__</code> : used to compile the embedded versions of orx library.<br>
-                    NB: this flag is <em>ONLY</em> needed when compiling orx library, not when linking
-                    against it.</p>
-</li>
+<li><p><code>__orxDEBUG__</code>    : used to compile and link against the debug versions of orx library
+                (liborxd.a / orxd.lib / liborxd.dylib), if not specified it refers to
+                the release versions (liborx.a / orx.lib / liborx.dylib).<br>
+                NB: If you want to link against the debug versions of orx library, you need
+                to specify it to your compiler!</p></li>
+<li><p><code>__orxPROFILER__</code> : used to enable the profiling push/pop macros for release builds
+                It's automatically enabled for debug builds and it has been enabled to
+                build liborxp.a / orxp.lib / orxp.dll / liborxp.dylib / liborxp.so<br>
+                NB: You can define it in your projects even when using regular release builds,
+                but you won't be able to see orx's internal profiling markers!</p></li>
+<li><p><code>__orxSTATIC__</code>   : used to compile and link against the static versions of orx library.<br>
+                NB: If you want to link against the static versions of orx library, you need
+                to specify it to your compiler!</p></li>
+<li><p><code>__orxEMBEDDED__</code> : used to compile the embedded versions of orx library.<br>
+                NB: this flag is <em>ONLY</em> needed when compiling orx library, not when linking
+                against it.</p></li>
 </ul>
+
 <p>There are other preprocessor flags used when compiling the orx library,
-but those should be easy enough to decipher.<br>
+but those should be easy enough to decipher.  markdo
 However, you might want to specify them manually for cross-compiling or
 use them so that your code will behave differently depending on the architecture
 for which you're compiling. Here's a quick list of these flags:</p>
+
 <table>
 <thead>
 <tr>
@@ -294,12 +1052,14 @@ for which you're compiling. Here's a quick list of these flags:</p>
 </tr>
 </tbody>
 </table>
-<h2>Comments</h2>
-<p>If you have any questions, comments, ideas or reviews, feel free to post them
-on <a href="http://forum.orx-project.org">orx's forum</a> or send them directly by email to iarwain [at] orx-project.org</p>
+
+<h2>
+<a id="user-content-comments" class="anchor" href="#comments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Comments</h2>
+
+<p>If you have any questions, comments, ideas or reviews, feel free to either
+post them on <a href="http://forum.orx-project.org">orx's forum</a>,
+come <a href="https://gitter.im/orx/orx">chat with us</a>
+or send them directly by email to iarwain [at] orx-project.org</p>
+
 <p>Enjoy!</p>
-        </article>
-      </div>
-    </div>
-  </body>
-</html>
+</article></body></html>
