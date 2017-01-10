@@ -186,6 +186,9 @@ orxSTATUS orxFASTCALL Init()
   /* Displays a small hint in console */
   orxLOG("\n- '%s' & '%s' will change the soldier's animations\n- '%s' & '%s' will scale the soldier", zInputWalkLeft, zInputWalkRight, zInputScaleUp, zInputScaleDown);
 
+  /* Registers event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_ANIM, EventHandler);
+
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
 
@@ -197,9 +200,6 @@ orxSTATUS orxFASTCALL Init()
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
-
-  /* Registers event handler */
-  orxEvent_AddHandler(orxEVENT_TYPE_ANIM, EventHandler);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
