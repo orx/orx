@@ -75,6 +75,7 @@ basefileinfolist = [
 docfileinfolist = basefileinfolist
 
 srcfileinfolist = basefileinfolist + [
+    {'src': 'bin/*.ini',                                                'dst': None},
     {'src': 'build/premake4.lua',                                       'dst': None},
     {'src': '../.extern',                                               'dst': None},
     {'src': '../setup*',                                                'dst': None}
@@ -248,7 +249,8 @@ androidnativefolderinfolist = devfolderinfolist + [
 
 srcfolderinfolist = [
     {'src': '../tools',                                                 'dst': None},
-    {'src': 'bin',                                                      'dst': None},
+    {'src': 'bin/data',                                                 'dst': None},
+    {'src': 'bin/plugins',                                              'dst': None},
     {'src': 'build/rebol',                                              'dst': None},
     {'src': 'include',                                                  'dst': None},
     {'src': 'plugins/Demo',                                             'dst': None},
