@@ -1,4 +1,8 @@
-Orx - Portable Game Engine (Version 1.8)
+[![Join the chat at https://gitter.im/orx/orx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orx/orx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
+[![Build status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva/branch/master?svg=true)](https://ci.appveyor.com/project/iarwain/orx/branch/master)
+
+Orx - Portable Game Engine (Version 1.8rc0)
 ========================================
 
 
@@ -17,7 +21,7 @@ Summary
 [Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is the stable release for orx v1.8. If you find any bugs,
+This is a release candidate for orx v1.8rc0. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
