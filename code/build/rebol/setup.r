@@ -36,7 +36,8 @@ switch platform [
 ]
 platform-info: platform-data/:platform
 
-change-dir system/options/home
+root: system/options/path
+change-dir root
 
 delete-dir: func [
     {Deletes a directory including all files and subdirectories.}
@@ -86,7 +87,7 @@ either req-ver = cur-ver [
         attempt [make-dir/deep cache]
         print ["== [" req-ver "] not in cache"]
         print ["== Fetching [" remote "]" newline "== Please wait!"]
-        write system/options/home/:local read to-url remote
+        write root/:local read to-url remote
         print ["== [" req-ver "] cached!"]
     ]
 
@@ -137,9 +138,9 @@ foreach config platform-info/config [
     print ["== Generating [" config "]"]
     forskip builds 2 [
         if exists? builds/2 [
-            change-dir rejoin [system/options/home builds/2]
+            change-dir rejoin [root builds/2]
             call/wait rejoin ["./" premake " " config]
-            change-dir system/options/home
+            change-dir root
         ]
     ]
 ]
@@ -164,7 +165,7 @@ either exists? hg [
                 newline
                 hg-hook
                 " = "
-                to-local-file either hook-rel: find/tail system/options/boot system/options/home [
+                to-local-file either hook-rel: find/tail system/options/boot root [
                     hook-rel
                 ] [
                     system/options/boot
@@ -195,7 +196,7 @@ if exists? git [
         foreach hook git-hooks [
             hook-content: rejoin [
                 newline
-                either hook-rel: find/tail system/options/boot system/options/home [
+                either hook-rel: find/tail system/options/boot root [
                     hook-rel
                 ] [
                     system/options/boot
