@@ -1,5 +1,42 @@
-Orx - Portable Game Engine  (Version 1.7)
+Orx - Portable Game Engine  (Version 1.8rc0)
 =========================================
+
+orx 1.8rc0
+-----
+* IMPORTANT: New animation declaration system has been added, both simpler and more powerful, older system is still working but is deprecated!
+* IMPORTANT: Support for Visual Studio 2015 has been added and support for Visual Studio 2008 and 2010 have been removed
+* IMPORTANT: Added version to orx, using MAJOR.MINOR-RELEASE (+additional BUILD number for official releases) + compile-time warning when using mismatched headers/lib versions
+* IMPORTANT: Renamed internal screen texture from -=Screen=- to screen
+* IMPORTANT: Added arm64-v8a support for Android
+* IMPORTANT: Default physics Box2D plugin has been replaced with one based on LiquidFun (which is a based on a more recent Box2D fork)
+* IMPORTANT: Body properties AllowGroundSliding and CanSlide are not supported anymore!
+* IMPORTANT: Display's screen config properties (ScreenWidth, ...) will be updated at runtime with current screen values
+* IMPORTANT: Viewports with a fixed size will not auto-resize by default anymore, viewport Size/Position take precedence on RelativeSize/RelativePosition
+* IMPORTANT: Added Display.ShaderListExtension config property, if not defined GL_EXT_gpu_shader4 will be enabled by default
+* IMPORTANT: Shaders can now be reconstituted from multiple parts using the Shader.CodeList property instead of the Code one
+* IMPORTANT: Highest priority storage will now always remain the default storage (".")
+* IMPORTANT: Prototypes of functions orxTexture_CreationFromFile() and orxTexture_LinkBitmap() and of command Texture.Create have changed!
+* IMPORTANT: Added KeepInCache property to textures (via graphics and fonts) and to animation sets
+
+* Added scrolling support to the interactive console (`), Console.ScrollSize controls the scrolling rate + a more user-friendly command completion display
+* Orx can now be used without a main module and can be partially initialized using any module combination, support for user modules registration has been added
+* orxOBJECTs can now be reset/deactivated upton deletion by returning orxSTATUS_FAILURE when listening to orxOBJECT_EVENT_DELETE
+* Added recursive version of some orxObject functions/commands like Enable, Pause, SetColor, SetGroupID, ...
+* Added NoDebug config property to viewports to prevent any automated debug drawing inside those viewports, such as the physics debug
+* Added Immediate property to spawner to ignore the delay for the first wave after creation/reset
+* Added FixedRatio property to viewports that are not linked to a camera
+* Added support for appending config list items (using +=), can't append to a value that is using inheritance marker (@) + added orxConfig_AppendListString()/Config.AppendValue
+* Added ANSI color support for terminal logs (ANSI color tags will be stripped from file logs for readability)
+* Config data can now be loaded from a memory buffer using orxConfig_LoadFromMemory()
+* Added support for time parameter to viewport shaders (using core clock's current time so that pause & stretching will affect the shaders)
+* Added orxConfig_MergeFiles() that will concatenate files' content, including comments and commands
+* Added orxMemory_Reallocate()
+* Added direct previous sibling link to orxTREE_NODEs
+* Added commands Object.SetClock, Object.GetClock, Object.SetAnimFrequency, Clock.SetFrequency and Clock.SetModifier
+* Optimized config list read accesses using an internal index list
+* Shader compiling debug message should not report the line number accurately from a user point of view
+* Added orxHashTable_Retrieve() to efficiently combine a get/set combo
+* Misc fixes, optimizations and additions
 
 orx 1.7
 -----
