@@ -1004,10 +1004,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
               alASSERT();
 
               /* Allocates stream buffers */
-              sstSoundSystem.as16StreamBuffer     = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
+              sstSoundSystem.as16StreamBuffer   = (orxS16 *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxS16), orxMEMORY_TYPE_AUDIO);
 
               /* Allocates working buffer list */
-              sstSoundSystem.auiWorkBufferList    = (ALuint *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxMEMORY_TYPE_AUDIO);
+              sstSoundSystem.auiWorkBufferList  = (ALuint *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxMEMORY_TYPE_AUDIO);
 
               /* Gets dimension ratio */
               fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);

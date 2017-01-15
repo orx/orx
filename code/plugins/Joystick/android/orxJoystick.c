@@ -112,7 +112,7 @@ static void canonicalToScreen(int     displayRotation,
   const AxisSwap& as = axisSwap[displayRotation];
   screenVec[0] = (float)as.negateX * canVec[ as.xSrc ];
   screenVec[1] = (float)as.negateY * canVec[ as.ySrc ];
-  screenVec[2] = canVec[2]; 
+  screenVec[2] = canVec[2];
 }
 
 static void enableSensorManager()
@@ -446,32 +446,36 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     }
     else
     {
-      sstJoystick.sensorManager = ASensorManager_getInstance();
-      sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
-
-      if(sstJoystick.accelerometerSensor != NULL)
+      if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
       {
-        /* Adds our Accelerometer event handlers */
-        if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+        sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
+      }
+      else
+      { /* enable accelerometer with default rate */
+        sstJoystick.u32Frequency = 60;
+      }
+
+      if(sstJoystick.u32Frequency > 0)
+      {
+        sstJoystick.sensorManager = ASensorManager_getInstance();
+        sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+
+        if(sstJoystick.accelerometerSensor != NULL)
         {
-          if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+          /* Adds our Accelerometer event handlers */
+          if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
           {
-            if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+            if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
             {
-              ALooper* looper = ALooper_forThread();
-              sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
-
-              if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
+              if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
               {
-                sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
-              }
-              else
-              { /* enable acceleromter with default rate */
-                sstJoystick.u32Frequency = 60;
-              }
+                ALooper* looper = ALooper_forThread();
+                sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
+                ASensorEventQueue_disableSensor(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor);
 
-              /* enable sensor */
-              enableSensorManager();
+                /* enable sensor */
+                enableSensorManager();
+              }
             }
           }
         }
@@ -506,7 +510,11 @@ void orxFASTCALL orxJoystick_Android_Exit()
       ASensorManager_destroyEventQueue(sstJoystick.sensorManager, sstJoystick.sensorEventQueue);
     }
 
-    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
+    if(sstJoystick.bUseJoystick != orxFALSE)
+    {
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
+    }
 
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
@@ -587,7 +595,7 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 
         /* Gets axis */
         s32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
-    
+
         /* Updates result */
         fResult = orx2F(sstJoystick.astJoyInfoList[u32ID].afAxisInfoList[s32Axis]);
       }
