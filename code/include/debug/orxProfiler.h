@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxProfiler
- * 
+ *
  * Profiler Module
  * Allows to profile code execution
  *
@@ -98,7 +98,7 @@
 /** Setups Profiler module */
 extern orxDLLAPI void orxFASTCALL                 orxProfiler_Setup();
 
-/** Inits the Profiler module 
+/** Inits the Profiler module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxProfiler_Init();

@@ -1759,7 +1759,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     /* Clears buffer index */
     sstDisplay.s32BufferIndex = 0;
 
-	/* Profiles */
+	  /* Profiles */
     orxPROFILER_POP_MARKER();
   }
 

@@ -303,7 +303,7 @@ orxSTATUS orxFASTCALL orxProfiler_Init()
       orxProfiler_GetMarkerData(orxTHREAD_KU32_MAIN_THREAD_ID, orxFALSE);
 
       /* Gets water stamp */
-      sstProfiler.s32WaterStamp = ((orxS32)(orxSystem_GetSystemTime() * 1e3)) << orxPROFILER_KU32_SHIFT_MARKER_ID;
+      sstProfiler.s32WaterStamp = ((orxS32)(orxMath_Mod((orxFLOAT)orxSystem_GetSystemTime() * 1e3, (orxFLOAT)(1L << (32 - orxPROFILER_KU32_SHIFT_MARKER_ID))))) << orxPROFILER_KU32_SHIFT_MARKER_ID;
 
       /* Updates flags */
       sstProfiler.u32Flags = orxPROFILER_KU32_STATIC_FLAG_READY | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS;
