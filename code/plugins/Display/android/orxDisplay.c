@@ -369,11 +369,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
 
 #define GL_MAX_DRAW_BUFFERS                              0x8824
-void           (* glDrawBuffers) (GLsizei n, const GLenum* bufs);
+void (* glDrawBuffers) (GLsizei n, const GLenum* bufs);
 
 static orxBOOL gl3stubInit()
 {
-  glDrawBuffers =  (void (*)(GLsizei, const GLenum*)) eglGetProcAddress("glDrawBuffers");
+  glDrawBuffers = (void (*)(GLsizei, const GLenum*)) eglGetProcAddress("glDrawBuffers");
 
   return glDrawBuffers != orxNULL ? orxTRUE : orxFALSE;
 }
