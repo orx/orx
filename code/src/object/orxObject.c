@@ -5826,10 +5826,24 @@ orxSTATUS orxFASTCALL orxObject_Attach(orxOBJECT *_pstObject, void *_pParent)
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      orxBODY *pstBody;
+
       /* Restores object's world position, rotation and scale */
       orxFrame_SetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vScale);
       orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_GLOBAL, fRotation);
       orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+
+      /* Gets body */
+      pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+      /* Valid? */
+      if(pstBody != orxNULL)
+      {
+        /* Updates body's position, rotation and scale */
+        orxBody_SetScale(pstBody, &vScale);
+        orxBody_SetRotation(pstBody, fRotation);
+        orxBody_SetPosition(pstBody, &vPosition);
+      }
     }
   }
 
