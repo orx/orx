@@ -38,6 +38,11 @@
 #include "utils/orxString.h"
 
 
+#ifdef __orxMSVC__
+  #pragma warning(disable : 4244)
+#endif /* __orxMSVC__ */
+
+
 /** Module flags
  */
 #define orxPROFILER_KU32_STATIC_FLAG_NONE         0x00000000
@@ -1407,3 +1412,7 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
   /* Done! */
   return u32Result;
 }
+
+#ifdef __orxMSVC__
+  #pragma warning(default : 4244)
+#endif /* __orxMSVC__ */

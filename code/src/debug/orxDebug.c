@@ -651,6 +651,16 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       orxDebug_ClearANSICodes(zBuffer);
     }
 
+#ifdef __orxWINDOWS__
+
+    /* Terminal display? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
+    {
+      OutputDebugString(zBuffer);
+    }
+
+#endif /* __orxWINDOWS__ */
+
     /* File print? */
     if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
     {
