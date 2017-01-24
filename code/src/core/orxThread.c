@@ -179,6 +179,10 @@ static void *orxThread_Execute(void *_pContext)
 
 #endif /* __orxWINDOWS__ */
 
+  /* Spins until ready */
+  while(pstInfo->hThread == 0)
+    ;
+
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
   /* Notifies the Java framework */
@@ -498,6 +502,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
     if(pstInfo->pstEnableSemaphore != orxNULL)
     {
       /* Inits its info */
+      pstInfo->hThread      = 0;
       pstInfo->pfnRun       = _pfnRun;
       pstInfo->pContext     = _pContext;
       pstInfo->zName        = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : orxSTRING_EMPTY;
