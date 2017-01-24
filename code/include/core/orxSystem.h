@@ -146,7 +146,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionString();
 /** Gets orx version literal (compiled), including build number
  * @return Compiled version literal
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionString();
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionFullString();
 
 /** Gets orx version absolute numeric value (compiled)
  * @return Absolute numeric value of compiled version
