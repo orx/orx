@@ -5,6 +5,7 @@ var searchData=
   ['_5f_5forxplugin_5f_5f',['__orxPLUGIN__',['../group___orx.html#gad1302f124cc2f4152901bfd9ea361895',1,'orxPluginAPI.h']]],
   ['_5f_5forxversion_5f_5f',['__orxVERSION__',['../group__orx_version.html#ga1a299d3ef2b9a1a12ab5e59291bfd275',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fbuild_5f_5f',['__orxVERSION_BUILD__',['../group__orx_version.html#ga2c1f9dd5f9b8ae99e9849e71327b66ea',1,'orxVersion.h']]],
+  ['_5f_5forxversion_5ffull_5fstring_5f_5f',['__orxVERSION_FULL_STRING__',['../group__orx_version.html#gab20e1bde54e44c8064e456d2e65f506f',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fmajor_5f_5f',['__orxVERSION_MAJOR__',['../group__orx_version.html#ga0a021f07cec12059367678af1c84f1ce',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fmask_5fbuild_5f_5f',['__orxVERSION_MASK_BUILD__',['../group__orx_version.html#ga70c7e0a0676080a6b1078f699f259445',1,'orxVersion.h']]],
   ['_5f_5forxversion_5fmask_5fmajor_5f_5f',['__orxVERSION_MASK_MAJOR__',['../group__orx_version.html#gadd9831eae921aac89149fc4b986f2e3c',1,'orxVersion.h']]],

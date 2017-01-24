@@ -8,6 +8,7 @@ var group__orx_version =
     ] ],
     [ "__orxVERSION__", "group__orx_version.html#ga1a299d3ef2b9a1a12ab5e59291bfd275", null ],
     [ "__orxVERSION_BUILD__", "group__orx_version.html#ga2c1f9dd5f9b8ae99e9849e71327b66ea", null ],
+    [ "__orxVERSION_FULL_STRING__", "group__orx_version.html#gab20e1bde54e44c8064e456d2e65f506f", null ],
     [ "__orxVERSION_MAJOR__", "group__orx_version.html#ga0a021f07cec12059367678af1c84f1ce", null ],
     [ "__orxVERSION_MASK_BUILD__", "group__orx_version.html#ga70c7e0a0676080a6b1078f699f259445", null ],
     [ "__orxVERSION_MASK_MAJOR__", "group__orx_version.html#gadd9831eae921aac89149fc4b986f2e3c", null ],
