@@ -388,7 +388,7 @@ orxVERSION *orxFASTCALL orxSystem_GetVersion(orxVERSION *_pstVersion)
   return _pstVersion;
 }
 
-/** Gets orx version literal (compiled)
+/** Gets orx version literal (compiled), excluding build number
  * @return Compiled version literal
  */
 const orxSTRING orxFASTCALL orxSystem_GetVersionString()
@@ -396,7 +396,21 @@ const orxSTRING orxFASTCALL orxSystem_GetVersionString()
   const orxSTRING zResult;
 
   /* Updates result */
-  zResult = __orxVERSION_STRING__;
+  zResult = __orxVERSION_FULL_STRING__;
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets orx version literal (compiled), including build number
+ * @return Compiled version literal
+ */
+const orxSTRING orxFASTCALL orxSystem_GetVersionFullString()
+{
+  const orxSTRING zResult;
+
+  /* Updates result */
+  zResult = __orxVERSION_FULL_STRING__;
 
   /* Done! */
   return zResult;

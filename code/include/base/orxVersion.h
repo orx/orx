@@ -68,6 +68,7 @@
 #endif /* __orxVERSION_BUILD__ */
 
 #define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_RELEASE__)
+#define __orxVERSION_FULL_STRING__  orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "." orxSTRINGIFY(__orxVERSION_BUILD__) "-" orxSTRINGIFY(__orxVERSION_RELEASE__)
 
 #define __orxVERSION_MASK_MAJOR__   0xFF000000
 #define __orxVERSION_SHIFT_MAJOR__  24

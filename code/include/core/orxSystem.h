@@ -138,7 +138,12 @@ extern orxDLLAPI void orxFASTCALL             orxSystem_Delay(orxFLOAT _fSeconds
  */
 extern orxDLLAPI orxVERSION *orxFASTCALL      orxSystem_GetVersion(orxVERSION *_pstVersion);
 
-/** Gets orx version literal (compiled)
+/** Gets orx version literal (compiled), excluding build number
+ * @return Compiled version literal
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionString();
+
+/** Gets orx version literal (compiled), including build number
  * @return Compiled version literal
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionString();

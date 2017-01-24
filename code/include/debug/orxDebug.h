@@ -185,7 +185,7 @@ do                                                                              
     orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_BLINK_OFF " than the version used when compiling this program [" \
     orxANSI_KZ_COLOR_FG_GREEN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]."                                               \
     orxANSI_KZ_COLOR_FG_RED orxANSI_KZ_COLOR_BLINK_ON " Problems will likely ensue!",                             \
-    orxSystem_GetVersionString(), __orxVERSION_STRING__);                                                         \
+    orxSystem_GetVersionFullString(), __orxVERSION_FULL_STRING__);                                                \
   }                                                                                                               \
   else if(orxSystem_GetVersionNumeric() > __orxVERSION__)                                                         \
   {                                                                                                               \
@@ -194,7 +194,7 @@ do                                                                              
     orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_BLINK_OFF " than the version used when compiling this program [" \
     orxANSI_KZ_COLOR_FG_GREEN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]."                                               \
     orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_BLINK_ON " Problems may arise due to possible incompatibilities!",\
-    orxSystem_GetVersionString(), __orxVERSION_STRING__);                                                         \
+    orxSystem_GetVersionFullString(), __orxVERSION_FULL_STRING__);                                                \
   }                                                                                                               \
   _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                          \
 }                                                                                                                 \
