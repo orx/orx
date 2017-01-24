@@ -354,15 +354,15 @@ orxSTATUS orxFASTCALL orxThread_Init()
 
 #endif /* __orxWINDOWS__ */
 
+      /* Waits for worker semaphore */
+      orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
+
       /* Creates worker thread */
       sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxTHREAD_KZ_THREAD_NAME_WORKER, orxNULL);
 
       /* Success? */
       if(sstThread.u32WorkerID != orxU32_UNDEFINED)
       {
-        /* Waits for worker semaphore */
-        orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
-
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -1041,7 +1041,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
     volatile orxTHREAD_TASK  *pstTask;
     orxU32                    u32NextTaskIndex;
 
-    /* Waits for semaphore */
+    /* Waits for task semaphore */
     orxThread_WaitSemaphore(sstThread.pstTaskSemaphore);
 
     /* Gets next task index */
@@ -1070,7 +1070,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
     orxMEMORY_BARRIER();
     sstThread.u32TaskInIndex = u32NextTaskIndex;
 
-    /* Signals semaphore */
+    /* Signals task semaphore */
     orxThread_SignalSemaphore(sstThread.pstTaskSemaphore);
 
     /* Signals worker semaphore */
