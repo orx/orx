@@ -205,7 +205,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     zParamName = orxConfig_GetListString(orxSHADER_KZ_CONFIG_PARAM_LIST, i);
 
     /* Updates list status */
-    bIsList = ((orxConfig_IsList(zParamName) != orxFALSE) && (orxConfig_IsInheritedValue(zParamName) == orxFALSE));
+    bIsList = ((orxConfig_IsList(zParamName) != orxFALSE) && (orxConfig_IsLocallyInheritedValue(zParamName) == orxFALSE));
 
     /* Valid? */
     if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
