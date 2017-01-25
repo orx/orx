@@ -2303,6 +2303,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCustomMesh(const orxBITMAP *_pstBitmap
   orxASSERT(_u32VertexNumber > 2);
   orxASSERT(_astVertexList != orxNULL);
 
+  /* Clear the buffer anyway because we're going to use custom draw mode */
+  orxDisplay_GLFW_DrawArrays();
+
   /* Gets bitmap to use */
   pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
 
@@ -2321,37 +2324,31 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCustomMesh(const orxBITMAP *_pstBitmap
   fXCoef = pstBitmap->fRecRealWidth * fWidth;
   fYCoef = pstBitmap->fRecRealHeight * fHeight;
 
-  /* Clear the buffer anyway because we're going to use custom draw mode */
-  orxDisplay_GLFW_DrawArrays();
-
   /* For all vertices */
   for (i = 0; i < u32VertexNumber; i++)
-      {
-      /* Copies position */
-      sstDisplay.astVertexList[i].fX = _astVertexList[i].fX;
-      sstDisplay.astVertexList[i].fY = _astVertexList[i].fY;
+  {
+    /* Copies position */
+    sstDisplay.astVertexList[i].fX = _astVertexList[i].fX;
+    sstDisplay.astVertexList[i].fY = _astVertexList[i].fY;
 
-//       /* Updates UV */
-//       sstDisplay.astVertexList[i].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-//       sstDisplay.astVertexList[i].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
-      /* Updates UV */
-      sstDisplay.astVertexList[i].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-      sstDisplay.astVertexList[i].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
+    /* Updates UV */
+    sstDisplay.astVertexList[i].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
+    sstDisplay.astVertexList[i].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
 
-      /* Copies color */
-      sstDisplay.astVertexList[i].stRGBA = _astVertexList[i].stRGBA;
-      }
-
-  /* Updates index */
-  sstDisplay.s32BufferIndex += i;
+    /* Copies color */
+    sstDisplay.astVertexList[i].stRGBA = _astVertexList[i].stRGBA;
+  }
 
   /* Has data? */
   if (u32VertexNumber > 0)
-      {
-      /* Draws arrays */
-      glDrawElements((GLenum)_eDrawMode, (GLsizei)_u32ElementCount, GL_UNSIGNED_SHORT, _au16IndexList);
-      glASSERT();
-      }
+  {
+    /* Draws arrays */
+    glDrawElements((GLenum)_eDrawMode, (GLsizei)_u32ElementCount, GL_UNSIGNED_SHORT, _au16IndexList);
+    glASSERT();
+  }
+
+  /* Clears buffer index */
+  sstDisplay.s32BufferIndex = 0;
 
   /* Done! */
   return eResult;
