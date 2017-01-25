@@ -2291,6 +2291,72 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   return eResult;
 }
 
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCustomMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxDISPLAY_DRAW_MODE _eDrawMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList, const orxU16 *_au16IndexList, orxU32 _u32ElementCount)
+{
+  const orxBITMAP  *pstBitmap;
+  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef;
+  orxU32            i, u32VertexNumber = _u32VertexNumber;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_u32VertexNumber > 2);
+  orxASSERT(_astVertexList != orxNULL);
+
+  /* Gets bitmap to use */
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
+
+  /* Prepares bitmap for drawing */
+  orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
+
+  /* Gets bitmap working size */
+  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
+  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
+
+  /* Gets top-left corner  */
+  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
+  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
+
+  /* Gets X & Y coefs */
+  fXCoef = pstBitmap->fRecRealWidth * fWidth;
+  fYCoef = pstBitmap->fRecRealHeight * fHeight;
+
+  /* Clear the buffer anyway because we're going to use custom draw mode */
+  orxDisplay_GLFW_DrawArrays();
+
+  /* For all vertices */
+  for (i = 0; i < u32VertexNumber; i++)
+      {
+      /* Copies position */
+      sstDisplay.astVertexList[i].fX = _astVertexList[i].fX;
+      sstDisplay.astVertexList[i].fY = _astVertexList[i].fY;
+
+//       /* Updates UV */
+//       sstDisplay.astVertexList[i].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
+//       sstDisplay.astVertexList[i].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
+      /* Updates UV */
+      sstDisplay.astVertexList[i].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
+      sstDisplay.astVertexList[i].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
+
+      /* Copies color */
+      sstDisplay.astVertexList[i].stRGBA = _astVertexList[i].stRGBA;
+      }
+
+  /* Updates index */
+  sstDisplay.s32BufferIndex += i;
+
+  /* Has data? */
+  if (u32VertexNumber > 0)
+      {
+      /* Draws arrays */
+      glDrawElements((GLenum)_eDrawMode, (GLsizei)_u32ElementCount, GL_UNSIGNED_SHORT, _au16IndexList);
+      glASSERT();
+      }
+
+  /* Done! */
+  return eResult;
+}
+
 void orxFASTCALL orxDisplay_GLFW_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   /* Checks */
@@ -5497,6 +5563,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolygon, DISPLAY, DRAW_POLY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawOBox, DISPLAY, DRAW_OBOX);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawMesh, DISPLAY, DRAW_MESH);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCustomMesh, DISPLAY, DRAW_CUSTOM_MESH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteShader, DISPLAY, DELETE_SHADER);

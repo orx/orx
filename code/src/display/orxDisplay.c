@@ -156,6 +156,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawPolygon, orxSTATUS, const orxVECTO
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawCircle, orxSTATUS, const orxVECTOR *, orxFLOAT, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawMesh, orxSTATUS, const orxBITMAP *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE, orxU32, const orxDISPLAY_VERTEX *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawCustomMesh, orxSTATUS, const orxBITMAP *, orxDISPLAY_SMOOTHING , orxDISPLAY_BLEND_MODE , orxDISPLAY_DRAW_MODE , orxU32 , const orxDISPLAY_VERTEX *, const orxU16 *, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING *, orxU32, const orxLINKLIST *, orxBOOL);
@@ -223,6 +224,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_POLYGON, orxDisplay_DrawPolygon)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_CIRCLE, orxDisplay_DrawCircle)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_OBOX, orxDisplay_DrawOBox)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_MESH, orxDisplay_DrawMesh)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_CUSTOM_MESH, orxDisplay_DrawCustomMesh)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, HAS_SHADER_SUPPORT, orxDisplay_HasShaderSupport)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_SHADER, orxDisplay_CreateShader)
@@ -298,6 +300,11 @@ orxSTATUS orxFASTCALL orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stCol
 orxSTATUS orxFASTCALL orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexCount, const orxDISPLAY_VERTEX *_astVertexList)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawMesh)(_pstBitmap, _eSmoothing, _eBlendMode, _u32VertexCount, _astVertexList);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_DrawCustomMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxDISPLAY_DRAW_MODE _eDrawMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList, const orxU16 *_au16IndexList, orxU32 _u32ElementCount)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawCustomMesh)(_pstBitmap, _eSmoothing, _eBlendMode, _eDrawMode, _u32VertexNumber, _astVertexList, _au16IndexList, _u32ElementCount);
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)

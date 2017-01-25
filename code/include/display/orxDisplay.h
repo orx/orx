@@ -161,6 +161,38 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
 
 } orxDISPLAY_BLEND_MODE;
 
+/** Drawing mode enum
+*/
+typedef enum __orxDISPLAY_DRAW_MODE_t
+{
+  orxDISPLAY_DRAW_MODE_POINTS = 0,
+  orxDISPLAY_DRAW_MODE_LINES,
+  orxDISPLAY_DRAW_MODE_LINE_LOOP,
+  orxDISPLAY_DRAW_MODE_LINE_STRIP,
+  orxDISPLAY_DRAW_MODE_TRIANGLES,
+  orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP,
+  orxDISPLAY_DRAW_MODE_TRIANGLE_FAN,
+  orxDISPLAY_DRAW_MODE_QUADS,
+  orxDISPLAY_DRAW_MODE_QUAD_STRIP,
+  orxDISPLAY_DRAW_MODE_POLYGON,
+ 
+  orxDISPLAY_DRAW_MODE_NONE = orxENUM_NONE
+
+} orxDISPLAY_DRAW_MODE;
+
+/** Drawing mode enum
+*/
+typedef enum __orxDISPLAY_INDEX_TYPE_t
+{
+  orxDISPLAY_INDEX_TYPE_U8 = 0,
+  orxDISPLAY_INDEX_TYPE_U16,
+  orxDISPLAY_INDEX_TYPE_U32,
+
+  orxDISPLAY_INDEX_TYPE_NONE = orxENUM_NONE
+
+} orxDISPLAY_INDEX_TYPE;
+
+
 /** Color structure
  */
 typedef struct __orxCOLOR_t
@@ -1049,6 +1081,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const 
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList);
+
+/** Draws a custom mash primitive
+* @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
+* @param[in]   _eSmoothing                           Bitmap smoothing type
+* @param[in]   _eBlendMode                           Blend mode
+* @param[in]   _eDrawMode                            Specifies what kind of primitives to render.
+* @param[in]   _u32VertexNumber                      Number of vertices in the mesh
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCustomMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxDISPLAY_DRAW_MODE _eDrawMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList, const orxU16 *_au16IndexList, orxU32 _u32ElementCount);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE
