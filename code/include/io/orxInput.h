@@ -233,7 +233,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetMultiplier(const o
 
 /** Sets input multiplier, if not set the default global multiplier will be used
  * @param[in] _zInputName       Concerned input name
- * @param[in] _fThreshold       Multiplier value
+ * @param[in] _fMultiplier      Multiplier value, can be negative
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetMultiplier(const orxSTRING _zInputName, orxFLOAT _fMultiplier);
