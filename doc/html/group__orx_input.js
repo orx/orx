@@ -47,6 +47,8 @@ var group__orx_input =
     [ "orxInput_GetBoundInput", "group__orx_input.html#ga7a64a4680ff3de5ca7b23f3e9012c17c", null ],
     [ "orxInput_GetBoundInputCounter", "group__orx_input.html#ga18c532bd6b587102950a69bf04bdc12c", null ],
     [ "orxInput_GetCurrentSet", "group__orx_input.html#gabf638c2d7b0cf7488050b390caf26b21", null ],
+    [ "orxInput_GetMultiplier", "group__orx_input.html#gad5ce976ebe2764d10279161e4f92636d", null ],
+    [ "orxInput_GetThreshold", "group__orx_input.html#ga7d736a44b91fcc908e506a3f9af813ac", null ],
     [ "orxInput_GetValue", "group__orx_input.html#gadaa46efcffa6a0267862228ca01f9131", null ],
     [ "orxInput_HasNewStatus", "group__orx_input.html#gac5afa246a389c779ac3c3a0d6635e363", null ],
     [ "orxInput_Init", "group__orx_input.html#ga6ccb0b601cbaa9dad16033ff7f242555", null ],
@@ -58,7 +60,9 @@ var group__orx_input =
     [ "orxInput_Save", "group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0", null ],
     [ "orxInput_SelectSet", "group__orx_input.html#gaae225101ab66ae99f8416fb5b12dbd0b", null ],
     [ "orxInput_SetCombineMode", "group__orx_input.html#ga11e483a6951d7c96b51db668cc148e04", null ],
+    [ "orxInput_SetMultiplier", "group__orx_input.html#gafe06c1f8cb65877896890e7427cdc5b4", null ],
     [ "orxInput_SetPermanentValue", "group__orx_input.html#ga42393f5dfe8922974e5ecf198abde788", null ],
+    [ "orxInput_SetThreshold", "group__orx_input.html#ga0d5ce81503466fb9057e719bd9a4c059", null ],
     [ "orxInput_Setup", "group__orx_input.html#ga1095ad88059cd0d841a28ad60efc0a22", null ],
     [ "orxInput_SetValue", "group__orx_input.html#gab2b159105a935ccb1547119a07822f97", null ],
     [ "orxInput_Unbind", "group__orx_input.html#gab92e0cf7b1f98c183d46a05887de1c2c", null ]
