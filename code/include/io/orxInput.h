@@ -212,6 +212,33 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetPermanentValue(con
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_ResetValue(const orxSTRING _zInputName);
 
 
+/** Gets input threshold
+ * @param[in] _zInputName       Concerned input name
+ * @return Input threshold
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetThreshold(const orxSTRING _zInputName);
+
+/** Sets input threshold, if not set the default global threshold will be used
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fThreshold       Threshold value (between 0.0f and 1.0f)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOAT _fThreshold);
+
+/** Gets input multiplier
+ * @param[in] _zInputName       Concerned input name
+ * @return Input multiplier
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetMultiplier(const orxSTRING _zInputName);
+
+/** Sets input multiplier, if not set the default global multiplier will be used
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fThreshold       Multiplier value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetMultiplier(const orxSTRING _zInputName, orxFLOAT _fMultiplier);
+
+
 /** Sets an input combine mode
  * @param[in] _zName            Concerned input name
  * @param[in] _bCombine         If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is

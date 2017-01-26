@@ -64,12 +64,14 @@
  */
 #define orxINPUT_KZ_CONFIG_SECTION                    "Input"     /**< Input set name */
 #define orxINPUT_KZ_CONFIG_SET_LIST                   "SetList"   /**< Input set list */
-#define orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD         "JoystickThreshold" /**< Input joystick threshold */
-#define orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER        "JoystickMultiplier" /**< Input joystick multiplier */
+#define orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD          "DefaultThreshold" /**< Input default threshold */
+#define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
 #define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList" /**< Combine input list */
 
 #define orxINPUT_KZ_INPUT_EXTERNAL                    "EXTERNAL"  /**< External input */
 
+#define orxINPUT_KZ_THRESHOLD_FORMAT                  "%sThreshold" /**< Threshold format */
+#define orxINPUT_KZ_MULTIPLIER_FORMAT                 "%sMultiplier" /**< Multiplier format */
 
 #define orxINPUT_KU32_SET_BANK_SIZE                   8
 #define orxINPUT_KU32_ENTRY_BANK_SIZE                 32
@@ -99,11 +101,12 @@
 
 #define orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING 4           /**< Last active binding shift */
 
-#define orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD        orx2F(0.15f)/**< Default joystick threshold */
+#define orxINPUT_KF_DEFAULT_THRESHOLD                 orx2F(0.15f)/**< Default threshold */
+#define orxINPUT_KF_DEFAULT_MULTIPLIER                orxFLOAT_1  /**< Default multiplier */
 
-#define orxINPUT_KU32_RESULT_BUFFER_SIZE              64
+#define orxINPUT_KU32_RESULT_BUFFER_SIZE              64          /**< Result buffer size */
 
-#define orxINPUT_KZ_MODE_FORMAT                       "%c%s"
+#define orxINPUT_KZ_MODE_FORMAT                       "%c%s"      /**< Mode format */
 
 
 /***************************************************************************
@@ -126,12 +129,14 @@ typedef struct __orxINPUT_BINDING_t
 typedef struct __orxINPUT_ENTRY_t
 {
   orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
-  orxU32            u32ID;                                        /**< Name ID (CRC) : 16 */
-  const orxSTRING   zName;                                        /**< Entry name : 20 */
+  const orxSTRING   zName;                                        /**< Entry name : 16 */
+  orxU32            u32ID;                                        /**< Name ID (CRC) : 20 */
   orxU32            u32Status;                                    /**< Entry status : 24 */
-  orxFLOAT          fExternalValue;                               /**< External value : 28 */
+  orxFLOAT          fThreshold;                                   /**< Threshold : 28 */
+  orxFLOAT          fMultiplier;                                  /**< Multiplier: 32 */
+  orxFLOAT          fExternalValue;                               /**< External value : 36 */
 
-  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 108 */
+  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 116 */
 
 } orxINPUT_ENTRY;
 
@@ -154,8 +159,8 @@ typedef struct __orxINPUT_STATIC_t
 {
   orxBANK      *pstSetBank;                                       /**< Set bank */
   orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
-  orxFLOAT      fJoystickAxisThreshold;                           /**< Joystick axis threshold */
-  orxFLOAT      fJoystickAxisMultiplier;                          /**< Joystick axis multiplier */
+  orxFLOAT      fDefaultThreshold;                                /**< Default threshold */
+  orxFLOAT      fDefaultMultiplier;                               /**< Default multiplier */
   orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
@@ -351,6 +356,29 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasNewStatus);
 }
 
+static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThreshold, orxFLOAT _fMultiplier)
+{
+  orxFLOAT fAbs, fResult = orxFLOAT_0;
+
+  /* Gets absolute value */
+  fAbs = orxMath_Abs(_fValue);
+
+  /* Above threshold? */
+  if(fAbs > _fThreshold)
+  {
+    orxFLOAT fScale;
+
+    /* Computes scale */
+    fScale = _fMultiplier / (orxFLOAT_1 - _fThreshold);
+
+    /* Updates result */
+    fResult = (_fValue < orxFLOAT_0) ? fScale * (_fThreshold - fAbs) : fScale * (fAbs - _fThreshold);
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxFLOAT fResult = orxFLOAT_0;
@@ -465,6 +493,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
     {
       orxU32  eType;
       orxU32  i, u32Number;
+      orxCHAR acBuffer[128] = {};
 
       /* Updates result */
       pstResult = sstInput.pstCurrentSet;
@@ -501,7 +530,20 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
                 if(zInput != orxSTRING_EMPTY)
                 {
                   /* Binds it */
-                  orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
+                  if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode) != orxSTATUS_FAILURE)
+                  {
+                    /* Gets threshold name */
+                    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
+
+                    /* Stores threshold */
+                    orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.fDefaultThreshold);
+
+                    /* Gets multiplier name */
+                    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
+
+                    /* Stores multiplier */
+                    orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.fDefaultMultiplier);
+                  }
                 }
               }
             }
@@ -606,18 +648,11 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
           }
         }
 
-        /* Is a joystick axis? */
-        if(pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS)
-        {
-          /* Updates value with multiplier */
-          pstEntry->astBindingList[i].fValue *= sstInput.fJoystickAxisMultiplier;
-        }
-
         /* Gets test value */
         fTestValue = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL)) ? pstEntry->fExternalValue : pstEntry->astBindingList[i].fValue;
 
         /* Active? */
-        if(orxMath_Abs(fTestValue) > ((pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0))
+        if(orxMath_Abs(fTestValue) > pstEntry->fThreshold)
         {
           /* First one? */
           if(bStatusSet == orxFALSE)
@@ -683,7 +718,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
             stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
-            stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
+            stPayload.afValue[i]  = orxInput_ScaleValue(pstEntry->astBindingList[i].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);
           }
 
           /* Updates status */
@@ -708,7 +743,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             stPayload.aeType[0]   = pstEntry->astBindingList[u32ActiveIndex].eType;
             stPayload.aeID[0]     = pstEntry->astBindingList[u32ActiveIndex].eID;
             stPayload.aeMode[0]   = pstEntry->astBindingList[u32ActiveIndex].eMode;
-            stPayload.afValue[0]  = pstEntry->astBindingList[u32ActiveIndex].fValue;
+            stPayload.afValue[0]  = orxInput_ScaleValue(pstEntry->astBindingList[u32ActiveIndex].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);
           }
 
           /* For all unused bindings */
@@ -755,7 +790,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
             stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
-            stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
+            stPayload.afValue[i]  = orxInput_ScaleValue(pstEntry->astBindingList[i].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);;
           }
         }
         else
@@ -785,7 +820,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             stPayload.aeType[0]   = pstEntry->astBindingList[u32LastActiveIndex].eType;
             stPayload.aeID[0]     = pstEntry->astBindingList[u32LastActiveIndex].eID;
             stPayload.aeMode[0]   = pstEntry->astBindingList[u32LastActiveIndex].eMode;
-            stPayload.afValue[0]  = pstEntry->astBindingList[u32LastActiveIndex].fValue;
+            stPayload.afValue[0]  = orxInput_ScaleValue(pstEntry->astBindingList[u32LastActiveIndex].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);
           }
 
           /* For all unused bindings */
@@ -931,6 +966,8 @@ static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryNam
       pstResult->u32ID      = orxString_GetID(_zEntryName);
       pstResult->zName      = orxString_GetFromID(pstResult->u32ID);
       pstResult->u32Status  = orxINPUT_KU32_ENTRY_FLAG_NONE;
+      pstResult->fThreshold = orxINPUT_KF_DEFAULT_THRESHOLD;
+      pstResult->fMultiplier= orxINPUT_KF_DEFAULT_MULTIPLIER;
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
         pstResult->astBindingList[i].eType  = orxINPUT_TYPE_NONE;
@@ -1263,15 +1300,11 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
     /* Stores current set */
     pstPreviousSet = sstInput.pstCurrentSet;
 
-    /* Gets joystick threshold */
-    sstInput.fJoystickAxisThreshold = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) != orxFALSE) ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD) : orxINPUT_KF_DEFAULT_JOYSTICK_THRESHOLD;
+    /* Gets default threshold */
+    sstInput.fDefaultThreshold = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD) != orxFALSE) ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD) : orxINPUT_KF_DEFAULT_THRESHOLD;
 
-    /* Gets joystick multiplier */
-    sstInput.fJoystickAxisMultiplier = orxConfig_GetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER);
-    if(sstInput.fJoystickAxisMultiplier <= orxFLOAT_0)
-    {
-      sstInput.fJoystickAxisMultiplier = orxFLOAT_1;
-    }
+    /* Gets default multiplier */
+    sstInput.fDefaultMultiplier = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER) != orxFALSE) ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER) : orxINPUT_KF_DEFAULT_MULTIPLIER;
 
     /* Has list set */
     if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_SET_LIST) != orxFALSE)
@@ -1417,11 +1450,11 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     /* Adds set list to config */
     orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
 
-    /* Adds joystick threshold */
-    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
+    /* Adds default threshold */
+    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD, sstInput.fDefaultThreshold);
 
-    /* Adds joystick multiplier */
-    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_MULTIPLIER, sstInput.fJoystickAxisMultiplier);
+    /* Adds default multiplier */
+    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER, sstInput.fDefaultMultiplier);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -1779,7 +1812,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
           {
             /* Valid & active? */
             if((pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
-            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > ((pstEntry->astBindingList[i].eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)))
+            && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->fThreshold))
             {
               /* Updates result */
               fResult = pstEntry->astBindingList[i].fValue;
@@ -1787,6 +1820,9 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
             }
           }
         }
+
+        /* Updates result */
+        fResult = orxInput_ScaleValue(fResult, pstEntry->fThreshold, pstEntry->fMultiplier);
 
         break;
       }
@@ -1955,6 +1991,179 @@ orxSTATUS orxFASTCALL orxInput_ResetValue(const orxSTRING _zInputName)
 
         /* Updates its status */
         orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_PERMANENT);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets input threshold
+ * @param[in] _zInputName       Concerned input name
+ * @return Input threshold
+ */
+orxFLOAT orxFASTCALL orxInput_GetThreshold(const orxSTRING _zInputName)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        fResult = pstEntry->fThreshold;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets input threshold, if not set the default global threshold will be used
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fThreshold       Threshold value (between 0.0f and 1.0f)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOAT _fThreshold)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+  orxASSERT(_fThreshold >= orxFLOAT_0);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Stores threshold */
+        pstEntry->fThreshold = _fThreshold;
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets input multiplier
+ * @param[in] _zInputName       Concerned input name
+ * @return Input multiplier
+ */
+orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        fResult = pstEntry->fMultiplier;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets input multiplier, if not set the default global multiplier will be used
+ * @param[in] _zInputName       Concerned input name
+ * @param[in] _fThreshold       Multiplier value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_SetMultiplier(const orxSTRING _zInputName, orxFLOAT _fMultiplier)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Stores multiplier */
+        pstEntry->fMultiplier = _fMultiplier;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -2736,7 +2945,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
         fValue = orxInput_GetBindingValue((orxINPUT_TYPE)eType, eID);
 
         /* Updates active status */
-        bActive = (orxMath_Abs(fValue) > ((eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0)) ? orxTRUE : orxFALSE;
+        bActive = (orxMath_Abs(fValue) > sstInput.fDefaultThreshold) ? orxTRUE : orxFALSE;
 
         /* Active? */
         if(bActive != orxFALSE)
