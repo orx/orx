@@ -396,7 +396,7 @@ const orxSTRING orxFASTCALL orxSystem_GetVersionString()
   const orxSTRING zResult;
 
   /* Updates result */
-  zResult = __orxVERSION_FULL_STRING__;
+  zResult = __orxVERSION_STRING__;
 
   /* Done! */
   return zResult;
