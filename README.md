@@ -2,7 +2,7 @@
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva/branch/master?svg=true)](https://ci.appveyor.com/project/iarwain/orx/branch/master)
 
-Orx - Portable Game Engine (Version 1.8rc0)
+Orx - Portable Game Engine (Version 1.8)
 ========================================
 
 
@@ -21,7 +21,7 @@ Summary
 [Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.8rc0. If you find any bugs,
+This is a release candidate for orx v1.8. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
@@ -122,34 +122,34 @@ Packages
 You can download all the packages from [sourceforge](http://orx.sf.net) or [bitbucket](https://bitbucket.org/orx/orx/downloads).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.8-rc0.zip`                   : orx's API doxygen documentation
-- `orx-src-1.8-rc0.zip`                   : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.8-rc0.tar.bz2`       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.8-rc0.tar.bz2`       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.8-rc0.zip`               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-1.8-rc0.zip`             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- `orx-dev-vs2013-32-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- `orx-dev-vs2013-64-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2015-32-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
-- `orx-dev-vs2015-64-1.8-rc0.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.8-rc0.zip`              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.8-rc0.zip`           : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.8-rc0.zip`    : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.8-rc0.tar.bz2`  : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.8-rc0.tar.bz2`  : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.8-rc0.zip`          : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-1.8-rc0.zip`        : tutorials for Windows (mingw)
-- `orx-tutorial-vs2013-32-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2013, x86)
-- `orx-tutorial-vs2013-64-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2013, x86-64)
-- `orx-tutorial-vs2015-32-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2015, x86)
-- `orx-tutorial-vs2015-64-1.8-rc0.zip`    : tutorials for Windows (Visual Studio 2015, x86-64)
+- `orx-doc-1.8.zip`                   : orx's API doxygen documentation
+- `orx-src-1.8.zip`                   : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.8.tar.bz2`       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.8.tar.bz2`       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.8.zip`               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-1.8.zip`             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
+- `orx-dev-vs2013-32-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
+- `orx-dev-vs2013-64-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2015-32-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
+- `orx-dev-vs2015-64-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.8.zip`              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.8.zip`           : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.8.zip`    : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.8.tar.bz2`  : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.8.tar.bz2`  : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.8.zip`          : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-1.8.zip`        : tutorials for Windows (mingw)
+- `orx-tutorial-vs2013-32-1.8.zip`    : tutorials for Windows (Visual Studio 2013, x86)
+- `orx-tutorial-vs2013-64-1.8.zip`    : tutorials for Windows (Visual Studio 2013, x86-64)
+- `orx-tutorial-vs2015-32-1.8.zip`    : tutorials for Windows (Visual Studio 2015, x86)
+- `orx-tutorial-vs2015-64-1.8.zip`    : tutorials for Windows (Visual Studio 2015, x86-64)
 
 All the `*-dev-*` packages above include:
 
 - orx release/profile/debug libraries used for linking
 - runtime release/profile/debug orx libraries
 - headers to include at compile time
-- template files exposing wich properties can be accessed using the config system (for user reference only, not needed by orx)
+- template files exposing which properties can be accessed using the config system (for user reference only, not needed by orx)
 
 All the `*-tutorial-*` packages above include:
 

@@ -1,6 +1,25 @@
 Orx - Portable Game Engine  (Version 1.8rc0)
 =========================================
 
+orx 1.8
+-----
+* IMPORTANT: Config list shader parameters will now work with inheritance
+* IMPORTANT: Input config property JoystickThreshold/JoystickMultiplier have been replaced by DefaultThreshold/DefaultMultipler (which are applied to *all* inputs)
+* IMPORTANT: Threshold/Multiplier can now be applied on a per-input basis, both in code and config
+* IMPORTANT: External input values are now subject to threshold/multiplier
+* IMPORTANT: There's now a proper input value scaling continuously mapping from [threshold; 1.0] to [0.0; multiplier]
+
+* Fixed a very low repro rate deadlock at init on Mac (and possibly some Linux)
+* Fixed a memory corruption when loading WEBP images with debug/profile builds
+* Made sure threads are properly registered before being executed -> fixes a profiler marker assert that would happen sometimes on Mac
+* Better profile marker watermark computation (would stop working properly after a bit over 4h of continuous runtime)
+* Fixed orxObject_Attach() for objects with bodies
+* Added orxConfig_IsLocallyInheritedValue() to tell if a value is locally inherited (ie. Value = @...)
+* Logs are not sent to Visual Studio debug windows when the debugger is attached
+* Added orxSystem_GetVersionFullString()/ __orxVERSION_FULL_STRING__ that contains the build number
+* Simplified tutorial 04_Anim
+* Misc fixes and additions
+
 orx 1.8rc0
 -----
 * IMPORTANT: New animation declaration system has been added, both simpler and more powerful, older system is still working but is deprecated!
