@@ -233,17 +233,30 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
  */
 static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
-  orxBOOL bShort = orxFALSE;
+  orxVERSION  stVersion;
+  orxBOOL     bShort = orxFALSE;
 
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Gets version */
+  orxSystem_GetVersion(&stVersion);
 
   /* Short version? */
   if((_u32NbParam > 1)
   && (orxString_ToBool(_azParams[1], &bShort, orxNULL) != orxSTATUS_FAILURE)
   && (bShort != orxFALSE))
   {
-    /* Displays the current version */
-    orxPARAM_LOG("%s", orxSystem_GetVersionString());
+    /* Stable? */
+    if(orxString_ICompare(stVersion.zRelease, "stable") == 0)
+    {
+      /* Displays the short current version */
+      orxPARAM_LOG("%u.%u", stVersion.u32Major, stVersion.u32Minor);
+    }
+    else
+    {
+      /* Displays the full current version */
+      orxPARAM_LOG("%s", orxSystem_GetVersionString());
+    }
   }
   else
   {
