@@ -1181,7 +1181,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointe
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
-  orxASSERT(_fFrequency >= orxDOUBLE_0);
+  orxASSERT(_fFrequency >= orxFLOAT_0);
 
   /* Stores frequency */
   _pstAnimPointer->fFrequency = _fFrequency;
