@@ -371,10 +371,10 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
     fModifierValue = _astArgList[2].fValue;
 
     /* Is modifier value valid? */
-    if(fModifierValue > orxFLOAT_0)
+    if(fModifierValue >= orxFLOAT_0)
     {
       /* Capped? */
-      if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
+      if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_CAPPED) == 0) && (fModifierValue != orxFLOAT_0))
       {
         /* Updates modifier value */
         fModifierValue = orxFLOAT_1 / fModifierValue;
@@ -383,7 +383,7 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
         eModifierType = orxCLOCK_MOD_TYPE_MAXED;
       }
       /* Fixed? */
-      else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+      else if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0) && (fModifierValue != orxFLOAT_0))
       {
         /* Updates modifier value */
         fModifierValue = orxFLOAT_1 / fModifierValue;

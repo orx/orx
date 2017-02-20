@@ -8115,7 +8115,7 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Gets object active time, i.e. the amount of time that the object has been alive taking into account.
+/** Gets object active time, i.e. the amount of time that the object has been alive taking into account
  * the object's clock multiplier and object's periods of pause.
  * @param[in]   _pstObject      Concerned object
  * @return      Active time
