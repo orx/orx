@@ -597,13 +597,13 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     /* Is not in block? */
                     if(bInBlock == orxFALSE)
                     {
-                      const orxCHAR *pc;
+                      const orxCHAR *pc = zValue;
 
                       /* For all characters */
-                      for(pc = zValue; *pc != orxCHAR_NULL; pc++)
+                      do
                       {
                         /* Is a white space? */
-                        if(orxCommand_IsWhiteSpace(*pc) != orxFALSE)
+                        if((*pc == orxCHAR_NULL) || (orxCommand_IsWhiteSpace(*pc) != orxFALSE))
                         {
                           /* Has room? */
                           if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
@@ -617,7 +617,11 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                           break;
                         }
-                      }
+
+                        /* Gets next character */
+                        pc++;
+
+                      } while(*pc != orxCHAR_NULL);
                     }
 
                     break;
@@ -698,7 +702,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Valid? */
         if(*pcSrc != orxCHAR_NULL)
         {
-          orxBOOL bInBlock = orxFALSE;
+          orxBOOL bInBlock = orxFALSE, bUseDefault = orxFALSE;
 
           /* Gets arg's beginning */
           zArg = pcSrc;
@@ -710,8 +714,22 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             zArg++;
             pcSrc++;
 
-            /* Updates block status */
-            bInBlock = orxTRUE;
+            /* Is an empty block? */
+            if((*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
+            && (*(pcSrc + 1) != orxCOMMAND_KC_BLOCK_MARKER))
+            {
+              /* Uses default */
+              bUseDefault = orxTRUE;
+
+              /* Updates arg pointer */
+              zArg++;
+              pcSrc++;
+            }
+            else
+            {
+              /* Updates block status */
+              bInBlock = orxTRUE;
+            }
           }
 
           /* Stores its type */
@@ -722,20 +740,33 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
           {
             case orxCOMMAND_VAR_TYPE_NUMERIC:
             {
-              orxVECTOR vValue;
-
-              /* Is a vector */
-              if(orxString_ToVector(zArg, &vValue, &pcSrc) != orxSTATUS_FAILURE)
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
               {
-                /* Stores its value */
-                astArgList[u32ArgNumber].zValue = zArg;
+                /* Replaces block end marker with 0 */
+                pcSrc--;
+                zArg--;
+                *((orxCHAR *)pcSrc) = '0';
 
-                /* Stops */
-                break;
+                /* Fall through */
               }
               else
               {
-                /* Fall through */
+                orxVECTOR vValue;
+
+                /* Is a vector */
+                if(orxString_ToVector(zArg, &vValue, &pcSrc) != orxSTATUS_FAILURE)
+                {
+                  /* Stores its value */
+                  astArgList[u32ArgNumber].zValue = zArg;
+
+                  /* Stops */
+                  break;
+                }
+                else
+                {
+                  /* Fall through */
+                }
               }
             }
 
@@ -788,56 +819,119 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
             case orxCOMMAND_VAR_TYPE_FLOAT:
             {
-              /* Gets its value */
-              eStatus = orxString_ToFloat(zArg, &(astArgList[u32ArgNumber].fValue), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].fValue = orxFLOAT_0;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToFloat(zArg, &(astArgList[u32ArgNumber].fValue), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_S32:
             {
-              /* Gets its value */
-              eStatus = orxString_ToS32(zArg, &(astArgList[u32ArgNumber].s32Value), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].s32Value = 0;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToS32(zArg, &(astArgList[u32ArgNumber].s32Value), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_U32:
             {
-              /* Gets its value */
-              eStatus = orxString_ToU32(zArg, &(astArgList[u32ArgNumber].u32Value), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].u32Value = 0;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToU32(zArg, &(astArgList[u32ArgNumber].u32Value), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_S64:
             {
-              /* Gets its value */
-              eStatus = orxString_ToS64(zArg, &(astArgList[u32ArgNumber].s64Value), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].s64Value = 0;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToS64(zArg, &(astArgList[u32ArgNumber].s64Value), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_U64:
             {
-              /* Gets its value */
-              eStatus = orxString_ToU64(zArg, &(astArgList[u32ArgNumber].u64Value), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].u64Value = 0;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToU64(zArg, &(astArgList[u32ArgNumber].u64Value), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_BOOL:
             {
-              /* Gets its value */
-              eStatus = orxString_ToBool(zArg, &(astArgList[u32ArgNumber].bValue), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                astArgList[u32ArgNumber].bValue = orxFALSE;
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToBool(zArg, &(astArgList[u32ArgNumber].bValue), &pcSrc);
+              }
 
               break;
             }
 
             case orxCOMMAND_VAR_TYPE_VECTOR:
             {
-              /* Gets its value */
-              eStatus = orxString_ToVector(zArg, &(astArgList[u32ArgNumber].vValue), &pcSrc);
+              /* Should use default? */
+              if(bUseDefault != orxFALSE)
+              {
+                /* Uses default value */
+                orxVector_Copy(&(astArgList[u32ArgNumber].vValue), &orxVECTOR_0);
+              }
+              else
+              {
+                /* Gets its value */
+                eStatus = orxString_ToVector(zArg, &(astArgList[u32ArgNumber].vValue), &pcSrc);
+              }
 
               break;
             }
