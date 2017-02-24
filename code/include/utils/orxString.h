@@ -1205,7 +1205,7 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
 /** Convert a string to a boolean
  * @param[in]   _zString        String To convert
  * @param[out]  _pbOutValue     Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the boolean conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToBool(const orxSTRING _zString, orxBOOL *_pbOutValue, const orxSTRING *_pzRemaining)

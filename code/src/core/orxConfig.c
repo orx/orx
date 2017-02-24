@@ -165,10 +165,10 @@ typedef struct __orxCONFIG_VALUE_t
   union
   {
     orxVECTOR           vValue;             /**< Vector value : 24 */
-    orxU32              u32Value;           /**< U32 value : 16 */
-    orxS32              s32Value;           /**< S32 value : 16 */
     orxU64              u64Value;           /**< U64 value : 20 */
     orxS64              s64Value;           /**< S64 value : 20 */
+    orxU32              u32Value;           /**< U32 value : 16 */
+    orxS32              s32Value;           /**< S32 value : 16 */
     orxFLOAT            fValue;             /**< Float value : 16 */
     orxBOOL             bValue;             /**< Bool value : 16 */
   };                                        /**< Union value : 24 */
@@ -176,10 +176,10 @@ typedef struct __orxCONFIG_VALUE_t
   union
   {
     orxVECTOR           vAltValue;          /**< Alternate vector value : 36 */
-    orxU32              u32AltValue;        /**< Alternate U32 value : 28 */
-    orxS32              s32AltValue;        /**< Alternate S32 value : 28 */
     orxU64              u64AltValue;        /**< Alternate U64 value : 32 */
     orxS64              s64AltValue;        /**< Alternate S64 value : 32 */
+    orxU32              u32AltValue;        /**< Alternate U32 value : 28 */
+    orxS32              s32AltValue;        /**< Alternate S32 value : 28 */
     orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
     orxBOOL             bAltValue;          /**< Alternate bool value : 28 */
   };                                        /**< Union value : 36 */
@@ -196,6 +196,8 @@ typedef struct __orxCONFIG_ENTRY_t
   orxU32            u32ID;                  /**< Key ID : 16 */
 
   orxCONFIG_VALUE   stValue;                /**< Entry value : 52 */
+
+  orxU32            u32OriginID;            /**< Origin : 56 */
 
 } orxCONFIG_ENTRY;
 
@@ -287,6 +289,55 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Cleans a value
+ * @param[in] _pstValue         Concerned config value
+ */
+static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
+{
+  /* Not in block mode? */
+  if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
+  {
+    /* Is a list? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Deletes string */
+      orxString_Delete(_pstValue->zValue);
+
+      /* Deletes index table */
+      orxMemory_Free(_pstValue->au32ListIndexTable);
+      _pstValue->au32ListIndexTable = orxNULL;
+
+      /* Cleans list status */
+      _pstValue->u16Flags      &= ~orxCONFIG_VALUE_KU16_FLAG_LIST;
+      _pstValue->u16ListCounter = 1;
+      _pstValue->u16CacheIndex  = 0;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Deletes an entry
+ * @param[in] _pstEntry         Entry to delete
+ */
+static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
+{
+  /* Checks */
+  orxASSERT(_pstEntry != orxNULL);
+
+  /* Deletes value */
+  orxConfig_CleanValue(&(_pstEntry->stValue));
+
+  /* Removes it from list */
+  orxLinkList_Remove(&(_pstEntry->stNode));
+
+  /* Deletes the entry */
+  orxBank_Free(sstConfig.pstEntryBank, _pstEntry);
+
+  return;
+}
+
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
@@ -304,6 +355,32 @@ static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
     /* Is config group? */
     if(pstPayload->u32GroupID == sstConfig.u32ResourceGroupID)
     {
+      orxCONFIG_SECTION *pstSection;
+
+      /* Finds correct entry */
+      for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+          pstSection != orxNULL;
+          pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+      {
+        orxCONFIG_ENTRY *pstEntry, *pstNextEntry;
+
+        /* For all entries */
+        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+            pstEntry != orxNULL;
+            pstEntry = pstNextEntry)
+        {
+          /* Gets next entry */
+          pstNextEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
+
+          /* Should get cleaned? */
+          if(pstEntry->u32OriginID == pstPayload->u32NameID)
+          {
+            /* Deletes it */
+            orxConfig_DeleteEntry(pstEntry);
+          }
+        }
+      }
+
       /* Reloads file */
       orxConfig_Load(orxString_GetFromID(pstPayload->u32NameID));
     }
@@ -446,6 +523,12 @@ static void orxFASTCALL orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue
   _pstValue->u16CacheIndex  = 0;
 }
 
+/** Initializes a value
+ * @param[in] _pstValue         Concerned config value
+ * @param[in] _zValue           Value to use for initialization
+ * @param[in] _bBlockMode       In block mode?
+ * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -595,6 +678,11 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   return eResult;
 }
 
+/** Appends a value to an existing one
+ * @param[in] _pstValue         Concerned config value
+ * @param[in] _zValue           Value to append
+ * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue)
 {
   orxCHAR  *pcOutput;
@@ -766,32 +854,6 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
 
   /* Done! */
   return eResult;
-}
-
-static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
-{
-  /* Not in block mode? */
-  if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
-  {
-    /* Is a list? */
-    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
-    {
-      /* Deletes string */
-      orxString_Delete(_pstValue->zValue);
-
-      /* Deletes index table */
-      orxMemory_Free(_pstValue->au32ListIndexTable);
-      _pstValue->au32ListIndexTable = orxNULL;
-
-      /* Cleans list status */
-      _pstValue->u16Flags      &= ~orxCONFIG_VALUE_KU16_FLAG_LIST;
-      _pstValue->u16ListCounter = 1;
-      _pstValue->u16CacheIndex  = 0;
-    }
-  }
-
-  /* Done! */
-  return;
 }
 
 /** Gets a list value
@@ -1247,6 +1309,9 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       {
         /* Inits value */
         eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _bBlockMode);
+
+        /* Stores origin */
+        pstEntry->u32OriginID = sstConfig.u32LoadFileID;
       }
 
       /* Success? */
@@ -1293,26 +1358,6 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
 
   /* Done! */
   return eResult;
-}
-
-/** Deletes an entry
- * @param[in] _pstEntry         Entry to delete
- */
-static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
-{
-  /* Checks */
-  orxASSERT(_pstEntry != orxNULL);
-
-  /* Deletes value */
-  orxConfig_CleanValue(&(_pstEntry->stValue));
-
-  /* Removes it from list */
-  orxLinkList_Remove(&(_pstEntry->stNode));
-
-  /* Deletes the entry */
-  orxBank_Free(sstConfig.pstEntryBank, _pstEntry);
-
-  return;
 }
 
 /** Creates a section
