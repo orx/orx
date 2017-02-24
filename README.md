@@ -1,6 +1,6 @@
 [![Join the chat at https://gitter.im/orx/orx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orx/orx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
-[![Build status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva/branch/master?svg=true)](https://ci.appveyor.com/project/iarwain/orx/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
 Orx - Portable Game Engine (Version 1.8)
 ========================================
