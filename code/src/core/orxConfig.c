@@ -2451,11 +2451,17 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
               /* Restores literal value */
               orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
-              /* Different? */
-              if(orxString_Compare(pcValueStart, pstEntry->stValue.zValue) != 0)
+              /* Appending? */
+              if(bAppend != orxFALSE)
               {
                 /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> += %s", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->u32ID), pcValueStart);
+              }
+              /* Different? */
+              else if(orxString_Compare(pcValueStart, pstEntry->stValue.zValue) != 0)
+              {
+                /* Logs */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = %s -> %s", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->u32ID), pstEntry->stValue.zValue, pcValueStart);
               }
 
               /* Recomputes working value */
@@ -2467,7 +2473,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
               if(orxString_Compare(pcValueStart, pstEntry->stValue.zValue) != 0)
               {
                 /* Logs */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = \"%s\", was \"%s\"", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->u32ID), pcValueStart, pstEntry->stValue.zValue);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> = %s -> %s", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->u32ID), pstEntry->stValue.zValue, pcValueStart);
               }
             }
           }
