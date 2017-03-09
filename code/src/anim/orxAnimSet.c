@@ -1523,7 +1523,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   const orxSTRING zAnim = orxSTRING_EMPTY;
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
-  orxS32          s32ValueCounter, s32MaxFrames = 0;
+  orxS32          s32ValueCounter, s32MaxFrames = -1;
   orxBOOL         bFromConfig = orxTRUE;
   orxANIM        *pstResult = orxNULL;
 
