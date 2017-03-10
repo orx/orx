@@ -7448,7 +7448,7 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
  * orxOBOX stBox;
  * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
  *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox);
+ * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
  * if(pstBank) {
  *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i)
  *     {
@@ -7459,9 +7459,10 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
  * }
  * @endcode
  * @param[in]   _pstCheckBox    Box to check intersection with
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxBANK / orxNULL
  */
-orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
+orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxU32 _u32GroupID)
 {
   orxOBOX    stObjectBox;
   orxOBJECT  *pstObject;
@@ -7480,9 +7481,9 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
     orxU32 u32Counter;
 
     /* For all objects */
-    for(u32Counter = 0, pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+    for(u32Counter = 0, pstObject = orxObject_GetNext(orxNULL, _u32GroupID);
         (u32Counter < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+        pstObject = orxObject_GetNext(pstObject, _u32GroupID))
     {
       /* Gets its bounding box */
       if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
@@ -7507,7 +7508,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate new cell.");
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate new object neighbor cell.");
             break;
           }
         }

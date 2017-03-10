@@ -862,7 +862,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  * orxOBOX stBox;
  * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
  *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox);
+ * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
  * if(pstBank) {
  *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i)
  *     {
@@ -872,10 +872,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  *     orxObject_DeleteNeighborList(pstBank);
  * }
  * @endcode
- * @param[in]   _pstCheckBox    Box to check intersection with
+ * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxBANK / orxNULL
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox);
+extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxU32 _u32GroupID);
 
 /** Deletes an object list created with orxObject_CreateNeighborList().
  * @param[in]   _pstObjectList  Concerned object list
