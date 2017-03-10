@@ -414,8 +414,8 @@ Name</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Neighboring</h2></td></tr>
-<tr class="memitem:gaa4804e5fc4da005d4e6301f5cebdce22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox)</td></tr>
-<tr class="separator:gaa4804e5fc4da005d4e6301f5cebdce22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga992097afad8409ed3f7667ecabb9b461"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga992097afad8409ed3f7667ecabb9b461">orxObject_CreateNeighborList</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxU32 _u32GroupID)</td></tr>
+<tr class="separator:ga992097afad8409ed3f7667ecabb9b461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaeac04e584788022c4bfb0e0e72ac0533">orxObject_DeleteNeighborList</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstObjectList)</td></tr>
 <tr class="separator:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -1016,7 +1016,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a> to get all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#ga992097afad8409ed3f7667ecabb9b461">orxObject_CreateNeighborList()</a> to get all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box to use for picking </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
@@ -1065,7 +1065,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaa4804e5fc4da005d4e6301f5cebdce22"></a>
+<a class="anchor" id="ga992097afad8409ed3f7667ecabb9b461"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1073,14 +1073,24 @@ Picking</h2></td></tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a>* orxFASTCALL orxObject_CreateNeighborList </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
-          <td class="paramname"><em>_pstCheckBox</em></td><td>)</td>
+          <td class="paramname"><em>_pstCheckBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32GroupID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box). The following is an example for iterating over a neighbor list: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxVECTOR vPosition; // The world position of the neighborhood area</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;// set_position(vPosition);</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxVECTOR vSize; // The size of the neighborhood area</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;// set_size(vSize);</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxVECTOR vPivot; // The pivot of the neighborhood area</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;// set_pivot(vPivot);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;orxOBOX stBox;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;orxOBox_2DSet(&amp;stBox, &amp;vPosition, &amp;vPivot, &amp;vSize, 0);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;orxBANK * pstBank = orxObject_CreateNeighborList(&amp;stBox);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;if(pstBank) {</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    for(int i=0; i &lt; orxBank_GetCounter(pstBank); ++i)</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    {</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        do_something_with(pstObject);</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    orxObject_DeleteNeighborList(pstBank);</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box). The following is an example for iterating over a neighbor list: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxVECTOR vPosition; // The world position of the neighborhood area</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;// set_position(vPosition);</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxVECTOR vSize; // The size of the neighborhood area</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;// set_size(vSize);</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxVECTOR vPivot; // The pivot of the neighborhood area</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;// set_pivot(vPivot);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;orxOBOX stBox;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;orxOBox_2DSet(&amp;stBox, &amp;vPosition, &amp;vPivot, &amp;vSize, 0);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;orxBANK * pstBank = orxObject_CreateNeighborList(&amp;stBox, orxU32_UNDEFINED);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;if(pstBank) {</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    for(int i=0; i &lt; orxBank_GetCounter(pstBank); ++i)</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    {</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        do_something_with(pstObject);</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    orxObject_DeleteNeighborList(pstBank);</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
   </table>
   </dd>
 </dl>
@@ -1124,7 +1134,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Deletes an object list created with <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Deletes an object list created with <a class="el" href="group__orx_object.html#ga992097afad8409ed3f7667ecabb9b461">orxObject_CreateNeighborList()</a>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObjectList</td><td>Concerned object list </td></tr>
   </table>
@@ -2708,7 +2718,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#ga51ca82e2024e8cb619fb25b384b5e101">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gaa4804e5fc4da005d4e6301f5cebdce22">orxObject_CreateNeighborList()</a> and orxObject_Raycast for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#ga51ca82e2024e8cb619fb25b384b5e101">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#ga992097afad8409ed3f7667ecabb9b461">orxObject_CreateNeighborList()</a> and orxObject_Raycast for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32GroupID</td><td>Group ID to consider, orxU32_UNDEFINED for all </td></tr>
