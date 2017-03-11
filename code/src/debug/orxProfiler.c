@@ -118,7 +118,7 @@ typedef struct __orxPROFILER_MARKER_DATA_t
   orxPROFILER_MARKER_INFO astMarkerInfoList[orxPROFILER_KU32_MAX_MARKER_NUMBER];
   orxS32                  s32MarkerCounter;
   orxS32                  s32CurrentMarker;
-  orxS32                  s32MarkerPopToSkip;
+  orxU32                  u32MarkerPopToSkip;
   orxU32                  u32CurrentMarkerDepth;
   orxU32                  u32HistoryIndex;
   orxU32                  u32HistoryQueryIndex;
@@ -484,8 +484,9 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
   if((orxFLAG_GET(sstProfiler.u32Flags, orxPROFILER_KU32_STATIC_FLAG_PAUSED | orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS) == orxPROFILER_KU32_STATIC_FLAG_ENABLE_OPS)
   || (orxThread_GetCurrent() != orxTHREAD_KU32_MAIN_THREAD_ID))
   {
-    orxS32                    s32ID;
     orxPROFILER_MARKER_DATA  *pstData;
+    orxS32                    s32ID;
+    orxBOOL                   bSkip = orxFALSE;
 
     /* Gets current marker data */
     pstData = orxProfiler_GetCurrentMarkerData();
@@ -593,10 +594,10 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker <%s> [ID: %d] as it's already currently pushed.", sstProfiler.astMarkerList[s32ID].zName, _s32MarkerID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Marker <%s> is already pushed, skipping.", sstProfiler.astMarkerList[s32ID].zName);
 
-        /* Updates marker pops to skip */
-        pstData->s32MarkerPopToSkip++;
+        /* Skips marker */
+        bSkip = orxTRUE;
       }
     }
     else
@@ -604,9 +605,12 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't push marker: invalid ID [%d].", _s32MarkerID);
 
-      /* Updates marker pops to skip */
-      pstData->s32MarkerPopToSkip++;
+      /* Skips marker */
+      bSkip = orxTRUE;
     }
+
+    /* Updates marker pops to skip */
+    pstData->u32MarkerPopToSkip = (pstData->u32MarkerPopToSkip << 1) | ((bSkip != orxFALSE) ? 1 : 0);
   }
 }
 
@@ -627,13 +631,10 @@ void orxFASTCALL orxProfiler_PopMarker()
     pstData = orxProfiler_GetCurrentMarkerData();
 
     /* Should skip pop? */
-    if(pstData->s32MarkerPopToSkip > 0)
+    if(pstData->u32MarkerPopToSkip & 1)
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Skipping marker pop.");
-
-      /* Updates it */
-      pstData->s32MarkerPopToSkip--;
     }
     else
     {
@@ -675,6 +676,9 @@ void orxFASTCALL orxProfiler_PopMarker()
         orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Can't pop marker: marker stack is empty.");
       }
     }
+
+    /* Updates marker pops to skip */
+    pstData->u32MarkerPopToSkip = pstData->u32MarkerPopToSkip >> 1;
   }
 }
 
