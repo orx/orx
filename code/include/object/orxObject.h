@@ -872,6 +872,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  *     orxObject_DeleteNeighborList(pstBank);
  * }
  * @endcode
+ * @param[in]   _pstCheckBox    Box to check intersection with
  * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
  * @return      orxBANK / orxNULL
  */
