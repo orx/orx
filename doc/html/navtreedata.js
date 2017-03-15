@@ -51,8 +51,8 @@ var NAVTREEINDEX =
 "group__orx_text.html",
 "group__orx_type.html#gaf3f0f3d5b7eecdfc747e04a9de35a45a",
 "orx_anim_pointer_8h_source.html",
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a38748bdfcfda7ada5413939ba16d593b",
-"structorx_v_e_c_t_o_r.html#a844a4d1f9ed96ceb6984a63eb165fe94"
+"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a2caddebb84b5626223b5606bc32e7000",
+"structorx_v_e_c_t_o_r.html#a362990e29a25ae83ec5667e9c94c2446"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
