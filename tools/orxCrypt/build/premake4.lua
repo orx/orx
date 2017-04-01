@@ -41,7 +41,8 @@ end
 function initplatforms ()
     if os.is ("windows") then
         if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015" then
+        or string.lower(_ACTION) == "vs2015"
+        or string.lower(_ACTION) == "vs2017" then
             return
             {
                 "x64",
@@ -168,7 +169,7 @@ solution "orxCrypt"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015"}
+    configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}

@@ -41,7 +41,8 @@ end
 function initplatforms ()
     if os.is ("windows") then
         if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015" then
+        or string.lower(_ACTION) == "vs2015"
+        or string.lower(_ACTION) == "vs2017" then
             return
             {
                 "x64",
@@ -170,7 +171,7 @@ solution "orxFontGen"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015"}
+    configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -265,13 +266,13 @@ solution "orxFontGen"
             "../../../extern/freetype/lib/vc2013/64"
         }
 
-    configuration {"vs2015", "x32"}
+    configuration {"vs2015 or vs2017", "x32"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/32"
         }
 
-    configuration {"vs2015", "x64"}
+    configuration {"vs2015 or vs2017", "x64"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/64"
