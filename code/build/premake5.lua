@@ -285,6 +285,7 @@ project "orx"
     kind ("ConsoleApp")
 
     links {"orxLIB"}
+    dependson {"orxLIB"}
 
     configuration {"not xcode*", "*Core*"}
         defines {"__orxSTATIC__"}
@@ -544,13 +545,12 @@ project "Bounce"
 
     kind ("SharedLib")
 
-    links
-    {
-        "orxLIB"
-    }
+    links {"orxLIB"}
+    dependson {"orxLIB"}
 
     configuration {"not xcode*"}
         links {"orx"}
+        dependson {"orx"}
 
 
 -- Linux
