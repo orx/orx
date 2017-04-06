@@ -114,7 +114,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 -- Solution: orx
 --
 
-solution "Tutorial"
+solution "orxFontGen"
 
     language ("C")
 
@@ -135,21 +135,30 @@ solution "Tutorial"
     includedirs
     {
         "../include",
-        "../../code/include",
-        "$(ORX)/include"
+        "../../../code/include",
+        "$(ORX)/include",
+        "../../../extern/stb_image",
+        "../../../extern/freetype/include"
     }
 
     configuration {"not macosx"}
-        libdirs {"../lib"}
+        libdirs
+        {
+            "../lib",
+            "../../../code/lib/static",
+            "$(ORX)/lib/static"
+        }
+
+    configuration {"macosx"}
+        libdirs
+        {
+            "../../../code/lib/dynamic",
+            "$(ORX)/lib/dynamic"
+        }
+
     configuration {}
 
-    libdirs
-    {
-        "../../code/lib/dynamic",
-        "$(ORX)/lib/dynamic"
-    }
-
-    targetdir ("../bin")
+    targetdir ("../bin/")
 
     flags
     {
@@ -157,13 +166,11 @@ solution "Tutorial"
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
-        "NoExceptions",
-        "NoIncrementalLink",
-        "NoEditAndContinue",
-        "NoMinimalRebuild",
-        "Symbols",
         "StaticRuntime"
     }
+
+    exceptionhandling "off"
+    symbols "on"
 
     configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
@@ -172,7 +179,10 @@ solution "Tutorial"
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
-        flags {"Unicode"}
+        characterset "unicode"
+
+    configuration {"vs20*"}
+        characterset "mbcs"
 
     configuration {"*Debug*"}
         defines {"__orxDEBUG__"}
@@ -180,23 +190,31 @@ solution "Tutorial"
 
     configuration {"*Profile*"}
         defines {"__orxPROFILER__"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orxp"}
 
     configuration {"*Release*"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orx"}
+
+    configuration {}
+        defines {"__orxSTATIC__"}
 
 
 -- Linux
 
-    configuration {"linux"}
-        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
-        links
+    configuration {"linux", "x32"}
+        libdirs
         {
-            "dl",
-            "m",
-            "rt"
+            "../../../extern/freetype/lib/linux",
+        }
+
+    configuration {"linux", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/linux64"
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
@@ -207,22 +225,22 @@ solution "Tutorial"
 -- Mac OS X
 
     configuration {"macosx"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/mac"
+        }
         buildoptions
         {
             "-mmacosx-version-min=10.6",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
-        links
-        {
-            "Foundation.framework",
-            "AppKit.framework"
-        }
         linkoptions
         {
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -233,135 +251,91 @@ solution "Tutorial"
 
 -- Windows
 
+    configuration {"windows", "vs*", "*Debug*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
+
+    configuration {"vs2012"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2012"
+        }
+
+    configuration {"vs2013", "x32"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2013/32"
+        }
+
+    configuration {"vs2013", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2013/64"
+        }
+
+    configuration {"vs2015 or vs2017", "x32"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2015/32"
+        }
+
+    configuration {"vs2015 or vs2017", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2015/64"
+        }
+
+    configuration {"windows", "codeblocks or codelite or gmake"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/mingw"
+        }
+
 
 --
--- Project: 01_Object
+-- Project: orxFontGen
 --
 
-project "01_Object"
+project "orxFontGen"
 
-    files {"../src/01_Object.c"}
+    files {"../src/orxFontGen.c"}
+    targetname ("orxfontgen")
+    links
+    {
+        "freetype"
+    }
 
 
 -- Linux
 
     configuration {"linux"}
-        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+        links
+        {
+            "dl",
+            "m",
+            "z",
+            "rt",
+            "pthread"
+        }
 
 
 -- Mac OS X
 
-    configuration {"macosx", "xcode*"}
-        postbuildcommands {"$(cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
-
-    configuration {"macosx", "not xcode*"}
-        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+    configuration {"macosx"}
+        links
+        {
+            "Foundation.framework",
+            "AppKit.framework",
+            "OpenGL.framework",
+            "z",
+            "pthread"
+        }
 
 
 -- Windows
 
     configuration {"windows"}
-        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
-
-
---
--- Project: 02_Clock
---
-
-project "02_Clock"
-
-    files {"../src/02_Clock.c"}
-
-
---
--- Project: 03_Frame
---
-
-project "03_Frame"
-
-    files {"../src/03_Frame.c"}
-
-
---
--- Project: 04_Anim
---
-
-project "04_Anim"
-
-    files {"../src/04_Anim.c"}
-
-
---
--- Project: 05_Viewport
---
-
-project "05_Viewport"
-
-    files {"../src/05_Viewport.c"}
-
-
---
--- Project: 06_Sound
---
-
-project "06_Sound"
-
-    files {"../src/06_Sound.c"}
-
-
---
--- Project: 07_FX
---
-
-project "07_FX"
-
-    files {"../src/07_FX.c"}
-
-
---
--- Project: 08_Physics
---
-
-project "08_Physics"
-
-    files {"../src/08_Physics.c"}
-
-
---
--- Project: 09_Scrolling
---
-
-project "09_Scrolling"
-
-    files {"../src/09_Scrolling.c"}
-
-
---
--- Project: 10_Locale
---
-
-project "10_Locale"
-
-    language ("C++")
-
-    files {"../src/10_Locale.cpp"}
-
-    configuration {"windows", "vs*"}
-        buildoptions {"/EHsc"}
-
---
--- Project: 11_Spawner
---
-
-project "11_Spawner"
-
-    files {"../src/11_Spawner.c"}
-
-
---
--- Project: 12_Lighting
---
-
-project "12_Lighting"
-
-    files {"../src/12_Lighting.c"}
+        links
+        {
+            "winmm",
+            "OpenGL32"
+        }

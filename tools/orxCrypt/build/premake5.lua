@@ -114,7 +114,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 -- Solution: orx
 --
 
-solution "orxFontGen"
+solution "orxCrypt"
 
     language ("C")
 
@@ -136,9 +136,7 @@ solution "orxFontGen"
     {
         "../include",
         "../../../code/include",
-        "$(ORX)/include",
-        "../../../extern/stb_image",
-        "../../../extern/freetype/include"
+        "$(ORX)/include"
     }
 
     configuration {"not macosx"}
@@ -166,10 +164,11 @@ solution "orxFontGen"
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
-        "NoExceptions",
-        "Symbols",
         "StaticRuntime"
     }
+
+    exceptionhandling "off"
+    symbols "on"
 
     configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
@@ -178,7 +177,10 @@ solution "orxFontGen"
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
-        flags {"Unicode"}
+        characterset "unicode"
+
+    configuration {"vs20*"}
+        characterset "mbcs"
 
     configuration {"*Debug*"}
         defines {"__orxDEBUG__"}
@@ -186,11 +188,13 @@ solution "orxFontGen"
 
     configuration {"*Profile*"}
         defines {"__orxPROFILER__"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orxp"}
 
     configuration {"*Release*"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orx"}
 
     configuration {}
@@ -198,18 +202,6 @@ solution "orxFontGen"
 
 
 -- Linux
-
-    configuration {"linux", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/linux",
-        }
-
-    configuration {"linux", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/linux64"
-        }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -219,10 +211,6 @@ solution "orxFontGen"
 -- Mac OS X
 
     configuration {"macosx"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/mac"
-        }
         buildoptions
         {
             "-mmacosx-version-min=10.6",
@@ -245,58 +233,15 @@ solution "orxFontGen"
 
 -- Windows
 
-    configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT"}
-
-    configuration {"vs2012"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2012"
-        }
-
-    configuration {"vs2013", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2013/32"
-        }
-
-    configuration {"vs2013", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2013/64"
-        }
-
-    configuration {"vs2015 or vs2017", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2015/32"
-        }
-
-    configuration {"vs2015 or vs2017", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2015/64"
-        }
-
-    configuration {"windows", "codeblocks or codelite or gmake"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/mingw"
-        }
-
 
 --
--- Project: orxFontGen
+-- Project: orxCrypt
 --
 
-project "orxFontGen"
+project "orxCrypt"
 
-    files {"../src/orxFontGen.c"}
-    targetname ("orxfontgen")
-    links
-    {
-        "freetype"
-    }
+    files {"../src/orxCrypt.c"}
+    targetname ("orxcrypt")
 
 
 -- Linux
@@ -306,7 +251,6 @@ project "orxFontGen"
         {
             "dl",
             "m",
-            "z",
             "rt",
             "pthread"
         }
@@ -319,17 +263,17 @@ project "orxFontGen"
         {
             "Foundation.framework",
             "AppKit.framework",
-            "OpenGL.framework",
-            "z",
             "pthread"
         }
 
 
 -- Windows
 
+    configuration {"windows", "vs*", "*Debug*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
+
     configuration {"windows"}
         links
         {
-            "winmm",
-            "OpenGL32"
+            "winmm"
         }

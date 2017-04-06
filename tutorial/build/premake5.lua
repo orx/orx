@@ -114,7 +114,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 -- Solution: orx
 --
 
-solution "orxCrypt"
+solution "Tutorial"
 
     language ("C")
 
@@ -135,28 +135,21 @@ solution "orxCrypt"
     includedirs
     {
         "../include",
-        "../../../code/include",
+        "../../code/include",
         "$(ORX)/include"
     }
 
     configuration {"not macosx"}
-        libdirs
-        {
-            "../lib",
-            "../../../code/lib/static",
-            "$(ORX)/lib/static"
-        }
-
-    configuration {"macosx"}
-        libdirs
-        {
-            "../../../code/lib/dynamic",
-            "$(ORX)/lib/dynamic"
-        }
-
+        libdirs {"../lib"}
     configuration {}
 
-    targetdir ("../bin/")
+    libdirs
+    {
+        "../../code/lib/dynamic",
+        "$(ORX)/lib/dynamic"
+    }
+
+    targetdir ("../bin")
 
     flags
     {
@@ -164,10 +157,14 @@ solution "orxCrypt"
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
-        "NoExceptions",
-        "Symbols",
+        "NoIncrementalLink",
+        "NoEditAndContinue",
+        "NoMinimalRebuild",
         "StaticRuntime"
     }
+
+    exceptionhandling "off"
+    symbols "on"
 
     configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
@@ -176,7 +173,10 @@ solution "orxCrypt"
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
-        flags {"Unicode"}
+        characterset "unicode"
+
+    configuration {"vs20*"}
+        characterset "mbcs"
 
     configuration {"*Debug*"}
         defines {"__orxDEBUG__"}
@@ -184,18 +184,26 @@ solution "orxCrypt"
 
     configuration {"*Profile*"}
         defines {"__orxPROFILER__"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orxp"}
 
     configuration {"*Release*"}
-        flags {"Optimize", "NoRTTI"}
+        rtti "off"
+        flags {"Optimize"}
         links {"orx"}
-
-    configuration {}
-        defines {"__orxSTATIC__"}
 
 
 -- Linux
+
+    configuration {"linux"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
+        links
+        {
+            "dl",
+            "m",
+            "rt"
+        }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -211,12 +219,16 @@ solution "orxCrypt"
             "-gdwarf-2",
             "-Wno-write-strings"
         }
+        links
+        {
+            "Foundation.framework",
+            "AppKit.framework"
+        }
         linkoptions
         {
             "-mmacosx-version-min=10.6",
             "-dead_strip"
         }
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -229,45 +241,133 @@ solution "orxCrypt"
 
 
 --
--- Project: orxCrypt
+-- Project: 01_Object
 --
 
-project "orxCrypt"
+project "01_Object"
 
-    files {"../src/orxCrypt.c"}
-    targetname ("orxcrypt")
+    files {"../src/01_Object.c"}
 
 
 -- Linux
 
     configuration {"linux"}
-        links
-        {
-            "dl",
-            "m",
-            "rt",
-            "pthread"
-        }
+        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
 
 
 -- Mac OS X
 
-    configuration {"macosx"}
-        links
-        {
-            "Foundation.framework",
-            "AppKit.framework",
-            "pthread"
-        }
+    configuration {"macosx", "xcode*"}
+        postbuildcommands {"$(cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+
+    configuration {"macosx", "not xcode*"}
+        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
 
 -- Windows
 
-    configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT"}
-
     configuration {"windows"}
-        links
-        {
-            "winmm"
-        }
+        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+
+
+--
+-- Project: 02_Clock
+--
+
+project "02_Clock"
+
+    files {"../src/02_Clock.c"}
+
+
+--
+-- Project: 03_Frame
+--
+
+project "03_Frame"
+
+    files {"../src/03_Frame.c"}
+
+
+--
+-- Project: 04_Anim
+--
+
+project "04_Anim"
+
+    files {"../src/04_Anim.c"}
+
+
+--
+-- Project: 05_Viewport
+--
+
+project "05_Viewport"
+
+    files {"../src/05_Viewport.c"}
+
+
+--
+-- Project: 06_Sound
+--
+
+project "06_Sound"
+
+    files {"../src/06_Sound.c"}
+
+
+--
+-- Project: 07_FX
+--
+
+project "07_FX"
+
+    files {"../src/07_FX.c"}
+
+
+--
+-- Project: 08_Physics
+--
+
+project "08_Physics"
+
+    files {"../src/08_Physics.c"}
+
+
+--
+-- Project: 09_Scrolling
+--
+
+project "09_Scrolling"
+
+    files {"../src/09_Scrolling.c"}
+
+
+--
+-- Project: 10_Locale
+--
+
+project "10_Locale"
+
+    language ("C++")
+
+    files {"../src/10_Locale.cpp"}
+
+    configuration {"windows", "vs*"}
+        buildoptions {"/EHsc"}
+
+--
+-- Project: 11_Spawner
+--
+
+project "11_Spawner"
+
+    files {"../src/11_Spawner.c"}
+
+
+--
+-- Project: 12_Lighting
+--
+
+project "12_Lighting"
+
+    files {"../src/12_Lighting.c"}
