@@ -5,9 +5,9 @@ matrix:
     - os: linux
       compiler: gcc
       sudo: required
-    - os: linux
-      compiler: clang
-      sudo: required
+    # - os: linux
+    #   compiler: clang
+    #   sudo: required
     - os: osx
       compiler: clang
       osx_image: xcode7.3
