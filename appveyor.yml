@@ -22,14 +22,19 @@ cache: ../cache
 build_script:
 - cmd: >-
     if "%VS120COMNTOOLS%" NEQ "" set VSVersion=2013
+
     if "%VS140COMNTOOLS%" NEQ "" set VSVersion=2015
+
     if "%VS90COMNTOOLS%" == "" set VSVersion=2017
 
     set PackageVersion=vs%VSVersion%-%Version%
+
     set Folder=vs%VSVersion%
 
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Release
+
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Profile
+
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Debug
 
     msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
@@ -37,11 +42,13 @@ build_script:
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
 
     msbuild tools/orxFontGen/build/windows/%Folder%/orxFontGen.sln /p:Platform=%Platform% /p:Configuration=Release
+
     msbuild tools/orxCrypt/build/windows/%Folder%/orxCrypt.sln /p:Platform=%Platform% /p:Configuration=Release
 
     cd code/build/python
 
     python package.py -p %PackageVersion%
+
     python package.py -p tuto%PackageVersion%
 
 artifacts:
