@@ -105,19 +105,20 @@ solution "orx"
     {
         "NoPCH",
         "NoManifest",
-        "FloatFast",
         "NoNativeWChar",
         "NoIncrementalLink",
         "NoEditAndContinue",
         "NoMinimalRebuild",
-        "StaticRuntime"
+        "StaticRuntime",
+        "MultiProcessorCompile"
     }
 
     exceptionhandling "off"
     symbols "on"
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
-        flags {"EnableSSE2"}
+    if _OPTIONS["cc"] ~= "clang" then
+      flags { "FloatFast" }
+    end
 
     configuration {"not x64"}
         flags {"EnableSSE2"}
