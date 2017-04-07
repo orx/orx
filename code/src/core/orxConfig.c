@@ -1592,9 +1592,6 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -1716,9 +1713,6 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -1840,9 +1834,6 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -1964,9 +1955,6 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -2088,9 +2076,6 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -2186,9 +2171,6 @@ static orxINLINE orxSTATUS orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -2307,9 +2289,6 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
     }
     else
     {
-      /* Sends event */
-      orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_INVALID_TYPE_ACCESS);
-
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
