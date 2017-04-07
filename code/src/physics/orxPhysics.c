@@ -35,6 +35,7 @@
 #include "plugin/orxPluginCore.h"
 
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
 #include "utils/orxString.h"
 
 #ifdef __orxMSVC__
@@ -42,6 +43,63 @@
   #include <malloc.h>
 
 #endif /* __orxMSVC__ */
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxPhysics_EventHandler(const orxEVENT *_pstEvent)
+{
+  static orxSTRING szCollisionFlagList = orxNULL;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Reload start? */
+  if(_pstEvent->eID == orxCONFIG_EVENT_RELOAD_START)
+  {
+    /* No collision flag list stored? */
+    if(szCollisionFlagList == orxNULL)
+    {
+      /* Pushes config section */
+      orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+      /* Stores it */
+      szCollisionFlagList = orxConfig_DuplicateRawValue(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+  }
+  /* Reload stop? */
+  else if(_pstEvent->eID == orxCONFIG_EVENT_RELOAD_STOP)
+  {
+    /* Has stored collision flag list? */
+    if(szCollisionFlagList != orxNULL)
+    {
+      /* Pushes config section */
+      orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+      /* Not defined in config? */
+      if(orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST) == orxFALSE)
+      {
+        /* Stores it */
+        orxConfig_SetString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, szCollisionFlagList);
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
+      /* Deletes it */
+      orxString_Delete(szCollisionFlagList);
+      szCollisionFlagList = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
 
 
 /***************************************************************************
@@ -301,11 +359,17 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(PHYSICS)
 
 orxSTATUS orxFASTCALL orxPhysics_Init()
 {
+  /* Adds event handler */
+  orxEvent_AddHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
+
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Init)();
 }
 
 void orxFASTCALL orxPhysics_Exit()
 {
+  /* Removes event handler */
+  orxEvent_RemoveHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
+
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Exit)();
 }
 
