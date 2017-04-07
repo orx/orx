@@ -1,0 +1,57 @@
+version: 1.9-dev.{build}
+
+image:
+- Visual Studio 2013
+- Visual Studio 2015
+- Visual Studio 2017
+
+configuration: Default
+
+platform: x64
+
+environment:
+  matrix:
+  - Version: 32
+  - Version: 64
+
+install:
+- cmd: setup ../cache
+
+cache: ../cache
+
+build_script:
+- cmd: >-
+    if "%VS120COMNTOOLS%" NEQ "" set VSVersion=2013
+    if "%VS140COMNTOOLS%" NEQ "" set VSVersion=2015
+    if "%VS90COMNTOOLS%" == "" set VSVersion=2017
+
+    set PackageVersion=vs%VSVersion%-%Version%
+    set Folder=vs%VSVersion%
+
+    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Release
+    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Profile
+    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Debug
+
+    msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
+
+    msbuild tools/orxFontGen/build/windows/%Folder%/orxFontGen.sln /p:Platform=%Platform% /p:Configuration=Release
+    msbuild tools/orxCrypt/build/windows/%Folder%/orxCrypt.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    cd code/build/python
+
+    python package.py -p %PackageVersion%
+    python package.py -p tuto%PackageVersion%
+
+artifacts:
+- path: code/build/python/packages/*vs2015-64*.zip
+  name: package-vs2015-64
+- path: code/build/python/packages/*vs2015-32*.zip
+  name: package-vs2015-32
+- path: code/build/python/packages/*vs2013-64*.zip
+  name: package-vs2013-64
+- path: code/build/python/packages/*vs2013-32*.zip
+  name: package-vs2013-32
+
+deploy: off
