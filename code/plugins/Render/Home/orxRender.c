@@ -1666,7 +1666,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
         /* Sets destination bitmap */
         orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
 
-        /* Does it intersect with texture */
+        /* Does it intersect with texture? */
         if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
         {
           orxFLOAT    fCorrectionRatio;
@@ -1841,7 +1841,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                         orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
 
                         /* Is object in Z frustum? */
-                        if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
+                        if((vObjectPos.fZ >= vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                         {
                           orxFLOAT  fObjectBoundingRadius, fSqrDist, fDepthCoef, fObjectRotation;
                           orxVECTOR vSize, vOffset, vObjectScale, vDist;
@@ -1876,11 +1876,18 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             /* Gets objects relative depth */
                             fObjectRelativeDepth = vObjectPos.fZ - vCameraPosition.fZ;
 
+                            /* On near plane? */
+                            if(fObjectRelativeDepth == orxFLOAT_0)
+                            {
+                              /* Prints error message */
+                              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[%s] is using AutoScroll/DepthScale and is on [%s]'s near plane: undefined results.", orxObject_GetName(pstObject), orxCamera_GetName(pstCamera));
+                            }
+
                             /* Near space? */
                             if(fObjectRelativeDepth < (orx2F(0.5f) * fCameraDepth))
                             {
                               /* Gets depth scale coef */
-                              fDepthCoef = (orx2F(0.5f) * fCameraDepth) / fObjectRelativeDepth;
+                              fDepthCoef = (orx2F(0.5f) * fCameraDepth) / (fObjectRelativeDepth + orxMATH_KF_TINY_EPSILON);
                             }
                             /* Far space */
                             else
