@@ -6,7 +6,6 @@ var group__orx_config =
     [ "orxCONFIG_EVENT", "group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],
       [ "orxCONFIG_EVENT_RELOAD_STOP", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267a9c3629004c01faf9a86b3eff33ce327c", null ],
-      [ "orxCONFIG_EVENT_INVALID_TYPE_ACCESS", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267a9e125de47cea79b01b38dd5804fcc9b8", null ],
       [ "orxCONFIG_EVENT_NUMBER", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad0606fb3b2c94f49ee8f7a502a6af6a5", null ],
       [ "orxCONFIG_EVENT_NONE", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad9ae2558aad3b328688ae5fd9bf16230", null ]
     ] ],
