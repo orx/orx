@@ -475,7 +475,6 @@ var searchData=
   ['orxconfig_5fcopyfile',['orxConfig_CopyFile',['../group__orx_config.html#gaf7628d0883e028674c707329490a740a',1,'orxConfig.h']]],
   ['orxconfig_5fduplicaterawvalue',['orxConfig_DuplicateRawValue',['../group__orx_config.html#ga71d5a6dcd9e8c5d835e4b480716a8ac9',1,'orxConfig.h']]],
   ['orxconfig_5fevent',['orxCONFIG_EVENT',['../group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267',1,'orxConfig.h']]],
-  ['orxconfig_5fevent_5finvalid_5ftype_5faccess',['orxCONFIG_EVENT_INVALID_TYPE_ACCESS',['../group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267a9e125de47cea79b01b38dd5804fcc9b8',1,'orxConfig.h']]],
   ['orxconfig_5fevent_5fnone',['orxCONFIG_EVENT_NONE',['../group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad9ae2558aad3b328688ae5fd9bf16230',1,'orxConfig.h']]],
   ['orxconfig_5fevent_5fnumber',['orxCONFIG_EVENT_NUMBER',['../group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad0606fb3b2c94f49ee8f7a502a6af6a5',1,'orxConfig.h']]],
   ['orxconfig_5fevent_5freload_5fstart',['orxCONFIG_EVENT_RELOAD_START',['../group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f',1,'orxConfig.h']]],
