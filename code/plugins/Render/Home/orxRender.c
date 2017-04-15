@@ -1389,14 +1389,13 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstTransform != orxNULL);
 
-  /* Gets object's graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+  /* Gets object's working graphic */
+  pstGraphic = orxObject_GetWorkingGraphic(_pstObject);
 
   /* Valid? */
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
-    orxANIMPOINTER         *pstAnimPointer;
     orxTEXTURE             *pstTexture;
     orxTEXT                *pstText;
     orxFONT                *pstFont;
@@ -1429,25 +1428,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
-    /* Gets animation pointer */
-    pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
-
-    /* Valid? */
-    if(pstAnimPointer != orxNULL)
-    {
-      orxGRAPHIC *pstTemp;
-
-      /* Gets current anim data */
-      pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
-
-      /* Valid? */
-      if(pstTemp != orxNULL)
-      {
-        /* Uses it */
-        pstGraphic = pstTemp;
-      }
-    }
-
     /* Is 2D? */
     if(bIs2D != orxFALSE)
     {
@@ -1455,6 +1435,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
 
       /* Gets its texture */
       pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+      orxASSERT(pstTexture != orxNULL);
 
       /* Gets its bitmap */
       pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1481,17 +1462,12 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         /* Valid? */
         if(pstFont != orxNULL)
         {
-          orxTEXTURE *pstTexture;
-
           /* Gets its texture */
           pstTexture = orxFont_GetTexture(pstFont);
+          orxASSERT(pstTexture != orxNULL);
 
-          /* Valid? */
-          if(pstTexture != orxNULL)
-          {
-            /* Gets its bitmap */
-            pstBitmap = orxTexture_GetBitmap(pstTexture);
-          }
+          /* Gets its bitmap */
+          pstBitmap = orxTexture_GetBitmap(pstTexture);
         }
       }
     }
