@@ -7651,38 +7651,22 @@ orxTEXTURE *orxFASTCALL orxObject_GetWorkingTexture(const orxOBJECT *_pstObject)
  */
 orxGRAPHIC *orxFASTCALL orxObject_GetWorkingGraphic(const orxOBJECT *_pstObject)
 {
-  orxGRAPHIC *pstResult = orxNULL;
+  orxANIMPOINTER *pstAnimPointer;
+  orxGRAPHIC     *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its graphic */
-  pstResult = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstObject), GRAPHIC);
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* Invalid? */
+  if((pstAnimPointer == orxNULL)
+  || ((pstResult = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer))) == orxNULL))
   {
-    orxANIMPOINTER *pstAnimPointer;
-
-    /* Gets animation pointer */
-    pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
-
-    /* Valid? */
-    if(pstAnimPointer != orxNULL)
-    {
-      orxGRAPHIC *pstTemp;
-
-      /* Gets current anim data */
-      pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
-
-      /* Valid? */
-      if(pstTemp != orxNULL)
-      {
-        /* Updates result */
-        pstResult = pstTemp;
-      }
-    }
+    /* Gets its graphic */
+    pstResult = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstObject), GRAPHIC);
   }
 
   /* Done! */
