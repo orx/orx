@@ -6,6 +6,7 @@ var group__orx_object =
     [ "orxOBJECT_EVENT", "group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1", [
       [ "orxOBJECT_EVENT_CREATE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ac7d8eaaac17797c1acdec7f1b01b1a1a", null ],
       [ "orxOBJECT_EVENT_DELETE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a7758a0718fb8208481577f472793ed11", null ],
+      [ "orxOBJECT_EVENT_PREPARE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ab96a69e75382ea4046e8661957c2cd5f", null ],
       [ "orxOBJECT_EVENT_ENABLE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a058696ba49effc18970e96d1e13a4960", null ],
       [ "orxOBJECT_EVENT_DISABLE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ae77b3080c48ca20eb581034046fac51f", null ],
       [ "orxOBJECT_EVENT_PAUSE", "group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1a5c8676393ce32fb527fb52ee3ebb3112", null ],
