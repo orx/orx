@@ -56,6 +56,7 @@
 
 #define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001  /**< Ready static flag */
 #define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002  /**< Clock static flag */
+#define orxOBJECT_KU32_STATIC_FLAG_AGE          0x00000004  /**< Age static flag */
 
 #define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF  /**< Internal static mask */
 
@@ -92,6 +93,7 @@
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
 #define orxOBJECT_KU32_BANK_SIZE                2048
+#define orxOBJECT_KU32_AGE_BANK_SIZE            64
 
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
@@ -133,6 +135,7 @@
 #define orxOBJECT_KZ_CONFIG_USE_RELATIVE_SPEED  "UseRelativeSpeed"
 #define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
 #define orxOBJECT_KZ_CONFIG_GROUP               "Group"
+#define orxOBJECT_KZ_CONFIG_AGE                 "Age"
 
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
@@ -207,11 +210,13 @@ struct __orxOBJECT_t
 typedef struct __orxOBJECT_STATIC_t
 {
   orxCLOCK     *pstClock;                       /**< Clock */
-  orxU32        u32DefaultGroupID;              /**< Default group ID */
-  orxU32        u32CurrentGroupID;              /**< Current group ID */
   orxBANK      *pstGroupBank;                   /**< Group bank */
+  orxBANK      *pstAgeBank;                     /**< Age bank */
   orxHASHTABLE *pstGroupTable;                  /**< Group table */
   orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
+  orxU32        u32DefaultGroupID;              /**< Default group ID */
+  orxU32        u32CurrentGroupID;              /**< Current group ID */
+  orxFLOAT      fCurrentAge;                    /**< Current age */
   orxU32        u32CachedGroupID;               /**< Cached group ID */
   orxU32        u32Flags;                       /**< Control flags */
 
@@ -3127,11 +3132,12 @@ orxSTATUS orxFASTCALL orxObject_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Creates group bank */
-          sstObject.pstGroupBank = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          /* Creates banks */
+          sstObject.pstGroupBank  = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstObject.pstAgeBank    = orxBank_Create(orxOBJECT_KU32_AGE_BANK_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
           /* Success? */
-          if(sstObject.pstGroupBank != orxNULL)
+          if((sstObject.pstGroupBank != orxNULL) && (sstObject.pstAgeBank != orxNULL))
           {
             /* Creates group table */
             sstObject.pstGroupTable = orxHashTable_Create(orxOBJECT_KU32_GROUP_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -3154,8 +3160,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
 
-              /* Deletes group bank */
+              /* Deletes banks */
               orxBank_Delete(sstObject.pstGroupBank);
+              orxBank_Delete(sstObject.pstAgeBank);
 
               /* Unregisters from clock */
               orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
@@ -3168,6 +3175,16 @@ orxSTATUS orxFASTCALL orxObject_Init()
           {
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
+
+            /* Deletes banks */
+            if(sstObject.pstGroupBank != orxNULL)
+            {
+              orxBank_Delete(sstObject.pstGroupBank);
+            }
+            if(sstObject.pstAgeBank != orxNULL)
+            {
+              orxBank_Delete(sstObject.pstAgeBank);
+            }
 
             /* Unregisters from clock */
             orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
@@ -3234,8 +3251,9 @@ void orxFASTCALL orxObject_Exit()
     /* Deletes group table */
     orxHashTable_Delete(sstObject.pstGroupTable);
 
-    /* Deletes group bank */
+    /* Deletes banks */
     orxBank_Delete(sstObject.pstGroupBank);
+    orxBank_Delete(sstObject.pstAgeBank);
 
     /* Updates flags */
     sstObject.u32Flags &= ~orxOBJECT_KU32_STATIC_FLAG_READY;
@@ -3402,6 +3420,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      orxVECTOR       vValue, vParentSize, vColor;
       const orxSTRING zGraphicFileName;
       const orxSTRING zAnimPointerName;
       const orxSTRING zAutoScrolling;
@@ -3412,11 +3431,36 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       const orxSTRING zCameraName;
       orxFRAME       *pstFrame;
       orxBODY        *pstBody;
+      orxFLOAT        fAge = orxFLOAT_0;
       orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
       orxS32          s32Number;
-      orxVECTOR       vValue, vParentSize, vColor;
       orxCOLOR        stColor;
       orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PREPARE, pstResult, orxNULL, orxNULL);
+
+      /* Gets age */
+      fAge = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_AGE);
+
+      /* Valid? */
+      if(fAge > orxFLOAT_0)
+      {
+        /* No age already defined? */
+        if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
+        {
+          /* Updates status */
+          orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE, orxOBJECT_KU32_STATIC_FLAG_NONE);
+        }
+        else
+        {
+          /* Clears age */
+          fAge = orxFLOAT_0;
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Ignoring defined age as one of its parent has already an age defined.", _zConfigID);
+        }
+      }
 
       /* Has group? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_GROUP) != orxFALSE)
@@ -4150,6 +4194,51 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstResult, orxNULL, orxNULL);
+
+      /* Should age? */
+      if(orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
+      {
+        orxOBJECT **ppstObject;
+
+        /* Adds it to the bank */
+        ppstObject = (orxOBJECT **)orxBank_Allocate(sstObject.pstAgeBank);
+        orxASSERT(ppstObject != orxNULL);
+        *ppstObject = pstResult;
+
+        /* Should apply age? */
+        if(fAge > orxFLOAT_0)
+        {
+          orxCLOCK             *pstClock;
+          const orxCLOCK_INFO  *pstClockInfo;
+
+          /* Gets core clock */
+          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+          orxASSERT(pstClock != orxNULL);
+
+          /* Gets its info */
+          pstClockInfo = orxClock_GetInfo(pstClock);
+          orxASSERT(pstClockInfo != orxNULL);
+
+          /* For all time slices */
+          for(; fAge > orxFLOAT_0; fAge -= pstClockInfo->fDT)
+          {
+            /* For all aging objects */
+            for(ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, orxNULL);
+                ppstObject != orxNULL;
+                ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, ppstObject))
+            {
+              /* Updates it */
+              orxObject_UpdateInternal(*ppstObject, pstClockInfo);
+            }
+          }
+
+          /* Clears bank */
+          orxBank_Clear(sstObject.pstAgeBank);
+
+          /* Updates status */
+          orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_NONE, orxOBJECT_KU32_STATIC_FLAG_AGE);
+        }
+      }
     }
 
     /* Pops section */
