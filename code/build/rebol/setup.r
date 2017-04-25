@@ -114,12 +114,12 @@ either req-ver = cur-ver [
     premake-path: dirize rejoin [premake-root platform-info/premake]
     premake: read premake-path
     premake-file: read premake-path/:premake
-    forskip builds 2 [
-        if exists? builds/2 [
-            print ["== Copying [" premake "] to [" builds/2 "]"]
-            write builds/2/:premake premake-file
+    foreach [type folder] builds [
+        if exists? folder [
+            print ["== Copying [" premake "] to [" folder "]"]
+            write folder/:premake premake-file
             if not platform = "windows" [
-                call reform ["chmod +x" builds/2/:premake]
+                call reform ["chmod +x" folder/:premake]
             ]
         ]
     ]
@@ -136,9 +136,9 @@ premake: read premake-path
 print ["== Generating build files for [" platform "]"]
 foreach config platform-info/config [
     print ["== Generating [" config "]"]
-    forskip builds 2 [
-        if exists? builds/2 [
-            change-dir rejoin [root builds/2]
+    foreach [type folder] builds [
+        if exists? folder [
+            change-dir rejoin [root folder]
             call/wait rejoin ["./" premake " " config]
             change-dir root
         ]
