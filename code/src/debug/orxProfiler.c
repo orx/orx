@@ -593,8 +593,8 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Marker <%s> is already pushed, skipping.", sstProfiler.astMarkerList[s32ID].zName);
+        /* Updates its push counter */
+        pstEntry->u32PushCounter++;
 
         /* Skips marker */
         bSkip = orxTRUE;
@@ -630,13 +630,8 @@ void orxFASTCALL orxProfiler_PopMarker()
     /* Gets current marker data */
     pstData = orxProfiler_GetCurrentMarkerData();
 
-    /* Should skip pop? */
-    if(pstData->u32MarkerPopToSkip & 1)
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Skipping marker pop.");
-    }
-    else
+    /* Not skipping pop? */
+    if((pstData->u32MarkerPopToSkip & 1) == 0)
     {
       /* Has pushed marker? */
       if(pstData->s32CurrentMarker >= 0)
