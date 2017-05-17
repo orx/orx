@@ -166,6 +166,18 @@
 
 #endif /* !__orxLLVM__ && !__orxGCC__ && !__orxMSVC__ */
 
+/* Instruction size */
+#if defined(__orxX86_64__) || defined(__orxPPC64__) || defined(__orxARM64__)
+
+  /* 64 bits */
+  #define __orx64__
+
+#else /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
+
+  /* 32 bits */
+  #define __orx32__
+
+#endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
 /* No platform defines? */
 #if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)&& !defined(__orxRASPBERRY_PI__)

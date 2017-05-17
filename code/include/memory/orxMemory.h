@@ -61,7 +61,7 @@
       #define DEFINED_WIN32_LEAN_AND_MEAN
     #endif /* !WIN32_LEAN_AND_MEAN */
   #endif /* NO_WIN32_LEAN_AND_MEAN */
-    #include <windows.h>
+  #include <windows.h>
   #ifdef DEFINED_WIN32_LEAN_AND_MEAN
     #undef WIN32_LEAN_AND_MEAN
     #undef DEFINED_WIN32_LEAN_AND_MEAN

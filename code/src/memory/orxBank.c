@@ -378,16 +378,16 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
     /* For all map parts */
     for(u32BitIndex = 0, u32MapPartIndex = 0, bFound = orxFALSE; !bFound && (u32MapPartIndex < (orxU32)_pstBank->u16SizeSegmentBitField); u32MapPartIndex++)
     {
-      orxS32 s32MapPartValue;
+      orxU32 u32MapPartValue;
 
       /* Gets the available slots */
-      s32MapPartValue = ~(pstCurrentSegment->au32CellAllocationMap[u32MapPartIndex]);
+      u32MapPartValue = ~(pstCurrentSegment->au32CellAllocationMap[u32MapPartIndex]);
 
       /* Any free one? */
-      if(s32MapPartValue != 0)
+      if(u32MapPartValue != 0)
       {
         /* Gets free cell's map part index */
-        u32BitIndex = orxMath_GetTrailingZeroCount(s32MapPartValue);
+        u32BitIndex = orxMath_GetTrailingZeroCount(u32MapPartValue);
 
         /* Found ! */
         bFound = orxTRUE;

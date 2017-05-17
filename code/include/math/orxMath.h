@@ -43,12 +43,30 @@
 #ifndef _orxMATH_H_
 #define _orxMATH_H_
 
-
 #include "orxInclude.h"
+#include "debug/orxDebug.h"
 
 /** Maths related includes
  */
 #include <math.h>
+
+#ifdef __orxMSVC__
+  #ifdef NO_WIN32_LEAN_AND_MEAN
+    #undef WIN32_LEAN_AND_MEAN
+  #else /* NO_WIN32_LEAN_AND_MEAN */
+    #ifndef WIN32_LEAN_AND_MEAN
+      #define WIN32_LEAN_AND_MEAN
+      #define DEFINED_WIN32_LEAN_AND_MEAN
+    #endif /* !WIN32_LEAN_AND_MEAN */
+  #endif /* NO_WIN32_LEAN_AND_MEAN */
+  #include <windows.h>
+  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
+    #undef WIN32_LEAN_AND_MEAN
+    #undef DEFINED_WIN32_LEAN_AND_MEAN
+  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
+  #undef NO_WIN32_LEAN_AND_MEAN
+  #include <intrin.h>
+#endif /* __orxMSVC__ */
 
 
 /** Public macro
@@ -185,15 +203,61 @@ static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
  */
 static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Value)
 {
-  /* De Bruijn multiply look up table */
-  static const orxU32 sau32DeBruijnLUT[32] =
-  {
-    0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
-    31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
-  };
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(_u32Value != 0);
+
+#ifdef __orxMSVC__
+
+  /* Uses intrinsic */
+  _BitScanForward((DWORD *)&u32Result, _u32Value);
+
+#else /* __orxMSVC__ */
+
+  /* Uses intrinsic */
+  u32Result = __builtin_ctz(_u32Value);
+
+#endif /* __orxMSVC__ */
 
   /* Done! */
-  return sau32DeBruijnLUT[(((orxU32)((orxS32)_u32Value & -(orxS32)_u32Value)) * 0x077CB531U) >> 27];
+  return u32Result;
+}
+
+/** Gets the count of trailing zeros in an orxU64
+ * @param[in]   _u64Value                       Value to process
+ * @return      Number of trailing zeros
+ */
+static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64Value)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(_u64Value != 0);
+
+#ifdef __orxMSVC__
+
+  #ifdef __orx64__
+
+  /* Uses intrinsic */
+  _BitScanForward64((DWORD *)&u32Result, _u64Value);
+
+  #else /* __orx64__ */
+
+  /* Updates result */
+  u32Result = ((_u64Value & 0xFFFFFFFFULL) == 0) ? orxMath_GetTrailingZeroCount((orxU32)(_u64Value >> 32)) + 32 : orxMath_GetTrailingZeroCount((orxU32)_u64Value);
+
+  #endif /* __orx64__ */
+
+#else /* __orxMSVC__ */
+
+  /* Uses intrinsic */
+  u32Result = __builtin_ctzll(_u64Value);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Is value a power of two?
