@@ -1,5 +1,6 @@
 var group__orx_decl =
 [
+    [ "__orx32__", "group__orx_decl.html#ga0d85df47979f03750d7788f06fb6096a", null ],
     [ "__orxLITTLE_ENDIAN__", "group__orx_decl.html#ga96482e65a36cc89edf91aae3315de27f", null ],
     [ "__orxX86__", "group__orx_decl.html#ga05d360cf9a5b757bf9bb062335546679", null ],
     [ "orxALIGN", "group__orx_decl.html#ga78943a6fd081ef896c6bb95154d81399", null ],

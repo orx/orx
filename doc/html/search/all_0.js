@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['_5f_5forx32_5f_5f',['__orx32__',['../group__orx_decl.html#ga0d85df47979f03750d7788f06fb6096a',1,'orxDecl.h']]],
   ['_5f_5forxextern_5f_5f',['__orxEXTERN__',['../group___orx.html#ga85d75b8c9e37db787fac4910ba02462f',1,'orx.h']]],
   ['_5f_5forxlittle_5fendian_5f_5f',['__orxLITTLE_ENDIAN__',['../group__orx_decl.html#ga96482e65a36cc89edf91aae3315de27f',1,'orxDecl.h']]],
   ['_5f_5forxplugin_5f_5f',['__orxPLUGIN__',['../group___orx.html#gad1302f124cc2f4152901bfd9ea361895',1,'orxPluginAPI.h']]],

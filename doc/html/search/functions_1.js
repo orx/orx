@@ -622,6 +622,7 @@ var searchData=
   ['orxmath_5fgetrandomu32',['orxMath_GetRandomU32',['../group__orx_math.html#ga2486997fa74ede624d529480179c9c8b',1,'orxMath.h']]],
   ['orxmath_5fgetrandomu64',['orxMath_GetRandomU64',['../group__orx_math.html#ga04060c5441b3236a18a5f8c90fb00ca9',1,'orxMath.h']]],
   ['orxmath_5fgettrailingzerocount',['orxMath_GetTrailingZeroCount',['../group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e',1,'orxMath.h']]],
+  ['orxmath_5fgettrailingzerocount64',['orxMath_GetTrailingZeroCount64',['../group__orx_math.html#gaf8070f188f7d4d48889a46b48b6c6a10',1,'orxMath.h']]],
   ['orxmath_5finitrandom',['orxMath_InitRandom',['../group__orx_math.html#ga6c72f24ba256435c70dafea7e34b94e3',1,'orxMath.h']]],
   ['orxmath_5fispoweroftwo',['orxMath_IsPowerOfTwo',['../group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b',1,'orxMath.h']]],
   ['orxmath_5fmod',['orxMath_Mod',['../group__orx_math.html#ga34841c1401b13000e35b536cb54eb147',1,'orxMath.h']]],

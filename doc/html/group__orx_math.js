@@ -33,6 +33,7 @@ var group__orx_math =
     [ "orxMath_GetRandomU32", "group__orx_math.html#ga2486997fa74ede624d529480179c9c8b", null ],
     [ "orxMath_GetRandomU64", "group__orx_math.html#ga04060c5441b3236a18a5f8c90fb00ca9", null ],
     [ "orxMath_GetTrailingZeroCount", "group__orx_math.html#gaea41a680ebfc7f5935f99dde8fbe923e", null ],
+    [ "orxMath_GetTrailingZeroCount64", "group__orx_math.html#gaf8070f188f7d4d48889a46b48b6c6a10", null ],
     [ "orxMath_InitRandom", "group__orx_math.html#ga6c72f24ba256435c70dafea7e34b94e3", null ],
     [ "orxMath_IsPowerOfTwo", "group__orx_math.html#gaf88e117449b1482040ebd7b082c60f6b", null ],
     [ "orxMath_Mod", "group__orx_math.html#ga34841c1401b13000e35b536cb54eb147", null ],
