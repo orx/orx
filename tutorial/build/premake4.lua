@@ -146,6 +146,7 @@ solution "Tutorial"
     libdirs
     {
         "../../code/lib/dynamic",
+        "../lib",
         "$(ORX)/lib/dynamic"
     }
 
