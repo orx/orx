@@ -233,6 +233,12 @@ solution "Tutorial"
 
 -- Windows
 
+    configuration {"windows", "vs*"}
+        buildoptions
+        {
+            "/MP"
+        }
+
 
 --
 -- Project: 01_Object

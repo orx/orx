@@ -254,6 +254,12 @@ solution "orx"
 
 -- Windows
 
+    configuration {"windows", "vs*"}
+        buildoptions
+        {
+            "/MP"
+        }
+
     configuration {"vs2012"}
         libdirs
         {

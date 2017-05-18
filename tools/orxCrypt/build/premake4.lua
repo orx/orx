@@ -227,6 +227,12 @@ solution "orxCrypt"
 
 -- Windows
 
+    configuration {"windows", "vs*"}
+        buildoptions
+        {
+            "/MP"
+        }
+
 
 --
 -- Project: orxCrypt

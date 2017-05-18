@@ -245,6 +245,12 @@ solution "orxFontGen"
 
 -- Windows
 
+    configuration {"windows", "vs*"}
+        buildoptions
+        {
+            "/MP"
+        }
+
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
