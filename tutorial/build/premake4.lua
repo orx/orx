@@ -139,14 +139,10 @@ solution "Tutorial"
         "$(ORX)/include"
     }
 
-    configuration {"not macosx"}
-        libdirs {"../lib"}
-    configuration {}
-
     libdirs
     {
-        "../../code/lib/dynamic",
         "../lib",
+        "../../code/lib/dynamic",
         "$(ORX)/lib/dynamic"
     }
 
