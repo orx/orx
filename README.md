@@ -119,7 +119,7 @@ Some tools (precompiled binaries only) are also shipped with the dev packages:
 Packages
 --------
 
-You can download all the packages from [sourceforge](http://orx.sf.net) or [bitbucket](https://bitbucket.org/orx/orx/downloads).
+You can download all the packages from [sourceforge](http://orx.sf.net) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
 - `orx-doc-1.8.zip`                   : orx's API doxygen documentation
