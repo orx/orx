@@ -207,6 +207,25 @@ typedef struct __orxCOLOR_t
 
 } orxCOLOR;
 
+/** Color structure
+ */
+typedef struct __orxCUSTOM_MESH
+{
+  orxBITMAP *                 pstBitmap;
+  orxU32                      u32BitmapClipTLX;
+  orxU32                      u32BitmapClipTLY;
+  orxU32                      u32BitmapClipBRX;
+  orxU32                      u32BitmapClipBRY;
+  orxDISPLAY_SMOOTHING        eSmoothing;
+  orxDISPLAY_BLEND_MODE       eBlendMode;
+  orxDISPLAY_DRAW_MODE        eDrawMode;
+  orxU32                      u32VertexNumber;
+  const orxDISPLAY_VERTEX *   astVertexList;
+  orxU32                      u32IndexesCount;
+  const orxU16 *              au16IndexList;
+  orxU32                      u32ElementCount;
+
+} orxCUSTOM_MESH;
 
 /** Config parameters
  */
@@ -1090,7 +1109,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const 
 * @param[in]   _u32VertexNumber                      Number of vertices in the mesh
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCustomMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxDISPLAY_DRAW_MODE _eDrawMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList, const orxU16 *_au16IndexList, orxU32 _u32ElementCount);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCustomMesh(orxCUSTOM_MESH *_pstCustomMesh);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE
