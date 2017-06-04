@@ -323,44 +323,31 @@ static orxINLINE orxVECTOR *_orxFrame_GetScale(const orxFRAME *_pstFrame, orxFRA
 
 static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalPosition(const orxFRAME *_pstFrame, orxVECTOR *_pvPos)
 {
-  orxVECTOR *pvResult;
+  const orxVECTOR  *pvGlobalPos;
+  orxVECTOR         vGlobalScale, vPos;
+  orxFLOAT          fGlobalRotation;
+  orxVECTOR        *pvResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  /* Gets global data */
+  _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+  fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
+  pvGlobalPos     = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+
+  /* Transforms input position with scale */
+  orxVector_Mul(&vPos, _pvPos, &vGlobalScale);
+
+  /* Has rotation? */
+  if(fGlobalRotation != orxFLOAT_0)
   {
-    const orxVECTOR  *pvGlobalPos;
-    orxVECTOR         vGlobalScale, vPos;
-    orxFLOAT          fGlobalRotation;
-
-    /* Gets global data */
-    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
-    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
-    pvGlobalPos     = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
-
-    /* Transforms input position with scale */
-    orxVector_Mul(&vPos, _pvPos, &vGlobalScale);
-
-    /* Has rotation? */
-    if(fGlobalRotation != orxFLOAT_0)
-    {
-      /* Transforms input position with rotation */
-      orxVector_2DRotate(&vPos, &vPos, fGlobalRotation);
-    }
-
-    /* Transforms input position with translation (position) */
-    orxVector_Add(_pvPos, &vPos, pvGlobalPos);
-
-    /* Updates result */
-    pvResult = _pvPos;
+    /* Transforms input position with rotation */
+    orxVector_2DRotate(&vPos, &vPos, fGlobalRotation);
   }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
 
-    /* Updates result */
-    pvResult = orxNULL;
-  }
+  /* Transforms input position with translation (position) */
+  orxVector_Add(_pvPos, &vPos, pvGlobalPos);
+
+  /* Updates result */
+  pvResult = _pvPos;
 
   /* Done! */
   return pvResult;
@@ -368,49 +355,36 @@ static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalPosition(const orxFRAME *_
 
 static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalPosition(const orxFRAME *_pstFrame, orxVECTOR *_pvPos)
 {
-  orxVECTOR *pvResult;
+  const orxVECTOR  *pvGlobalPos;
+  orxVECTOR         vGlobalScale, vPos;
+  orxFLOAT          fGlobalRotation;
+  orxVECTOR        *pvResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  /* Gets parent's global data */
+  pvGlobalPos     = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+  fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
+  _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+
+  /* Transforms input position with translation (position) */
+  orxVector_Sub(&vPos, _pvPos, pvGlobalPos);
+
+  /* Has rotation? */
+  if(fGlobalRotation != orxFLOAT_0)
   {
-    const orxVECTOR  *pvGlobalPos;
-    orxVECTOR         vGlobalScale, vPos;
-    orxFLOAT          fGlobalRotation;
-
-    /* Gets parent's global data */
-    pvGlobalPos     = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
-    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
-
-    /* Transforms input position with translation (position) */
-    orxVector_Sub(&vPos, _pvPos, pvGlobalPos);
-
-    /* Has rotation? */
-    if(fGlobalRotation != orxFLOAT_0)
-    {
-      /* Transforms input position with rotation */
-      orxVector_2DRotate(&vPos, &vPos, -fGlobalRotation);
-    }
-
-    /* Valid scale? */
-    if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
-    {
-      /* Transforms input position with scale */
-      orxVector_Div(&vPos, &vPos, &vGlobalScale);
-    }
-
-    /* Updates result */
-    orxVector_Copy(_pvPos, &vPos);
-    pvResult = _pvPos;
+    /* Transforms input position with rotation */
+    orxVector_2DRotate(&vPos, &vPos, -fGlobalRotation);
   }
-  else
+
+  /* Valid scale? */
+  if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-
-    /* Updates result */
-    pvResult = orxNULL;
+    /* Transforms input position with scale */
+    orxVector_Div(&vPos, &vPos, &vGlobalScale);
   }
+
+  /* Updates result */
+  orxVector_Copy(_pvPos, &vPos);
+  pvResult = _pvPos;
 
   /* Done! */
   return pvResult;
@@ -418,27 +392,14 @@ static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalPosition(const orxFRAME *_
 
 static orxINLINE orxFLOAT orxFrame_FromLocalToGlobalRotation(const orxFRAME *_pstFrame, orxFLOAT _fRotation)
 {
+  orxFLOAT fGlobalRotation;
   orxFLOAT fResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    orxFLOAT fGlobalRotation;
+  /* Gets global angle */
+  fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
-    /* Gets global angle */
-    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
-
-    /* Transforms input rotation */
-    fResult = _fRotation + fGlobalRotation;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-
-    /* Updates result */
-    fResult = orxFLOAT_0;
-  }
+  /* Transforms input rotation */
+  fResult = _fRotation + fGlobalRotation;
 
   /* Done! */
   return fResult;
@@ -446,27 +407,14 @@ static orxINLINE orxFLOAT orxFrame_FromLocalToGlobalRotation(const orxFRAME *_ps
 
 static orxINLINE orxFLOAT orxFrame_FromGlobalToLocalRotation(const orxFRAME *_pstFrame, orxFLOAT _fRotation)
 {
+  orxFLOAT fGlobalRotation;
   orxFLOAT fResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    orxFLOAT fGlobalRotation;
+  /* Gets global angle */
+  fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
-    /* Gets global angle */
-    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
-
-    /* Transforms input rotation */
-    fResult = _fRotation - fGlobalRotation;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-
-    /* Updates result */
-    fResult = orxFLOAT_0;
-  }
+  /* Transforms input rotation */
+  fResult = _fRotation - fGlobalRotation;
 
   /* Done! */
   return fResult;
@@ -474,30 +422,17 @@ static orxINLINE orxFLOAT orxFrame_FromGlobalToLocalRotation(const orxFRAME *_ps
 
 static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalScale(const orxFRAME *_pstFrame, orxVECTOR *_pvScale)
 {
-  orxVECTOR *pvResult;
+  orxVECTOR   vGlobalScale;
+  orxVECTOR  *pvResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    orxVECTOR vGlobalScale;
+  /* Gets global scale */
+  _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
 
-    /* Gets global scale */
-    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+  /* Transforms input scale */
+  orxVector_Mul(_pvScale, _pvScale, &vGlobalScale);
 
-    /* Transforms input scale */
-    orxVector_Mul(_pvScale, _pvScale, &vGlobalScale);
-
-    /* Updates result */
-    pvResult = _pvScale;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-
-    /* Updates result */
-    pvResult = orxNULL;
-  }
+  /* Updates result */
+  pvResult = _pvScale;
 
   /* Done! */
   return pvResult;
@@ -505,33 +440,20 @@ static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalScale(const orxFRAME *_pst
 
 static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pstFrame, orxVECTOR *_pvScale)
 {
-  orxVECTOR *pvResult;
+  orxVECTOR   vGlobalScale;
+  orxVECTOR  *pvResult;
 
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  /* Gets global scale */
+  _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+
+  /* Transforms input scale */
+  if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
   {
-    orxVECTOR vGlobalScale;
-
-    /* Gets global scale */
-    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
-
-    /* Transforms input scale */
-    if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
-    {
-      orxVector_Div(_pvScale, _pvScale, &vGlobalScale);
-    }
-
-    /* Updates result */
-    pvResult = _pvScale;
+    orxVector_Div(_pvScale, _pvScale, &vGlobalScale);
   }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
 
-    /* Updates result */
-    pvResult = orxNULL;
-  }
+  /* Updates result */
+  pvResult = _pvScale;
 
   /* Done! */
   return pvResult;
@@ -543,37 +465,29 @@ static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pst
  */
 static orxINLINE void orxFrame_UpdateData(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
 {
-  /* 2D data? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  orxVECTOR vPos, vScale;
+  orxFLOAT  fRotation;
+
+  /* Gets frame's local data */
+  _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, &vScale);
+  fRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
+  orxVector_Copy(&vPos, _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL));
+
+  /* Is not root? */
+  if(_pstParent != sstFrame.pstRoot)
   {
-    orxVECTOR vPos, vScale;
-    orxFLOAT  fRotation;
-
-    /* Gets frame's local data */
-    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, &vScale);
-    fRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
-    orxVector_Copy(&vPos, _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL));
-
-    /* Is not root? */
-    if(_pstParent != sstFrame.pstRoot)
-    {
-      /* Transforms them */
-      orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
-      fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
-      orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
-    }
-
-    /* Stores them */
-    _orxFrame_SetRotation(_pstFrame, fRotation, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_SetScale(_pstFrame, &vScale, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_SetPosition(_pstFrame, &vPos, orxFRAME_SPACE_GLOBAL);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
+    /* Transforms them */
+    orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
+    fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
+    orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
   }
 
+  /* Stores them */
+  _orxFrame_SetRotation(_pstFrame, fRotation, orxFRAME_SPACE_GLOBAL);
+  _orxFrame_SetScale(_pstFrame, &vScale, orxFRAME_SPACE_GLOBAL);
+  _orxFrame_SetPosition(_pstFrame, &vPos, orxFRAME_SPACE_GLOBAL);
+
+  /* Done! */
   return;
 }
 
@@ -623,6 +537,7 @@ static orxINLINE void orxFrame_DeleteAll()
   orxFrame_Delete(sstFrame.pstRoot);
   sstFrame.pstRoot = orxNULL;
 
+  /* Done! */
   return;
 }
 
@@ -640,6 +555,7 @@ void orxFASTCALL orxFrame_Setup()
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 
@@ -725,6 +641,7 @@ void orxFASTCALL orxFrame_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit frame module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -747,35 +664,26 @@ orxFRAME *orxFASTCALL orxFrame_Create(orxU32 _u32Flags)
   if(pstFrame != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstFrame, _u32Flags & orxFRAME_KU32_MASK_USER_ALL, orxFRAME_KU32_MASK_ALL);
+    orxStructure_SetFlags(pstFrame, (_u32Flags & orxFRAME_KU32_MASK_USER_ALL) | orxFRAME_KU32_FLAG_DATA_2D, orxFRAME_KU32_MASK_ALL);
 
-    /* Inits members */
-    if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_DATA_2D)
+    /* Checks */
+    orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_DATA_2D);
+
+    /* Inits values */
+    pstFrame->stData.fGlobalScaleX  = orxFLOAT_1;
+    pstFrame->stData.fGlobalScaleY  = orxFLOAT_1;
+    pstFrame->stData.fLocalScaleX   = orxFLOAT_1;
+    pstFrame->stData.fLocalScaleY   = orxFLOAT_1;
+
+    /* Has already a root? */
+    if(sstFrame.pstRoot != orxNULL)
     {
-      /* Updates flags */
-      orxStructure_SetFlags(pstFrame, orxFRAME_KU32_FLAG_DATA_2D, orxFRAME_KU32_FLAG_NONE);
-
-      /* Inits values */
-      pstFrame->stData.fGlobalScaleX  = orxFLOAT_1;
-      pstFrame->stData.fGlobalScaleY  = orxFLOAT_1;
-      pstFrame->stData.fLocalScaleX   = orxFLOAT_1;
-      pstFrame->stData.fLocalScaleY   = orxFLOAT_1;
-
-      /* Has already a root? */
-      if(sstFrame.pstRoot != orxNULL)
-      {
-        /* Sets frame to root */
-        orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
-      }
-
-      /* Increases counter */
-      orxStructure_IncreaseCounter(pstFrame);
+      /* Sets frame to root */
+      orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d data yet.");
-    }
+
+    /* Increases counter */
+    orxStructure_IncreaseCounter(pstFrame);
   }
   else
   {
@@ -983,44 +891,39 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
   }
   else
   {
-    /* 2D data? */
-    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+    orxFRAME *pstParent, *pstChild;
+    orxVECTOR vPos;
+
+    /* Checks */
+    orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
+
+    /* Gets parent frame */
+    pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+    /* Stores global position */
+    _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
+
+    /* Computes & stores local position */
+    orxVector_Copy(&vPos, _pvPos);
+    _orxFrame_SetPosition(_pstFrame, orxFrame_FromGlobalToLocalPosition(pstParent, &vPos), orxFRAME_SPACE_LOCAL);
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* For all children */
+    for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+        pstChild != orxNULL;
+        pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
     {
-      orxFRAME *pstParent, *pstChild;
-      orxVECTOR vPos;
-
-      /* Gets parent frame */
-      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-      /* Stores global position */
-      _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
-
-      /* Computes & stores local position */
-      orxVector_Copy(&vPos, _pvPos);
-      _orxFrame_SetPosition(_pstFrame, orxFrame_FromGlobalToLocalPosition(pstParent, &vPos), orxFRAME_SPACE_LOCAL);
-
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-      /* For all children */
-      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-          pstChild != orxNULL;
-          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-      {
-        /* Processes it */
-        orxFrame_Process(pstChild, _pstFrame);
-      }
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
+      /* Processes it */
+      orxFrame_Process(pstChild, _pstFrame);
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-    }
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
 
+  /* Done! */
   return;
 }
 
@@ -1053,42 +956,37 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
   }
   else
   {
-    /* 2D data? */
-    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+    orxFRAME *pstParent, *pstChild;
+
+    /* Checks */
+    orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
+
+    /* Gets parent frame */
+    pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+    /* Stores global rotation */
+    _orxFrame_SetRotation(_pstFrame, _fRotation, orxFRAME_SPACE_GLOBAL);
+
+    /* Computes & stores local rotation */
+    _orxFrame_SetRotation(_pstFrame, orxFrame_FromGlobalToLocalRotation(pstParent, _fRotation), orxFRAME_SPACE_LOCAL);
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* For all children */
+    for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+        pstChild != orxNULL;
+        pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
     {
-      orxFRAME *pstParent, *pstChild;
-
-      /* Gets parent frame */
-      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-      /* Stores global rotation */
-      _orxFrame_SetRotation(_pstFrame, _fRotation, orxFRAME_SPACE_GLOBAL);
-
-      /* Computes & stores local rotation */
-      _orxFrame_SetRotation(_pstFrame, orxFrame_FromGlobalToLocalRotation(pstParent, _fRotation), orxFRAME_SPACE_LOCAL);
-
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-      /* For all children */
-      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-          pstChild != orxNULL;
-          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-      {
-        /* Processes it */
-        orxFrame_Process(pstChild, _pstFrame);
-      }
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
+      /* Processes it */
+      orxFrame_Process(pstChild, _pstFrame);
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-    }
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
 
+  /* Done! */
   return;
 }
 
@@ -1122,44 +1020,39 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
   }
   else
   {
-    /* 2D data? */
-    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+    orxFRAME *pstParent, *pstChild;
+    orxVECTOR vScale;
+
+    /* Checks */
+    orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
+
+    /* Gets parent frame */
+    pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+    /* Stores global scale */
+    _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
+
+    /* Computes & stores local scale */
+    orxVector_Copy(&vScale, _pvScale);
+    _orxFrame_SetScale(_pstFrame, orxFrame_FromGlobalToLocalScale(pstParent, &vScale), orxFRAME_SPACE_LOCAL);
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+    /* For all children */
+    for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+        pstChild != orxNULL;
+        pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
     {
-      orxFRAME *pstParent, *pstChild;
-      orxVECTOR vScale;
-
-      /* Gets parent frame */
-      pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
-
-      /* Stores global scale */
-      _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
-
-      /* Computes & stores local scale */
-      orxVector_Copy(&vScale, _pvScale);
-      _orxFrame_SetScale(_pstFrame, orxFrame_FromGlobalToLocalScale(pstParent, &vScale), orxFRAME_SPACE_LOCAL);
-
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
-      /* For all children */
-      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
-          pstChild != orxNULL;
-          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
-      {
-        /* Processes it */
-        orxFrame_Process(pstChild, _pstFrame);
-      }
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
+      /* Processes it */
+      orxFrame_Process(pstChild, _pstFrame);
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
-    }
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
 
+  /* Done! */
   return;
 }
 
@@ -1178,20 +1071,11 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvPos != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
+  orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
 
-  /* Is a 2D Frame? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    /* Updates result */
-    orxVector_Copy(_pvPos, _orxFrame_GetPosition(_pstFrame, _eSpace));
-    pvResult = _pvPos;
-  }
-  else
-  {
-    /* Resets coord structure */
-    orxVector_SetAll(_pvPos, orxFLOAT_0);
-    pvResult = orxNULL;
-  }
+  /* Updates result */
+  orxVector_Copy(_pvPos, _orxFrame_GetPosition(_pstFrame, _eSpace));
+  pvResult = _pvPos;
 
   /* Done! */
   return pvResult;
@@ -1210,18 +1094,10 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
+  orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
 
-  /* Is Frame 2D? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    /* Updates result */
-    fRotation = _orxFrame_GetRotation(_pstFrame, _eSpace);
-  }
-  else
-  {
-    /* Updates result */
-    fRotation = orxFLOAT_0;
-  }
+  /* Updates result */
+  fRotation = _orxFrame_GetRotation(_pstFrame, _eSpace);
 
   /* Done! */
   return fRotation;
@@ -1242,21 +1118,10 @@ orxVECTOR *orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eS
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
   orxASSERT(_pvScale != orxNULL);
+  orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
 
-  /* Is Frame 2D? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-  {
-    /* Updates result */
-    pvResult = _orxFrame_GetScale(_pstFrame, _eSpace, _pvScale);
-  }
-  else
-  {
-    /* Clears scale */
-    orxVector_Copy(_pvScale, &orxVECTOR_0);
-
-    /* Updates result */
-    pvResult = orxNULL;
-  }
+  /* Updates result */
+  pvResult = _orxFrame_GetScale(_pstFrame, _eSpace, _pvScale);
 
   /* Done! */
   return pvResult;
