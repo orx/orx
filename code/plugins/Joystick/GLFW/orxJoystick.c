@@ -244,8 +244,8 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-      /* Updates its info */
-      orxJoystick_GLFW_UpdateInfo(u32ID);
+    /* Updates its info */
+    orxJoystick_GLFW_UpdateInfo(u32ID);
 
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
@@ -295,8 +295,8 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-      /* Updates its info */
-      orxJoystick_GLFW_UpdateInfo(u32ID);
+    /* Updates its info */
+    orxJoystick_GLFW_UpdateInfo(u32ID);
 
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
