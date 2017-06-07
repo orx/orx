@@ -101,6 +101,13 @@ typedef enum __orxFRAME_SPACE_t
 typedef struct __orxFRAME_t                   orxFRAME;
 
 
+/** Get ignore flags
+ * @param[in]   _zAttributes    Literal ignore flags
+ * @return Ignore flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxFrame_GetIgnoreFlags(const orxSTRING _zFlags);
+
+
 /** Setups the frame module
  */
 extern orxDLLAPI void orxFASTCALL             orxFrame_Setup();

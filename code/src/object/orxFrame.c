@@ -65,6 +65,18 @@
  */
 #define orxFRAME_KU32_BANK_SIZE             2048        /**< Bank size */
 
+#define orxFRAME_KZ_NONE                    "none"
+#define orxFRAME_KZ_ROTATION                "rotation"
+#define orxFRAME_KZ_SCALE                   "scale"
+#define orxFRAME_KZ_POSITION                "position"
+#define orxFRAME_KZ_POSITION_ROTATION       "position.rotation"
+#define orxFRAME_KZ_POSITION_SCALE          "position.scale"
+#define orxFRAME_KZ_POSITION_POSITION       "position.position"
+#define orxFRAME_KZ_ALL                     "all"
+
+#define orxFRAME_KC_SEPARATOR               '.'
+#define orxFRAME_KU32_POSITION_LENGTH       8
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -649,6 +661,100 @@ static orxINLINE void orxFrame_DeleteAll()
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** Get ignore flags
+ * @param[in]   _zAttributes    Literal ignore flags
+ * @return Ignore flags
+ */
+orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
+{
+  orxCHAR   acBuffer[128];
+  orxSTRING zFlags;
+  orxU32    u32Result = orxFRAME_KU32_FLAG_IGNORE_NONE;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+
+  /* Gets lower case version */
+  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+
+  /* Not none? */
+  if(!orxString_SearchString(zFlags, orxFRAME_KZ_NONE) != orxNULL)
+  {
+    /* All? */
+    if(orxString_SearchString(zFlags, orxFRAME_KZ_ALL) != orxNULL)
+    {
+      /* Updates result */
+      u32Result = orxFRAME_KU32_MASK_IGNORE_ALL;
+    }
+    else
+    {
+      const orxSTRING zFoundFlag;
+      const orxSTRING zStart;
+
+      /* Rotation? */
+      if(((zFoundFlag = orxString_SearchString(zFlags, orxFRAME_KZ_ROTATION)) != orxNULL)
+      && ((zFoundFlag == acBuffer)
+       || (*(zFoundFlag - 1) != orxFRAME_KC_SEPARATOR)
+       || (orxString_SearchString(zFoundFlag + 1, orxFRAME_KZ_ROTATION) != orxNULL)))
+      {
+        /* Updates result */
+        u32Result |= orxFRAME_KU32_FLAG_IGNORE_ROTATION;
+      }
+      /* Scale? */
+      if(((zFoundFlag = orxString_SearchString(zFlags, orxFRAME_KZ_SCALE)) != orxNULL)
+      && ((zFoundFlag == acBuffer)
+       || (*(zFoundFlag - 1) != orxFRAME_KC_SEPARATOR)
+       || (orxString_SearchString(zFoundFlag + 1, orxFRAME_KZ_SCALE) != orxNULL)))
+      {
+        /* Updates result */
+        u32Result |= orxFRAME_KU32_FLAG_IGNORE_SCALE;
+      }
+      /* Position? */
+      for(zStart = zFlags, zFoundFlag = orxString_SearchString(zStart, orxFRAME_KZ_POSITION);
+          zFoundFlag != orxNULL;
+          zFoundFlag = orxString_SearchString(zStart, orxFRAME_KZ_POSITION))
+      {
+        if(*(zFoundFlag + orxFRAME_KU32_POSITION_LENGTH) != orxFRAME_KC_SEPARATOR)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_MASK_IGNORE_POSITION;
+          break;
+        }
+        else
+        {
+          zStart = orxMIN(zFoundFlag + orxFRAME_KU32_POSITION_LENGTH + 2, acBuffer + sizeof(acBuffer) - 1);
+        }
+      }
+      /* Not ignoring entire position? */
+      if(!orxFLAG_TEST(u32Result, orxFRAME_KU32_MASK_IGNORE_POSITION))
+      {
+        /* Position.Rotation? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_ROTATION) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION;
+        }
+        /* Position.Scale? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_SCALE) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE;
+        }
+        /* Position.Position? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_POSITION) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
 
 /** Animation module setup
  */

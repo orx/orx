@@ -136,6 +136,7 @@
 #define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
 #define orxOBJECT_KZ_CONFIG_GROUP               "Group"
 #define orxOBJECT_KZ_CONFIG_AGE                 "Age"
+#define orxOBJECT_KZ_CONFIG_IGNORE_FROM_PARENT  "IgnoreFromParent"
 
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
@@ -3450,6 +3451,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zClockName;
         const orxSTRING zSpawnerName;
         const orxSTRING zCameraName;
+        const orxSTRING zIgnoreFromParent;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
         orxFLOAT        fAge = orxFLOAT_0;
@@ -3553,6 +3555,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Updates frame flags */
           u32FrameFlags  |= orxFRAME_KU32_FLAG_DEPTH_SCALE;
+        }
+
+        /* Ignore from parent? */
+        if((zIgnoreFromParent = orxConfig_GetString(orxOBJECT_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
+        {
+          /* Updates flags */
+          u32FrameFlags |= orxFrame_GetIgnoreFlags(zIgnoreFromParent);
         }
 
         /* Creates frame */
