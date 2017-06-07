@@ -868,6 +868,7 @@ var searchData=
   ['orxframe_5fdelete',['orxFrame_Delete',['../group__orx_frame.html#ga2da19cebead5fb95d7c1d0bfb4f97a34',1,'orxFrame.h']]],
   ['orxframe_5fexit',['orxFrame_Exit',['../group__orx_frame.html#gaf0e806d876d6bb7506429850ce567f08',1,'orxFrame.h']]],
   ['orxframe_5fgetchild',['orxFrame_GetChild',['../group__orx_frame.html#ga662a90bb46f78bac43fcff8f6d5332e9',1,'orxFrame.h']]],
+  ['orxframe_5fgetignoreflags',['orxFrame_GetIgnoreFlags',['../group__orx_frame.html#ga66dc1b7f18b6ba70dde693ef4ffe97d6',1,'orxFrame.h']]],
   ['orxframe_5fgetparent',['orxFrame_GetParent',['../group__orx_frame.html#gaaee7f5ca1f2e80e445e859b0968c6512',1,'orxFrame.h']]],
   ['orxframe_5fgetposition',['orxFrame_GetPosition',['../group__orx_frame.html#ga7ed8f5fee4724dfbfa779856ba778752',1,'orxFrame.h']]],
   ['orxframe_5fgetrotation',['orxFrame_GetRotation',['../group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad',1,'orxFrame.h']]],
