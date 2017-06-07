@@ -680,7 +680,7 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
   acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
   /* Not none? */
-  if(!orxString_SearchString(zFlags, orxFRAME_KZ_NONE) != orxNULL)
+  if(orxString_SearchString(zFlags, orxFRAME_KZ_NONE) == orxNULL)
   {
     /* All? */
     if(orxString_SearchString(zFlags, orxFRAME_KZ_ALL) != orxNULL)
