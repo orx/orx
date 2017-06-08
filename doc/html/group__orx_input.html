@@ -198,6 +198,10 @@ Functions</h2></td></tr>
 <tr class="separator:ga7d736a44b91fcc908e506a3f9af813ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadaa46efcffa6a0267862228ca01f9131"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gadaa46efcffa6a0267862228ca01f9131">orxInput_GetValue</a> (const orxSTRING _zInputName)</td></tr>
 <tr class="separator:gadaa46efcffa6a0267862228ca01f9131"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga98c3c07b52876bd97c180c4a4fe5ea93"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga98c3c07b52876bd97c180c4a4fe5ea93">orxInput_HasBeenActivated</a> (const orxSTRING _zInputName)</td></tr>
+<tr class="separator:ga98c3c07b52876bd97c180c4a4fe5ea93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga57c901a02e535c93cbe424f7c9f89e86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga57c901a02e535c93cbe424f7c9f89e86">orxInput_HasBeenDeactivated</a> (const orxSTRING _zInputName)</td></tr>
+<tr class="separator:ga57c901a02e535c93cbe424f7c9f89e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac5afa246a389c779ac3c3a0d6635e363"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gac5afa246a389c779ac3c3a0d6635e363">orxInput_HasNewStatus</a> (const orxSTRING _zInputName)</td></tr>
 <tr class="separator:gac5afa246a389c779ac3c3a0d6635e363"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6ccb0b601cbaa9dad16033ff7f242555"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga6ccb0b601cbaa9dad16033ff7f242555">orxInput_Init</a> ()</td></tr>
@@ -882,6 +886,52 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxFLOAT </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga98c3c07b52876bd97c180c4a4fe5ea93"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxInput_HasBeenActivated </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zInputName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Has input been activated (this frame)? </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zInputName</td><td>Concerned input name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE if newly activated since last frame, orxFALSE otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga57c901a02e535c93cbe424f7c9f89e86"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxInput_HasBeenDeactivated </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zInputName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Has input been deactivated (this frame)? </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zInputName</td><td>Concerned input name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE if newly deactivated since last frame, orxFALSE otherwise </dd></dl>
 
 </div>
 </div>

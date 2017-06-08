@@ -549,6 +549,8 @@ var searchData=
   ['orxinput_5fgetmultiplier',['orxInput_GetMultiplier',['../group__orx_input.html#gad5ce976ebe2764d10279161e4f92636d',1,'orxInput.h']]],
   ['orxinput_5fgetthreshold',['orxInput_GetThreshold',['../group__orx_input.html#ga7d736a44b91fcc908e506a3f9af813ac',1,'orxInput.h']]],
   ['orxinput_5fgetvalue',['orxInput_GetValue',['../group__orx_input.html#gadaa46efcffa6a0267862228ca01f9131',1,'orxInput.h']]],
+  ['orxinput_5fhasbeenactivated',['orxInput_HasBeenActivated',['../group__orx_input.html#ga98c3c07b52876bd97c180c4a4fe5ea93',1,'orxInput.h']]],
+  ['orxinput_5fhasbeendeactivated',['orxInput_HasBeenDeactivated',['../group__orx_input.html#ga57c901a02e535c93cbe424f7c9f89e86',1,'orxInput.h']]],
   ['orxinput_5fhasnewstatus',['orxInput_HasNewStatus',['../group__orx_input.html#gac5afa246a389c779ac3c3a0d6635e363',1,'orxInput.h']]],
   ['orxinput_5finit',['orxInput_Init',['../group__orx_input.html#ga6ccb0b601cbaa9dad16033ff7f242555',1,'orxInput.h']]],
   ['orxinput_5fisactive',['orxInput_IsActive',['../group__orx_input.html#ga4ee461925448ad4a31a3e82749bd0d92',1,'orxInput.h']]],
