@@ -91,6 +91,7 @@
 #define orxSPAWNER_KZ_CONFIG_CLEAN_ON_DELETE      "CleanOnDelete"
 #define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
 #define orxSPAWNER_KZ_CONFIG_IMMEDIATE            "Immediate"
+#define orxSPAWNER_KZ_CONFIG_IGNORE_FROM_PARENT   "IgnoreFromParent"
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
 
@@ -155,8 +156,9 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
   if((_pstSpawner->zReference != orxNULL)
   && (*(_pstSpawner->zReference) != orxCHAR_NULL))
   {
-    orxVECTOR vValue;
-    orxU32    u32Value;
+    orxVECTOR       vValue;
+    const orxSTRING zIgnoreFromParent;
+    orxU32          u32Value;
 
     /* Pushes its config section */
     orxConfig_PushSection(_pstSpawner->zReference);
@@ -357,6 +359,13 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
 
       /* Updates timer */
       _pstSpawner->fWaveTimer = orxFLOAT_0;
+    }
+
+    /* Ignore from parent? */
+    if((zIgnoreFromParent = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
+    {
+      /* Updates frame */
+      orxStructure_SetFlags(_pstSpawner->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
     }
 
     /* Updates result */

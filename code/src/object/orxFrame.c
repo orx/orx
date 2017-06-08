@@ -65,6 +65,18 @@
  */
 #define orxFRAME_KU32_BANK_SIZE             2048        /**< Bank size */
 
+#define orxFRAME_KZ_NONE                    "none"
+#define orxFRAME_KZ_ROTATION                "rotation"
+#define orxFRAME_KZ_SCALE                   "scale"
+#define orxFRAME_KZ_POSITION                "position"
+#define orxFRAME_KZ_POSITION_ROTATION       "position.rotation"
+#define orxFRAME_KZ_POSITION_SCALE          "position.scale"
+#define orxFRAME_KZ_POSITION_POSITION       "position.position"
+#define orxFRAME_KZ_ALL                     "all"
+
+#define orxFRAME_KC_SEPARATOR               '.'
+#define orxFRAME_KU32_POSITION_LENGTH       8
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -321,10 +333,52 @@ static orxINLINE orxVECTOR *_orxFrame_GetScale(const orxFRAME *_pstFrame, orxFRA
   return pvResult;
 }
 
+static orxINLINE orxVECTOR *orxFrame_PartialFromLocalToGlobalPosition(const orxFRAME *_pstFrame, orxU32 _u32Flags, orxVECTOR *_pvPos)
+{
+  orxVECTOR *pvResult;
+
+  /* Transforms input position with scale */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE))
+  {
+    orxVECTOR vGlobalScale;
+
+    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+    orxVector_Mul(_pvPos, _pvPos, &vGlobalScale);
+  }
+
+  /* Has rotation? */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION))
+  {
+    orxFLOAT fGlobalRotation;
+
+    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
+    if(fGlobalRotation != orxFLOAT_0)
+    {
+      /* Transforms input position with rotation */
+      orxVector_2DRotate(_pvPos, _pvPos, fGlobalRotation);
+    }
+  }
+
+  /* Transforms input position with translation (position) */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION))
+  {
+    const orxVECTOR *pvGlobalPos;
+
+    pvGlobalPos = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+    orxVector_Add(_pvPos, _pvPos, pvGlobalPos);
+  }
+
+  /* Updates result */
+  pvResult = _pvPos;
+
+  /* Done! */
+  return pvResult;
+}
+
 static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalPosition(const orxFRAME *_pstFrame, orxVECTOR *_pvPos)
 {
   const orxVECTOR  *pvGlobalPos;
-  orxVECTOR         vGlobalScale, vPos;
+  orxVECTOR         vGlobalScale;
   orxFLOAT          fGlobalRotation;
   orxVECTOR        *pvResult;
 
@@ -334,17 +388,17 @@ static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalPosition(const orxFRAME *_
   pvGlobalPos     = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
 
   /* Transforms input position with scale */
-  orxVector_Mul(&vPos, _pvPos, &vGlobalScale);
+  orxVector_Mul(_pvPos, _pvPos, &vGlobalScale);
 
   /* Has rotation? */
   if(fGlobalRotation != orxFLOAT_0)
   {
     /* Transforms input position with rotation */
-    orxVector_2DRotate(&vPos, &vPos, fGlobalRotation);
+    orxVector_2DRotate(_pvPos, _pvPos, fGlobalRotation);
   }
 
   /* Transforms input position with translation (position) */
-  orxVector_Add(_pvPos, &vPos, pvGlobalPos);
+  orxVector_Add(_pvPos, _pvPos, pvGlobalPos);
 
   /* Updates result */
   pvResult = _pvPos;
@@ -353,10 +407,58 @@ static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalPosition(const orxFRAME *_
   return pvResult;
 }
 
-static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalPosition(const orxFRAME *_pstFrame, orxVECTOR *_pvPos)
+static orxINLINE orxVECTOR *orxFrame_PartialFromGlobalToLocalPosition(const orxFRAME *_pstFrame, orxU32 _u32Flags, const orxVECTOR *_pvInPos, orxVECTOR *_pvOutPos)
+{
+  orxVECTOR *pvResult;
+
+  /* Transforms input position with translation (position) */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION))
+  {
+    const orxVECTOR *pvGlobalPos;
+
+    pvGlobalPos = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+    orxVector_Sub(_pvOutPos, _pvInPos, pvGlobalPos);
+  }
+  else
+  {
+    orxVector_Copy(_pvOutPos, _pvInPos);
+  }
+
+  /* Transforms input position with rotation */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION))
+  {
+    orxFLOAT fGlobalRotation;
+
+    fGlobalRotation = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
+    if(fGlobalRotation != orxFLOAT_0)
+    {
+      orxVector_2DRotate(_pvOutPos, _pvOutPos, -fGlobalRotation);
+    }
+  }
+
+  /* Transforms input position with scale */
+  if(!orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE))
+  {
+    orxVECTOR vGlobalScale;
+
+    _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
+    if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
+    {
+      orxVector_Div(_pvOutPos, _pvOutPos, &vGlobalScale);
+    }
+  }
+
+  /* Updates result */
+  pvResult = _pvOutPos;
+
+  /* Done! */
+  return pvResult;
+}
+
+static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalPosition(const orxFRAME *_pstFrame, const orxVECTOR *_pvInPos, orxVECTOR *_pvOutPos)
 {
   const orxVECTOR  *pvGlobalPos;
-  orxVECTOR         vGlobalScale, vPos;
+  orxVECTOR         vGlobalScale;
   orxFLOAT          fGlobalRotation;
   orxVECTOR        *pvResult;
 
@@ -366,25 +468,24 @@ static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalPosition(const orxFRAME *_
   _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, &vGlobalScale);
 
   /* Transforms input position with translation (position) */
-  orxVector_Sub(&vPos, _pvPos, pvGlobalPos);
+  orxVector_Sub(_pvOutPos, _pvInPos, pvGlobalPos);
 
   /* Has rotation? */
   if(fGlobalRotation != orxFLOAT_0)
   {
     /* Transforms input position with rotation */
-    orxVector_2DRotate(&vPos, &vPos, -fGlobalRotation);
+    orxVector_2DRotate(_pvOutPos, _pvOutPos, -fGlobalRotation);
   }
 
   /* Valid scale? */
   if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
   {
     /* Transforms input position with scale */
-    orxVector_Div(&vPos, &vPos, &vGlobalScale);
+    orxVector_Div(_pvOutPos, _pvOutPos, &vGlobalScale);
   }
 
   /* Updates result */
-  orxVector_Copy(_pvPos, &vPos);
-  pvResult = _pvPos;
+  pvResult = _pvOutPos;
 
   /* Done! */
   return pvResult;
@@ -438,7 +539,7 @@ static orxINLINE orxVECTOR *orxFrame_FromLocalToGlobalScale(const orxFRAME *_pst
   return pvResult;
 }
 
-static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pstFrame, orxVECTOR *_pvScale)
+static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pstFrame, const orxVECTOR *_pvInScale, orxVECTOR *_pvOutScale)
 {
   orxVECTOR   vGlobalScale;
   orxVECTOR  *pvResult;
@@ -449,11 +550,11 @@ static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pst
   /* Transforms input scale */
   if((vGlobalScale.fX != orxFLOAT_0) && (vGlobalScale.fY != orxFLOAT_0))
   {
-    orxVector_Div(_pvScale, _pvScale, &vGlobalScale);
+    orxVector_Div(_pvOutScale, _pvInScale, &vGlobalScale);
   }
 
   /* Updates result */
-  pvResult = _pvScale;
+  pvResult = _pvOutScale;
 
   /* Done! */
   return pvResult;
@@ -476,10 +577,25 @@ static orxINLINE void orxFrame_UpdateData(orxFRAME *_pstFrame, const orxFRAME *_
   /* Is not root? */
   if(_pstParent != sstFrame.pstRoot)
   {
+    orxU32 u32Flags;
+
     /* Transforms them */
-    orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
-    fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
-    orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
+    if(!orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_IGNORE_SCALE))
+    {
+      orxFrame_FromLocalToGlobalScale(_pstParent, &vScale);
+    }
+    if(!orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_IGNORE_ROTATION))
+    {
+      fRotation = orxFrame_FromLocalToGlobalRotation(_pstParent, fRotation);
+    }
+    if((u32Flags = orxStructure_GetFlags(_pstFrame, orxFRAME_KU32_MASK_IGNORE_POSITION)) == 0)
+    {
+      orxFrame_FromLocalToGlobalPosition(_pstParent, &vPos);
+    }
+    else
+    {
+      orxFrame_PartialFromLocalToGlobalPosition(_pstParent, u32Flags, &vPos);
+    }
   }
 
   /* Stores them */
@@ -545,6 +661,100 @@ static orxINLINE void orxFrame_DeleteAll()
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** Get ignore flags
+ * @param[in]   _zAttributes    Literal ignore flags
+ * @return Ignore flags
+ */
+orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
+{
+  orxCHAR   acBuffer[128];
+  orxSTRING zFlags;
+  orxU32    u32Result = orxFRAME_KU32_FLAG_IGNORE_NONE;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+
+  /* Gets lower case version */
+  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+
+  /* Not none? */
+  if(orxString_SearchString(zFlags, orxFRAME_KZ_NONE) == orxNULL)
+  {
+    /* All? */
+    if(orxString_SearchString(zFlags, orxFRAME_KZ_ALL) != orxNULL)
+    {
+      /* Updates result */
+      u32Result = orxFRAME_KU32_MASK_IGNORE_ALL;
+    }
+    else
+    {
+      const orxSTRING zFoundFlag;
+      const orxSTRING zStart;
+
+      /* Rotation? */
+      if(((zFoundFlag = orxString_SearchString(zFlags, orxFRAME_KZ_ROTATION)) != orxNULL)
+      && ((zFoundFlag == acBuffer)
+       || (*(zFoundFlag - 1) != orxFRAME_KC_SEPARATOR)
+       || (orxString_SearchString(zFoundFlag + 1, orxFRAME_KZ_ROTATION) != orxNULL)))
+      {
+        /* Updates result */
+        u32Result |= orxFRAME_KU32_FLAG_IGNORE_ROTATION;
+      }
+      /* Scale? */
+      if(((zFoundFlag = orxString_SearchString(zFlags, orxFRAME_KZ_SCALE)) != orxNULL)
+      && ((zFoundFlag == acBuffer)
+       || (*(zFoundFlag - 1) != orxFRAME_KC_SEPARATOR)
+       || (orxString_SearchString(zFoundFlag + 1, orxFRAME_KZ_SCALE) != orxNULL)))
+      {
+        /* Updates result */
+        u32Result |= orxFRAME_KU32_FLAG_IGNORE_SCALE;
+      }
+      /* Position? */
+      for(zStart = zFlags, zFoundFlag = orxString_SearchString(zStart, orxFRAME_KZ_POSITION);
+          zFoundFlag != orxNULL;
+          zFoundFlag = orxString_SearchString(zStart, orxFRAME_KZ_POSITION))
+      {
+        if(*(zFoundFlag + orxFRAME_KU32_POSITION_LENGTH) != orxFRAME_KC_SEPARATOR)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_MASK_IGNORE_POSITION;
+          break;
+        }
+        else
+        {
+          zStart = orxMIN(zFoundFlag + orxFRAME_KU32_POSITION_LENGTH + 2, acBuffer + sizeof(acBuffer) - 1);
+        }
+      }
+      /* Not ignoring entire position? */
+      if(!orxFLAG_TEST(u32Result, orxFRAME_KU32_MASK_IGNORE_POSITION))
+      {
+        /* Position.Rotation? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_ROTATION) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION;
+        }
+        /* Position.Scale? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_SCALE) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE;
+        }
+        /* Position.Position? */
+        if(orxString_SearchString(zFlags, orxFRAME_KZ_POSITION_POSITION) != orxNULL)
+        {
+          /* Updates result */
+          u32Result |= orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
 
 /** Animation module setup
  */
@@ -891,8 +1101,9 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
   }
   else
   {
-    orxFRAME *pstParent, *pstChild;
     orxVECTOR vPos;
+    orxFRAME *pstParent, *pstChild;
+    orxU32    u32Flags;
 
     /* Checks */
     orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
@@ -904,8 +1115,14 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     _orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_GLOBAL);
 
     /* Computes & stores local position */
-    orxVector_Copy(&vPos, _pvPos);
-    _orxFrame_SetPosition(_pstFrame, orxFrame_FromGlobalToLocalPosition(pstParent, &vPos), orxFRAME_SPACE_LOCAL);
+    if((u32Flags = orxStructure_GetFlags(_pstFrame, orxFRAME_KU32_MASK_IGNORE_POSITION)) == 0)
+    {
+      _orxFrame_SetPosition(_pstFrame, orxFrame_FromGlobalToLocalPosition(pstParent, _pvPos, &vPos), orxFRAME_SPACE_LOCAL);
+    }
+    else
+    {
+      _orxFrame_SetPosition(_pstFrame, orxFrame_PartialFromGlobalToLocalPosition(pstParent, u32Flags, _pvPos, &vPos), orxFRAME_SPACE_LOCAL);
+    }
 
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxFrame_Process");
@@ -968,7 +1185,7 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     _orxFrame_SetRotation(_pstFrame, _fRotation, orxFRAME_SPACE_GLOBAL);
 
     /* Computes & stores local rotation */
-    _orxFrame_SetRotation(_pstFrame, orxFrame_FromGlobalToLocalRotation(pstParent, _fRotation), orxFRAME_SPACE_LOCAL);
+    _orxFrame_SetRotation(_pstFrame, orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_IGNORE_ROTATION) ? _fRotation : orxFrame_FromGlobalToLocalRotation(pstParent, _fRotation), orxFRAME_SPACE_LOCAL);
 
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxFrame_Process");
@@ -1021,7 +1238,6 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
   else
   {
     orxFRAME *pstParent, *pstChild;
-    orxVECTOR vScale;
 
     /* Checks */
     orxASSERT(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D));
@@ -1033,8 +1249,16 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
     _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_GLOBAL);
 
     /* Computes & stores local scale */
-    orxVector_Copy(&vScale, _pvScale);
-    _orxFrame_SetScale(_pstFrame, orxFrame_FromGlobalToLocalScale(pstParent, &vScale), orxFRAME_SPACE_LOCAL);
+    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_IGNORE_SCALE))
+    {
+      _orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_LOCAL);
+    }
+    else
+    {
+      orxVECTOR vScale;
+
+      _orxFrame_SetScale(_pstFrame, orxFrame_FromGlobalToLocalScale(pstParent, _pvScale, &vScale), orxFRAME_SPACE_LOCAL);
+    }
 
     /* Profiles */
     orxPROFILER_PUSH_MARKER("orxFrame_Process");
@@ -1144,7 +1368,7 @@ orxVECTOR *orxFASTCALL orxFrame_TransformPosition(orxFRAME *_pstFrame, orxFRAME_
   orxASSERT(_pvPos != orxNULL);
 
   /* Updates result */
-  pvResult = (_eSpace == orxFRAME_SPACE_LOCAL) ? orxFrame_FromLocalToGlobalPosition(_pstFrame, _pvPos) : orxFrame_FromGlobalToLocalPosition(_pstFrame, _pvPos);
+  pvResult = (_eSpace == orxFRAME_SPACE_LOCAL) ? orxFrame_FromLocalToGlobalPosition(_pstFrame, _pvPos) : orxFrame_FromGlobalToLocalPosition(_pstFrame, _pvPos, _pvPos);
 
   /* Done! */
   return pvResult;
@@ -1189,7 +1413,7 @@ orxVECTOR *orxFASTCALL orxFrame_TransformScale(orxFRAME *_pstFrame, orxFRAME_SPA
   orxASSERT(_pvScale != orxNULL);
 
   /* Updates result */
-  pvResult = (_eSpace == orxFRAME_SPACE_LOCAL) ? orxFrame_FromLocalToGlobalScale(_pstFrame, _pvScale) : orxFrame_FromGlobalToLocalScale(_pstFrame, _pvScale);
+  pvResult = (_eSpace == orxFRAME_SPACE_LOCAL) ? orxFrame_FromLocalToGlobalScale(_pstFrame, _pvScale) : orxFrame_FromGlobalToLocalScale(_pstFrame, _pvScale, _pvScale);
 
   /* Done! */
   return pvResult;

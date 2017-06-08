@@ -69,6 +69,7 @@
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH     "FrustumWidth"
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
+#define orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT "IgnoreFromParent"
 
 #define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 #define orxCAMERA_KU32_BANK_SIZE              16          /**< Bank size */
@@ -824,7 +825,15 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
       {
         orxVECTOR       vPosition;
         const orxSTRING zParentName;
+        const orxSTRING zIgnoreFromParent;
         orxFLOAT        fNear, fFar, fWidth, fHeight;
+
+        /* Ignore from parent? */
+        if((zIgnoreFromParent = orxConfig_GetString(orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
+        {
+          /* Updates frame */
+          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
+        }
 
         /* Has group list? */
         if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_GROUP_LIST) != orxFALSE)

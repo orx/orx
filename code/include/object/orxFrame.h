@@ -58,19 +58,28 @@
 
 /** Frame flags
  */
-#define orxFRAME_KU32_FLAG_NONE               0x00000000  /**< No flags */
+#define orxFRAME_KU32_FLAG_NONE                     0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_FLAG_SCROLL_X           0x00000001  /**< X axis differential scrolling flag */
-#define orxFRAME_KU32_FLAG_SCROLL_Y           0x00000002  /**< Y axis differential scrolling flag */
-#define orxFRAME_KU32_MASK_SCROLL_BOTH        0x00000003  /**< Both axis differential scrolling mask */
+#define orxFRAME_KU32_FLAG_SCROLL_X                 0x00000001  /**< X axis differential scrolling flag */
+#define orxFRAME_KU32_FLAG_SCROLL_Y                 0x00000002  /**< Y axis differential scrolling flag */
+#define orxFRAME_KU32_MASK_SCROLL_BOTH              0x00000003  /**< Both axis differential scrolling mask */
 
-#define orxFRAME_KU32_FLAG_DEPTH_SCALE        0x00000004  /**< Relative depth scaling flag */
+#define orxFRAME_KU32_FLAG_DEPTH_SCALE              0x00000004  /**< Relative depth scaling flag */
 
-#define orxFRAME_KU32_FLAG_FLIP_X             0x00000010  /**< X axis flipping flag */
-#define orxFRAME_KU32_FLAG_FLIP_Y             0x00000020  /**< Y axis flipping flag */
-#define orxFRAME_KU32_MASK_FLIP_BOTH          0x00000030  /**< Both axis flippinf mask */
+#define orxFRAME_KU32_FLAG_FLIP_X                   0x00000010  /**< X axis flipping flag */
+#define orxFRAME_KU32_FLAG_FLIP_Y                   0x00000020  /**< Y axis flipping flag */
+#define orxFRAME_KU32_MASK_FLIP_BOTH                0x00000030  /**< Both axis flippinf mask */
 
-#define orxFRAME_KU32_MASK_USER_ALL           0x000000FF  /**< User all ID mask */
+#define orxFRAME_KU32_FLAG_IGNORE_NONE              0x00000000  /**< Rotation, scale and position are affected by parent */
+#define orxFRAME_KU32_FLAG_IGNORE_ROTATION          0x00000100  /**< Rotation is unaffected by parent */
+#define orxFRAME_KU32_FLAG_IGNORE_SCALE             0x00000200  /**< Scale is unaffected by parent */
+#define orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION 0x00001000  /**< Position is unaffected by parent's rotation */
+#define orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE    0x00002000  /**< Position is unaffected by parent's scale */
+#define orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION 0x00004000  /**< Position is unaffected by parent's position */
+#define orxFRAME_KU32_MASK_IGNORE_POSITION          0x00007000  /**< Position is unaffected by parent */
+#define orxFRAME_KU32_MASK_IGNORE_ALL               0x00007300  /**< Rotation, scale and position are unaffected by parent */
+
+#define orxFRAME_KU32_MASK_USER_ALL                 0x0000FFFF  /**< User all ID mask */
 
 
 /** Frame space enum
@@ -90,6 +99,13 @@ typedef enum __orxFRAME_SPACE_t
 /** Internal Frame structure
  */
 typedef struct __orxFRAME_t                   orxFRAME;
+
+
+/** Get ignore flags
+ * @param[in]   _zAttributes    Literal ignore flags
+ * @return Ignore flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxFrame_GetIgnoreFlags(const orxSTRING _zFlags);
 
 
 /** Setups the frame module
