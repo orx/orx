@@ -179,6 +179,18 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const or
  */
 extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsActive(const orxSTRING _zInputName);
 
+/** Has input been activated (this frame)?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if newly activated since last frame, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_HasBeenActivated(const orxSTRING _zInputName);
+
+/** Has input been deactivated (this frame)?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if newly deactivated since last frame, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_HasBeenDeactivated(const orxSTRING _zInputName);
+
 /** Has a new active status since this frame?
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active status is new, orxFALSE otherwise

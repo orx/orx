@@ -415,7 +415,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     sbRecord = orxTRUE;
   }
 
-  if(orxInput_IsActive("ToggleTrail") && (orxInput_HasNewStatus("ToggleTrail")))
+  if(orxInput_HasBeenActivated("ToggleTrail"))
   {
     /* Toggles trail rendering */
     orxConfig_PushSection("Bounce");
@@ -423,7 +423,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxConfig_PopSection();
   }
 
-  if(orxInput_IsActive("ToggleProfiler") && orxInput_HasNewStatus("ToggleProfiler"))
+  if(orxInput_HasBeenActivated("ToggleProfiler"))
   {
     /* Toggles profiler rendering */
     orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
@@ -431,7 +431,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxConfig_PopSection();
   }
 
-  if(orxInput_IsActive("PreviousResolution") && orxInput_HasNewStatus("PreviousResolution"))
+  if(orxInput_HasBeenActivated("PreviousResolution"))
   {
     /* Updates video mode index */
     su32VideoModeIndex = (su32VideoModeIndex == 0) ? orxDisplay_GetVideoModeCounter() - 1 : su32VideoModeIndex - 1;
@@ -439,7 +439,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Applies it */
     orxBounce_ApplyCurrentVideoMode();
   }
-  else if(orxInput_IsActive("NextResolution") && orxInput_HasNewStatus("NextResolution"))
+  else if(orxInput_HasBeenActivated("NextResolution"))
   {
     /* Updates video mode index */
     su32VideoModeIndex = (su32VideoModeIndex >= orxDisplay_GetVideoModeCounter() - 1) ? 0 : su32VideoModeIndex + 1;
@@ -447,7 +447,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Applies it */
     orxBounce_ApplyCurrentVideoMode();
   }
-  if(orxInput_IsActive("ToggleFullScreen") && orxInput_HasNewStatus("ToggleFullScreen"))
+  if(orxInput_HasBeenActivated("ToggleFullScreen"))
   {
     /* Toggles full screen display */
     orxDisplay_SetFullScreen(!orxDisplay_IsFullScreen());
@@ -516,7 +516,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxConfig_PopSection();
 
   /* Toggle shader? */
-  if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))
+  if(orxInput_HasBeenActivated("ToggleShader"))
   {
     /* Toggles shader status */
     sbShaderEnabled = !sbShaderEnabled;

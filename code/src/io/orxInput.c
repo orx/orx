@@ -1726,6 +1726,88 @@ orxBOOL orxFASTCALL orxInput_IsActive(const orxSTRING _zInputName)
   return bResult;
 }
 
+/** Has input been activated (this frame)?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if newly activated since last frame, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxInput_HasBeenActivated(const orxSTRING _zInputName)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets its ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        bResult = (orxFLAG_TEST_ALL(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE | orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS)) ? orxTRUE : orxFALSE;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Has input been deactivated (this frame)?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if newly deactivated since last frame, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxInput_HasBeenDeactivated(const orxSTRING _zInputName)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets its ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        bResult = (orxFLAG_GET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE | orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS) == orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS) ? orxTRUE : orxFALSE;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Has a new active status since this frame?
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active status is new, orxFALSE otherwise
