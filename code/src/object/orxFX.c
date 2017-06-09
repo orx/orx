@@ -108,6 +108,7 @@
 #define orxFX_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 #define orxFX_KZ_CONFIG_USE_ROTATION            "UseRotation"
 #define orxFX_KZ_CONFIG_USE_SCALE               "UseScale"
+#define orxFX_KZ_CONFIG_DO_NOT_CACHE            "DoNotCache"
 
 #define orxFX_KZ_LINEAR                         "linear"
 #define orxFX_KZ_TRIANGLE                       "triangle"
@@ -591,41 +592,45 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        /* Adds it to reference table */
-        if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
+        /* Stores its reference */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Processes its data */
+        if(orxFX_ProcessData(pstResult) != orxSTATUS_FAILURE)
         {
-          /* Stores its reference */
-          pstResult->zReference = orxConfig_GetCurrentSection();
-
-          /* Processes its data */
-          if(orxFX_ProcessData(pstResult) != orxSTATUS_FAILURE)
+          /* Can be cached? */
+          if(orxConfig_GetBool(orxFX_KZ_CONFIG_DO_NOT_CACHE) == orxFALSE)
           {
-            /* Should keep it in cache? */
-            if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+            /* Adds it to reference table */
+            if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
             {
-              /* Increases its reference counter to keep it in cache table */
-              orxStructure_IncreaseCounter(pstResult);
+              /* Should keep it in cache? */
+              if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+              {
+                /* Increases its reference counter to keep it in cache table */
+                orxStructure_IncreaseCounter(pstResult);
 
-              /* Updates its flags */
-              orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_CACHED, orxFX_KU32_FLAG_NONE);
+                /* Updates its flags */
+                orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_CACHED, orxFX_KU32_FLAG_NONE);
+              }
             }
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't create FX <%s>: invalid content.", _zConfigID);
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add FX to hashtable.");
 
-            /* Deletes it */
-            orxFX_Delete(pstResult);
+              /* Deletes it */
+              orxFX_Delete(pstResult);
 
-            /* Updates result */
-            pstResult = orxNULL;
+              /* Updates result */
+              pstResult = orxNULL;
+            }
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add FX to hashtable.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't create FX <%s>: invalid content.", _zConfigID);
 
           /* Deletes it */
           orxFX_Delete(pstResult);
