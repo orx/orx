@@ -102,7 +102,7 @@ typedef struct __orxFRAME_t                   orxFRAME;
 
 
 /** Get ignore flags
- * @param[in]   _zAttributes    Literal ignore flags
+ * @param[in]   _zFlags         Literal ignore flags
  * @return Ignore flags
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxFrame_GetIgnoreFlags(const orxSTRING _zFlags);
@@ -123,7 +123,7 @@ extern orxDLLAPI void orxFASTCALL             orxFrame_Exit();
 
 
 /** Creates a frame
- * @param[in]   _u32Flags     flags for created animation
+ * @param[in]   _u32Flags       Flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
 extern orxDLLAPI orxFRAME *orxFASTCALL        orxFrame_Create(orxU32 _u32Flags);

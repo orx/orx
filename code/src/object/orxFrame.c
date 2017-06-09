@@ -663,7 +663,7 @@ static orxINLINE void orxFrame_DeleteAll()
  ***************************************************************************/
 
 /** Get ignore flags
- * @param[in]   _zAttributes    Literal ignore flags
+ * @param[in]   _zFlags         Literal ignore flags
  * @return Ignore flags
  */
 orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
