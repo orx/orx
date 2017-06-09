@@ -51,8 +51,8 @@ var NAVTREEINDEX =
 "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea14f6191a030ef1b3e85a1e5b1a21d6ea",
 "group__orx_type.html#ga4f3008a8bfb2e9e3d1a05cd731006b4b",
 "group__orx_viewport.html#gafae98230b6e33fb16c5827b48db78b4b",
-"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a8b73f797e6e288c74d4420242f6b4e35",
-"structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f"
+"structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a8f356d9ce8242a2cf34a3d4356c0a6a1",
+"structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ac17e89ac7eaa0c881ddd923f4e1882e0"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -8,7 +8,6 @@ var searchData=
   ['orxanimset_2eh',['orxAnimSet.h',['../orx_anim_set_8h.html',1,'']]],
   ['orxbank_2eh',['orxBank.h',['../orx_bank_8h.html',1,'']]],
   ['orxbody_2eh',['orxBody.h',['../orx_body_8h.html',1,'']]],
-  ['orxbuild_2eh',['orxBuild.h',['../orx_build_8h.html',1,'']]],
   ['orxcamera_2eh',['orxCamera.h',['../orx_camera_8h.html',1,'']]],
   ['orxclock_2eh',['orxClock.h',['../orx_clock_8h.html',1,'']]],
   ['orxcommand_2eh',['orxCommand.h',['../orx_command_8h.html',1,'']]],
