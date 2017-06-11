@@ -552,6 +552,10 @@ static orxINLINE orxVECTOR *orxFrame_FromGlobalToLocalScale(const orxFRAME *_pst
   {
     orxVector_Div(_pvOutScale, _pvInScale, &vGlobalScale);
   }
+  else
+  {
+    orxVector_Copy(_pvOutScale, _pvInScale);
+  }
 
   /* Updates result */
   pvResult = _pvOutScale;
