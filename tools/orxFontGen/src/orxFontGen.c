@@ -47,6 +47,13 @@
 #include "ft2build.h"
 #include FT_FREETYPE_H
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
+#endif /* __orxGCC__ */
+
 
 /** Module flags
  */
@@ -1124,3 +1131,9 @@ int main(int argc, char **argv)
   // Done!
   return EXIT_SUCCESS;
 }
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */
