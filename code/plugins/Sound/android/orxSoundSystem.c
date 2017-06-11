@@ -1030,11 +1030,11 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
               /* Updates status */
               orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
-            alcDevicePauseSOFT = (LPALCDEVICEPAUSESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDevicePauseSOFT");
-            alcDeviceResumeSOFT = (LPALCDEVICERESUMESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDeviceResumeSOFT");
+              alcDevicePauseSOFT = (LPALCDEVICEPAUSESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDevicePauseSOFT");
+              alcDeviceResumeSOFT = (LPALCDEVICERESUMESOFT) alcGetProcAddress(sstSoundSystem.poDevice, "alcDeviceResumeSOFT");
 
-            /* Add event handler */
-            orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
+              /* Add event handler */
+              orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
