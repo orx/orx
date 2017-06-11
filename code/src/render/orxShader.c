@@ -53,6 +53,13 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+
+#endif /* __orxGCC__ */
+
 
 /** Module flags
  */
@@ -1789,3 +1796,9 @@ const orxSTRING orxFASTCALL orxShader_GetName(const orxSHADER *_pstShader)
   /* Done! */
   return zResult;
 }
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */

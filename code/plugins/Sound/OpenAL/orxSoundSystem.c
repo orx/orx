@@ -52,6 +52,13 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
 #include "stb_vorbis.c"
 #include "sndfile.h"
 
@@ -2590,3 +2597,9 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma warning(default : 4996)
 
 #endif /* __orxMSVC__ */
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */

@@ -47,8 +47,13 @@
 #include "webp/decode.h"
 #endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
+#ifdef __orxGCC__
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif /* __orxGCC__ */
+
 #ifdef __orxMSVC__
-#pragma warning(disable : 4312)
+  #pragma warning(disable : 4312)
 #endif /* __orxMSVC__ */
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
@@ -72,7 +77,7 @@
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 #ifdef __orxMSVC__
-#pragma warning(default : 4312)
+  #pragma warning(default : 4312)
 #endif /* __orxMSVC__ */
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -5448,3 +5453,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetVideoMode, DISPLAY, GET_VIDE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);
 orxPLUGIN_USER_CORE_FUNCTION_END();
+
+#ifdef __orxGCC__
+  #pragma GCC diagnostic pop
+#endif /* __orxGCC__ */

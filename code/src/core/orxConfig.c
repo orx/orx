@@ -55,6 +55,13 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
 
 /** Module flags
  */
@@ -6640,3 +6647,9 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
   /* Done! */
   return zResult;
 }
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */

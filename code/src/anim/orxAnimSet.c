@@ -48,6 +48,13 @@
 
 #endif /* __orxMSVC__ */
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
 #ifdef __orx64__
 
   #define orxANIMSET_CAST_HELPER   (orxU64)
@@ -3553,3 +3560,9 @@ const orxSTRING orxFASTCALL orxAnimSet_GetName(const orxANIMSET *_pstAnimSet)
   #pragma warning(default : 4311 4312)
 
 #endif /* __orxMSVC__ */
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */

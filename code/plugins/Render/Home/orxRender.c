@@ -35,6 +35,14 @@
 #include "orxPluginAPI.h"
 
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
+
 /** Module flags
  */
 #define orxRENDER_KU32_STATIC_FLAG_NONE             0x00000000 /**< No flags */
@@ -3015,3 +3023,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_GetWorldPosition, RENDER, GET_WO
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_GetScreenPosition, RENDER, GET_SCREEN_POSITION);
 
 orxPLUGIN_USER_CORE_FUNCTION_END();
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */
