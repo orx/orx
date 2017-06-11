@@ -197,6 +197,9 @@ solution "orxCrypt"
 
 -- Linux
 
+    configuration {"linux"}
+        buildoptions {"-Wno-unused-function"}
+
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
         buildoptions {"-fschedule-insns"}

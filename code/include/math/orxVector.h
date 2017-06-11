@@ -50,6 +50,14 @@
 #include "math/orxMath.h"
 
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
+
 /** Public structure definition
  */
 typedef struct __orxVECTOR_t
@@ -885,6 +893,12 @@ extern orxDLLAPI const orxVECTOR orxVECTOR_CYAN;   /**< Cyan color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_MAGENTA;/**< Magenta color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_BLACK;  /**< Black color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */
 
 #endif /* _orxVECTOR_H_ */
 

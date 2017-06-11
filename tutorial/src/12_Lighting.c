@@ -123,7 +123,7 @@ void ComputeGreyImage(orxU8 *_pu8Buffer, orxU32 _u32BufferSize)
   {
     orxCOLOR        stColor;
     orxRGBA         u32Pixel;
-    const orxVECTOR vBW = {orx2F(0.299f), orx2F(0.587f), orx2F(0.114f)};
+    const orxVECTOR vBW = {{orx2F(0.299f)}, {orx2F(0.587f)}, {orx2F(0.114f)}};
 
     /* Gets pixel's value */
     u32Pixel = orx2RGBA(_pu8Buffer[i], _pu8Buffer[i + 1], _pu8Buffer[i + 2], _pu8Buffer[i + 3]);
@@ -161,7 +161,7 @@ void ComputeNormalMap(const orxU8 *_pu8SrcBuffer, orxU8 *_pu8DstBuffer, orxS32 _
       orxFLOAT        fLeft, fRight, fUp, fDown;
       orxCOLOR        stNormal;
       orxRGBA         stPixel;
-      const orxVECTOR vHalf = {orx2F(0.5f), orx2F(0.5f), orx2F(0.5f)};
+      const orxVECTOR vHalf = {{orx2F(0.5f)}, {orx2F(0.5f)}, {orx2F(0.5f)}};
 
       /* Gets pixel's index */
       s32Index = (i * _s32Width + j) * sizeof(orxRGBA);

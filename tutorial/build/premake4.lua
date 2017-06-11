@@ -188,6 +188,7 @@ solution "Tutorial"
 -- Linux
 
     configuration {"linux"}
+        buildoptions {"-Wno-unused-function"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
