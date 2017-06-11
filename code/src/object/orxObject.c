@@ -50,6 +50,14 @@
 #include "sound/orxSoundPointer.h"
 
 
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
+#endif /* __orxGCC__ */
+
+
 /** Module flags
  */
 #define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000  /**< No static flag */
@@ -8522,3 +8530,9 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32Grou
   /* Done! */
   return pstResult;
 }
+
+#ifdef __orxGCC__
+
+  #pragma GCC diagnostic pop
+
+#endif /* __orxGCC__ */

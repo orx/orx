@@ -206,7 +206,8 @@ solution "orx"
         }
         buildoptions
         {
-            "-Wno-unused-function"
+            "-Wno-unused-function",
+            "-Wno-unused-but-set-variable"
         }
 
     configuration {"linux", "x64"}
@@ -219,7 +220,8 @@ solution "orx"
         }
         buildoptions
         {
-            "-Wno-unused-function"
+            "-Wno-unused-function",
+            "-Wno-unused-but-set-variable"
         }
 
 
