@@ -50,6 +50,7 @@
 #ifdef __orxGCC__
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+  #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 #endif /* __orxGCC__ */
 
 #ifdef __orxMSVC__

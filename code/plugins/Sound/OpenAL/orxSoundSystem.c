@@ -56,6 +56,7 @@
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+  #pragma GCC diagnostic ignored "-Wunused-value"
 
 #endif /* __orxGCC__ */
 
