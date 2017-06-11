@@ -4469,7 +4469,7 @@ orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const 
   orxASSERT(_zDstFileName != orxNULL);
   orxASSERT(_azSrcFileName != orxNULL);
   orxASSERT(*_zDstFileName != orxCHAR_NULL);
-  orxASSERT(*_azSrcFileName != orxCHAR_NULL);
+  orxASSERT(*_azSrcFileName != orxNULL);
   orxASSERT(_u32Number > 0);
 
   /* Opens destination file */

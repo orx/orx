@@ -47,7 +47,9 @@
 #include "webp/decode.h"
 #endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
+#ifdef __orxMSVC__
 #pragma warning(disable : 4312)
+#endif /* __orxMSVC__ */
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_PSD
@@ -69,7 +71,9 @@
 #undef STBI_NO_PSD
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
+#ifdef __orxMSVC__
 #pragma warning(default : 4312)
+#endif /* __orxMSVC__ */
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)

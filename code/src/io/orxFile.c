@@ -784,7 +784,7 @@ orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
   const orxCHAR  *pcSrc;
   orxCHAR        *pcDst;
   orxCHAR         acBuffer[orxFILE_KU32_BUFFER_SIZE];
-  orxSTATUS       eResult;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
