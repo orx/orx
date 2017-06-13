@@ -1188,8 +1188,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
             /* Gets it */
             zKey = orxConfig_GetKey(i);
 
-            /* Isn't toggle key? */
-            if(orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
+            /* Isn't toggle key nor scroll size? */
+            if((orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
+            && (orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
             {
               const orxSTRING zAlias;
               orxCHAR         cBackup = orxCHAR_NULL, *pc;
