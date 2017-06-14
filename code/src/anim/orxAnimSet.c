@@ -2093,25 +2093,34 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             /* Gets frame duration */
             fFrameDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
 
-            /* Checks */
-            orxASSERT(fFrameDuration > orxFLOAT_0);
-
-            /* Updates its timestamp */
-            fTimeStamp += fFrameDuration;
-
             /* Pops config section */
             orxConfig_PopSection();
 
-            /* Adds it */
-            if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+            /* Valid? */
+            if(fFrameDuration > orxFLOAT_0)
             {
-              /* Updates graphic's owner */
-              orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
+              /* Updates its timestamp */
+              fTimeStamp += fFrameDuration;
+
+              /* Adds it */
+              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+              {
+                /* Updates graphic's owner */
+                orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, zName, _zConfigID);
+
+                /* Deletes it */
+                orxGraphic_Delete(pstFrameInfo->pstGraphic);
+              }
             }
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", zAnimSet, zName, _zConfigID);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No valid duration defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, _zConfigID, zName);
 
               /* Deletes it */
               orxGraphic_Delete(pstFrameInfo->pstGraphic);
