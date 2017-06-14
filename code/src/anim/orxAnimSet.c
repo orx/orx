@@ -2075,6 +2075,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
           {
             const orxSTRING zName;
+            orxFLOAT        fFrameDuration;
 
             /* Gets its name */
             zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
@@ -2089,8 +2090,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
             }
 
+            /* Gets frame duration */
+            fFrameDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
+
+            /* Checks */
+            orxASSERT(fFrameDuration > orxFLOAT_0);
+
             /* Updates its timestamp */
-            fTimeStamp += orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
+            fTimeStamp += fFrameDuration;
 
             /* Pops config section */
             orxConfig_PopSection();
