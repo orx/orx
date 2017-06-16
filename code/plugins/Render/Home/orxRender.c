@@ -1392,11 +1392,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxRender_RenderObject");
 
-  /* Checks */
-  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pstTransform != orxNULL);
-
   /* Gets object's working graphic */
   pstGraphic = orxObject_GetWorkingGraphic(_pstObject);
 
@@ -1532,7 +1527,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxOBJECT *_pstOb
         }
         else
         {
-          /* Transfomrs text */
+          /* Transforms text */
           eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, _eSmoothing, _eBlendMode);
         }
       }
