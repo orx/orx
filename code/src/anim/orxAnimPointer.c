@@ -195,8 +195,16 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
   /* Not already initialized? */
   if(!orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT))
   {
+    orxU32 u32BackupTargetAnim;
+
+    /* Backups target anim */
+    u32BackupTargetAnim = _pstAnimPointer->u32TargetAnim;
+
     /* Sets its initial animation */
     orxAnimPointer_SetCurrentAnim(_pstAnimPointer, 0);
+
+    /* Restores target anim */
+    _pstAnimPointer->u32TargetAnim = u32BackupTargetAnim;
   }
 
   /* Not Paused? */
