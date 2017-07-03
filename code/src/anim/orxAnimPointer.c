@@ -406,6 +406,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         /* Updates current anim */
         eResult = orxAnim_Update(pstAnim, _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
 
+        /* Keeps current time for comparison */
+        fTimeCompare = _pstAnimPointer->fCurrentAnimTime;
+
         /* New key? */
         if(_pstAnimPointer->u32CurrentKey != u32BackupKey)
         {
@@ -418,8 +421,12 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_UPDATE, pstOwner, pstOwner, &stPayload);
         }
 
-        /* Sends custom events */
-        orxAnimPointer_SendCustomEvents(pstAnim, pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
+        /* Has current time not been modified during event? */
+        if(_pstAnimPointer->fCurrentAnimTime == fTimeCompare)
+        {
+          /* Sends custom events */
+          orxAnimPointer_SendCustomEvents(pstAnim, pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
+        }
       }
     }
     else
