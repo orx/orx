@@ -781,13 +781,13 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Everything seems ok. Register the module help function */
+  /* Everything seems ok. Register the version function */
   stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-  stParams.pfnParser  = orxParam_Help;
-  stParams.zShortName = "h";
-  stParams.zLongName  = "help";
-  stParams.zShortDesc = "Prints this help. A parameter can be specified to print its complete description (-h <param>).";
-  stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
+  stParams.pfnParser  = orxParam_Version;
+  stParams.zShortName = "v";
+  stParams.zLongName  = "version";
+  stParams.zShortDesc = "Prints orx's version.";
+  stParams.zLongDesc  = "If a parameter is specified and evaluates to the boolean <true>, only the version number itself will be printed.";
 
   /* Register */
   eResult = orxParam_Register(&stParams);
@@ -797,11 +797,11 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   {
     /* Everything seems ok. Register the module help function */
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-    stParams.pfnParser  = orxParam_Version;
-    stParams.zShortName = "v";
-    stParams.zLongName  = "version";
-    stParams.zShortDesc = "Prints orx's version.";
-    stParams.zLongDesc  = "If a parameter is specified and evaluates to the boolean true, only the version number itself will be printed.";
+    stParams.pfnParser  = orxParam_Help;
+    stParams.zShortName = "h";
+    stParams.zLongName  = "help";
+    stParams.zShortDesc = "Prints this help. A parameter can be specified to print its complete description (-h <param>).";
+    stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
     /* Register */
     eResult = orxParam_Register(&stParams);
