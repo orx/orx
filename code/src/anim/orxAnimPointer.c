@@ -213,9 +213,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     /* Has current animation */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
-      orxBOOL               bCut, bClearTarget;
-      orxU32                u32NewAnim;
-      orxFLOAT              fTimeBackup, fEventStartTime;
+      orxFLOAT              fEventStartTime;
       orxSTRUCTURE         *pstOwner;
       orxANIM_EVENT_PAYLOAD stPayload;
 
@@ -231,6 +229,10 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
 
       do
       {
+        orxBOOL   bCut, bClearTarget;
+        orxU32    u32NewAnim;
+        orxFLOAT  fTimeBackup, fTimeCompare;
+
         /* Gets a backup of current time */
         fTimeBackup = _pstAnimPointer->fCurrentAnimTime;
 
@@ -241,6 +243,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+
+        /* Keeps current time for comparison */
+        fTimeCompare = _pstAnimPointer->fCurrentAnimTime;
 
         /* Change happened? */
         if(u32NewAnim != _pstAnimPointer->u32CurrentAnim)
@@ -316,8 +321,17 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             }
           }
 
-          /* Updates event start time */
-          fEventStartTime = orx2F(-1.0f);
+          /* Has current time been modified during event? */
+          if(_pstAnimPointer->fCurrentAnimTime != fTimeCompare)
+          {
+            /* Updates event start time */
+            fEventStartTime = _pstAnimPointer->fCurrentAnimTime;
+          }
+          else
+          {
+            /* Updates event start time */
+            fEventStartTime = orx2F(-1.0f);
+          }
         }
         else
         {
@@ -362,8 +376,17 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
               }
             }
 
-            /* Updates event start time */
-            fEventStartTime = orx2F(-1.0f);
+            /* Has current time been modified during event? */
+            if(_pstAnimPointer->fCurrentAnimTime != fTimeCompare)
+            {
+              /* Updates event start time */
+              fEventStartTime = _pstAnimPointer->fCurrentAnimTime;
+            }
+            else
+            {
+              /* Updates event start time */
+              fEventStartTime = orx2F(-1.0f);
+            }
           }
         }
       } while(_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim));
