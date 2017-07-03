@@ -58,6 +58,7 @@
 #ifdef __orxGCC__
 
   #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wpragmas"
   #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 
 #endif /* __orxGCC__ */
