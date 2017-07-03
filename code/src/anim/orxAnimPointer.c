@@ -395,6 +395,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
       {
         orxANIM  *pstAnim;
+        orxFLOAT  fTimeCompare;
         orxU32    u32BackupKey;
 
         /* Gets current anim */
