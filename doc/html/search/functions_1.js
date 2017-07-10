@@ -2,7 +2,6 @@ var searchData=
 [
   ['orx_5fdefaulteventhandler',['orx_DefaultEventHandler',['../group___orx.html#ga62230a89f7961eab406d0bbbb6acbf00',1,'orx.h']]],
   ['orx_5fexecute',['orx_Execute',['../group___orx.html#ga0558e5e4d1eb112a8033e5d95b60b226',1,'orx.h']]],
-  ['orx_5flogallstructures',['orx_LogAllStructures',['../group___orx.html#gae6277d966fb1c39a483162cd6824c2cd',1,'orx.h']]],
   ['orx_5fmainsetup',['orx_MainSetup',['../group___orx.html#ga25f8974b9edb1f72d95af8c0ae4ce7d9',1,'orx.h']]],
   ['orxaabox_5fcopy',['orxAABox_Copy',['../group__orx_a_a_box.html#gafa88474a3959f2f4674edead0e641570',1,'orxAABox.h']]],
   ['orxaabox_5fgetcenter',['orxAABox_GetCenter',['../group__orx_a_a_box.html#ga39f0e04fcf9a3f8a7ee36c775f7f02b3',1,'orxAABox.h']]],
@@ -1172,6 +1171,7 @@ var searchData=
   ['orxstructure_5fgetstoragetype',['orxStructure_GetStorageType',['../group__orx_structure.html#ga92c89569bf3d75646c5ae5a9f36ac58a',1,'orxStructure.h']]],
   ['orxstructure_5fincreasecounter',['orxStructure_IncreaseCounter',['../group__orx_structure.html#gab6ddc1c02cd3dc49b22091e5fd995a36',1,'orxStructure.h']]],
   ['orxstructure_5finit',['orxStructure_Init',['../group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c',1,'orxStructure.h']]],
+  ['orxstructure_5flogall',['orxStructure_LogAll',['../group__orx_structure.html#ga729e081eb94e229eb9862e64d466feec',1,'orxStructure.h']]],
   ['orxstructure_5fregister',['orxStructure_Register',['../group__orx_structure.html#gab643d3cca457a20400bb056fb14a2ba1',1,'orxStructure.h']]],
   ['orxstructure_5fsetflags',['orxStructure_SetFlags',['../group__orx_structure.html#ga95058db32c35e47042cf42e560bda596',1,'orxStructure.h']]],
   ['orxstructure_5fsetowner',['orxStructure_SetOwner',['../group__orx_structure.html#gae4e2dfb3c7a38e389941211b90931e1e',1,'orxStructure.h']]],

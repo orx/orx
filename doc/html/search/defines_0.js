@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['orx_5fdeclare_5fstructure_5finfo',['orx_DECLARE_STRUCTURE_INFO',['../orx_8h.html#ac86a5d8eb1dff5f35f1e745f532716c0',1,'orx.h']]],
-  ['orx_5fmax_5fname_5flength',['orx_MAX_NAME_LENGTH',['../orx_8h.html#a28a5cae59c1c54fc41c431ff65d2521d',1,'orx.h']]],
   ['orxcolor_5fget_5frgb_5fcomponent',['orxCOLOR_GET_RGB_COMPONENT',['../orx_display_8h.html#a6fc2c652329e3d8e0bdb951d5882471f',1,'orxDisplay.h']]],
   ['orxcrc_5fget_5ffirst',['orxCRC_GET_FIRST',['../orx_string_8h.html#a48b410748ead27e6cb1ae8269b019f13',1,'orxString.h']]],
   ['orxcrc_5findex_5f0',['orxCRC_INDEX_0',['../orx_string_8h.html#a641299bb35331719631f85afc6ab50dd',1,'orxString.h']]],

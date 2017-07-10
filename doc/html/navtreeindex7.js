@@ -1,7 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"group__orx_font.html#ga5a600515960df2d48b224d2f44d057f8":[1,21,0],
-"group__orx_font.html#ga5a600515960df2d48b224d2f44d057f8":[3,0,0,4,1,0],
 "group__orx_font.html#ga6eaf162b26fb22952530260f4861f5f0":[1,21,9],
 "group__orx_font.html#ga6eaf162b26fb22952530260f4861f5f0":[3,0,0,4,1,9],
 "group__orx_font.html#ga8e56191650ac7c5a713a01d5081243a9":[1,21,2],
@@ -105,8 +103,8 @@ var NAVTREEINDEX7 =
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7a9b375c1d5f0e71ba458ea07880280983":[3,0,0,9,0,18,3],
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7a9c7e51d4c9681e4606f4c4f287b8d3e7":[1,22,18,2],
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7a9c7e51d4c9681e4606f4c4f287b8d3e7":[3,0,0,9,0,18,2],
-"group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7af690c225877c9e176f6c93ce0a8af5dd":[1,22,18,1],
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7af690c225877c9e176f6c93ce0a8af5dd":[3,0,0,9,0,18,1],
+"group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7af690c225877c9e176f6c93ce0a8af5dd":[1,22,18,1],
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7afed364b31da98d46831bc4820c906f3d":[3,0,0,9,0,18,0],
 "group__orx_frame.html#gga2d4e31dbaf34ca37925cdb474f5c02a7afed364b31da98d46831bc4820c906f3d":[1,22,18,0],
 "group__orx_graphic.html":[1,23],
@@ -243,11 +241,13 @@ var NAVTREEINDEX7 =
 "group__orx_hash_table.html#ga97acae50d336c53cc2fd89000555930e":[3,0,0,14,0,1],
 "group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a":[1,24,2],
 "group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a":[3,0,0,14,0,2],
-"group__orx_hash_table.html#gac18bbcfe1ea91dc145b92d2c146e9286":[3,0,0,14,0,9],
 "group__orx_hash_table.html#gac18bbcfe1ea91dc145b92d2c146e9286":[1,24,9],
+"group__orx_hash_table.html#gac18bbcfe1ea91dc145b92d2c146e9286":[3,0,0,14,0,9],
 "group__orx_hash_table.html#gac2b15c7adbd972eea139d22b31db71fe":[1,24,3],
 "group__orx_hash_table.html#gac2b15c7adbd972eea139d22b31db71fe":[3,0,0,14,0,3],
 "group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585":[1,24,6],
 "group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585":[3,0,0,14,0,6],
-"group__orx_hash_table.html#gad18920165a34e79646e2b0dde49e28be":[1,24,11]
+"group__orx_hash_table.html#gad18920165a34e79646e2b0dde49e28be":[1,24,11],
+"group__orx_hash_table.html#gad18920165a34e79646e2b0dde49e28be":[3,0,0,14,0,11],
+"group__orx_hash_table.html#gad92b73fba98413e285bc2ef0c5ef6567":[1,24,4]
 };
