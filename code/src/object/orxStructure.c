@@ -32,9 +32,12 @@
 
 #include "object/orxStructure.h"
 
+#include "orxKernel.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
 #include "debug/orxProfiler.h"
+#include "utils/orxHashTable.h"
+#include "utils/orxTree.h"
 
 
 /** Module flags
@@ -81,6 +84,43 @@ typedef struct __orxSTRUCTURE_REGISTER_INFO_t
 
 } orxSTRUCTURE_REGISTER_INFO;
 
+/** Internal log structures
+ */
+typedef struct __orxSTRUCTURE_LOG_NODE_t
+{
+  orxTREE_NODE  stNode;
+  orxSTRUCTURE *pstStructure;
+
+} orxSTRUCTURE_LOG_NODE;
+
+typedef orxSTRING(orxFASTCALL *orxSTRUCTURE_GETNAME)(const void *_pStructure);
+
+#define orxSTRUCTURE_DECLARE_STRUCTURE_INFO(ID, FN) {orxSTRUCTURE_ID_##ID, (orxSTRUCTURE_GETNAME)FN}
+struct
+{
+  orxSTRUCTURE_ID       eID;
+  orxSTRUCTURE_GETNAME  pfnGetName;
+} sastStructureLogInfoList[] =
+{
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(OBJECT,    orxObject_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(FONT,      orxFont_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(VIEWPORT,  orxViewport_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(ANIMSET,   orxAnimSet_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(ANIM,      orxAnim_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(BODY,      orxBody_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(CAMERA,    orxCamera_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(CLOCK,     orxClock_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(FX,        orxFX_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(GRAPHIC,   orxGraphic_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(SHADER,    orxShader_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(SOUND,     orxSound_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(SPAWNER,   orxSpawner_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXT,      orxText_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXTURE,   orxTexture_GetName),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TIMELINE,  orxNULL)
+};
+#undef orxSTRUCTURE_DECLARE_STRUCTURE_INFO
+
 /** Static structure
  */
 typedef struct __orxSTRUCTURE_STATIC_t
@@ -105,6 +145,135 @@ static orxSTRUCTURE_STATIC sstStructure;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orxHASHTABLE *_pstTable, orxTREE_NODE *_pstRoot, orxSTRUCTURE *_pstStructure)
+{
+  orxSTRUCTURE_LOG_NODE **ppstBucket;
+
+  /* Retrieves structure's bucket */
+  ppstBucket = (orxSTRUCTURE_LOG_NODE **)orxHashTable_Retrieve(_pstTable, orxStructure_GetGUID(_pstStructure));
+
+  /* Not already in the tree? */
+  if(*ppstBucket == orxNULL)
+  {
+    orxSTRUCTURE           *pstOwner;
+    orxSTRUCTURE_LOG_NODE  *pstNode;
+
+    /* Creates its node */
+    pstNode = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(_pstBank);
+    orxASSERT(pstNode != orxNULL);
+    pstNode->pstStructure = _pstStructure;
+
+    /* Gets its owner */
+    pstOwner = orxStructure_GetOwner(_pstStructure);
+
+    /* Valid and public? */
+    if((pstOwner != orxNULL) && (pstOwner != _pstStructure))
+    {
+      orxTREE_NODE *pstOwnerNode;
+
+      /* Inserts it */
+      pstOwnerNode = orxStructure_InsertLogNode(_pstBank, _pstTable, _pstRoot, pstOwner);
+
+      /* Sets owner as tree parent */
+      orxTree_AddChild(pstOwnerNode, &(pstNode->stNode));
+    }
+    else
+    {
+      /* Inserts as child of root */
+      orxTree_AddChild(_pstRoot, &(pstNode->stNode));
+    }
+
+    /* Stores it */
+    *ppstBucket = pstNode;
+  }
+
+  /* Done! */
+  return &((*ppstBucket)->stNode);
+}
+
+static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 _u32Depth)
+{
+  /* Is Valid? */
+  if(_pstNode != orxNULL)
+  {
+    orxSTRUCTURE *pstStructure;
+    orxTREE_NODE *pstChild;
+    orxU32        u32Depth = _u32Depth;
+
+    /* Gets its structure */
+    pstStructure = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE_LOG_NODE, stNode, _pstNode)->pstStructure;
+
+    /* Has public structure */
+    if((pstStructure != orxNULL) && (orxStructure_GetOwner(pstStructure) != pstStructure))
+    {
+      orxCHAR acBuffer[1024] = {0};
+      orxU32 i;
+
+      /* Finds its ID */
+      for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sastStructureLogInfoList); i++)
+      {
+        if(sastStructureLogInfoList[i].eID == orxStructure_GetID(pstStructure))
+        {
+#define orxSTRUCTURE_MAX_NAME_LENGTH 48
+
+          /* Supports name? */
+          if(sastStructureLogInfoList[i].pfnGetName != orxNULL)
+          {
+            const orxSTRING zName;
+            orxS32          s32Offset;
+
+            /* Gets structure name */
+            zName = sastStructureLogInfoList[i].pfnGetName(pstStructure);
+
+            /* Gets offset */
+            s32Offset = orxSTRUCTURE_MAX_NAME_LENGTH - orxString_GetLength(zName) - 2 * _u32Depth;
+            s32Offset = orxMAX(s32Offset, 0);
+
+            /* Logs it */
+            orxLOG("%*s%-8s \"%s\"%*s[%016llX]", 2 * _u32Depth, orxSTRING_EMPTY, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
+          }
+          else
+          {
+            /* Logs it */
+            orxLOG("%*s%-8s %*s[%016llX]", 2 * _u32Depth, orxSTRING_EMPTY, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - 2 * _u32Depth, orxSTRING_EMPTY, pstStructure->u64GUID);
+          }
+
+#undef orxSTRUCTURE_MAX_NAME_LENGTH
+
+          /* Updates depth */
+          u32Depth = _u32Depth + 1;
+
+          break;
+        }
+      }
+    }
+
+    /* Gets its child */
+    pstChild = orxTree_GetChild(_pstNode);
+
+    /* Valid? */
+    if(pstChild != orxNULL)
+    {
+      orxTREE_NODE *pstSibling;
+
+      /* Logs its */
+      orxStructure_LogNode(pstChild, u32Depth);
+
+      /* For all its siblings */
+      for(pstSibling = orxTree_GetSibling(pstChild);
+          pstSibling != orxNULL;
+          pstSibling = orxTree_GetSibling(pstSibling))
+      {
+        /* Logs it */
+        orxStructure_LogNode(pstSibling, u32Depth);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
 
 
 /***************************************************************************
@@ -995,6 +1164,88 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(void *_pStructure, void *_pParent)
 
     /* Not done */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Logs all user-generated active structures
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxStructure_LogAll()
+{
+  orxHASHTABLE *pstTable;
+  orxBANK      *pstBank;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Creates table & bank */
+  pstTable  = orxHashTable_Create(1024, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+  pstBank   = orxBank_Create(1024, sizeof(orxSTRUCTURE_LOG_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+
+  /* Valid? */
+  if((pstTable != orxNULL) && (pstBank != orxNULL))
+  {
+    orxTREE                 stTree = {0};
+    orxSTRUCTURE_LOG_NODE  *pstRoot;
+    orxU32                  u32DebugFlags;
+    orxS32                  i;
+
+    /* Inits tree */
+    pstRoot = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(pstBank);
+    orxASSERT(pstRoot != orxNULL);
+    orxMemory_Zero(pstRoot, sizeof(orxSTRUCTURE_LOG_NODE));
+    orxTree_AddRoot(&stTree, &(pstRoot->stNode));
+
+    /* For all IDs */
+    for(i = orxARRAY_GET_ITEM_COUNT(sastStructureLogInfoList) - 1; i >= 0; i--)
+    {
+      orxSTRUCTURE *pstStructure;
+
+      /* Checks */
+      orxASSERT(orxStructure_GetStorageType(sastStructureLogInfoList[i].eID) == orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+
+      /* For all structures */
+      for(pstStructure = orxStructure_GetFirst(sastStructureLogInfoList[i].eID);
+          pstStructure != orxNULL;
+          pstStructure = orxStructure_GetNext(pstStructure))
+      {
+        /* Inserts it */
+        orxStructure_InsertLogNode(pstBank, pstTable, &(pstRoot->stNode), pstStructure);
+      }
+    }
+
+    /* Backups debug flags */
+    u32DebugFlags = orxDEBUG_GET_FLAGS();
+
+    /* Sets new debug flags */
+    orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE,
+                       orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP | orxDEBUG_KU32_STATIC_FLAG_TYPE);
+
+    /* Logs header */
+    orxLOG("*** BEGIN STRUCTURE LOG ***\n");
+
+    /* Logs tree from root */
+    orxStructure_LogNode(&(pstRoot->stNode), 0);
+
+    /* Logs footer */
+    orxLOG("\n*** END STRUCTURE LOG ***");
+
+    /* Restores debug flags */
+    orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Deletes table & bank */
+  if(pstTable != orxNULL)
+  {
+    orxHashTable_Delete(pstTable);
+  }
+  if(pstBank != orxNULL)
+  {
+    orxBank_Delete(pstBank);
   }
 
   /* Done! */

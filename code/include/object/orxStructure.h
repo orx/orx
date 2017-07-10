@@ -383,6 +383,12 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetNext(con
 extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_SetParent(void *_pStructure, void *_phParent);
 
 
+/** Logs all user-generated active structures
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_LogAll();
+
+
 /** *** Inlined structure accessors *** */
 
 
