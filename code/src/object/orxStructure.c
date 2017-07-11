@@ -197,6 +197,8 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
   /* Is Valid? */
   if(_pstNode != orxNULL)
   {
+    static orxCHAR  sacPrefixBuffer[1024] = {0};
+    static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
     orxSTRUCTURE *pstStructure;
     orxTREE_NODE *pstChild;
     orxU32        u32Depth = _u32Depth;
@@ -231,12 +233,12 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
             s32Offset = orxMAX(s32Offset, 0);
 
             /* Logs it */
-            orxLOG("%*s%-8s \"%s\"%*s[%016llX]", 2 * _u32Depth, orxSTRING_EMPTY, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
+            orxLOG("%s%-8s \"%s\"%*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
           }
           else
           {
             /* Logs it */
-            orxLOG("%*s%-8s %*s[%016llX]", 2 * _u32Depth, orxSTRING_EMPTY, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - 2 * _u32Depth, orxSTRING_EMPTY, pstStructure->u64GUID);
+            orxLOG("%s%-8s %*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - 2 * _u32Depth, orxSTRING_EMPTY, pstStructure->u64GUID);
           }
 
 #undef orxSTRUCTURE_MAX_NAME_LENGTH
@@ -257,6 +259,10 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
     {
       orxTREE_NODE *pstSibling;
 
+      /* Updates prefix */
+      *spcPrefixCurrent++ = '+';
+      *spcPrefixCurrent++ = '-';
+
       /* Logs its */
       orxStructure_LogNode(pstChild, u32Depth);
 
@@ -268,6 +274,10 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
         /* Logs it */
         orxStructure_LogNode(pstSibling, u32Depth);
       }
+
+      /* Restores prefix */
+      spcPrefixCurrent -= 2;
+      *spcPrefixCurrent = orxCHAR_NULL;
     }
   }
 

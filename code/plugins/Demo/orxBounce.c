@@ -494,11 +494,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxSpawner_Spawn(spoBallSpawner, 1);
   }
   /* Picking? */
-  else if(orxInput_HasBeenActivated("Pick"))
+  else if(orxInput_IsActive("Pick"))
   {
     orxOBJECT *pstObject;
-
-    orxStructure_LogAll();
 
     /* Updates mouse position */
     vMousePos.fZ -= orx2F(0.1f);
