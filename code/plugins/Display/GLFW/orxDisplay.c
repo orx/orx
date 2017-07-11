@@ -2514,6 +2514,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Swap()
   /* Swap buffers */
   glfwSwapBuffers();
 
+  /* Is fullscreen & VSync? */
+  if(orxFLAG_TEST_ALL(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN | orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
+  {
+    /* Waits for the end of GPU work */
+    glFinish();
+    glASSERT();
+  }
+
   /* Done! */
   return eResult;
 }
@@ -3648,8 +3656,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  orxLOG("VSYNC: %s", _bEnable ? "TRUE" : "FALSE");
-
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
@@ -4556,8 +4562,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           {
             orxCLOCK *pstClock;
 
-            orxDisplay_GLFW_EnableVSync(orxFALSE);
-
             /* Has VSync value? */
             if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
             {
@@ -4568,6 +4572,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             {
               /* Enables vertical sync */
               orxDisplay_GLFW_EnableVSync(orxTRUE);
+            }
+
+            /* Has VSync value? */
+            if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+            {
+              /* Updates vertical sync */
+              orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
             }
 
             /* Inits info */

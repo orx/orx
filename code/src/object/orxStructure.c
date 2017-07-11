@@ -192,16 +192,25 @@ static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orx
   return &((*ppstBucket)->stNode);
 }
 
-static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 _u32Depth)
+static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
 {
+#define orxSTRUCTURE_MAX_NAME_LENGTH 48
+
   /* Is Valid? */
   if(_pstNode != orxNULL)
   {
     static orxCHAR  sacPrefixBuffer[1024] = {0};
     static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
-    orxSTRUCTURE *pstStructure;
-    orxTREE_NODE *pstChild;
-    orxU32        u32Depth = _u32Depth;
+    orxSTRUCTURE   *pstStructure;
+    orxTREE_NODE   *pstChild, *pstSibling;
+
+    /* Gets next sibling */
+    pstSibling = orxTree_GetSibling(_pstNode);
+
+    /* Updates prefix */
+    *(spcPrefixCurrent)     = (pstSibling != orxNULL) ? '+' : '`';
+    *(spcPrefixCurrent + 1) = '-';
+    spcPrefixCurrent       += 2;
 
     /* Gets its structure */
     pstStructure = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE_LOG_NODE, stNode, _pstNode)->pstStructure;
@@ -209,16 +218,19 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
     /* Has public structure */
     if((pstStructure != orxNULL) && (orxStructure_GetOwner(pstStructure) != pstStructure))
     {
-      orxCHAR acBuffer[1024] = {0};
-      orxU32 i;
+      orxSTRUCTURE_ID eID;
+      orxU32          i;
+      orxBOOL         bLogged = orxFALSE;
 
-      /* Finds its ID */
+      /* Gets its ID */
+      eID = orxStructure_GetID(pstStructure);
+
+      /* For all listed IDs */
       for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sastStructureLogInfoList); i++)
       {
-        if(sastStructureLogInfoList[i].eID == orxStructure_GetID(pstStructure))
+        /* Found? */
+        if(sastStructureLogInfoList[i].eID == eID)
         {
-#define orxSTRUCTURE_MAX_NAME_LENGTH 48
-
           /* Supports name? */
           if(sastStructureLogInfoList[i].pfnGetName != orxNULL)
           {
@@ -229,26 +241,32 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
             zName = sastStructureLogInfoList[i].pfnGetName(pstStructure);
 
             /* Gets offset */
-            s32Offset = orxSTRUCTURE_MAX_NAME_LENGTH - orxString_GetLength(zName) - 2 * _u32Depth;
+            s32Offset = orxSTRUCTURE_MAX_NAME_LENGTH - orxString_GetLength(zName) - (orxS32)(spcPrefixCurrent - sacPrefixBuffer);
             s32Offset = orxMAX(s32Offset, 0);
 
             /* Logs it */
-            orxLOG("%s%-8s \"%s\"%*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
-          }
-          else
-          {
-            /* Logs it */
-            orxLOG("%s%-8s %*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(sastStructureLogInfoList[i].eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - 2 * _u32Depth, orxSTRING_EMPTY, pstStructure->u64GUID);
-          }
+            orxLOG("%s%-16s \"%s\"%*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
 
-#undef orxSTRUCTURE_MAX_NAME_LENGTH
-
-          /* Updates depth */
-          u32Depth = _u32Depth + 1;
+            /* Updates logged status */
+            bLogged = orxTRUE;
+          }
 
           break;
         }
       }
+
+      /* Not logged yet? */
+      if(bLogged == orxFALSE)
+      {
+        /* Logs it */
+        orxLOG("%s%-16s %*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - (orxS32)(spcPrefixCurrent - sacPrefixBuffer), orxSTRING_EMPTY, pstStructure->u64GUID);
+      }
+    }
+    /* Root? */
+    else if(_pstNode == orxTree_GetRoot(orxTree_GetTree(_pstNode)))
+    {
+      /* Logs it */
+      orxLOG("[ROOT]");
     }
 
     /* Gets its child */
@@ -257,14 +275,12 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
     /* Valid? */
     if(pstChild != orxNULL)
     {
-      orxTREE_NODE *pstSibling;
-
       /* Updates prefix */
-      *spcPrefixCurrent++ = '+';
-      *spcPrefixCurrent++ = '-';
+      *(spcPrefixCurrent - 2) = (pstSibling != orxNULL) ? '|' : ' ';
+      *(spcPrefixCurrent - 1) = ' ';
 
       /* Logs its */
-      orxStructure_LogNode(pstChild, u32Depth);
+      orxStructure_LogNode(pstChild);
 
       /* For all its siblings */
       for(pstSibling = orxTree_GetSibling(pstChild);
@@ -272,17 +288,19 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxU32 
           pstSibling = orxTree_GetSibling(pstSibling))
       {
         /* Logs it */
-        orxStructure_LogNode(pstSibling, u32Depth);
+        orxStructure_LogNode(pstSibling);
       }
-
-      /* Restores prefix */
-      spcPrefixCurrent -= 2;
-      *spcPrefixCurrent = orxCHAR_NULL;
     }
+
+    /* Restores prefix */
+    spcPrefixCurrent -= 2;
+    *spcPrefixCurrent = orxCHAR_NULL;
   }
 
   /* Done! */
   return;
+
+#undef orxSTRUCTURE_MAX_NAME_LENGTH
 }
 
 
@@ -1236,7 +1254,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
     orxLOG("*** BEGIN STRUCTURE LOG ***\n");
 
     /* Logs tree from root */
-    orxStructure_LogNode(&(pstRoot->stNode), 0);
+    orxStructure_LogNode(&(pstRoot->stNode));
 
     /* Logs footer */
     orxLOG("\n*** END STRUCTURE LOG ***");
