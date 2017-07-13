@@ -52,6 +52,11 @@
 
 /** Defines
  */
+#define orxSTRUCTURE_KU32_LOG_COLOR_ID        orxANSI_KZ_COLOR_FG_YELLOW
+#define orxSTRUCTURE_KU32_LOG_COLOR_NAME      orxANSI_KZ_COLOR_FG_CYAN
+#define orxSTRUCTURE_KU32_LOG_COLOR_GUID      orxANSI_KZ_COLOR_FG_MAGENTA
+#define orxSTRUCTURE_KU32_LOG_COLOR_MARKER    orxANSI_KZ_COLOR_FG_DEFAULT
+#define orxSTRUCTURE_KU32_LOG_COLOR_TREE      orxANSI_KZ_COLOR_FG_GREEN
 
 
 /***************************************************************************
@@ -245,7 +250,7 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
             s32Offset = orxMAX(s32Offset, 0);
 
             /* Logs it */
-            orxLOG("%s%-16s \"%s\"%*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
+            orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_TREE "%s" orxSTRUCTURE_KU32_LOG_COLOR_ID "%-16s" orxSTRUCTURE_KU32_LOG_COLOR_MARKER " \"" orxSTRUCTURE_KU32_LOG_COLOR_NAME "%s" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "\"%*s[" orxSTRUCTURE_KU32_LOG_COLOR_GUID "%016llX" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]", sacPrefixBuffer, orxStructure_GetIDString(eID), zName, s32Offset, orxSTRING_EMPTY, pstStructure->u64GUID);
 
             /* Updates logged status */
             bLogged = orxTRUE;
@@ -259,14 +264,14 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
       if(bLogged == orxFALSE)
       {
         /* Logs it */
-        orxLOG("%s%-16s %*s[%016llX]", sacPrefixBuffer, orxStructure_GetIDString(eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - (orxS32)(spcPrefixCurrent - sacPrefixBuffer), orxSTRING_EMPTY, pstStructure->u64GUID);
+        orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_TREE "%s" orxSTRUCTURE_KU32_LOG_COLOR_ID "%-16s" orxSTRUCTURE_KU32_LOG_COLOR_MARKER " %*s[" orxSTRUCTURE_KU32_LOG_COLOR_GUID "%016llX" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]", sacPrefixBuffer, orxStructure_GetIDString(eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - (orxS32)(spcPrefixCurrent - sacPrefixBuffer), orxSTRING_EMPTY, pstStructure->u64GUID);
       }
     }
     /* Root? */
     else if(_pstNode == orxTree_GetRoot(orxTree_GetTree(_pstNode)))
     {
       /* Logs it */
-      orxLOG("[ROOT]");
+      orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_MARKER "[" orxSTRUCTURE_KU32_LOG_COLOR_ID "ROOT" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]");
     }
 
     /* Gets its child */
