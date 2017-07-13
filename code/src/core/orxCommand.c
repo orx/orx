@@ -2084,6 +2084,22 @@ void orxFASTCALL orxCommand_CommandVersion(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: LogAllStructures
+ */
+void orxFASTCALL orxCommand_CommandLogAllStructures(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTATUS eResult;
+
+  /* Logs all structures */
+  eResult = orxStructure_LogAll();
+
+  /* Updates result */
+  _pstResult->u32Value = (eResult != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -2159,6 +2175,9 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Command: Version */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Version, "String", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Type = full [minor|major|build|release|numeric|full]", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: LogAllStructures */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
@@ -2261,6 +2280,9 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Version */
   orxCommand_AddAlias("Version", "Command.Version", orxNULL);
+
+  /* Alias: Structure.LogAll */
+  orxCommand_AddAlias("Structure.LogAll", "Command.LogAllStructures", orxNULL);
 }
 
 /** Unregisters all the command commands
@@ -2368,6 +2390,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Version */
   orxCommand_RemoveAlias("Version");
 
+  /* Alias: Structure.LogAll */
+  orxCommand_RemoveAlias("Structure.LogAll");
+
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 
@@ -2439,6 +2464,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Version */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Version);
+
+  /* Command: LogAllStructures */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, LogAllStructures);
 }
 
 /***************************************************************************
