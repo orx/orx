@@ -642,7 +642,7 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
     else
     {
       /* Stores value */
-      _pstValue->zValue = (orxSTRING)orxString_Store(sstConfig.acValueBuffer);
+      _pstValue->zValue = (*sstConfig.acValueBuffer != orxCHAR_NULL) ? (orxSTRING)orxString_Store(sstConfig.acValueBuffer) : (orxSTRING)orxSTRING_EMPTY;
 
       /* Computes working value */
       orxConfig_ComputeWorkingValue(_pstValue, 1);
