@@ -1593,6 +1593,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S32;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s32Value       = s32Value;
+        _pstValue->s32AltValue    = s32Value;
 
         /* Updates result */
         *_ps32Result = s32Value;
@@ -1714,6 +1715,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U32;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u32Value       = u32Value;
+        _pstValue->u32AltValue    = u32Value;
 
         /* Updates result */
         *_pu32Result = u32Value;
@@ -1835,6 +1837,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S64;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s64Value       = s64Value;
+        _pstValue->s64AltValue    = s64Value;
 
         /* Updates result */
         *_ps64Result = s64Value;
@@ -1956,6 +1959,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U64;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u64Value       = u64Value;
+        _pstValue->u64AltValue    = u64Value;
 
         /* Updates result */
         *_pu64Result = u64Value;
@@ -2077,6 +2081,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_FLOAT;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->fValue         = fValue;
+        _pstValue->fAltValue      = fValue;
 
         /* Updates result */
         *_pfResult = fValue;
@@ -2293,6 +2298,7 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_VECTOR;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         orxVector_Copy(&(_pstValue->vValue), _pvResult);
+        orxVector_Copy(&(_pstValue->vAltValue), _pvResult);
       }
     }
     else
