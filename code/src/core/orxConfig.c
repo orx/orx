@@ -3191,46 +3191,63 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
       /* Is index valid? */
       if(s32Index < (orxS32)pstValue->u16ListCounter)
       {
-        /* Gets string value */
-        if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
+        orxVECTOR vResult;
+        orxBOOL   bConfigLevelEnabled;
+
+        /* Gets config debug level state */
+        bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+
+        /* Deactivates config debug level */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+        /* Gets vector value */
+        if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
         {
-          orxVECTOR vResult;
-          orxBOOL   bConfigLevelEnabled;
+          /* Prints it */
+          orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
-          /* Gets config debug level state */
-          bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-
-          /* Deactivates config debug level */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-          /* Not hexadecimal, binary or octal?? */
-          if((_pstResult->zValue[0] == orxCHAR_EOL)
-          || (_pstResult->zValue[0] != '0')
-          || (_pstResult->zValue[1] == orxCHAR_EOL)
-          || (((_pstResult->zValue[1] | 0x20) != 'x')
-           && ((_pstResult->zValue[1] | 0x20) != 'b')
-           && ((_pstResult->zValue[1] < '0')
-            || (_pstResult->zValue[1] > '9'))))
-          {
-            /* Gets vector value */
-            if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
-            {
-              /* Prints it */
-              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
-
-              /* Updates result */
-              _pstResult->zValue = sstConfig.acCommandBuffer;
-            }
-          }
-
-          /* Restores config debug level state */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+          /* Updates result */
+          _pstResult->zValue = sstConfig.acCommandBuffer;
         }
         else
         {
-          /* Updates result */
-          _pstResult->zValue = orxSTRING_EMPTY;
+          /* Gets string value */
+          if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
+          {
+            /* Random? */
+            if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+            {
+              orxS32 s32RandomSeparatorIndex;
+
+              /* Searches for the random separator */
+              s32RandomSeparatorIndex = orxString_SearchCharIndex(_pstResult->zValue, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+              /* Valid? */
+              if((s32RandomSeparatorIndex >= 0) && (*(_pstResult->zValue + s32RandomSeparatorIndex + 1) != orxCONFIG_KC_RANDOM_SEPARATOR))
+              {
+                orxFLOAT fValue;
+
+                /* Gets random float value */
+                if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fValue) != orxSTATUS_FAILURE)
+                {
+                  /* Prints it */
+                  orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fValue);
+
+                  /* Updates result */
+                  _pstResult->zValue = sstConfig.acCommandBuffer;
+                }
+              }
+            }
+          }
+          else
+          {
+            /* Updates result */
+            _pstResult->zValue = orxSTRING_EMPTY;
+          }
         }
+
+        /* Restores config debug level state */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
       }
       else
       {
