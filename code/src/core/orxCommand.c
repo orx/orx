@@ -456,7 +456,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     orxU32          u32PushCounter;
     const orxCHAR  *pcCommandEnd;
     orxCOMMAND     *pstCommand;
-    orxBOOL         bInBlock;
     orxCHAR         cBackupChar, acGUID[20];
 
     /* Updates status */
@@ -3512,7 +3511,7 @@ orxU32 orxFASTCALL orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, c
     {
       /* Ends string */
       _zDstString[0]  = orxCHAR_NULL;
-      u32Result     = 0;
+      u32Result       = 0;
 
       break;
     }
