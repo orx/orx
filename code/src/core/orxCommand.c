@@ -1008,6 +1008,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
       }
+
+      /* Stops */
+      zCommand = orxSTRING_EMPTY;
     }
 
     /* Failure? */
