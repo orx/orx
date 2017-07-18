@@ -51,7 +51,7 @@
 #define orxCOMMAND_KC_PUSH_MARKER                     '>'                             /**< Push marker character */
 #define orxCOMMAND_KC_POP_MARKER                      '<'                             /**< Pop marker character */
 #define orxCOMMAND_KC_GUID_MARKER                     '^'                             /**< GUID marker character */
-#define orxCOMMAND_KC_SEPARATOR                       ';'                             /**< Command separator character */
+#define orxCOMMAND_KC_SEPARATOR                       ','                             /**< Command separator character */
 
 
 /** Variable type enum
