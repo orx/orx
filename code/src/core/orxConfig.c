@@ -82,6 +82,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_INHERITANCE     0x0004      /**< Inheritance flag */
 #define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
 #define orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE      0x0010      /**< Self value flag */
+#define orxCONFIG_VALUE_KU16_FLAG_COMMAND         0x0020      /**< Command flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -877,6 +878,9 @@ static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstVal
   orxASSERT(_pstValue != orxNULL);
   orxASSERT(_s32Index >= 0);
 
+  /* Clears command flag */
+  orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_NONE, orxCONFIG_VALUE_KU16_FLAG_COMMAND);
+
   /* Is self value? */
   if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE))
   {
@@ -913,6 +917,9 @@ static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstVal
             /* Updates result */
             zResult = (_bPermanentStore != orxFALSE) ? orxString_Store(sstConfig.acCommandBuffer) : sstConfig.acCommandBuffer;
           }
+
+          /* Updates command flag */
+          orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND, orxCONFIG_VALUE_KU16_FLAG_NONE);
         }
       }
       else
@@ -1633,6 +1640,13 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
         /* Updates result */
         *_ps32Result = s32Value;
       }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+      }
     }
     else
     {
@@ -1754,6 +1768,13 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
 
         /* Updates result */
         *_pu32Result = u32Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -1877,6 +1898,13 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
         /* Updates result */
         *_ps64Result = s64Value;
       }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+      }
     }
     else
     {
@@ -1998,6 +2026,13 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
 
         /* Updates result */
         *_pu64Result = u64Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -2121,6 +2156,13 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
         /* Updates result */
         *_pfResult = fValue;
       }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+      }
     }
     else
     {
@@ -2209,10 +2251,19 @@ static orxINLINE orxSTATUS orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue
     /* Gets value */
     if(orxString_ToBool(zStart, &bValue, orxNULL) != orxSTATUS_FAILURE)
     {
-      /* Updates cache */
-      _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_BOOL;
-      _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
-      _pstValue->bValue         = bValue;
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_BOOL;
+        _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+        _pstValue->bValue         = bValue;
+      }
 
       /* Updates result */
       *_pbResult = bValue;
@@ -2334,6 +2385,13 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         orxVector_Copy(&(_pstValue->vValue), _pvResult);
         orxVector_Copy(&(_pstValue->vAltValue), _pvResult);
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
