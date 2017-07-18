@@ -684,6 +684,11 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Stops */
                 bStop = orxTRUE;
               }
+              else
+              {
+                /* Copies it */
+                *pcDst++ = *pcSrc;
+              }
 
               break;
             }
