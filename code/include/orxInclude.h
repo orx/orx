@@ -31,11 +31,8 @@
  * - Add multi animation interpreter (for blends, transitions, etc...)
  * - Add fixed point decimals
  * - Add Matrix module
- * - Update camera to use matrix
- * - Update camera to use 3D-like computation
+ * - Update camera to use 3D matrix
  * - Add network :)
- * - Add waypoint/way system
- * - Restore generic pathfinder module
  */
 
 /**
