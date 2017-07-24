@@ -82,6 +82,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_INHERITANCE     0x0004      /**< Inheritance flag */
 #define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
 #define orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE      0x0010      /**< Self value flag */
+#define orxCONFIG_VALUE_KU16_FLAG_COMMAND         0x0020      /**< Command flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -867,14 +868,18 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
 /** Gets a list value
  * @param[in] _pstValue         Concerned config value
  * @param[in] _s32Index         Index of the desired value
+ * @param[in] _bPermanentStore  Store the result permanently if it's a string from a command
  */
-static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32Index)
+static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32Index, orxBOOL _bPermanentStore)
 {
   const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_pstValue != orxNULL);
   orxASSERT(_s32Index >= 0);
+
+  /* Clears command flag */
+  orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_NONE, orxCONFIG_VALUE_KU16_FLAG_COMMAND);
 
   /* Is self value? */
   if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE))
@@ -886,6 +891,43 @@ static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstVal
   {
     /* Updates result */
     zResult = (_s32Index == 0) ? _pstValue->zValue : _pstValue->zValue + _pstValue->au32ListIndexTable[_s32Index - 1];
+
+    /* Command character? */
+    if(*zResult == orxCONFIG_KC_COMMAND)
+    {
+      /* Real command? */
+      if(*(zResult + 1) != orxCONFIG_KC_COMMAND)
+      {
+        orxCOMMAND_VAR stResult;
+
+        /* Evaluates command */
+        if(orxCommand_Evaluate(zResult + 1, &stResult) != orxNULL)
+        {
+          /* String? */
+          if(stResult.eType == orxCOMMAND_VAR_TYPE_STRING)
+          {
+            /* Updates result */
+            zResult = stResult.zValue;
+          }
+          else
+          {
+            /* Prints result */
+            orxCommand_PrintVar(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), &stResult);
+
+            /* Updates result */
+            zResult = (_bPermanentStore != orxFALSE) ? orxString_Store(sstConfig.acCommandBuffer) : sstConfig.acCommandBuffer;
+          }
+
+          /* Updates command flag */
+          orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND, orxCONFIG_VALUE_KU16_FLAG_NONE);
+        }
+      }
+      else
+      {
+        /* Updates result */
+        zResult++;
+      }
+    }
   }
 
   /* Done! */
@@ -1536,7 +1578,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToS32(zStart, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
@@ -1593,9 +1635,17 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S32;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s32Value       = s32Value;
+        _pstValue->s32AltValue    = s32Value;
 
         /* Updates result */
         *_ps32Result = s32Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -1657,7 +1707,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToU32(zStart, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
@@ -1714,9 +1764,17 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U32;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u32Value       = u32Value;
+        _pstValue->u32AltValue    = u32Value;
 
         /* Updates result */
         *_pu32Result = u32Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -1778,7 +1836,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToS64(zStart, &s64Value, &zRemainder) != orxSTATUS_FAILURE)
@@ -1835,9 +1893,17 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S64;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s64Value       = s64Value;
+        _pstValue->s64AltValue    = s64Value;
 
         /* Updates result */
         *_ps64Result = s64Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -1899,7 +1965,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToU64(zStart, &u64Value, &zRemainder) != orxSTATUS_FAILURE)
@@ -1956,9 +2022,17 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U64;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u64Value       = u64Value;
+        _pstValue->u64AltValue    = u64Value;
 
         /* Updates result */
         *_pu64Result = u64Value;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -2020,7 +2094,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToFloat(zStart, &fValue, &zRemainder) != orxSTATUS_FAILURE)
@@ -2077,9 +2151,17 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_FLOAT;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->fValue         = fValue;
+        _pstValue->fAltValue      = fValue;
 
         /* Updates result */
         *_pfResult = fValue;
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -2120,7 +2202,7 @@ static orxINLINE orxSTATUS orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstVal
   }
 
   /* Gets wanted value */
-  *_pzResult = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+  *_pzResult = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxTRUE);
 
   /* Done! */
   return eResult;
@@ -2164,15 +2246,24 @@ static orxINLINE orxSTATUS orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToBool(zStart, &bValue, orxNULL) != orxSTATUS_FAILURE)
     {
-      /* Updates cache */
-      _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_BOOL;
-      _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
-      _pstValue->bValue         = bValue;
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_BOOL;
+        _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
+        _pstValue->bValue         = bValue;
+      }
 
       /* Updates result */
       *_pbResult = bValue;
@@ -2237,7 +2328,7 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
     const orxSTRING zStart;
 
     /* Gets wanted value */
-    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex);
+    zStart = orxConfig_GetListValue(_pstValue, _s32ListIndex, orxFALSE);
 
     /* Gets value */
     if(orxString_ToVector(zStart, _pvResult, &zRemainder) != orxSTATUS_FAILURE)
@@ -2293,6 +2384,14 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
         _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_VECTOR;
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         orxVector_Copy(&(_pstValue->vValue), _pvResult);
+        orxVector_Copy(&(_pstValue->vAltValue), _pvResult);
+      }
+
+      /* Command? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+      {
+        /* Clears cache */
+        _pstValue->u16Type = (orxU16)orxCONFIG_VALUE_TYPE_STRING;
       }
     }
     else
@@ -3182,55 +3281,66 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
     if(pstValue != orxNULL)
     {
       /* Random? */
-      if((s32Index == -1) && (orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST)))
+      if(s32Index == -1)
       {
         /* Updates real index */
-        s32Index = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCounter - 1);
+        s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCounter - 1) : 0;
       }
 
       /* Is index valid? */
       if(s32Index < (orxS32)pstValue->u16ListCounter)
       {
-        /* Gets string value */
-        if(orxConfig_GetStringFromValue(pstValue, s32Index, &(_pstResult->zValue)) != orxSTATUS_FAILURE)
+        orxVECTOR vResult;
+        orxBOOL   bConfigLevelEnabled;
+
+        /* Gets config debug level state */
+        bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+
+        /* Deactivates config debug level */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+        /* Gets vector value */
+        if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
         {
-          orxVECTOR vResult;
-          orxBOOL   bConfigLevelEnabled;
+          /* Prints it */
+          orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
-          /* Gets config debug level state */
-          bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-
-          /* Deactivates config debug level */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-          /* Not hexadecimal, binary or octal?? */
-          if((_pstResult->zValue[0] == orxCHAR_EOL)
-          || (_pstResult->zValue[0] != '0')
-          || (_pstResult->zValue[1] == orxCHAR_EOL)
-          || (((_pstResult->zValue[1] | 0x20) != 'x')
-           && ((_pstResult->zValue[1] | 0x20) != 'b')
-           && ((_pstResult->zValue[1] < '0')
-            || (_pstResult->zValue[1] > '9'))))
-          {
-            /* Gets vector value */
-            if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
-            {
-              /* Prints it */
-              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
-
-              /* Updates result */
-              _pstResult->zValue = sstConfig.acCommandBuffer;
-            }
-          }
-
-          /* Restores config debug level state */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+          /* Updates result */
+          _pstResult->zValue = sstConfig.acCommandBuffer;
         }
         else
         {
-          /* Updates result */
-          _pstResult->zValue = orxSTRING_EMPTY;
+          orxBOOL bSuccess = orxFALSE;
+
+          /* Random? */
+          if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+          {
+            orxFLOAT fValue;
+
+            /* Gets random float value */
+            if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fValue) != orxSTATUS_FAILURE)
+            {
+              /* Prints it */
+              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fValue);
+
+              /* Updates result */
+              _pstResult->zValue = sstConfig.acCommandBuffer;
+
+              /* Updates status */
+              bSuccess = orxTRUE;
+            }
+          }
+
+          /* Need string value? */
+          if(bSuccess == orxFALSE)
+          {
+            /* Gets string value */
+            _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
+          }
         }
+
+        /* Restores config debug level state */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
       }
       else
       {

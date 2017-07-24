@@ -441,6 +441,7 @@ static orxINLINE const orxCOMMAND *orxCommand_FindNext(const orxCOMMAND_TRIE_NOD
 static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandLine, const orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult, orxBOOL _bSilent)
 {
   const orxSTRING zCommand;
+  orxBOOL         bProcessed = orxFALSE;
   orxCOMMAND_VAR *pstResult = orxNULL;
 
   /* Profiles */
@@ -449,13 +450,16 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
   /* Gets start of command */
   zCommand = orxString_SkipWhiteSpaces(_zCommandLine);
 
-  /* Valid? */
-  if(zCommand != orxSTRING_EMPTY)
+  /* For all commands */
+  while(*zCommand != orxCHAR_NULL)
   {
     orxU32          u32PushCounter;
     const orxCHAR  *pcCommandEnd;
     orxCOMMAND     *pstCommand;
     orxCHAR         cBackupChar, acGUID[20];
+
+    /* Updates status */
+    bProcessed = orxTRUE;
 
     /* For all push markers / spaces */
     for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
@@ -469,7 +473,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     }
 
     /* Finds end of command */
-    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (orxCommand_IsWhiteSpace(*pcCommandEnd) == orxFALSE) && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++);
+    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (orxCommand_IsWhiteSpace(*pcCommandEnd) == orxFALSE) && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++)
+      ;
 
     /* Ends command */
     cBackupChar               = *pcCommandEnd;
@@ -537,6 +542,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       /* For all stacked buffers */
       for(i = s32BufferCounter - 1, pcDst = sstCommand.acEvaluateBuffer; i >= 0; i--)
       {
+        orxBOOL bStop;
+
         /* Has room for next buffer? */
         if((i != s32BufferCounter - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
         {
@@ -545,7 +552,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         }
 
         /* For all characters */
-        for(pcSrc = azBufferList[i]; (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2); pcSrc++)
+        for(pcSrc = azBufferList[i], bStop = orxFALSE; (bStop == orxFALSE) && (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2); pcSrc++)
         {
           /* Depending on character */
           switch(*pcSrc)
@@ -669,6 +676,23 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               break;
             }
 
+            case orxCOMMAND_KC_SEPARATOR:
+            {
+              /* Not in block? */
+              if(bInBlock == orxFALSE)
+              {
+                /* Stops */
+                bStop = orxTRUE;
+              }
+              else
+              {
+                /* Copies it */
+                *pcDst++ = *pcSrc;
+              }
+
+              break;
+            }
+
             case orxCOMMAND_KC_BLOCK_MARKER:
             {
               /* Toggles block status */
@@ -690,6 +714,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
       /* Copies end of string */
       *pcDst = orxCHAR_NULL;
+
+      /* Updates next command expression */
+      zCommand = orxString_SkipWhiteSpaces(pcSrc);
 
       /* For all characters in the buffer */
       for(pcSrc = sstCommand.acEvaluateBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
@@ -986,6 +1013,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
       }
+
+      /* Stops */
+      zCommand = orxSTRING_EMPTY;
     }
 
     /* Failure? */
@@ -1030,7 +1060,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       u32PushCounter--;
     }
   }
-  else
+
+  /* Unprocessed? */
+  if(bProcessed == orxFALSE)
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
@@ -3487,7 +3519,7 @@ orxU32 orxFASTCALL orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, c
     {
       /* Ends string */
       _zDstString[0]  = orxCHAR_NULL;
-      u32Result     = 0;
+      u32Result       = 0;
 
       break;
     }
