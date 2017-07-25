@@ -445,8 +445,6 @@ extern int main(int argc, char *argv[]);
 
 void android_main( android_app* state )
 {
-    app_dummy();
-
     state->onAppCmd = handleCmd;
     state->onInputEvent = handleInput;
 
