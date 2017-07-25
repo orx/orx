@@ -807,6 +807,9 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
     /* Reallocates index table */
     _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCounter - 1) * sizeof(orxU32));
 
+    /* Checks */
+    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
+
     /* Computes buffer size */
     u32BufferSize = _pstValue->au32ListIndexTable[_pstValue->u16ListCounter - 2] + orxString_GetLength(_pstValue->zValue + _pstValue->au32ListIndexTable[_pstValue->u16ListCounter - 2]) + 1;
 
@@ -814,7 +817,6 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
     _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer));
 
     /* Checks */
-    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
     orxASSERT(_pstValue->zValue != orxNULL);
   }
   else
