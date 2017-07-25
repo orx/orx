@@ -6,29 +6,6 @@
 -- Globals
 --
 
-function islinux64 ()
-    local pipe    = io.popen ("uname -m")
-    local content = pipe:read ('*a')
-    pipe:close ()
-
-    local t64 =
-    {
-        'x86_64',
-        'ia64',
-        'amd64',
-        'powerpc64',
-        'sparc64'
-    }
-
-    for i, v in ipairs (t64) do
-        if content:find (v) then
-            return true
-        end
-    end
-
-    return false
-end
-
 function initconfigurations ()
     return
     {
@@ -58,7 +35,7 @@ function initplatforms ()
             }
         end
     elseif os.is ("linux") then
-        if islinux64 () then
+        if os.is64bit () then
             return
             {
                 "x64",
