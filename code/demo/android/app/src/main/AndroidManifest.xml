@@ -10,7 +10,7 @@
         <activity android:name="org.orxproject.orxtest.OrxDemo" android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="@integer/orientation">
+            android:screenOrientation="sensorPortrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

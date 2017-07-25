@@ -11,5 +11,6 @@ LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)
 
+$(call import-add-path,/home/loki/src/orx/code)
 $(call import-module,lib/static/android-native)
 
