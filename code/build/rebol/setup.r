@@ -7,22 +7,22 @@ REBOL [
 
 
 ; Default settings
-tag:            "<version>"
-host:           rejoin ["https://bitbucket.org/orx/orx-extern/get/" tag ".zip"]
+tag:            <version>
+host:           ["https://bitbucket.org/orx/orx-extern/get/" tag ".zip"]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
 premake-root:   dirize extern/premake/bin
-builds:         ['code %code/build 'tutorial %tutorial/build 'orxfontgen %tools/orxFontGen/build 'orxcrypt %tools/orxCrypt/build]
+builds:         [code %code/build tutorial %tutorial/build orxfontgen %tools/orxFontGen/build orxcrypt %tools/orxCrypt/build]
 hg:             %.hg/
 hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
 platform-data:  [
-    "windows"   ['premake "windows" 'config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
-    "mac"       ['premake "mac"     'config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
-    "linux"     ['premake "linux32" 'config ["gmake" "codelite"                           ] 'deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+    "windows"   [premake "windows" config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
+    "mac"       [premake "mac"     config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
+    "linux"     [premake "linux32" config ["gmake" "codelite"                           ] deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
 
 
@@ -40,7 +40,7 @@ root: system/options/path
 change-dir root
 
 delete-dir: func [
-    {Deletes a directory including all files and subdirectories.}
+    "Deletes a directory including all files and subdirectories."
     dir [file! url!]
     /local files
 ] [
@@ -65,10 +65,10 @@ cur-ver: either exists? cur-file [
     none
 ]
 print ["== Checking version: [" extern "]"]
-either req-ver = cur-ver [
-    print ["== [" cur-ver "] already installed, skipping!"]
+print either req-ver = cur-ver [
+    ["== [" cur-ver "] already installed, skipping!"]
 ] [
-    print ["== [" req-ver "] needed, current [" cur-ver "]"]
+    ["== [" req-ver "] needed, current [" cur-ver "]"]
 
 
     ; Updates cache
@@ -79,8 +79,8 @@ either req-ver = cur-ver [
 
 
     ; Updates cache
-    local: rejoin [cache req-ver '.zip]
-    remote: replace host tag req-ver
+    local: rejoin [cache req-ver %.zip]
+    remote: to-string replace reduce host tag req-ver
     either exists? local [
         print ["== [" req-ver "] found in cache!"]
     ] [
@@ -111,14 +111,14 @@ either req-ver = cur-ver [
 
 
     ; Installs premake
-    premake-path: dirize rejoin [premake-root platform-info/premake]
+    premake-path: dirize join premake-root platform-info/premake
     premake: read premake-path
     premake-file: read premake-path/:premake
     foreach [type folder] builds [
         if exists? folder [
             print ["== Copying [" premake "] to [" folder "]"]
             write folder/:premake premake-file
-            if not platform = "windows" [
+            unless platform = "windows" [
                 call reform ["chmod +x" folder/:premake]
             ]
         ]
@@ -131,7 +131,7 @@ either req-ver = cur-ver [
 
 
 ; Runs premake
-premake-path: dirize rejoin [premake-root platform-info/premake]
+premake-path: dirize join premake-root platform-info/premake
 premake: read premake-path
 print ["== Generating build files for [" platform "]"]
 foreach config platform-info/config [
@@ -182,8 +182,8 @@ either exists? hg [
     ]
 ] [
     ; Creates build file placeholder
-    if not exists? build-file [
-        attempt [write build-file {}]
+    unless exists? build-file [
+        attempt [write build-file ""]
     ]
 ]
 
@@ -226,7 +226,7 @@ if exists? git [
             either hook-file [
                 print ["== Installing git hook [" hook "]"]
                 write hook-path hook-file
-                if not platform = "windows" [
+                unless platform = "windows" [
                     call reform ["chmod +x" hook-path]
                 ]
             ] [
