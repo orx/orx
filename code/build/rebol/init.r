@@ -21,7 +21,7 @@ usage: func [
         print {}
     ]
 
-    prin [{Usage:} system/options/script]
+    prin [{Usage:} system/options/boot system/options/script]
 
     print rejoin [
         newline newline
@@ -57,3 +57,11 @@ either system/options/args [
 ] [
     usage
 ]
+
+; Locates source and destination
+change-dir root: system/options/path
+source: clean-path/dir join first split-path join root system/options/script source
+unless exists? destination: to-rebol-file destination [
+    make-dir/deep destination
+]
+change-dir destination
