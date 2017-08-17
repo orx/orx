@@ -7,48 +7,53 @@ REBOL [
 
 ; Variables
 source: %../template/
-destination: %./
 params: reduce [
-    'name           {Project name}      no
-    'destination    {Destination path}  yes
+    'name           {Project name}      none
+    'destination    {Destination path}  %./
 ]
 
 ; Usage
-usage: does [
+usage: func [
+    /message content [block! string!]
+] [
+    if message [
+        print content
+        print {}
+    ]
+
     prin [{Usage:} system/options/script]
 
     print rejoin [
         newline newline
-        map-each [param desc optional] params [
-            prin rejoin [{ } either optional [rejoin [{[} param {]}]] [param]]
-            rejoin [{= } param {: } desc either optional [{, optional}] [{}] newline]
+        map-each [param desc default] params [
+            prin rejoin [{ } either default [rejoin [{[} param {]}]] [param]]
+            rejoin [{= } param {: } desc either default [rejoin [{=[} default {], optional}]] [{, required}] newline]
         ]
     ]
     quit
 ]
 
-; Process params
+; Processes params
 either system/options/args [
-    use [param] [
-        param: params
-        foreach arg system/options/args [
-            either tail? param [
-                print [{Too many arguments:} mold system/options/args newline]
-                usage
-            ] [
-                set param/1 arg
-                param: skip param 3
+    either (length? system/options/args) > ((length? params) / 3) [
+        usage/message [{Too many arguments:} mold system/options/args]
+    ] [
+        use [arg] [
+            arg: system/options/args
+            foreach [param desc default] params [
+                either tail? arg [
+                    either default [
+                        set param default
+                    ] [
+                        usage/message [{Not enough arguments:} mold system/options/args]
+                    ]
+                ] [
+                    set param arg/1
+                    arg: next arg
+                ]
             ]
-        ]
-        unless any [
-            tail? param
-            param/3
-        ] [
-            print [{Not enough arguments:} mold system/options/args newline]
-            usage
         ]
     ]
 ] [
     usage
 ]
-
