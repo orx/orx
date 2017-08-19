@@ -87,10 +87,10 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 
 --
--- Solution: [Template]
+-- Solution: [orx]
 --
 
-solution "[Template]"
+solution "[orx]"
 
     language ("C++")
 
@@ -217,10 +217,10 @@ solution "[Template]"
 
 
 --
--- Project: [Template]
+-- Project: [orx]
 --
 
-project "[Template]"
+project "[orx]"
 
     files
     {
@@ -231,7 +231,7 @@ project "[Template]"
     }
 
     configuration {"windows", "vs*"}
-    buildoptions {"/EHsc"}
+        buildoptions {"/EHsc"}
 
     vpaths
     {

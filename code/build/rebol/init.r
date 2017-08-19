@@ -65,3 +65,4 @@ unless exists? destination: to-rebol-file destination [
     make-dir/deep destination
 ]
 change-dir destination
+destination: what-dir
