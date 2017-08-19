@@ -12,22 +12,38 @@ params: reduce [
     'destination    {Destination path}  %./
 ]
 
+; Helpers
+delete-dir: funct [
+    "Deletes a directory including all files and subdirectories."
+    dir [file! url!]
+] [
+    if all [
+        dir? dir
+        dir: dirize dir
+        attempt [files: load dir]
+    ] [
+        foreach file files [delete-dir dir/:file]
+    ]
+    attempt [delete dir]
+]
+
 ; Usage
 usage: func [
     /message content [block! string!]
 ] [
     if message [
+        prin {== }
         print content
         print {}
     ]
 
-    prin [{Usage:} system/options/boot system/options/script]
+    prin [{== Usage:} system/options/boot system/options/script]
 
     print rejoin [
         newline newline
         map-each [param desc default] params [
             prin rejoin [{ } either default [rejoin [{[} param {]}]] [param]]
-            rejoin [{= } param {: } desc either default [rejoin [{=[} default {], optional}]] [{, required}] newline]
+            rejoin [{  = } param {: } desc either default [rejoin [{=[} default {], optional}]] [{, required}] newline]
         ]
     ]
     quit
@@ -66,3 +82,13 @@ unless exists? destination: to-rebol-file destination [
 ]
 change-dir destination
 destination: what-dir
+
+; Creates project directory
+if exists? name: to-rebol-file name [
+    print [{== [} name {] already exists, erasing!}]
+    delete-dir name
+]
+print [{== Creating [} name {]}]
+make-dir/deep name
+
+halt
