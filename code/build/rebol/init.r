@@ -7,7 +7,7 @@ REBOL [
 
 ; Variables
 source: %../template/
-premake: %premake4
+premake: %../premake4
 params: reduce [
     'name           {Project name}      none
     'destination    {Destination path}  %./
@@ -144,7 +144,7 @@ if build [
     change-dir build
     foreach config platform-info/config [
         log/only [{  *} config]
-        call/wait reform [root/:premake config]
+        call/wait reform [clean-path source/:premake config]
     ]
 ]
 
