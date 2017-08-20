@@ -1,20 +1,26 @@
 REBOL [
-    title: "Init"
-    author: "iarwain@orx-project.org"
+    title: {Init}
+    author: {iarwain@orx-project.org}
     date: 15-Aug-2017
     file: %init.r
 ]
 
 ; Variables
 source: %../template/
+premake: %premake4
 params: reduce [
     'name           {Project name}      none
     'destination    {Destination path}  %./
 ]
+platforms:  [
+    {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]]
+    {mac}       [config [{gmake} {codelite} {xcode4}                  ]]
+    {linux}     [config [{gmake} {codelite}                           ]]
+]
 
 ; Helpers
 delete-dir: funct [
-    "Deletes a directory including all files and subdirectories."
+    {Deletes a directory including all files and subdirectories.}
     dir [file! url!]
 ] [
     if all [
@@ -26,6 +32,22 @@ delete-dir: funct [
     ]
     attempt [delete dir]
 ]
+log: funct [
+    message [string! block!]
+    /only
+    /no-break
+] [
+    unless only [
+        prin [{[} now/time {] }]
+    ]
+    either no-break [prin message] [print message]
+]
+
+; Inits
+switch platform: lowercase to-string system/platform/1 [
+    {macintosh} [platform: {mac}]
+]
+platform-info: platforms/:platform
 
 ; Usage
 usage: func [
@@ -85,10 +107,46 @@ destination: what-dir
 
 ; Creates project directory
 if exists? name: to-rebol-file name [
-    print [{== [} name {] already exists, erasing!}]
+    log [{[} name {] already exists, erasing!}]
     delete-dir name
 ]
-print [{== Creating [} name {]}]
+log [{Initializing [} name {]}]
 make-dir/deep name
 
-halt
+; Copies all files
+log {== Creating files:}
+template: {[orx]}
+build: none
+do copy-files: funct [
+    from [file!]
+    to [file!]
+] [
+    foreach file read from [
+        src: from/:file
+        dst: replace to/:file template name
+        if file = %build/ [
+            set 'build dst
+        ]
+        either dir? src [
+            make-dir/deep dst
+            copy-files src dst
+        ] [
+            log/only [{  +} dst]
+            write dst replace/all read src template name
+        ]
+    ]
+
+] source destination/:name
+
+; Creates build projects
+if build [
+    log [{Generating build files for [} platform {]:}]
+    change-dir build
+    foreach config platform-info/config [
+        log/only [{  *} config]
+        call/wait reform [root/:premake config]
+    ]
+]
+
+; Ends
+log {Init successful!}
