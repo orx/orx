@@ -131,7 +131,7 @@ do copy-files: funct [
             make-dir/deep dst
             copy-files src dst
         ] [
-            log/only [{  +} dst]
+            log/only [{  +} to-local-file dst]
             write dst replace/all read src template name
         ]
     ]
@@ -144,7 +144,7 @@ if build [
     change-dir build
     foreach config platform-info/config [
         log/only [{  *} config]
-        call/wait reform [clean-path source/:premake config]
+        call/wait reform [to-local-file clean-path source/:premake config]
     ]
 ]
 
