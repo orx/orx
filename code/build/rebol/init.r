@@ -8,6 +8,7 @@ REBOL [
 ; Variables
 source: %../template/
 premake: %../premake4
+template: {[orx]}
 params: reduce [
     'name           {Project name}      none
     'destination    {Destination path}  %./
@@ -115,7 +116,6 @@ make-dir/deep name
 
 ; Copies all files
 log {== Creating files:}
-template: {[orx]}
 build: none
 do copy-files: funct [
     from [file!]
