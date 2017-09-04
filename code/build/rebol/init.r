@@ -7,10 +7,11 @@ REBOL [
 
 ; Variables
 source: %../template/
-premake: %../premake4
+premake: either system/platform/1 = 'Windows [%premake4.exe] [%premake4]
+premake-source: rejoin [%../ premake]
 template: {[orx]}
 params: reduce [
-    'name           {Project name}      none
+    'name           {Project name}      _
     'destination    {Destination path}  %./
 ]
 platforms:  [
@@ -20,7 +21,7 @@ platforms:  [
 ]
 
 ; Helpers
-delete-dir: funct [
+delete-dir: func [
     {Deletes a directory including all files and subdirectories.}
     dir [file! url!]
 ] [
@@ -33,7 +34,7 @@ delete-dir: funct [
     ]
     attempt [delete dir]
 ]
-log: funct [
+log: func [
     message [string! block!]
     /only
     /no-break
@@ -41,7 +42,7 @@ log: funct [
     unless only [
         prin [{[} now/time {] }]
     ]
-    either no-break [prin message] [print message]
+    either no-break [prin message] [print/eval message]
 ]
 
 ; Inits
@@ -56,7 +57,7 @@ usage: func [
 ] [
     if message [
         prin {== }
-        print content
+        print/eval content
         print {}
     ]
 
@@ -99,7 +100,7 @@ either system/options/args [
 
 ; Locates source and destination
 change-dir root: system/options/path
-source: clean-path/dir join first split-path join root system/options/script source
+source: clean-path/dir rejoin [first split-path rejoin [root system/options/script] source]
 unless exists? destination: to-rebol-file destination [
     make-dir/deep destination
 ]
@@ -109,17 +110,18 @@ destination: what-dir
 ; Creates project directory
 if exists? name: to-rebol-file name [
     log [{[} name {] already exists, erasing!}]
-    delete-dir name
+    delete-dir dirize name
 ]
 log [{Initializing [} name {]}]
 make-dir/deep name
 
 ; Copies all files
 log {== Creating files:}
-build: none
-do copy-files: funct [
+build: _
+eval copy-files: func [
     from [file!]
     to [file!]
+    /local src dst
 ] [
     foreach file read from [
         src: from/:file
@@ -140,11 +142,12 @@ do copy-files: funct [
 
 ; Creates build projects
 if build [
-    log [{Generating build files for [} platform {]:}]
     change-dir build
+    write premake read source/:premake-source
+    log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
         log/only [{  *} config]
-        call/wait reform [to-local-file clean-path source/:premake config]
+        call/wait reform [to-local-file clean-path premake config]
     ]
 ]
 

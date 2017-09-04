@@ -14,4 +14,4 @@ else
     fi
 fi
 
-${ROOT}/${REBOL} ${ROOT}/code/build/rebol/init.r "$@"
+${ROOT}/${REBOL} -qs ${ROOT}/code/build/rebol/init.r "$@"
