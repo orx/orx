@@ -144,10 +144,13 @@ eval copy-files: func [
 if build [
     change-dir build
     write premake read source/:premake-source
+    unless platform = {windows} [
+        call/shell/wait reform [{chmod +x} premake]
+    ]
     log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
         log/only [{  *} config]
-        call/wait reform [to-local-file clean-path premake config]
+        call/shell/wait reform [to-local-file clean-path premake config]
     ]
 ]
 
