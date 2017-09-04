@@ -29,6 +29,7 @@ platform-data:  compose/deep [
 ; Inits
 begin: now/time
 skip-hook: false
+attempt [write build-file ""]
 
 switch platform: lowercase to-string system/platform/1 [
     "macintosh" [platform: "mac"]
@@ -152,7 +153,7 @@ print ["== You can now build orx in [" builds/code/:platform "]"]
 
 
 ; Mercurial hook
-either exists? hg [
+if exists? hg [
     either skip-hook [
         print "== Skipping Mercurial hook installation"
     ] [
@@ -180,14 +181,12 @@ either exists? hg [
             ]
         ]
     ]
-    ; Removes build file
-    if exists? build-file [
-        attempt [delete build-file]
-    ]
-] [
-    ; Creates build file placeholder
-    unless exists? build-file [
-        attempt [write build-file ""]
+
+    ; Creates build file
+    build-version: copy {}
+    call/shell/wait/output {hg log -l 1 --template "{rev}"} build-version
+    if not empty? build-version [
+        attempt [write build-file reform [{#define __orxVERSION_BUILD__} build-version]]
     ]
 ]
 
