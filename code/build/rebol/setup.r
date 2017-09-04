@@ -138,7 +138,12 @@ foreach config platform-info/config [
     foreach [type folder] builds [
         if exists? folder [
             change-dir rejoin [root folder]
-            call/shell/wait rejoin ["./" premake " " config]
+            command: rejoin ["./" premake " " config]
+            either platform = "windows" [
+                call/wait command
+            ] [
+                call/shell/wait command
+            ]
             change-dir root
         ]
     ]
