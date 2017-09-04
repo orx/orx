@@ -19,20 +19,19 @@ hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
-platform-data:  [
-    "windows"   [premake "windows" config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
-    "mac"       [premake "mac"     config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
-    "linux"     [premake "linux32" config ["gmake" "codelite"                           ] deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+platform-data:  compose/deep [
+    "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
+    "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
+    "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])    config ["gmake" "codelite"                           ]  deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
 ]
 
 
 ; Inits
 begin: now/time
 skip-hook: false
-platform: lowercase to-string system/platform/1
-switch platform [
+
+switch platform: lowercase to-string system/platform/1 [
     "macintosh" [platform: "mac"]
-    "linux"     [if find to-string system/platform/2 "x64" [platform-data/:platform/premake: "linux64"]]
 ]
 platform-info: platform-data/:platform
 
@@ -119,7 +118,7 @@ either req-ver = cur-ver [
             print ["== Copying [" premake "] to [" folder "]"]
             write folder/:premake premake-file
             unless platform = "windows" [
-                call reform ["chmod +x" folder/:premake]
+                call/shell/wait reform ["chmod +x" folder/:premake]
             ]
         ]
     ]
@@ -139,7 +138,7 @@ foreach config platform-info/config [
     foreach [type folder] builds [
         if exists? folder [
             change-dir rejoin [root folder]
-            call/wait rejoin ["./" premake " " config]
+            call/shell/wait rejoin ["./" premake " " config]
             change-dir root
         ]
     ]
@@ -227,7 +226,7 @@ if exists? git [
                 print ["== Installing git hook [" hook "]"]
                 write hook-path hook-file
                 unless platform = "windows" [
-                    call reform ["chmod +x" hook-path]
+                    call/shell/wait reform ["chmod +x" hook-path]
                 ]
             ] [
                 print ["== Git hook [" hook "] already installed"]

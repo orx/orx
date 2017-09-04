@@ -13,4 +13,4 @@ else
     fi
 fi
 
-${REBOL} code/build/rebol/setup.r "$@"
+${REBOL} -qs code/build/rebol/setup.r "$@"
