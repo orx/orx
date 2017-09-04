@@ -62,17 +62,17 @@ req-ver: read/lines req-file
 cur-ver: either exists? cur-file [
     read/lines cur-file
 ] [
-    none
+    _
 ]
 print ["== Checking version: [" extern "]"]
-print either req-ver = cur-ver [
-    ["== [" cur-ver "] already installed, skipping!"]
+either req-ver = cur-ver [
+    print ["== [" cur-ver "] already installed, skipping!"]
 ] [
-    ["== [" req-ver "] needed, current [" cur-ver "]"]
+    print ["== [" req-ver "] needed, current [" cur-ver "]"]
 
 
     ; Updates cache
-    if system/options/args [
+    unless empty? system/options/args [
         print ["== Overriding cache [" cache "] => [" cache: dirize to-file system/options/args/1 "]"]
         skip-hook: true
     ]
@@ -105,14 +105,14 @@ print either req-ver = cur-ver [
     print ["== Decompressing [" local "] => [" extern "]"]
     wait 0.5
     unzip/quiet temp local
-    until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
+    loop-until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
     attempt [delete-dir temp]
     print ["== [" req-ver "] installed!"]
 
 
     ; Installs premake
-    premake-path: dirize join premake-root platform-info/premake
-    premake: read premake-path
+    premake-path: dirize rejoin [premake-root platform-info/premake]
+    premake: first read premake-path
     premake-file: read premake-path/:premake
     foreach [type folder] builds [
         if exists? folder [
@@ -131,8 +131,8 @@ print either req-ver = cur-ver [
 
 
 ; Runs premake
-premake-path: dirize join premake-root platform-info/premake
-premake: read premake-path
+premake-path: dirize rejoin [premake-root platform-info/premake]
+premake: first read premake-path
 print ["== Generating build files for [" platform "]"]
 foreach config platform-info/config [
     print ["== Generating [" config "]"]
@@ -211,7 +211,7 @@ if exists? git [
                 not empty? read hook-path
             ] [
                 hook-file: either find hook-file: to-string read hook-path system/options/script [
-                    none
+                    _
                 ] [
                     append hook-file hook-content
                 ]
@@ -238,7 +238,7 @@ if exists? git [
 
 
 ; Done!
-if platform-info/deps [
+if find platform-info 'deps [
     print newline
     print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
     foreach lib platform-info/deps [print ["==[" lib "]"]]
