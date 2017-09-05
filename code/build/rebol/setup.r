@@ -29,7 +29,6 @@ platform-data:  compose/deep [
 ; Inits
 begin: now/time
 skip-hook: false
-attempt [write build-file ""]
 
 switch platform: lowercase to-string system/platform/1 [
     "macintosh" [platform: "mac"]
@@ -38,6 +37,7 @@ platform-info: platform-data/:platform
 
 root: system/options/path
 change-dir root
+attempt [write build-file ""]
 
 delete-dir: func [
     "Deletes a directory including all files and subdirectories."
