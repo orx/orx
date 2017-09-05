@@ -488,7 +488,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     {
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength, s32BufferCounter = 0, i;
+      orxS32                s32GUIDLength, s32BufferCounter = 0, s32VectorDepth = 0, i;
       orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
@@ -678,8 +678,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
             case orxCOMMAND_KC_SEPARATOR:
             {
-              /* Not in block? */
-              if(bInBlock == orxFALSE)
+              /* Not in block or in vector? */
+              if((bInBlock == orxFALSE)
+              && (s32VectorDepth == 0))
               {
                 /* Stops */
                 bStop = orxTRUE;
@@ -689,6 +690,30 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Copies it */
                 *pcDst++ = *pcSrc;
               }
+
+              break;
+            }
+
+            case orxSTRING_KC_VECTOR_START:
+            case orxSTRING_KC_VECTOR_START_ALT:
+            {
+              /* Increments vector depth */
+              s32VectorDepth++;
+
+              /* Copies it */
+              *pcDst++ = *pcSrc;
+
+              break;
+            }
+
+            case orxSTRING_KC_VECTOR_END:
+            case orxSTRING_KC_VECTOR_END_ALT:
+            {
+              /* Decrements vector depth */
+              s32VectorDepth--;
+
+              /* Copies it */
+              *pcDst++ = *pcSrc;
 
               break;
             }
