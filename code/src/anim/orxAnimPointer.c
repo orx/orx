@@ -1046,7 +1046,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
 
       /* Computes animpointer from start */
-      eResult = orxAnimPointer_SetTime(_pstAnimPointer, orxFLOAT_0);
+      _pstAnimPointer->fCurrentAnimTime = orxFLOAT_0;
+
+      /* Computes animpointer */
+      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
     }
     else
     {
@@ -1199,10 +1202,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, or
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
   /* Stores relative timestamp */
-  _pstAnimPointer->fCurrentAnimTime = _fTime;
+  _pstAnimPointer->fCurrentAnimTime = _fTime - orxMATH_KF_EPSILON;
 
   /* Computes animpointer */
-  eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
+  eResult = orxAnimPointer_Compute(_pstAnimPointer, orxMATH_KF_EPSILON);
 
   /* Done! */
   return eResult;
