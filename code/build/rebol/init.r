@@ -61,7 +61,7 @@ usage: func [
         print {}
     ]
 
-    prin [{== Usage:} system/options/boot system/options/script]
+    prin [{== Usage:} to-local-file system/options/boot to-local-file system/options/script]
 
     print rejoin [
         newline newline
