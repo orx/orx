@@ -15,8 +15,8 @@ params: reduce [
 ]
 platforms:  [
     {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
-    {mac}       [config [{gmake} {codelite} {xcode4}                  ]     premake %premake4       setup {setup.sh}    script %init.sh     ]
-    {linux}     [config [{gmake} {codelite}                           ]     premake %premake4       setup {setup.sh}    script %./init.sh   ]
+    {mac}       [config [{gmake} {codelite} {xcode4}                  ]     premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+    {linux}     [config [{gmake} {codelite}                           ]     premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]
 
 ; Helpers
@@ -108,7 +108,9 @@ change-dir root
 unless exists? source/:premake-source [
     log [{New orx installation found, running setup!}]
     attempt [delete-dir source/:extern]
+    change-dir source/../../..
     call/shell/wait platform-info/setup
+    change-dir root
 ]
 
 ; Locates destination
