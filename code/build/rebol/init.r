@@ -7,17 +7,16 @@ REBOL [
 
 ; Variables
 source: %../template/
-premake: either system/platform/1 = 'Windows [%premake4.exe] [%premake4]
-premake-source: rejoin [%../ premake]
 template: {[orx]}
+extern: %../../../extern/
 params: reduce [
     'name           {Project name}      _
     'destination    {Destination path}  %./
 ]
 platforms:  [
-    {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]]
-    {mac}       [config [{gmake} {codelite} {xcode4}                  ]]
-    {linux}     [config [{gmake} {codelite}                           ]]
+    {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   ]
+    {mac}       [config [{gmake} {codelite} {xcode4}                  ]     premake %premake        setup {setup.sh}    ]
+    {linux}     [config [{gmake} {codelite}                           ]     premake %premake        setup {setup.sh}    ]
 ]
 
 ; Helpers
@@ -50,6 +49,7 @@ switch platform: lowercase to-string system/platform/1 [
     {macintosh} [platform: {mac}]
 ]
 platform-info: platforms/:platform
+premake-source: rejoin [%../ platform-info/premake]
 
 ; Usage
 usage: func [
@@ -98,9 +98,18 @@ either system/options/args [
     usage
 ]
 
-; Locates source and destination
+; Locates source
 change-dir root: system/options/path
 source: clean-path/dir rejoin [first split-path rejoin [root system/options/script] source]
+
+; Runs setup if premake isn't found
+unless exists? source/:premake-source [
+    log [{New orx installation found, running setup!}]
+    attempt [delete-dir source/:extern]
+    call/shell/wait platform-info/setup
+]
+
+; Locates destination
 unless exists? destination: to-rebol-file destination [
     make-dir/deep destination
 ]
@@ -143,14 +152,14 @@ eval copy-files: func [
 ; Creates build projects
 if build [
     change-dir build
-    write premake read source/:premake-source
+    write platform-info/premake read source/:premake-source
     unless platform = {windows} [
-        call/shell/wait reform [{chmod +x} premake]
+        call/shell/wait reform [{chmod +x} platform-info/premake]
     ]
     log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
         log/only [{  *} config]
-        call/shell/wait reform [to-local-file clean-path premake config]
+        call/shell/wait reform [to-local-file clean-path platform-info/premake config]
     ]
 ]
 
