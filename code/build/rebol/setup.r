@@ -21,7 +21,6 @@ git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code/
-env-file:       %.profile
 platform-data:  compose/deep [
     "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
     "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
@@ -140,7 +139,12 @@ set-env env-variable env-path
 either platform = "windows" [
     call/shell/wait reform ["setx" env-variable mold env-path]
 ] [
-    env-file: to-rebol-file rejoin [dirize get-env "HOME" env-file]
+    env-home: to-rebol-file dirize get-env "HOME"
+    env-file: either exists? env-home/.bashrc [
+        env-home/.bashrc
+    ] [
+        env-home/.profile
+    ]
     env-content: either exists? env-file [to-string read env-file] [copy ""]
     env-prefix: rejoin ["export " env-variable "="]
     parse env-content [
