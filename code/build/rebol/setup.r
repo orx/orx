@@ -19,6 +19,9 @@ hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
+env-variable:   "ORX"
+env-path:       %code/
+env-file:       %.profile
 platform-data:  compose/deep [
     "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
     "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
@@ -130,6 +133,24 @@ either req-ver = cur-ver [
 ]
 
 
+; Sets environment variable
+env-path: to-local-file clean-path root/:env-path
+print ["== Setting environment: [" env-variable "=" env-path "]"]
+set-env env-variable env-path
+either platform = "windows" [
+    call/shell/wait reform ["setx" env-variable mold env-path]
+] [
+    env-file: to-rebol-file rejoin [dirize get-env "HOME" env-file]
+    env-content: either exists? env-file [to-string read env-file] [copy ""]
+    env-prefix: rejoin ["export " env-variable "="]
+    parse env-content [
+        thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+        | to end start: (insert start rejoin [newline env-prefix env-path newline])
+    ]
+    attempt [write env-file env-content]
+]
+
+
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: first read premake-path
@@ -183,10 +204,10 @@ if exists? hg [
     ]
 
     ; Creates build file
-    build-version: copy {}
+    build-version: copy ""
     call/shell/wait/output {hg log -l 1 --template "{rev}"} build-version
     if not empty? build-version [
-        attempt [write build-file reform [{#define __orxVERSION_BUILD__} build-version]]
+        attempt [write build-file reform ["#define __orxVERSION_BUILD__" build-version]]
     ]
 ]
 
