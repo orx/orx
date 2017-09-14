@@ -14,9 +14,9 @@ params: reduce [
     'destination    {Destination path}  %./
 ]
 platforms:  [
-    {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   ]
-    {mac}       [config [{gmake} {codelite} {xcode4}                  ]     premake %premake        setup {setup.sh}    ]
-    {linux}     [config [{gmake} {codelite}                           ]     premake %premake        setup {setup.sh}    ]
+    {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
+    {mac}       [config [{gmake} {codelite} {xcode4}                  ]     premake %premake        setup {setup.sh}    script %init.sh     ]
+    {linux}     [config [{gmake} {codelite}                           ]     premake %premake        setup {setup.sh}    script %./init.sh   ]
 ]
 
 ; Helpers
@@ -61,7 +61,7 @@ usage: func [
         print {}
     ]
 
-    prin [{== Usage:} to-local-file system/options/boot to-local-file system/options/script]
+    prin [{== Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
 
     print rejoin [
         newline newline
@@ -99,8 +99,9 @@ either system/options/args [
 ]
 
 ; Locates source
+change-dir rejoin [first split-path system/options/script source]
+source: what-dir
 change-dir root: system/options/path
-source: clean-path/dir rejoin [first split-path rejoin [root system/options/script] source]
 
 ; Runs setup if premake isn't found
 unless exists? source/:premake-source [
