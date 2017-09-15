@@ -137,7 +137,7 @@ env-path: to-local-file clean-path root/:env-path
 print ["== Setting environment: [" env-variable "=" env-path "]"]
 set-env env-variable env-path
 either platform = "windows" [
-    call/shell/wait reform ["setx" env-variable mold env-path]
+    call/shell/wait reform ["setx" env-variable env-path]
 ] [
     env-home: to-rebol-file dirize get-env "HOME"
     env-file: either exists? env-home/.bashrc [
