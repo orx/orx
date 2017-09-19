@@ -237,3 +237,21 @@ project "[orx]"
     {
         ["config"] = {"**.ini"}
     }
+
+
+-- Linux
+
+    configuration {"linux"}
+        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.so ] && cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+
+
+-- Mac OS X
+
+    configuration {"macosx"}
+        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+
+
+-- Windows
+
+    configuration {"windows"}
+        postbuildcommands {"cmd /c if exist $(ORX)\\lib\\dynamic\\orx.dll copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
