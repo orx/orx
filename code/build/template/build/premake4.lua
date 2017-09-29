@@ -147,10 +147,12 @@ solution "[orx]"
         flags {"Unicode"}
 
     configuration {"*Debug*"}
+        targetsuffix ("d")
         defines {"__orxDEBUG__"}
         links {"orxd"}
 
     configuration {"*Profile*"}
+        targetsuffix ("p")
         defines {"__orxPROFILER__"}
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
