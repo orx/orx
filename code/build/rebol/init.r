@@ -10,8 +10,7 @@ source: %../template/
 template: {[orx]}
 extern: %../../../extern/
 params: reduce [
-    'name           {Project name}      _
-    'destination    {Destination path}  %./
+    'name           {Project name, relative or full path}   _
 ]
 platforms:  [
     {windows}   [config [{gmake} {codelite} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
@@ -113,20 +112,15 @@ unless exists? source/:premake-source [
     change-dir root
 ]
 
-; Locates destination
-unless exists? destination: to-rebol-file destination [
-    make-dir/deep destination
-]
-change-dir destination
-destination: what-dir
-
-; Creates project directory
+; Inits project directory
 if exists? name: to-rebol-file name [
-    log [{[} name {] already exists, erasing!}]
+    log [{[} to-local-file name {] already exists, erasing!}]
     delete-dir dirize name
 ]
-log [{Initializing [} name {]}]
 make-dir/deep name
+change-dir name/..
+name: second split-path name
+log [{Initializing [} name {] in [} to-local-file what-dir {]}]
 
 ; Copies all files
 log {== Creating files:}
@@ -151,7 +145,7 @@ eval copy-files: func [
         ]
     ]
 
-] source destination/:name
+] source name
 
 ; Creates build projects
 if build [
