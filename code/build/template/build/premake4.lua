@@ -10,6 +10,7 @@ function initconfigurations ()
     return
     {
         "Debug",
+        "Profile",
         "Release"
     }
 end
