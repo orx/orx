@@ -140,18 +140,19 @@ either platform = "windows" [
     call/shell/wait reform ["setx" env-variable env-path]
 ] [
     env-home: to-rebol-file dirize get-env "HOME"
-    env-file: either exists? env-home/.bashrc [
+    env-prefix: rejoin ["export " env-variable "="]
+    env-files: [
         env-home/.bashrc
-    ] [
         env-home/.profile
     ]
-    env-content: either exists? env-file [to-string read env-file] [copy ""]
-    env-prefix: rejoin ["export " env-variable "="]
-    parse env-content [
-        thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
-        | to end start: (insert start rejoin [newline env-prefix env-path newline])
+    foreach env-file env-files [
+        env-content: either exists? env-file [to-string read env-file] [copy ""]
+        parse env-content [
+            thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+            | to end start: (insert start rejoin [newline env-prefix env-path newline])
+        ]
+        attempt [write env-file env-content]
     ]
-    attempt [write env-file env-content]
 ]
 
 
