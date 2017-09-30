@@ -141,7 +141,7 @@ either platform = "windows" [
 ] [
     env-home: to-rebol-file dirize get-env "HOME"
     env-prefix: rejoin ["export " env-variable "="]
-    env-files: [
+    env-files: reduce [
         env-home/.bashrc
         env-home/.profile
     ]

@@ -14,3 +14,4 @@ else
 fi
 
 ${REBOL} -qs code/build/rebol/setup.r "$@"
+source ~/.bashrc
