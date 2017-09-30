@@ -278,9 +278,7 @@ if all [
     new-env
     find platform-info 'env-mesg
 ] [
-    print newline
-    print ["== IMPORTANT - New environment detected:" platform-info/env-mesg]
-    print newline
+    print [newline "== IMPORTANT - New environment detected:" platform-info/env-mesg newline]
 ]
 end: now/time
 print ["== [" (end - begin) "] Setup successful!"]
