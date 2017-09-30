@@ -22,9 +22,9 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code
 platform-data:  compose/deep [
-    "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
-    "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
-    "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])    config ["gmake" "codelite"                           ]  deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+    "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                              env-mesg "Please restart your favorite IDE before using orx."]
+    "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                              env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
+    "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])    config ["gmake" "codelite"                           ]  deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]    env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
 ]
 
 
@@ -134,6 +134,7 @@ either req-ver = cur-ver [
 
 ; Sets environment variable
 env-path: to-local-file clean-path root/:env-path
+new-env: env-path != get-env env-variable
 print ["== Setting environment: [" env-variable "=" env-path "]"]
 set-env env-variable env-path
 either platform = "windows" [
@@ -271,6 +272,14 @@ if find platform-info 'deps [
     print newline
     print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
     foreach lib platform-info/deps [print ["==[" lib "]"]]
+    print newline
+]
+if all [
+    new-env
+    find platform-info 'env-mesg
+] [
+    print newline
+    print ["== IMPORTANT - New environment detected:" platform-info/env-mesg]
     print newline
 ]
 end: now/time
