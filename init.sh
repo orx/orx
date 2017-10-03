@@ -2,6 +2,7 @@
 
 OS=`uname -s`
 ARCH=`uname -m`
+ROOT=`dirname $0`
 
 if [ "${OS}" = "Darwin" ]; then
     REBOL=code/build/rebol/r3-mac
@@ -13,4 +14,4 @@ else
     fi
 fi
 
-${REBOL} -qs code/build/rebol/setup.r "$@"
+${ROOT}/${REBOL} -qs ${ROOT}/code/build/rebol/init.r "$@"

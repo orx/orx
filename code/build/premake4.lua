@@ -437,7 +437,6 @@ project "orxLIB"
 
     configuration {"linux"}
         defines {"_GNU_SOURCE"}
-        prebuildcommands {"if [ ! -e " .. copybase .. "/include/base/orxBuild.h ]; then hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. copybase .. "/include/base/orxBuild.h; fi"}
 
     configuration {"linux", "not *Core*"}
         links
@@ -492,7 +491,6 @@ project "orxLIB"
 
     configuration{"macosx"}
         buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
-        prebuildcommands {"if [ ! -e " .. copybase .. "/include/base/orxBuild.h ]; then hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. copybase .. "/include/base/orxBuild.h; fi"}
 
     configuration {"macosx", "*Debug*"}
         linkoptions {"-install_name @executable_path/liborxd.dylib"}
@@ -530,9 +528,6 @@ project "orxLIB"
 
 
 -- Windows
-
-    configuration {"windows"}
-        prebuildcommands {"if not exist " .. path.translate(copybase, "\\") .. "\\include\\base\\orxBuild.h (hg log -l 1 --template \"#define __orxVERSION_BUILD__ {rev}\" > " .. path.translate(copybase, "\\") .. "\\include\\base\\orxBuild.h)"}
 
     configuration {"windows", "not *Core*"}
         links

@@ -10,6 +10,7 @@ function initconfigurations ()
     return
     {
         "Debug",
+        "Profile",
         "Release"
     }
 end
@@ -87,10 +88,10 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 
 --
--- Solution: [Template]
+-- Solution: [orx]
 --
 
-solution "[Template]"
+solution "[orx]"
 
     language ("C++")
 
@@ -146,10 +147,12 @@ solution "[Template]"
         flags {"Unicode"}
 
     configuration {"*Debug*"}
+        targetsuffix ("d")
         defines {"__orxDEBUG__"}
         links {"orxd"}
 
     configuration {"*Profile*"}
+        targetsuffix ("p")
         defines {"__orxPROFILER__"}
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
@@ -217,10 +220,10 @@ solution "[Template]"
 
 
 --
--- Project: [Template]
+-- Project: [orx]
 --
 
-project "[Template]"
+project "[orx]"
 
     files
     {
@@ -231,9 +234,27 @@ project "[Template]"
     }
 
     configuration {"windows", "vs*"}
-    buildoptions {"/EHsc"}
+        buildoptions {"/EHsc"}
 
     vpaths
     {
         ["config"] = {"**.ini"}
     }
+
+
+-- Linux
+
+    configuration {"linux"}
+        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.so ] && cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+
+
+-- Mac OS X
+
+    configuration {"macosx"}
+        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+
+
+-- Windows
+
+    configuration {"windows"}
+        postbuildcommands {"cmd /c if exist $(ORX)\\lib\\dynamic\\orx.dll copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}

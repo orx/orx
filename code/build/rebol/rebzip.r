@@ -75,9 +75,9 @@ ctx-zip: context [
     ][
         value: get-ishort value
         to time! reduce [
-            63488 and value / 2048
-            2016 and value / 32
-            31 and value * 2
+            (and~ 63488 value) / 2048
+            (and~ 2016 value) / 32
+            (and~ 31 value) * 2
         ]
     ]
     get-msdos-date: func [
@@ -86,9 +86,9 @@ ctx-zip: context [
     ][
         value: get-ishort value
         to date! reduce [
-            65024 and value / 512 + 1980
-            480 and value / 32
-            31 and value
+            (and~ 65024 value) / 512 + 1980
+            (and~ 480 value) / 32
+            and~ 31 value
         ]
     ]
 
@@ -195,7 +195,7 @@ ctx-zip: context [
             return value
         ]
         value: decode-url value
-        join %"" [
+        rejoin [%""
             value/host "/"
             any [value/path ""]
             any [value/target ""]
@@ -303,24 +303,21 @@ ctx-zip: context [
         uncompressed-data nb-entries path file info errors crc uncompressed-size-raw
     ][
         errors: 0
-        info: unless all [quiet not verbose][
-            func [value][prin join "" value]
-        ]
+        info: func [value][unless all [quiet not verbose] [prin value]]
         if any-file? where [where: dirize where]
         if all [any-file? where not exists? where][
             make-dir/deep where
         ]
         if any-file? source [source: read source]
         nb-entries: 0
-
-        parse/all source [
+        parse source [
             to local-file-sig
             some [
                 to local-file-sig 4 skip
                 (nb-entries: nb-entries + 1)
                 2 skip ; version
                 copy flags 2 skip
-                    (if not zero? flags/1 and 1 [return false])
+                    (if not zero? and~ flags/1 1 [return false])
                 copy method 2 skip
                     (method: get-ishort method)
                 copy time 2 skip (time: get-msdos-time time)
@@ -357,15 +354,15 @@ ctx-zip: context [
                             data: either zero? uncompressed-size [
                                 copy #{}
                             ][
-                                rejoin [#{789C} copy/part data compressed-size crc uncompressed-size-raw]
+                                copy/part data compressed-size
                             ]
 
                             either error? try [
-                                data: decompress/gzip data
+                                data: decompress/only data
                             ][
                                 info "^- -> failed [deflate]^/"
                                 errors: errors + 1
-                                uncompressed-data: none
+                                uncompressed-data: _
                             ][
                                 uncompressed-data: data
                                 info "^- -> ok [deflate]^/"
@@ -374,14 +371,14 @@ ctx-zip: context [
                     ][
                         info ["^- -> failed [method " method "]^/"]
                         errors: errors + 1
-                        uncompressed-data: none
+                        uncompressed-data: _
                     ]
                     either any-block? where [
                         where: insert where name
                         where: insert where either all [
                             #"/" = last name
                             empty? uncompressed-data
-                        ][none][uncompressed-data]
+                        ][_][uncompressed-data]
                     ][
                         ; make directory and / or write file
                         either #"/" = last name [

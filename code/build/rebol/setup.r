@@ -19,25 +19,27 @@ hg-hook:        "update.orx"
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
-platform-data:  [
-    "windows"   [premake "windows" config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                          ]
-    "mac"       [premake "mac"     config ["gmake" "codelite" "xcode4"                  ]                                                                          ]
-    "linux"     [premake "linux32" config ["gmake" "codelite"                           ] deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]]
+env-variable:   "ORX"
+env-path:       %code
+platform-data:  compose/deep [
+    "windows"   [premake "windows"                                                                  config ["gmake" "codelite" "vs2013" "vs2015" "vs2017"]                                                                              env-mesg "Please restart your favorite IDE before using orx."]
+    "mac"       [premake "mac"                                                                      config ["gmake" "codelite" "xcode4"                  ]                                                                              env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
+    "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])    config ["gmake" "codelite"                           ]  deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]    env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
 ]
 
 
 ; Inits
 begin: now/time
 skip-hook: false
-platform: lowercase to-string system/platform/1
-switch platform [
+
+switch platform: lowercase to-string system/platform/1 [
     "macintosh" [platform: "mac"]
-    "linux"     [if find to-string system/platform/2 "x64" [platform-data/:platform/premake: "linux64"]]
 ]
 platform-info: platform-data/:platform
 
 root: system/options/path
 change-dir root
+attempt [write build-file ""]
 
 delete-dir: func [
     "Deletes a directory including all files and subdirectories."
@@ -62,17 +64,17 @@ req-ver: read/lines req-file
 cur-ver: either exists? cur-file [
     read/lines cur-file
 ] [
-    none
+    _
 ]
 print ["== Checking version: [" extern "]"]
-print either req-ver = cur-ver [
-    ["== [" cur-ver "] already installed, skipping!"]
+either req-ver = cur-ver [
+    print ["== [" cur-ver "] already installed, skipping!"]
 ] [
-    ["== [" req-ver "] needed, current [" cur-ver "]"]
+    print ["== [" req-ver "] needed, current [" cur-ver "]"]
 
 
     ; Updates cache
-    if system/options/args [
+    unless empty? system/options/args [
         print ["== Overriding cache [" cache "] => [" cache: dirize to-file system/options/args/1 "]"]
         skip-hook: true
     ]
@@ -105,21 +107,21 @@ print either req-ver = cur-ver [
     print ["== Decompressing [" local "] => [" extern "]"]
     wait 0.5
     unzip/quiet temp local
-    until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
+    loop-until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
     attempt [delete-dir temp]
     print ["== [" req-ver "] installed!"]
 
 
     ; Installs premake
-    premake-path: dirize join premake-root platform-info/premake
-    premake: read premake-path
+    premake-path: dirize rejoin [premake-root platform-info/premake]
+    premake: first read premake-path
     premake-file: read premake-path/:premake
     foreach [type folder] builds [
         if exists? folder [
             print ["== Copying [" premake "] to [" folder "]"]
             write folder/:premake premake-file
             unless platform = "windows" [
-                call reform ["chmod +x" folder/:premake]
+                call/shell/wait reform ["chmod +x" folder/:premake]
             ]
         ]
     ]
@@ -130,16 +132,46 @@ print either req-ver = cur-ver [
 ]
 
 
+; Sets environment variable
+env-path: to-local-file clean-path root/:env-path
+new-env: env-path != get-env env-variable
+print ["== Setting environment: [" env-variable "=" env-path "]"]
+set-env env-variable env-path
+either platform = "windows" [
+    call/shell/wait reform ["setx" env-variable env-path]
+] [
+    env-home: to-rebol-file dirize get-env "HOME"
+    env-prefix: rejoin ["export " env-variable "="]
+    env-files: reduce [
+        env-home/.bashrc
+        env-home/.profile
+    ]
+    foreach env-file env-files [
+        env-content: either exists? env-file [to-string read env-file] [copy ""]
+        parse env-content [
+            thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+            | to end start: (insert start rejoin [newline env-prefix env-path newline])
+        ]
+        attempt [write env-file env-content]
+    ]
+]
+
+
 ; Runs premake
-premake-path: dirize join premake-root platform-info/premake
-premake: read premake-path
+premake-path: dirize rejoin [premake-root platform-info/premake]
+premake: first read premake-path
 print ["== Generating build files for [" platform "]"]
 foreach config platform-info/config [
     print ["== Generating [" config "]"]
     foreach [type folder] builds [
         if exists? folder [
             change-dir rejoin [root folder]
-            call/wait rejoin ["./" premake " " config]
+            command: rejoin ["./" premake " " config]
+            either platform = "windows" [
+                call/wait command
+            ] [
+                call/shell/wait command
+            ]
             change-dir root
         ]
     ]
@@ -148,7 +180,7 @@ print ["== You can now build orx in [" builds/code/:platform "]"]
 
 
 ; Mercurial hook
-either exists? hg [
+if exists? hg [
     either skip-hook [
         print "== Skipping Mercurial hook installation"
     ] [
@@ -176,14 +208,12 @@ either exists? hg [
             ]
         ]
     ]
-    ; Removes build file
-    if exists? build-file [
-        attempt [delete build-file]
-    ]
-] [
-    ; Creates build file placeholder
-    unless exists? build-file [
-        attempt [write build-file ""]
+
+    ; Creates build file
+    build-version: copy ""
+    call/shell/wait/output {hg log -l 1 --template "{rev}"} build-version
+    if not empty? build-version [
+        attempt [write build-file reform ["#define __orxVERSION_BUILD__" build-version]]
     ]
 ]
 
@@ -211,7 +241,7 @@ if exists? git [
                 not empty? read hook-path
             ] [
                 hook-file: either find hook-file: to-string read hook-path system/options/script [
-                    none
+                    _
                 ] [
                     append hook-file hook-content
                 ]
@@ -227,7 +257,7 @@ if exists? git [
                 print ["== Installing git hook [" hook "]"]
                 write hook-path hook-file
                 unless platform = "windows" [
-                    call reform ["chmod +x" hook-path]
+                    call/shell/wait reform ["chmod +x" hook-path]
                 ]
             ] [
                 print ["== Git hook [" hook "] already installed"]
@@ -238,11 +268,17 @@ if exists? git [
 
 
 ; Done!
-if platform-info/deps [
+if find platform-info 'deps [
     print newline
     print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
     foreach lib platform-info/deps [print ["==[" lib "]"]]
     print newline
+]
+if all [
+    new-env
+    find platform-info 'env-mesg
+] [
+    print [newline "== IMPORTANT - New environment detected:" platform-info/env-mesg newline]
 ]
 end: now/time
 print ["== [" (end - begin) "] Setup successful!"]

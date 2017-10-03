@@ -23,7 +23,7 @@
  */
 
 /**
- * @file [Template].cpp
+ * @file [orx].cpp
  * @date 17/05/2017
  * @author sausage@zeta.org.au
  *
@@ -45,7 +45,7 @@ orxSTATUS orxFASTCALL Init()
 {
     /* Displays a small hint in console */
     orxLOG("\n* This template creates a viewport/camera couple and an object"
-    "\n* You can play with the config parameters in ../data/config/[Template].ini"
+    "\n* You can play with the config parameters in ../data/config/[orx].ini"
     "\n* After changing them, relaunch the template to see the changes.");
 
     /* Creates the viewport */
