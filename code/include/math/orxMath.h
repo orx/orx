@@ -189,12 +189,22 @@ extern orxDLLAPI void orxFASTCALL     orxMath_SetRandomSeeds(const orxU32 _au32S
  */
 static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 {
-  _u32Value  -= (_u32Value >> 1) & 0x55555555;
-  _u32Value   = (_u32Value & 0x33333333) + ((_u32Value >> 2) & 0x33333333);
-  _u32Value   = (((_u32Value + (_u32Value >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+  orxU32 u32Result;
+
+#ifdef __orxMSVC__
+
+  /* Uses intrinsic */
+  u32Result = __popcnt(_u32Value);
+
+#else /* __orxMSVC__ */
+
+  /* Uses intrinsic */
+  u32Result = __builtin_popcount(_u32Value);
+
+#endif /* __orxMSVC__ */
 
   /* Done! */
-  return _u32Value;
+  return u32Result;
 }
 
 /** Gets the count of trailing zeros in an orxU32
