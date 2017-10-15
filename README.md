@@ -223,7 +223,6 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
   `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
-  `__orxRASPBERRY_PI__`   | orx is being compiled for Raspberry Pi
   `__orxCPP__`            | orx is being compiled with a C++ compiler
   `__orxOBJC__`           | orx is being compiled with an Objective-C compiler
   `__orxFREEBASIC__`      | orx is being compiled for FreeBasic, WIP

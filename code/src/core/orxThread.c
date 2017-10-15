@@ -50,11 +50,11 @@
   #include <sys/types.h>
   #include <unistd.h>
 
-  #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
+  #if defined(__orxLINUX__)
 
     #include <sched.h>
 
-  #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
+  #endif /* __orxLINUX__ */
 
   #if defined (__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
@@ -341,7 +341,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
-  #if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
+  #if defined(__orxLINUX__)
 
       {
         cpu_set_t stSet;
@@ -354,7 +354,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
         pthread_setaffinity_np(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, sizeof(cpu_set_t), &stSet);
       }
 
-  #endif /* __orxLINUX__ || __orxRASPBERRY_PI__ */
+  #endif /* __orxLINUX__ */
 
 #endif /* __orxWINDOWS__ */
 

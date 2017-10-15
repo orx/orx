@@ -89,7 +89,7 @@
  */
 #define orxFILE_KU32_BUFFER_SIZE                512         /**< Buffer size */
 
-#if defined(__orxLINUX__) || defined(__orxRASPBERRY_PI__)
+#if defined(__orxLINUX__)
 
 #define orxFILE_KZ_APPLICATION_FOLDER           ".local/share"
 
@@ -314,7 +314,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
     }
   }
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxRASPBERRY_PI__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__)
 
   {
     const orxCHAR *zHome;
@@ -400,7 +400,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
     }
   }
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxRASPBERRY_PI__)
+#elif defined(__orxLINUX__) || defined(__orxMAC__)
 
   {
     const orxCHAR *zHome;
