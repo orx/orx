@@ -1627,7 +1627,7 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
  */
 orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
 {
-  orxU32 u32Length = 0, u32Result;
+  orxU32 u32Length = 0, u32Result = 0;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
@@ -1637,7 +1637,7 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
     const orxSTRING         zCommand;
-    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
+    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
 
     /* Gets entry */
     pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
@@ -1645,18 +1645,26 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
     /* Gets start of line */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
 
-    /* Gets completion counter */
-    for(u32Result = 0, zCommand = orxCommand_GetNext(acBuffer, orxNULL, orxNULL);
-        zCommand != orxNULL;
-        u32Result++, zCommand = orxCommand_GetNext(acBuffer, zCommand, orxNULL))
+    /* Skips all push markers */
+    for(pc = acBuffer; (*pc == ' ') || (*pc == '\t') || (*pc == orxCOMMAND_KC_PUSH_MARKER); pc++)
+      ;
+
+    /* Not empty? */
+    if(*pc != orxCHAR_NULL)
     {
-      orxU32 u32NewLength;
+      /* Gets completion counter */
+      for(u32Result = 0, zCommand = orxCommand_GetNext(pc, orxNULL, orxNULL);
+          zCommand != orxNULL;
+          u32Result++, zCommand = orxCommand_GetNext(pc, zCommand, orxNULL))
+      {
+        orxU32 u32NewLength;
 
-      /* Gets new length */
-      u32NewLength = orxString_GetLength(zCommand);
+        /* Gets new length */
+        u32NewLength = orxString_GetLength(zCommand);
 
-      /* Updates length */
-      u32Length = orxMAX(u32Length, u32NewLength);
+        /* Updates length */
+        u32Length = orxMAX(u32Length, u32NewLength);
+      }
     }
   }
   else
@@ -1692,7 +1700,7 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
   if(sstConsole.zCompletedCommand != orxNULL)
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
-    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE];
+    orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
     orxU32                  u32CompletionIndex;
 
     /* Gets entry */
@@ -1701,16 +1709,29 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
     /* Gets start of line */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
 
-    /* Finds requested completion */
-    for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(acBuffer, orxNULL, orxNULL);
-        (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
-        u32CompletionIndex++, zResult = orxCommand_GetNext(acBuffer, zResult, orxNULL))
+    /* Skips all push markers */
+    for(pc = acBuffer; (*pc == ' ') || (*pc == '\t') || (*pc == orxCOMMAND_KC_PUSH_MARKER); pc++)
       ;
 
-    /* Not found? */
-    if(zResult == orxNULL)
+    /* Not empty? */
+    if(*pc != orxCHAR_NULL)
     {
-      /* Updates result */
+      /* Finds requested completion */
+      for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(pc, orxNULL, orxNULL);
+        (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
+          u32CompletionIndex++, zResult = orxCommand_GetNext(pc, zResult, orxNULL))
+        ;
+
+      /* Not found? */
+      if(zResult == orxNULL)
+      {
+        /* Updates result */
+        zResult = orxSTRING_EMPTY;
+      }
+    }
+    else
+    {
+      /* Clears result */
       zResult = orxSTRING_EMPTY;
     }
   }
