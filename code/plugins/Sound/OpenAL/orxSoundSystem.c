@@ -1260,7 +1260,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         }
         else
         {
-          /* Uses default ont */
+          /* Uses default one */
           sstSoundSystem.s32StreamBufferNumber = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER;
         }
 
@@ -1914,9 +1914,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Play(orxSOUNDSYSTEM_SOUND *_pstSound
       _pstSound->bStop = orxFALSE;
     }
 
-      /* Updates status */
-      _pstSound->bPause = orxFALSE;
-    }
+    /* Updates status */
+    _pstSound->bPause = orxFALSE;
+  }
   else
   {
     /* Not finished loading? */

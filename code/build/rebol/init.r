@@ -99,9 +99,7 @@ either system/options/args [
 ]
 
 ; Locates source
-change-dir rejoin [first split-path system/options/script source]
-source: what-dir
-change-dir root
+source: clean-path rejoin [first split-path system/options/script source]
 
 ; Runs setup if premake isn't found
 unless exists? source/:premake-source [
@@ -112,15 +110,18 @@ unless exists? source/:premake-source [
     change-dir root
 ]
 
+; Retrieves project name
+if dir? name: clean-path to-rebol-file name [clear back tail name]
+
 ; Inits project directory
-if exists? name: to-rebol-file name [
-    log [{[} to-local-file name {] already exists, erasing!}]
-    delete-dir dirize name
+either exists? name [
+    log [{[} to-local-file name {] already exists, overriding!}]
+] [
+    make-dir/deep name
 ]
-make-dir/deep name
 change-dir name/..
-name: second split-path name
-log [{Initializing [} name {] in [} to-local-file what-dir {]}]
+set [path name] split-path name
+log [{Initializing [} name {] in [} to-local-file path {]}]
 
 ; Copies all files
 log {== Creating files:}
