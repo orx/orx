@@ -281,11 +281,17 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsInheritedValue(const o
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsRandomValue(const orxSTRING _zKey);
 
-/** Is this value dynamic? (ie. random and/or a list)
+/** Is this value dynamic? (ie. random and/or a list or command)
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsDynamicValue(const orxSTRING _zKey);
+
+/** Is this a command value? (ie. lazily evaluated command: %...)
+* @param[in] _zKey             Key name
+* @return orxTRUE / orxFALSE
+*/
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsCommandValue(const orxSTRING _zKey);
 
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name

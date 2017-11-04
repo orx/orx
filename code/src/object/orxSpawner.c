@@ -222,7 +222,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     /* Sets wave size */
     orxSpawner_SetWaveSize(_pstSpawner, orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_SIZE));
 
-    /* Has list/random value? */
+    /* Has list/random/command value? */
     if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_WAVE_SIZE) != orxFALSE)
     {
       /* Updates status */
@@ -232,7 +232,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     /* Sets wave delay */
     orxSpawner_SetWaveDelay(_pstSpawner, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY));
 
-    /* Has list/random value? */
+    /* Has list/random/command value? */
     if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_WAVE_DELAY) != orxFALSE)
     {
       /* Updates status */
@@ -297,7 +297,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
         orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
       }
 
-      /* Has list/random value? */
+      /* Has list/random/command value? */
       if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE)
       {
         /* Updates status */
@@ -495,8 +495,8 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       /* Pushes section */
       orxConfig_PushSection(_pstSpawner->zReference);
 
-      /* Is single spawn or object not a list? */
-      if((u32SpawnNumber == 1) || (orxConfig_IsList(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE))
+      /* Is single spawn or object not dynamic? */
+      if((u32SpawnNumber == 1) || (orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE))
       {
         /* Stores it */
         zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);

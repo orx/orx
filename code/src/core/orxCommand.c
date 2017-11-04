@@ -1004,6 +1004,11 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             *(orxCHAR *)pcSrc = orxCHAR_NULL;
           }
         }
+        else
+        {
+          /* Stops */
+          break;
+        }
       }
 
       /* Error? */

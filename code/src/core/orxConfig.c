@@ -440,7 +440,7 @@ static void orxFASTCALL orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue
     orxU32    u32Index;
 
     /* Updates flags */
-    u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE;
+    u16Flags = ((*(_pstValue->zValue) == orxCONFIG_KC_COMMAND) && (*(_pstValue->zValue + 1) != orxCONFIG_KC_COMMAND)) ? orxCONFIG_VALUE_KU16_FLAG_COMMAND : orxCONFIG_VALUE_KU16_FLAG_NONE;
 
     /* Doesn't have an index table? */
     if(_pstValue->au32ListIndexTable == orxNULL)
@@ -465,6 +465,13 @@ static void orxFASTCALL orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue
         /* Not too long? */
         if(u32Counter < 0xFFFF)
         {
+          /* Is a command? */
+          if((*(pc + 1) == orxCONFIG_KC_COMMAND) && (*(pc + 2) != orxCONFIG_KC_COMMAND))
+          {
+            /* Adds command flag */
+            u16Flags |= orxCONFIG_VALUE_KU16_FLAG_COMMAND;
+          }
+
           /* Sets an end of string here */
           *pc = orxCHAR_NULL;
 
@@ -880,9 +887,6 @@ static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstVal
   orxASSERT(_pstValue != orxNULL);
   orxASSERT(_s32Index >= 0);
 
-  /* Clears command flag */
-  orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_NONE, orxCONFIG_VALUE_KU16_FLAG_COMMAND);
-
   /* Is self value? */
   if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE))
   {
@@ -919,9 +923,6 @@ static orxINLINE const orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstVal
             /* Updates result */
             zResult = (_bPermanentStore != orxFALSE) ? orxString_Store(sstConfig.acCommandBuffer) : sstConfig.acCommandBuffer;
           }
-
-          /* Updates command flag */
-          orxFLAG_SET(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND, orxCONFIG_VALUE_KU16_FLAG_NONE);
         }
       }
       else
@@ -3282,6 +3283,8 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
     /* Success? */
     if(pstValue != orxNULL)
     {
+      const orxSTRING zValue;
+
       /* Random? */
       if(s32Index == -1)
       {
@@ -3289,8 +3292,15 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
         s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCounter - 1) : 0;
       }
 
+      /* Is a command? */
+      zValue = (s32Index == 0) ? pstValue->zValue : pstValue->zValue + pstValue->au32ListIndexTable[s32Index - 1];
+      if((*zValue == orxCONFIG_KC_COMMAND) && (*(zValue + 1) != orxCONFIG_KC_COMMAND))
+      {
+        /* Gets string value */
+        _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
+      }
       /* Is index valid? */
-      if(s32Index < (orxS32)pstValue->u16ListCounter)
+      else if(s32Index < (orxS32)pstValue->u16ListCounter)
       {
         orxVECTOR vResult;
         orxBOOL   bConfigLevelEnabled;
@@ -5569,7 +5579,7 @@ orxBOOL orxFASTCALL orxConfig_IsRandomValue(const orxSTRING _zKey)
   return bResult;
 }
 
-/** Is this value dynamic? (ie. random and/or a list)
+/** Is this value dynamic? (ie. random and/or a list or command)
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
@@ -5588,8 +5598,39 @@ orxBOOL orxFASTCALL orxConfig_IsDynamicValue(const orxSTRING _zKey)
   /* Valid? */
   if(pstValue != orxNULL)
   {
-    /* Has random or list flag? */
-    if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM | orxCONFIG_VALUE_KU16_FLAG_LIST))
+    /* Has random, list or command flag? */
+    if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM | orxCONFIG_VALUE_KU16_FLAG_LIST | orxCONFIG_VALUE_KU16_FLAG_COMMAND))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Is this a command value? (ie. lazily evaluated command: %...)
+* @param[in] _zKey             Key name
+* @return orxTRUE / orxFALSE
+*/
+orxBOOL orxFASTCALL orxConfig_IsCommandValue(const orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Is a command? */
+    if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_COMMAND))
     {
       /* Updates result */
       bResult = orxTRUE;
