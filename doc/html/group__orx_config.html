@@ -215,6 +215,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad57211f9017325df09ecc0fd4414eef3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5f188331baaf549aa47f31375cb79016"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga5f188331baaf549aa47f31375cb79016">orxConfig_Init</a> ()</td></tr>
 <tr class="separator:ga5f188331baaf549aa47f31375cb79016"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7be32326e233bfd2b8abed43f9c6482d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7be32326e233bfd2b8abed43f9c6482d">orxConfig_IsCommandValue</a> (const orxSTRING _zKey)</td></tr>
+<tr class="separator:ga7be32326e233bfd2b8abed43f9c6482d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad79e4e0dd3a92d0a9ffad2bc85af2c80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gad79e4e0dd3a92d0a9ffad2bc85af2c80">orxConfig_IsDynamicValue</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:gad79e4e0dd3a92d0a9ffad2bc85af2c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga365019394fbad0e1d52f88edf4da7ab5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga365019394fbad0e1d52f88edf4da7ab5">orxConfig_IsInheritedValue</a> (const orxSTRING _zKey)</td></tr>
@@ -1314,6 +1316,29 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga7be32326e233bfd2b8abed43f9c6482d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxConfig_IsCommandValue </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is this a command value? (ie. lazily evaluated command: %...) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gad79e4e0dd3a92d0a9ffad2bc85af2c80"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1327,7 +1352,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Is this value dynamic? (ie. random and/or a list) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Is this value dynamic? (ie. random and/or a list or command) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
   </table>

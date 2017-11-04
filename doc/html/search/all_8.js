@@ -508,6 +508,7 @@ var searchData=
   ['orxconfig_5fhassection',['orxConfig_HasSection',['../group__orx_config.html#gad42bd0a8612fbe43d17a887f7149e4a0',1,'orxConfig.h']]],
   ['orxconfig_5fhasvalue',['orxConfig_HasValue',['../group__orx_config.html#gad57211f9017325df09ecc0fd4414eef3',1,'orxConfig.h']]],
   ['orxconfig_5finit',['orxConfig_Init',['../group__orx_config.html#ga5f188331baaf549aa47f31375cb79016',1,'orxConfig.h']]],
+  ['orxconfig_5fiscommandvalue',['orxConfig_IsCommandValue',['../group__orx_config.html#ga7be32326e233bfd2b8abed43f9c6482d',1,'orxConfig.h']]],
   ['orxconfig_5fisdynamicvalue',['orxConfig_IsDynamicValue',['../group__orx_config.html#gad79e4e0dd3a92d0a9ffad2bc85af2c80',1,'orxConfig.h']]],
   ['orxconfig_5fisinheritedvalue',['orxConfig_IsInheritedValue',['../group__orx_config.html#ga365019394fbad0e1d52f88edf4da7ab5',1,'orxConfig.h']]],
   ['orxconfig_5fislist',['orxConfig_IsList',['../group__orx_config.html#gab7d1fdec8e820cd684cef7987cf73ba0',1,'orxConfig.h']]],
