@@ -141,7 +141,7 @@
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
 
-#define orxDISPLAY_KF_VSYNC_DELAY_FIX           0.2f
+#define orxDISPLAY_KF_VSYNC_DELAY_FIX           0.5f
 
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
@@ -1859,8 +1859,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
  */
 static void orxFASTCALL orxDisplay_GLFW_VSyncFix(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
-  /* Toggles VSync */
-  orxDisplay_EnableVSync(!orxDisplay_IsVSyncEnabled());
+  /* Updates status */
+  orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+  /* Enforces VSync */
+  orxDisplay_EnableVSync(orxDisplay_IsVSyncEnabled());
+
+  /* Done! */
+  return;
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
@@ -3670,30 +3676,25 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
+    /* Has VSync fix already happened? (to prevent busy loop in some graphics drivers) */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
+    {
 #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
-
-    /* Updates VSync status */
-    glfwSwapInterval(-1);
-
+      /* Updates VSync status */
+      glfwSwapInterval(-1);
 #else /* __orxWINDOWS__ || __orxLINUX__ */
-
-    /* Updates VSync status */
-    glfwSwapInterval(1);
-
+      /* Updates VSync status */
+      glfwSwapInterval(1);
 #endif /* __orxWINDOWS__ || __orxLINUX__ */
+    }
+    else
+    {
+      /* Updates VSync status */
+      glfwSwapInterval(0);
+    }
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-
-    /* First time enabled? */
-    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
-    {
-      /* Toggles VSync twice to fix a busy loop issue in some graphics drivers */
-      orxClock_AddGlobalTimer(orxDisplay_GLFW_VSyncFix, orxDISPLAY_KF_VSYNC_DELAY_FIX, 2, orxNULL);
-
-      /* Updates status */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
   }
   else
   {
@@ -4595,12 +4596,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
               orxDisplay_GLFW_EnableVSync(orxTRUE);
             }
 
-            /* Has VSync value? */
-            if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
-            {
-              /* Updates vertical sync */
-              orxDisplay_GLFW_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
-            }
+            /* Only allows delayed VSync to fix a busy loop issue in some graphics drivers */
+            orxClock_AddGlobalTimer(orxDisplay_GLFW_VSyncFix, orxDISPLAY_KF_VSYNC_DELAY_FIX, 1, orxNULL);
 
             /* Inits info */
             sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
