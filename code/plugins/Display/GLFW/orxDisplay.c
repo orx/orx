@@ -121,6 +121,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000400  /**< No resize flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000800  /**< Ignore resize event flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00001000  /**< Full screen flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -139,6 +140,8 @@
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
+
+#define orxDISPLAY_KF_VSYNC_DELAY_FIX           0.2f
 
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
@@ -1850,6 +1853,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
 
   /* Done! */
   return eResult;
+}
+
+/** VSync fix (to prevent a busy loop/high CPU use in some graphics drivers)
+ */
+static void orxFASTCALL orxDisplay_GLFW_VSyncFix(const orxCLOCK_INFO *_pstInfo, void *_pContext)
+{
+  /* Toggles VSync */
+  orxDisplay_EnableVSync(!orxDisplay_IsVSyncEnabled());
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_GLFW_GetScreenBitmap()
@@ -3673,6 +3684,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
 
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
+    /* First time enabled? */
+    if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
+    {
+      /* Toggles VSync twice to fix a busy loop issue in some graphics drivers */
+      orxClock_AddGlobalTimer(orxDisplay_GLFW_VSyncFix, orxDISPLAY_KF_VSYNC_DELAY_FIX, 2, orxNULL);
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
   }
   else
   {
