@@ -466,9 +466,9 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
   return bestConfig;
 }
 
-/** Render inhibiter
+/** Render inhibitor
  */
-static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibiter(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibitor(const orxEVENT *_pstEvent)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
@@ -568,8 +568,8 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       eglMakeCurrent(sstDisplay.display, sstDisplay.surface, sstDisplay.surface, sstDisplay.context);
       eglASSERT();
 
-      /* Removes render inhibiter */
-      orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
+      /* Removes render inhibitor */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibitor);
 
       eResult = orxSTATUS_SUCCESS;
     }
@@ -590,8 +590,8 @@ static void orxAndroid_Display_DestroySurface()
     eglASSERT();
     sstDisplay.surface = EGL_NO_SURFACE;
 
-    /* Adds render inhibiter */
-    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibiter);
+    /* Adds render inhibitor */
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_RenderInhibitor);
   }
 }
 

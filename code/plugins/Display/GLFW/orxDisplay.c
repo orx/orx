@@ -307,6 +307,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLdouble                  dLastOrthoRight, dLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
+  orxFLOAT                  fClockTickSize;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
   orxU32                    u32DestinationBitmapCounter;
@@ -398,9 +399,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
 
 
-/** Render inhibiter
+/** Render inhibitor
  */
-static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibiter(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibitor(const orxEVENT *_pstEvent)
 {
   /* Render stop? */
   if(_pstEvent->eID == orxRENDER_EVENT_STOP)
@@ -449,11 +450,27 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     /* Wasn't in the foreground before? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
     {
+      /* Has backup clock tick size? */
+      if(sstDisplay.fClockTickSize >= orxFLOAT_0)
+      {
+        orxCLOCK *pstClock;
+
+        /* Gets core clock */
+        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+        /* Valid? */
+        if(pstClock != orxNULL)
+        {
+          /* Restores its tick size */
+          orxClock_SetTickSize(pstClock, sstDisplay.fClockTickSize);
+        }
+      }
+
       /* Sends foreground event */
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
       {
-        /* Adds render inhibiter */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibiter);
+        /* Removes render inhibitor */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
       }
 
       /* Updates foreground status */
@@ -493,11 +510,33 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     /* Wasn't in the background before? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
     {
+      /* Clears backup clock tick size */
+      sstDisplay.fClockTickSize = -orxFLOAT_1;
+
       /* Sends background event */
       if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
       {
-        /* Adds render inhibiter */
-        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibiter);
+        /* Adds render inhibitor */
+        orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
+
+        /* Is VSync on? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
+        {
+          orxCLOCK *pstClock;
+
+          /* Gets core clock */
+          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+          /* Valid? */
+          if(pstClock != orxNULL)
+          {
+            /* Backups its tick size */
+            sstDisplay.fClockTickSize = orxClock_GetInfo(pstClock)->fTickSize;
+
+            /* Sets its tick size to match the refresh rate */
+            orxClock_SetTickSize(pstClock, orxFLOAT_1 / orxU2F(sstDisplay.u32RefreshRate));
+          }
+        }
       }
 
       /* Updates background status */

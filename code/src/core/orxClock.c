@@ -1241,8 +1241,15 @@ orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickS
   /* Valid modifier value? */
   if(_fTickSize >= orxFLOAT_0)
   {
-    /* Updates clock tick size*/
+    /* Updates clock tick size */
     _pstClock->stClockInfo.fTickSize = _fTickSize;
+
+    /* Is core clock? */
+    if(_pstClock->stClockInfo.eType == orxCLOCK_TYPE_CORE)
+    {
+      /* Updates main clock tick size */
+      sstClock.fMainClockTickSize = _fTickSize;
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

@@ -49,9 +49,9 @@ static volatile orxU32 su32FrameCounter = 0;
  */
 orxSTATUS (orxFASTCALL *spfnRun)() = orxNULL;
 
-/** Render inhibiter
+/** Render inhibitor
  */
-static orxSTATUS orxFASTCALL RenderInhibiter(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxiOS_RenderInhibitor(const orxEVENT *_pstEvent)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
@@ -151,8 +151,8 @@ const orxSTRING orxiOS_GetDocumentsPath()
   /* Queues event */
   [poView QueueEvent:orxSYSTEM_EVENT_BACKGROUND WithPayload:nil];
 
-  /* Adds render inhibiter */
-  orxEvent_AddHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+  /* Adds render inhibitor */
+  orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxiOS_RenderInhibitor);
 
   /* Gets current frame */
   u32CurrentFrame = su32FrameCounter;
@@ -174,8 +174,8 @@ const orxSTRING orxiOS_GetDocumentsPath()
   /* Queues event */
   [poView QueueEvent:orxSYSTEM_EVENT_FOREGROUND WithPayload:nil];
 
-  /* Removes render inhibiter */
-  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, RenderInhibiter);
+  /* Removes render inhibitor */
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxiOS_RenderInhibitor);
 }
 
 - (void) applicationWillResignActive:(UIApplication *)_poApplication
