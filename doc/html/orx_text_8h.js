@@ -6,6 +6,8 @@ var orx_text_8h =
     [ "orxText_Delete", "group__orx_text.html#gaf95fd8ed766cf9cd9ae3ba3f87881259", null ],
     [ "orxText_Exit", "group__orx_text.html#gacac1ac74b221fa74b2785f2035e8bb79", null ],
     [ "orxText_GetFont", "group__orx_text.html#gae0fcd3219603c8a0a0142428e0d98670", null ],
+    [ "orxText_GetLineCount", "group__orx_text.html#ga5c5d9b2a2255e108406fb1f8d8c2cea5", null ],
+    [ "orxText_GetLineSize", "group__orx_text.html#ga1044432fa44552c75360c05ffe2360a2", null ],
     [ "orxText_GetName", "group__orx_text.html#ga29d5de5b4a21a24bd3bfbad5cf57b799", null ],
     [ "orxText_GetSize", "group__orx_text.html#ga790a85f0fda7a8a57c9b19fb37b8e44b", null ],
     [ "orxText_GetString", "group__orx_text.html#ga48540a8acf5c3b2914e4139d0471f0b5", null ],

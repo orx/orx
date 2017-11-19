@@ -131,6 +131,10 @@ Functions</h2></td></tr>
 <tr class="separator:gacac1ac74b221fa74b2785f2035e8bb79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae0fcd3219603c8a0a0142428e0d98670"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_font.html#gab691adc491d2136ac68d160d1f14bc1d">orxFONT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gae0fcd3219603c8a0a0142428e0d98670">orxText_GetFont</a> (const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 <tr class="separator:gae0fcd3219603c8a0a0142428e0d98670"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5c5d9b2a2255e108406fb1f8d8c2cea5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#ga5c5d9b2a2255e108406fb1f8d8c2cea5">orxText_GetLineCount</a> (const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+<tr class="separator:ga5c5d9b2a2255e108406fb1f8d8c2cea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1044432fa44552c75360c05ffe2360a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#ga1044432fa44552c75360c05ffe2360a2">orxText_GetLineSize</a> (const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxU32 _u32Line, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+<tr class="separator:ga1044432fa44552c75360c05ffe2360a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga29d5de5b4a21a24bd3bfbad5cf57b799"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#ga29d5de5b4a21a24bd3bfbad5cf57b799">orxText_GetName</a> (const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 <tr class="separator:ga29d5de5b4a21a24bd3bfbad5cf57b799"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga790a85f0fda7a8a57c9b19fb37b8e44b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#ga790a85f0fda7a8a57c9b19fb37b8e44b">orxText_GetSize</a> (const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
@@ -263,6 +267,77 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Text font / orxNULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga5c5d9b2a2255e108406fb1f8d8c2cea5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxText_GetLineCount </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *&#160;</td>
+          <td class="paramname"><em>_pstText</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets text's line count </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstText</td><td>Concerned text </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxU32 </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga1044432fa44552c75360c05ffe2360a2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxText_GetLineSize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *&#160;</td>
+          <td class="paramname"><em>_pstText</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&#160;</td>
+          <td class="paramname"><em>_pfWidth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&#160;</td>
+          <td class="paramname"><em>_pfHeight</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets text's line size </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstText</td><td>Concerned text </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_u32Line</td><td>Line index </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pfWidth</td><td>Line's width </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pfHeight</td><td>Line's height </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>

@@ -1198,6 +1198,8 @@ var searchData=
   ['orxtext_5fdelete',['orxText_Delete',['../group__orx_text.html#gaf95fd8ed766cf9cd9ae3ba3f87881259',1,'orxText.h']]],
   ['orxtext_5fexit',['orxText_Exit',['../group__orx_text.html#gacac1ac74b221fa74b2785f2035e8bb79',1,'orxText.h']]],
   ['orxtext_5fgetfont',['orxText_GetFont',['../group__orx_text.html#gae0fcd3219603c8a0a0142428e0d98670',1,'orxText.h']]],
+  ['orxtext_5fgetlinecount',['orxText_GetLineCount',['../group__orx_text.html#ga5c5d9b2a2255e108406fb1f8d8c2cea5',1,'orxText.h']]],
+  ['orxtext_5fgetlinesize',['orxText_GetLineSize',['../group__orx_text.html#ga1044432fa44552c75360c05ffe2360a2',1,'orxText.h']]],
   ['orxtext_5fgetname',['orxText_GetName',['../group__orx_text.html#ga29d5de5b4a21a24bd3bfbad5cf57b799',1,'orxText.h']]],
   ['orxtext_5fgetsize',['orxText_GetSize',['../group__orx_text.html#ga790a85f0fda7a8a57c9b19fb37b8e44b',1,'orxText.h']]],
   ['orxtext_5fgetstring',['orxText_GetString',['../group__orx_text.html#ga48540a8acf5c3b2914e4139d0471f0b5',1,'orxText.h']]],
