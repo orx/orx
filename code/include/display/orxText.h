@@ -92,6 +92,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_Delete(orxTEXT *_pstText);
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
+/** Gets text's line count
+ * @param[in]   _pstText      Concerned text
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL       orxText_GetLineCount(const orxTEXT *_pstText);
+
+/** Gets text's line size
+ * @param[in]   _pstText      Concerned text
+ * @param[out]  _u32Line      Line index
+ * @param[out]  _pfWidth      Line's width
+ * @param[out]  _pfHeight     Line's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Line, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
 /** Gets text name
  * @param[in]   _pstText      Concerned text
  * @return      Text name / orxNULL

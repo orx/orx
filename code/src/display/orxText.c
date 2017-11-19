@@ -706,6 +706,165 @@ orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidt
   return eResult;
 }
 
+/** Gets text's line count
+ * @param[in]   _pstText      Concerned text
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxText_GetLineCount(const orxTEXT *_pstText)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstText);
+
+  /* Is not empty? */
+  if((_pstText->zString != orxNULL) && (*(_pstText->zString) != orxCHAR_NULL))
+  {
+    const orxCHAR *pc;
+
+    /* For all characters */
+    for(pc = _pstText->zString, u32Result = 1; *pc != orxCHAR_NULL; pc++)
+    {
+      /* Depending on character */
+      switch(*pc)
+      {
+        case orxCHAR_CR:
+        {
+          /* Half EOL? */
+          if(*(pc + 1) == orxCHAR_LF)
+          {
+            /* Updates pointer */
+            pc++;
+          }
+
+          /* Fall through */
+        }
+
+        case orxCHAR_LF:
+        {
+          /* Updates result */
+          u32Result++;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = 0;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets text's line size
+ * @param[in]   _pstText      Concerned text
+ * @param[out]  _u32Line      Line index
+ * @param[out]  _pfWidth      Line's width
+ * @param[out]  _pfHeight     Line's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Line, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstText);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Has font? */
+  if(_pstText->pstFont != orxNULL)
+  {
+    /* Has text? */
+    if(_pstText->zString != orxNULL)
+    {
+      const orxCHAR  *pc;
+      orxU32          u32Line;
+
+      /* Skips to requested line */
+      for(pc = _pstText->zString, u32Line = 0; (u32Line < _u32Line) && (*pc != orxCHAR_NULL); pc++)
+      {
+        /* Depending on character */
+        switch(*pc)
+        {
+          case orxCHAR_CR:
+          {
+            /* Half EOL? */
+            if(*(pc + 1) == orxCHAR_LF)
+            {
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Fall through */
+          }
+
+          case orxCHAR_LF:
+          {
+            /* Updates line counter */
+            u32Line++;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+      }
+
+      /* Valid? */
+      if(*pc != orxCHAR_NULL)
+      {
+        orxU32    u32CharacterCodePoint;
+        orxFLOAT  fWidth;
+
+        /* For all characters in the line */
+        for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc), fWidth = orxFLOAT_0;
+            (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL);
+            u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+        {
+          /* Updates width */
+          fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
+        }
+
+        /* Stores dimensions */
+        *_pfWidth   = fWidth;
+        *_pfHeight  = orxFont_GetCharacterHeight(_pstText->pstFont);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s:%u]: Couldn't get text line size, invalid line number.", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, _u32Line);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s:%u]: Couldn't get text line size as no string is set.", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, _u32Line);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s:%u]: Couldn't get text line size as no font is set.", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, _u32Line);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets text name
  * @param[in]   _pstText      Concerned text
  * @return      Text name / orxNULL
