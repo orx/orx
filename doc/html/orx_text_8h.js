@@ -12,7 +12,9 @@ var orx_text_8h =
     [ "orxText_GetSize", "group__orx_text.html#ga790a85f0fda7a8a57c9b19fb37b8e44b", null ],
     [ "orxText_GetString", "group__orx_text.html#ga48540a8acf5c3b2914e4139d0471f0b5", null ],
     [ "orxText_Init", "group__orx_text.html#ga14c4856a4f1a9e4cb084646e71b30182", null ],
+    [ "orxText_IsFixedSize", "group__orx_text.html#ga6b803d0a5656ce1348d5565fca35489e", null ],
     [ "orxText_SetFont", "group__orx_text.html#ga6c17c8e949027b0f40e6c2d682d5ae83", null ],
+    [ "orxText_SetSize", "group__orx_text.html#gaf2365c6272ddbe5154c24e1098618721", null ],
     [ "orxText_SetString", "group__orx_text.html#ga1d65bbeba32adec6b694e8deffade036", null ],
     [ "orxText_Setup", "group__orx_text.html#gabaf8ba36746f278176c2efec5a0a14d4", null ]
 ];
