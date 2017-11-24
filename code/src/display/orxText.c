@@ -54,7 +54,9 @@
  */
 #define orxTEXT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxTEXT_KU32_FLAG_INTERNAL            0x10000000  /**< Internal structure handlign flag */
+#define orxTEXT_KU32_FLAG_INTERNAL            0x10000000  /**< Internal structure handling flag */
+#define orxTEXT_KU32_FLAG_FIXED_WIDTH         0x00000001  /**< Fixed width flag */
+#define orxTEXT_KU32_FLAG_FIXED_HEIGHT        0x00000002  /**< Fixed height flag */
 
 #define orxTEXT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -77,19 +79,20 @@
  */
 struct __orxTEXT_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
-  orxFONT          *pstFont;                    /**< Font : 20 */
-  const orxSTRING   zString;                    /**< String : 24 */
-  orxFLOAT          fWidth;                     /**< Width : 28 */
-  orxFLOAT          fHeight;                    /**< Height : 32 */
-  const orxSTRING   zReference;                 /**< Config reference : 36 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 40 / 64 */
+  orxSTRING         zString;                    /**< String : 44 / 72 */
+  orxFONT          *pstFont;                    /**< Font : 48 / 80 */
+  orxFLOAT          fWidth;                     /**< Width : 52 / 84 */
+  orxFLOAT          fHeight;                    /**< Height : 56 / 88 */
+  const orxSTRING   zReference;                 /**< Config reference : 60 / 96 */
+  orxSTRING         zOriginalString;            /**< Original string : 64 / 104 */
 };
 
 /** Static structure
  */
 typedef struct __orxTEXT_STATIC_t
 {
-  orxU32        u32Flags;                       /**< Control flags : 4 */
+  orxU32            u32Flags;                   /**< Control flags */
 
 } orxTEXT_STATIC;
 
@@ -354,68 +357,219 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstText);
 
+  /* Has original string? */
+  if(_pstText->zOriginalString != orxNULL)
+  {
+    /* Has current string? */
+    if(_pstText->zString != orxNULL)
+    {
+      /* Deletes it */
+      orxString_Delete(_pstText->zString);
+    }
+
+    /* Restores string from original */
+    _pstText->zString = _pstText->zOriginalString;
+    _pstText->zOriginalString = orxNULL;
+  }
+
   /* Has string and font? */
   if((_pstText->zString != orxNULL) && (_pstText->zString != orxSTRING_EMPTY) && (_pstText->pstFont != orxNULL))
   {
-    orxFLOAT        fWidth, fMaxWidth, fHeight, fCharacterHeight;
+    orxFLOAT        fWidth, fHeight, fCharacterHeight;
     orxU32          u32CharacterCodePoint;
-    const orxCHAR  *pc;
 
     /* Gets character height */
     fCharacterHeight = orxFont_GetCharacterHeight(_pstText->pstFont);
 
-    /* For all characters */
-    for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = fCharacterHeight, fWidth = fMaxWidth = orxFLOAT_0;
-        u32CharacterCodePoint != orxCHAR_NULL;
-        u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
+    /* No fixed size? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_WIDTH | orxTEXT_KU32_FLAG_FIXED_HEIGHT) == orxFALSE)
     {
-      /* Depending on character */
-      switch(u32CharacterCodePoint)
+      const orxCHAR  *pc;
+      orxFLOAT        fMaxWidth;
+
+      /* For all characters */
+      for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = fCharacterHeight, fWidth = fMaxWidth = orxFLOAT_0;
+          u32CharacterCodePoint != orxCHAR_NULL;
+          u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
       {
-        case orxCHAR_CR:
+        /* Depending on character */
+        switch(u32CharacterCodePoint)
         {
-          /* Half EOL? */
-          if(*pc == orxCHAR_LF)
+          case orxCHAR_CR:
           {
-            /* Updates pointer */
-            pc++;
+            /* Half EOL? */
+            if(*pc == orxCHAR_LF)
+            {
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Fall through */
           }
 
-          /* Fall through */
-        }
+          case orxCHAR_LF:
+          {
+            /* Updates height */
+            fHeight += fCharacterHeight;
 
-        case orxCHAR_LF:
-        {
-          /* Updates height */
-          fHeight += fCharacterHeight;
+            /* Updates max width */
+            fMaxWidth = orxMAX(fMaxWidth, fWidth);
 
-          /* Updates max width */
-          fMaxWidth = orxMAX(fMaxWidth, fWidth);
+            /* Resets width */
+            fWidth = orxFLOAT_0;
 
-          /* Resets width */
-          fWidth = orxFLOAT_0;
+            break;
+          }
 
-          break;
-        }
+          default:
+          {
+            /* Updates width */
+            fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
 
-        default:
-        {
-          /* Updates width */
-          fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
-
-          break;
+            break;
+          }
         }
       }
-    }
 
-    /* Stores values */
-    _pstText->fWidth  = orxMAX(fWidth, fMaxWidth);
-    _pstText->fHeight = fHeight;
+      /* Stores values */
+      _pstText->fWidth  = orxMAX(fWidth, fMaxWidth);
+      _pstText->fHeight = fHeight;
+    }
+    else
+    {
+      orxCHAR  *pc;
+      orxSTRING zLastSpace;
+
+      /* For all characters */
+      for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, (const orxCHAR **)&pc), fHeight = fCharacterHeight, fWidth = orxFLOAT_0, zLastSpace = orxNULL;
+          u32CharacterCodePoint != orxCHAR_NULL;
+          u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+      {
+        /* Depending on the character */
+        switch(u32CharacterCodePoint)
+        {
+          case orxCHAR_CR:
+          {
+            /* Half EOL? */
+            if(*pc == orxCHAR_LF)
+            {
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Fall through */
+          }
+
+          case orxCHAR_LF:
+          {
+            /* Updates height */
+            fHeight += fCharacterHeight;
+
+            /* Should truncate? */
+            if((orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_HEIGHT) != orxFALSE) && (fHeight > _pstText->fHeight))
+            {
+              /* Truncates the string */
+              *pc = orxCHAR_NULL;
+            }
+            else
+            {
+              /* Resets width */
+              fWidth = orxFLOAT_0;
+            }
+
+            break;
+          }
+
+          case ' ':
+          case '\t':
+          {
+            /* Updates width */
+            fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
+
+            /* Updates last space */
+            zLastSpace = pc - 1;
+
+            break;
+          }
+
+          default:
+          {
+            /* Finds end of word */
+            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+            {
+              fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
+            }
+
+            /* Gets back to previous character */
+            pc--;
+
+            break;
+          }
+        }
+
+        /* Doesn't fit inside the line? */
+        if(fWidth > _pstText->fWidth)
+        {
+          /* No original string copy yet? */
+          if(_pstText->zOriginalString == orxNULL)
+          {
+            /* Stores a copy of the original */
+            _pstText->zOriginalString = orxString_Duplicate(_pstText->zString);
+          }
+
+          /* Has last space? */
+          if(zLastSpace != orxNULL)
+          {
+            /* Inserts end of line */
+            *zLastSpace = orxCHAR_LF;
+
+            /* Updates cursor */
+            pc = zLastSpace;
+
+            /* Clears last space */
+            zLastSpace = orxNULL;
+
+            /* Updates width */
+            fWidth = orxFLOAT_0;
+          }
+          else
+          {
+            orxCHAR cBackup, *pcDebug;
+
+            /* Logs message */
+            cBackup = *pc;
+            *pc = orxCHAR_NULL;
+            for(pcDebug = pc - 1; (pcDebug >= _pstText->zString) && (*pcDebug != ' ') && (*pcDebug != '\t') && (*pcDebug != orxCHAR_LF) && (*pcDebug != orxCHAR_CR); pcDebug--)
+              ;
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Word <%s> is too long to fit inside the requested <%g> pixels!", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, pcDebug + 1, _pstText->fWidth);
+            *pc = cBackup;
+          }
+        }
+      }
+
+      /* Isn't height fixed? */
+      if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_HEIGHT) == orxFALSE)
+      {
+        /* Stores it */
+        _pstText->fHeight = fHeight;
+      }
+    }
   }
   else
   {
-    /* Clears values */
-    _pstText->fWidth = _pstText->fHeight = orxFLOAT_0;
+    /* Isn't width fixed? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_WIDTH) == orxFALSE)
+    {
+      /* Clears it */
+      _pstText->fWidth = orxFLOAT_0;
+    }
+
+    /* Isn't height fixed? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_HEIGHT) == orxFALSE)
+    {
+      /* Clears it */
+      _pstText->fHeight = orxFLOAT_0;
+    }
   }
 
   /* Done! */
@@ -571,8 +725,9 @@ orxTEXT *orxFASTCALL orxText_Create()
   if(pstResult != orxNULL)
   {
     /* Inits it */
-    pstResult->zString  = orxNULL;
-    pstResult->pstFont  = orxNULL;
+    pstResult->zString          = orxNULL;
+    pstResult->pstFont          = orxNULL;
+    pstResult->zOriginalString  = orxNULL;
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
@@ -613,7 +768,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference key */
-      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
+      pstResult->zReference = orxConfig_GetCurrentSection();
 
       /* Processes its config data */
       if(orxText_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
@@ -682,28 +837,23 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   return eResult;
 }
 
-/** Gets text size
+/** Gets text name
  * @param[in]   _pstText      Concerned text
- * @param[out]  _pfWidth      Text's width
- * @param[out]  _pfHeight     Text's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      Text name / orxNULL
  */
-orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
 
   /* Updates result */
-  *_pfWidth   = _pstText->fWidth;
-  *_pfHeight  = _pstText->fHeight;
+  zResult = (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY;
 
   /* Done! */
-  return eResult;
+  return zResult;
 }
 
 /** Gets text's line count
@@ -865,23 +1015,47 @@ orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Li
   return eResult;
 }
 
-/** Gets text name
+/** Is text's size fixed? (ie. manually constrained with orxText_SetSize())
  * @param[in]   _pstText      Concerned text
- * @return      Text name / orxNULL
+ * @return      orxTRUE / orxFALSE
  */
-const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
+orxBOOL orxFASTCALL orxText_IsFixedSize(const orxTEXT *_pstText)
 {
-  const orxSTRING zResult;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Updates result */
-  zResult = (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY;
+  bResult = orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_WIDTH | orxTEXT_KU32_FLAG_FIXED_HEIGHT);
 
   /* Done! */
-  return zResult;
+  return bResult;
+}
+
+/** Gets text size
+ * @param[in]   _pstText      Concerned text
+ * @param[out]  _pfWidth      Text's width
+ * @param[out]  _pfHeight     Text's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstText);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Updates result */
+  *_pfWidth   = _pstText->fWidth;
+  *_pfHeight  = _pstText->fHeight;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets text string
@@ -931,6 +1105,84 @@ orxFONT *orxFASTCALL orxText_GetFont(const orxTEXT *_pstText)
   return pstResult;
 }
 
+/** Sets text's size, will lead to reformatting if text doesn't fit (pass width = -1.0f to restore text's original size, ie. unconstrained)
+ * @param[in]   _pstText      Concerned text
+ * @param[in]   _fWidth       Max width for the text, remove any size constraint if negative
+ * @param[in]   _fHeight      Max height for the text, ignored if negative (ie. unconstrained height)
+ * @param[in]   _pzExtra      Text that wouldn't fit inside the box if height is provided, orxSTRING_EMPTY if no extra, orxNULL to ignore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxText_SetSize(orxTEXT *_pstText, orxFLOAT _fWidth, orxFLOAT _fHeight, const orxSTRING *_pzExtra)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstText);
+  orxASSERT (_fWidth > orxFLOAT_0);
+
+  /* Unconstrained? */
+  if(_fWidth <= orxFLOAT_0)
+  {
+    /* Was constrained? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_FIXED_WIDTH) != orxFALSE)
+    {
+      /* Clears dimensions */
+      _pstText->fWidth = _pstText->fHeight = orxFLOAT_0;
+
+      /* Updates status */
+      orxStructure_SetFlags(_pstText, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_FLAG_FIXED_WIDTH | orxTEXT_KU32_FLAG_FIXED_HEIGHT);
+
+      /* Updates size */
+      orxText_UpdateSize(_pstText);
+    }
+
+    /* Asked for extra? */
+    if(_pzExtra != orxNULL)
+    {
+      /* Updates it */
+      *_pzExtra = orxSTRING_EMPTY;
+    }
+  }
+  else
+  {
+    /* Stores dimensions */
+    _pstText->fWidth  = _fWidth;
+    _pstText->fHeight = (_fHeight > orxFLOAT_0) ? _fHeight : orxFLOAT_0;
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstText, (_fHeight > orxFLOAT_0) ? orxTEXT_KU32_FLAG_FIXED_WIDTH | orxTEXT_KU32_FLAG_FIXED_HEIGHT : orxTEXT_KU32_FLAG_FIXED_WIDTH, orxTEXT_KU32_FLAG_FIXED_WIDTH | orxTEXT_KU32_FLAG_FIXED_HEIGHT);
+
+    /* Updates size */
+    orxText_UpdateSize(_pstText);
+
+    /* Asked for extra? */
+    if(_pzExtra != orxNULL)
+    {
+      /* Has original string? */
+      if(_pstText->zOriginalString != orxNULL)
+      {
+        const orxCHAR *pcSrc, *pcDst;
+
+        /* Finds end of new string */
+        for(pcSrc = _pstText->zString, pcDst = _pstText->zOriginalString; *pcSrc != orxCHAR_NULL; pcSrc++, pcDst++)
+          ;
+
+        /* Updates extra */
+        *_pzExtra = (pcDst != orxCHAR_NULL) ? pcDst : orxSTRING_EMPTY;
+      }
+      else
+      {
+        /* Updates extra */
+        *_pzExtra = orxSTRING_EMPTY;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets text string
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zString      String to contain
@@ -945,17 +1197,26 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Has current string? */
-  if((_pstText->zString != orxNULL) && (_pstText->zString != orxSTRING_EMPTY))
+  if(_pstText->zString != orxNULL)
   {
-    /* Cleans it */
+    /* Deletes it */
+    orxString_Delete(_pstText->zString);
     _pstText->zString = orxNULL;
+
+    /* Has original? */
+    if(_pstText->zOriginalString != orxNULL)
+    {
+      /* Deletes it */
+      orxString_Delete(_pstText->zOriginalString);
+      _pstText->zOriginalString = orxNULL;
+    }
   }
 
   /* Has new string? */
   if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
-    _pstText->zString = orxString_Store(_zString);
+    _pstText->zString = orxString_Duplicate(_zString);
   }
 
   /* Updates text size */
@@ -988,7 +1249,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
       orxStructure_DecreaseCounter(_pstText->pstFont);
 
       /* Internally handled? */
-      if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL))
+      if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
       {
         /* Removes its owner */
         orxStructure_SetOwner(_pstText->pstFont, orxNULL);

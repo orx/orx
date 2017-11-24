@@ -84,13 +84,11 @@ extern orxDLLAPI orxTEXT *orxFASTCALL     orxText_CreateFromConfig(const orxSTRI
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_Delete(orxTEXT *_pstText);
 
 
-/** Gets text size
+/** Gets text name
  * @param[in]   _pstText      Concerned text
- * @param[out]  _pfWidth      Text's width
- * @param[out]  _pfHeight     Text's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      Text name / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText);
 
 /** Gets text's line count
  * @param[in]   _pstText      Concerned text
@@ -107,12 +105,20 @@ extern orxDLLAPI orxU32 orxFASTCALL       orxText_GetLineCount(const orxTEXT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Line, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-/** Gets text name
+/** Is text's size fixed? (ie. manually constrained with orxText_SetSize())
  * @param[in]   _pstText      Concerned text
- * @return      Text name / orxNULL
+ * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText);
+extern orxDLLAPI orxBOOL orxFASTCALL      orxText_IsFixedSize(const orxTEXT *_pstText);
 
+
+/** Gets text size
+ * @param[in]   _pstText      Concerned text
+ * @param[out]  _pfWidth      Text's width
+ * @param[out]  _pfHeight     Text's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets text string
  * @param[in]   _pstText      Concerned text
@@ -126,6 +132,15 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_p
  */
 extern orxDLLAPI orxFONT *orxFASTCALL     orxText_GetFont(const orxTEXT *_pstText);
 
+
+/** Sets text's size, will lead to reformatting if text doesn't fit (pass width = -1.0f to restore text's original size, ie. unconstrained)
+ * @param[in]   _pstText      Concerned text
+ * @param[in]   _fWidth       Max width for the text, remove any size constraint if negative
+ * @param[in]   _fHeight      Max height for the text, ignored if negative (ie. unconstrained height)
+ * @param[in]   _pzExtra      Text that wouldn't fit inside the box if height is provided, orxSTRING_EMPTY if no extra, orxNULL to ignore
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetSize(orxTEXT *_pstText, orxFLOAT _fWidth, orxFLOAT _fHeight, const orxSTRING *_pzExtra);
 
 /** Sets text string
  * @param[in]   _pstText      Concerned text

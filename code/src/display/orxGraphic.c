@@ -1160,9 +1160,31 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
   orxASSERT(_pvSize);
   orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fY >= orxFLOAT_0));
 
-  /* Stores values */
-  _pstGraphic->fWidth   = _pvSize->fX;
-  _pstGraphic->fHeight  = _pvSize->fY;
+  /* Has text? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
+  {
+    /* Updates its size */
+    eResult = orxText_SetSize(orxTEXT(_pstGraphic->pstData), _pvSize->fX, _pvSize->fY, orxNULL);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Retrieves size from text */
+      orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+    }
+    else
+    {
+      /* Stores values */
+      _pstGraphic->fWidth = _pvSize->fX;
+      _pstGraphic->fHeight = _pvSize->fY;
+    }
+  }
+  else
+  {
+    /* Stores values */
+    _pstGraphic->fWidth   = _pvSize->fX;
+    _pstGraphic->fHeight  = _pvSize->fY;
+  }
 
   /* Done! */
   return eResult;

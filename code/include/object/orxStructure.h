@@ -174,7 +174,7 @@ typedef struct __orxSTRUCTURE_t
     orxTREE_NODE      stTreeNode;     /**< Tree node : 36/56 */
   } stStorage;                        /**< Storage node union : 36/56 */
 
-  orxU32              u32Flags;       /**< Flags : 40/60 */
+  orxU32              u32Flags;       /**< Flags : 40/64 */
 
 } orxSTRUCTURE;
 
