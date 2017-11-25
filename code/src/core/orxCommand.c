@@ -473,7 +473,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     }
 
     /* Finds end of command */
-    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (orxCommand_IsWhiteSpace(*pcCommandEnd) == orxFALSE) && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF); pcCommandEnd++)
+    for(pcCommandEnd = zCommand + 1; (*pcCommandEnd != orxCHAR_NULL) && (orxCommand_IsWhiteSpace(*pcCommandEnd) == orxFALSE) && (*pcCommandEnd != orxCHAR_CR) && (*pcCommandEnd != orxCHAR_LF) && (*pcCommandEnd != orxCOMMAND_KC_SEPARATOR); pcCommandEnd++)
       ;
 
     /* Ends command */
@@ -521,7 +521,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       }
 
       /* Adds input to the buffer list */
-      azBufferList[s32BufferCounter++] = pcCommandEnd + 1;
+      azBufferList[s32BufferCounter++] = pcCommandEnd;
 
       /* For all alias nodes */
       for(pstCommandNode = orxCommand_FindTrieNode(zCommand, orxFALSE);
