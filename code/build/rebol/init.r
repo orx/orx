@@ -13,9 +13,9 @@ params: reduce [
     'name           {Project name, relative or full path}   _
 ]
 platforms:  [
-    {windows}   [config [{gmake} {codelite} {codeblocks} {vs2013} {vs2015} {vs2017}]     premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
-    {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]     premake %premake4       setup {./setup.sh}  script %./init.sh   ]
-    {linux}     [config [{gmake} {codelite} {codeblocks}                           ]     premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+    {windows}   [config [{gmake} {codelite} {codeblocks} {vs2013} {vs2015} {vs2017}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
+    {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+    {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]
 
 ; Helpers
