@@ -1719,6 +1719,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction value" orxANSI_KZ_COLOR_FG_DEFAULT " [%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, zDirection, _zConfigID);
             }
           }
+
+          /* Both values on the same axis? */
+          if((!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x03))
+          || (!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x0C)))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid combination of direction values" orxANSI_KZ_COLOR_FG_DEFAULT " [%s-%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 0), orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 1), _zConfigID);
+
+            /* Restores default values */
+            eRowDirection     = orxDIRECTION_RIGHT;
+            eColumnDirection  = orxDIRECTION_DOWN;
+          }
         }
         else
         {
