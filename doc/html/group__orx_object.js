@@ -89,6 +89,7 @@ var group__orx_object =
     [ "orxObject_Pause", "group__orx_object.html#ga4897a87b6d7191e34a0a5f7c0f23d3ac", null ],
     [ "orxObject_PauseRecursive", "group__orx_object.html#ga645f6c4285a135184de3478402492ae5", null ],
     [ "orxObject_Pick", "group__orx_object.html#gaa7f5946ded728ecc944e0f38b4d73676", null ],
+    [ "orxObject_Play", "group__orx_object.html#ga44aceac5c9186acab63d968a21f8ab64", null ],
     [ "orxObject_Raycast", "group__orx_object.html#ga410c5d027af684442bc39f7dd7c1b9dc", null ],
     [ "orxObject_RemoveFX", "group__orx_object.html#ga43abc9ef140d0b03f10991c3a9fd8dc8", null ],
     [ "orxObject_RemoveShader", "group__orx_object.html#gada022dc8a3ef36235ccb5b6cc6e6b06a", null ],
@@ -132,6 +133,7 @@ var group__orx_object =
     [ "orxObject_SetWorldPosition", "group__orx_object.html#ga99ce45e8e97e79f8f13682b9cd356b2a", null ],
     [ "orxObject_SetWorldRotation", "group__orx_object.html#gab083b96e18a265a0c7eb80df771adc5b", null ],
     [ "orxObject_SetWorldScale", "group__orx_object.html#ga43592e3d1c1e6e2c5e763d58ff444b63", null ],
+    [ "orxObject_Stop", "group__orx_object.html#ga5d5b00d4b10294e6de89c3cea3dfd5d1", null ],
     [ "orxObject_SynchronizeFX", "group__orx_object.html#ga935328ed11be325c601817c29cd59c26", null ],
     [ "orxObject_UnlinkStructure", "group__orx_object.html#ga81a38ca6606fb2588ba746b94b1c6636", null ],
     [ "orxObject_Update", "group__orx_object.html#ga3f2370c4ec2a5950753bb8c1ff7277f4", null ]
