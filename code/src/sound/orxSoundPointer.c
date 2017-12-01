@@ -66,6 +66,7 @@
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL   0x10000000  /**< Internal flag */
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PAUSE 0x00000001  /**< Auto-pause flag */
 #define orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY  0x00000002  /**< Auto-play flag */
+#define orxSOUNDPOINTER_HOLDER_KU32_FLAG_ON_HOLD    0x00000004  /**< On hold flag */
 
 #define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
@@ -290,11 +291,15 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
         /* Delegates update to the sound */
         orxStructure_Update(pstSound, _pstCaller, _pstClockInfo);
 
-        /* Is sound stopped? */
-        if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
+        /* Not on hold? */
+        if(!orxFLAG_TEST(pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_ON_HOLD))
         {
-          /* Removes it */
-          orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
+          /* Is sound stopped? */
+          if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
+          {
+            /* Removes it */
+            orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
+          }
         }
       }
     }
@@ -616,6 +621,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Play(orxSOUNDPOINTER *_pstSoundPointer)
       /* Plays it */
       orxSound_Play(pstSound);
 
+      /* Updates its flags */
+      orxFLAG_SET(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_ON_HOLD);
+
       /* Delegates update to the sound */
       orxStructure_Update(pstSound, orxStructure_GetOwner(_pstSoundPointer), orxNULL);
     }
@@ -686,7 +694,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Stop(orxSOUNDPOINTER *_pstSoundPointer)
     if(pstSound != orxNULL)
     {
       /* Updates its flags */
-      orxFLAG_SET(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY);
+      orxFLAG_SET(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_ON_HOLD, orxSOUNDPOINTER_HOLDER_KU32_FLAG_AUTO_PLAY);
 
       /* Stops it */
       orxSound_Stop(pstSound);

@@ -1494,6 +1494,62 @@ void orxFASTCALL orxObject_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: Play
+ */
+void orxFASTCALL orxObject_CommandPlay(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates it */
+    orxObject_Play(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Stop
+ */
+void orxFASTCALL orxObject_CommandStop(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates it */
+    orxObject_Stop(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetParent
  */
 void orxFASTCALL orxObject_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2595,6 +2651,11 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: Pause */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pause, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pause", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
+  /* Command: Play */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Play, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: Stop */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Stop, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetParent, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetParent */
@@ -2756,6 +2817,11 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Enable);
   /* Command: Pause */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Pause);
+
+  /* Command: Play */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Play);
+  /* Command: Stop */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Stop);
 
   /* Command: SetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetParent);
@@ -7234,6 +7300,60 @@ orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch
   {
     /* Set pitch to all sounds */
     eResult = orxSoundPointer_SetPitch(pstSoundPointer, _fPitch);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Plays all the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_Play(orxOBJECT *_pstObject)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Plays all the sounds */
+    eResult = orxSoundPointer_Play(pstSoundPointer);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Stops all the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_Stop(orxOBJECT *_pstObject)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Stops all the sounds */
+    eResult = orxSoundPointer_Stop(pstSoundPointer);
   }
 
   /* Done! */
