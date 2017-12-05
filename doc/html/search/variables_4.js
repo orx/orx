@@ -4,6 +4,7 @@ var searchData=
   ['fangulardamping',['fAngularDamping',['../structorx_b_o_d_y___d_e_f.html#a0b853cdf831ae23e61d59cc94457d379',1,'orxBODY_DEF']]],
   ['fb',['fB',['../structorx_v_e_c_t_o_r.html#a916fac6ccddca92d7906da0431b51ecc',1,'orxVECTOR']]],
   ['fcharacterheight',['fCharacterHeight',['../structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a01a7dcd08cf42946f764f540705e5e83',1,'orxCHARACTER_MAP']]],
+  ['fcursor',['fCursor',['../structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a912b8279140b77d15f4c13ffd395c1ae',1,'orxSOUND_STREAM_PACKET']]],
   ['fdamping',['fDamping',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a5b3837c299ac402f9852f737355859c4',1,'orxBODY_JOINT_DEF']]],
   ['fdefaultrotation',['fDefaultRotation',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#aa605c4caacceecccd232220a6baaf5e9',1,'orxBODY_JOINT_DEF']]],
   ['fdensity',['fDensity',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#aac514621c48e50eac5a497a99b896329',1,'orxBODY_PART_DEF']]],
