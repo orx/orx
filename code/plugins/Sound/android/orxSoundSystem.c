@@ -499,6 +499,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
           stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
           stPayload.stStream.stPacket.bDiscard        = orxFALSE;
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
+          stPayload.stStream.stPayload.fCursor        = _pstSound->fCursor;
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);

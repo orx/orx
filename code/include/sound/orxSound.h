@@ -113,6 +113,7 @@ typedef struct __orxSOUND_STREAM_PACKET_t
   orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
   orxS32    s32ID;                            /**< Packet's ID : 20 */
+  orxFLOAT  fCursor;                          /**< Packet's cursor: 24 */
 
 } orxSOUND_STREAM_PACKET;
 
