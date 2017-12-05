@@ -738,7 +738,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
           stPayload.stStream.stPacket.bDiscard        = orxFALSE;
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
-          stPayload.stStream.stPayload.fCursor        = _pstSound->fCursor;
+          stPayload.stStream.stPacket.fCursor         = _pstSound->fCursor;
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);
@@ -958,7 +958,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
 
       /* Updates timestamp and cursor */
       fDT = orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
-      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += fDT
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += fDT;
       sstSoundSystem.stRecordingPayload.stStream.stPacket.fCursor += fDT;
     }
 
