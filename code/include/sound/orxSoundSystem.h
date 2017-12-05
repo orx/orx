@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxSoundSystem
- * 
+ *
  * Sound system plugin module
  * Plugin module that handles sound system
  *
@@ -216,6 +216,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetVolume(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch);
 
+/** Sets a sound cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _fCursor                              Cursor position, in seconds
+ * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetCursor(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fCursor);
+
 /** Sets a sound position
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _pvPosition                           Position to set
@@ -255,6 +262,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetVolume(c
  * @return Sound's pitch
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Gets a sound's cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @return Sound's cursor position, in seconds
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetCursor(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound position
  * @param[in]   _pstSound                             Concerned sound

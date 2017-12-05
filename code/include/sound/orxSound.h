@@ -275,6 +275,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetVolume(orxSOUND *_pstS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch);
 
+/** Sets a sound cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _fCursor                              Cursor position, in seconds
+ * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor);
+
 /** Sets sound position
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _pvPosition     Desired position
@@ -315,6 +322,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(const orxSOUND 
  * @return orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(const orxSOUND *_pstSound);
+
+/** Gets a sound's cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @return Sound's cursor position, in seconds
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetCursor(const orxSOUND *_pstSound);
 
 /** Gets sound position
  * @param[in]  _pstSound      Concerned Sound

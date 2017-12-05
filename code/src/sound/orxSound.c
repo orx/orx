@@ -2203,6 +2203,37 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
   return eResult;
 }
 
+/** Sets a sound cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _fCursor                              Cursor position, in seconds
+ * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT(_fCursor >= orxFLOAT_0);
+  orxASSERT(_fCursor <= orxSound_GetDuration(_pstSound));
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Sets its cursor */
+    eResult = orxSoundSystem_SetCursor(_pstSound->pstData, _fCursor);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets sound position
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _pvPosition     Desired position
@@ -2365,6 +2396,34 @@ orxFLOAT orxFASTCALL orxSound_GetPitch(const orxSOUND *_pstSound)
   {
     /* Updates result */
     fResult = _pstSound->fPitch;
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a sound's cursor (ie. play position from beginning)
+ * @param[in]   _pstSound                             Concerned sound
+ * @return Sound's cursor position, in seconds
+ */
+orxFLOAT orxFASTCALL orxSound_GetCursor(const orxSOUND *_pstSound)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxSoundSystem_GetCursor(_pstSound->pstData);
   }
   else
   {
