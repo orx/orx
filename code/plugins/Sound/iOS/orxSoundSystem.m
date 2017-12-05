@@ -154,6 +154,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
       orxBOOL                 bStopping     : 1;
       orxBOOL                 bPause        : 1;
       orxS32                  s32PacketID;
+      orxFLOAT                fCursor;
+      orxFLOAT                fSetCursor;
       orxSOUNDSYSTEM_DATA     stData;
 
       ALuint                  auiBufferList[0];
@@ -567,6 +569,36 @@ static orxINLINE void orxSoundSystem_iOS_Rewind(orxSOUNDSYSTEM_DATA *_pstData)
   return;
 }
 
+static orxINLINE void orxSoundSystem_iOS_Seek(orxSOUNDSYSTEM_DATA *_pstData, orxFLOAT _fCursor)
+{
+  /* Checks */
+  orxASSERT(_pstData != orxNULL);
+
+  /* vorbis? */
+  if(_pstData->bVorbis != orxFALSE)
+  {
+    /* Has valid file? */
+    if(_pstData->vorbis.pstFile != orxNULL)
+    {
+      /* Seeks position */
+      stb_vorbis_seek(_pstData->vorbis.pstFile, orxF2U(_fCursor * orxU2F(_pstData->stInfo.u32SampleRate)));
+    }
+  }
+  /* extaudio */
+  else
+  {
+    /* Has valid file? */
+    if(_pstData->extaudio.oFileRef != orxNULL)
+    {
+      /* Seeks position */
+      ExtAudioFileSeek(_pstData->extaudio.oFileRef, orxF2U(_fCursor * orxU2F(_pstData->stInfo.u32SampleRate)));
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 static orxSTATUS orxFASTCALL orxSoundSystem_iOS_FreeSound(void *_pContext)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
@@ -605,6 +637,17 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
   /* Valid? */
   if(_pstSound->fDuration != orxFLOAT_0)
   {
+    /* Has set cursor? */
+    if(_pstSound->fSetCursor != orxFLOAT_0)
+    {
+      /* Seeks position */
+      orxSoundSystem_iOS_Seek(&(_pstSound->stData), _pstSound->fSetCursor);
+
+      /* Updates cursors */
+      _pstSound->fCursor = _pstSound->fSetCursor;
+      _pstSound->fSetCursor = orxFLOAT_0;
+    }
+
     /* Not stopped? */
     if(_pstSound->bStop == orxFALSE)
     {
@@ -718,6 +761,9 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
               alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
               alASSERT();
 
+              /* Updates cursor */
+              _pstSound->fCursor += orxU2F(stPayload.stStream.stPacket.u32SampleNumber) / (orxU2F(_pstSound->stData.stInfo.u32ChannelNumber) * orxU2F(_pstSound->stData.stInfo.u32SampleRate));
+
               /* End of file? */
               if(u32FrameNumber < u32BufferFrameNumber)
               {
@@ -744,6 +790,9 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
             {
               /* Rewinds file */
               orxSoundSystem_iOS_Rewind(&(_pstSound->stData));
+
+              /* Resets cursor */
+              _pstSound->fCursor = orxFLOAT_0;
 
               /* Not looping? */
               if(_pstSound->bLoop == orxFALSE)
@@ -816,6 +865,9 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
 
         /* Rewinds file */
         orxSoundSystem_iOS_Rewind(&(_pstSound->stData));
+
+        /* Resets cursor */
+        _pstSound->fCursor = orxFLOAT_0;
 
         /* Gets actual state */
         alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
@@ -1767,6 +1819,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iOS_CreateStream(orxU32 _u32Cha
       pstResult->bStop      = orxTRUE;
       pstResult->bStopping  = orxFALSE;
       pstResult->s32PacketID= 0;
+      pstResult->fCursor    = orxFLOAT_0;
+      pstResult->fSetCursor = orxFLOAT_0;
 
       /* Adds it to the list */
       orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
@@ -1831,6 +1885,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_iOS_CreateStreamFromFile(const 
         pstResult->bStop      = orxTRUE;
         pstResult->bStopping  = orxFALSE;
         pstResult->s32PacketID= 0;
+        pstResult->fCursor    = orxFLOAT_0;
+        pstResult->fSetCursor = orxFLOAT_0;
 
         /* Generates openAL source */
         alGenSources(1, &(pstResult->uiSource));
@@ -2223,6 +2279,31 @@ orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSoun
   return eResult;
 }
 
+orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetCursor(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fCursor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Sets stream cursor */
+    _pstSound->fSetCursor = _fCursor;
+  }
+  else
+  {
+    /* Sets source's cursor */
+    alSourcef(_pstSound->uiSource, AL_SEC_OFFSET, _fCursor);
+    alASSERT();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_iOS_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -2324,6 +2405,31 @@ orxFLOAT orxFASTCALL orxSoundSystem_iOS_GetPitch(const orxSOUNDSYSTEM_SOUND *_ps
   /* Updates result */
   alGetSourcef(_pstSound->uiSource, AL_PITCH, &fResult);
   alASSERT();
+
+  /* Done! */
+  return fResult;
+}
+
+orxFLOAT orxFASTCALL orxSoundSystem_iOS_GetCursor(const orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Stream? */
+  if(_pstSound->bIsStream != orxFALSE)
+  {
+    /* Updates result */
+    fResult = _pstSound->fCursor;
+  }
+  else
+  {
+    /* Updates result */
+    alGetSourcef(_pstSound->uiSource, AL_SEC_OFFSET, &fResult);
+    alASSERT();
+  }
 
   /* Done! */
   return fResult;
@@ -2581,12 +2687,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_StopRecording, SOUNDSYSTEM, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetPitch, SOUNDSYSTEM, SET_PITCH);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetCursor, SOUNDSYSTEM, SET_CURSOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetPosition, SOUNDSYSTEM, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetPitch, SOUNDSYSTEM, GET_PITCH);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetCursor, SOUNDSYSTEM, GET_CURSOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetPosition, SOUNDSYSTEM, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_iOS_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
