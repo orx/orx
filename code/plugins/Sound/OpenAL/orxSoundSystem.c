@@ -738,6 +738,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
           stPayload.stStream.stPacket.bDiscard        = orxFALSE;
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
+          stPayload.stStream.stPayload.fCursor        = _pstSound->fCursor;
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);
@@ -918,7 +919,8 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
     /* For all packets */
     while(iSampleNumber > 0)
     {
-      orxU32 u32PacketSampleNumber;
+      orxU32    u32PacketSampleNumber;
+      orxFLOAT  fDT;
 
       /* Gets sample number for this packet */
       u32PacketSampleNumber = (orxU32)orxMIN(iSampleNumber, sstSoundSystem.s32StreamBufferSize);
@@ -954,8 +956,10 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
       /* Updates remaining sample number */
       iSampleNumber -= (ALCint)u32PacketSampleNumber;
 
-      /* Updates timestamp */
-      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+      /* Updates timestamp and cursor */
+      fDT = orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += fDT
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fCursor += fDT;
     }
 
     /* Updates packet's timestamp */
@@ -2113,8 +2117,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
           /* Starts capture device */
           alcCaptureStart(sstSoundSystem.poCaptureDevice);
 
-          /* Updates packet's timestamp */
-          sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+          /* Updates packet's timestamp and cursor */
+          sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp  = (orxFLOAT)orxSystem_GetTime();
+          sstSoundSystem.stRecordingPayload.stStream.stPacket.fCursor     = orxFLOAT_0;
 
           /* Updates status */
           orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
