@@ -1720,7 +1720,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample <%s>: couldn't allocate internal structure.", _zName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample [%s]: couldn't allocate internal structure.", _zName);
 
           /* Deletes sample */
           orxSoundSystem_DeleteSample(pstSample);
@@ -1730,7 +1730,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample <%s>: a sample with the same name is already present.", _zName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample [%s]: a sample with the same name is already present.", _zName);
     }
   }
 
@@ -1819,7 +1819,7 @@ orxSTATUS orxFASTCALL orxSound_DeleteSample(const orxSTRING _zName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't delete sample <%s>: sample is still in use by at least a sound.", _zName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't delete sample [%s]: sample is still in use by at least a sound.", _zName);
       }
     }
   }
@@ -1886,13 +1886,13 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample <%s> to sound: sample not found.", _zSampleName);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample [%s] to sound: sample not found.", _zSampleName);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample <%s>: sound is already linked to another sample or a stream.", _zSampleName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't link sample [%s]: sound is already linked to another sample or a stream.", _zSampleName);
   }
 
   /* Done! */
@@ -2215,14 +2215,24 @@ orxSTATUS orxFASTCALL orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor)
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT(_fCursor >= orxFLOAT_0);
-  orxASSERT(_fCursor <= orxSound_GetDuration(_pstSound));
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
-    /* Sets its cursor */
-    eResult = orxSoundSystem_SetCursor(_pstSound->pstData, _fCursor);
+    /* Valid? */
+    if((_fCursor >= orxFLOAT_0) && (_fCursor < orxSound_GetDuration(_pstSound)))
+    {
+      /* Sets its cursor */
+      eResult = orxSoundSystem_SetCursor(_pstSound->pstData, _fCursor);
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Can't set cursor" orxANSI_KZ_COLOR_FG_DEFAULT " to <%g>: out of bound value, valid range is " orxANSI_KZ_COLOR_FG_YELLOW "[0, %g[" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", orxSound_GetName(_pstSound), _fCursor, orxSound_GetDuration(_pstSound));
+    }
   }
   else
   {
