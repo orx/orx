@@ -217,7 +217,6 @@ typedef struct __orxOBJECT_STATIC_t
   orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
   orxU32        u32DefaultGroupID;              /**< Default group ID */
   orxU32        u32CurrentGroupID;              /**< Current group ID */
-  orxFLOAT      fCurrentAge;                    /**< Current age */
   orxU32        u32CachedGroupID;               /**< Cached group ID */
   orxU32        u32Flags;                       /**< Control flags */
 
@@ -3545,7 +3544,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             fAge = orxFLOAT_0;
 
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Ignoring defined age as one of its parent has already an age defined.", _zConfigID);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Ignoring age as one of its owner is already aging.", _zConfigID);
           }
         }
 
