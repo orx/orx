@@ -525,85 +525,13 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Profiles */
   orxPROFILER_POP_MARKER();
 }
-int is_prime(int num)
-{
-  if(num % 2 == 0 && num > 2) return 0;
-  for(int i = 3; i < num / 2; i += 2)
-  {
-    if(num % i == 0)
-      return 0;
-  }
-  return 1;
-}
+
 /** Inits the bounce demo
  */
 static orxSTATUS orxBounce_Init()
 {
   orxU32    i, count;
   orxSTATUS eResult;
-  orxU64 genA, genB;
-
-//  genA = 65, genB = 8921;
-//  genA = 512, genB = 191;
-//
-//  orxDOUBLE s, e;
-//
-//  s = orxSystem_GetTime();
-//  for(i = 0, count = 0; i < 40000000; i++)
-//  {
-//    genA = (genA * 16807) % 2147483647;
-//    genB = (genB * 48271) % 2147483647;
-//
-//    if((genA & 0xFFFF) == (genB & 0xFFFF))
-//    {
-//      count++;
-//    }
-//  }
-//  orxLOG("%u", count);
-//
-////  genA = 65, genB = 8921;
-//  genA = 512, genB = 191;
-//  for(i = 1, count = 0; i <= 5000000; i++)
-//  {
-//    do {genA = (genA * 16807) % 2147483647;} while (genA & 3 != 0);
-//    do {genB = (genB * 48271) % 2147483647;} while (genB & 7 != 0);
-//
-//    if((genA & 0xFFFF) == (genB & 0xFFFF))
-//    {
-//      count++;
-//    }
-//  }
-//  orxLOG("%u", count);
-//  e = orxSystem_GetTime();
-//  orxLOG("%g", e - s);
-
-  count = 0;
-  for(i = 106500; i <= 123500; i += 17)
-  {
-    if(!is_prime(i))
-    {
-      count++;
-    }
-  }
-  orxLOG("count: %u", count);
-
-  //volatile orxU64 a, b, c, d, e, f, g, h = 0;
-
-  //for(b = 106500; b <= 123500; b += 17)
-  //{
-  //  bool prime = true;
-  //  for(d = 2; prime && d != b; ++d)
-  //  {
-  //    for(e = 2; e != b; ++e)
-  //    {
-  //      if(d * e == b) { prime = false; break; }
-  //    }
-  //  }
-  //  if(!prime){h++;} // b not prime -> ++h
-  //  orxLOG("b: %u", b);
-  //}
-
-  //orxLOG("h: %u", h);
 
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");
