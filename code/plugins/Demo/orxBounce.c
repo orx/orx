@@ -530,7 +530,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  */
 static orxSTATUS orxBounce_Init()
 {
-  orxU32    i, count;
+  orxU32    i;
   orxSTATUS eResult;
 
   /* Loads config file and selects its section */
