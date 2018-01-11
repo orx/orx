@@ -876,7 +876,9 @@ static void orxResource_UpdatePostInit()
     /* Reloads storage */
     orxResource_ReloadStorage();
   }
-  else
+
+  /* Is config loaded now? */
+  if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
   {
     /* Doesn't have watch */
     if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
