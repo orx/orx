@@ -2053,7 +2053,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* Creates graphic */
         pstGraphic = orxGraphic_CreateFromConfig(acBuffer);
 
-        /* Reenables display logs */
+        /* Re-enables display logs */
         orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
         /* Success? */
