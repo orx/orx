@@ -38,6 +38,7 @@
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
+#include "core/orxLocale.h"
 #include "core/orxResource.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
@@ -103,6 +104,8 @@
 #define orxSOUND_KZ_CONFIG_ATTENUATION                  "Attenuation"
 #define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
 #define orxSOUND_KZ_CONFIG_BUS                          "Bus"
+
+#define orxSOUND_KC_LOCALE_MARKER                       '$'
 
 
 /***************************************************************************
@@ -364,6 +367,13 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         /* Profiles */
         orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Sound)");
 
+        /* Begins with locale marker? */
+        if(*zName == orxSOUND_KC_LOCALE_MARKER)
+        {
+          /* Gets its locale value */
+          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+        }
+
         /* Loads its corresponding sample */
         _pstSound->pstSample = orxSound_LoadSample(zName, orxConfig_GetBool(orxSOUND_KZ_CONFIG_KEEP_IN_CACHE));
 
@@ -401,6 +411,13 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
       {
         /* Profiles */
         orxPROFILER_PUSH_MARKER("orxSound_CreateFromConfig (Music)");
+
+        /* Begins with locale marker? */
+        if(*zName == orxSOUND_KC_LOCALE_MARKER)
+        {
+          /* Gets its locale value */
+          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+        }
 
         /* Is empty stream ? */
         if(orxString_ICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
@@ -538,16 +555,235 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Resource event? */
+  if(_pstEvent->eType == orxEVENT_TYPE_RESOURCE)
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    /* Add or update? */
+    if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+    {
+      orxRESOURCE_EVENT_PAYLOAD *pstPayload;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      /* Gets payload */
+      pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      /* Is config group? */
+      if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      {
+        orxSOUND *pstSound;
+
+        /* For all sounds */
+        for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+            pstSound != orxNULL;
+            pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+        {
+          /* Has reference? */
+          if((pstSound->zReference != orxNULL) && (pstSound->zReference != orxSTRING_EMPTY))
+          {
+            /* Matches? */
+            if(orxConfig_GetOriginID(pstSound->zReference) == pstPayload->u32NameID)
+            {
+              orxSOUND_STATUS eStatus;
+
+              /* Gets current status */
+              eStatus = orxSound_GetStatus(pstSound);
+
+              /* Stops sound */
+              orxSound_Stop(pstSound);
+
+              /* Re-processes its config data */
+              orxSound_ProcessConfigData(pstSound, orxFALSE);
+
+              /* Depending on previous status */
+              switch(eStatus)
+              {
+                case orxSOUND_STATUS_PLAY:
+                {
+                  /* Updates sound */
+                  orxSound_Play(pstSound);
+
+                  break;
+                }
+
+                case orxSOUND_STATUS_PAUSE:
+                {
+                  /* Updates sound */
+                  orxSound_Play(pstSound);
+                  orxSound_Pause(pstSound);
+
+                  break;
+                }
+
+                case orxSOUND_STATUS_STOP:
+                default:
+                {
+                  /* Updates sound */
+                  orxSound_Stop(pstSound);
+
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      /* Is sound group? */
+      else if(pstPayload->u32GroupID == orxString_ToCRC(orxSOUND_KZ_RESOURCE_GROUP))
+      {
+        orxHANDLE         hIterator;
+        orxU64            u64Key;
+        orxSOUND_SAMPLE  *pstSample;
+
+        /* Looks for matching sample */
+        for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstSample);
+            (hIterator != orxHANDLE_UNDEFINED) && (pstSample->u32ID != pstPayload->u32NameID);
+            hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, &u64Key, (void **)&pstSample));
+
+        /* Found? */
+        if(hIterator != orxHANDLE_UNDEFINED)
+        {
+          orxSOUND *pstSound;
+          orxBOOL   bLoaded;
+
+          /* For all sounds */
+          for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+              pstSound != orxNULL;
+              pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+          {
+            /* Use concerned sample? */
+            if(pstSound->pstSample == pstSample)
+            {
+              orxU32 u32BackupFlags;
+
+              /* Depending on its status */
+              switch(orxSound_GetStatus(pstSound))
+              {
+                case orxSOUND_STATUS_PLAY:
+                {
+                  /* Updates flags */
+                  u32BackupFlags = orxSOUND_KU32_FLAG_BACKUP_PLAY;
+
+                  break;
+                }
+
+                case orxSOUND_STATUS_PAUSE:
+                {
+                  /* Updates flags */
+                  u32BackupFlags = orxSOUND_KU32_FLAG_BACKUP_PAUSE;
+
+                  break;
+                }
+
+                default:
+                case orxSOUND_STATUS_STOP:
+                {
+                  /* Updates flags */
+                  u32BackupFlags = orxSOUND_KU32_FLAG_NONE;
+                }
+              }
+
+              /* Stops it */
+              orxSound_Stop(pstSound);
+
+              /* Deletes its data */
+              orxSoundSystem_Delete(pstSound->pstData);
+              pstSound->pstData = orxNULL;
+
+              /* Updates flags */
+              orxStructure_SetFlags(pstSound, u32BackupFlags, orxSOUND_KU32_MASK_BACKUP_ALL);
+            }
+          }
+
+          /* Updates sample */
+          orxSoundSystem_DeleteSample(pstSample->pstData);
+          pstSample->pstData = orxSoundSystem_LoadSample(orxString_GetFromID(pstSample->u32ID));
+
+          /* Updates load status */
+          bLoaded = (pstSample->pstData != orxNULL) ? orxTRUE : orxFALSE;
+
+          /* For all sounds */
+          for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+              pstSound != orxNULL;
+              pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+          {
+            /* Use concerned sample? */
+            if(pstSound->pstSample == pstSample)
+            {
+              /* Was sample loaded? */
+              if(bLoaded != orxFALSE)
+              {
+                /* Recreates sound data based on sample */
+                pstSound->pstData = orxSoundSystem_CreateFromSample(pstSound->pstSample->pstData);
+              }
+              else
+              {
+                /* Clears data */
+                pstSound->pstData = orxNULL;
+              }
+
+              /* Success? */
+              if(pstSound->pstData != orxNULL)
+              {
+                /* Re-processes its config data */
+                orxSound_ProcessConfigData(pstSound, orxTRUE);
+
+                /* Depending on previous status */
+                switch(orxStructure_GetFlags(pstSound, orxSOUND_KU32_MASK_BACKUP_ALL))
+                {
+                  case orxSOUND_KU32_FLAG_BACKUP_PLAY:
+                  {
+                    /* Plays sound */
+                    orxSound_Play(pstSound);
+
+                    break;
+                  }
+
+                  case orxSOUND_KU32_FLAG_BACKUP_PAUSE:
+                  {
+                    /* Pauses sound */
+                    orxSound_Play(pstSound);
+                    orxSound_Pause(pstSound);
+
+                    break;
+                  }
+
+                  default:
+                  {
+                    break;
+                  }
+                }
+              }
+              else
+              {
+                /* Removes its reference */
+                pstSound->pstSample = orxNULL;
+
+                /* Updates its status */
+                orxStructure_SetFlags(pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_FLAG_HAS_SAMPLE);
+              }
+
+              /* Clears backup flags */
+              orxStructure_SetFlags(pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_BACKUP_ALL);
+            }
+          }
+
+          /* Failed loading? */
+          if(bLoaded == orxFALSE)
+          {
+            /* Resets its reference counter */
+            pstSample->u32Counter = 0;
+
+            /* Unloads it */
+            orxSound_UnloadSample(pstSample);
+          }
+        }
+      }
+    }
+  }
+  /* Locale event? */
+  else if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
+  {
+    /* Select language event? */
+    if(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE)
     {
       orxSOUND *pstSound;
 
@@ -556,22 +792,65 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
           pstSound != orxNULL;
           pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
       {
-        /* Has reference? */
-        if((pstSound->zReference != orxNULL) && (pstSound->zReference != orxSTRING_EMPTY))
+        /* Has a reference? */
+        if(pstSound->zReference != orxNULL)
         {
-          /* Matches? */
-          if(orxConfig_GetOriginID(pstSound->zReference) == pstPayload->u32NameID)
+          const orxSTRING azProperties[] = {orxSOUND_KZ_CONFIG_SOUND, orxSOUND_KZ_CONFIG_MUSIC};
+          orxBOOL         bUseLocale = orxFALSE;
+          orxU32          i;
+
+          /* Pushes its section */
+          orxConfig_PushSection(pstSound->zReference);
+
+          /* For all properties */
+          for(i = 0; i < orxARRAY_GET_ITEM_COUNT(azProperties); i++)
           {
+            const orxSTRING zName;
+
+            /* Gets its value */
+            zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
+
+            /* Uses locale? */
+            if((*zName == orxSOUND_KC_LOCALE_MARKER) && (*(zName + 1) != orxSOUND_KC_LOCALE_MARKER))
+            {
+              /* Updates status */
+              bUseLocale = orxTRUE;
+              break;
+            }
+          }
+
+          /* Uses locale? */
+          if(bUseLocale != orxFALSE)
+          {
+            orxVECTOR       vPosition;
+            orxFLOAT        fVolume, fPitch, fAttenuation, fDistance;
+            orxU32          u32BusID;
             orxSOUND_STATUS eStatus;
 
             /* Gets current status */
             eStatus = orxSound_GetStatus(pstSound);
+
+            /* Backups current state */
+            fVolume       = orxSound_GetVolume(pstSound);
+            fPitch        = orxSound_GetPitch(pstSound);
+            u32BusID      = orxSound_GetBusID(pstSound);
+            fAttenuation  = orxSound_GetAttenuation(pstSound);
+            fDistance     = orxSound_GetReferenceDistance(pstSound);
+            orxSound_GetPosition(pstSound, &vPosition);
 
             /* Stops sound */
             orxSound_Stop(pstSound);
 
             /* Re-processes its config data */
             orxSound_ProcessConfigData(pstSound, orxFALSE);
+
+            /* Restores state */
+            orxSound_SetVolume(pstSound, fVolume);
+            orxSound_SetPitch(pstSound, fPitch);
+            orxSound_SetBusID(pstSound, u32BusID);
+            orxSound_SetAttenuation(pstSound, fAttenuation);
+            orxSound_SetReferenceDistance(pstSound, fDistance);
+            orxSound_SetPosition(pstSound, &vPosition);
 
             /* Depending on previous status */
             switch(eStatus)
@@ -603,157 +882,9 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
               }
             }
           }
-        }
-      }
-    }
-    /* Is sound group? */
-    else if(pstPayload->u32GroupID == orxString_ToCRC(orxSOUND_KZ_RESOURCE_GROUP))
-    {
-      orxHANDLE         hIterator;
-      orxU64            u64Key;
-      orxSOUND_SAMPLE  *pstSample;
 
-      /* Looks for matching sample */
-      for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstSample);
-          (hIterator != orxHANDLE_UNDEFINED) && (pstSample->u32ID != pstPayload->u32NameID);
-          hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, &u64Key, (void **)&pstSample));
-
-      /* Found? */
-      if(hIterator != orxHANDLE_UNDEFINED)
-      {
-        orxSOUND *pstSound;
-        orxBOOL   bLoaded;
-
-        /* For all sounds */
-        for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
-            pstSound != orxNULL;
-            pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
-        {
-          /* Use concerned sample? */
-          if(pstSound->pstSample == pstSample)
-          {
-            orxU32 u32BackupFlags;
-
-            /* Depending on its status */
-            switch(orxSound_GetStatus(pstSound))
-            {
-              case orxSOUND_STATUS_PLAY:
-              {
-                /* Updates flags */
-                u32BackupFlags = orxSOUND_KU32_FLAG_BACKUP_PLAY;
-
-                break;
-              }
-
-              case orxSOUND_STATUS_PAUSE:
-              {
-                /* Updates flags */
-                u32BackupFlags = orxSOUND_KU32_FLAG_BACKUP_PAUSE;
-
-                break;
-              }
-
-              default:
-              case orxSOUND_STATUS_STOP:
-              {
-                /* Updates flags */
-                u32BackupFlags = orxSOUND_KU32_FLAG_NONE;
-              }
-            }
-
-            /* Stops it */
-            orxSound_Stop(pstSound);
-
-            /* Deletes its data */
-            orxSoundSystem_Delete(pstSound->pstData);
-            pstSound->pstData = orxNULL;
-
-            /* Updates flags */
-            orxStructure_SetFlags(pstSound, u32BackupFlags, orxSOUND_KU32_MASK_BACKUP_ALL);
-          }
-        }
-
-        /* Updates sample */
-        orxSoundSystem_DeleteSample(pstSample->pstData);
-        pstSample->pstData = orxSoundSystem_LoadSample(orxString_GetFromID(pstSample->u32ID));
-
-        /* Updates load status */
-        bLoaded = (pstSample->pstData != orxNULL) ? orxTRUE : orxFALSE;
-
-        /* For all sounds */
-        for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
-            pstSound != orxNULL;
-            pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
-        {
-          /* Use concerned sample? */
-          if(pstSound->pstSample == pstSample)
-          {
-            /* Was sample loaded? */
-            if(bLoaded != orxFALSE)
-            {
-              /* Recreates sound data based on sample */
-              pstSound->pstData = orxSoundSystem_CreateFromSample(pstSound->pstSample->pstData);
-            }
-            else
-            {
-              /* Clears data */
-              pstSound->pstData = orxNULL;
-            }
-
-            /* Success? */
-            if(pstSound->pstData != orxNULL)
-            {
-              /* Re-processes its config data */
-              orxSound_ProcessConfigData(pstSound, orxTRUE);
-
-              /* Depending on previous status */
-              switch(orxStructure_GetFlags(pstSound, orxSOUND_KU32_MASK_BACKUP_ALL))
-              {
-                case orxSOUND_KU32_FLAG_BACKUP_PLAY:
-                {
-                  /* Plays sound */
-                  orxSound_Play(pstSound);
-
-                  break;
-                }
-
-                case orxSOUND_KU32_FLAG_BACKUP_PAUSE:
-                {
-                  /* Pauses sound */
-                  orxSound_Play(pstSound);
-                  orxSound_Pause(pstSound);
-
-                  break;
-                }
-
-                default:
-                {
-                  break;
-                }
-              }
-            }
-            else
-            {
-              /* Removes its reference */
-              pstSound->pstSample = orxNULL;
-
-              /* Updates its status */
-              orxStructure_SetFlags(pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_FLAG_HAS_SAMPLE);
-            }
-
-            /* Clears backup flags */
-            orxStructure_SetFlags(pstSound, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_BACKUP_ALL);
-          }
-        }
-
-        /* Failed loading? */
-        if(bLoaded == orxFALSE)
-        {
-          /* Resets its reference counter */
-          pstSample->u32Counter = 0;
-
-          /* Unloads it */
-          orxSound_UnloadSample(pstSample);
+          /* Pops config section */
+          orxConfig_PopSection();
         }
       }
     }
@@ -1260,6 +1391,7 @@ void orxFASTCALL orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_COMMAND);
+  orxModule_AddOptionalDependency(orxMODULE_ID_SOUND, orxMODULE_ID_LOCALE);
 
   /* Done! */
   return;
@@ -1314,8 +1446,9 @@ orxSTATUS orxFASTCALL orxSound_Init()
               /* Creates master bus */
               orxSound_GetBus(sstSound.u32MasterBusID, orxTRUE);
 
-              /* Adds event handler */
+              /* Adds event handlers */
               orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
+              orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxSound_EventHandler);
 
               /* Inits Flags */
               orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY, orxSOUND_KU32_STATIC_FLAG_NONE);
@@ -1406,8 +1539,9 @@ void orxFASTCALL orxSound_Exit()
     /* Unregisters commands */
     orxSound_UnregisterCommands();
 
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxSound_EventHandler);
 
     /* Deletes all sounds */
     orxSound_DeleteAll();
@@ -1539,7 +1673,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       /* Stores its reference */
-      pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
+      pstResult->zReference = orxConfig_GetCurrentSection();
 
       /* Processes its config data */
       if(orxSound_ProcessConfigData(pstResult, orxFALSE) == orxSTATUS_FAILURE)

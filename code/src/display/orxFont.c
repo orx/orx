@@ -917,7 +917,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
       if(pstResult != orxNULL)
       {
         /* Stores its reference key */
-        pstResult->zReference = orxString_Store(orxConfig_GetCurrentSection());
+        pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Processes its config data */
         if(orxFont_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
