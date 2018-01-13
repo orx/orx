@@ -281,7 +281,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
             /* Pushes its section */
             orxConfig_PushSection(pstGraphic->zReference);
 
-            /* Gets its string */
+            /* Gets its texture */
             zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
 
             /* Valid? */
