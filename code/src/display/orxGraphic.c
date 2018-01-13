@@ -88,6 +88,8 @@
 
 #define orxGRAPHIC_KU32_BANK_SIZE                 1024
 
+#define orxGRAPHIC_KC_LOCALE_MARKER              '$'
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -131,51 +133,6 @@ static orxGRAPHIC_STATIC sstGraphic;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Event handler
- * @param[in]   _pstEvent                     Sent event
- * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
- */
-static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
-
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Select language event */
-    case orxLOCALE_EVENT_SELECT_LANGUAGE:
-    {
-      orxGRAPHIC *pstGraphic;
-
-      /* For all graphics */
-      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
-          pstGraphic != orxNULL;
-          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
-      {
-        /* Is data a text? */
-        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
-        {
-          /* Updates graphic's size */
-          orxGraphic_UpdateSize(pstGraphic);
-        }
-      }
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
 
 /** Sets graphic data
  * @param[in]   _pstGraphic     Graphic concerned
@@ -283,6 +240,85 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
   {
     /* Updates flags */
     orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_TYPE);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    /* Select language event */
+    case orxLOCALE_EVENT_SELECT_LANGUAGE:
+    {
+      orxGRAPHIC *pstGraphic;
+
+      /* For all graphics */
+      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
+          pstGraphic != orxNULL;
+          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
+      {
+        /* 2D data? */
+        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+        {
+          /* Has a reference? */
+          if(pstGraphic->zReference != orxNULL)
+          {
+            const orxSTRING zName;
+
+            /* Pushes its section */
+            orxConfig_PushSection(pstGraphic->zReference);
+
+            /* Gets its string */
+            zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
+
+            /* Valid? */
+            if(zName != orxNULL)
+            {
+              /* Begins with locale marker? */
+              if((*zName == orxGRAPHIC_KC_LOCALE_MARKER) && (*(zName + 1) != orxGRAPHIC_KC_LOCALE_MARKER))
+              {
+                orxTEXTURE *pstTexture;
+
+                /* Creates texture */
+                pstTexture = orxTexture_CreateFromFile(orxLocale_GetString(zName + 1), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+
+                /* Updates data */
+                orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+              }
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
+        }
+        /* Text data? */
+        else if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+        {
+          /* Updates graphic's size */
+          orxGraphic_UpdateSize(pstGraphic);
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
   }
 
   /* Done! */
@@ -483,6 +519,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
       {
         orxTEXTURE *pstTexture;
+
+        /* Begins with locale marker? */
+        if(*zName == orxGRAPHIC_KC_LOCALE_MARKER)
+        {
+          /* Gets its locale value */
+          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+        }
 
         /* Creates texture */
         pstTexture = orxTexture_CreateFromFile(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));

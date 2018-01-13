@@ -88,10 +88,10 @@ class Logo
 {
 private:
   // Our orxOBJECT self reference
-  orxOBJECT *m_pstObject;
+  orxOBJECT *mpstObject;
 
   // Our orxOBJECT reference to the legend
-  orxOBJECT *m_pstLegend;
+  orxOBJECT *mpstLegend;
 
 public:
   Logo();
@@ -102,21 +102,21 @@ public:
 Logo::Logo()
 {
   // Creates and stores our orxOBJECT
-  m_pstObject = orxObject_CreateFromConfig("Logo");
+  mpstObject = orxObject_CreateFromConfig("Logo");
 
   // Adds ourselves to the orxOBJECT
-  orxObject_SetUserData(m_pstObject, this);
+  orxObject_SetUserData(mpstObject, this);
 
   // Creates and stores our legend object
-  m_pstLegend = orxObject_CreateFromConfig("Legend");
+  mpstLegend = orxObject_CreateFromConfig("Legend");
 }
 
 // D-tor
 Logo::~Logo()
 {
   // Deletes our orxOBJECTs
-  orxObject_Delete(m_pstObject);
-  orxObject_Delete(m_pstLegend);
+  orxObject_Delete(mpstObject);
+  orxObject_Delete(mpstLegend);
 }
 
 
