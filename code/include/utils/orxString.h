@@ -1132,10 +1132,7 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
     zString = orxString_SkipWhiteSpaces(zString + 1);
 
     /* Gets X value */
-    eResult = orxString_ToFloat(zString, &(stValue.fX), &zString);
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    if(orxString_ToFloat(zString, &(stValue.fX), &zString) != orxSTATUS_FAILURE)
     {
       /* Skips all white spaces */
       zString = orxString_SkipWhiteSpaces(zString);
@@ -1147,10 +1144,7 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
         zString = orxString_SkipWhiteSpaces(zString + 1);
 
         /* Gets Y value */
-        eResult = orxString_ToFloat(zString, &(stValue.fY), &zString);
-
-        /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
+        if(orxString_ToFloat(zString, &(stValue.fY), &zString) != orxSTATUS_FAILURE)
         {
           /* Skips all white spaces */
           zString = orxString_SkipWhiteSpaces(zString);
@@ -1162,20 +1156,17 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
             zString = orxString_SkipWhiteSpaces(zString + 1);
 
             /* Gets Z value */
-            eResult = orxString_ToFloat(zString, &(stValue.fZ), &zString);
-
-            /* Success? */
-            if(eResult != orxSTATUS_FAILURE)
+            if(orxString_ToFloat(zString, &(stValue.fZ), &zString) != orxSTATUS_FAILURE)
             {
               /* Skips all white spaces */
               zString = orxString_SkipWhiteSpaces(zString);
 
-              /* Is not a vector end character? */
-              if((*zString != orxSTRING_KC_VECTOR_END)
-              && (*zString != orxSTRING_KC_VECTOR_END_ALT))
+              /* Has a valid ending marker? */
+              if((*zString == orxSTRING_KC_VECTOR_END)
+              || (*zString == orxSTRING_KC_VECTOR_END_ALT))
               {
                 /* Updates result */
-                eResult = orxSTATUS_FAILURE;
+                eResult = orxSTATUS_SUCCESS;
               }
             }
           }
