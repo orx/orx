@@ -271,7 +271,7 @@ static orxINLINE void orxFont_CreateDefaultFont()
               orxStructure_SetOwner(pstTexture, sstFont.pstDefaultFont);
 
               /* Gets character counter */
-              u32CharacterCounter = orxString_GetCharacterCounter(sstDefaultFont.zCharacterList);
+              u32CharacterCounter = orxString_GetCharacterCount(sstDefaultFont.zCharacterList);
 
               /* Allocates array for character widths */
               afCharacterWidthList = (orxFLOAT *)orxMemory_Allocate(u32CharacterCounter * sizeof(orxFLOAT), orxMEMORY_TYPE_MAIN);
@@ -415,7 +415,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             eResult = orxSTATUS_SUCCESS;
 
             /* Gets character counter */
-            u32CharacterCounter = orxString_GetCharacterCounter(zCharacterList);
+            u32CharacterCounter = orxString_GetCharacterCount(zCharacterList);
 
             /* Has origin/size? */
             if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
@@ -475,7 +475,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             {
               /* Has valid character height and character width list */
               if(((fCharacterHeight = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_HEIGHT)) > orxFLOAT_0)
-              && (orxConfig_GetListCounter(orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST) == (orxS32)u32CharacterCounter))
+              && (orxConfig_GetListCount(orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST) == (orxS32)u32CharacterCounter))
               {
                 orxU32 i;
 
@@ -827,7 +827,7 @@ orxFONT *orxFASTCALL orxFont_Create()
           pstResult->zCharacterList = orxSTRING_EMPTY;
 
           /* Increases counter */
-          orxStructure_IncreaseCounter(pstResult);
+          orxStructure_IncreaseCount(pstResult);
         }
         else
         {
@@ -902,7 +902,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -968,10 +968,10 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
   orxSTRUCTURE_ASSERT(_pstFont);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstFont);
+  orxStructure_DecreaseCount(_pstFont);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstFont) == 0)
+  if(orxStructure_GetRefCount(_pstFont) == 0)
   {
     /* Removes texture */
     orxFont_SetTexture(_pstFont, orxNULL);
@@ -1039,7 +1039,7 @@ orxSTATUS orxFASTCALL orxFont_SetTexture(orxFONT *_pstFont, orxTEXTURE *_pstText
   if(_pstFont->pstTexture != orxNULL)
   {
     /* Updates structure reference counter */
-    orxStructure_DecreaseCounter(_pstFont->pstTexture);
+    orxStructure_DecreaseCount(_pstFont->pstTexture);
 
     /* Internally handled? */
     if(orxStructure_TestFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL))
@@ -1068,7 +1068,7 @@ orxSTATUS orxFASTCALL orxFont_SetTexture(orxFONT *_pstFont, orxTEXTURE *_pstText
     _pstFont->pstTexture = _pstTexture;
 
     /* Updates its reference counter */
-    orxStructure_IncreaseCounter(_pstTexture);
+    orxStructure_IncreaseCount(_pstTexture);
 
     /* Updates font's size */
     orxTexture_GetSize(_pstTexture, &(_pstFont->fWidth), &(_pstFont->fHeight));
@@ -1157,7 +1157,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u
   orxASSERT(_afCharacterWidthList != orxNULL);
 
   /* Gets character counter */
-  u32CharacterCounter = orxString_GetCharacterCounter(_pstFont->zCharacterList);
+  u32CharacterCounter = orxString_GetCharacterCount(_pstFont->zCharacterList);
 
   /* Valid? */
   if(_u32CharacterNumber == u32CharacterCounter)

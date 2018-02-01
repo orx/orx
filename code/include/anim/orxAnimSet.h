@@ -239,7 +239,7 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSiz
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @return			Anim counter / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(const orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCount(const orxANIMSET *_pstAnimSet);
 
 /** Gets animation ID from name
  * @param[in]   _pstAnimSet                         Concerned AnimSet

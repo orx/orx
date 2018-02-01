@@ -190,7 +190,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
     orxU32 u32KeyCounter;
 
     /* Gets number of keys */
-    u32KeyCounter = orxConfig_GetKeyCounter();
+    u32KeyCounter = orxConfig_GetKeyCount();
 
     /* Valid? */
     if(u32KeyCounter > 0)
@@ -231,7 +231,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           afTimeList[i] = fTime;
 
           /* Updates event counter */
-          u32EventCounter += orxConfig_GetListCounter(zKey);
+          u32EventCounter += orxConfig_GetListCount(zKey);
         }
         else
         {
@@ -286,7 +286,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
             zKey = orxConfig_GetKey(u32KeyIndex);
 
             /* For all events */
-            for(i = 0, u32ListCounter = orxConfig_GetListCounter(zKey);
+            for(i = 0, u32ListCounter = orxConfig_GetListCount(zKey);
                 i < u32ListCounter;
                 i++, u32EventIndex++)
             {
@@ -829,7 +829,7 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create()
     orxStructure_SetFlags(pstResult, orxTIMELINE_KU32_FLAG_ENABLED, orxTIMELINE_KU32_MASK_ALL);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -854,10 +854,10 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
   orxSTRUCTURE_ASSERT(_pstTimeLine);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstTimeLine);
+  orxStructure_DecreaseCount(_pstTimeLine);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstTimeLine) == 0)
+  if(orxStructure_GetRefCount(_pstTimeLine) == 0)
   {
     orxTIMELINE_EVENT_PAYLOAD stPayload;
     orxSTRUCTURE             *pstOwner;

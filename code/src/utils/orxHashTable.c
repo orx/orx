@@ -202,7 +202,7 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */
-orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
+orxU32 orxFASTCALL orxHashTable_GetCount(const orxHASHTABLE *_pstHashTable)
 {
   orxU32 u32Result;
 

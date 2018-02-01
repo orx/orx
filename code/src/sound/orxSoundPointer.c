@@ -440,7 +440,7 @@ orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create()
     orxStructure_SetFlags(pstResult, orxSOUNDPOINTER_KU32_FLAG_ENABLED, orxSOUNDPOINTER_KU32_MASK_ALL);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -465,10 +465,10 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
   orxSTRUCTURE_ASSERT(_pstSoundPointer);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstSoundPointer);
+  orxStructure_DecreaseCount(_pstSoundPointer);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstSoundPointer) == 0)
+  if(orxStructure_GetRefCount(_pstSoundPointer) == 0)
   {
     /* Removes all sounds */
     orxSoundPointer_RemoveAllSounds(_pstSoundPointer);
@@ -775,7 +775,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
     orxOBJECT              *pstOwner;
 
     /* Increases its reference counter */
-    orxStructure_IncreaseCounter(_pstSound);
+    orxStructure_IncreaseCount(_pstSound);
 
     /* Adds it to holder */
     _pstSoundPointer->astSoundList[u32Index].pstSound = _pstSound;
@@ -874,7 +874,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Decreases its reference counter */
-        orxStructure_DecreaseCounter(pstSound);
+        orxStructure_DecreaseCount(pstSound);
 
         /* Was last added sound? */
         if(_pstSoundPointer->u32LastAddedIndex == i)
@@ -953,7 +953,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSound
       orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
       /* Decreases its reference counter */
-      orxStructure_DecreaseCounter(pstSound);
+      orxStructure_DecreaseCount(pstSound);
 
       /* Was last added sound? */
       if(_pstSoundPointer->u32LastAddedIndex == i)
@@ -1059,7 +1059,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
       orxOBJECT              *pstOwner;
 
       /* Increases its reference counter */
-      orxStructure_IncreaseCounter(pstSound);
+      orxStructure_IncreaseCount(pstSound);
 
       /* Adds it to holder */
       _pstSoundPointer->astSoundList[u32Index].pstSound = pstSound;
@@ -1166,7 +1166,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
         /* Decreases its reference counter */
-        orxStructure_DecreaseCounter(pstSound);
+        orxStructure_DecreaseCount(pstSound);
 
         /* Was last added sound? */
         if(_pstSoundPointer->u32LastAddedIndex == i)

@@ -1543,7 +1543,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     }
 
     /* Has active shaders? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) > 0)
     {
       orxDISPLAY_SHADER *pstShader, *pstNextShader;
 
@@ -1637,7 +1637,7 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
       /* No other shader active? */
-      if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+      if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) == 0)
       {
         /* Updates shader uniform */
         glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
@@ -3589,7 +3589,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
   return eResult;
 }
 
-orxU32 orxFASTCALL orxDisplay_GLFW_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_GLFW_GetVideoModeCount()
 {
   GLFWvidmode astModeList[256];
   orxU32      u32Result = 0;
@@ -3878,7 +3878,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         }
 
         /* Gets bitmap counter */
-        s32BitmapCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstBitmapBank) - 1;
+        s32BitmapCounter = (orxS32)orxBank_GetCount(sstDisplay.pstBitmapBank) - 1;
 
         /* Valid? */
         if(s32BitmapCounter > 0)
@@ -3925,7 +3925,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         }
 
         /* Gets shader counter */
-        s32ShaderCounter = (orxS32)orxBank_GetCounter(sstDisplay.pstShaderBank);
+        s32ShaderCounter = (orxS32)orxBank_GetCount(sstDisplay.pstShaderBank);
 
         /* Valid? */
         if(s32ShaderCounter > 0)
@@ -4845,7 +4845,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           orxS32 i, s32Count;
 
           /* For all extensions */
-          for(i = 0, s32Count = orxConfig_GetListCounter(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST);
+          for(i = 0, s32Count = orxConfig_GetListCount(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST);
               i < s32Count;
               i++)
           {
@@ -5507,7 +5507,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_EnableVSync, DISPLAY, ENABLE_VS
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetVideoModeCount, DISPLAY, GET_VIDEO_MODE_COUNT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);

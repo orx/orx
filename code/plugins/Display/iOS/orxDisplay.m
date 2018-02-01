@@ -2175,7 +2175,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
     /* Has active shaders? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) > 0)
     {
       orxDISPLAY_SHADER *pstShader, *pstNextShader;
 
@@ -2262,7 +2262,7 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     orxDisplay_iOS_BindBitmap(_pstBitmap);
 
     /* No other shader active? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) == 0)
     {
       /* Updates shader uniform */
       glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
@@ -3894,7 +3894,7 @@ orxBOOL orxFASTCALL orxDisplay_iOS_IsFullScreen()
   return bResult;
 }
 
-orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCount()
 {
   orxU32 u32Result = 1;
 
@@ -4934,7 +4934,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_EnableVSync, DISPLAY, ENABLE_VSY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoModeCount, DISPLAY, GET_VIDEO_MODE_COUNT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);

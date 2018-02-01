@@ -400,7 +400,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateInternal(orxBOOL _bInternal)
     if(pstResult->pstFrame != orxNULL)
     {
       /* Increases its frame counter */
-      orxStructure_IncreaseCounter(pstResult->pstFrame);
+      orxStructure_IncreaseCount(pstResult->pstFrame);
 
       /* Inits flags */
       orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_MASK_ALL);
@@ -409,7 +409,7 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateInternal(orxBOOL _bInternal)
       orxStructure_SetOwner(pstResult->pstFrame, pstResult);
 
       /* Increases counter */
-      orxStructure_IncreaseCounter(pstResult);
+      orxStructure_IncreaseCount(pstResult);
 
       /* Not creating it internally? */
       if(_bInternal == orxFALSE)
@@ -1217,10 +1217,10 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   orxSTRUCTURE_ASSERT(_pstSpawner);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstSpawner);
+  orxStructure_DecreaseCount(_pstSpawner);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstSpawner) == 0)
+  if(orxStructure_GetRefCount(_pstSpawner) == 0)
   {
     orxOBJECT *pstObject;
 
@@ -1266,7 +1266,7 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
     orxStructure_SetOwner(_pstSpawner->pstFrame, orxNULL);
 
     /* Decreases frame's ref counter */
-    orxStructure_DecreaseCounter(_pstSpawner->pstFrame);
+    orxStructure_DecreaseCount(_pstSpawner->pstFrame);
 
     /* Deletes its frame */
     orxFrame_Delete(_pstSpawner->pstFrame);
@@ -1491,7 +1491,7 @@ orxU32 orxFASTCALL orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      Total object counter
  */
-orxU32 orxFASTCALL orxSpawner_GetTotalObjectCounter(const orxSPAWNER *_pstSpawner)
+orxU32 orxFASTCALL orxSpawner_GetTotalObjectCount(const orxSPAWNER *_pstSpawner)
 {
   orxU32 u32Result;
 
@@ -1510,7 +1510,7 @@ orxU32 orxFASTCALL orxSpawner_GetTotalObjectCounter(const orxSPAWNER *_pstSpawne
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      Active object counter
  */
-orxU32 orxFASTCALL orxSpawner_GetActiveObjectCounter(const orxSPAWNER *_pstSpawner)
+orxU32 orxFASTCALL orxSpawner_GetActiveObjectCount(const orxSPAWNER *_pstSpawner)
 {
   orxU32 u32Result;
 

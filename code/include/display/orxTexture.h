@@ -165,7 +165,7 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_GetScreenTexture();
 /** Gets pending load counter
  * @return      Pending load counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL       orxTexture_GetLoadCounter();
+extern orxDLLAPI orxU32 orxFASTCALL       orxTexture_GetLoadCount();
 
 #endif /* _orxTEXTURE_H_ */
 

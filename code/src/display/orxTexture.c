@@ -477,7 +477,7 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
 
 /** Command: GetLoadCounter
  */
-void orxFASTCALL orxTexture_CommandGetLoadCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxTexture_CommandGetLoadCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
   _pstResult->u32Value = sstTexture.u32LoadCounter;
@@ -505,7 +505,7 @@ static orxINLINE void orxTexture_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Texture|Name", orxCOMMAND_VAR_TYPE_STRING}, {"File = Name.png", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetLoadCounter */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetLoadCounter, "Load Counter", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetLoadCount, "Load Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
 }
 
 /** Unregisters all the texture commands
@@ -543,7 +543,7 @@ static orxINLINE orxTEXTURE *orxTexture_CreateInternal()
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -815,7 +815,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -841,7 +841,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
         if(_bKeepInCache != orxFALSE)
         {
           /* Increases its reference counter to keep it in cache table */
-          orxStructure_IncreaseCounter(pstResult);
+          orxStructure_IncreaseCount(pstResult);
 
           /* Updates its flags */
           orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_CACHED, orxTEXTURE_KU32_FLAG_NONE);
@@ -901,10 +901,10 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Decreases reference counter */
-  orxStructure_DecreaseCounter(_pstTexture);
+  orxStructure_DecreaseCount(_pstTexture);
 
   /* Is the last reference? */
-  if(orxStructure_GetRefCounter(_pstTexture) == 0)
+  if(orxStructure_GetRefCount(_pstTexture) == 0)
   {
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_DELETE, _pstTexture, orxNULL, orxNULL);
@@ -1226,7 +1226,7 @@ orxTEXTURE *orxFASTCALL orxTexture_GetScreenTexture()
 /** Gets pending load counter
  * @return      Pending load counter
  */
-orxU32 orxFASTCALL orxTexture_GetLoadCounter()
+orxU32 orxFASTCALL orxTexture_GetLoadCount()
 {
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);

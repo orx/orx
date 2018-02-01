@@ -766,7 +766,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
   orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
   /* For all watched groups */
-  for(s32ListCounter = orxConfig_GetListCounter(orxRESOURCE_KZ_CONFIG_WATCH_LIST); ss32GroupIndex < s32ListCounter; ss32GroupIndex++)
+  for(s32ListCounter = orxConfig_GetListCount(orxRESOURCE_KZ_CONFIG_WATCH_LIST); ss32GroupIndex < s32ListCounter; ss32GroupIndex++)
   {
     orxRESOURCE_GROUP  *pstGroup;
     orxU32              u32GroupID;
@@ -979,10 +979,10 @@ void orxFASTCALL orxResource_CommandGetPath(orxU32 _u32ArgNumber, const orxCOMMA
 
 /** Command: GetTotalPendingOpCounter
  */
-void orxFASTCALL orxResource_CommandGetTotalPendingOpCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxResource_CommandGetTotalPendingOpCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->u32Value = orxResource_GetTotalPendingOpCounter();
+  _pstResult->u32Value = orxResource_GetTotalPendingOpCount();
 
   /* Done! */
   return;
@@ -1006,7 +1006,7 @@ static orxINLINE void orxResource_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetPath, "Path", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Location", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetTotalPendingOpCounter */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCounter, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
 }
 
 /** Unregisters all the resource commands
@@ -1277,7 +1277,7 @@ void orxFASTCALL orxResource_Exit()
     orxBank_Delete(sstResource.pstOpenInfoBank);
 
     /* Checks */
-    orxASSERT(orxBank_GetCounter(sstResource.pstResourceInfoBank) == 0);
+    orxASSERT(orxBank_GetCount(sstResource.pstResourceInfoBank) == 0);
 
     /* Deletes info bank */
     orxBank_Delete(sstResource.pstResourceInfoBank);
@@ -1293,7 +1293,7 @@ void orxFASTCALL orxResource_Exit()
 /** Gets number of resource groups
  * @return Number of resource groups
  */
-orxU32 orxFASTCALL orxResource_GetGroupCounter()
+orxU32 orxFASTCALL orxResource_GetGroupCount()
 {
   orxU32 u32Result = 0;
 
@@ -1301,7 +1301,7 @@ orxU32 orxFASTCALL orxResource_GetGroupCounter()
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  u32Result = orxBank_GetCounter(sstResource.pstGroupBank);
+  u32Result = orxBank_GetCount(sstResource.pstGroupBank);
 
   /* Done! */
   return u32Result;
@@ -1319,7 +1319,7 @@ const orxSTRING orxFASTCALL orxResource_GetGroup(orxU32 _u32Index)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Valid index? */
-  if(_u32Index < orxBank_GetCounter(sstResource.pstGroupBank))
+  if(_u32Index < orxBank_GetCount(sstResource.pstGroupBank))
   {
     orxRESOURCE_GROUP *pstGroup;
 
@@ -1399,7 +1399,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
         if(_bAddFirst != orxFALSE)
         {
           /* Checks */
-          orxASSERT(orxLinkList_GetCounter(&(pstGroup->stStorageList)) != 0);
+          orxASSERT(orxLinkList_GetCount(&(pstGroup->stStorageList)) != 0);
 
           /* Adds it first */
           orxLinkList_AddAfter(orxLinkList_GetFirst(&(pstGroup->stStorageList)), &(pstStorage->stNode));
@@ -1500,7 +1500,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
  */
-orxU32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
+orxU32 orxFASTCALL orxResource_GetStorageCount(const orxSTRING _zGroup)
 {
   orxU32 u32Result = 0;
 
@@ -1527,7 +1527,7 @@ orxU32 orxFASTCALL orxResource_GetStorageCounter(const orxSTRING _zGroup)
     if(pstGroup != orxNULL)
     {
       /* Updates result */
-      u32Result = orxLinkList_GetCounter(&(pstGroup->stStorageList));
+      u32Result = orxLinkList_GetCount(&(pstGroup->stStorageList));
     }
   }
 
@@ -1567,7 +1567,7 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
     if(pstGroup != orxNULL)
     {
       /* Valid index? */
-      if(_u32Index < orxBank_GetCounter(pstGroup->pstStorageBank))
+      if(_u32Index < orxBank_GetCount(pstGroup->pstStorageBank))
       {
         orxRESOURCE_STORAGE *pstStorage;
 
@@ -1605,7 +1605,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
   /* For all keys */
-  for(i = 0, u32SectionCounter = orxConfig_GetKeyCounter(); i < u32SectionCounter; i++)
+  for(i = 0, u32SectionCounter = orxConfig_GetKeyCount(); i < u32SectionCounter; i++)
   {
     orxRESOURCE_GROUP  *pstGroup = orxNULL;
     const orxSTRING     zGroup;
@@ -1628,7 +1628,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
       ;
 
       /* For all storages in list */
-      for(j = 0, jCounter = orxConfig_GetListCounter(zGroup); j < jCounter; j++)
+      for(j = 0, jCounter = orxConfig_GetListCount(zGroup); j < jCounter; j++)
       {
         const orxSTRING zStorage;
         orxBOOL         bAdd = orxTRUE;
@@ -2385,7 +2385,7 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
  * @param[in] _hResource        Concerned resource
  * @return Number of pending asynchronous operations for that resource
  */
-orxU32 orxFASTCALL orxResource_GetPendingOpCounter(const orxHANDLE _hResource)
+orxU32 orxFASTCALL orxResource_GetPendingOpCount(const orxHANDLE _hResource)
 {
   orxU32 u32Result = 0;
 
@@ -2411,7 +2411,7 @@ orxU32 orxFASTCALL orxResource_GetPendingOpCounter(const orxHANDLE _hResource)
 /** Gets total pending operation counter
  * @return Number of total pending asynchronous operations
  */
-orxU32 orxFASTCALL orxResource_GetTotalPendingOpCounter()
+orxU32 orxFASTCALL orxResource_GetTotalPendingOpCount()
 {
   orxU32 u32InIndex, u32OutIndex;
   orxU32 u32Result = 0;
@@ -2514,7 +2514,7 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
-orxU32 orxFASTCALL orxResource_GetTypeCounter()
+orxU32 orxFASTCALL orxResource_GetTypeCount()
 {
   orxU32 u32Result = 0;
 
@@ -2522,7 +2522,7 @@ orxU32 orxFASTCALL orxResource_GetTypeCounter()
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  u32Result = orxBank_GetCounter(sstResource.pstTypeBank);
+  u32Result = orxBank_GetCount(sstResource.pstTypeBank);
 
   /* Done! */
   return u32Result;
@@ -2540,7 +2540,7 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Valid index? */
-  if(_u32Index < orxBank_GetCounter(sstResource.pstTypeBank))
+  if(_u32Index < orxBank_GetCount(sstResource.pstTypeBank))
   {
     orxRESOURCE_TYPE *pstType;
 

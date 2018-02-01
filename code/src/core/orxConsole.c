@@ -254,7 +254,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
   if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
   {
     /* For all history entries */
-    for(i = 0, u32Counter = orxMIN(orxConfig_GetListCounter(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Counter; i++)
+    for(i = 0, u32Counter = orxMIN(orxConfig_GetListCount(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Counter; i++)
     {
       orxCONSOLE_INPUT_ENTRY *pstEntry;
 
@@ -1181,7 +1181,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
           /* For all keys */
-          for(i = 0, u32Counter = orxConfig_GetKeyCounter(); i < u32Counter; i++)
+          for(i = 0, u32Counter = orxConfig_GetKeyCount(); i < u32Counter; i++)
           {
             const orxSTRING zKey;
 
@@ -1540,7 +1540,7 @@ orxSTATUS orxFASTCALL orxConsole_SetFont(const orxFONT *_pstFont)
   if(sstConsole.pstFont != orxNULL)
   {
     /* Updates its reference counter */
-    orxStructure_DecreaseCounter((orxFONT *)sstConsole.pstFont);
+    orxStructure_DecreaseCount((orxFONT *)sstConsole.pstFont);
   }
 
   /* Is font valid? */
@@ -1550,7 +1550,7 @@ orxSTATUS orxFASTCALL orxConsole_SetFont(const orxFONT *_pstFont)
     sstConsole.pstFont = _pstFont;
 
     /* Updates its reference counter */
-    orxStructure_IncreaseCounter((orxFONT *)sstConsole.pstFont);
+    orxStructure_IncreaseCount((orxFONT *)sstConsole.pstFont);
   }
 
   /* Done! */
@@ -1625,7 +1625,7 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
  * @param[out]  _pu32MaxLength Max completion length, orxNULL to ignore
  * @return Current completions counter
  */
-orxU32 orxFASTCALL orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength)
+orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
 {
   orxU32 u32Length = 0, u32Result = 0;
 

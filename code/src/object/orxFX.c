@@ -281,7 +281,7 @@ static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
     orxConfig_PushSection(_pstFX->zReference);
 
     /* Gets number of declared slots */
-    u32SlotCounter = orxConfig_GetListCounter(orxFX_KZ_CONFIG_SLOT_LIST);
+    u32SlotCounter = orxConfig_GetListCount(orxFX_KZ_CONFIG_SLOT_LIST);
 
     /* Too many slots? */
     if(u32SlotCounter > orxFX_KU32_SLOT_NUMBER)
@@ -546,7 +546,7 @@ orxFX *orxFASTCALL orxFX_Create()
     orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_ENABLED, orxFX_KU32_MASK_ALL);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -581,7 +581,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -611,7 +611,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
               if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
               {
                 /* Increases its reference counter to keep it in cache table */
-                orxStructure_IncreaseCounter(pstResult);
+                orxStructure_IncreaseCount(pstResult);
 
                 /* Updates its flags */
                 orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_CACHED, orxFX_KU32_FLAG_NONE);
@@ -673,10 +673,10 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstFX);
+  orxStructure_DecreaseCount(_pstFX);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstFX) == 0)
+  if(orxStructure_GetRefCount(_pstFX) == 0)
   {
     /* Has an ID? */
     if((_pstFX->zReference != orxNULL)

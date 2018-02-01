@@ -387,7 +387,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   pstBitmap = orxTexture_GetBitmap(pstTexture);
 
   /* Gets marker counter */
-  s32MarkerCounter = orxProfiler_GetMarkerCounter();
+  s32MarkerCounter = orxProfiler_GetMarkerCount();
 
   /* For all markers */
   for(s32UniqueCounter = 0, sstRender.u32MaxMarkerDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
@@ -497,7 +497,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
       {
         /* Has been pushed? */
-        if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+        if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
         {
           /* First marker? */
           if(bFirst != orxFALSE)
@@ -677,7 +677,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique and has been pushed? */
-    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
+    if((orxProfiler_GetMarkerPushCount(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCount(s32MarkerID) > 0))
     {
       orxDOUBLE dTime, dStartTime;
       orxCOLOR  stBarColor;
@@ -789,7 +789,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     /* Is unique and has been pushed? */
     if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
-    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
+    && (orxProfiler_GetMarkerPushCount(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stLabelColor;
@@ -838,7 +838,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -862,7 +862,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     /* Is unique and hasn't been pushed? */
     if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
-    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) == 0))
+    && (orxProfiler_GetMarkerPushCount(s32MarkerID) == 0))
     {
       orxDOUBLE dTime;
       orxU32    u32Depth;
@@ -880,7 +880,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = 1;
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -939,7 +939,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
       /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+      if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
       {
         orxCOLOR stBarColor;
 
@@ -996,7 +996,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
       /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+      if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
       {
         /* Updates display color */
         orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -1008,7 +1008,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1334,7 +1334,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   }
 
   /* Gets completion counter */
-  u32Counter = orxConsole_GetCompletionCounter(&u32MaxLength);
+  u32Counter = orxConsole_GetCompletionCount(&u32MaxLength);
 
   /* Draws overlay */
   stColor.fAlpha      = 0.9f;
@@ -1591,7 +1591,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
     orxBOOL     bSuccess = orxTRUE;
 
     /* Gets viewport's texture counter */
-    u32TextureCounter = orxViewport_GetTextureCounter(_pstViewport);
+    u32TextureCounter = orxViewport_GetTextureCount(_pstViewport);
 
     /* Gets viewport textures */
     orxViewport_GetTextureList(_pstViewport, u32TextureCounter, apstTextureList);
@@ -1769,7 +1769,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
 
               /* For all camera group IDs */
-              for(i = 0, u32Number = orxCamera_GetGroupIDCounter(pstCamera); i < u32Number; i++)
+              for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
                 orxU32 u32GroupID;
 
@@ -1971,7 +1971,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             pstRenderNode->fDepthCoef = fDepthCoef;
 
                             /* Empty list? */
-                            if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
+                            if(orxLinkList_GetCount(&(sstRender.stRenderList)) == 0)
                             {
                               /* Adds node at beginning */
                               orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
@@ -2202,7 +2202,7 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     }
 
     /* Increases FPS counter */
-    orxFPS_IncreaseFrameCounter();
+    orxFPS_IncreaseFrameCount();
 
     /* Gets screen bitmap */
     pstScreen = orxDisplay_GetScreenBitmap();

@@ -580,7 +580,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             case orxCOMMAND_KC_POP_MARKER:
             {
               /* Valid? */
-              if(orxBank_GetCounter(sstCommand.pstResultBank) > 0)
+              if(orxBank_GetCount(sstCommand.pstResultBank) > 0)
               {
                 orxCOMMAND_STACK_ENTRY *pstEntry;
                 orxCHAR                 acValue[64];
@@ -588,7 +588,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 const orxSTRING         zValue = acValue;
 
                 /* Gets last stack entry */
-                pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCounter(sstCommand.pstResultBank) - 1);
+                pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_GetAtIndex(sstCommand.pstResultBank, orxBank_GetCount(sstCommand.pstResultBank) - 1);
 
                 /* Inits value */
                 acValue[sizeof(acValue) - 1] = orxCHAR_NULL;

@@ -205,7 +205,7 @@ static orxINLINE orxTREE_NODE *                 orxTree_GetRoot(const orxTREE *_
  * @param[in]   _pstTree                        Concerned tree
  * @return Number of nodes in tree
  */
-static orxINLINE orxU32                         orxTree_GetCounter(const orxTREE *_pstTree)
+static orxINLINE orxU32                         orxTree_GetCount(const orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);

@@ -1045,7 +1045,7 @@ static orxINLINE void orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSet, orx
  * @param[in]   _pstAnimSet										Concerned AnimSet
  * @param[in]   _u32AnimCounter								Counter value
  */
-static orxINLINE void orxAnimSet_SetAnimCounter(orxANIMSET *_pstAnimSet, orxU32 _u32AnimCounter)
+static orxINLINE void orxAnimSet_SetAnimCount(orxANIMSET *_pstAnimSet, orxU32 _u32AnimCounter)
 {
   /* Checks */
   orxASSERT(_u32AnimCounter <= orxAnimSet_GetAnimStorageSize(_pstAnimSet));
@@ -1059,7 +1059,7 @@ static orxINLINE void orxAnimSet_SetAnimCounter(orxANIMSET *_pstAnimSet, orxU32 
 /** Increases an AnimSet internal Anim counter
  * @param[in]   _pstAnimSet										Concerned AnimSet
  */
-static orxINLINE void orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimSet)
+static orxINLINE void orxAnimSet_IncreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
   register orxU32 u32AnimCounter;
 
@@ -1067,10 +1067,10 @@ static orxINLINE void orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimSet)
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Gets anim counter */
-  u32AnimCounter = orxAnimSet_GetAnimCounter(_pstAnimSet);
+  u32AnimCounter = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Updates anim counter*/
-  orxAnimSet_SetAnimCounter(_pstAnimSet, u32AnimCounter + 1);
+  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCounter + 1);
 
   return;
 }
@@ -1078,7 +1078,7 @@ static orxINLINE void orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimSet)
 /** Decreases an AnimSet internal Anim counter
  * @param[in]   _pstAnimSet										Concerned AnimSet
  */
-static orxINLINE void orxAnimSet_DecreaseAnimCounter(orxANIMSET *_pstAnimSet)
+static orxINLINE void orxAnimSet_DecreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
   register orxU32 u32AnimCounter;
 
@@ -1086,10 +1086,10 @@ static orxINLINE void orxAnimSet_DecreaseAnimCounter(orxANIMSET *_pstAnimSet)
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Gets anim counter */
-  u32AnimCounter = orxAnimSet_GetAnimCounter(_pstAnimSet);
+  u32AnimCounter = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Updates anim counter*/
-  orxAnimSet_SetAnimCounter(_pstAnimSet, u32AnimCounter - 1);
+  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCounter - 1);
 
   return;
 }
@@ -1333,7 +1333,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
   orxANIMSET *pstResult;
 
   /* Gets animation counter */
-  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_ANIM_LIST);
+  u32AnimCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_ANIM_LIST);
 
   /* Creates animation set */
   pstResult = orxAnimSet_Create(u32AnimCounter);
@@ -1386,7 +1386,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
     orxHashTable_Optimize(pstResult->pstIDTable);
 
     /* For all links */
-    for(i = 0, u32LinkCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
+    for(i = 0, u32LinkCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
     {
       const orxSTRING zLinkName;
 
@@ -1500,7 +1500,7 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
     orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
     /* For all linked animations */
-    for(i = 0, u32Counter = orxConfig_GetListCounter(acLinkName);
+    for(i = 0, u32Counter = orxConfig_GetListCount(acLinkName);
         i < u32Counter;
         i++)
     {
@@ -1543,7 +1543,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   zAnimSet = orxConfig_GetCurrentSection();
 
   /* Gets associated list size */
-  s32ValueCounter = orxConfig_GetListCounter(_zConfigID);
+  s32ValueCounter = orxConfig_GetListCount(_zConfigID);
 
   /* Depending on number of values */
   switch(s32ValueCounter)
@@ -1672,7 +1672,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
       {
         /* Valid? */
-        if(orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
+        if(orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
         {
           orxU32        i;
           orxDIRECTION *aeDirections[] =
@@ -2016,7 +2016,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
 
         /* Gets event value counter */
-        s32EventValueCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+        s32EventValueCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
 
         /* Found event? */
         if(s32EventValueCounter > 0)
@@ -2078,7 +2078,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       }
 
       /* Gets frame counter */
-      u32FrameCounter = orxBank_GetCounter(sstAnimSet.pstCreationBank);
+      u32FrameCounter = orxBank_GetCount(sstAnimSet.pstCreationBank);
 
       /* Found frames? */
       if(u32FrameCounter != 0)
@@ -2192,7 +2192,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
   zStartAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_START_ANIM);
 
   /* Gets start anim list counter */
-  u32AnimCounter = orxConfig_GetListCounter(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
+  u32AnimCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
 
   /* Has start anim(s)? */
   if((zStartAnim != orxSTRING_EMPTY)
@@ -2220,7 +2220,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
     }
 
     /* Gets animation counter */
-    u32AnimCounter = orxHashTable_GetCounter(sstAnimSet.pstCreationTable);
+    u32AnimCounter = orxHashTable_GetCount(sstAnimSet.pstCreationTable);
 
     /* Creates animation set */
     pstResult = orxAnimSet_Create(u32AnimCounter);
@@ -2317,7 +2317,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
             orxU32 i, u32LinkCounter;
 
             /* For all links */
-            for(i = 0, u32LinkCounter = orxConfig_GetListCounter(acLinkName); i < u32LinkCounter; i++)
+            for(i = 0, u32LinkCounter = orxConfig_GetListCount(acLinkName); i < u32LinkCounter; i++)
             {
               const orxSTRING zLink;
 
@@ -2599,7 +2599,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
 
       /* Set storage size & counter */
       orxAnimSet_SetAnimStorageSize(pstAnimSet, _u32Size);
-      orxAnimSet_SetAnimCounter(pstAnimSet, 0);
+      orxAnimSet_SetAnimCount(pstAnimSet, 0);
 
       /* Creates link table */
       pstAnimSet->pstLinkTable = orxAnimSet_CreateLinkTable(_u32Size);
@@ -2614,7 +2614,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
         orxStructure_SetFlags(pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC, orxANIMSET_KU32_MASK_FLAGS);
 
         /* Increases counter */
-        orxStructure_IncreaseCounter(pstAnimSet);
+        orxStructure_IncreaseCount(pstAnimSet);
       }
       else
       {
@@ -2672,7 +2672,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -2697,7 +2697,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxConfig_GetBool(orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
         {
           /* Increases its reference counter to keep it in cache table */
-          orxStructure_IncreaseCounter(pstResult);
+          orxStructure_IncreaseCount(pstResult);
 
           /* Updates its flags */
           orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_CACHED, orxANIMSET_KU32_FLAG_NONE);
@@ -2734,10 +2734,10 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstAnimSet);
+  orxStructure_DecreaseCount(_pstAnimSet);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstAnimSet) == 0)
+  if(orxStructure_GetRefCount(_pstAnimSet) == 0)
   {
     /* Cleans members */
     orxAnimSet_RemoveAllAnims(_pstAnimSet);
@@ -2820,7 +2820,7 @@ void orxFASTCALL orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
   orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK, orxANIMSET_KU32_FLAG_NONE);
 
   /* Updates reference counter */
-  orxStructure_IncreaseCounter(_pstAnimSet);
+  orxStructure_IncreaseCount(_pstAnimSet);
 
   return;
 }
@@ -2835,12 +2835,12 @@ void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Updates reference counter */
-  orxStructure_DecreaseCounter(_pstAnimSet);
+  orxStructure_DecreaseCount(_pstAnimSet);
 
   /* No extra reference left? */
-  if((orxStructure_GetRefCounter(_pstAnimSet) <= 1)
+  if((orxStructure_GetRefCount(_pstAnimSet) <= 1)
   || (orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_CACHED)
-   && (orxStructure_GetRefCounter(_pstAnimSet) <= 2)))
+   && (orxStructure_GetRefCount(_pstAnimSet) <= 2)))
   {
     /* Unlocks animset */
     orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_REFERENCE_LOCK);
@@ -2917,7 +2917,7 @@ orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim
 
   /* Gets storage size & counter */
   u32Size     = orxAnimSet_GetAnimStorageSize(_pstAnimSet);
-  u32Counter  = orxAnimSet_GetAnimCounter(_pstAnimSet);
+  u32Counter  = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Not locked? */
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK) == orxFALSE)
@@ -2941,10 +2941,10 @@ orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim
       _pstAnimSet->pastAnim[u32Index] = _pstAnim;
 
       /* Updates Animation reference counter */
-      orxStructure_IncreaseCounter(_pstAnim);
+      orxStructure_IncreaseCount(_pstAnim);
 
       /* Updates Animation counter */
-      orxAnimSet_IncreaseAnimCounter(_pstAnimSet);
+      orxAnimSet_IncreaseAnimCount(_pstAnimSet);
 
       /* Gets result ID */
       u32Result = u32Index;
@@ -2996,10 +2996,10 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32
     if(_pstAnimSet->pastAnim[u32AnimIndex] != orxNULL)
     {
       /* Updates counter */
-      orxAnimSet_DecreaseAnimCounter(_pstAnimSet);
+      orxAnimSet_DecreaseAnimCount(_pstAnimSet);
 
       /* Updates animation reference counter */
-      orxStructure_DecreaseCounter((_pstAnimSet->pastAnim[u32AnimIndex]));
+      orxStructure_DecreaseCount((_pstAnimSet->pastAnim[u32AnimIndex]));
 
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_INTERNAL) != orxFALSE)
@@ -3058,7 +3058,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
     orxU32 i;
 
     /* Gets animation counter */
-    u32Counter = orxAnimSet_GetAnimCounter(_pstAnimSet);
+    u32Counter = orxAnimSet_GetAnimCount(_pstAnimSet);
 
     /* Until there are no animation left */
     for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Counter) && (eResult != orxSTATUS_FAILURE); i++)
@@ -3349,8 +3349,8 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
   orxASSERT(_pfTime != orxNULL);
   orxASSERT(_pbCut != orxNULL);
   orxASSERT(_pbClearTarget != orxNULL);
-  orxASSERT(_u32SrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
-  orxASSERT((_u32DstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_u32DstAnim == orxU32_UNDEFINED));
+  orxASSERT(_u32SrcAnim < orxAnimSet_GetAnimCount(_pstAnimSet));
+  orxASSERT((_u32DstAnim < orxAnimSet_GetAnimCount(_pstAnimSet)) || (_u32DstAnim == orxU32_UNDEFINED));
 
   /* Gets Link Table */
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
@@ -3480,8 +3480,8 @@ orxU32 orxFASTCALL orxAnimSet_FindNextAnim(orxANIMSET *_pstAnimSet, orxU32 _u32S
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
-  orxASSERT(_u32SrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
-  orxASSERT((_u32DstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_u32DstAnim == orxU32_UNDEFINED));
+  orxASSERT(_u32SrcAnim < orxAnimSet_GetAnimCount(_pstAnimSet));
+  orxASSERT((_u32DstAnim < orxAnimSet_GetAnimCount(_pstAnimSet)) || (_u32DstAnim == orxU32_UNDEFINED));
 
   /* Computes link table if needed */
   if(orxAnimSet_ComputeLinkTable(_pstAnimSet->pstLinkTable) != orxSTATUS_FAILURE)
@@ -3509,7 +3509,7 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Gets counter */
-  u32Counter = orxAnimSet_GetAnimCounter(_pstAnimSet);
+  u32Counter = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Is index valid? */
   if(_u32AnimID < u32Counter)
@@ -3520,7 +3520,7 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": index [%u] is invalid <max = %u>.", _pstAnimSet->zReference, _u32AnimID, orxAnimSet_GetAnimCounter(_pstAnimSet));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": index [%u] is invalid <max = %u>.", _pstAnimSet->zReference, _u32AnimID, orxAnimSet_GetAnimCount(_pstAnimSet));
   }
 
   /* Done! */
@@ -3545,7 +3545,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimStorageSize(const orxANIMSET *_pstAnimSet)
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @return			Anim counter / orxU32_UNDEFINED
  */
-orxU32 orxFASTCALL orxAnimSet_GetAnimCounter(const orxANIMSET *_pstAnimSet)
+orxU32 orxFASTCALL orxAnimSet_GetAnimCount(const orxANIMSET *_pstAnimSet)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);

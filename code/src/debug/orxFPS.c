@@ -208,7 +208,7 @@ void orxFASTCALL orxFPS_Exit()
 }
 
 /** Increases internal frame counter */
-void orxFASTCALL orxFPS_IncreaseFrameCounter()
+void orxFASTCALL orxFPS_IncreaseFrameCount()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);

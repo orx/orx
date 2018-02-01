@@ -58,7 +58,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxFPS_Init();
 extern orxDLLAPI void orxFASTCALL                 orxFPS_Exit();
 
 /** Increases internal frame counter */
-extern orxDLLAPI void orxFASTCALL                 orxFPS_IncreaseFrameCounter();
+extern orxDLLAPI void orxFASTCALL                 orxFPS_IncreaseFrameCount();
 
 /** Gets current FTP value
  * @return orxU32

@@ -324,7 +324,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         orxConfig_PushSection(orxPARAM_KZ_CONFIG_SECTION);
 
         /* Gets parameter value number */
-        s32ParamValueNumber = orxConfig_GetListCounter(_pstParamInfo->stParam.zLongName);
+        s32ParamValueNumber = orxConfig_GetListCount(_pstParamInfo->stParam.zLongName);
 
         /* Checks */
         orxASSERT(s32ParamValueNumber <= orxPARAM_KU32_MAX_CONFIG_PARAM - 1);

@@ -422,7 +422,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
     }
 
     /* Has handler(s)? */
-    if(orxLinkList_GetCounter(&(pstStorage->stList)) != 0)
+    if(orxLinkList_GetCount(&(pstStorage->stList)) != 0)
     {
       orxEVENT_HANDLER_INFO *pstInfo;
 

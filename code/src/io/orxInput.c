@@ -519,7 +519,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
             if(zBinding != orxSTRING_EMPTY)
             {
               /* For all defined inputs */
-              for(u32Number = orxConfig_GetListCounter(zBinding), i = 0; i < u32Number; i++)
+              for(u32Number = orxConfig_GetListCount(zBinding), i = 0; i < u32Number; i++)
               {
                 const orxSTRING zInput;
 
@@ -552,7 +552,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
       }
 
       /* For all defined combines */
-      for(i = 0, u32Number = orxConfig_GetListCounter(orxINPUT_KZ_CONFIG_COMBINE_LIST); i < u32Number; i++)
+      for(i = 0, u32Number = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_COMBINE_LIST); i < u32Number; i++)
       {
         /* Updates its combine mode */
         orxInput_SetCombineMode(orxConfig_GetListString(orxINPUT_KZ_CONFIG_COMBINE_LIST, i), orxTRUE);
@@ -1312,7 +1312,7 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
       orxU32 i, u32Number;
 
       /* For all sets */
-      for(i = 0, u32Number = orxConfig_GetListCounter(orxINPUT_KZ_CONFIG_SET_LIST); i < u32Number; i++)
+      for(i = 0, u32Number = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_SET_LIST); i < u32Number; i++)
       {
         orxINPUT_SET *pstSet;
 
@@ -1364,11 +1364,11 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
 
 #ifdef __orxMSVC__
 
-    const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxLinkList_GetCounter(&(sstInput.stSetList)) * sizeof(orxSTRING));
+    const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxLinkList_GetCount(&(sstInput.stSetList)) * sizeof(orxSTRING));
 
 #else /* __orxMSVC__ */
 
-    const orxSTRING   azSetNameList[orxLinkList_GetCounter(&(sstInput.stSetList))];
+    const orxSTRING   azSetNameList[orxLinkList_GetCount(&(sstInput.stSetList))];
 
 #endif /* __orxMSVC__ */
 
@@ -1391,11 +1391,11 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
 
 #ifdef __orxMSVC__
 
-        const orxSTRING  *azCombineNameList = (const orxSTRING *)alloca(orxLinkList_GetCounter(&(pstSet->stEntryList)) * sizeof(orxSTRING));
+        const orxSTRING  *azCombineNameList = (const orxSTRING *)alloca(orxLinkList_GetCount(&(pstSet->stEntryList)) * sizeof(orxSTRING));
 
 #else /* __orxMSVC__ */
 
-        const orxSTRING   azCombineNameList[orxLinkList_GetCounter(&(pstSet->stEntryList))];
+        const orxSTRING   azCombineNameList[orxLinkList_GetCount(&(pstSet->stEntryList))];
 
 #endif /* __orxMSVC__ */
 
@@ -2557,7 +2557,7 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID, orxINP
  * @param[in] _eMode            Mode (only used for axis input)
  * @return Number of bound inputs
  */
-orxU32 orxFASTCALL orxInput_GetBoundInputCounter(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
+orxU32 orxFASTCALL orxInput_GetBoundInputCount(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode)
 {
   orxU32 u32Result = 0;
 
@@ -2610,7 +2610,7 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Valid? */
-  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputCounter(_eType, _eID, _eMode)))
+  if((sstInput.pstCurrentSet != orxNULL) && (_u32InputIndex < orxInput_GetBoundInputCount(_eType, _eID, _eMode)))
   {
     orxINPUT_ENTRY *pstEntry;
     orxU32          u32CurrentIndex;
