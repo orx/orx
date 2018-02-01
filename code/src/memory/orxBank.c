@@ -753,7 +753,7 @@ void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
  * @param[in] _pstBank    Concerned bank
  * @return Number of allocated cells
  */
-orxU32 orxFASTCALL orxBank_GetCounter(const orxBANK *_pstBank)
+orxU32 orxFASTCALL orxBank_GetCount(const orxBANK *_pstBank)
 {
   /* Checks */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);

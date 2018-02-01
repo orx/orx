@@ -300,7 +300,7 @@ extern orxDLLAPI orxSTRUCTURE_STORAGE_TYPE orxFASTCALL  orxStructure_GetStorageT
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL                     orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxU32 orxFASTCALL                     orxStructure_GetCount(orxSTRUCTURE_ID _eStructureID);
 
 /** Updates structure if update function was registered for the structure type
  * @param[in]   _pStructure     Concerned structure
@@ -395,7 +395,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_LogAll();
 /** Increases structure reference counter
  * @param[in]   _pStructure    Concerned structure
  */
-static orxINLINE void                                   orxStructure_IncreaseCounter(void *_pStructure)
+static orxINLINE void                                   orxStructure_IncreaseCount(void *_pStructure)
 {
   orxU64 u64Counter;
 
@@ -421,7 +421,7 @@ static orxINLINE void                                   orxStructure_IncreaseCou
 /** Decreases structure reference counter
  * @param[in]   _pStructure    Concerned structure
  */
-static orxINLINE void                                   orxStructure_DecreaseCounter(void *_pStructure)
+static orxINLINE void                                   orxStructure_DecreaseCount(void *_pStructure)
 {
   orxU64 u64Counter;
 
@@ -448,7 +448,7 @@ static orxINLINE void                                   orxStructure_DecreaseCou
  * @param[in]   _pStructure    Concerned structure
  * @return      orxU32
  */
-static orxINLINE orxU32                                 orxStructure_GetRefCounter(const void *_pStructure)
+static orxINLINE orxU32                                 orxStructure_GetRefCount(const void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);

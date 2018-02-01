@@ -125,7 +125,7 @@ extern orxDLLAPI void orxFASTCALL                         orxResource_Exit();
 /** Gets number of resource groups
  * @return Number of resource groups
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetGroupCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetGroupCount();
 
 /** Gets resource group at given index
  * @param[in] _u32Index         Index of resource group
@@ -153,7 +153,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStor
  * @param[in] _zGroup           Concerned resource group
  * @return Number of storages for this resource group
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetStorageCounter(const orxSTRING _zGroup);
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetStorageCount(const orxSTRING _zGroup);
 
 /** Gets storage at given index for a given resource group
  * @param[in] _zGroup           Concerned resource group
@@ -265,12 +265,12 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxH
  * @param[in] _hResource        Concerned resource
  * @return Number of pending asynchronous operations for that resource
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetPendingOpCounter(const orxHANDLE _hResource);
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetPendingOpCount(const orxHANDLE _hResource);
 
 /** Gets total pending operation counter
  * @return Number of total pending asynchronous operations
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPendingOpCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPendingOpCount();
 
 
 /** Registers a new resource type
@@ -282,7 +282,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterTy
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCount();
 
 /** Gets registered type info at given index
  * @param[in] _u32Index         Index of storage

@@ -81,7 +81,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Clear(orxHASHTABLE 
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */
-extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCount(const orxHASHTABLE *_pstHashTable);
 
 /** @name HashTable key manipulation.
  * @{ */

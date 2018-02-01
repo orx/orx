@@ -1089,7 +1089,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
 /** Gets number of pending asynchronous tasks awaiting full completion (might pump task notifications if called from main thread)
  * @return      Number of pending asynchronous tasks
  */
-orxU32 orxFASTCALL orxThread_GetTaskCounter()
+orxU32 orxFASTCALL orxThread_GetTaskCount()
 {
   orxU32 u32TaskInIndex, u32TaskOutIndex, u32Result;
 

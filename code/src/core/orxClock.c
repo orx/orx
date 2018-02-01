@@ -778,7 +778,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
       /* Increases counter */
-      orxStructure_IncreaseCounter(pstClock);
+      orxStructure_IncreaseCount(pstClock);
     }
     else
     {
@@ -820,7 +820,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -932,10 +932,10 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstClock);
+  orxStructure_DecreaseCount(_pstClock);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstClock) == 0)
+  if(orxStructure_GetRefCount(_pstClock) == 0)
   {
     /* Not locked? */
     if(!orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK))
@@ -970,7 +970,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
     else
     {
       /* Increases counter */
-      orxStructure_IncreaseCounter(_pstClock);
+      orxStructure_IncreaseCount(_pstClock);
 
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Can't delete clock <%s> as it's currently locked for processing!", orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED) ? _pstClock->zReference : orxSTRING_EMPTY);

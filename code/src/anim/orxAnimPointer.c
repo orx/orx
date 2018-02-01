@@ -600,7 +600,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     }
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstAnimPointer);
+    orxStructure_IncreaseCount(pstAnimPointer);
   }
   else
   {
@@ -696,10 +696,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstAnimPointer);
+  orxStructure_DecreaseCount(_pstAnimPointer);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstAnimPointer) == 0)
+  if(orxStructure_GetRefCount(_pstAnimPointer) == 0)
   {
     /* Has an animset? */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
@@ -991,7 +991,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
   if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   {
     /* In range? */
-    if(_u32AnimID < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+    if(_u32AnimID < orxAnimSet_GetAnimCount(_pstAnimPointer->pstAnimSet))
     {
       orxANIM_EVENT_PAYLOAD stPayload;
       orxANIM              *pstAnim;
@@ -1102,7 +1102,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPoint
         eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
       }
       /* In range? */
-      else if(_u32AnimID < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+      else if(_u32AnimID < orxAnimSet_GetAnimCount(_pstAnimPointer->pstAnimSet))
       {
         /* Stores ID */
         _pstAnimPointer->u32TargetAnim = _u32AnimID;

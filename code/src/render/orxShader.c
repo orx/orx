@@ -203,7 +203,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
   orxBank_Clear(_pstShader->pstParamBank);
 
   /* For all parameters */
-  for(i = 0, s32Number = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
+  for(i = 0, s32Number = orxConfig_GetListCount(orxSHADER_KZ_CONFIG_PARAM_LIST); i < s32Number; i++)
   {
     orxBOOL         bIsList;
     const orxSTRING zParamName;
@@ -221,7 +221,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       orxS32  s32ParamListCounter;
 
       /* Gets param's list counter */
-      s32ParamListCounter = (bIsList != orxFALSE) ? orxConfig_GetListCounter(zParamName) : 0;
+      s32ParamListCounter = (bIsList != orxFALSE) ? orxConfig_GetListCount(zParamName) : 0;
 
       /* Is a vector? */
       if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)as8ValueBuffer)[0])) != orxNULL)
@@ -372,7 +372,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     orxS32 s32Count;
 
     /* Gets its counter */
-    s32Count = orxConfig_GetListCounter(orxSHADER_KZ_CONFIG_CODE_LIST);
+    s32Count = orxConfig_GetListCount(orxSHADER_KZ_CONFIG_CODE_LIST);
 
     {
       orxS32 i;
@@ -659,7 +659,7 @@ orxSHADER *orxFASTCALL orxShader_Create()
       orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_ENABLED, orxSHADER_KU32_MASK_ALL);
 
       /* Increases counter */
-      orxStructure_IncreaseCounter(pstResult);
+      orxStructure_IncreaseCount(pstResult);
     }
     else
     {
@@ -716,7 +716,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -740,7 +740,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
           if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
           {
             /* Increases its reference counter to keep it in cache table */
-            orxStructure_IncreaseCounter(pstResult);
+            orxStructure_IncreaseCount(pstResult);
 
             /* Updates its flags */
             orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_CACHED, orxSHADER_KU32_FLAG_NONE);
@@ -792,10 +792,10 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
   orxSTRUCTURE_ASSERT(_pstShader);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstShader);
+  orxStructure_DecreaseCount(_pstShader);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstShader) == 0)
+  if(orxStructure_GetRefCount(_pstShader) == 0)
   {
     /* Has an ID? */
     if((_pstShader->zReference != orxNULL)
@@ -1503,7 +1503,7 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxST
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCount(&(_pstShader->stParamValueList)), _u32ArraySize);
         }
       }
       else
@@ -1576,7 +1576,7 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orx
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCounter(&(_pstShader->stParamValueList)), _u32ArraySize);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't set value(s) for parameter <%s>: needed %u values, %u were given.", _pstShader->zReference, _pstShader, _zName, orxLinkList_GetCount(&(_pstShader->stParamValueList)), _u32ArraySize);
         }
       }
       else

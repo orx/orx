@@ -897,7 +897,7 @@ orxFRAME *orxFASTCALL orxFrame_Create(orxU32 _u32Flags)
     }
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstFrame);
+    orxStructure_IncreaseCount(pstFrame);
   }
   else
   {
@@ -922,10 +922,10 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstFrame);
+  orxStructure_DecreaseCount(_pstFrame);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstFrame) == 0)
+  if(orxStructure_GetRefCount(_pstFrame) == 0)
   {
     /* Deletes structure */
     orxStructure_Delete(_pstFrame);

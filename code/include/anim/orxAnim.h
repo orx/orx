@@ -230,7 +230,7 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const or
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim key counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(const orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCount(const orxANIM *_pstAnim);
 
 
 /** Anim event storage size accessor
@@ -243,7 +243,7 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventStorageSize(const 
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim event counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCounter(const orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCount(const orxANIM *_pstAnim);
 
 
 /** Anim time length accessor

@@ -199,7 +199,7 @@ orxSTATUS orxFASTCALL orxLocale_Init()
     orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
     /* Gets language counter */
-    s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+    s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
     /* Has any? */
     if(s32LanguageCounter > 0)
@@ -277,7 +277,7 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
       /* Gets language counter */
-      s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+      s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
       /* For all languages */
       for(i = 0; i < s32LanguageCounter; i++)
@@ -370,7 +370,7 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
       /* Gets language counter */
-      s32LanguageCounter = orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+      s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
       /* For all languages */
       for(i = 0; i < s32LanguageCounter; i++)
@@ -397,7 +397,7 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
 /** Gets language counter
  * @return Number of languages defined
  */
-orxU32 orxFASTCALL orxLocale_GetLanguageCounter()
+orxU32 orxFASTCALL orxLocale_GetLanguageCount()
 {
   orxU32 u32Result;
 
@@ -408,7 +408,7 @@ orxU32 orxFASTCALL orxLocale_GetLanguageCounter()
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
   /* Updates result */
-  u32Result = (orxU32)orxConfig_GetListCounter(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+  u32Result = (orxU32)orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -562,7 +562,7 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
 /** Gets key counter for the current language
  * @return Key counter the current language if valid, 0 otherwise
  */
-orxU32 orxFASTCALL orxLocale_GetKeyCounter()
+orxU32 orxFASTCALL orxLocale_GetKeyCount()
 {
   orxU32 u32Result;
 
@@ -576,7 +576,7 @@ orxU32 orxFASTCALL orxLocale_GetKeyCounter()
     orxConfig_PushSection(sstLocale.zCurrentLanguage);
 
     /* Updates result */
-    u32Result = orxConfig_GetKeyCounter();
+    u32Result = orxConfig_GetKeyCount();
 
     /* Pops config section */
     orxConfig_PopSection();

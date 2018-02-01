@@ -180,7 +180,7 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
     else
     {
       /* Updates structure reference counter */
-      orxStructure_DecreaseCounter(_pstGraphic->pstData);
+      orxStructure_DecreaseCount(_pstGraphic->pstData);
     }
 
     /* Cleans reference */
@@ -232,7 +232,7 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
       else
       {
         /* Updates structure reference counter */
-        orxStructure_IncreaseCounter(_pstData);
+        orxStructure_IncreaseCount(_pstData);
       }
     }
   }
@@ -480,7 +480,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create()
     orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstGraphic);
+    orxStructure_IncreaseCount(pstGraphic);
   }
 
   /* Done! */
@@ -892,10 +892,10 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstGraphic);
+  orxStructure_DecreaseCount(_pstGraphic);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstGraphic) == 0)
+  if(orxStructure_GetRefCount(_pstGraphic) == 0)
   {
     /* Cleans data */
     orxGraphic_SetDataInternal(_pstGraphic, orxNULL, orxFALSE);

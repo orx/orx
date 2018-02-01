@@ -3459,13 +3459,13 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
 
 /** Command: GetListCounter
  */
-void orxFASTCALL orxConfig_CommandGetListCounter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
   orxConfig_PushSection(_astArgList[0].zValue);
 
   /* Updates result */
-  _pstResult->s32Value = orxConfig_GetListCounter(_astArgList[1].zValue);
+  _pstResult->s32Value = orxConfig_GetListCount(_astArgList[1].zValue);
 
   /* Pops section */
   orxConfig_PopSection();
@@ -3512,7 +3512,7 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: GetRawValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetRawValue, "RawValue", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetListCounter */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCounter, "Counter", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCount, "Count", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Alias: Load */
   orxCommand_AddAlias("Load", "Config.Load", orxNULL);
@@ -5149,7 +5149,7 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Has stacked entry? */
-  if(orxLinkList_GetCounter(&(sstConfig.stStackList)) > 0)
+  if(orxLinkList_GetCount(&(sstConfig.stStackList)) > 0)
   {
     orxCONFIG_STACK_ENTRY *pstStackEntry;
 
@@ -5312,7 +5312,7 @@ orxU32 orxFASTCALL orxConfig_GetOriginID(const orxSTRING _zSectionName)
 /** Gets section counter
  * @return Section counter
  */
-orxU32 orxFASTCALL orxConfig_GetSectionCounter()
+orxU32 orxFASTCALL orxConfig_GetSectionCount()
 {
   orxU32 u32Result;
 
@@ -5320,7 +5320,7 @@ orxU32 orxFASTCALL orxConfig_GetSectionCounter()
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  u32Result = orxLinkList_GetCounter(&(sstConfig.stSectionList));
+  u32Result = orxLinkList_GetCount(&(sstConfig.stSectionList));
 
   /* Done! */
   return u32Result;
@@ -5338,7 +5338,7 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Valid? */
-  if(_u32SectionIndex < orxConfig_GetSectionCounter())
+  if(_u32SectionIndex < orxConfig_GetSectionCount())
   {
     orxCONFIG_SECTION  *pstSection;
     orxU32              i;
@@ -6247,7 +6247,7 @@ orxBOOL orxFASTCALL orxConfig_IsList(const orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return List counter if it's a valid list, 0 otherwise
  */
-orxS32 orxFASTCALL orxConfig_GetListCounter(const orxSTRING _zKey)
+orxS32 orxFASTCALL orxConfig_GetListCount(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxS32            s32Result = 0;
@@ -6744,7 +6744,7 @@ orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const or
 /** Gets key counter for the current section
  * @return Key counter the current section if valid, 0 otherwise
  */
-orxU32 orxFASTCALL orxConfig_GetKeyCounter()
+orxU32 orxFASTCALL orxConfig_GetKeyCount()
 {
   orxU32 u32Result;
 
@@ -6755,7 +6755,7 @@ orxU32 orxFASTCALL orxConfig_GetKeyCounter()
   if(sstConfig.pstCurrentSection != orxNULL)
   {
     /* Updates result */
-    u32Result = orxLinkList_GetCounter(&(sstConfig.pstCurrentSection->stEntryList));
+    u32Result = orxLinkList_GetCount(&(sstConfig.pstCurrentSection->stEntryList));
   }
   else
   {
@@ -6779,7 +6779,7 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Valid? */
-  if(_u32KeyIndex < orxConfig_GetKeyCounter())
+  if(_u32KeyIndex < orxConfig_GetKeyCount())
   {
     orxCONFIG_ENTRY  *pstEntry;
     orxU32            i;

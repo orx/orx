@@ -870,7 +870,7 @@ orxDOUBLE orxFASTCALL orxProfiler_GetMaxResetTime()
 /** Gets the number of registered markers used on the queried thread
  * @return Number of registered markers
  */
-orxS32 orxFASTCALL orxProfiler_GetMarkerCounter()
+orxS32 orxFASTCALL orxProfiler_GetMarkerCount()
 {
   orxPROFILER_MARKER_DATA  *pstData;
   orxS32                    s32Result;
@@ -1196,7 +1196,7 @@ const orxSTRING orxFASTCALL orxProfiler_GetMarkerName(orxS32 _s32MarkerID)
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return Number of time the marker has been pushed since last reset
  */
-orxU32 orxFASTCALL orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID)
+orxU32 orxFASTCALL orxProfiler_GetMarkerPushCount(orxS32 _s32MarkerID)
 {
   orxPROFILER_MARKER_DATA  *pstData;
   orxU32                    u32Result;

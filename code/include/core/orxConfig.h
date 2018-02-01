@@ -237,7 +237,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ProtectSection(const orx
 /** Gets section counter
  * @return Section counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetSectionCounter();
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetSectionCount();
 
 /** Gets section at the given index
  * @param[in] _u32SectionIndex  Index of the desired section
@@ -435,7 +435,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsList(const orxSTRING _
  * @param[in] _zKey             Key name
  * @return List counter if it's a valid list, 0 otherwise
  */
-extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetListCounter(const orxSTRING _zKey);
+extern orxDLLAPI orxS32 orxFASTCALL           orxConfig_GetListCount(const orxSTRING _zKey);
 
 /** Reads a signed integer value from config list
  * @param[in] _zKey             Key name
@@ -513,7 +513,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_AppendListString(const o
 /** Gets key counter of the current section
  * @return Key counter of the current section if valid, 0 otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetKeyCounter();
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetKeyCount();
 
 /** Gets key for the current section at the given index
  * @param[in] _u32KeyIndex      Index of the desired key

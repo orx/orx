@@ -141,7 +141,7 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetLogLineLengt
  * @param[out]  _pu32MaxLength Max completion length, orxNULL to ignore
  * @return Current completions counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetCompletionCounter(orxU32 *_pu32MaxLength);
+extern orxDLLAPI orxU32 orxFASTCALL                   orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength);
 
 /** Gets completion
  * @param[in]   _u32Index     Index of the active completion

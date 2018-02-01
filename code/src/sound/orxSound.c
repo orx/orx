@@ -1594,7 +1594,7 @@ orxSOUND *orxFASTCALL orxSound_Create()
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
 
     /* Sets master bus ID */
     orxSound_SetBusID(pstResult, sstSound.u32MasterBusID);
@@ -1722,10 +1722,10 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   orxSTRUCTURE_ASSERT(_pstSound);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstSound);
+  orxStructure_DecreaseCount(_pstSound);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstSound) == 0)
+  if(orxStructure_GetRefCount(_pstSound) == 0)
   {
     /* Stops it */
     orxSound_Stop(_pstSound);

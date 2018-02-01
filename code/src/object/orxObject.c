@@ -2916,7 +2916,7 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
     orxObject_SetGroupID(pstResult, sstObject.u32DefaultGroupID);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -2935,10 +2935,10 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstObject);
+  orxStructure_DecreaseCount(_pstObject);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstObject) == 0)
+  if(orxStructure_GetRefCount(_pstObject) == 0)
   {
     orxEVENT  stEvent;
     orxU32    i;
@@ -2988,7 +2988,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
     else
     {
       /* Increases counter */
-      orxStructure_IncreaseCounter(_pstObject);
+      orxStructure_IncreaseCount(_pstObject);
 
       /* Resets its active time: going undead */
       _pstObject->fActiveTime = orxFLOAT_0;
@@ -4028,13 +4028,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Children *** */
 
         /* Has child list? */
-        if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
+        if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
         {
           orxS32      i, s32JointNumber;
           orxOBJECT  *pstLastChild;
 
           /* Gets child joint list number */
-          s32JointNumber = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST);
+          s32JointNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST);
 
           /* For all defined objects */
           for(i = 0, pstLastChild = orxNULL; i < s32Number; i++)
@@ -4128,12 +4128,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** FX *** */
 
         /* Has FX? */
-        if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
+        if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
         {
           orxS32 i, s32DelayNumber;
 
           /* Gets number of delays */
-          s32DelayNumber = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
+          s32DelayNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
 
           /* For all defined FXs */
           for(i = 0; i < s32Number; i++)
@@ -4200,7 +4200,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Sound *** */
 
         /* Has sound? */
-        if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+        if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
         {
           orxS32 i;
 
@@ -4215,7 +4215,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Shader *** */
 
         /* Has shader? */
-        if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
+        if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
         {
           orxS32 i;
 
@@ -4230,7 +4230,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Timeline *** */
 
         /* Has TimeLine tracks? */
-        if((s32Number = orxConfig_GetListCounter(orxOBJECT_KZ_CONFIG_TRACK_LIST)) > 0)
+        if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRACK_LIST)) > 0)
         {
           orxS32 i;
 
@@ -4386,7 +4386,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     orxObject_UnlinkStructure(_pstObject, eStructureID);
 
     /* Updates structure reference counter */
-    orxStructure_IncreaseCounter(_pstStructure);
+    orxStructure_IncreaseCount(_pstStructure);
 
     /* Links new structure to object */
     _pstObject->astStructureList[eStructureID].pstStructure = _pstStructure;
@@ -4428,7 +4428,7 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
     pstStructure = _pstObject->astStructureList[_eStructureID].pstStructure;
 
     /* Decreases structure reference counter */
-    orxStructure_DecreaseCounter(pstStructure);
+    orxStructure_DecreaseCount(pstStructure);
 
     /* Was internally handled? */
     if(orxFLAG_TEST(_pstObject->astStructureList[_eStructureID].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL))
@@ -7693,7 +7693,7 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
  *
  * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
  * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i)
+ *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
  *     {
  *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
  *         do_something_with(pstObject);

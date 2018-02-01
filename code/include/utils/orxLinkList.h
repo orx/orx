@@ -225,7 +225,7 @@ static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetLast(const orxLIN
  * @param[in]   _pstList                        Concerned list
  * @return Number of nodes in list
  */
-static orxINLINE orxU32                         orxLinkList_GetCounter(const orxLINKLIST *_pstList)
+static orxINLINE orxU32                         orxLinkList_GetCount(const orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);

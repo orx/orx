@@ -745,7 +745,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         orxStructure_SetOwner(pstFrame, pstCamera);
 
         /* Increases its reference counter */
-        orxStructure_IncreaseCounter(pstFrame);
+        orxStructure_IncreaseCount(pstFrame);
 
         /* Adds default group ID */
         orxCamera_AddGroupID(pstCamera, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP), orxFALSE);
@@ -754,7 +754,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_2D, orxCAMERA_KU32_FLAG_NONE);
 
         /* Increases counter */
-        orxStructure_IncreaseCounter(pstCamera);
+        orxStructure_IncreaseCount(pstCamera);
       }
       else
       {
@@ -809,7 +809,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
   if(pstResult != orxNULL)
   {
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -844,7 +844,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
           orxCamera_RemoveGroupID(pstResult, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP));
 
           /* For all groups */
-          for(i = 0, u32Number = orxConfig_GetListCounter(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < u32Number; i++)
+          for(i = 0, u32Number = orxConfig_GetListCount(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < u32Number; i++)
           {
             /* Adds it */
             orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
@@ -952,13 +952,13 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstCamera);
+  orxStructure_DecreaseCount(_pstCamera);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstCamera) == 0)
+  if(orxStructure_GetRefCount(_pstCamera) == 0)
   {
     /* Removes frame reference */
-    orxStructure_DecreaseCounter(_pstCamera->pstFrame);
+    orxStructure_DecreaseCount(_pstCamera->pstFrame);
 
     /* Removes its owner */
     orxStructure_SetOwner(_pstCamera->pstFrame, orxNULL);
@@ -1006,7 +1006,7 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
     orxU32 u32Counter;
 
     /* Gets number of current stored IDs */
-    u32Counter = orxCamera_GetGroupIDCounter(_pstCamera);
+    u32Counter = orxCamera_GetGroupIDCount(_pstCamera);
 
     /* Room left? */
     if(u32Counter < orxCAMERA_KU32_GROUP_ID_NUMBER)
@@ -1117,7 +1117,7 @@ orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32
  * @param[in] _pstCamera        Concerned camera
  * @return Number of group IDs of this camera
  */
-orxU32 orxFASTCALL orxCamera_GetGroupIDCounter(const orxCAMERA *_pstCamera)
+orxU32 orxFASTCALL orxCamera_GetGroupIDCount(const orxCAMERA *_pstCamera)
 {
   orxU32 u32Result;
 

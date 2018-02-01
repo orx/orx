@@ -279,7 +279,7 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
     orxU32 u32Counter, i;
 
     /* For all elements */
-    for(i = 0, u32Counter = orxConfig_GetListCounter(_zConfigID); i < u32Counter; i++)
+    for(i = 0, u32Counter = orxConfig_GetListCount(_zConfigID); i < u32Counter; i++)
     {
       /* Updates result with numerical value */
       u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
@@ -468,7 +468,7 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
 
       /* Increases counter */
-      orxStructure_IncreaseCounter(pstBody);
+      orxStructure_IncreaseCount(pstBody);
     }
     else
     {
@@ -544,7 +544,7 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
       orxU32 i, u32SlotCounter;
 
       /* Gets number of declared slots */
-      u32SlotCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_PART_LIST);
+      u32SlotCounter = orxConfig_GetListCount(orxBODY_KZ_CONFIG_PART_LIST);
 
       /* For all parts */
       for(i = 0; i < u32SlotCounter; i++)
@@ -611,10 +611,10 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstBody);
+  orxStructure_DecreaseCount(_pstBody);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstBody) == 0)
+  if(orxStructure_GetRefCount(_pstBody) == 0)
   {
     orxBODY_PART   *pstBodyPart;
     orxBODY_JOINT  *pstBodyJoint;
@@ -948,7 +948,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       /* Updates mesh specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_MESH;
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
-      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 3))
+      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 3))
       {
         orxU32 i;
 
@@ -1019,7 +1019,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       /* Updates chain specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_CHAIN;
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
-      && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
+      && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
       {
         /* Allocates vertices */
         stBodyPartDef.stChain.avVertices = (orxVECTOR *)alloca(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR));
@@ -1986,7 +1986,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
       orxVector_Copy(&(_pstBody->vScale), _pvScale);
 
       /* For all parts */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stPartList)), pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
+      for(u32Counter = orxLinkList_GetCount(&(_pstBody->stPartList)), pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
           u32Counter > 0;
           u32Counter--, pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList)))
       {
@@ -2012,7 +2012,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
       }
 
       /* For all source joints */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stSrcJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
+      for(u32Counter = orxLinkList_GetCount(&(_pstBody->stSrcJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
           u32Counter > 0;
           u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody))
       {
@@ -2042,7 +2042,7 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
       }
 
       /* For all destination joints */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stDstJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
+      for(u32Counter = orxLinkList_GetCount(&(_pstBody->stDstJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
           u32Counter > 0;
           u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody))
       {

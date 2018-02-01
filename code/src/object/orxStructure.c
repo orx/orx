@@ -722,7 +722,7 @@ orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_I
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
-orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
+orxU32 orxFASTCALL orxStructure_GetCount(orxSTRUCTURE_ID _eStructureID)
 {
   orxU32 u32Result = orxU32_UNDEFINED;
 
@@ -736,7 +736,7 @@ orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
     case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
     {
       /* Gets counter */
-      u32Result = orxLinkList_GetCounter(&(sstStructure.astStorage[_eStructureID].stLinkList));
+      u32Result = orxLinkList_GetCount(&(sstStructure.astStorage[_eStructureID].stLinkList));
 
       break;
     }
@@ -744,7 +744,7 @@ orxU32 orxFASTCALL orxStructure_GetCounter(orxSTRUCTURE_ID _eStructureID)
     case orxSTRUCTURE_STORAGE_TYPE_TREE:
     {
       /* Gets counter */
-      u32Result = orxTree_GetCounter(&(sstStructure.astStorage[_eStructureID].stTree));
+      u32Result = orxTree_GetCount(&(sstStructure.astStorage[_eStructureID].stTree));
 
       break;
     }

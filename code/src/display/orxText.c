@@ -733,7 +733,7 @@ orxTEXT *orxFASTCALL orxText_Create()
     orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
 
     /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -813,10 +813,10 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstText);
+  orxStructure_DecreaseCount(_pstText);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstText) == 0)
+  if(orxStructure_GetRefCount(_pstText) == 0)
   {
     /* Removes string */
     orxText_SetString(_pstText, orxNULL);
@@ -1246,7 +1246,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
     if(_pstText->pstFont != orxNULL)
     {
       /* Updates structure reference counter */
-      orxStructure_DecreaseCounter(_pstText->pstFont);
+      orxStructure_DecreaseCount(_pstText->pstFont);
 
       /* Internally handled? */
       if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
@@ -1272,7 +1272,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
       _pstText->pstFont = _pstFont;
 
       /* Updates its reference counter */
-      orxStructure_IncreaseCounter(_pstFont);
+      orxStructure_IncreaseCount(_pstFont);
     }
 
     /* Updates text's size */
