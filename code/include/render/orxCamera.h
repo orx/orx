@@ -123,7 +123,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_RemoveGroupID(
  * @param[in] _pstCamera        Concerned camera
  * @return Number of group IDs of this camera
  */
-extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCounter(const orxCAMERA *_pstCamera);
+extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCount(const orxCAMERA *_pstCamera);
 
 /** Gets the group ID of a camera at the given index
  * @param[in] _pstCamera        Concerned camera

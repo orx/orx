@@ -63,8 +63,8 @@ typedef struct __orxFPS_STATIC_t
   /* Associated clock */
   orxCLOCK *pstClock;
 
-  /* Frame counter */
-  orxU32 u32FrameCounter;
+  /* Frame count */
+  orxU32 u32FrameCount;
 
   /* FPS */
   orxU32 u32FPS;
@@ -88,7 +88,7 @@ static orxFPS_STATIC sstFPS;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Updates FPS counter
+/** Updates FPS count
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pContext         User defined context
  */
@@ -98,10 +98,10 @@ static void orxFASTCALL orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
 
   /* Gets FPS value */
-  sstFPS.u32FPS = sstFPS.u32FrameCounter;
+  sstFPS.u32FPS = sstFPS.u32FrameCount;
 
-  /* Resets frame counter */
-  sstFPS.u32FrameCounter = 0;
+  /* Resets frame count */
+  sstFPS.u32FrameCount = 0;
 
   return;
 }
@@ -207,14 +207,14 @@ void orxFASTCALL orxFPS_Exit()
   return;
 }
 
-/** Increases internal frame counter */
-void orxFASTCALL orxFPS_IncreaseFrameCounter()
+/** Increases internal frame count */
+void orxFASTCALL orxFPS_IncreaseFrameCount()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
 
-  /* Updates frame counter */
-  sstFPS.u32FrameCounter++;
+  /* Updates frame count */
+  sstFPS.u32FrameCount++;
 
   return;
 }

@@ -506,7 +506,7 @@ static orxU32 orxFASTCALL                                 orxString_GetFirstChar
  * @param[in] _zString                  Concerned string
  * @return                              Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string
  */
-static orxINLINE orxU32                                   orxString_GetCharacterCounter(const orxSTRING _zString)
+static orxINLINE orxU32                                   orxString_GetCharacterCount(const orxSTRING _zString)
 {
   const orxCHAR  *pc;
   orxU32          u32Result;

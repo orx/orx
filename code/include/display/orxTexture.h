@@ -162,10 +162,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTe
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_GetScreenTexture();
 
-/** Gets pending load counter
- * @return      Pending load counter
+/** Gets pending load count
+ * @return      Pending load count
  */
-extern orxDLLAPI orxU32 orxFASTCALL       orxTexture_GetLoadCounter();
+extern orxDLLAPI orxU32 orxFASTCALL       orxTexture_GetLoadCount();
 
 #endif /* _orxTEXTURE_H_ */
 

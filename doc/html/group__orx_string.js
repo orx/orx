@@ -14,7 +14,7 @@ var group__orx_string =
     [ "orxString_Duplicate", "group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd", null ],
     [ "orxString_Exit", "group__orx_string.html#ga5609313df76783e84f9ab2726f3014a5", null ],
     [ "orxString_ExtractBase", "group__orx_string.html#ga643f4af16e0e79abe462c2b7a1fd0fcf", null ],
-    [ "orxString_GetCharacterCounter", "group__orx_string.html#ga08c8a06ad01a11f54df7ebc604dfa998", null ],
+    [ "orxString_GetCharacterCount", "group__orx_string.html#ga7fec95bc660e4ac981cc1485a9900054", null ],
     [ "orxString_GetExtension", "group__orx_string.html#ga3352602bfc1529ae7c20fc8c665c179d", null ],
     [ "orxString_GetFirstCharacterCodePoint", "group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756", null ],
     [ "orxString_GetFromID", "group__orx_string.html#gae091c7e34dce2c46b5262a9d78e2faa9", null ],

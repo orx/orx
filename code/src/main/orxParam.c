@@ -118,7 +118,7 @@ typedef struct __orxPARAM_STATIC_t
   orxBANK      *pstBank;          /* Bank of registered parameters */
   orxHASHTABLE *pstHashTable;     /* HashTable of registered Parameters */
 
-  orxU32        u32ParamNumber;   /* Param counter */
+  orxU32        u32ParamNumber;   /* Param count */
   orxSTRING    *azParams;         /* Params */
 
   orxU32        u32Flags;         /* Module flags */
@@ -296,7 +296,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
     || ((_pstParamInfo->u32Count > 0)
      && (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED)))))
     {
-      orxU32 u32ParamCounter, u32RemainingNumber = 0;
+      orxU32 u32ParamCount, u32RemainingNumber = 0;
 
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)
@@ -324,7 +324,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         orxConfig_PushSection(orxPARAM_KZ_CONFIG_SECTION);
 
         /* Gets parameter value number */
-        s32ParamValueNumber = orxConfig_GetListCounter(_pstParamInfo->stParam.zLongName);
+        s32ParamValueNumber = orxConfig_GetListCount(_pstParamInfo->stParam.zLongName);
 
         /* Checks */
         orxASSERT(s32ParamValueNumber <= orxPARAM_KU32_MAX_CONFIG_PARAM - 1);
@@ -360,18 +360,18 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Found? */
       if(azParamList != orxNULL)
       {
-        /* Increases ref counter */
+        /* Increases ref count */
         _pstParamInfo->u32Count++;
 
         /* Now, count the number of extra params */
-        for(u32ParamCounter = 1;
-            (u32ParamCounter < u32RemainingNumber)
-         && (orxString_SearchString(azParamList[u32ParamCounter], orxPARAM_KZ_MODULE_SHORT_PREFIX) != azParamList[u32ParamCounter])
-         && (orxString_SearchString(azParamList[u32ParamCounter], orxPARAM_KZ_MODULE_LONG_PREFIX) != azParamList[u32ParamCounter]);
-            u32ParamCounter++);
+        for(u32ParamCount = 1;
+            (u32ParamCount < u32RemainingNumber)
+         && (orxString_SearchString(azParamList[u32ParamCount], orxPARAM_KZ_MODULE_SHORT_PREFIX) != azParamList[u32ParamCount])
+         && (orxString_SearchString(azParamList[u32ParamCount], orxPARAM_KZ_MODULE_LONG_PREFIX) != azParamList[u32ParamCount]);
+            u32ParamCount++);
 
         /* Can process it? */
-        if(_pstParamInfo->stParam.pfnParser(u32ParamCounter, (const orxSTRING *)azParamList) != orxSTATUS_FAILURE)
+        if(_pstParamInfo->stParam.pfnParser(u32ParamCount, (const orxSTRING *)azParamList) != orxSTATUS_FAILURE)
         {
           /* Updates status */
           _pstParamInfo->stParam.u32Flags |= orxPARAM_KU32_FLAG_PROCESSED;

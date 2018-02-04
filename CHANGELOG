@@ -1,6 +1,50 @@
 Orx - Portable Game Engine  (Version 1.8rc0)
 =========================================
 
+orx 1.9
+-----
+* IMPORTANT: Added support for Visual Studio 2017
+* IMPORTANT: Added init script to create/initialize a new project (init.bat/.sh <path/to/new/project)
+* IMPORTANT: Setup script will now define a ORX environment variable that will point to where orx's library is (tutorials, tools and init-ed projects will rely on it to find orx)
+* IMPORTANT: Every *Counter methods, fields and variables have been renamed to *Count
+* IMPORTANT: Config hot-reload now supports deleted keys/sections
+* IMPORTANT: Cameras will now use an inclusive near frustum plane (ie. objects with their Z == Camera.FrustumNear will now be rendered)
+* IMPORTANT: Empty command parameters are now interpreted as 0/(0, 0, 0)/false
+* IMPORTANT: Default number for animation frames is now -1 (as many as can fit) instead of 0 (as many as are defined in config)
+* IMPORTANT: Added object age concept
+* IMPORTANT: Added partial frame transmission support to orxFrame (+ config property IgnoreFromParent)
+* IMPORTANT: Added support for lazy command evaluation as config values (ex: MyValue = % MyModule.MyCommand 18)
+* IMPORTANT: Multiple commands can now be processed at once if separated by ',' (Works with commands from timelines as well as those from console or any call to orxCommand_Evaluate())
+* IMPORTATN: Added orxText_SetSize() that can constrain a text horizontally and vertically
+* IMPORTANT: Added orxSound_GetCursor() & orxSound_SetCursor()
+* IMPORTANT: Graphic's texture and sound stream/sample now support locale marker ($) for localization
+
+* One can now prevent any animation transition from an anim by explicitly defining it empty (ex: MyAnim-> =)
+* 0 can now be used as a clock multiplier with Clock.SetMultiplier
+* Added orxConfig_IsCommandValue() that will return true if there's a lazy command defined (works with lists as well)
+* orxConfig_IsDynamicValue() now encompasses command values as well
+* Spawners will now evaluate lazy commands for each spawned object if needed
+* Added orxText_GetLineCount() and orxText_GetLineSize()
+* orxTEXT's strings are now locally stored and not amongst StringIDs anymore
+* Replaced orx_LogAllStructures() with orxStructure_LogAll() that now display a tree of all user-allocated active structures, instead of only the "roots"
+* Added config property DoNotCache to orxFX (If set to true, any instance of this FX will always be entirely recreated from config, which allows for variations and random values)
+* Added orxInput_HasBeenActivated() & orxInput_HasBeenDeactivated()
+* Added event orxOBJECT_EVENT_PREPARE (called at the very beginning of object creation, before it is initialized, if handler returns orxSTATUS_FAILURE, object's creation will be aborted)
+* Added orxObject_Play() & orxObject_Stop() to play and stop all the sounds on one object (+ corresponding commands)
+* When a sound is manually stopped, it's not removed anymore (whereas those that stop automatically get removed as soon as they're stopped)
+* Added group ID parameter to orxObject_CreateNeighborList()
+* Removed orxCONFIG_EVENT_INVALID_TYPE_ACCESS
+* Physics collision flags will now get maintained when reloading config if they not defined in config (if the property is defined in config, any additional runtime-only flags will need to be re-added)
+* orxMath_GetTrailingZeroCount() now uses intrinsics on all platforms
+* Added orxMath_GetTrailingZeroCount64() that uses intrinsics everywhere
+* orxMath_GetBitCount() now uses intrinsics on all platforms
+* Added orxFrame_GetIgnoreFlags()
+* Fix attempt to 100% CPU use when VSync is on with some graphics drivers
+* When iconified when VSync is on, orx will now sleep to simulate the same refresh rate and prevent high CPU use (computer only)
+* Added __orx64__/__orx32__ to define CPU instruction size
+* Removed __orxRASPBERRY_PI__
+* Misc fixes and additions
+
 orx 1.8
 -----
 * IMPORTANT: Config list shader parameters will now work with inheritance

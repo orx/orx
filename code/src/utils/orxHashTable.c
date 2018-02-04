@@ -58,7 +58,7 @@ typedef struct __orxHASHTABLE_CELL_t
 struct __orxHASHTABLE_t
 {
   orxBANK            *pstBank;                                /**< Bank where are stored cells : 4 */
-  orxU32              u32Counter;                             /**< Hashtable item counter : 8 */
+  orxU32              u32Count;                               /**< Hashtable item count : 8 */
   orxU32              u32Size;                                /**< Hashtable size : 12 */
   orxHASHTABLE_CELL  *apstCell[0];                            /**< Hash table */
 };
@@ -191,18 +191,18 @@ orxSTATUS orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
   /* Clear the hash */
   orxMemory_Zero(_pstHashTable->apstCell, _pstHashTable->u32Size * sizeof(orxHASHTABLE_CELL *));
 
-  /* Clears counter */
-  _pstHashTable->u32Counter = 0;
+  /* Clears count */
+  _pstHashTable->u32Count = 0;
 
   /* Done! */
   return orxSTATUS_SUCCESS;
 }
 
-/** Gets a hash table item counter
+/** Gets a hash table item count
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */
-orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
+orxU32 orxFASTCALL orxHashTable_GetCount(const orxHASHTABLE *_pstHashTable)
 {
   orxU32 u32Result;
 
@@ -210,7 +210,7 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(const orxHASHTABLE *_pstHashTable)
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Updates result */
-  u32Result = _pstHashTable->u32Counter;
+  u32Result = _pstHashTable->u32Count;
 
   /* Done! */
   return u32Result;
@@ -290,8 +290,8 @@ void **orxFASTCALL orxHashTable_Retrieve(orxHASHTABLE *_pstHashTable, orxU64 _u6
       pstCell->pData    = orxNULL;
       pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
-      /* Updates counter */
-      _pstHashTable->u32Counter++;
+      /* Updates count */
+      _pstHashTable->u32Count++;
 
       /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
@@ -363,8 +363,8 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64K
       pstCell->pData    = _pData;
       pstCell->pstNext  = _pstHashTable->apstCell[u32Index];
 
-      /* Updates counter */
-      _pstHashTable->u32Counter++;
+      /* Updates count */
+      _pstHashTable->u32Count++;
 
       /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
@@ -424,8 +424,8 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU64 _u64K
       /* Inserts it */
       _pstHashTable->apstCell[u32Index] = pstCell;
 
-      /* Updates counter */
-      _pstHashTable->u32Counter++;
+      /* Updates count */
+      _pstHashTable->u32Count++;
 
       /* Updates result */
       eStatus = orxSTATUS_SUCCESS;
@@ -503,8 +503,8 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU64 _u
   /* Successful? */
   if(eStatus != orxSTATUS_FAILURE)
   {
-    /* Updates counter */
-    _pstHashTable->u32Counter--;
+    /* Updates count */
+    _pstHashTable->u32Count--;
   }
 
   /* Profiles */
@@ -599,12 +599,12 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Has elements? */
-  if(_pstHashTable->u32Counter > 0)
+  if(_pstHashTable->u32Count > 0)
   {
     orxHASHTABLE_CELL *astWorkBuffer;
 
     /* Allocates work buffer */
-    astWorkBuffer = (orxHASHTABLE_CELL *)orxMemory_Allocate(_pstHashTable->u32Counter * sizeof(orxHASHTABLE_CELL), orxMEMORY_TYPE_TEMP);
+    astWorkBuffer = (orxHASHTABLE_CELL *)orxMemory_Allocate(_pstHashTable->u32Count * sizeof(orxHASHTABLE_CELL), orxMEMORY_TYPE_TEMP);
 
     /* Valid? */
     if(astWorkBuffer != orxNULL)
@@ -614,7 +614,7 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
       orxHASHTABLE_CELL  *pstCell;
 
       /* For all cells */
-      for(i = 0, u64KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++, u32BufferIndex++)
+      for(i = 0, u64KeyIndex = 0, u32BufferIndex = 0, pstCell = orxNULL; i < _pstHashTable->u32Count; i++, u32BufferIndex++)
       {
         /* Linked cell? */
         if((pstCell != orxNULL) && (pstCell->pstNext != orxNULL))
@@ -636,7 +636,7 @@ orxSTATUS orxFASTCALL orxHashTable_Optimize(orxHASHTABLE *_pstHashTable)
       orxBank_Clear(_pstHashTable->pstBank);
 
       /* For all ordered cells */
-      for(i = 0, pstCell = orxNULL; i < _pstHashTable->u32Counter; i++)
+      for(i = 0, pstCell = orxNULL; i < _pstHashTable->u32Count; i++)
       {
         orxHASHTABLE_CELL *pstPreviousCell;
 

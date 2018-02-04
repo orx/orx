@@ -53,7 +53,7 @@
 typedef struct __orxMOUSE_STATIC_t
 {
   orxU32      u32Flags;
-  orxU32      u32TouchCounter;
+  orxU32      u32TouchCount;
   orxBOOL     bIsClicked;
   orxVECTOR   vMouseMove, vMousePosition;
 
@@ -83,8 +83,8 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
     /* Touch? */
     case orxSYSTEM_EVENT_TOUCH_BEGIN:
     {
-      /* Updates counter */
-      sstMouse.u32TouchCounter++;
+      /* Updates count */
+      sstMouse.u32TouchCount++;
 
       /* Fall through */
     }
@@ -116,13 +116,13 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
     case orxSYSTEM_EVENT_TOUCH_END:
     {
       /* Checks */
-      orxASSERT(sstMouse.u32TouchCounter > 0);
+      orxASSERT(sstMouse.u32TouchCount > 0);
 
-      /* Updates counter */
-      sstMouse.u32TouchCounter--;
+      /* Updates count */
+      sstMouse.u32TouchCount--;
 
       /* Updates click status */
-      sstMouse.bIsClicked = (sstMouse.u32TouchCounter == 0) ? orxFALSE : orxTRUE;
+      sstMouse.bIsClicked = (sstMouse.u32TouchCount == 0) ? orxFALSE : orxTRUE;
 
       break;
     }

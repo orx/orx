@@ -2,7 +2,7 @@ var group__orx_tree =
 [
     [ "orxTREE", "structorx_t_r_e_e.html", [
       [ "pstRoot", "structorx_t_r_e_e.html#ac8eb6aef655adaecc1a09e4d697f8f50", null ],
-      [ "u32Counter", "structorx_t_r_e_e.html#a1ca0edee0ff7cd252156181a3f8487dc", null ]
+      [ "u32Count", "structorx_t_r_e_e.html#affda3600ff83650caad5f6bb66be007e", null ]
     ] ],
     [ "orxTREE_NODE", "structorx_t_r_e_e___n_o_d_e.html", [
       [ "pstChild", "structorx_t_r_e_e___n_o_d_e.html#adeee9aca48dc6807b2ff0f0b964b175e", null ],
@@ -17,7 +17,7 @@ var group__orx_tree =
     [ "orxTree_AddSibling", "group__orx_tree.html#ga5a7dc6e58ae762c6024acf7606ae2e3d", null ],
     [ "orxTree_Clean", "group__orx_tree.html#gad4ae5f030a001c6d5eeea85d84c59e90", null ],
     [ "orxTree_GetChild", "group__orx_tree.html#gaeba32cfd9a5a4930b721aeb0829384ba", null ],
-    [ "orxTree_GetCounter", "group__orx_tree.html#gaeff1423931d056d7248f16daf4a86c38", null ],
+    [ "orxTree_GetCount", "group__orx_tree.html#ga53db1d0c2d5da61016386f76ad80bc2e", null ],
     [ "orxTree_GetParent", "group__orx_tree.html#gac479b2f7c343405752d5031a20a24f1f", null ],
     [ "orxTree_GetPrevious", "group__orx_tree.html#ga4d51e08a64164f8c451e82b2457b9bb1", null ],
     [ "orxTree_GetRoot", "group__orx_tree.html#ga9e30cca8dce436b7a6d74b6f2c4705e3", null ],

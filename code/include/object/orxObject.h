@@ -878,7 +878,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  *
  * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
  * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCounter(pstBank); ++i)
+ *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
  *     {
  *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
  *         do_something_with(pstObject);

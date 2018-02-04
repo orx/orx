@@ -234,7 +234,7 @@ static void orxFASTCALL orxRender_ResetInput(const orxCLOCK_INFO *_pstInfo, void
   orxInput_SelectSet(zPreviousSet);
 }
 
-/** Renders FPS counter
+/** Renders FPS count
  */
 static orxINLINE void orxRender_Home_RenderFPS()
 {
@@ -347,7 +347,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDISPLAY_TRANSFORM    stTransform;
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
-  orxS32                  s32MarkerCounter, s32UniqueCounter, s32MarkerID;
+  orxS32                  s32MarkerCount, s32UniqueCount, s32MarkerID;
   orxU32                  u32CurrentDepth, i;
   orxFLOAT                fScreenWidth, fScreenHeight, fWidth, fHeight, fBorder, fHueDelta, fTextScale;
   orxDOUBLE               dFrameStartTime = orxDOUBLE_0, dTotalTime, dRecTotalTime;
@@ -386,11 +386,11 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
 
-  /* Gets marker counter */
-  s32MarkerCounter = orxProfiler_GetMarkerCounter();
+  /* Gets marker count */
+  s32MarkerCount = orxProfiler_GetMarkerCount();
 
   /* For all markers */
-  for(s32UniqueCounter = 0, sstRender.u32MaxMarkerDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
+  for(s32UniqueCount = 0, sstRender.u32MaxMarkerDepth = 0, s32MarkerID = orxProfiler_GetNextMarkerID(orxPROFILER_KS32_MARKER_ID_NONE);
       s32MarkerID != orxPROFILER_KS32_MARKER_ID_NONE;
       s32MarkerID = orxProfiler_GetNextMarkerID(s32MarkerID))
   {
@@ -409,8 +409,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         sstRender.u32MaxMarkerDepth = u32Depth;
       }
 
-      /* Updates counter */
-      s32UniqueCounter++;
+      /* Updates count */
+      s32UniqueCount++;
     }
   }
 
@@ -446,7 +446,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
 
   /* Gets hue delta */
-  fHueDelta = orxRENDER_KF_PROFILER_HUE_STACK_RANGE / orxS2F(s32MarkerCounter + 1);
+  fHueDelta = orxRENDER_KF_PROFILER_HUE_STACK_RANGE / orxS2F(s32MarkerCount + 1);
 
   /* Inits transform */
   stTransform.fSrcX     = stTransform.fSrcY     = orxFLOAT_0;
@@ -497,7 +497,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
       {
         /* Has been pushed? */
-        if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+        if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
         {
           /* First marker? */
           if(bFirst != orxFALSE)
@@ -545,7 +545,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
             /* Gets associated colors */
             stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
-            stBarColor.vHSL.fH  = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+            stBarColor.vHSL.fH  = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCount), orxFLOAT_1);
             stBarColor.vHSL.fS  = orxFLOAT_1;
             stBarColor.vHSL.fL  = orxRENDER_KF_PROFILER_BAR_LOW_L;
             stLowRGBA           = orxColor_ToRGBA(orxColor_FromHSLToRGB(&stTempColor, &stBarColor));
@@ -677,7 +677,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique and has been pushed? */
-    if((orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
+    if((orxProfiler_GetMarkerPushCount(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCount(s32MarkerID) > 0))
     {
       orxDOUBLE dTime, dStartTime;
       orxCOLOR  stBarColor;
@@ -727,7 +727,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32CurrentDepth = u32Depth;
 
       /* Updates pixel color */
-      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCount), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
       /* Draws bar */
@@ -763,13 +763,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     stTransform.fDstX = fBorder;
     stTransform.fDstY = orxMath_Ceil(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenHeight + orxFLOAT_1);
-    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenHeight / ((s32UniqueCounter) ? orxS2F(s32UniqueCounter) : orxFLOAT_1));
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenHeight / ((s32UniqueCount) ? orxS2F(s32UniqueCount) : orxFLOAT_1));
   }
   else
   {
     stTransform.fDstX = orxMath_Ceil(orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT * fScreenWidth + orxFLOAT_1);
     stTransform.fDstY = fScreenHeight - fBorder;
-    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenWidth / ((s32UniqueCounter) ? orxS2F(s32UniqueCounter) : orxFLOAT_1));
+    fHeight           = orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT) * fScreenWidth / ((s32UniqueCount) ? orxS2F(s32UniqueCount) : orxFLOAT_1));
   }
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
 
@@ -789,7 +789,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     /* Is unique and has been pushed? */
     if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
-    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0))
+    && (orxProfiler_GetMarkerPushCount(s32MarkerID) > 0))
     {
       orxDOUBLE dTime;
       orxCOLOR  stLabelColor;
@@ -802,7 +802,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = orxProfiler_GetUniqueMarkerDepth(s32MarkerID);
 
       /* Sets font's color */
-      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCounter), orxFLOAT_1);
+      stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0xFF) % s32MarkerCount), orxFLOAT_1);
       orxDisplay_SetBitmapColor(pstFontBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)));
 
       /* Is selected depth for history? */
@@ -838,7 +838,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -862,7 +862,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     /* Is unique and hasn't been pushed? */
     if((orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE)
-    && (orxProfiler_GetMarkerPushCounter(s32MarkerID) == 0))
+    && (orxProfiler_GetMarkerPushCount(s32MarkerID) == 0))
     {
       orxDOUBLE dTime;
       orxU32    u32Depth;
@@ -880,7 +880,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = 1;
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -903,20 +903,20 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
 
   /* Gets hue delta */
-  fHueDelta = orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE / ((s32MarkerCounter != 0) ? orxS2F(s32MarkerCounter) : 1);
+  fHueDelta = orxRENDER_KF_PROFILER_HUE_UNSTACK_RANGE / ((s32MarkerCount != 0) ? orxS2F(s32MarkerCount) : 1);
 
   /* Updates vertical values & marker's height */
   if(bLandscape != orxFALSE)
   {
     stTransform.fDstX = orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenWidth + fBorder;
     stTransform.fDstY = orxFLOAT_1;
-    fHeight           = orxMath_Floor(fScreenHeight / ((s32MarkerCounter > s32UniqueCounter) ? orxS2F(s32MarkerCounter - s32UniqueCounter) : 1));
+    fHeight           = orxMath_Floor(fScreenHeight / ((s32MarkerCount > s32UniqueCount) ? orxS2F(s32MarkerCount - s32UniqueCount) : 1));
   }
   else
   {
     stTransform.fDstX = orxFLOAT_1;
     stTransform.fDstY = fScreenHeight - (orxRENDER_KF_PROFILER_SEPARATOR_WIDTH * fScreenHeight + fBorder);
-    fHeight           = orxMath_Floor(fScreenWidth / ((s32MarkerCounter > s32UniqueCounter) ? orxS2F(s32MarkerCounter - s32UniqueCounter) : 1));
+    fHeight           = orxMath_Floor(fScreenWidth / ((s32MarkerCount > s32UniqueCount) ? orxS2F(s32MarkerCount - s32UniqueCount) : 1));
   }
   fHeight = orxCLAMP(fHeight, orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT, orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT);
   stTransform.fScaleY = fHeight - orx2F(2.0f);
@@ -939,7 +939,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
       /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+      if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
       {
         orxCOLOR stBarColor;
 
@@ -948,7 +948,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
         stTransform.fScaleX = (orxFLOAT)(dTime * dRecTotalTime) * fWidth;
 
         /* Updates display color */
-        stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCounter), orxFLOAT_1);
+        stColor.vHSV.fH = orxMath_Mod(fHueDelta * orxS2F((s32MarkerID & 0x7FFFFFFF) % s32MarkerCount), orxFLOAT_1);
         orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stBarColor, &stColor)));
 
         /* Draws bar */
@@ -996,7 +996,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       dTime = orxProfiler_GetMarkerTime(s32MarkerID);
 
       /* Has been pushed? */
-      if(orxProfiler_GetMarkerPushCounter(s32MarkerID) > 0)
+      if(orxProfiler_GetMarkerPushCount(s32MarkerID) > 0)
       {
         /* Updates display color */
         orxDisplay_SetBitmapColor(pstFontBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -1008,7 +1008,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCounter(s32MarkerID));
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1052,13 +1052,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   {
     static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
     static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
-    orxU32                  u32TotalCounter = 0, u32TotalPeakCounter = 0, u32TotalSize = 0, u32TotalPeakSize = 0, u32TotalOperationCounter = 0, u32UnitIndex;
+    orxU32                  u32TotalCount = 0, u32TotalPeakCount = 0, u32TotalSize = 0, u32TotalPeakSize = 0, u32TotalOperationCount = 0, u32UnitIndex;
 
     /* For all memory types, including total */
     for(i = 0; i <= orxMEMORY_TYPE_NUMBER; i++)
     {
       const orxSTRING zType;
-      orxU32          u32Counter, u32PeakCounter, u32Size, u32PeakSize, u32OperationCounter;
+      orxU32          u32Count, u32PeakCount, u32Size, u32PeakSize, u32OperationCount;
       orxFLOAT        fSize, fPeakSize;
 
       /* Updates position */
@@ -1075,23 +1075,23 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(i == orxMEMORY_TYPE_NUMBER)
       {
         /* Gets values */
-        u32Counter           = u32TotalCounter;
-        u32PeakCounter       = u32TotalPeakCounter;
+        u32Count             = u32TotalCount;
+        u32PeakCount         = u32TotalPeakCount;
         u32Size              = u32TotalSize;
         u32PeakSize          = u32TotalPeakSize;
-        u32OperationCounter  = u32TotalOperationCounter;
+        u32OperationCount    = u32TotalOperationCount;
       }
       else
       {
         /* Gets its usage info */
-        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u32Counter, &u32PeakCounter, &u32Size, &u32PeakSize, &u32OperationCounter);
+        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u32Count, &u32PeakCount, &u32Size, &u32PeakSize, &u32OperationCount);
 
         /* Updates totals */
-        u32TotalCounter          += u32Counter;
-        u32TotalPeakCounter      += u32PeakCounter;
+        u32TotalCount            += u32Count;
+        u32TotalPeakCount        += u32PeakCount;
         u32TotalSize             += u32Size;
         u32TotalPeakSize         += u32PeakSize;
-        u32TotalOperationCounter += u32OperationCounter;
+        u32TotalOperationCount   += u32OperationCount;
       }
 
       /* Finds best unit */
@@ -1100,7 +1100,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
 
       /* Is used? */
-      if(u32Counter > 0)
+      if(u32Count > 0)
       {
         /* Inits display color */
         orxColor_SetRGBA(&stColor, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -1131,7 +1131,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u32Counter, u32PeakCounter, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCounter);
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u32Count, u32PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
@@ -1159,7 +1159,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight, fBackupY;
-  orxU32                  u32CursorIndex, i, u32Counter, u32MaxLength, u32Offset;
+  orxU32                  u32CursorIndex, i, u32Count, u32MaxLength, u32Offset;
   orxCHAR                 acBackup[2];
   orxFLOAT                fCharacterHeight, fCharacterWidth;
   orxCOLOR                stColor;
@@ -1333,21 +1333,21 @@ static orxINLINE void orxRender_Home_RenderConsole()
     stTransform.fDstX = fBackupX;
   }
 
-  /* Gets completion counter */
-  u32Counter = orxConsole_GetCompletionCounter(&u32MaxLength);
+  /* Gets completion count */
+  u32Count = orxConsole_GetCompletionCount(&u32MaxLength);
 
   /* Draws overlay */
   stColor.fAlpha      = 0.9f;
   orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(&stColor));
-  stTransform.fDstY   = fBackupY - (u32Counter - 1) * fCharacterHeight;
+  stTransform.fDstY   = fBackupY - (u32Count - 1) * fCharacterHeight;
   stTransform.fScaleX = u32MaxLength * fCharacterWidth;
-  stTransform.fScaleY = u32Counter * fCharacterHeight;
+  stTransform.fScaleY = u32Count * fCharacterHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
 
   /* For all current completions */
   for(i = 0;
-      i < u32Counter;
+      i < u32Count;
       i++)
   {
     orxBOOL bActive;
@@ -1359,7 +1359,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     orxDisplay_SetBitmapColor(pstFontBitmap, (bActive != orxFALSE) ? orxRENDER_KST_CONSOLE_INPUT_COLOR : orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR);
 
     /* Updates position */
-    stTransform.fDstY = fBackupY - ((u32Counter - i - 1) * fCharacterHeight);
+    stTransform.fDstY = fBackupY - ((u32Count - i - 1) * fCharacterHeight);
 
     /* Displays it */
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -1585,19 +1585,19 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
   /* Is viewport enabled? */
   if(orxViewport_IsEnabled(_pstViewport) != orxFALSE)
   {
-    orxU32      u32TextureCounter, i;
+    orxU32      u32TextureCount, i;
     orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
     orxBITMAP  *apstBitmapList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
     orxBOOL     bSuccess = orxTRUE;
 
-    /* Gets viewport's texture counter */
-    u32TextureCounter = orxViewport_GetTextureCounter(_pstViewport);
+    /* Gets viewport's texture count */
+    u32TextureCount = orxViewport_GetTextureCount(_pstViewport);
 
     /* Gets viewport textures */
-    orxViewport_GetTextureList(_pstViewport, u32TextureCounter, apstTextureList);
+    orxViewport_GetTextureList(_pstViewport, u32TextureCount, apstTextureList);
 
     /* For all of them */
-    for(i = 0; i < u32TextureCounter; i++)
+    for(i = 0; i < u32TextureCount; i++)
     {
       /* Gets its bitmap */
       apstBitmapList[i] = orxTexture_GetBitmap(apstTextureList[i]);
@@ -1644,7 +1644,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
         orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
 
         /* Sets destination bitmap */
-        orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCounter);
+        orxDisplay_SetDestinationBitmaps(apstBitmapList, u32TextureCount);
 
         /* Does it intersect with texture? */
         if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
@@ -1694,7 +1694,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           }
 
           /* For all bitmaps */
-          for(i = 0; i < u32TextureCounter; i++)
+          for(i = 0; i < u32TextureCount; i++)
           {
             /* Sets its clipping */
             orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
@@ -1769,7 +1769,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               fRenderRotation = orxFrame_GetRotation(pstCameraFrame, orxFRAME_SPACE_GLOBAL);
 
               /* For all camera group IDs */
-              for(i = 0, u32Number = orxCamera_GetGroupIDCounter(pstCamera); i < u32Number; i++)
+              for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
                 orxU32 u32GroupID;
 
@@ -1971,7 +1971,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             pstRenderNode->fDepthCoef = fDepthCoef;
 
                             /* Empty list? */
-                            if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
+                            if(orxLinkList_GetCount(&(sstRender.stRenderList)) == 0)
                             {
                               /* Adds node at beginning */
                               orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
@@ -2201,8 +2201,8 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxRender_Home_RenderViewport(pstViewport);
     }
 
-    /* Increases FPS counter */
-    orxFPS_IncreaseFrameCounter();
+    /* Increases FPS count */
+    orxFPS_IncreaseFrameCount();
 
     /* Gets screen bitmap */
     pstScreen = orxDisplay_GetScreenBitmap();

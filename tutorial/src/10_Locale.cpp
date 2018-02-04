@@ -154,7 +154,7 @@ Game soMyGame;
 void Game::SelectNextLanguage()
 {
   // Updates language index
-  u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCounter() - 1) ? 0 : u32LanguageIndex + 1;
+  u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCount() - 1) ? 0 : u32LanguageIndex + 1;
 
   // Selects it
   orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex));
@@ -176,7 +176,7 @@ orxSTATUS Game::InitGame()
 
     // Displays all the available languages, C++ style
     std::cout << "The available languages are:" << std::endl;
-    for(orxU32 i = 0; i < orxLocale_GetLanguageCounter(); i++)
+    for(orxU32 i = 0; i < orxLocale_GetLanguageCount(); i++)
     {
       std::cout << " - " << orxLocale_GetLanguage(i) << std::endl;
     }

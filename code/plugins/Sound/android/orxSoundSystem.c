@@ -1170,7 +1170,7 @@ void orxFASTCALL orxSoundSystem_Android_Exit()
     orxSoundSystem_StopRecording();
 
     /* Waits for all tasks to be finished */
-    while(orxThread_GetTaskCounter() != 0);
+    while(orxThread_GetTaskCount() != 0);
 
     /* Deletes semaphore */
     orxThread_DeleteSemaphore(sstSoundSystem.pstStreamSemaphore);

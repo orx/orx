@@ -113,7 +113,7 @@ struct __orxVIEWPORT_t
   orxCAMERA            *pstCamera;                                            /**< Associated camera : 80 */
   orxSHADERPOINTER     *pstShaderPointer;                                     /**< Shader pointer : 88 */
   orxFLOAT              fFixedRatio;                                          /**< Fixed ratio : 92 */
-  orxU32                u32TextureCounter;                                    /**< Associated texture counter : 96 */
+  orxU32                u32TextureCount;                                      /**< Associated texture count : 96 */
   orxU32                u32TextureOwnerFlags;                                 /**< Texture owner flags : 100 */
   orxDISPLAY_BLEND_MODE eBlendMode;                                           /**< Blend mode : 104 */
   const orxSTRING       zReference;                                           /**< Reference : 112 */
@@ -183,7 +183,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
             pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
         {
           /* Is linked to screen? */
-          if(pstViewport->u32TextureCounter == 0)
+          if(pstViewport->u32TextureCount == 0)
           {
             /* Updates relative position & dimension */
             orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
@@ -205,7 +205,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
               orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
 
               /* For all textures */
-              for(i = 0; i < pstViewport->u32TextureCounter; i++)
+              for(i = 0; i < pstViewport->u32TextureCount; i++)
               {
                 /* Is owned? */
                 if(pstViewport->u32TextureOwnerFlags & (1 << i))
@@ -412,8 +412,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_Create()
     /* Sets default size */
     orxViewport_SetRelativeSize(pstViewport, orxFLOAT_1, orxFLOAT_1);
 
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstViewport);
+    /* Increases count */
+    orxStructure_IncreaseCount(pstViewport);
   }
   else
   {
@@ -524,14 +524,14 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* *** Textures *** */
 
       /* Has texture list? */
-      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME)) > 0)
+      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME)) > 0)
       {
-        orxS32      i, s32TextureCounter;
+        orxS32      i, s32TextureCount;
         orxU32      u32OwnerFlags = 0;
         orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
 
         /* For all entries */
-        for(i = 0, s32TextureCounter = 0; i < s32Number; i++)
+        for(i = 0, s32TextureCount = 0; i < s32Number; i++)
         {
           const orxSTRING zTextureName;
 
@@ -607,7 +607,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
               orxStructure_SetOwner(pstTexture, pstResult);
 
               /* Stores it */
-              apstTextureList[s32TextureCounter++] = pstTexture;
+              apstTextureList[s32TextureCount++] = pstTexture;
             }
             else
             {
@@ -618,20 +618,20 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
 
         /* Has valid textures? */
-        if(s32TextureCounter > 0)
+        if(s32TextureCount > 0)
         {
           orxS32 j;
 
           /* Stores them */
-          orxViewport_SetTextureList(pstResult, (orxU32)s32TextureCounter, apstTextureList);
+          orxViewport_SetTextureList(pstResult, (orxU32)s32TextureCount, apstTextureList);
 
           /* For all secondary textures */
-          for(j = 1; j < s32TextureCounter; j++)
+          for(j = 1; j < s32TextureCount; j++)
           {
             orxU32  k;
             orxBOOL bStored = orxFALSE;
 
-            for(k = 1; k < pstResult->u32TextureCounter; k++)
+            for(k = 1; k < pstResult->u32TextureCount; k++)
             {
               /* Found? */
               if(pstResult->apstTextureList[k] == apstTextureList[j])
@@ -749,7 +749,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* *** Shader *** */
 
       /* Has shader? */
-      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_SHADER_LIST)) > 0)
+      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_SHADER_LIST)) > 0)
       {
         orxS32 i;
 
@@ -944,17 +944,17 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstViewport);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstViewport);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstViewport) == 0)
+  if(orxStructure_GetRefCount(_pstViewport) == 0)
   {
     /* Removes camera */
     orxViewport_SetCamera(_pstViewport, orxNULL);
 
     /* Was linked to textures? */
-    if(_pstViewport->u32TextureCounter != 0)
+    if(_pstViewport->u32TextureCount != 0)
     {
       /* Removes them */
       orxViewport_SetTextureList(_pstViewport, 0, orxNULL);
@@ -963,8 +963,8 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
     /* Had a shader pointer? */
     if(_pstViewport->pstShaderPointer != orxNULL)
     {
-      /* Updates its counter */
-      orxStructure_DecreaseCounter(_pstViewport->pstShaderPointer);
+      /* Updates its count */
+      orxStructure_DecreaseCount(_pstViewport->pstShaderPointer);
 
       /* Was internally allocated? */
       if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER) != orxFALSE)
@@ -1022,10 +1022,10 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
   orxASSERT(_u32TextureNumber < orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER);
 
   /* For all associated textures */
-  for(i = 0; i < _pstViewport->u32TextureCounter; i++)
+  for(i = 0; i < _pstViewport->u32TextureCount; i++)
   {
-    /* Updates its reference counter */
-    orxStructure_DecreaseCounter((_pstViewport->apstTextureList[i]));
+    /* Updates its reference count */
+    orxStructure_DecreaseCount((_pstViewport->apstTextureList[i]));
 
     /* Was internally allocated? */
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES) != orxFALSE)
@@ -1045,13 +1045,13 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
   if(_u32TextureNumber != 0)
   {
     orxFLOAT fTextureWidth, fTextureHeight;
-    orxU32 u32TextureCounter;
+    orxU32 u32TextureCount;
 
     /* Checks */
     orxASSERT(_apstTextureList != orxNULL);
 
     /* For all new textures */
-    for(i = 0, u32TextureCounter = 0; i < _u32TextureNumber; i++)
+    for(i = 0, u32TextureCount = 0; i < _u32TextureNumber; i++)
     {
       /* Checks */
       orxSTRUCTURE_ASSERT(_apstTextureList[i]);
@@ -1081,19 +1081,19 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
       }
 
       /* Stores it */
-      _pstViewport->apstTextureList[u32TextureCounter++] = _apstTextureList[i];
+      _pstViewport->apstTextureList[u32TextureCount++] = _apstTextureList[i];
 
-      /* Updates its reference counter */
-      orxStructure_IncreaseCounter(_apstTextureList[i]);
+      /* Updates its reference count */
+      orxStructure_IncreaseCount(_apstTextureList[i]);
     }
 
-    /* Updates texture counter */
-    _pstViewport->u32TextureCounter = u32TextureCounter;
+    /* Updates texture count */
+    _pstViewport->u32TextureCount = u32TextureCount;
   }
   else
   {
-    /* Updates texture counter */
-    _pstViewport->u32TextureCounter = _u32TextureNumber;
+    /* Updates texture count */
+    _pstViewport->u32TextureCount = _u32TextureNumber;
 
     /* Deactivates viewport */
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_ENABLED);
@@ -1120,7 +1120,7 @@ orxSTATUS orxFASTCALL orxViewport_GetTextureList(const orxVIEWPORT *_pstViewport
   orxASSERT(_apstTextureList != orxNULL);
 
   /* Has texture? */
-  if(_pstViewport->u32TextureCounter != 0)
+  if(_pstViewport->u32TextureCount != 0)
   {
     orxU32 i;
 
@@ -1141,11 +1141,11 @@ orxSTATUS orxFASTCALL orxViewport_GetTextureList(const orxVIEWPORT *_pstViewport
   return eResult;
 }
 
-/** Gets a viewport texture counter
+/** Gets a viewport texture count
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Number of textures associated with the viewport
  */
-orxU32 orxFASTCALL orxViewport_GetTextureCounter(const orxVIEWPORT *_pstViewport)
+orxU32 orxFASTCALL orxViewport_GetTextureCount(const orxVIEWPORT *_pstViewport)
 {
   orxU32 u32Result;
 
@@ -1154,7 +1154,7 @@ orxU32 orxFASTCALL orxViewport_GetTextureCounter(const orxVIEWPORT *_pstViewport
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates result */
-  u32Result = (_pstViewport->u32TextureCounter != 0) ? _pstViewport->u32TextureCounter : 1;
+  u32Result = (_pstViewport->u32TextureCount != 0) ? _pstViewport->u32TextureCount : 1;
 
   /* Done! */
   return u32Result;
@@ -1314,8 +1314,8 @@ void orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_ps
   /* Has already a camera? */
   if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
   {
-    /* Updates its reference counter */
-    orxStructure_DecreaseCounter((_pstViewport->pstCamera));
+    /* Updates its reference count */
+    orxStructure_DecreaseCount((_pstViewport->pstCamera));
 
     /* Was internally allocated? */
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA) != orxFALSE)
@@ -1337,8 +1337,8 @@ void orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_ps
   /* Has a new camera? */
   if(_pstCamera != orxNULL)
   {
-    /* Updates its reference counter */
-    orxStructure_IncreaseCounter(_pstCamera);
+    /* Updates its reference count */
+    orxStructure_IncreaseCount(_pstCamera);
 
     /* Updates flags */
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
@@ -1396,8 +1396,8 @@ orxSTATUS orxFASTCALL orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orx
       /* Valid? */
       if(_pstViewport->pstShaderPointer != orxNULL)
       {
-        /* Updates its counter */
-        orxStructure_IncreaseCounter(_pstViewport->pstShaderPointer);
+        /* Updates its count */
+        orxStructure_IncreaseCount(_pstViewport->pstShaderPointer);
 
         /* Updates flags */
         orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);

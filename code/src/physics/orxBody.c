@@ -276,10 +276,10 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
   /* Is 0? */
   if(u32Value == 0)
   {
-    orxU32 u32Counter, i;
+    orxU32 u32Count, i;
 
     /* For all elements */
-    for(i = 0, u32Counter = orxConfig_GetListCounter(_zConfigID); i < u32Counter; i++)
+    for(i = 0, u32Count = orxConfig_GetListCount(_zConfigID); i < u32Count; i++)
     {
       /* Updates result with numerical value */
       u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
@@ -467,8 +467,8 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
 
-      /* Increases counter */
-      orxStructure_IncreaseCounter(pstBody);
+      /* Increases count */
+      orxStructure_IncreaseCount(pstBody);
     }
     else
     {
@@ -541,13 +541,13 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxU32 i, u32SlotCounter;
+      orxU32 i, u32SlotCount;
 
       /* Gets number of declared slots */
-      u32SlotCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_PART_LIST);
+      u32SlotCount = orxConfig_GetListCount(orxBODY_KZ_CONFIG_PART_LIST);
 
       /* For all parts */
-      for(i = 0; i < u32SlotCounter; i++)
+      for(i = 0; i < u32SlotCount; i++)
       {
         const orxSTRING zPartName;
 
@@ -610,11 +610,11 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstBody);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstBody);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstBody) == 0)
+  if(orxStructure_GetRefCount(_pstBody) == 0)
   {
     orxBODY_PART   *pstBodyPart;
     orxBODY_JOINT  *pstBodyJoint;
@@ -790,7 +790,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, const orxBODY_PART_
         orxU32 u32Size;
 
         /* Gets vertex buffer size */
-        u32Size = _pstBodyPartDef->stChain.u32VertexCounter * sizeof(orxVECTOR);
+        u32Size = _pstBodyPartDef->stChain.u32VertexCount * sizeof(orxVECTOR);
 
         /* Allocates vertex list */
         pstLocalBodyPartDef->stChain.avVertices = (orxVECTOR *)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_PHYSICS);
@@ -948,22 +948,22 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       /* Updates mesh specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_MESH;
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
-      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 3))
+      && ((stBodyPartDef.stMesh.u32VertexCount = orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 3))
       {
         orxU32 i;
 
         /* Too many defined vertices? */
-        if(stBodyPartDef.stMesh.u32VertexCounter > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
+        if(stBodyPartDef.stMesh.u32VertexCount > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %d. The maximum allowed is: %d. Using the first %d ones for the shape <%s>", stBodyPartDef.stMesh.u32VertexCounter, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %d. The maximum allowed is: %d. Using the first %d ones for the shape <%s>", stBodyPartDef.stMesh.u32VertexCount, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, _zConfigID);
 
           /* Updates vertices number */
-          stBodyPartDef.stMesh.u32VertexCounter = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
+          stBodyPartDef.stMesh.u32VertexCount = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
         }
 
         /* For all defined vertices */
-        for(i = 0; i < stBodyPartDef.stMesh.u32VertexCounter; i++)
+        for(i = 0; i < stBodyPartDef.stMesh.u32VertexCount; i++)
         {
           /* Gets its vector */
           orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stMesh.avVertices[i]));
@@ -1019,10 +1019,10 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       /* Updates chain specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_CHAIN;
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
-      && ((stBodyPartDef.stChain.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
+      && ((stBodyPartDef.stChain.u32VertexCount = orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
       {
         /* Allocates vertices */
-        stBodyPartDef.stChain.avVertices = (orxVECTOR *)alloca(stBodyPartDef.stChain.u32VertexCounter * sizeof(orxVECTOR));
+        stBodyPartDef.stChain.avVertices = (orxVECTOR *)alloca(stBodyPartDef.stChain.u32VertexCount * sizeof(orxVECTOR));
 
         /* Valid? */
         if(stBodyPartDef.stChain.avVertices != orxNULL)
@@ -1030,7 +1030,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
           orxU32 i;
 
           /* For all defined vertices */
-          for(i = 0; i < stBodyPartDef.stChain.u32VertexCounter; i++)
+          for(i = 0; i < stBodyPartDef.stChain.u32VertexCount; i++)
           {
             /* Gets its vector */
             orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i]));
@@ -1980,15 +1980,15 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
     {
       orxBODY_PART   *pstBodyPart;
       orxBODY_JOINT  *pstBodyJoint;
-      orxU32          u32Counter;
+      orxU32          u32Count;
 
       /* Stores it */
       orxVector_Copy(&(_pstBody->vScale), _pvScale);
 
       /* For all parts */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stPartList)), pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
-          u32Counter > 0;
-          u32Counter--, pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList)))
+      for(u32Count = orxLinkList_GetCount(&(_pstBody->stPartList)), pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList));
+          u32Count > 0;
+          u32Count--, pstBodyPart = (orxBODY_PART *)orxLinkList_GetFirst(&(_pstBody->stPartList)))
       {
         /* Has reference? */
         if(pstBodyPart->zReference != orxNULL)
@@ -2012,9 +2012,9 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
       }
 
       /* For all source joints */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stSrcJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
-          u32Counter > 0;
-          u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody))
+      for(u32Count = orxLinkList_GetCount(&(_pstBody->stSrcJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody);
+          u32Count > 0;
+          u32Count--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST(_pstBody))
       {
         /* Has reference? */
         if(pstBodyJoint->zReference != orxNULL)
@@ -2042,9 +2042,9 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
       }
 
       /* For all destination joints */
-      for(u32Counter = orxLinkList_GetCounter(&(_pstBody->stDstJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
-          u32Counter > 0;
-          u32Counter--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody))
+      for(u32Count = orxLinkList_GetCount(&(_pstBody->stDstJointList)), pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody);
+          u32Count > 0;
+          u32Count--, pstBodyJoint = orxBODY_GET_FIRST_JOINT_FROM_DST_LIST(_pstBody))
       {
         /* Has reference? */
         if(pstBodyJoint->zReference != orxNULL)

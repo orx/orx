@@ -132,7 +132,7 @@ typedef struct __orxSOUND_SAMPLE_t
 {
   orxSOUNDSYSTEM_SAMPLE  *pstData;                      /**< Sound data : 4 */
   orxU32                  u32ID;                        /**< Sample ID : 8 */
-  orxU32                  u32Counter;                   /**< Reference counter : 12 */
+  orxU32                  u32Count;                     /**< Reference count : 12 */
   orxU32                  u32Flags;                     /**< Flags : 16 */
 
 } orxSOUND_SAMPLE;
@@ -202,8 +202,8 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
   /* Found? */
   if(pstResult != orxNULL)
   {
-    /* Increases its reference counter */
-    pstResult->u32Counter++;
+    /* Increases its reference count */
+    pstResult->u32Count++;
   }
   else
   {
@@ -223,16 +223,16 @@ static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName
         /* Should keep in cache? */
         if(_bKeepInCache != orxFALSE)
         {
-          /* Inits its reference counter */
-          pstResult->u32Counter = 1;
+          /* Inits its reference count */
+          pstResult->u32Count = 1;
 
           /* Stores its flags */
           orxFLAG_SET(pstResult->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL | orxSOUND_SAMPLE_KU32_FLAG_CACHED, orxSOUND_SAMPLE_KU32_MASK_ALL);
         }
         else
         {
-          /* Inits its reference counter */
-          pstResult->u32Counter = 0;
+          /* Inits its reference count */
+          pstResult->u32Count = 0;
 
           /* Stores its flags */
           orxFLAG_SET(pstResult->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL, orxSOUND_SAMPLE_KU32_MASK_ALL);
@@ -268,7 +268,7 @@ static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
   orxASSERT(_pstSample != orxNULL);
 
   /* Not referenced anymore? */
-  if(_pstSample->u32Counter == 0)
+  if(_pstSample->u32Count == 0)
   {
     /* Is internal? */
     if(orxFLAG_TEST(_pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL))
@@ -289,8 +289,8 @@ static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
   }
   else
   {
-    /* Updates its reference counter */
-    _pstSample->u32Counter--;
+    /* Updates its reference count */
+    _pstSample->u32Count--;
   }
 
   /* Done! */
@@ -769,8 +769,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
           /* Failed loading? */
           if(bLoaded == orxFALSE)
           {
-            /* Resets its reference counter */
-            pstSample->u32Counter = 0;
+            /* Resets its reference count */
+            pstSample->u32Count = 0;
 
             /* Unloads it */
             orxSound_UnloadSample(pstSample);
@@ -1593,8 +1593,8 @@ orxSOUND *orxFASTCALL orxSound_Create()
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
 
     /* Sets master bus ID */
     orxSound_SetBusID(pstResult, sstSound.u32MasterBusID);
@@ -1721,11 +1721,11 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstSound);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstSound);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstSound) == 0)
+  if(orxStructure_GetRefCount(_pstSound) == 0)
   {
     /* Stops it */
     orxSound_Stop(_pstSound);
@@ -1841,7 +1841,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
         {
           /* Inits it */
           pstSoundSample->pstData     = pstSample;
-          pstSoundSample->u32Counter  = 0;
+          pstSoundSample->u32Count    = 0;
           pstSoundSample->u32ID       = u32ID;
           orxFLAG_SET(pstSoundSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_NONE, orxSOUND_SAMPLE_KU32_MASK_ALL);
 
@@ -1936,7 +1936,7 @@ orxSTATUS orxFASTCALL orxSound_DeleteSample(const orxSTRING _zName)
     if(pstSoundSample != orxNULL)
     {
       /* Not referenced anymore? */
-      if(pstSoundSample->u32Counter == 0)
+      if(pstSoundSample->u32Count == 0)
       {
         /* Deletes its data */
         orxSoundSystem_DeleteSample(pstSoundSample->pstData);

@@ -241,8 +241,8 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
             }
             else
             {
-              /* Decreases its reference counter */
-              orxStructure_DecreaseCounter(pstFX);
+              /* Decreases its reference count */
+              orxStructure_DecreaseCount(pstFX);
 
               /* Removes its reference */
               pstFXPointer->astFXList[i].pstFX = orxNULL;
@@ -382,8 +382,8 @@ orxFXPOINTER *orxFASTCALL orxFXPointer_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFXPOINTER_KU32_FLAG_ENABLED, orxFXPOINTER_KU32_MASK_ALL);
 
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -407,11 +407,11 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstFXPointer);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstFXPointer);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstFXPointer) == 0)
+  if(orxStructure_GetRefCount(_pstFXPointer) == 0)
   {
     orxU32 i;
 
@@ -421,8 +421,8 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
       /* Valid? */
       if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
       {
-        /* Decreases its reference counter */
-        orxStructure_DecreaseCounter(_pstFXPointer->astFXList[i].pstFX);
+        /* Decreases its reference count */
+        orxStructure_DecreaseCount(_pstFXPointer->astFXList[i].pstFX);
 
         /* Is internal? */
         if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
@@ -538,8 +538,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
     /* Gets owner */
     pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
-    /* Increases its reference counter */
-    orxStructure_IncreaseCounter(_pstFX);
+    /* Increases its reference count */
+    orxStructure_IncreaseCount(_pstFX);
 
     /* Adds it to holder */
     _pstFXPointer->astFXList[u32Index].pstFX = _pstFX;
@@ -609,8 +609,8 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
       {
         orxFX_EVENT_PAYLOAD stPayload;
 
-        /* Decreases its reference counter */
-        orxStructure_DecreaseCounter(pstFX);
+        /* Decreases its reference count */
+        orxStructure_DecreaseCount(pstFX);
 
         /* Removes its reference */
         _pstFXPointer->astFXList[i].pstFX = orxNULL;
@@ -724,8 +724,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
       /* Gets owner */
       pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
-      /* Increases its reference counter */
-      orxStructure_IncreaseCounter(pstFX);
+      /* Increases its reference count */
+      orxStructure_IncreaseCount(pstFX);
 
       /* Adds it to holder */
       _pstFXPointer->astFXList[u32Index].pstFX = pstFX;
@@ -863,8 +863,8 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
       {
         orxFX_EVENT_PAYLOAD stPayload;
 
-        /* Decreases its reference counter */
-        orxStructure_DecreaseCounter(pstFX);
+        /* Decreases its reference count */
+        orxStructure_DecreaseCount(pstFX);
 
         /* Removes its reference */
         _pstFXPointer->astFXList[i].pstFX = orxNULL;

@@ -127,8 +127,8 @@ typedef struct __orxTIMELINE_TRACK_t
 {
   const orxSTRING           zReference;               /**< Track reference : 4 */
   orxU32                    u32ID;                    /**< ID : 8 */
-  orxU32                    u32RefCounter;            /**< Reference counter : 12 */
-  orxU32                    u32EventCounter;          /**< Event counter : 16 */
+  orxU32                    u32RefCount;              /**< Reference count : 12 */
+  orxU32                    u32EventCount;            /**< Event count : 16 */
   orxU32                    u32Flags;
   orxTIMELINE_TRACK_EVENT   astEventList[0];          /**< Track event list */
 
@@ -187,35 +187,35 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
   if((orxConfig_HasSection(_zTrackID) != orxFALSE)
   && (orxConfig_PushSection(_zTrackID) != orxSTATUS_FAILURE))
   {
-    orxU32 u32KeyCounter;
+    orxU32 u32KeyCount;
 
     /* Gets number of keys */
-    u32KeyCounter = orxConfig_GetKeyCounter();
+    u32KeyCount = orxConfig_GetKeyCount();
 
     /* Valid? */
-    if(u32KeyCounter > 0)
+    if(u32KeyCount > 0)
     {
-      orxU32 u32EventCounter = 0, i;
+      orxU32 u32EventCount = 0, i;
 
 #ifdef __orxMSVC__
 
-      orxFLOAT *afTimeList = (orxFLOAT *)alloca(u32KeyCounter * sizeof(orxFLOAT));
+      orxFLOAT *afTimeList = (orxFLOAT *)alloca(u32KeyCount * sizeof(orxFLOAT));
 
 #else /* __orxMSVC__ */
 
-      orxFLOAT afTimeList[u32KeyCounter];
+      orxFLOAT afTimeList[u32KeyCount];
 
 #endif /* __orxMSVC__ */
 
       /* For all time entries */
-      for(i = 0; i < u32KeyCounter; i++)
+      for(i = 0; i < u32KeyCount; i++)
       {
         /* Inits it */
         afTimeList[i] = orxFLOAT_MAX;
       }
 
       /* For all config keys */
-      for(i = 0; i < u32KeyCounter; i++)
+      for(i = 0; i < u32KeyCount; i++)
       {
         const orxSTRING zKey;
         orxFLOAT        fTime;
@@ -230,8 +230,8 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           /* Stores it */
           afTimeList[i] = fTime;
 
-          /* Updates event counter */
-          u32EventCounter += orxConfig_GetListCounter(zKey);
+          /* Updates event count */
+          u32EventCount += orxConfig_GetListCount(zKey);
         }
         else
         {
@@ -247,7 +247,7 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
       }
 
       /* Allocates track */
-      pstResult = (orxTIMELINE_TRACK *)orxMemory_Allocate(sizeof(orxTIMELINE_TRACK) + (u32EventCounter * sizeof(orxTIMELINE_TRACK_EVENT)), orxMEMORY_TYPE_MAIN);
+      pstResult = (orxTIMELINE_TRACK *)orxMemory_Allocate(sizeof(orxTIMELINE_TRACK) + (u32EventCount * sizeof(orxTIMELINE_TRACK_EVENT)), orxMEMORY_TYPE_MAIN);
 
       /* Valid? */
       if(pstResult != orxNULL)
@@ -261,14 +261,14 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           orxU32 u32EventIndex, u32Flags = orxTIMELINE_TRACK_KU32_FLAG_NONE;
 
           /* For all events */
-          for(u32EventIndex = 0; u32EventIndex < u32EventCounter;)
+          for(u32EventIndex = 0; u32EventIndex < u32EventCount;)
           {
             const orxSTRING zKey;
             orxFLOAT        fTime;
-            orxU32          u32KeyIndex, u32ListCounter;
+            orxU32          u32KeyIndex, u32ListCount;
 
             /* Finds time to add next */
-            for(fTime = orxFLOAT_MAX, u32KeyIndex = orxU32_UNDEFINED, i = 0; i < u32KeyCounter; i++)
+            for(fTime = orxFLOAT_MAX, u32KeyIndex = orxU32_UNDEFINED, i = 0; i < u32KeyCount; i++)
             {
               /* Is sooner? */
               if(afTimeList[i] < fTime)
@@ -286,12 +286,12 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
             zKey = orxConfig_GetKey(u32KeyIndex);
 
             /* For all events */
-            for(i = 0, u32ListCounter = orxConfig_GetListCounter(zKey);
-                i < u32ListCounter;
+            for(i = 0, u32ListCount = orxConfig_GetListCount(zKey);
+                i < u32ListCount;
                 i++, u32EventIndex++)
             {
               /* Checks */
-              orxASSERT(u32EventIndex < u32EventCounter);
+              orxASSERT(u32EventIndex < u32EventCount);
 
               /* Stores event */
               pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
@@ -305,15 +305,15 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           /* Stores its reference */
           pstResult->zReference = orxString_GetFromID(pstResult->u32ID);
 
-          /* Updates track counters */
-          pstResult->u32RefCounter    = 1;
-          pstResult->u32EventCounter  = u32EventCounter;
+          /* Updates track counts */
+          pstResult->u32RefCount    = 1;
+          pstResult->u32EventCount  = u32EventCount;
 
           /* Should keep in cache? */
           if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
           {
-            /* Increases its reference counter to keep it in cache table */
-            pstResult->u32RefCounter++;
+            /* Increases its reference count to keep it in cache table */
+            pstResult->u32RefCount++;
 
             /* Updates flags */
             u32Flags |= orxTIMELINE_TRACK_KU32_FLAG_CACHED;
@@ -377,11 +377,11 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
  */
 static orxINLINE void orxTimeLine_DeleteTrack(orxTIMELINE_TRACK *_pstTrack)
 {
-  /* Decreases counter */
-  _pstTrack->u32RefCounter--;
+  /* Decreases count */
+  _pstTrack->u32RefCount--;
 
   /* Not referenced? */
-  if(_pstTrack->u32RefCounter == 0)
+  if(_pstTrack->u32RefCount == 0)
   {
     /* Has an ID? */
     if((_pstTrack->zReference != orxNULL)
@@ -430,11 +430,11 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
         {
           orxTIMELINE        *pstTimeLine;
           orxTIMELINE_TRACK  *pstNewTrack;
-          orxU32              u32Counter, u32ID, u32Flags;
+          orxU32              u32Count, u32ID, u32Flags;
           const orxSTRING     zReference;
 
-          /* Backups counter, ID, flags & reference */
-          u32Counter  = pstTrack->u32RefCounter;
+          /* Backups count, ID, flags & reference */
+          u32Count  = pstTrack->u32RefCount;
           u32ID       = pstTrack->u32ID;
           u32Flags    = orxFLAG_GET(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_MASK_BACKUP);
           zReference  = pstTrack->zReference;
@@ -448,8 +448,8 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
           /* Success? */
           if(pstNewTrack != orxNULL)
           {
-            /* Restores its counter */
-            pstNewTrack->u32RefCounter = u32Counter;
+            /* Restores its count */
+            pstNewTrack->u32RefCount = u32Count;
 
             /* Restores its flags */
             orxFLAG_SET(pstNewTrack->u32Flags, u32Flags, orxTIMELINE_TRACK_KU32_MASK_BACKUP);
@@ -614,7 +614,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
 
           /* For all recently past events */
           for(u32EventIndex = pstTimeLine->astTrackList[i].u32NextEventIndex;
-              (u32EventIndex < pstTrack->u32EventCounter) && (fTrackLocalTime >= pstTrack->astEventList[u32EventIndex].fTimeStamp);
+              (u32EventIndex < pstTrack->u32EventCount) && (fTrackLocalTime >= pstTrack->astEventList[u32EventIndex].fTimeStamp);
               u32EventIndex++)
           {
             /* Updates payload */
@@ -626,7 +626,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
           }
 
           /* Is over? */
-          if(u32EventIndex >= pstTrack->u32EventCounter)
+          if(u32EventIndex >= pstTrack->u32EventCount)
           {
             orxTIMELINE_TRACK *pstTrack;
 
@@ -828,8 +828,8 @@ orxTIMELINE *orxFASTCALL orxTimeLine_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTIMELINE_KU32_FLAG_ENABLED, orxTIMELINE_KU32_MASK_ALL);
 
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -853,11 +853,11 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTimeLine);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstTimeLine);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstTimeLine);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstTimeLine) == 0)
+  if(orxStructure_GetRefCount(_pstTimeLine) == 0)
   {
     orxTIMELINE_EVENT_PAYLOAD stPayload;
     orxSTRUCTURE             *pstOwner;
@@ -1019,8 +1019,8 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     /* Found? */
     if(pstTrack != orxNULL)
     {
-      /* Increases counter */
-      pstTrack->u32RefCounter++;
+      /* Increases count */
+      pstTrack->u32RefCount++;
     }
     else
     {
@@ -1155,7 +1155,7 @@ orxFLOAT orxFASTCALL orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID)
   if((pstTrack = (orxTIMELINE_TRACK *)orxHashTable_Get(sstTimeLine.pstTrackTable, u32TrackID)) != orxNULL)
   {
     /* Updates result */
-    fResult = pstTrack->astEventList[pstTrack->u32EventCounter - 1].fTimeStamp;
+    fResult = pstTrack->astEventList[pstTrack->u32EventCount - 1].fTimeStamp;
   }
   else
   {

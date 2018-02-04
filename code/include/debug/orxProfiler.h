@@ -172,7 +172,7 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMaxResetTime();
 /** Gets the number of registered markers used on the queried thread
  * @return Number of registered markers
  */
-extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCounter();
+extern orxDLLAPI orxS32 orxFASTCALL               orxProfiler_GetMarkerCount();
 
 
 /** Gets the next registered marker ID
@@ -214,11 +214,11 @@ extern orxDLLAPI orxDOUBLE orxFASTCALL            orxProfiler_GetMarkerMaxTime(o
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxProfiler_GetMarkerName(orxS32 _s32MarkerID);
 
-/** Gets the marker's push counter
+/** Gets the marker's push count
  * @param[in] _s32MarkerID      Concerned marker ID
  * @return Number of time the marker has been pushed since last reset
  */
-extern orxDLLAPI orxU32 orxFASTCALL               orxProfiler_GetMarkerPushCounter(orxS32 _s32MarkerID);
+extern orxDLLAPI orxU32 orxFASTCALL               orxProfiler_GetMarkerPushCount(orxS32 _s32MarkerID);
 
 
 /** Has the marker been pushed by a unique parent?

@@ -101,10 +101,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetCurrentLa
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasLanguage(const orxSTRING _zLanguage);
 
-/** Gets language counter
+/** Gets language count
  * @return Number of languages defined
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetLanguageCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetLanguageCount();
 
 /** Gets language at the given index
  * @param[in] _u32LanguageIndex Index of the desired language
@@ -132,10 +132,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetString(co
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
 
-/** Gets key counter for the current language
- * @return Key counter the current language if valid, 0 otherwise
+/** Gets key count for the current language
+ * @return Key count the current language if valid, 0 otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCounter();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCount();
 
 /** Gets key for the current language at the given index
  * @param[in] _u32KeyIndex      Index of the desired key
