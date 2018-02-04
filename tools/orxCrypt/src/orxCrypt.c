@@ -103,7 +103,7 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
       orxConfig_PushSection("Param");
 
       // Is empty?
-      if(orxConfig_GetKeyCounter() == 0)
+      if(orxConfig_GetKeyCount() == 0)
       {
         // Don't save it
         bResult = orxFALSE;
@@ -134,7 +134,7 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
       orxConfig_PushSection("Config");
 
       // Is empty?
-      if(orxConfig_GetKeyCounter() == 0)
+      if(orxConfig_GetKeyCount() == 0)
       {
         // Don't save it
         bResult = orxFALSE;

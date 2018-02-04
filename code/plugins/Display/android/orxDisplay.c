@@ -253,8 +253,8 @@ typedef struct __orxDISPLAY_SHADER_t
   GLuint                    uiProgram;
   GLint                     iTextureLocation;
   GLint                     iProjectionMatrixLocation;
-  GLint                     iTextureCounter;
-  orxS32                    s32ParamCounter;
+  GLint                     iTextureCount;
+  orxS32                    s32ParamCount;
   orxBOOL                   bPending;
   orxBOOL                   bUseCustomParam;
   orxSTRING                 zCode;
@@ -276,7 +276,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
-  orxS32                    s32PendingShaderCounter;
+  orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
   orxFLOAT                  fLastOrthoRight, fLastOrthoBottom;
@@ -284,7 +284,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
-  orxU32                    u32DestinationBitmapCounter;
+  orxU32                    u32DestinationBitmapCount;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
   GLuint                    uiVertexBuffer;
@@ -1599,8 +1599,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
       if(iSuccess != GL_FALSE)
       {
         /* Updates shader */
-        _pstShader->uiProgram       = uiProgram;
-        _pstShader->iTextureCounter = 0;
+        _pstShader->uiProgram     = uiProgram;
+        _pstShader->iTextureCount = 0;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -1675,12 +1675,12 @@ static void orxFASTCALL orxDisplay_Android_InitShader(orxDISPLAY_SHADER *_pstSha
   glASSERT();
 
   /* Has custom textures? */
-  if(_pstShader->iTextureCounter > 0)
+  if(_pstShader->iTextureCount > 0)
   {
     GLint i;
 
     /* For all defined textures */
-    for(i = 0; i < _pstShader->iTextureCounter; i++)
+    for(i = 0; i < _pstShader->iTextureCount; i++)
     {
       /* Binds bitmap */
       orxDisplay_Android_BindBitmap(_pstShader->astTextureInfoList[i].pstBitmap);
@@ -1707,7 +1707,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     glASSERT();
 
     /* Has active shaders? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) > 0)
     {
       orxDISPLAY_SHADER *pstShader, *pstNextShader;
 
@@ -1729,8 +1729,8 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
         /* Was pending removal? */
         if(pstShader->bPending != orxFALSE)
         {
-          /* Clears its texture counter */
-          pstShader->iTextureCounter = 0;
+          /* Clears its texture count */
+          pstShader->iTextureCount = 0;
 
           /* Clears its texture info list */
           orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -1741,8 +1741,8 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
           /* Removes it from active list */
           orxLinkList_Remove(&(pstShader->stNode));
 
-          /* Updates counter */
-          sstDisplay.s32PendingShaderCounter--;
+          /* Updates count */
+          sstDisplay.s32PendingShaderCount--;
         }
       }
 
@@ -1775,13 +1775,13 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
   /* Has pending shaders? */
-  if(sstDisplay.s32PendingShaderCounter != 0)
+  if(sstDisplay.s32PendingShaderCount != 0)
   {
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
 
     /* Checks */
-    orxASSERT(sstDisplay.s32PendingShaderCounter == 0);
+    orxASSERT(sstDisplay.s32PendingShaderCount == 0);
   }
 
   /* New bitmap? */
@@ -1794,7 +1794,7 @@ static orxINLINE void orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBitm
     orxDisplay_Android_BindBitmap(_pstBitmap);
 
     /* No other shader active? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) == 0)
     {
       /* Updates shader uniform */
       glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
@@ -2116,7 +2116,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _pstFont->stColor;
 
-          /* Updates counter */
+          /* Updates count */
           sstDisplay.s32BufferIndex += 4;
         }
         else
@@ -2517,11 +2517,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
   else
   {
     orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-    orxU32      u32BackupBitmapCounter;
+    orxU32      u32BackupBitmapCount;
 
     /* Backups current destinations */
-    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
-    u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
+    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCount * sizeof(orxBITMAP *));
+    u32BackupBitmapCount = sstDisplay.u32DestinationBitmapCount;
 
     /* Sets new destination bitmap */
     if(orxDisplay_Android_SetDestinationBitmaps(&_pstBitmap, 1) != orxSTATUS_FAILURE)
@@ -2550,7 +2550,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_ClearBitmap(orxBITMAP *_pstBitmap, orxR
       }
 
       /* Restores previous destinations */
-      orxDisplay_Android_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+      orxDisplay_Android_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCount);
     }
     /* Not screen? */
     else if(_pstBitmap != sstDisplay.pstScreen)
@@ -2745,11 +2745,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
   if(_u32ByteNumber == u32BufferSize)
   {
     orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-    orxU32      u32BackupBitmapCounter;
+    orxU32      u32BackupBitmapCount;
 
     /* Backups current destinations */
-    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCounter * sizeof(orxBITMAP *));
-    u32BackupBitmapCounter = sstDisplay.u32DestinationBitmapCounter;
+    orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCount * sizeof(orxBITMAP *));
+    u32BackupBitmapCount = sstDisplay.u32DestinationBitmapCount;
 
     /* Sets new destination bitmap */
     if((eResult = orxDisplay_Android_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
@@ -2803,7 +2803,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
       }
 
       /* Restores previous destinations */
-      orxDisplay_Android_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCounter);
+      orxDisplay_Android_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCount);
     }
   }
   else
@@ -2885,12 +2885,12 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
     /* Outputs logs */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can only attach the first <%d> bitmaps as destinations, out of the <%d> requested.", sstDisplay.iDrawBufferNumber, _u32Number);
 
-    /* Updates bitmap counter */
+    /* Updates bitmap count */
     u32Number = (orxU32)sstDisplay.iDrawBufferNumber;
   }
   else
   {
-    /* Gets bitmap counter */
+    /* Gets bitmap count */
     u32Number = _u32Number;
   }
 
@@ -2900,7 +2900,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
     orxBOOL bDraw;
 
     /* Updates draw status */
-    bDraw = ((_apstBitmapList[0] != sstDisplay.apstDestinationBitmapList[0]) || (u32Number != sstDisplay.u32DestinationBitmapCounter)) ? orxTRUE : orxFALSE;
+    bDraw = ((_apstBitmapList[0] != sstDisplay.apstDestinationBitmapList[0]) || (u32Number != sstDisplay.u32DestinationBitmapCount)) ? orxTRUE : orxFALSE;
 
     /* Not screen? */
     if((_apstBitmapList[0] != orxNULL) && (_apstBitmapList[0] != sstDisplay.pstScreen))
@@ -3049,8 +3049,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
         sstDisplay.apstDestinationBitmapList[i] = pstBitmap;
       }
 
-      /* Updates counter */
-      sstDisplay.u32DestinationBitmapCounter = i;
+      /* Updates count */
+      sstDisplay.u32DestinationBitmapCount = i;
 
       /* Using framebuffer? */
       if(bUseFrameBuffer != orxFALSE)
@@ -3110,7 +3110,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
       if(sstDisplay.iDrawBufferNumber > 1)
       {
         /* Updates draw buffers */
-        glDrawBuffers((GLsizei)sstDisplay.u32DestinationBitmapCounter, sstDisplay.aeDrawBufferList);
+        glDrawBuffers((GLsizei)sstDisplay.u32DestinationBitmapCount, sstDisplay.aeDrawBufferList);
         glASSERT();
       }
 
@@ -3224,7 +3224,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
 
-    /* Updates counter */
+    /* Updates count */
     sstDisplay.s32BufferIndex = 4;
 
     /* Draws arrays */
@@ -3326,7 +3326,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _pstSrc->stColor;
 
-          /* Updates counter */
+          /* Updates count */
           sstDisplay.s32BufferIndex += 4;
         }
       }
@@ -3619,7 +3619,7 @@ orxBOOL orxFASTCALL orxDisplay_Android_IsFullScreen()
   return bResult;
 }
 
-orxU32 orxFASTCALL orxDisplay_Android_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_Android_GetVideoModeCount()
 {
   orxU32 u32Result = 1;
 
@@ -3717,7 +3717,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
       /* Clears destination bitmap */
       sstDisplay.apstDestinationBitmapList[0] = orxNULL;
-      sstDisplay.u32DestinationBitmapCounter  = 1;
+      sstDisplay.u32DestinationBitmapCount    = 1;
 
       /* Clears new display surface */
       glScissor(0, 0, (GLsizei)sstDisplay.pstScreen->u32RealWidth, (GLsizei)sstDisplay.pstScreen->u32RealHeight);
@@ -4091,7 +4091,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Clears destination bitmap */
         sstDisplay.apstDestinationBitmapList[0] = orxNULL;
-        sstDisplay.u32DestinationBitmapCounter  = 1;
+        sstDisplay.u32DestinationBitmapCount    = 1;
 
         /* Updates bound texture */
         sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
@@ -4349,8 +4349,8 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
         pstShader->uiProgram              = (GLuint)orxU32_UNDEFINED;
-        pstShader->iTextureCounter        = 0;
-        pstShader->s32ParamCounter        = 0;
+        pstShader->iTextureCount          = 0;
+        pstShader->s32ParamCount          = 0;
         pstShader->bPending               = orxFALSE;
         pstShader->bUseCustomParam        = _bUseCustomParam;
         pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
@@ -4443,8 +4443,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StartShader(orxHANDLE _hShader)
     /* Resets its pending status */
     pstShader->bPending = orxFALSE;
 
-    /* Updates counter */
-    sstDisplay.s32PendingShaderCounter--;
+    /* Updates count */
+    sstDisplay.s32PendingShaderCount--;
   }
 
   /* Uses its program */
@@ -4494,8 +4494,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
           /* Was pending removal? */
           if(pstActive->bPending != orxFALSE)
           {
-            /* Clears its texture counter */
-            pstActive->iTextureCounter = 0;
+            /* Clears its texture count */
+            pstActive->iTextureCount = 0;
 
             /* Clears its texture info list */
             orxMemory_Zero(pstActive->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4506,13 +4506,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
             /* Removes it from active list */
             orxLinkList_Remove(&(pstActive->stNode));
 
-            /* Updates counter */
-            sstDisplay.s32PendingShaderCounter--;
+            /* Updates count */
+            sstDisplay.s32PendingShaderCount--;
           }
         }
 
-        /* Clears texture counter */
-        pstShader->iTextureCounter = 0;
+        /* Clears texture count */
+        pstShader->iTextureCount = 0;
 
         /* Clears its texture info list */
         orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4533,8 +4533,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
           bResetShader = orxFALSE;
         }
 
-        /* Clears texture counter */
-        pstShader->iTextureCounter = 0;
+        /* Clears texture count */
+        pstShader->iTextureCount = 0;
 
         /* Clears texture info list */
         orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4547,8 +4547,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
         /* Marks it as pending */
         pstShader->bPending = orxTRUE;
 
-        /* Updates counter */
-        sstDisplay.s32PendingShaderCounter++;
+        /* Updates count */
+        sstDisplay.s32PendingShaderCount++;
       }
 
       /* Updates projection matrix */
@@ -4600,16 +4600,16 @@ orxS32 orxFASTCALL orxDisplay_Android_GetParameterID(const orxHANDLE _hShader, c
     orxCHAR                 acBuffer[256];
 
     /* Checks */
-    orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
+    orxASSERT(pstShader->s32ParamCount < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
-    pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
+    pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCount];
 
     /* Updates result */
-    s32Result = pstShader->s32ParamCounter++;
+    s32Result = pstShader->s32ParamCount++;
 
     /* Array? */
     if(_s32Index >= 0)
@@ -4710,7 +4710,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* For all already used texture units */
-  for(i = 0; i < pstShader->iTextureCounter; i++)
+  for(i = 0; i < pstShader->iTextureCount; i++)
   {
     /* Same location? */
     if(pstShader->astTextureInfoList[i].iLocation == pstShader->astParamInfoList[_s32ID].iLocation)
@@ -4742,7 +4742,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
   if(eResult == orxSTATUS_FAILURE)
   {
     /* Has free texture unit left? */
-    if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+    if(pstShader->iTextureCount < sstDisplay.iTextureUnitNumber)
     {
       /* Valid? */
       if(_s32ID >= 0)
@@ -4755,8 +4755,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         }
 
         /* Updates texture info */
-        pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
-        pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
+        pstShader->astTextureInfoList[pstShader->iTextureCount].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
+        pstShader->astTextureInfoList[pstShader->iTextureCount].pstBitmap = _pstValue;
 
         /* Updates corner values */
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY)));
@@ -4764,8 +4764,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderBitmap(orxHANDLE _hShader, orx
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)((_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY)));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
-        /* Updates texture counter */
-        pstShader->iTextureCounter++;
+        /* Updates texture count */
+        pstShader->iTextureCount++;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -4889,7 +4889,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_EnableVSync, DISPLAY, ENABLE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetVideoModeCount, DISPLAY, GET_VIDEO_MODE_COUNT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);

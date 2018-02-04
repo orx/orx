@@ -70,7 +70,7 @@ var group__orx_physics =
       [ "u16CheckMask", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a0476f715d172f3951178b844fffc7180", null ],
       [ "u16SelfFlags", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a37c7fc77ed4f80a0cd7a2cb302c71914", null ],
       [ "u32Flags", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#abb7ec467f1deb2954cfa0f31d12ac67c", null ],
-      [ "u32VertexCounter", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a77861c705d1e4a33603f25fcbc1f64df", null ],
+      [ "u32VertexCount", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a70c93bdc970ce55b5809adde881597e0", null ],
       [ "v0", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a817c3f417b5e4d6b72a72ac4d51e2036", null ],
       [ "v1", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#ace0341c14da5f559c659a7354fa6a78a", null ],
       [ "v2", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a4229508dcb53ec73170f32f24b264160", null ],

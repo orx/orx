@@ -642,7 +642,7 @@ static void Run()
     orxU32 u32Counter;
 
     // Gets glyph list's counter
-    u32Counter = orxLinkList_GetCounter(&sstFontGen.stGlyphList);
+    u32Counter = orxLinkList_GetCount(&sstFontGen.stGlyphList);
 
     // Valid?
     if(u32Counter)

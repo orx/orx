@@ -173,7 +173,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetFullScreen, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsFullScreen, orxBOOL, void);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetVideoModeCounter, orxU32, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetVideoModeCount, orxU32, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetVideoMode, orxDISPLAY_VIDEO_MODE *, orxU32, orxDISPLAY_VIDEO_MODE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetVideoMode, orxSTATUS, const orxDISPLAY_VIDEO_MODE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVideoModeAvailable, orxBOOL, const orxDISPLAY_VIDEO_MODE *);
@@ -240,7 +240,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncE
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_FULL_SCREEN, orxDisplay_SetFullScreen)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_FULL_SCREEN, orxDisplay_IsFullScreen)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_VIDEO_MODE_COUNTER, orxDisplay_GetVideoModeCounter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_VIDEO_MODE_COUNT, orxDisplay_GetVideoModeCount)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_VIDEO_MODE, orxDisplay_GetVideoMode)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_VIDEO_MODE, orxDisplay_SetVideoMode)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VIDEO_MODE_AVAILABLE, orxDisplay_IsVideoModeAvailable)
@@ -295,9 +295,9 @@ orxSTATUS orxFASTCALL orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stCol
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawOBox)(_pstBox, _stColor, _bFill);
 }
 
-orxSTATUS orxFASTCALL orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexCounter, const orxDISPLAY_VERTEX *_astVertexList)
+orxSTATUS orxFASTCALL orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexCount, const orxDISPLAY_VERTEX *_astVertexList)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawMesh)(_pstBitmap, _eSmoothing, _eBlendMode, _u32VertexCounter, _astVertexList);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawMesh)(_pstBitmap, _eSmoothing, _eBlendMode, _u32VertexCount, _astVertexList);
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
@@ -465,9 +465,9 @@ orxBOOL orxFASTCALL orxDisplay_IsFullScreen()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsFullScreen)();
 }
 
-orxU32 orxFASTCALL orxDisplay_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_GetVideoModeCount()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetVideoModeCounter)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetVideoModeCount)();
 }
 
 orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode)

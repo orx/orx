@@ -105,7 +105,7 @@ typedef struct __orxLINKLIST_t
 {
   orxLINKLIST_NODE *pstFirst;                   /**< First node pointer : 4/8 */
   orxLINKLIST_NODE *pstLast;                    /**< Last node pointer : 8/16 */
-  orxU32            u32Counter;                 /**< Node counter : 12/20 */
+  orxU32            u32Count;                   /**< Node count : 12/20 */
 
 } orxLINKLIST;
 
@@ -221,17 +221,17 @@ static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetLast(const orxLIN
   return(_pstList->pstLast);
 }
 
-/** Gets a list counter
+/** Gets a list count
  * @param[in]   _pstList                        Concerned list
  * @return Number of nodes in list
  */
-static orxINLINE orxU32                         orxLinkList_GetCounter(const orxLINKLIST *_pstList)
+static orxINLINE orxU32                         orxLinkList_GetCount(const orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
 
   /* Returns it */
-  return(_pstList->u32Counter);
+  return(_pstList->u32Count);
 }
 
 #endif /* _orxLINKLIST_H_ */

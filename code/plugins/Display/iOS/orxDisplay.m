@@ -294,8 +294,8 @@ typedef struct __orxDISPLAY_SHADER_t
   GLuint                    uiProgram;
   GLint                     iTextureLocation;
   GLint                     iProjectionMatrixLocation;
-  GLint                     iTextureCounter;
-  orxS32                    s32ParamCounter;
+  GLint                     iTextureCount;
+  orxS32                    s32ParamCount;
   orxBOOL                   bPending;
   orxBOOL                   bUseCustomParam;
   orxSTRING                 zCode;
@@ -334,7 +334,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
-  orxS32                    s32PendingShaderCounter;
+  orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
   orxFLOAT                  fLastOrthoRight, fLastOrthoBottom;
@@ -2071,8 +2071,8 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
       if(iSuccess != GL_FALSE)
       {
         /* Updates shader */
-        _pstShader->uiProgram       = uiProgram;
-        _pstShader->iTextureCounter = 0;
+        _pstShader->uiProgram     = uiProgram;
+        _pstShader->iTextureCount = 0;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -2147,12 +2147,12 @@ static void orxFASTCALL orxDisplay_iOS_InitShader(orxDISPLAY_SHADER *_pstShader)
   glASSERT();
 
   /* Has custom textures? */
-  if(_pstShader->iTextureCounter > 0)
+  if(_pstShader->iTextureCount > 0)
   {
     GLint i;
 
     /* For all defined textures */
-    for(i = 0; i < _pstShader->iTextureCounter; i++)
+    for(i = 0; i < _pstShader->iTextureCount; i++)
     {
       /* Binds bitmap */
       orxDisplay_iOS_BindBitmap(_pstShader->astTextureInfoList[i].pstBitmap);
@@ -2175,7 +2175,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
     orxPROFILER_PUSH_MARKER("orxDisplay_DrawArrays");
 
     /* Has active shaders? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) > 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) > 0)
     {
       orxDISPLAY_SHADER *pstShader, *pstNextShader;
 
@@ -2197,8 +2197,8 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
         /* Was pending removal? */
         if(pstShader->bPending != orxFALSE)
         {
-          /* Clears its texture counter */
-          pstShader->iTextureCounter = 0;
+          /* Clears its texture count */
+          pstShader->iTextureCount = 0;
 
           /* Clears its texture info list */
           orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -2209,8 +2209,8 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
           /* Removes it from active list */
           orxLinkList_Remove(&(pstShader->stNode));
 
-          /* Updates counter */
-          sstDisplay.s32PendingShaderCounter--;
+          /* Updates count */
+          sstDisplay.s32PendingShaderCount--;
         }
       }
 
@@ -2243,13 +2243,13 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != sstDisplay.pstScreen));
 
   /* Has pending shaders? */
-  if(sstDisplay.s32PendingShaderCounter != 0)
+  if(sstDisplay.s32PendingShaderCount != 0)
   {
     /* Draws remaining items */
     orxDisplay_iOS_DrawArrays();
 
     /* Checks */
-    orxASSERT(sstDisplay.s32PendingShaderCounter == 0);
+    orxASSERT(sstDisplay.s32PendingShaderCount == 0);
   }
 
   /* New bitmap? */
@@ -2262,7 +2262,7 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
     orxDisplay_iOS_BindBitmap(_pstBitmap);
 
     /* No other shader active? */
-    if(orxLinkList_GetCounter(&(sstDisplay.stActiveShaderList)) == 0)
+    if(orxLinkList_GetCount(&(sstDisplay.stActiveShaderList)) == 0)
     {
       /* Updates shader uniform */
       glUNIFORM(1i, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
@@ -2595,7 +2595,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstFont->stColor;
 
-          /* Updates counter */
+          /* Updates count */
           sstDisplay.s32BufferIndex += 4;
         }
         else
@@ -3511,7 +3511,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
 
-    /* Updates counter */
+    /* Updates count */
     sstDisplay.s32BufferIndex = 4;
 
     /* Draws arrays */
@@ -3613,7 +3613,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstSrc->stColor;
 
-          /* Updates counter */
+          /* Updates count */
           sstDisplay.s32BufferIndex += 4;
         }
       }
@@ -3894,7 +3894,7 @@ orxBOOL orxFASTCALL orxDisplay_iOS_IsFullScreen()
   return bResult;
 }
 
-orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCounter()
+orxU32 orxFASTCALL orxDisplay_iOS_GetVideoModeCount()
 {
   orxU32 u32Result = 1;
 
@@ -4393,8 +4393,8 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
       /* Inits shader */
       orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
       pstShader->uiProgram              = (GLuint)orxHANDLE_UNDEFINED;
-      pstShader->iTextureCounter        = 0;
-      pstShader->s32ParamCounter        = 0;
+      pstShader->iTextureCount          = 0;
+      pstShader->s32ParamCount          = 0;
       pstShader->bPending               = orxFALSE;
       pstShader->bUseCustomParam        = _bUseCustomParam;
       pstShader->zCode                  = orxString_Duplicate(sstDisplay.acShaderCodeBuffer);
@@ -4486,8 +4486,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StartShader(orxHANDLE _hShader)
     /* Resets its pending status */
     pstShader->bPending = orxFALSE;
 
-    /* Updates counter */
-    sstDisplay.s32PendingShaderCounter--;
+    /* Updates count */
+    sstDisplay.s32PendingShaderCount--;
   }
 
   /* Uses its program */
@@ -4538,8 +4538,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
           /* Was pending removal? */
           if(pstActive->bPending != orxFALSE)
           {
-            /* Clears its texture counter */
-            pstActive->iTextureCounter = 0;
+            /* Clears its texture count */
+            pstActive->iTextureCount = 0;
 
             /* Clears its texture info list */
             orxMemory_Zero(pstActive->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4550,13 +4550,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
             /* Removes it from active list */
             orxLinkList_Remove(&(pstActive->stNode));
 
-            /* Updates counter */
-            sstDisplay.s32PendingShaderCounter--;
+            /* Updates count */
+            sstDisplay.s32PendingShaderCount--;
           }
         }
 
-        /* Clears texture counter */
-        pstShader->iTextureCounter = 0;
+        /* Clears texture count */
+        pstShader->iTextureCount = 0;
 
         /* Clears its texture info list */
         orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4577,8 +4577,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
           bResetShader = orxFALSE;
         }
 
-        /* Clears texture counter */
-        pstShader->iTextureCounter = 0;
+        /* Clears texture count */
+        pstShader->iTextureCount = 0;
 
         /* Clears texture info list */
         orxMemory_Zero(pstShader->astTextureInfoList, sstDisplay.iTextureUnitNumber * sizeof(orxDISPLAY_TEXTURE_INFO));
@@ -4591,8 +4591,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
         /* Marks it as pending */
         pstShader->bPending = orxTRUE;
 
-        /* Updates counter */
-        sstDisplay.s32PendingShaderCounter++;
+        /* Updates count */
+        sstDisplay.s32PendingShaderCount++;
       }
 
       /* Updates projection matrix */
@@ -4643,16 +4643,16 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     orxCHAR                 acBuffer[256];
 
     /* Checks */
-    orxASSERT(pstShader->s32ParamCounter < sstDisplay.iTextureUnitNumber);
+    orxASSERT(pstShader->s32ParamCount < sstDisplay.iTextureUnitNumber);
 
     /* Inits buffer */
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets corresponding param info */
-    pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCounter];
+    pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCount];
 
     /* Updates result */
-    s32Result = pstShader->s32ParamCounter++;
+    s32Result = pstShader->s32ParamCount++;
 
     /* Array? */
     if(_s32Index >= 0)
@@ -4753,7 +4753,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* For all already used texture units */
-  for(i = 0; i < pstShader->iTextureCounter; i++)
+  for(i = 0; i < pstShader->iTextureCount; i++)
   {
     /* Same location? */
     if(pstShader->astTextureInfoList[i].iLocation == pstShader->astParamInfoList[_s32ID].iLocation)
@@ -4785,7 +4785,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 
   if(eResult == orxSTATUS_FAILURE)
   {
     /* Has free texture unit left? */
-    if(pstShader->iTextureCounter < sstDisplay.iTextureUnitNumber)
+    if(pstShader->iTextureCount < sstDisplay.iTextureUnitNumber)
     {
       /* Valid? */
       if(_s32ID >= 0)
@@ -4798,8 +4798,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 
         }
 
         /* Updates texture info */
-        pstShader->astTextureInfoList[pstShader->iTextureCounter].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
-        pstShader->astTextureInfoList[pstShader->iTextureCounter].pstBitmap = _pstValue;
+        pstShader->astTextureInfoList[pstShader->iTextureCount].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
+        pstShader->astTextureInfoList[pstShader->iTextureCount].pstBitmap = _pstValue;
 
         /* Updates corner values */
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationTop, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vTL.fY));
@@ -4807,8 +4807,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderBitmap(orxHANDLE _hShader, orxS32 
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationBottom, (GLfloat)(_pstValue->fRecRealHeight * _pstValue->stClip.vBR.fY));
         glUNIFORM(1f, pstShader->astParamInfoList[_s32ID].iLocationRight, (GLfloat)(_pstValue->fRecRealWidth * _pstValue->stClip.vBR.fX));
 
-        /* Updates texture counter */
-        pstShader->iTextureCounter++;
+        /* Updates texture count */
+        pstShader->iTextureCount++;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -4934,7 +4934,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_EnableVSync, DISPLAY, ENABLE_VSY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetFullScreen, DISPLAY, SET_FULL_SCREEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsFullScreen, DISPLAY, IS_FULL_SCREEN);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoModeCounter, DISPLAY, GET_VIDEO_MODE_COUNTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoModeCount, DISPLAY, GET_VIDEO_MODE_COUNT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetVideoMode, DISPLAY, GET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetVideoMode, DISPLAY, SET_VIDEO_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVideoModeAvailable, DISPLAY, IS_VIDEO_MODE_AVAILABLE);

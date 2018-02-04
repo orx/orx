@@ -97,7 +97,7 @@ static orxINLINE orxSTATUS LoadConfig()
   orxConfig_SelectSection("Tutorial");
 
   /* Is current ID valid? */
-  if(ss32ConfigID < orxConfig_GetListCounter("ConfigList"))
+  if(ss32ConfigID < orxConfig_GetListCount("ConfigList"))
   {
     const orxSTRING zConfigFile;
 
@@ -113,7 +113,7 @@ static orxINLINE orxSTATUS LoadConfig()
       orxConfig_PushSection("Tutorial");
 
       /* For all defined viewports */
-      for(i = 0; i < orxConfig_GetListCounter("ViewportList"); i++)
+      for(i = 0; i < orxConfig_GetListCount("ViewportList"); i++)
       {
         /* Creates it */
         orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
@@ -166,7 +166,7 @@ orxSTATUS orxFASTCALL Run()
   if(orxInput_IsActive("NextConfig") && orxInput_HasNewStatus("NextConfig"))
   {
     /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCounter("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
+    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCount("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
 
     /* Loads it */
     LoadConfig();
@@ -175,7 +175,7 @@ orxSTATUS orxFASTCALL Run()
   else if(orxInput_IsActive("PreviousConfig") && orxInput_HasNewStatus("PreviousConfig"))
   {
     /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCounter("ConfigList") - 1;
+    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCount("ConfigList") - 1;
 
     /* Loads it */
     LoadConfig();

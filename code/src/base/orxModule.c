@@ -145,8 +145,8 @@ typedef struct __orxMODULE_INFO_t
 typedef struct __orxMODULE_STATIC_t
 {
   orxMODULE_INFO            astModuleInfo[orxMODULE_ID_TOTAL_NUMBER];
-  orxU32                    u32InitLoopCounter;
-  orxU32                    u32InitCounter;
+  orxU32                    u32InitLoopCount;
+  orxU32                    u32InitCount;
 
 } orxMODULE_STATIC;
 
@@ -193,7 +193,7 @@ static orxINLINE void orxModule_SetupAll()
   orxU32 eID;
 
   /* Clears static variable */
-  sstModule.u32InitLoopCounter = 0;
+  sstModule.u32InitLoopCount = 0;
 
   /* For all modules */
   for(eID = 0; eID < orxMODULE_ID_TOTAL_NUMBER; eID++)
@@ -285,7 +285,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
 
   /* First init? */
-  if((sstModule.u32InitLoopCounter == 0) && (sstModule.u32InitCounter == 0))
+  if((sstModule.u32InitLoopCount == 0) && (sstModule.u32InitCount == 0))
   {
     /* Registers all other modules */
     orxModule_RegisterAll();
@@ -294,8 +294,8 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     orxModule_SetupAll();
   }
 
-  /* Increases loop counter */
-  sstModule.u32InitLoopCounter++;
+  /* Increases loop count */
+  sstModule.u32InitLoopCount++;
 
   /* Is module registered? */
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
@@ -372,7 +372,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
             sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
 
             /* Updates count */
-            sstModule.u32InitCounter++;
+            sstModule.u32InitCount++;
           }
           else
           {
@@ -389,11 +389,11 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     eResult = orxSTATUS_FAILURE;
   }
 
-  /* Decreases loop counter */
-  sstModule.u32InitLoopCounter--;
+  /* Decreases loop count */
+  sstModule.u32InitLoopCount--;
 
   /* Was external call? */
-  if(sstModule.u32InitLoopCounter == 0)
+  if(sstModule.u32InitLoopCount == 0)
   {
     /* Failed? */
     if(eResult == orxSTATUS_FAILURE)
@@ -510,8 +510,8 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       }
     }
 
-    /* Updates counter */
-    sstModule.u32InitCounter--;
+    /* Updates count */
+    sstModule.u32InitCount--;
   }
 
   return;

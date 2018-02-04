@@ -298,8 +298,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga7052f393a9cdb5bc6c454beb8fafceac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7099d1d4919c383535a31bbe900f7e3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga7099d1d4919c383535a31bbe900f7e3c">orxDisplay_GetVideoMode</a> (orxU32 _u32Index, <a class="el" href="structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html">orxDISPLAY_VIDEO_MODE</a> *_pstVideoMode)</td></tr>
 <tr class="separator:ga7099d1d4919c383535a31bbe900f7e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga638dd5b17942872b2e681ca849ac43f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2">orxDisplay_GetVideoModeCounter</a> ()</td></tr>
-<tr class="separator:ga638dd5b17942872b2e681ca849ac43f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9a6efbaeaa8c4434ab81dcb8d68a1033"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9a6efbaeaa8c4434ab81dcb8d68a1033">orxDisplay_GetVideoModeCount</a> ()</td></tr>
+<tr class="separator:ga9a6efbaeaa8c4434ab81dcb8d68a1033"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac588e2511f5f9925136a7655a5f42ec2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gac588e2511f5f9925136a7655a5f42ec2">orxDisplay_HasShaderSupport</a> ()</td></tr>
 <tr class="separator:gac588e2511f5f9925136a7655a5f42ec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeaa35d99583568b07d3d8c83e7f1e5ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gaeaa35d99583568b07d3d8c83e7f1e5ac">orxDisplay_Init</a> ()</td></tr>
@@ -2090,7 +2090,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets an available video mode </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Index</td><td>Video mode index, pass _u32Index &lt; <a class="el" href="group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2">orxDisplay_GetVideoModeCounter()</a> for an available listed mode, orxU32_UNDEFINED for the the default (desktop) mode and any other value for current mode </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Index</td><td>Video mode index, pass _u32Index &lt; <a class="el" href="group__orx_display.html#ga9a6efbaeaa8c4434ab81dcb8d68a1033">orxDisplay_GetVideoModeCount()</a> for an available listed mode, orxU32_UNDEFINED for the the default (desktop) mode and any other value for current mode </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pstVideoMode</td><td>Storage for the video mode </td></tr>
   </table>
   </dd>
@@ -2099,19 +2099,19 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga638dd5b17942872b2e681ca849ac43f2"></a>
+<a class="anchor" id="ga9a6efbaeaa8c4434ab81dcb8d68a1033"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxDisplay_GetVideoModeCounter </td>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxDisplay_GetVideoModeCount </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets available video mode counter </p><dl class="section return"><dt>Returns</dt><dd>Available video mode counter </dd></dl>
+<p>Gets available video mode count </p><dl class="section return"><dt>Returns</dt><dd>Available video mode count </dd></dl>
 
 </div>
 </div>

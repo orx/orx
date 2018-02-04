@@ -166,8 +166,8 @@ typedef struct __orxPLUGIN_CORE_INFO_t
   /* Core functions : 4 */
   orxPLUGIN_CORE_FUNCTION const    *pstCoreFunctionTable;
 
-  /* Core functions counter : 8 */
-  orxU32                            u32CoreFunctionCounter;
+  /* Core functions count : 8 */
+  orxU32                            u32CoreFunctionCount;
 
   /* Core module ID : 12 */
   orxMODULE_ID                      eModuleID;
@@ -223,7 +223,7 @@ static orxINLINE void orxPlugin_UpdateAllModule()
 
       /* Checks all functions */
       for(j = 0, bLoaded = orxTRUE;
-          (j < sstPlugin.astCoreInfo[i].u32CoreFunctionCounter) && (bLoaded != orxFALSE);
+          (j < sstPlugin.astCoreInfo[i].u32CoreFunctionCount) && (bLoaded != orxFALSE);
           j++)
       {
         /* Tests if function is loaded */
@@ -350,7 +350,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
     u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
     /* Checks */
-    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
+    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCount);
     orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
     /* Embedded mode or was not already loaded? */
@@ -409,7 +409,7 @@ static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
     /* Checks */
-    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
+    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCount);
     orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
     /* Restores default core function */
@@ -688,7 +688,7 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
 
   /* Stores info */
   sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable    = _astCoreFunction;
-  sstPlugin.astCoreInfo[_ePluginCoreID].u32CoreFunctionCounter  = _u32CoreFunctionNumber;
+  sstPlugin.astCoreInfo[_ePluginCoreID].u32CoreFunctionCount    = _u32CoreFunctionNumber;
   sstPlugin.astCoreInfo[_ePluginCoreID].eModuleID               = _eModuleID;
   sstPlugin.astCoreInfo[_ePluginCoreID].u32Flags                = orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE;
 

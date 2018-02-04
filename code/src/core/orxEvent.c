@@ -85,7 +85,7 @@ typedef struct __orxEVENT_HANDLER_STORAGE_t
 typedef struct __orxEVENT_STATIC_t
 {
   orxU32                    u32Flags;                 /**< Control flags */
-  orxS32                    s32EventSendCounter;      /**< Event send counter */
+  orxS32                    s32EventSendCount;        /**< Event send count */
   orxHASHTABLE             *pstHandlerStorageTable;   /**< Handler storage table */
   orxBANK                  *pstHandlerStorageBank;    /**< Handler storage bank */
   orxEVENT_HANDLER_STORAGE *astCoreHandlerStorageList[orxEVENT_TYPE_CORE_NUMBER]; /**< Core handler storage list */
@@ -417,12 +417,12 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
     /* Main thread? */
     if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     {
-      /* Updates event send counter */
-      sstEvent.s32EventSendCounter++;
+      /* Updates event send count */
+      sstEvent.s32EventSendCount++;
     }
 
     /* Has handler(s)? */
-    if(orxLinkList_GetCounter(&(pstStorage->stList)) != 0)
+    if(orxLinkList_GetCount(&(pstStorage->stList)) != 0)
     {
       orxEVENT_HANDLER_INFO *pstInfo;
 
@@ -451,8 +451,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
     /* Main thread? */
     if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     {
-      /* Updates event send counter */
-      sstEvent.s32EventSendCounter--;
+      /* Updates event send count */
+      sstEvent.s32EventSendCount--;
     }
   }
 
@@ -496,7 +496,7 @@ orxBOOL orxFASTCALL orxEvent_IsSending()
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  bResult = (sstEvent.s32EventSendCounter != 0) ? orxTRUE : orxFALSE;
+  bResult = (sstEvent.s32EventSendCount != 0) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

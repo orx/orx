@@ -137,11 +137,11 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_SetTextureList(orxVIEW
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_GetTextureList(const orxVIEWPORT *_pstViewport, orxU32 _u32TextureNumber, orxTEXTURE **_apstTextureList);
 
-/** Gets a viewport texture counter
+/** Gets a viewport texture count
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Number of textures associated with the viewport
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxViewport_GetTextureCounter(const orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxU32 orxFASTCALL           orxViewport_GetTextureCount(const orxVIEWPORT *_pstViewport);
 
 
 

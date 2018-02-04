@@ -434,7 +434,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if(orxInput_HasBeenActivated("PreviousResolution"))
   {
     /* Updates video mode index */
-    su32VideoModeIndex = (su32VideoModeIndex == 0) ? orxDisplay_GetVideoModeCounter() - 1 : su32VideoModeIndex - 1;
+    su32VideoModeIndex = (su32VideoModeIndex == 0) ? orxDisplay_GetVideoModeCount() - 1 : su32VideoModeIndex - 1;
 
     /* Applies it */
     orxBounce_ApplyCurrentVideoMode();
@@ -442,7 +442,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   else if(orxInput_HasBeenActivated("NextResolution"))
   {
     /* Updates video mode index */
-    su32VideoModeIndex = (su32VideoModeIndex >= orxDisplay_GetVideoModeCounter() - 1) ? 0 : su32VideoModeIndex + 1;
+    su32VideoModeIndex = (su32VideoModeIndex >= orxDisplay_GetVideoModeCount() - 1) ? 0 : su32VideoModeIndex + 1;
 
     /* Applies it */
     orxBounce_ApplyCurrentVideoMode();
@@ -572,7 +572,7 @@ static orxSTATUS orxBounce_Init()
     }
 
     /* Creates all viewports */
-    for(i = 0; i < (orxU32)orxConfig_GetListCounter("ViewportList"); i++)
+    for(i = 0; i < (orxU32)orxConfig_GetListCount("ViewportList"); i++)
     {
       orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
     }

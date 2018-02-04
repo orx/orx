@@ -668,7 +668,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
               /* Updates its time stamp */
               pstTimerStorage->fTimeStamp = pstClock->stClockInfo.fTime + pstTimerStorage->fDelay;
 
-              /* Should update counter */
+              /* Should update count */
               if(pstTimerStorage->s32Repetition > 0)
               {
                 /* Updates it */
@@ -777,8 +777,8 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
       pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
-      /* Increases counter */
-      orxStructure_IncreaseCounter(pstClock);
+      /* Increases count */
+      orxStructure_IncreaseCount(pstClock);
     }
     else
     {
@@ -819,8 +819,8 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
   /* Found? */
   if(pstResult != orxNULL)
   {
-    /* Increases counter */
-    orxStructure_IncreaseCounter(pstResult);
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
   }
   else
   {
@@ -931,11 +931,11 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Decreases counter */
-  orxStructure_DecreaseCounter(_pstClock);
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstClock);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstClock) == 0)
+  if(orxStructure_GetRefCount(_pstClock) == 0)
   {
     /* Not locked? */
     if(!orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_UPDATE_LOCK))
@@ -969,8 +969,8 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
     }
     else
     {
-      /* Increases counter */
-      orxStructure_IncreaseCounter(_pstClock);
+      /* Increases count */
+      orxStructure_IncreaseCount(_pstClock);
 
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Can't delete clock <%s> as it's currently locked for processing!", orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED) ? _pstClock->zReference : orxSTRING_EMPTY);
