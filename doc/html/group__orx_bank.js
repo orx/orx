@@ -13,7 +13,7 @@ var group__orx_bank =
     [ "orxBank_Exit", "group__orx_bank.html#gaac6b0ec7f48717e7b49c3fc0f70b1563", null ],
     [ "orxBank_Free", "group__orx_bank.html#ga79adce27cc4c9367165dd2b381f8dda2", null ],
     [ "orxBank_GetAtIndex", "group__orx_bank.html#gaf95868757d6eabc89dfb66491253cf86", null ],
-    [ "orxBank_GetCounter", "group__orx_bank.html#ga2d51c38d4cd273bcb7308180afc6a3ce", null ],
+    [ "orxBank_GetCount", "group__orx_bank.html#gac0dca7698dd17b3938ad694e636b6f6a", null ],
     [ "orxBank_GetIndex", "group__orx_bank.html#ga1feb3a29e189618bddab014bf32364d5", null ],
     [ "orxBank_GetNext", "group__orx_bank.html#gac989e67080308981d31e5e055f854f61", null ],
     [ "orxBank_Init", "group__orx_bank.html#ga9a13587274e0732ae0d76780911820c4", null ],

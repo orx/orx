@@ -8,7 +8,7 @@ var group__orx_hash_table =
     [ "orxHashTable_Create", "group__orx_hash_table.html#gaf066ca473c2b4640b2c389f00bee7a54", null ],
     [ "orxHashTable_Delete", "group__orx_hash_table.html#gac4c44cf291c85a9b5808c9c8ad4e9585", null ],
     [ "orxHashTable_Get", "group__orx_hash_table.html#gafba7999c3056e5898db26612493fa255", null ],
-    [ "orxHashTable_GetCounter", "group__orx_hash_table.html#ga1cb31319da82205b9daa63016cead824", null ],
+    [ "orxHashTable_GetCount", "group__orx_hash_table.html#ga7eaa23a6ea6d99f015e7a616f1f0847e", null ],
     [ "orxHashTable_GetNext", "group__orx_hash_table.html#gac18bbcfe1ea91dc145b92d2c146e9286", null ],
     [ "orxHashTable_Optimize", "group__orx_hash_table.html#ga4c7dc1294ce43ca8854946bd388be572", null ],
     [ "orxHashTable_Remove", "group__orx_hash_table.html#gad18920165a34e79646e2b0dde49e28be", null ],
