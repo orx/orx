@@ -5,7 +5,7 @@ var orx_anim_set_8h =
     [ "orxANIMSET_KU32_FLAG_REFERENCE_LOCK", "group__orx_anim_set.html#ga7be06fb08f0518f0865cadf8e9f91a3f", null ],
     [ "orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET", "group__orx_anim_set.html#ga956fe40b028fc972b957007e12a6a202", null ],
     [ "orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT", "group__orx_anim_set.html#ga3697f4c6a4d6ba8499a0ff2300efaa45", null ],
-    [ "orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER", "group__orx_anim_set.html#gabc981b4a302dc676462a4ceebaf67be5", null ],
+    [ "orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT", "group__orx_anim_set.html#ga1fb1967579c54359265d303cc1ee9a54", null ],
     [ "orxANIMSET_KU32_LINK_FLAG_NONE", "group__orx_anim_set.html#ga797d24144c7323c465377a269131d049", null ],
     [ "orxANIMSET_KU32_LINK_FLAG_PRIORITY", "group__orx_anim_set.html#ga9dae4315b9cd736eaf074b8f5e1fa3fd", null ],
     [ "orxANIMSET_KU32_MAX_ANIM_NUMBER", "group__orx_anim_set.html#gacdf6b4ae3c86e1c071d615ef3337530b", null ],

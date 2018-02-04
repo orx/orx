@@ -6,7 +6,7 @@ var structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d =
     [ "fY", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#afa397a944c58aba55102e489d98517e2", null ],
     [ "stAccelerometer", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#aeebf5b4297b69907ae590ff999af7f71", null ],
     [ "stTouch", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ac5978a803de8be8f7e8bd973d54633a1", null ],
-    [ "u32FrameCounter", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5180c55a06c42705506c03de7faa8b0e", null ],
+    [ "u32FrameCount", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#abe6cc98c7668bc1fbc26449075e92e5b", null ],
     [ "u32ID", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#acac2246d17351b95043ae2ccc1bf707d", null ],
     [ "vAcceleration", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f", null ]
 ];
