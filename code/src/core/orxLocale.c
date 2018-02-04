@@ -190,7 +190,7 @@ orxSTATUS orxFASTCALL orxLocale_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY))
   {
-    orxS32 s32LanguageCounter;
+    orxS32 s32LanguageCount;
 
     /* Inits Flags */
     orxFLAG_SET(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY, orxLOCALE_KU32_STATIC_MASK_ALL);
@@ -198,11 +198,11 @@ orxSTATUS orxFASTCALL orxLocale_Init()
     /* Pushes locale config section */
     orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
-    /* Gets language counter */
-    s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+    /* Gets language count */
+    s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
     /* Has any? */
-    if(s32LanguageCounter > 0)
+    if(s32LanguageCount > 0)
     {
       /* Selects the first one by default */
       orxLocale_SelectLanguage(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, 0));
@@ -268,7 +268,7 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
   /* Is language valid? */
   if(_zLanguage != orxSTRING_EMPTY)
   {
-    orxS32 i, s32LanguageCounter;
+    orxS32 i, s32LanguageCount;
 
     /* Valid? */
     if(_zLanguage != orxSTRING_EMPTY)
@@ -276,11 +276,11 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
       /* Pushes locale config section */
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
-      /* Gets language counter */
-      s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+      /* Gets language count */
+      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
       /* For all languages */
-      for(i = 0; i < s32LanguageCounter; i++)
+      for(i = 0; i < s32LanguageCount; i++)
       {
         /* Found? */
         if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
@@ -361,7 +361,7 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
   /* Valid? */
   if(_zLanguage != orxSTRING_EMPTY)
   {
-    orxS32 i, s32LanguageCounter;
+    orxS32 i, s32LanguageCount;
 
     /* Valid? */
     if(_zLanguage != orxSTRING_EMPTY)
@@ -369,11 +369,11 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
       /* Pushes locale config section */
       orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
 
-      /* Gets language counter */
-      s32LanguageCounter = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+      /* Gets language count */
+      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
 
       /* For all languages */
-      for(i = 0; i < s32LanguageCounter; i++)
+      for(i = 0; i < s32LanguageCount; i++)
       {
         /* Found? */
         if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
@@ -394,7 +394,7 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
   return bResult;
 }
 
-/** Gets language counter
+/** Gets language count
  * @return Number of languages defined
  */
 orxU32 orxFASTCALL orxLocale_GetLanguageCount()
@@ -559,8 +559,8 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
   return eResult;
 }
 
-/** Gets key counter for the current language
- * @return Key counter the current language if valid, 0 otherwise
+/** Gets key count for the current language
+ * @return Key count the current language if valid, 0 otherwise
  */
 orxU32 orxFASTCALL orxLocale_GetKeyCount()
 {

@@ -668,7 +668,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
               /* Updates its time stamp */
               pstTimerStorage->fTimeStamp = pstClock->stClockInfo.fTime + pstTimerStorage->fDelay;
 
-              /* Should update counter */
+              /* Should update count */
               if(pstTimerStorage->s32Repetition > 0)
               {
                 /* Updates it */
@@ -777,7 +777,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
       pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
-      /* Increases counter */
+      /* Increases count */
       orxStructure_IncreaseCount(pstClock);
     }
     else
@@ -819,7 +819,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
   /* Found? */
   if(pstResult != orxNULL)
   {
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -931,7 +931,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstClock);
 
   /* Not referenced? */
@@ -969,7 +969,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
     }
     else
     {
-      /* Increases counter */
+      /* Increases count */
       orxStructure_IncreaseCount(_pstClock);
 
       /* Logs message */

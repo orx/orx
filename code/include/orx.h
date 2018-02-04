@@ -249,8 +249,8 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame stop event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
-        /* Updates frame counter */
-        stPayload.u32FrameCounter++;
+        /* Updates frame count */
+        stPayload.u32FrameCount++;
       }
     }
 
@@ -320,8 +320,8 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame stop event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
-        /* Updates frame counter */
-        stPayload.u32FrameCounter++;
+        /* Updates frame count */
+        stPayload.u32FrameCount++;
       }
     }
 

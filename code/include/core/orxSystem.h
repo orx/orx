@@ -78,7 +78,7 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
 {
   union
   {
-    orxU32      u32FrameCounter;
+    orxU32      u32FrameCount;
 
     /* Touch event */
     struct

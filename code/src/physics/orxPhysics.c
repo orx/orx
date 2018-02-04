@@ -176,7 +176,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
  */
 orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
 {
-  orxU32 u32Result = 0, u32Counter, i;
+  orxU32 u32Result = 0, u32Count, i;
 
   /* Checks */
   orxASSERT(_zFlag != orxNULL);
@@ -184,22 +184,22 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
   /* Pushes config section */
   orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
 
-  /* Gets flag list counter */
-  u32Counter = orxConfig_GetListCount(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
+  /* Gets flag list count */
+  u32Count = orxConfig_GetListCount(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
 
   {
 #ifdef __orxMSVC__
 
-    const orxSTRING *azFlagList = (const orxSTRING *)alloca((u32Counter + 1) * sizeof(orxSTRING *));
+    const orxSTRING *azFlagList = (const orxSTRING *)alloca((u32Count + 1) * sizeof(orxSTRING *));
 
 #else /* __orxMSVC__ */
 
-    const orxSTRING azFlagList[u32Counter + 1];
+    const orxSTRING azFlagList[u32Count + 1];
 
 #endif /* __orxMSVC__ */
 
     /* For all flags */
-    for(i = 0; i < u32Counter; i++)
+    for(i = 0; i < u32Count; i++)
     {
       /* Gets it */
       azFlagList[i] = orxConfig_GetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, i);
@@ -218,19 +218,19 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
     if(u32Result == 0)
     {
       /* Is there room to add the new flag? */
-      if(u32Counter < 16)
+      if(u32Count < 16)
       {
         /* Stores its name */
-        azFlagList[u32Counter] = _zFlag;
+        azFlagList[u32Count] = _zFlag;
 
         /* Updates flag list */
-        if(orxConfig_SetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, azFlagList, u32Counter + 1) != orxSTATUS_FAILURE)
+        if(orxConfig_SetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, azFlagList, u32Count + 1) != orxSTATUS_FAILURE)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%d>.", _zFlag, 1 << u32Counter);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%d>.", _zFlag, 1 << u32Count);
 
           /* Updates result */
-          u32Result = 1 << u32Counter;
+          u32Result = 1 << u32Count;
         }
       }
       else

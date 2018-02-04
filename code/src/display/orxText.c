@@ -732,7 +732,7 @@ orxTEXT *orxFASTCALL orxText_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -812,7 +812,7 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstText);
 
   /* Not referenced? */
@@ -960,7 +960,7 @@ orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Li
 
           case orxCHAR_LF:
           {
-            /* Updates line counter */
+            /* Updates line count */
             u32Line++;
           }
 
@@ -1245,7 +1245,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
     /* Has current font? */
     if(_pstText->pstFont != orxNULL)
     {
-      /* Updates structure reference counter */
+      /* Updates structure reference count */
       orxStructure_DecreaseCount(_pstText->pstFont);
 
       /* Internally handled? */
@@ -1271,7 +1271,7 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
       /* Stores it */
       _pstText->pstFont = _pstFont;
 
-      /* Updates its reference counter */
+      /* Updates its reference count */
       orxStructure_IncreaseCount(_pstFont);
     }
 

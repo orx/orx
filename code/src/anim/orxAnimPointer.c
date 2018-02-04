@@ -94,7 +94,7 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
-  orxU32                  u32LoopCounter;             /**< Current animation loop counter : 52 */
+  orxU32                  u32LoopCount;               /**< Current animation loop count : 52 */
 };
 
 
@@ -274,8 +274,8 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Clears current key */
           _pstAnimPointer->u32CurrentKey = 0;
 
-          /* Clears loop counter */
-          _pstAnimPointer->u32LoopCounter = 0;
+          /* Clears loop count */
+          _pstAnimPointer->u32LoopCount = 0;
 
           /* Stores target anim */
           u32TargetAnim = _pstAnimPointer->u32TargetAnim;
@@ -355,11 +355,11 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             u32CurrentAnim  = _pstAnimPointer->u32CurrentAnim;
             u32TargetAnim   = _pstAnimPointer->u32TargetAnim;
 
-            /* Updates loop counter */
-            _pstAnimPointer->u32LoopCounter++;
+            /* Updates loop count */
+            _pstAnimPointer->u32LoopCount++;
 
             /* Updates payload */
-            stPayload.stLoop.u32Counter = _pstAnimPointer->u32LoopCounter;
+            stPayload.stLoop.u32Count = _pstAnimPointer->u32LoopCount;
 
             /* Sends it */
             orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, pstOwner, pstOwner, &stPayload);
@@ -587,7 +587,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     pstAnimPointer->fTime             = orxFLOAT_0;
     pstAnimPointer->u32TargetAnim     = orxU32_UNDEFINED;
     pstAnimPointer->u32CurrentKey     = 0;
-    pstAnimPointer->u32LoopCounter    = 0;
+    pstAnimPointer->u32LoopCount      = 0;
 
     /* Is animset link table non-static? */
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
@@ -599,7 +599,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
       orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_FLAG_NONE);
     }
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstAnimPointer);
   }
   else
@@ -695,7 +695,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstAnimPointer);
 
   /* Not referenced? */
@@ -1019,8 +1019,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       /* Clears current key */
       _pstAnimPointer->u32CurrentKey  = 0;
 
-      /* Clears loop counter */
-      _pstAnimPointer->u32LoopCounter = 0;
+      /* Clears loop count */
+      _pstAnimPointer->u32LoopCount   = 0;
 
       /* Has current anim? */
       if(u32CurrentAnim != orxU32_UNDEFINED)

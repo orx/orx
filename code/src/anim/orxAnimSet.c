@@ -86,11 +86,11 @@
 #define orxANIMSET_KU32_FLAG_CACHED                   0x80000000  /**< Cached flag */
 
 #define orxANIMSET_KU32_MASK_SIZE                     0x000003FF  /**< ID mask for size */
-#define orxANIMSET_KU32_MASK_COUNTER                  0x000FFC00  /**< ID mask for counter */
+#define orxANIMSET_KU32_MASK_COUNT                    0x000FFC00  /**< ID mask for count */
 #define orxANIMSET_KU32_MASK_FLAGS                    0xFFF00000  /**< ID mask for flags */
 
 #define orxANIMSET_KU32_ID_SHIFT_SIZE                 0           /**< ID shift for size */
-#define orxANIMSET_KU32_ID_SHIFT_COUNTER              10          /**< ID shift for counter */
+#define orxANIMSET_KU32_ID_SHIFT_COUNT                10          /**< ID shift for count */
 
 
 /** Link table link flags
@@ -201,7 +201,7 @@ struct __orxANIMSET_LINK_TABLE_t
 {
   orxU32                 *au32LinkArray;              /**< Link array : 4 */
   orxU8                  *au8LoopArray;               /**< Loop array : 8 */
-  orxU16                  u16LinkCounter;             /**< Link counter : 10 */
+  orxU16                  u16LinkCount;               /**< Link count : 10 */
   orxU16                  u16TableSize;               /**< Table size : 12 */
   orxU32                  u32Flags;                   /**< Flags : 16 */
 };
@@ -259,7 +259,7 @@ orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName)
 orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Link table set flag test accessor
- * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
  * @param[in]   _u32Flags                     Flags to test
  * @return      orxTRUE / orxFALSE
  */
@@ -273,7 +273,7 @@ static orxINLINE orxBOOL orxAnimSet_TestLinkTableFlag(orxANIMSET_LINK_TABLE *_ps
 }
 
 /** Link table set flag set accessor
- * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
  * @param[in]   _u32AddFlags                  Flags to add
  * @param[in]   _u32RemoveFlags               Flags to remove
  */
@@ -289,7 +289,7 @@ static orxINLINE void orxAnimSet_SetLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLin
 }
 
 /** Gets a link value from a link table
- * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
  * @param[in]   _u32Index                     Link index
  * @return      Link value / orxU32_UNDEFINED
  */
@@ -304,9 +304,9 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLink(orxANIMSET_LINK_TABLE *_pstL
 }
 
 /** Sets a link value in a link table
- * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
  * @param[in]   _u32Index                     Link index
- * @param[in]		_u32LinkValue									Value to set
+ * @param[in]   _u32LinkValue                 Value to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index, orxU32 _u32LinkValue)
@@ -325,10 +325,10 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLink(orxANIMSET_LINK_TABLE *_p
 }
 
 /** Sets a link property
- * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
  * @param[in]   _u32LinkIndex                 Link index
- * @param[in]		_u32Property									Property ID
- * @param[in]		_u32Value											Value to set
+ * @param[in]   _u32Property                  Property ID
+ * @param[in]   _u32Value                     Value to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property, orxU32 _u32Value)
@@ -345,20 +345,20 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_T
     /* Depends on property */
     switch(_u32Property & orxANIMSET_KU32_LINK_MASK_FLAGS)
     {
-      /* Loop Counter */
-      case orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER:
+      /* Loop Count */
+      case orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT:
       {
-        /* Sets loop counter value */
+        /* Sets loop count value */
         _pstLinkTable->au8LoopArray[_u32LinkIndex] = (orxU8)_u32Value;
 
         /* Updates flags */
         if(_u32Value != 0)
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER;
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT;
         }
         else
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER;
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT;
         }
 
         break;
@@ -436,9 +436,9 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_T
 }
 
 /** Gets a link property
- * @param[in]   _pstLinkTable	                Concerned LinkTable
- * @param[in]   _u32LinkIndex									Link index
- * @param[in]		_u32Property									Link property ID
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
+ * @param[in]   _u32LinkIndex                 Link index
+ * @param[in]   _u32Property                  Link property ID
  * @return      Link property value / orxU32_UNDEFINED;
  */
 static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property)
@@ -455,11 +455,11 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
     /* Depends on property */
     switch(_u32Property & orxANIMSET_KU32_LINK_MASK_FLAGS)
     {
-      /* Loop Counter */
-      case orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER:
+      /* Loop Count */
+      case orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT:
       {
-        /* Has a counter? */
-        if(_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER)
+        /* Has a count? */
+        if(_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT)
         {
           u32Value = (orxU32)(_pstLinkTable->au8LoopArray[_u32LinkIndex]);
         }
@@ -524,9 +524,9 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
 }
 
 /** Sets a link info between 2 Anims
- * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
- * @param[in]   _u32SrcIndex									Source Anim index
- * @param[in]		_u32DstIndex									Destination Anim index
+ * @param[in]   _pstInfo                      Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex                  Source Anim index
+ * @param[in]   _u32DstIndex                  Destination Anim index
  */
 static orxINLINE void orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
@@ -549,9 +549,9 @@ static orxINLINE void orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU
 }
 
 /** Resets a link info between 2 Anims
- * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
- * @param[in]   _u32SrcIndex									Source Anim index
- * @param[in]		_u32DstIndex									Destination Anim index
+ * @param[in]   _pstInfo                      Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex                  Source Anim index
+ * @param[in]   _u32DstIndex                  Destination Anim index
  */
 static orxINLINE void orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
@@ -576,8 +576,8 @@ static orxINLINE void orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, or
 }
 
 /** Cleans all link info from an Anim
- * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
- * @param[in]   _u32SrcIndex									Source Anim index
+ * @param[in]   _pstInfo                      Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex                  Source Anim index
  */
 static orxINLINE void orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex)
 {
@@ -600,10 +600,10 @@ static orxINLINE void orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, or
 }
 
 /** Gets a link info between 2 Anims
- * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
- * @param[in]   _u32SrcIndex									Source Anim index
- * @param[in]		_u32DstIndex									Destination Anim index
- * @return			orxTRUE / orxFALSE
+ * @param[in]   _pstInfo                      Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex                  Source Anim index
+ * @param[in]   _u32DstIndex                  Destination Anim index
+ * @return      orxTRUE / orxFALSE
  */
 static orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
@@ -626,9 +626,9 @@ static orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, o
 }
 
 /** Updates links information from one Anim to another
- * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
- * @param[in]   _u32SrcIndex									Source Anim index
- * @param[in]		_u32DstIndex									Destination Anim index
+ * @param[in]   _pstInfo                      Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex                  Source Anim index
+ * @param[in]   _u32DstIndex                  Destination Anim index
  * @return      orxTRUE / orxFALSE
  */
 static orxBOOL orxFASTCALL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
@@ -737,8 +737,8 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstIn
 }
 
  /** Updates all links for an Anim
- * @param[in]   _u32Index			                Anim index
- * @param[in]   _pstInfo											Associated LinkUpdateInfo
+ * @param[in]   _u32Index                     Anim index
+ * @param[in]   _pstInfo                      Associated LinkUpdateInfo
  * @return      orxTRUE if updated, orxFALSE otherwise
  */
 static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
@@ -799,8 +799,8 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDAT
 }
 
 /** Creates and inits a LinkUpdateInfo
- * @param[in]   _pstLinkTable	                Concerned LinkTable
- * @return			Created & up to date LinkUpdateInfo / orxNULL
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
+ * @return      Created & up to date LinkUpdateInfo / orxNULL
  */
 static orxLINK_UPDATE_INFO *orxFASTCALL orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
@@ -878,8 +878,8 @@ static orxINLINE void orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstL
 }
 
 /** Cleans a LinkTable for a given Anim
- * @param[in]   _pstLinkTable	                Concerned LinkTable
- * @param[in]   _u32AnimIndex									Anim index
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
+ * @param[in]   _u32AnimIndex                 Anim index
  */
 static void orxFASTCALL orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
 {
@@ -918,8 +918,8 @@ static void orxFASTCALL orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLin
 }
 
 /** Creates a LinkTable
- * @param[in]   _u32Size											Size of the desired LinkTable
- * @return 			Created LinkTable / orxNULL
+ * @param[in]   _u32Size                      Size of the desired LinkTable
+ * @return      Created LinkTable / orxNULL
  */
 static orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CreateLinkTable(orxU32 _u32Size)
 {
@@ -960,7 +960,7 @@ static orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CreateLinkTable(orxU32 _u32
 
         /* Inits values */
         pstLinkTable->u16TableSize    = (orxU16)_u32Size;
-        pstLinkTable->u16LinkCounter  = 0;
+        pstLinkTable->u16LinkCount    = 0;
 
         /* Inits flags */
         orxAnimSet_SetLinkTableFlag(pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_READY | orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_MASK_FLAGS);
@@ -1004,8 +1004,8 @@ static orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CreateLinkTable(orxU32 _u32
 }
 
 /** Copies an AnimSet LinkTable into another one
- * @param[in]   _pstDstLinkTable	            Destination LinkTable
- * @param[in]   _pstSrcLinkTable							Source LinkTable
+ * @param[in]   _pstDstLinkTable              Destination LinkTable
+ * @param[in]   _pstSrcLinkTable              Source LinkTable
  */
 static orxINLINE void orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstDstLinkTable, const orxANIMSET_LINK_TABLE *_pstSrcLinkTable)
 {
@@ -1015,7 +1015,7 @@ static orxINLINE void orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstDstLin
 
   /* Copies all */
   _pstDstLinkTable->u32Flags       = _pstSrcLinkTable->u32Flags;
-  _pstDstLinkTable->u16LinkCounter = _pstSrcLinkTable->u16LinkCounter;
+  _pstDstLinkTable->u16LinkCount   = _pstSrcLinkTable->u16LinkCount;
   _pstDstLinkTable->u16TableSize   = _pstSrcLinkTable->u16TableSize;
 
   /* Copies tables */
@@ -1026,8 +1026,8 @@ static orxINLINE void orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstDstLin
 }
 
 /** Sets an AnimSet storage size
- * @param[in]   _pstAnimSet										Concerned AnimSet
- * @param[in]   _u32Size											Desired size
+ * @param[in]   _pstAnimSet                   Concerned AnimSet
+ * @param[in]   _u32Size                      Desired size
  */
 static orxINLINE void orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSet, orxU32 _u32Size)
 {
@@ -1041,55 +1041,55 @@ static orxINLINE void orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSet, orx
   return;
 }
 
-/** Sets an AnimSet internal Anim counter
- * @param[in]   _pstAnimSet										Concerned AnimSet
- * @param[in]   _u32AnimCounter								Counter value
+/** Sets an AnimSet internal Anim count
+ * @param[in]   _pstAnimSet                   Concerned AnimSet
+ * @param[in]   _u32AnimCount                 Count value
  */
-static orxINLINE void orxAnimSet_SetAnimCount(orxANIMSET *_pstAnimSet, orxU32 _u32AnimCounter)
+static orxINLINE void orxAnimSet_SetAnimCount(orxANIMSET *_pstAnimSet, orxU32 _u32AnimCount)
 {
   /* Checks */
-  orxASSERT(_u32AnimCounter <= orxAnimSet_GetAnimStorageSize(_pstAnimSet));
+  orxASSERT(_u32AnimCount <= orxAnimSet_GetAnimStorageSize(_pstAnimSet));
 
-  /* Updates counter */
-  orxStructure_SetFlags(_pstAnimSet, _u32AnimCounter << orxANIMSET_KU32_ID_SHIFT_COUNTER, orxANIMSET_KU32_MASK_COUNTER);
+  /* Updates count */
+  orxStructure_SetFlags(_pstAnimSet, _u32AnimCount << orxANIMSET_KU32_ID_SHIFT_COUNT, orxANIMSET_KU32_MASK_COUNT);
 
   return;
 }
 
-/** Increases an AnimSet internal Anim counter
- * @param[in]   _pstAnimSet										Concerned AnimSet
+/** Increases an AnimSet internal Anim count
+ * @param[in]   _pstAnimSet                   Concerned AnimSet
  */
 static orxINLINE void orxAnimSet_IncreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
-  register orxU32 u32AnimCounter;
+  register orxU32 u32AnimCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Gets anim counter */
-  u32AnimCounter = orxAnimSet_GetAnimCount(_pstAnimSet);
+  /* Gets anim count */
+  u32AnimCount = orxAnimSet_GetAnimCount(_pstAnimSet);
 
-  /* Updates anim counter*/
-  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCounter + 1);
+  /* Updates anim count*/
+  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCount + 1);
 
   return;
 }
 
-/** Decreases an AnimSet internal Anim counter
- * @param[in]   _pstAnimSet										Concerned AnimSet
+/** Decreases an AnimSet internal Anim count
+ * @param[in]   _pstAnimSet                   Concerned AnimSet
  */
 static orxINLINE void orxAnimSet_DecreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
-  register orxU32 u32AnimCounter;
+  register orxU32 u32AnimCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Gets anim counter */
-  u32AnimCounter = orxAnimSet_GetAnimCount(_pstAnimSet);
+  /* Gets anim count */
+  u32AnimCount = orxAnimSet_GetAnimCount(_pstAnimSet);
 
-  /* Updates anim counter*/
-  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCounter - 1);
+  /* Updates anim count*/
+  orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCount - 1);
 
   return;
 }
@@ -1117,11 +1117,11 @@ static orxINLINE void orxAnimSet_DeleteAll()
 }
 
 /** Computes next Animation, updating LinkTable link status
- * @param[in]   _pstLinkTable									Concerned LinkTable
- * @param[in]   _u32SrcAnim										Source Anim index
- * @param[in]   _u32DstAnim										Destination Anim index / orxU32_UNDEFINED
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
+ * @param[in]   _u32SrcAnim                   Source Anim index
+ * @param[in]   _u32DstAnim                   Destination Anim index / orxU32_UNDEFINED
  * @param[in]   _bSimulate                    Simulation mode, no update will be made on the link table
- * @return 			Next Anim index / orxU32_UNDEFINED
+ * @return      Next Anim index / orxU32_UNDEFINED
  */
 static orxU32 orxFASTCALL orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxBOOL _bSimulate)
 {
@@ -1171,10 +1171,10 @@ static orxU32 orxFASTCALL orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pst
       {
         orxU32 u32Loop;
 
-        /* Gets link loop counter */
-        u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
+        /* Gets link loop count */
+        u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT);
 
-        /* Has no empty loop counter (if no loop, value is orxU32_UNDEFINED)? */
+        /* Has no empty loop count (if no loop, value is orxU32_UNDEFINED)? */
         if(u32Loop != 0)
         {
           orxS32 s32LinkPriority;
@@ -1214,14 +1214,14 @@ static orxU32 orxFASTCALL orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pst
       /* Gets direct link id */
       u32LinkIndex = u32BaseIndex + u32Result;
 
-      /* Gets current loop counter */
-      u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
+      /* Gets current loop count */
+      u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT);
 
-      /* Is loop counter used? */
+      /* Is loop count used? */
       if(u32Loop != orxU32_UNDEFINED)
       {
-        /* Updates loop counter */
-        orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER, u32Loop - 1);
+        /* Updates loop count */
+        orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT, u32Loop - 1);
 
         /* Is link table dirty again? */
         if(u32Loop <= 1)
@@ -1238,8 +1238,8 @@ static orxU32 orxFASTCALL orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pst
 }
 
 /** Computes all link relations
- * @param[in]   _pstLinkTable									Concerned LinkTable
- * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstLinkTable                 Concerned LinkTable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
@@ -1329,20 +1329,20 @@ static orxSTATUS orxFASTCALL orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *
 
 static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRING _zConfigID)
 {
-  orxU32      u32AnimCounter;
+  orxU32      u32AnimCount;
   orxANIMSET *pstResult;
 
-  /* Gets animation counter */
-  u32AnimCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_ANIM_LIST);
+  /* Gets animation count */
+  u32AnimCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_ANIM_LIST);
 
   /* Creates animation set */
-  pstResult = orxAnimSet_Create(u32AnimCounter);
+  pstResult = orxAnimSet_Create(u32AnimCount);
 
   /* Valid? */
   if((pstResult != orxNULL)
   && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
   {
-    orxU32 i, u32LinkCounter;
+    orxU32 i, u32LinkCount;
 
     /* Updates status flags */
     orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
@@ -1351,7 +1351,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
     pstResult->zReference = orxConfig_GetCurrentSection();
 
     /* For all animations */
-    for(i = 0; i < u32AnimCounter; i++)
+    for(i = 0; i < u32AnimCount; i++)
     {
       const orxSTRING zAnimName;
 
@@ -1386,7 +1386,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
     orxHashTable_Optimize(pstResult->pstIDTable);
 
     /* For all links */
-    for(i = 0, u32LinkCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCounter; i++)
+    for(i = 0, u32LinkCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_LINK_LIST); i < u32LinkCount; i++)
     {
       const orxSTRING zLinkName;
 
@@ -1490,7 +1490,7 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
   /* Not already referenced? */
   if(*pzTableBucket == orxNULL)
   {
-    orxU32  i, u32Counter;
+    orxU32  i, u32Count;
     orxCHAR acLinkName[64] = {};
 
     /* Stores it */
@@ -1500,8 +1500,8 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
     orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
     /* For all linked animations */
-    for(i = 0, u32Counter = orxConfig_GetListCount(acLinkName);
-        i < u32Counter;
+    for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
+        i < u32Count;
         i++)
     {
       const orxSTRING zLinkedAnim;
@@ -1535,7 +1535,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   const orxSTRING zAnim = orxSTRING_EMPTY;
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
-  orxS32          s32ValueCounter, s32MaxFrames = -1;
+  orxS32          s32ValueCount, s32MaxFrames = -1;
   orxBOOL         bFromConfig = orxTRUE;
   orxANIM        *pstResult = orxNULL;
 
@@ -1543,10 +1543,10 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   zAnimSet = orxConfig_GetCurrentSection();
 
   /* Gets associated list size */
-  s32ValueCounter = orxConfig_GetListCount(_zConfigID);
+  s32ValueCount = orxConfig_GetListCount(_zConfigID);
 
   /* Depending on number of values */
-  switch(s32ValueCounter)
+  switch(s32ValueCount)
   {
     case 0:
     {
@@ -1773,7 +1773,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     if(bContinue != orxFALSE)
     {
       orxVECTOR       vFrameOrigin, vCurrentSize;
-      orxU32          u32FrameCounter, u32EventCounter, i;
+      orxU32          u32FrameCount, u32EventCount, i;
       orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
       const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
       orxFLOAT       *pfRowOrigin;
@@ -1902,14 +1902,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       }
 
       /* For all frames */
-      for(i = 0, u32EventCounter = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
+      for(i = 0, u32EventCount = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
           (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
           i++)
       {
         orxGRAPHIC     *pstGraphic;
         const orxSTRING zEventName = orxNULL;
         orxFLOAT        fEventValue = orxFLOAT_0;
-        orxS32          s32EventValueCounter;
+        orxS32          s32EventValueCount;
         orxBOOL         bDebugLevelBackup;
 
         /* Gets frame name */
@@ -2015,18 +2015,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           }
         }
 
-        /* Gets event value counter */
-        s32EventValueCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+        /* Gets event value count */
+        s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
 
         /* Found event? */
-        if(s32EventValueCounter > 0)
+        if(s32EventValueCount > 0)
         {
           /* Gets event info */
           zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
-          fEventValue = (s32EventValueCounter > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
+          fEventValue = (s32EventValueCount > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
 
-          /* Updates event counter */
-          u32EventCounter++;
+          /* Updates event count */
+          u32EventCount++;
         }
 
         /* Pops config section */
@@ -2077,14 +2077,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
       }
 
-      /* Gets frame counter */
-      u32FrameCounter = orxBank_GetCount(sstAnimSet.pstCreationBank);
+      /* Gets frame count */
+      u32FrameCount = orxBank_GetCount(sstAnimSet.pstCreationBank);
 
       /* Found frames? */
-      if(u32FrameCounter != 0)
+      if(u32FrameCount != 0)
       {
         /* Creates 2D animation */
-        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCounter, u32EventCounter);
+        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCount, u32EventCount);
 
         /* Valid? */
         if(pstResult != orxNULL)
@@ -2185,18 +2185,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING _zConfigID)
 {
   const orxSTRING zStartAnim;
-  orxU32          u32AnimCounter;
+  orxU32          u32AnimCount;
   orxANIMSET     *pstResult = orxNULL;
 
   /* Gets start anim */
   zStartAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_START_ANIM);
 
-  /* Gets start anim list counter */
-  u32AnimCounter = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
+  /* Gets start anim list count */
+  u32AnimCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_START_ANIM_LIST);
 
   /* Has start anim(s)? */
   if((zStartAnim != orxSTRING_EMPTY)
-  || (u32AnimCounter > 0))
+  || (u32AnimCount > 0))
   {
     /* Has single start anim? */
     if(zStartAnim != orxSTRING_EMPTY)
@@ -2212,18 +2212,18 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
       zStartAnim = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, 0);
 
       /* For all listed start anims */
-      for(i = 0; i < u32AnimCounter; i++)
+      for(i = 0; i < u32AnimCount; i++)
       {
         /* References it and all anims linked from it */
         orxAnimSet_ReferenceAnim(orxConfig_GetListString(orxANIMSET_KZ_CONFIG_START_ANIM_LIST, i));
       }
     }
 
-    /* Gets animation counter */
-    u32AnimCounter = orxHashTable_GetCount(sstAnimSet.pstCreationTable);
+    /* Gets animation count */
+    u32AnimCount = orxHashTable_GetCount(sstAnimSet.pstCreationTable);
 
     /* Creates animation set */
-    pstResult = orxAnimSet_Create(u32AnimCounter);
+    pstResult = orxAnimSet_Create(u32AnimCount);
 
     /* Valid? */
     if((pstResult != orxNULL)
@@ -2314,10 +2314,10 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
           }
           else
           {
-            orxU32 i, u32LinkCounter;
+            orxU32 i, u32LinkCount;
 
             /* For all links */
-            for(i = 0, u32LinkCounter = orxConfig_GetListCount(acLinkName); i < u32LinkCounter; i++)
+            for(i = 0, u32LinkCount = orxConfig_GetListCount(acLinkName); i < u32LinkCount; i++)
             {
               const orxSTRING zLink;
 
@@ -2571,8 +2571,8 @@ void orxFASTCALL orxAnimSet_Exit()
 }
 
 /** Creates an empty AnimSet
- * @param[in]		_u32Size														Storage size
- * return 			Created orxANIMSET / orxNULL
+ * @param[in]   _u32Size                            Storage size
+ * return       Created orxANIMSET / orxNULL
  */
 orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
 {
@@ -2597,7 +2597,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
       /* Cleans it */
       orxMemory_Zero(pstAnimSet->pastAnim, _u32Size * sizeof(orxANIM *));
 
-      /* Set storage size & counter */
+      /* Set storage size & count */
       orxAnimSet_SetAnimStorageSize(pstAnimSet, _u32Size);
       orxAnimSet_SetAnimCount(pstAnimSet, 0);
 
@@ -2613,7 +2613,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
         /* Inits flags */
         orxStructure_SetFlags(pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC, orxANIMSET_KU32_MASK_FLAGS);
 
-        /* Increases counter */
+        /* Increases count */
         orxStructure_IncreaseCount(pstAnimSet);
       }
       else
@@ -2671,7 +2671,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   /* Found? */
   if(pstResult != orxNULL)
   {
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -2696,7 +2696,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
         /* Should keep it in cache? */
         if(orxConfig_GetBool(orxANIMSET_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
         {
-          /* Increases its reference counter to keep it in cache table */
+          /* Increases its reference count to keep it in cache table */
           orxStructure_IncreaseCount(pstResult);
 
           /* Updates its flags */
@@ -2722,7 +2722,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
 }
 
 /** Deletes an AnimSet
- * @param[in]		_pstAnimSet													AnimSet to delete
+ * @param[in]   _pstAnimSet                         AnimSet to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
@@ -2733,7 +2733,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstAnimSet);
 
   /* Not referenced? */
@@ -2808,7 +2808,7 @@ orxSTATUS orxFASTCALL orxAnimSet_ClearCache()
 }
 
 /** Adds a reference to an AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
  */
 void orxFASTCALL orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
 {
@@ -2819,14 +2819,14 @@ void orxFASTCALL orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
   /* Locks animset */
   orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK, orxANIMSET_KU32_FLAG_NONE);
 
-  /* Updates reference counter */
+  /* Updates reference count */
   orxStructure_IncreaseCount(_pstAnimSet);
 
   return;
 }
 
 /** Removes a reference from an AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
  */
 void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
 {
@@ -2834,7 +2834,7 @@ void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Updates reference counter */
+  /* Updates reference count */
   orxStructure_DecreaseCount(_pstAnimSet);
 
   /* No extra reference left? */
@@ -2850,7 +2850,7 @@ void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
 }
 
 /** Clones an AnimSet Link Table
- * @param[in]		_pstAnimSet													AnimSet to clone
+ * @param[in]   _pstAnimSet                         AnimSet to clone
  * @return An internally allocated clone of the AnimSet
  */
 orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(const orxANIMSET *_pstAnimSet)
@@ -2884,7 +2884,7 @@ orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(const orxANIMSET *_
 }
 
 /** Deletes a Link Table
- * @param[in]		_pstAnimSet													AnimSet to delete (should have been created using the clone function)
+ * @param[in]   _pstAnimSet                         AnimSet to delete (should have been created using the clone function)
  */
 void orxFASTCALL orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
@@ -2901,13 +2901,13 @@ void orxFASTCALL orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable
 }
 
 /** Adds an Anim to an AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_pstAnim														Anim to add
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _pstAnim                            Anim to add
  * @return Anim ID in the specified AnimSet
  */
 orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim)
 {
-  orxU32 u32Counter, u32Size, u32Index;
+  orxU32 u32Count, u32Size, u32Index;
   orxU32 u32Result;
 
   /* Checks */
@@ -2915,15 +2915,15 @@ orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim
   orxSTRUCTURE_ASSERT(_pstAnimSet);
   orxSTRUCTURE_ASSERT(_pstAnim);
 
-  /* Gets storage size & counter */
-  u32Size     = orxAnimSet_GetAnimStorageSize(_pstAnimSet);
-  u32Counter  = orxAnimSet_GetAnimCount(_pstAnimSet);
+  /* Gets storage size & count */
+  u32Size   = orxAnimSet_GetAnimStorageSize(_pstAnimSet);
+  u32Count  = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Not locked? */
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK) == orxFALSE)
   {
     /* Is there free room? */
-    if(u32Counter < u32Size)
+    if(u32Count < u32Size)
     {
       /* Finds the first empty slot */
       for(u32Index = 0; u32Index < u32Size; u32Index++)
@@ -2940,10 +2940,10 @@ orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim
       /* Adds the extra animation */
       _pstAnimSet->pastAnim[u32Index] = _pstAnim;
 
-      /* Updates Animation reference counter */
+      /* Updates Animation reference count */
       orxStructure_IncreaseCount(_pstAnim);
 
-      /* Updates Animation counter */
+      /* Updates Animation count */
       orxAnimSet_IncreaseAnimCount(_pstAnimSet);
 
       /* Gets result ID */
@@ -2972,9 +2972,9 @@ orxU32 orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim
 }
 
 /** Removes an Anim from an AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32AnimID												  ID of the anim to remove
- * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32AnimID                          ID of the anim to remove
+ * @return      orxSTATUS_SUCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32AnimID)
 {
@@ -2995,10 +2995,10 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32
     /* Animation found for the given ID? */
     if(_pstAnimSet->pastAnim[u32AnimIndex] != orxNULL)
     {
-      /* Updates counter */
+      /* Updates count */
       orxAnimSet_DecreaseAnimCount(_pstAnimSet);
 
-      /* Updates animation reference counter */
+      /* Updates animation reference count */
       orxStructure_DecreaseCount((_pstAnimSet->pastAnim[u32AnimIndex]));
 
       /* Was internally allocated? */
@@ -3040,12 +3040,12 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxU32 _u32
 }
 
 /** Removes all Anim from the AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
 {
-  orxU32    u32Counter;
+  orxU32    u32Count;
   orxSTATUS eResult;
 
   /* Checks */
@@ -3057,11 +3057,11 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
   {
     orxU32 i;
 
-    /* Gets animation counter */
-    u32Counter = orxAnimSet_GetAnimCount(_pstAnimSet);
+    /* Gets animation count */
+    u32Count = orxAnimSet_GetAnimCount(_pstAnimSet);
 
     /* Until there are no animation left */
-    for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Counter) && (eResult != orxSTATUS_FAILURE); i++)
+    for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Count) && (eResult != orxSTATUS_FAILURE); i++)
     {
       eResult = orxAnimSet_RemoveAnim(_pstAnimSet, i);
     }
@@ -3083,10 +3083,10 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
 }
 
 /** Adds a link between two Anims of the AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32SrcAnim													Source Anim of the link
- * @param[in]		_u32DstAnim													Destination Anim of the link
- * @return 			ID of the created link / orxU32_UNDEFINED
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32SrcAnim                         Source Anim of the link
+ * @param[in]   _u32DstAnim                         Destination Anim of the link
+ * @return      ID of the created link / orxU32_UNDEFINED
  */
 orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
 {
@@ -3130,8 +3130,8 @@ orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAni
       /* Stores it */
       orxAnimSet_SetLinkTableLink(pstLinkTable, u32Index, u32Link);
 
-      /* Updates counter */
-      pstLinkTable->u16LinkCounter++;
+      /* Updates count */
+      pstLinkTable->u16LinkCount++;
 
       /* Animset has to be computed again */
       orxAnimSet_SetLinkTableFlag(pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
@@ -3162,9 +3162,9 @@ orxU32 orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAni
 }
 
 /** Removes a link from the AnimSet
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32LinkID												  ID of the link
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32LinkID                          ID of the link
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxU32 _u32LinkID)
 {
@@ -3225,10 +3225,10 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxU32 _u32
 }
 
 /** Gets a direct link between two Anims, if exists
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32SrcAnim													ID of the source Anim
- * @param[in]		_u32DstAnim												  ID of the destination Anim
- * @return			ID of the direct link, orxU32_UNDEFINED if none
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32SrcAnim                         ID of the source Anim
+ * @param[in]   _u32DstAnim                         ID of the destination Anim
+ * @return      ID of the direct link, orxU32_UNDEFINED if none
  */
 orxU32 orxFASTCALL orxAnimSet_GetLink(const orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
 {
@@ -3270,11 +3270,11 @@ orxU32 orxFASTCALL orxAnimSet_GetLink(const orxANIMSET *_pstAnimSet, orxU32 _u32
 }
 
 /** Sets a link property
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32LinkID												  ID of the concerned link
- * @param[in]		_u32Property												ID of the property to set
- * @param[in]		_32Value														Value of the property to set
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32LinkID                          ID of the concerned link
+ * @param[in]   _u32Property                        ID of the property to set
+ * @param[in]   _32Value                            Value of the property to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property, orxU32 _u32Value)
 {
@@ -3294,8 +3294,8 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32
     /* Changes occurred? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Added loop counter? */
-      if(_u32Property == orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER)
+      /* Added loop count? */
+      if(_u32Property == orxANIMSET_KU32_LINK_FLAG_LOOP_COUNT)
       {
         /* Link table should be locally stored by animation pointers now */
         orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_LINK_STATIC);
@@ -3313,10 +3313,10 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxU32
 }
 
 /** Gets a link property
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32LinkID 												  ID of the concerned link
- * @param[in]		_u32Property												ID of the property to get
- * @return			Property value / orxU32_UNDEFINED
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32LinkID                          ID of the concerned link
+ * @param[in]   _u32Property                        ID of the property to get
+ * @return      Property value / orxU32_UNDEFINED
  */
 orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxU32 _u32LinkID, orxU32 _u32Property)
 {
@@ -3333,7 +3333,7 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orx
  * @param[in]   _u32SrcAnim                         Source (current) Anim ID
  * @param[in]   _u32DstAnim                         Destination Anim ID, if none (auto mode) set it to orxU32_UNDEFINED
  * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
- * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+ * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counts for example)
  * @param[out] _pbCut                               Animation has been cut
  * @param[out] _pbClearTarget                       Animation has requested a target clearing
  * @return Current Anim ID. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
@@ -3495,24 +3495,24 @@ orxU32 orxFASTCALL orxAnimSet_FindNextAnim(orxANIMSET *_pstAnimSet, orxU32 _u32S
 }
 
 /** AnimSet Anim get accessor
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32AnimID                          Anim ID
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32AnimID                          Anim ID
  * @return Anim pointer / orxNULL
  */
 orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u32AnimID)
 {
-  orxU32 u32Counter;
+  orxU32 u32Count;
   orxANIM *pstAnim = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Gets counter */
-  u32Counter = orxAnimSet_GetAnimCount(_pstAnimSet);
+  /* Gets count */
+  u32Count = orxAnimSet_GetAnimCount(_pstAnimSet);
 
   /* Is index valid? */
-  if(_u32AnimID < u32Counter)
+  if(_u32AnimID < u32Count)
   {
     /* Gets Animation */
     pstAnim = _pstAnimSet->pastAnim[_u32AnimID];
@@ -3528,8 +3528,8 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxU32 _u
 }
 
 /** AnimSet Anim storage size get accessor
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			AnimSet Storage size / orxU32_UNDEFINED
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @return      AnimSet Storage size / orxU32_UNDEFINED
  */
 orxU32 orxFASTCALL orxAnimSet_GetAnimStorageSize(const orxANIMSET *_pstAnimSet)
 {
@@ -3541,9 +3541,9 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimStorageSize(const orxANIMSET *_pstAnimSet)
   return(orxStructure_GetFlags(_pstAnimSet, orxANIMSET_KU32_MASK_SIZE) >> orxANIMSET_KU32_ID_SHIFT_SIZE);
 }
 
-/** AnimSet Anim counter get accessor
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			Anim counter / orxU32_UNDEFINED
+/** AnimSet Anim count get accessor
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @return      Anim count / orxU32_UNDEFINED
  */
 orxU32 orxFASTCALL orxAnimSet_GetAnimCount(const orxANIMSET *_pstAnimSet)
 {
@@ -3551,8 +3551,8 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimCount(const orxANIMSET *_pstAnimSet)
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Gets counter */
-  return(orxStructure_GetFlags(_pstAnimSet, orxANIMSET_KU32_MASK_COUNTER) >> orxANIMSET_KU32_ID_SHIFT_COUNTER);
+  /* Gets count */
+  return(orxStructure_GetFlags(_pstAnimSet, orxANIMSET_KU32_MASK_COUNT) >> orxANIMSET_KU32_ID_SHIFT_COUNT);
 }
 
 /** Gets animation ID from name

@@ -142,7 +142,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxBank_GetIndex(const orxBANK *_pst
  */
 extern orxDLLAPI void *orxFASTCALL          orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index);
 
-/** Gets the bank allocated cell counter
+/** Gets the bank allocated cell count
  * @param[in] _pstBank    Concerned bank
  * @return Number of allocated cells
  */

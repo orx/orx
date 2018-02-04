@@ -282,7 +282,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
 
-/** Gets the input counter to which a mouse/joystick button, keyboard key or joystick axis is bound
+/** Gets the input count to which a mouse/joystick button, keyboard key or joystick axis is bound
  * @param[in] _eType            Type of peripheral to test
  * @param[in] _eID              ID of button/key/axis to test
  * @param[in] _eMode            Mode (only used for axis input)

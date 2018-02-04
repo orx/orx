@@ -245,14 +245,14 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxMemory_GetCacheLine
 
 /** Gets memory usage for a given type
  * @param[in] _eMemType               Concerned memory type
- * @param[out] _pu32Counter           Current memory allocation counter
- * @param[out] _pu32PeakCounter       Peak memory allocation counter
+ * @param[out] _pu32Count             Current memory allocation count
+ * @param[out] _pu32PeakCount         Peak memory allocation count
  * @param[out] _pu32Size              Current memory allocation size
  * @param[out] _pu32PeakSize          Peak memory allocation size
- * @param[out] _pu32OperationCounter  Total number of memory operations (malloc/free)
+ * @param[out] _pu32OperationCount    Total number of memory operations (malloc/free)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Count, orxU32 *_pu32PeakCount, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCount);
 
 
 /** Tracks (external) memory allocation

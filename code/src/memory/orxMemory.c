@@ -64,9 +64,9 @@
 
 typedef struct __orxMEMORY_TRACKER_t
 {
-  orxU32 u32Counter, u32PeakCounter;
+  orxU32 u32Count, u32PeakCount;
   orxU32 u32Size, u32PeakSize;
-  orxU32 u32OperationCounter;
+  orxU32 u32OperationCount;
 
 } orxMEMORY_TRACKER;
 
@@ -462,14 +462,14 @@ orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
 
 /** Gets memory usage for a given type
  * @param[in] _eMemType         Concerned memory type
- * @param[out] _pu32Counter     Current memory allocation counter
- * @param[out] _pu32PeakCounter Peak memory allocation counter
+ * @param[out] _pu32Count       Current memory allocation count
+ * @param[out] _pu32PeakCount   Peak memory allocation count
  * @param[out] _pu32Size        Current memory allocation size
  * @param[out] _pu32PeakSize    Peak memory allocation size
- * @param[out] _pu32OperationCounter  Total number of memory operations (malloc/free)
+ * @param[out] _pu32OperationCount Total number of memory operations (malloc/free)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Counter, orxU32 *_pu32PeakCounter, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCounter)
+orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Count, orxU32 *_pu32PeakCount, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCount)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -479,18 +479,18 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
   /* Valid? */
   if(_eMemType < orxMEMORY_TYPE_NUMBER)
   {
-    /* Asked for current counter? */
-    if(_pu32Counter != orxNULL)
+    /* Asked for current count? */
+    if(_pu32Count != orxNULL)
     {
       /* Updates it */
-      *_pu32Counter = sstMemory.astMemoryTrackerList[_eMemType].u32Counter;
+      *_pu32Count = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
     }
 
-    /* Asked for peak counter? */
-    if(_pu32PeakCounter != orxNULL)
+    /* Asked for peak count? */
+    if(_pu32PeakCount != orxNULL)
     {
       /* Updates it */
-      *_pu32PeakCounter = sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter;
+      *_pu32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount;
     }
 
     /* Asked for current size? */
@@ -507,11 +507,11 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
       *_pu32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize;
     }
 
-    /* Asked for total operation counter? */
-    if(_pu32OperationCounter != orxNULL)
+    /* Asked for total operation count? */
+    if(_pu32OperationCount != orxNULL)
     {
       /* Updates it */
-      *_pu32OperationCounter = sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter;
+      *_pu32OperationCount = sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount;
     }
   }
   else
@@ -543,12 +543,12 @@ orxSTATUS orxFASTCALL orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size,
     /* Allocate? */
     if(_bAllocate != orxFALSE)
     {
-      /* Updates counters */
+      /* Updates counts */
       sstMemory.astMemoryTrackerList[_eMemType].u32Size += _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Counter++;
-      if(sstMemory.astMemoryTrackerList[_eMemType].u32Counter > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter)
+      sstMemory.astMemoryTrackerList[_eMemType].u32Count++;
+      if(sstMemory.astMemoryTrackerList[_eMemType].u32Count > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount)
       {
-        sstMemory.astMemoryTrackerList[_eMemType].u32PeakCounter = sstMemory.astMemoryTrackerList[_eMemType].u32Counter;
+        sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
       }
       if(sstMemory.astMemoryTrackerList[_eMemType].u32Size > sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize)
       {
@@ -557,13 +557,13 @@ orxSTATUS orxFASTCALL orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size,
     }
     else
     {
-      /* Updates counters */
+      /* Updates counts */
       sstMemory.astMemoryTrackerList[_eMemType].u32Size -= _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Counter--;
+      sstMemory.astMemoryTrackerList[_eMemType].u32Count--;
     }
 
-    /* Updates operation counter */
-    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCounter++;
+    /* Updates operation count */
+    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount++;
   }
   else
   {

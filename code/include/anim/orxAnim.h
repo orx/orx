@@ -103,7 +103,7 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
     /* Loop event */
     struct
     {
-      orxU32          u32Counter;             /**< Loop counter : 12 */
+      orxU32          u32Count;               /**< Loop count : 12 */
     } stLoop;
 
     /* Custom event */
@@ -226,9 +226,9 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetKeyData(const orxANIM *
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim);
 
-/** Anim key counter accessor
+/** Anim key count accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Anim key counter
+ * @return      Anim key count
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCount(const orxANIM *_pstAnim);
 
@@ -239,9 +239,9 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCount(const orxANIM 
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventStorageSize(const orxANIM *_pstAnim);
 
-/** Anim event counter accessor
+/** Anim event count accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Anim event counter
+ * @return      Anim event count
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCount(const orxANIM *_pstAnim);
 
