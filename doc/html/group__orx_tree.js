@@ -2,7 +2,7 @@ var group__orx_tree =
 [
     [ "orxTREE", "structorx_t_r_e_e.html", [
       [ "pstRoot", "structorx_t_r_e_e.html#ac8eb6aef655adaecc1a09e4d697f8f50", null ],
-      [ "u32Counter", "structorx_t_r_e_e.html#a1ca0edee0ff7cd252156181a3f8487dc", null ]
+      [ "u32Count", "structorx_t_r_e_e.html#affda3600ff83650caad5f6bb66be007e", null ]
     ] ],
     [ "orxTREE_NODE", "structorx_t_r_e_e___n_o_d_e.html", [
       [ "pstChild", "structorx_t_r_e_e___n_o_d_e.html#adeee9aca48dc6807b2ff0f0b964b175e", null ],
