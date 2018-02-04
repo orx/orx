@@ -132,7 +132,7 @@ typedef struct __orxSTRUCTURE_STATIC_t
 {
   orxSTRUCTURE_STORAGE        astStorage[orxSTRUCTURE_ID_NUMBER];           /**< Structure banks */
   orxSTRUCTURE_REGISTER_INFO  astInfo[orxSTRUCTURE_ID_NUMBER];              /**< Structure info */
-  orxU32                      au32InstanceCounter[orxSTRUCTURE_ID_NUMBER];  /**< Structure instance counters */
+  orxU32                      au32InstanceCount[orxSTRUCTURE_ID_NUMBER];    /**< Structure instance counts */
   orxU32                      u32Flags;                                     /**< Control flags */
 
 } orxSTRUCTURE_STATIC;
@@ -602,18 +602,18 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         /* Checks */
         orxASSERT(_eStructureID <= (orxU32)(orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
         orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
-        orxASSERT(sstStructure.au32InstanceCounter[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
+        orxASSERT(sstStructure.au32InstanceCount[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
         /* Stores GUID */
         pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
                               | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
-                              | ((orxU64)sstStructure.au32InstanceCounter[_eStructureID] << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+                              | ((orxU64)sstStructure.au32InstanceCount[_eStructureID] << orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
 
         /* Cleans owner GUID */
         pstStructure->u64OwnerGUID = orxU64_UNDEFINED;
 
         /* Updates instance ID */
-        sstStructure.au32InstanceCounter[_eStructureID] = (sstStructure.au32InstanceCounter[_eStructureID] + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+        sstStructure.au32InstanceCount[_eStructureID] = (sstStructure.au32InstanceCount[_eStructureID] + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
       }
       else
       {
@@ -718,7 +718,7 @@ orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_I
   return(sstStructure.astStorage[_eStructureID].eType);
 }
 
-/** Gets given type structure counter
+/** Gets given type structure count
  * @param[in]   _eStructureID   Concerned structure ID
  * @return      orxU32 / orxU32_UNDEFINED
  */
@@ -735,7 +735,7 @@ orxU32 orxFASTCALL orxStructure_GetCount(orxSTRUCTURE_ID _eStructureID)
   {
     case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
     {
-      /* Gets counter */
+      /* Gets count */
       u32Result = orxLinkList_GetCount(&(sstStructure.astStorage[_eStructureID].stLinkList));
 
       break;
@@ -743,7 +743,7 @@ orxU32 orxFASTCALL orxStructure_GetCount(orxSTRUCTURE_ID _eStructureID)
 
     case orxSTRUCTURE_STORAGE_TYPE_TREE:
     {
-      /* Gets counter */
+      /* Gets count */
       u32Result = orxTree_GetCount(&(sstStructure.astStorage[_eStructureID].stTree));
 
       break;

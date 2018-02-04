@@ -275,30 +275,30 @@ static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
   if((_pstFX->zReference != orxNULL)
   && (*(_pstFX->zReference) != orxCHAR_NULL))
   {
-    orxU32 u32SlotCounter, i;
+    orxU32 u32SlotCount, i;
 
     /* Pushes its config section */
     orxConfig_PushSection(_pstFX->zReference);
 
     /* Gets number of declared slots */
-    u32SlotCounter = orxConfig_GetListCount(orxFX_KZ_CONFIG_SLOT_LIST);
+    u32SlotCount = orxConfig_GetListCount(orxFX_KZ_CONFIG_SLOT_LIST);
 
     /* Too many slots? */
-    if(u32SlotCounter > orxFX_KU32_SLOT_NUMBER)
+    if(u32SlotCount > orxFX_KU32_SLOT_NUMBER)
     {
       /* For all exceeding slots */
-      for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCounter; i++)
+      for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCount; i++)
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Too many slots for this FX, can't add slot <%s>.", _pstFX->zReference, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
       }
 
-      /* Updates slot counter */
-      u32SlotCounter = orxFX_KU32_SLOT_NUMBER;
+      /* Updates slot count */
+      u32SlotCount = orxFX_KU32_SLOT_NUMBER;
     }
 
     /* For all slots */
-    for(i = 0; i < u32SlotCounter; i++)
+    for(i = 0; i < u32SlotCount; i++)
     {
       const orxSTRING zSlotName;
 
@@ -545,7 +545,7 @@ orxFX *orxFASTCALL orxFX_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_ENABLED, orxFX_KU32_MASK_ALL);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -580,7 +580,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   /* Found? */
   if(pstResult != orxNULL)
   {
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -610,7 +610,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
               /* Should keep it in cache? */
               if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
               {
-                /* Increases its reference counter to keep it in cache table */
+                /* Increases its reference count to keep it in cache table */
                 orxStructure_IncreaseCount(pstResult);
 
                 /* Updates its flags */
@@ -672,7 +672,7 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstFX);
 
   /* Not referenced? */

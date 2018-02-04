@@ -1139,8 +1139,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetFullScreen(o
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_IsFullScreen();
 
 
-/** Gets available video mode counter
- * @return Available video mode counter
+/** Gets available video mode count
+ * @return Available video mode count
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCount();
 

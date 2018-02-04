@@ -186,7 +186,7 @@ orxBOOL orxFASTCALL orxConsole_HistorySaveCallback(const orxSTRING _zSectionName
  */
 static void orxFASTCALL orxConsole_SaveHistory()
 {
-  orxU32          i, u32Counter = 0;
+  orxU32 i, u32Count = 0;
   const orxSTRING azHistoryList[orxCONSOLE_KU32_INPUT_ENTRY_NUMBER];
 
   /* Did we cycle? */
@@ -198,7 +198,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
         i++)
     {
       /* Stores it */
-      azHistoryList[u32Counter++] = sstConsole.astInputEntryList[i].acBuffer;
+      azHistoryList[u32Count++] = sstConsole.astInputEntryList[i].acBuffer;
     }
   }
 
@@ -206,11 +206,11 @@ static void orxFASTCALL orxConsole_SaveHistory()
   for(i = 0; i < sstConsole.u32InputIndex; i++)
   {
     /* Stores it */
-    azHistoryList[u32Counter++] = sstConsole.astInputEntryList[i].acBuffer;
+    azHistoryList[u32Count++] = sstConsole.astInputEntryList[i].acBuffer;
   }
 
   /* Has entries? */
-  if(u32Counter > 0)
+  if(u32Count > 0)
   {
     orxCHAR acBuffer[256];
 
@@ -218,7 +218,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
     orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
     /* Stores list */
-    orxConfig_SetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, azHistoryList, u32Counter);
+    orxConfig_SetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, azHistoryList, u32Count);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -238,7 +238,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
  */
 static void orxFASTCALL orxConsole_LoadHistory()
 {
-  orxU32 i, u32Counter;
+  orxU32 i, u32Count;
   orxCHAR acBuffer[256];
 
   /* Gets file name */
@@ -254,7 +254,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
   if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
   {
     /* For all history entries */
-    for(i = 0, u32Counter = orxMIN(orxConfig_GetListCount(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Counter; i++)
+    for(i = 0, u32Count = orxMIN(orxConfig_GetListCount(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Count; i++)
     {
       orxCONSOLE_INPUT_ENTRY *pstEntry;
 
@@ -268,7 +268,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
     }
 
     /* Updates indices */
-    sstConsole.u32InputIndex = sstConsole.u32HistoryIndex = u32Counter % orxCONSOLE_KU32_INPUT_ENTRY_NUMBER;
+    sstConsole.u32InputIndex = sstConsole.u32HistoryIndex = u32Count % orxCONSOLE_KU32_INPUT_ENTRY_NUMBER;
   }
 
   /* Pops config section */
@@ -1171,7 +1171,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          orxU32  i, u32Counter;
+          orxU32  i, u32Count;
           orxBOOL bDebugLevelBackup;
 
           /* Inits log end index */
@@ -1181,7 +1181,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
           /* For all keys */
-          for(i = 0, u32Counter = orxConfig_GetKeyCount(); i < u32Counter; i++)
+          for(i = 0, u32Count = orxConfig_GetKeyCount(); i < u32Count; i++)
           {
             const orxSTRING zKey;
 
@@ -1539,7 +1539,7 @@ orxSTATUS orxFASTCALL orxConsole_SetFont(const orxFONT *_pstFont)
   /* Has a current font? */
   if(sstConsole.pstFont != orxNULL)
   {
-    /* Updates its reference counter */
+    /* Updates its reference count */
     orxStructure_DecreaseCount((orxFONT *)sstConsole.pstFont);
   }
 
@@ -1549,7 +1549,7 @@ orxSTATUS orxFASTCALL orxConsole_SetFont(const orxFONT *_pstFont)
     /* Stores it */
     sstConsole.pstFont = _pstFont;
 
-    /* Updates its reference counter */
+    /* Updates its reference count */
     orxStructure_IncreaseCount((orxFONT *)sstConsole.pstFont);
   }
 
@@ -1621,9 +1621,9 @@ orxU32 orxFASTCALL orxConsole_GetLogLineLength()
   return u32Result;
 }
 
-/** Gets current completions counter
+/** Gets current completions count
  * @param[out]  _pu32MaxLength Max completion length, orxNULL to ignore
- * @return Current completions counter
+ * @return Current completions count
  */
 orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
 {
@@ -1652,7 +1652,7 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
-      /* Gets completion counter */
+      /* Gets completion count */
       for(u32Result = 0, zCommand = orxCommand_GetNext(pc, orxNULL, orxNULL);
           zCommand != orxNULL;
           u32Result++, zCommand = orxCommand_GetNext(pc, zCommand, orxNULL))

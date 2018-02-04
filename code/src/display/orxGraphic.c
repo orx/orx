@@ -107,8 +107,8 @@ struct __orxGRAPHIC_t
   orxFLOAT        fLeft;                    /**< Left coordinate : 56 */
   orxFLOAT        fWidth;                   /**< Width : 60 */
   orxFLOAT        fHeight;                  /**< Height : 64 */
-  orxFLOAT        fRepeatX;                 /**< X-axis repeat counter : 68 */
-  orxFLOAT        fRepeatY;                 /**< Y-axis repeat counter : 72 */
+  orxFLOAT        fRepeatX;                 /**< X-axis repeat count : 68 */
+  orxFLOAT        fRepeatY;                 /**< Y-axis repeat count : 72 */
   const orxSTRING zReference;               /**< Reference : 76 */
 };
 
@@ -179,7 +179,7 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
     }
     else
     {
-      /* Updates structure reference counter */
+      /* Updates structure reference count */
       orxStructure_DecreaseCount(_pstGraphic->pstData);
     }
 
@@ -231,7 +231,7 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
       }
       else
       {
-        /* Updates structure reference counter */
+        /* Updates structure reference count */
         orxStructure_IncreaseCount(_pstData);
       }
     }
@@ -479,7 +479,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create()
     /* Sets its repeat value to default */
     orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstGraphic);
   }
 
@@ -891,7 +891,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstGraphic);
 
   /* Not referenced? */

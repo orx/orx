@@ -42,7 +42,7 @@
 #define orxIOS_KZ_CONFIG_SECTION                      "iOS"
 #define orxIOS_KZ_CONFIG_ACCELEROMETER_FREQUENCY      "AccelerometerFrequency"
 
-static volatile orxU32 su32FrameCounter = 0;
+static volatile orxU32 su32FrameCount = 0;
 
 
 /** Main function pointer
@@ -106,8 +106,8 @@ const orxSTRING orxiOS_GetDocumentsPath()
   /* Activates window */
   [poWindow makeKeyAndVisible];
 
-  /* Inits frame counter */
-  su32FrameCounter = 0;
+  /* Inits frame count */
+  su32FrameCount = 0;
 
   /* Assigns main loop to a new thread */
   [NSThread detachNewThreadSelector:@selector(MainLoop) toTarget:self withObject:nil];
@@ -155,10 +155,10 @@ const orxSTRING orxiOS_GetDocumentsPath()
   orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxiOS_RenderInhibitor);
 
   /* Gets current frame */
-  u32CurrentFrame = su32FrameCounter;
+  u32CurrentFrame = su32FrameCount;
 
   /* Spins until end of frame */
-  while(u32CurrentFrame == su32FrameCounter);
+  while(u32CurrentFrame == su32FrameCount);
 }
 
 - (void) applicationWillEnterForeground:(UIApplication *)_poApplication
@@ -300,9 +300,9 @@ const orxSTRING orxiOS_GetDocumentsPath()
       /* Sends frame stop event */
       orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &stPayload);
 
-      /* Updates frame counter */
-      su32FrameCounter++;
-      stPayload.u32FrameCounter = su32FrameCounter;
+      /* Updates frame count */
+      su32FrameCount++;
+      stPayload.u32FrameCount = su32FrameCount;
 
       /* Releases memory pool */
       [poPool release];

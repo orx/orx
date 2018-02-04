@@ -66,7 +66,7 @@ typedef struct __orxTREE_NODE_t
 typedef struct __orxTREE_t
 {
   orxTREE_NODE *pstRoot;                        /**< Root node pointer : 4/8 */
-  orxU32        u32Counter;                     /**< Node counter : 8/12 */
+  orxU32        u32Count;                       /**< Node count : 8/12 */
 
 } orxTREE;
 
@@ -201,7 +201,7 @@ static orxINLINE orxTREE_NODE *                 orxTree_GetRoot(const orxTREE *_
   return(_pstTree->pstRoot);
 }
 
-/** Gets a tree counter
+/** Gets a tree count
  * @param[in]   _pstTree                        Concerned tree
  * @return Number of nodes in tree
  */
@@ -211,7 +211,7 @@ static orxINLINE orxU32                         orxTree_GetCount(const orxTREE *
   orxASSERT(_pstTree != orxNULL);
 
   /* Returns it */
-  return(_pstTree->u32Counter);
+  return(_pstTree->u32Count);
 }
 
 #endif /* _orxTREE_H_ */

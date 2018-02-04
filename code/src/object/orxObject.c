@@ -2915,7 +2915,7 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
     /* Sets default group ID */
     orxObject_SetGroupID(pstResult, sstObject.u32DefaultGroupID);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -2934,7 +2934,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstObject);
 
   /* Not referenced? */
@@ -2987,7 +2987,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
     }
     else
     {
-      /* Increases counter */
+      /* Increases count */
       orxStructure_IncreaseCount(_pstObject);
 
       /* Resets its active time: going undead */
@@ -4385,7 +4385,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     /* Unlink previous structure if needed */
     orxObject_UnlinkStructure(_pstObject, eStructureID);
 
-    /* Updates structure reference counter */
+    /* Updates structure reference count */
     orxStructure_IncreaseCount(_pstStructure);
 
     /* Links new structure to object */
@@ -4427,7 +4427,7 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
     /* Gets referenced structure */
     pstStructure = _pstObject->astStructureList[_eStructureID].pstStructure;
 
-    /* Decreases structure reference counter */
+    /* Decreases structure reference count */
     orxStructure_DecreaseCount(pstStructure);
 
     /* Was internally handled? */
@@ -7721,11 +7721,11 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, o
   /* Valid? */
   if(pstResult != orxNULL)
   {
-    orxU32 u32Counter;
+    orxU32 u32Count;
 
     /* For all objects */
-    for(u32Counter = 0, pstObject = orxObject_GetNext(orxNULL, _u32GroupID);
-        (u32Counter < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
+    for(u32Count = 0, pstObject = orxObject_GetNext(orxNULL, _u32GroupID);
+        (u32Count < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
         pstObject = orxObject_GetNext(pstObject, _u32GroupID))
     {
       /* Gets its bounding box */
@@ -7745,8 +7745,8 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, o
             /* Adds object */
             *ppstObject = pstObject;
 
-            /* Updates counter */
-            u32Counter++;
+            /* Updates count */
+            u32Count++;
           }
           else
           {

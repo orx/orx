@@ -108,7 +108,7 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
     if(pstTree->pstRoot == _pstNode)
     {
       /* Is the last node in tree? */
-      if(pstTree->u32Counter == 1)
+      if(pstTree->u32Count == 1)
       {
         /* Removes it */
         pstTree->pstRoot = orxNULL;
@@ -116,8 +116,8 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
         /* Updates node */
         orxMemory_Zero(_pstNode, sizeof(orxTREE_NODE));
 
-        /* Updates counter */
-        pstTree->u32Counter = 0;
+        /* Updates count */
+        pstTree->u32Count = 0;
       }
       else
       {
@@ -189,8 +189,8 @@ static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBO
       /* Updates node */
       orxMemory_Zero(_pstNode, sizeof(orxTREE_NODE));
 
-      /* Updates counter */
-      pstTree->u32Counter--;
+      /* Updates count */
+      pstTree->u32Count--;
     }
   }
 
@@ -215,7 +215,7 @@ orxSTATUS orxFASTCALL orxTree_Clean(orxTREE *_pstTree)
   orxASSERT(_pstTree != orxNULL);
 
   /* Non empty? */
-  while((_pstTree->u32Counter > 1) && (eResult != orxSTATUS_FAILURE))
+  while((_pstTree->u32Count > 1) && (eResult != orxSTATUS_FAILURE))
   {
     /* Removes root node */
     eResult = orxTree_Remove(_pstTree->pstRoot->pstChild);
@@ -260,7 +260,7 @@ orxSTATUS orxFASTCALL orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
     else
     {
       /* Checks there are no node right now */
-      orxASSERT(_pstTree->u32Counter == 0);
+      orxASSERT(_pstTree->u32Count == 0);
 
       /* Stores it as root */
       _pstTree->pstRoot = _pstNode;
@@ -271,8 +271,8 @@ orxSTATUS orxFASTCALL orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
       /* Stores tree pointer */
       _pstNode->pstTree = _pstTree;
 
-      /* Updates counter */
-      _pstTree->u32Counter++;
+      /* Updates count */
+      _pstTree->u32Count++;
     }
   }
   else
@@ -354,8 +354,8 @@ orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE 
       _pstRefNode->pstSibling  = orxNULL;
       _pstRefNode->pstPrevious = orxNULL;
 
-      /* Updates counter */
-      pstTree->u32Counter++;
+      /* Updates count */
+      pstTree->u32Count++;
     }
     else
     {
@@ -425,8 +425,8 @@ orxSTATUS orxFASTCALL orxTree_AddSibling(orxTREE_NODE *_pstRefNode, orxTREE_NODE
         /* Updates ref node */
         _pstRefNode->pstSibling = _pstNode;
 
-        /* Updates counter */
-        pstTree->u32Counter++;
+        /* Updates count */
+        pstTree->u32Count++;
       }
       else
       {
@@ -499,8 +499,8 @@ orxSTATUS orxFASTCALL orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *
       /* Updates ref node */
       _pstRefNode->pstChild = _pstNode;
 
-      /* Updates counter */
-      pstTree->u32Counter++;
+      /* Updates count */
+      pstTree->u32Count++;
     }
     else
     {
@@ -622,7 +622,7 @@ orxSTATUS orxFASTCALL orxTree_Remove(orxTREE_NODE *_pstNode)
   if(pstTree != orxNULL)
   {
     /* Checks tree is non empty */
-    orxASSERT(pstTree->u32Counter != 0);
+    orxASSERT(pstTree->u32Count != 0);
 
     /* Removes it */
     eResult = orxTree_PrivateRemove(_pstNode, orxFALSE);

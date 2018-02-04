@@ -61,7 +61,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   orxASSERT(_pstList != orxNULL);
 
   /* Non empty? */
-  if(_pstList->u32Counter != 0)
+  if(_pstList->u32Count != 0)
   {
     orxLINKLIST_NODE *pstNode;
 
@@ -126,8 +126,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
     /* Stores node at the start of the list */
     _pstList->pstFirst    = _pstNode;
 
-    /* Updates counter */
-    _pstList->u32Counter++;
+    /* Updates count */
+    _pstList->u32Count++;
   }
   else
   {
@@ -177,8 +177,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
     /* Stores node at the end of the list */
     _pstList->pstLast     = _pstNode;
 
-    /* Updates counter */
-    _pstList->u32Counter++;
+    /* Updates count */
+    _pstList->u32Count++;
   }
   else
   {
@@ -240,8 +240,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
       /* Updates ref node */
       _pstRefNode->pstPrevious  = _pstNode;
 
-      /* Updates counter */
-      pstList->u32Counter++;
+      /* Updates count */
+      pstList->u32Count++;
     }
     else
     {
@@ -312,8 +312,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
       /* Updates ref node */
       _pstRefNode->pstNext      = _pstNode;
 
-      /* Updates counter */
-      pstList->u32Counter++;
+      /* Updates count */
+      pstList->u32Count++;
     }
     else
     {
@@ -357,7 +357,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   if(pstList != orxNULL)
   {
     /* Checks list is non empty */
-    orxASSERT(pstList->u32Counter != 0);
+    orxASSERT(pstList->u32Count != 0);
 
     /* Gets neighbours pointers */
     pstPrevious = _pstNode->pstPrevious;
@@ -396,8 +396,8 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
     /* Cleans node */
     orxMemory_Zero(_pstNode, sizeof(orxLINKLIST_NODE));
 
-    /* Udpates counter */
-    pstList->u32Counter--;
+    /* Udpates count */
+    pstList->u32Count--;
   }
   else
   {

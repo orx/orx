@@ -81,14 +81,14 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_
 
 /* Macro for Structure Handling */
 #define _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, FUNCTION_ID, NAME, ARGS) \
-  if(u32UserPluginFunctionCounter < u32UserPluginFunctionMaxNumber) \
+  if(u32UserPluginFunctionCount < u32UserPluginFunctionMaxNumber) \
   { \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction   = (orxPLUGIN_FUNCTION) FUNCTION; \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID   = FUNCTION_ID; \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName = #NAME; \
-    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1); \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1] = orxCHAR_NULL; \
-    u32UserPluginFunctionCounter++; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].pfnFunction   = (orxPLUGIN_FUNCTION) FUNCTION; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].eFunctionID   = FUNCTION_ID; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionName = #NAME; \
+    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionArgs, ARGS, orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1); \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE - 1] = orxCHAR_NULL; \
+    u32UserPluginFunctionCount++; \
   } \
   else \
   { \
@@ -98,7 +98,7 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_
 
 #define orxPLUGIN_USER_FUNCTION_START(STRUCTURE) \
 { \
-  orxU32 u32UserPluginFunctionCounter = 0; \
+  orxU32 u32UserPluginFunctionCount = 0; \
   orxU32 u32UserPluginFunctionMaxNumber = sizeof(STRUCTURE) / sizeof(orxPLUGIN_USER_FUNCTION_INFO); \
   orxPLUGIN_USER_FUNCTION_INFO *pstUserPluginFunctionInfo = STRUCTURE; \
   orxMemory_Zero(pstUserPluginFunctionInfo, u32UserPluginFunctionMaxNumber * sizeof(orxPLUGIN_USER_FUNCTION_INFO));
@@ -110,7 +110,7 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_
                                          ARGS)
 
 #define orxPLUGIN_USER_FUNCTION_END(NUMBER_ADDRESS, STRUCTURE_ADDRESS) \
-  *NUMBER_ADDRESS = u32UserPluginFunctionCounter; \
+  *NUMBER_ADDRESS = u32UserPluginFunctionCount; \
   *STRUCTURE_ADDRESS = pstUserPluginFunctionInfo; \
 }
 

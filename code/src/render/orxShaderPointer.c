@@ -350,7 +350,7 @@ orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_ENABLED, orxSHADERPOINTER_KU32_MASK_ALL);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -375,7 +375,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstShaderPointer);
 
   /* Not referenced? */
@@ -389,7 +389,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
       /* Valid? */
       if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
       {
-        /* Decreases its reference counter */
+        /* Decreases its reference count */
         orxStructure_DecreaseCount(_pstShaderPointer->astShaderList[i].pstShader);
 
         /* Is internal? */
@@ -574,7 +574,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPoi
     /* Not already present? */
     if(bPresent == orxFALSE)
     {
-      /* Increases its reference counter */
+      /* Increases its reference count */
       orxStructure_IncreaseCount(_pstShader);
 
       /* Adds it to holder */
@@ -637,7 +637,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
       /* Found? */
       if(pstShader == _pstShader)
       {
-        /* Decreases its reference counter */
+        /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);
 
         /* Removes its reference */
@@ -728,7 +728,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
       /* Valid? */
       if(pstShader != orxNULL)
       {
-        /* Increases its reference counter */
+        /* Increases its reference count */
         orxStructure_IncreaseCount(pstShader);
 
         /* Adds it to holder */
@@ -806,7 +806,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
       /* Found? */
       if(orxString_ToCRC(orxShader_GetName(pstShader)) == u32ID)
       {
-        /* Decreases its reference counter */
+        /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);
 
         /* Removes its reference */

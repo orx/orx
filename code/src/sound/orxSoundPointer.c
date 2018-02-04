@@ -439,7 +439,7 @@ orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create()
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSOUNDPOINTER_KU32_FLAG_ENABLED, orxSOUNDPOINTER_KU32_MASK_ALL);
 
-    /* Increases counter */
+    /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
   else
@@ -464,7 +464,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSoundPointer);
 
-  /* Decreases counter */
+  /* Decreases count */
   orxStructure_DecreaseCount(_pstSoundPointer);
 
   /* Not referenced? */
@@ -774,7 +774,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
     orxSOUND_EVENT_PAYLOAD  stPayload;
     orxOBJECT              *pstOwner;
 
-    /* Increases its reference counter */
+    /* Increases its reference count */
     orxStructure_IncreaseCount(_pstSound);
 
     /* Adds it to holder */
@@ -873,7 +873,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
         /* Sends remove event */
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
-        /* Decreases its reference counter */
+        /* Decreases its reference count */
         orxStructure_DecreaseCount(pstSound);
 
         /* Was last added sound? */
@@ -952,7 +952,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllSounds(orxSOUNDPOINTER *_pstSound
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
-      /* Decreases its reference counter */
+      /* Decreases its reference count */
       orxStructure_DecreaseCount(pstSound);
 
       /* Was last added sound? */
@@ -1058,7 +1058,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
       orxSOUND_EVENT_PAYLOAD  stPayload;
       orxOBJECT              *pstOwner;
 
-      /* Increases its reference counter */
+      /* Increases its reference count */
       orxStructure_IncreaseCount(pstSound);
 
       /* Adds it to holder */
@@ -1165,7 +1165,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
 
-        /* Decreases its reference counter */
+        /* Decreases its reference count */
         orxStructure_DecreaseCount(pstSound);
 
         /* Was last added sound? */

@@ -453,7 +453,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
   /* For all commands */
   while(*zCommand != orxCHAR_NULL)
   {
-    orxU32          u32PushCounter;
+    orxU32          u32PushCount;
     const orxCHAR  *pcCommandEnd;
     orxCOMMAND     *pstCommand;
     orxCHAR         cBackupChar, acGUID[20];
@@ -462,13 +462,13 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     bProcessed = orxTRUE;
 
     /* For all push markers / spaces */
-    for(u32PushCounter = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
+    for(u32PushCount = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
     {
       /* Is a push marker? */
       if(*zCommand == orxCOMMAND_KC_PUSH_MARKER)
       {
-        /* Updates push counter */
-        u32PushCounter++;
+        /* Updates push count */
+        u32PushCount++;
       }
     }
 
@@ -488,7 +488,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     {
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength, s32BufferCounter = 0, s32VectorDepth = 0, i;
+      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, i;
       orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
@@ -521,18 +521,18 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       }
 
       /* Adds input to the buffer list */
-      azBufferList[s32BufferCounter++] = pcCommandEnd;
+      azBufferList[s32BufferCount++] = pcCommandEnd;
 
       /* For all alias nodes */
       for(pstCommandNode = orxCommand_FindTrieNode(zCommand, orxFALSE);
-          (pstCommandNode->pstCommand->bIsAlias != orxFALSE) && (s32BufferCounter < orxCOMMAND_KU32_ALIAS_MAX_DEPTH);
+          (pstCommandNode->pstCommand->bIsAlias != orxFALSE) && (s32BufferCount < orxCOMMAND_KU32_ALIAS_MAX_DEPTH);
           pstCommandNode = orxCommand_FindTrieNode(pstCommandNode->pstCommand->zAliasedCommandName, orxFALSE))
       {
         /* Has args? */
         if(pstCommandNode->pstCommand->zArgs != orxNULL)
         {
           /* Adds it to the buffer list */
-          azBufferList[s32BufferCounter++] = pstCommandNode->pstCommand->zArgs;
+          azBufferList[s32BufferCount++] = pstCommandNode->pstCommand->zArgs;
         }
       }
 
@@ -540,12 +540,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       *(orxCHAR *)pcCommandEnd = cBackupChar;
 
       /* For all stacked buffers */
-      for(i = s32BufferCounter - 1, pcDst = sstCommand.acEvaluateBuffer; i >= 0; i--)
+      for(i = s32BufferCount - 1, pcDst = sstCommand.acEvaluateBuffer; i >= 0; i--)
       {
         orxBOOL bStop;
 
         /* Has room for next buffer? */
-        if((i != s32BufferCounter - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
+        if((i != s32BufferCount - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
         {
           /* Inserts space */
           *pcDst++ = ' ';
@@ -992,7 +992,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
           /* Interrupted? */
           if((eStatus == orxSTATUS_FAILURE) || (*pcSrc == orxCHAR_NULL))
           {
-            /* Updates argument counter */
+            /* Updates argument count */
             u32ArgNumber++;
 
             /* Stops processing */
@@ -1057,7 +1057,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     }
 
     /* For all requested pushes */
-    while(u32PushCounter > 0)
+    while(u32PushCount > 0)
     {
       orxCOMMAND_STACK_ENTRY *pstEntry;
 
@@ -1086,8 +1086,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_VAR));
       }
 
-      /* Updates push counter */
-      u32PushCounter--;
+      /* Updates push count */
+      u32PushCount--;
     }
   }
 
@@ -1196,7 +1196,7 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
 {
   const orxSTRING zPrefix;
   const orxSTRING zCommand;
-  orxU32          u32Counter, u32Flags;
+  orxU32          u32Count, u32Flags;
 
   /* Backups debug flags */
   u32Flags = orxDEBUG_GET_FLAGS();
@@ -1211,7 +1211,7 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zCommand = orxNULL, zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Counter = 0;
+  for(zCommand = orxNULL, zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Count = 0;
       zCommand != orxNULL;
       zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL))
   {
@@ -1221,8 +1221,8 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
       /* Logs it */
       orxLOG(zCommand);
 
-      /* Updates counter */
-      u32Counter++;
+      /* Updates count */
+      u32Count++;
     }
   }
 
@@ -1230,7 +1230,7 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
   orxDEBUG_SET_FLAGS(u32Flags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   /* Updates result */
-  _pstResult->u32Value = u32Counter;
+  _pstResult->u32Value = u32Count;
 
   /* Done! */
   return;
@@ -1293,7 +1293,7 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
 {
   const orxSTRING zPrefix;
   const orxSTRING zAlias;
-  orxU32          u32Counter, u32Flags;
+  orxU32          u32Count, u32Flags;
 
   /* Backups debug flags */
   u32Flags = orxDEBUG_GET_FLAGS();
@@ -1308,7 +1308,7 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zAlias = orxNULL, zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Counter = 0;
+  for(zAlias = orxNULL, zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Count = 0;
       zAlias != orxNULL;
       zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL))
   {
@@ -1354,8 +1354,8 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
       /* Logs it */
       orxLOG(acBuffer);
 
-      /* Updates counter */
-      u32Counter++;
+      /* Updates count */
+      u32Count++;
     }
   }
 
@@ -1363,7 +1363,7 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
   orxDEBUG_SET_FLAGS(u32Flags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   /* Updates result */
-  _pstResult->u32Value = u32Counter;
+  _pstResult->u32Value = u32Count;
 
   /* Done! */
   return;
@@ -1445,21 +1445,21 @@ void orxFASTCALL orxCommand_CommandIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR
 /* Command: Repeat */
 void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxS32  s32Counter;
+  orxS32  s32Count;
   orxCHAR acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];
 
   /* Disables marker operations */
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
-  /* Gets counter */
-  s32Counter = _astArgList[0].s32Value;
+  /* Gets count */
+  s32Count = _astArgList[0].s32Value;
 
   /* Copies command */
   orxString_NCopy(acBuffer, _astArgList[1].zValue, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1);
   acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
   /* For all iterations */
-  while(s32Counter--)
+  while(s32Count--)
   {
     /* Evaluates first command */
     orxCommand_Evaluate(acBuffer, _pstResult);
@@ -2173,14 +2173,14 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Exit, "Exit", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Message = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: ListCommands */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListCommands, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddAlias */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, AddAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Command/Alias", orxCOMMAND_VAR_TYPE_STRING}, {"Arguments = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveAlias */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, RemoveAlias, "Alias", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Alias", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ListAliases */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Counter", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Evaluate */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Command", orxCOMMAND_VAR_TYPE_STRING});

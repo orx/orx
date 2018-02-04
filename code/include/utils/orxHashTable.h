@@ -77,7 +77,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Delete(orxHASHTABLE
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
 
-/** Gets a hash table item counter
+/** Gets a hash table item count
  * @param[in] _pstHashTable         Concerned hash table
  * @return    Item number
  */

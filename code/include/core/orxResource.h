@@ -261,13 +261,13 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Read(orxHA
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext);
 
 
-/** Gets pending operation counter for a given resource
+/** Gets pending operation count for a given resource
  * @param[in] _hResource        Concerned resource
  * @return Number of pending asynchronous operations for that resource
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetPendingOpCount(const orxHANDLE _hResource);
 
-/** Gets total pending operation counter
+/** Gets total pending operation count
  * @return Number of total pending asynchronous operations
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPendingOpCount();
