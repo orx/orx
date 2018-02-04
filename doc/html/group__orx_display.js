@@ -147,7 +147,7 @@ var group__orx_display =
     [ "orxDisplay_GetScreenSize", "group__orx_display.html#ga16f67c9a5e6bd6bf733c3bc2bc4c7522", null ],
     [ "orxDisplay_GetTempBitmap", "group__orx_display.html#ga7052f393a9cdb5bc6c454beb8fafceac", null ],
     [ "orxDisplay_GetVideoMode", "group__orx_display.html#ga7099d1d4919c383535a31bbe900f7e3c", null ],
-    [ "orxDisplay_GetVideoModeCounter", "group__orx_display.html#ga638dd5b17942872b2e681ca849ac43f2", null ],
+    [ "orxDisplay_GetVideoModeCount", "group__orx_display.html#ga9a6efbaeaa8c4434ab81dcb8d68a1033", null ],
     [ "orxDisplay_HasShaderSupport", "group__orx_display.html#gac588e2511f5f9925136a7655a5f42ec2", null ],
     [ "orxDisplay_Init", "group__orx_display.html#gaeaa35d99583568b07d3d8c83e7f1e5ac", null ],
     [ "orxDisplay_IsFullScreen", "group__orx_display.html#ga0bbde87afcc4090fd37efd155b5568df", null ],

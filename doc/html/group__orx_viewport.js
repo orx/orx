@@ -31,7 +31,7 @@ var group__orx_viewport =
     [ "orxViewport_GetRelativeSize", "group__orx_viewport.html#gafc6d9a5c61ebb87c8e8c41252a09fa97", null ],
     [ "orxViewport_GetShaderPointer", "group__orx_viewport.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0", null ],
     [ "orxViewport_GetSize", "group__orx_viewport.html#ga3b6cbedca7b2e175e928bfe294b49960", null ],
-    [ "orxViewport_GetTextureCounter", "group__orx_viewport.html#gaebf199482a6a50f71f01565e5500ed9b", null ],
+    [ "orxViewport_GetTextureCount", "group__orx_viewport.html#ga317139844078249c6622b821a70cb040", null ],
     [ "orxViewport_GetTextureList", "group__orx_viewport.html#ga8e12a07c0a06d857f132adc17dde6226", null ],
     [ "orxViewport_HasBackgroundColor", "group__orx_viewport.html#ga33e1130fcab6494a30fded85b8379dff", null ],
     [ "orxViewport_Init", "group__orx_viewport.html#ga6bfbc0987b56d9a2a9ead46e44c43297", null ],

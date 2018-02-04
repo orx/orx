@@ -95,7 +95,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a92bed8869928b756ca47acc76f3489ef", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_FULL_SCREEN", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a0c267a57b705e543e31fd2defa316876", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_FULL_SCREEN", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9fa24ad95450f6fddd8cd9466d9eb75c", null ],
-      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE_COUNTER", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a1902e735494cce8980572b5e6e40cab8", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE_COUNT", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a4792060a7dd5fefab7e4ad38eb9e5e4b", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_VIDEO_MODE", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a8e208331d1bf571cd3a823103fd75fe9", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_VIDEO_MODE", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ad2ed2a217cd0f922f585acbfa967bc1e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VIDEO_MODE_AVAILABLE", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9541393c1e5c303dfa6702737be60915", null ],

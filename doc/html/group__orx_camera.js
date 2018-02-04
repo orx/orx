@@ -14,7 +14,7 @@ var group__orx_camera =
     [ "orxCamera_GetFrame", "group__orx_camera.html#ga0ddadcb114f4d34fec41a7eb6f3fe9fb", null ],
     [ "orxCamera_GetFrustum", "group__orx_camera.html#ga8b88cc610d014c016c46034f66014f9c", null ],
     [ "orxCamera_GetGroupID", "group__orx_camera.html#ga9f73655c6d4a2e1ae7a56242847b239b", null ],
-    [ "orxCamera_GetGroupIDCounter", "group__orx_camera.html#gab823a96ae2a15065df5003325f119595", null ],
+    [ "orxCamera_GetGroupIDCount", "group__orx_camera.html#ga0e6d53cc8ae514b29cf6386d1ca4a782", null ],
     [ "orxCamera_GetName", "group__orx_camera.html#gab9edd5fc69d31f154c27c87fa2e3022c", null ],
     [ "orxCamera_GetParent", "group__orx_camera.html#ga0f4a7776168cb58ff3bd2dd0cdf882d9", null ],
     [ "orxCamera_GetPosition", "group__orx_camera.html#ga763544898f06821bdc7976ed6b53f308", null ],
