@@ -2,7 +2,7 @@
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
-Orx - Portable Game Engine (Version 1.8)
+Orx - Portable Game Engine (Version 1.9)
 ========================================
 
 
@@ -21,7 +21,7 @@ Summary
 [Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.8. If you find any bugs,
+This is a release candidate for orx v1.9. If you find any bugs,
 please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
@@ -70,7 +70,7 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86 with vs2012, x86/x86-64 with vs2013 & vs2015 and mingw32 (5.3.0) with codelite, codeblocks and GNU makefile)
+- Windows (x86 with vs2012, x86/x86-64 with vs2013, vs2015 & vs2017 and mingw32 (6.3.0) with codelite, codeblocks and GNU makefile)
 - MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
@@ -122,27 +122,31 @@ Packages
 You can download all the packages from [sourceforge](http://orx.sf.net) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.8.zip`                   : orx's API doxygen documentation
-- `orx-src-1.8.zip`                   : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.8.tar.bz2`       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.8.tar.bz2`       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.8.zip`               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-1.8.zip`             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- `orx-dev-vs2013-32-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- `orx-dev-vs2013-64-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2015-32-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
-- `orx-dev-vs2015-64-1.8.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.8.zip`              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.8.zip`           : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.8.zip`    : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.8.tar.bz2`  : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.8.tar.bz2`  : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.8.zip`          : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-1.8.zip`        : tutorials for Windows (mingw)
-- `orx-tutorial-vs2013-32-1.8.zip`    : tutorials for Windows (Visual Studio 2013, x86)
-- `orx-tutorial-vs2013-64-1.8.zip`    : tutorials for Windows (Visual Studio 2013, x86-64)
-- `orx-tutorial-vs2015-32-1.8.zip`    : tutorials for Windows (Visual Studio 2015, x86)
-- `orx-tutorial-vs2015-64-1.8.zip`    : tutorials for Windows (Visual Studio 2015, x86-64)
+- `orx-doc-1.9.zip`                   : orx's API doxygen documentation
+- `orx-src-1.9.zip`                   : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.9.tar.bz2`       : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.9.tar.bz2`       : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.9.zip`               : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-1.9.zip`             : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
+- `orx-dev-vs2013-32-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
+- `orx-dev-vs2013-64-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2015-32-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
+- `orx-dev-vs2015-64-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.9.zip`         : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.9.zip`              : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.9.zip`           : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.9.zip`    : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.9.tar.bz2`  : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.9.tar.bz2`  : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.9.zip`          : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-1.9.zip`        : tutorials for Windows (mingw)
+- `orx-tutorial-vs2013-32-1.9.zip`    : tutorials for Windows (Visual Studio 2013, x86)
+- `orx-tutorial-vs2013-64-1.9.zip`    : tutorials for Windows (Visual Studio 2013, x86-64)
+- `orx-tutorial-vs2015-32-1.9.zip`    : tutorials for Windows (Visual Studio 2015, x86)
+- `orx-tutorial-vs2015-64-1.9.zip`    : tutorials for Windows (Visual Studio 2015, x86-64)
+- `orx-tutorial-vs2017-32-1.9.zip`    : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.9.zip`    : tutorials for Windows (Visual Studio 2017, x86-64)
 
 All the `*-dev-*` packages above include:
 
