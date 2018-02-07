@@ -82,7 +82,8 @@ srcfileinfolist = basefileinfolist + [
     {'src': 'bin/*.ini',                                                'dst': None},
     {'src': 'build/premake4.lua',                                       'dst': None},
     {'src': '../.extern',                                               'dst': None},
-    {'src': '../setup*',                                                'dst': None}
+    {'src': '../setup*',                                                'dst': None},
+    {'src': '../init*',                                                 'dst': None}
 ]
 
 devfileinfolist = basefileinfolist + [
