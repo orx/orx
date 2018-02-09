@@ -257,6 +257,7 @@ srcfolderinfolist = [
     {'src': 'bin/data',                                                 'dst': None},
     {'src': 'bin/plugins',                                              'dst': None},
     {'src': 'build/rebol',                                              'dst': None},
+    {'src': 'build/template',                                           'dst': None},
     {'src': 'include',                                                  'dst': None},
     {'src': 'plugins/Demo',                                             'dst': None},
     {'src': 'plugins/Display/GLFW',                                     'dst': None},
