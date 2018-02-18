@@ -270,17 +270,17 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsInCombineMode(const
  * @param[in] _eType            Type of peripheral to bind
  * @param[in] _eID              ID of button/key/axis to bind
  * @param[in] _eMode            Mode (only used for axis input)
+ * @param[in] _s32Index         Index of the desired binding, if < 0 the oldest binding will be replaced
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxS32 _s32BindingIndex);
 
-/** Unbinds a mouse/joystick button, keyboard key or joystick axis
- * @param[in] _eType            Type of peripheral to unbind
- * @param[in] _eID              ID of button/key/axis to unbind
- * @param[in] _eMode            Mode (only used for axis input)
+/** Unbinds an input
+ * @param[in] _zName            Concerned input name
+ * @param[in] _s32Index         Index of the desired binding, if < 0 all the bindings will be removed
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(const orxSTRING _zName, orxS32 _s32BindingIndex);
 
 /** Gets the input count to which a mouse/joystick button, keyboard key or joystick axis is bound
  * @param[in] _eType            Type of peripheral to test
@@ -295,9 +295,11 @@ extern orxDLLAPI orxU32 orxFASTCALL               orxInput_GetBoundInputCount(or
  * @param[in] _eID              ID of button/key/axis to test
  * @param[in] _eMode            Mode (only used for axis input)
  * @param[in] _u32InputIndex    Index of the desired input
- * @return orxSTRING input name if bound / orxSTRING_EMPY otherwise
+ * @param[out] _pzName          Input name, mandatory
+ * @param[out] _pu32BindingIndex Binding index for this input, ignored if orxNULL
+ * @return orxSTATUS_SUCCESS if binding exists / orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxU32 _u32InputIndex);
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxU32 _u32InputIndex, const orxSTRING *_pzName, orxU32 *_pu32BindingIndex);
 
 /** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) at a given index
  * @param[in]   _zName            Concerned input name
