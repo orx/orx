@@ -2651,11 +2651,11 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
 }
 
 /** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) at a given index
- * @param[in]   _zName           Concerned input name
- * @param[in]   _u32BindingIndex Index of the desired binding
- * @param[out]  _peType          List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
- * @param[out]  _peID            List of binding IDs (button/key/axis)
- * @param[out]  _peMode           List of modes (only used for axis inputs)
+ * @param[in]   _zName            Concerned input name
+ * @param[in]   _u32BindingIndex  Index of the desired binding, should be less than orxINPUT_KU32_BINDING_NUMBER
+ * @param[out]  _peType           Binding type (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
+ * @param[out]  _peID             Binding ID (button/key/axis)
+ * @param[out]  _peMode           Mode (only used for axis inputs)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
 orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID, orxINPUT_MODE *_peMode)
