@@ -188,7 +188,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    static orxBOOL sbHomePressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
+    static orxBOOL sbInsertPressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
@@ -197,26 +197,26 @@ orxSTATUS orxFASTCALL orxMain_Run()
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
     }
 
-    /* Was home pressed? */
-    if(sbHomePressed != orxFALSE)
+    /* Was insert pressed? */
+    if(sbInsertPressed != orxFALSE)
     {
       /* No longer pressed? */
       if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) == orxFALSE)
       {
         /* Updates key status */
-        sbHomePressed = orxFALSE;
+        sbInsertPressed = orxFALSE;
       }
     }
     else
     {
-      /* Is home pressed? */
+      /* Is insert pressed? */
       if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) != orxFALSE)
       {
         /* Reloads config history */
         orxConfig_ReloadHistory();
 
         /* Updates key status */
-        sbHomePressed = orxTRUE;
+        sbInsertPressed = orxTRUE;
       }
     }
 
