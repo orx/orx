@@ -28,7 +28,7 @@ var orx_input_8h =
       [ "orxINPUT_TYPE_NUMBER", "group__orx_input.html#gga13d8a7334d0c18530536658991628659adea8549dfda454ad486d3697c2c4672b", null ],
       [ "orxINPUT_TYPE_NONE", "group__orx_input.html#gga13d8a7334d0c18530536658991628659ab866e5f4e6df8eb07878919669d8a3d8", null ]
     ] ],
-    [ "orxInput_Bind", "group__orx_input.html#ga9fd25621386542b8a76ef605b062eae8", null ],
+    [ "orxInput_Bind", "group__orx_input.html#gae7bb2d59504a48c474381788d7ce4e6e", null ],
     [ "orxInput_EnableSet", "group__orx_input.html#ga8b0c6c19d0753b894b6d0add816516bc", null ],
     [ "orxInput_Exit", "group__orx_input.html#ga494bcae3fb2c30b26d44069ce7a844a1", null ],
     [ "orxInput_GetActiveBinding", "group__orx_input.html#gab4636c9b964274cfe2cd10203ccd0dd6", null ],
@@ -36,7 +36,7 @@ var orx_input_8h =
     [ "orxInput_GetBindingList", "group__orx_input.html#ga70a74994a419dc1b4ad7e7500317fe16", null ],
     [ "orxInput_GetBindingName", "group__orx_input.html#gadaad0e95af17d1e3086d3558a7b6868c", null ],
     [ "orxInput_GetBindingType", "group__orx_input.html#ga74c83ce70224a1b9f6b14249c79df4fe", null ],
-    [ "orxInput_GetBoundInput", "group__orx_input.html#ga7a64a4680ff3de5ca7b23f3e9012c17c", null ],
+    [ "orxInput_GetBoundInput", "group__orx_input.html#ga758d9c6ee60b17a1ddd3e79afc18a8e9", null ],
     [ "orxInput_GetBoundInputCount", "group__orx_input.html#ga973eb666a9e7d89bfc025dc392cdcce4", null ],
     [ "orxInput_GetCurrentSet", "group__orx_input.html#gabf638c2d7b0cf7488050b390caf26b21", null ],
     [ "orxInput_GetMultiplier", "group__orx_input.html#gad5ce976ebe2764d10279161e4f92636d", null ],
@@ -59,5 +59,5 @@ var orx_input_8h =
     [ "orxInput_SetThreshold", "group__orx_input.html#ga0d5ce81503466fb9057e719bd9a4c059", null ],
     [ "orxInput_Setup", "group__orx_input.html#ga1095ad88059cd0d841a28ad60efc0a22", null ],
     [ "orxInput_SetValue", "group__orx_input.html#gab2b159105a935ccb1547119a07822f97", null ],
-    [ "orxInput_Unbind", "group__orx_input.html#gab92e0cf7b1f98c183d46a05887de1c2c", null ]
+    [ "orxInput_Unbind", "group__orx_input.html#gae32d1e9dfecf8947eaea02e67b2a4c71", null ]
 ];
