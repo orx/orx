@@ -1,4 +1,4 @@
-/* Orx - Portable Game Engine
+﻿/* Orx - Portable Game Engine
  *
  * Copyright (c) 2008-2018 Orx-Project
  *
@@ -1611,6 +1611,13 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
       /* Gets anim name */
       zAnim = orxConfig_GetListString(_zConfigID, 0);
+
+      /* Undefined? */
+      if(*zAnim == orxCHAR_NULL)
+      {
+        /* Uses self as name */
+        zAnim = _zConfigID;
+      }
 
       break;
     }
