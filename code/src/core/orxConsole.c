@@ -1,4 +1,4 @@
-/* Orx - Portable Game Engine
+﻿/* Orx - Portable Game Engine
  *
  * Copyright (c) 2008-2018 Orx-Project
  *
@@ -94,7 +94,7 @@
 
 #define orxCONSOLE_KU32_SCROLL_SIZE                   3
 
-#define orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY         orx2F(0.25f)
+#define orxCONSOLE_KF_INPUT_RESET_FIRST_DELAY         orx2F(0.35f)
 #define orxCONSOLE_KF_INPUT_RESET_DELAY               orx2F(0.05f)
 
 
@@ -1644,10 +1644,9 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
 
     /* Gets start of line */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
-
-    /* Skips all push markers */
-    for(pc = acBuffer; (*pc == ' ') || (*pc == '\t') || (*pc == orxCOMMAND_KC_PUSH_MARKER); pc++)
+    for(pc = acBuffer + pstEntry->u32CursorIndex; (pc >= acBuffer) && (*pc != ' ') && (*pc != '\t') && (*pc != orxCOMMAND_KC_PUSH_MARKER); pc--)
       ;
+    pc++;
 
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
@@ -1708,17 +1707,16 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
 
     /* Gets start of line */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
-
-    /* Skips all push markers */
-    for(pc = acBuffer; (*pc == ' ') || (*pc == '\t') || (*pc == orxCOMMAND_KC_PUSH_MARKER); pc++)
+    for(pc = acBuffer + pstEntry->u32CursorIndex; (pc >= acBuffer) && (*pc != ' ') && (*pc != '\t') && (*pc != orxCOMMAND_KC_PUSH_MARKER); pc--)
       ;
+    pc++;
 
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
       /* Finds requested completion */
       for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(pc, orxNULL, orxNULL);
-        (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
+          (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
           u32CompletionIndex++, zResult = orxCommand_GetNext(pc, zResult, orxNULL))
         ;
 
