@@ -270,14 +270,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsInCombineMode(const
  * @param[in] _eType            Type of peripheral to bind
  * @param[in] _eID              ID of button/key/axis to bind
  * @param[in] _eMode            Mode (only used for axis input)
- * @param[in] _s32Index         Index of the desired binding, if < 0 the oldest binding will be replaced
+ * @param[in] _s32BindingIndex  Index of the desired binding, if < 0 the oldest binding will be replaced
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID, orxINPUT_MODE _eMode, orxS32 _s32BindingIndex);
 
 /** Unbinds an input
  * @param[in] _zName            Concerned input name
- * @param[in] _s32Index         Index of the desired binding, if < 0 all the bindings will be removed
+ * @param[in] _s32BindingIndex  Index of the desired binding, if < 0 all the bindings will be removed
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_Unbind(const orxSTRING _zName, orxS32 _s32BindingIndex);
