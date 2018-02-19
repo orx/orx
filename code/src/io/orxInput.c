@@ -3033,7 +3033,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
 
-  /* Disables input logs */
+  /* Disables joystick logs */
   bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_JOYSTICK);
   orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, orxFALSE);
 
@@ -3079,7 +3079,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
     }
   }
 
-  /* Re-enables input logs */
+  /* Re-enables joystick logs */
   orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, bDebugLevelBackup);
 
   /* Failed? */
