@@ -249,15 +249,11 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  #ifdef __orxFREEBASIC__
-
-    #define orxFASTCALL         __stdcall
-
-  #else /* __orxFREEBASIC__ */
+  #ifndef orxFASTCALL
 
     #define orxFASTCALL         __fastcall
 
-  #endif /* __orxFREEBASIC__ */
+  #endif /* !orxFASTCALL */
 
   #define orxSTDCALL            __stdcall
 
@@ -272,37 +268,37 @@
   /** The null address */
   #define orxNULL               (0)
 
-  /* *** Compiler specific *** */
-  #if defined(__orxFREEBASIC__)
+  /** Inline */
+  #ifndef orxINLINE
 
-    /** The function intend to be inlined. */
-    #define orxINLINE
+    /* *** Compiler specific *** */
+    #if defined(__orxGCC__) || defined(__orxLLVM__)
 
-  #elif defined(__orxGCC__)
+      /** The function intend to be inlined. */
+      #define orxINLINE         inline
 
-    /** The function intend to be inlined. */
-    #define orxINLINE         inline
+    #elif defined(__orxMSVC__)
 
-  #elif defined(__orxLLVM__)
+      /** The function intend to be inlined. */
+      #define orxINLINE         __inline
 
-    /** The function intend to be inlined. */
-    #define orxINLINE         inline
+    #endif
 
-  #elif defined(__orxMSVC__)
-
-    /** The function intend to be inlined. */
-    #define orxINLINE         __inline
-
-  #endif
+  #endif /* !orxINLINE */
 
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
+    /* ARM / ARM64 / LLVM / PPC / PPC64 / X86_64 / iOS / Android */
     #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxARM64__)
 
-      #define orxFASTCALL
+      #ifndef orxFASTCALL
+
+        #define orxFASTCALL
+
+      #endif /* !orxFASTCALL */
 
       #define orxSTDCALL
 
@@ -310,15 +306,11 @@
 
     #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxARM64__ */
 
-      #ifdef __orxFREEBASIC__
-
-        #define orxFASTCALL     __attribute__ ((stdcall))
-
-      #else /* __orxFREEBASIC__ */
+      #ifndef orxFASTCALL
 
         #define orxFASTCALL     __attribute__ ((fastcall))
 
-      #endif /* __orxFREEBASIC__ */
+      #endif /* !orxFASTCALL */
 
       #define orxSTDCALL        __attribute__ ((stdcall))
 
@@ -332,17 +324,12 @@
     /** The symbol will be imported (exe compilation) */
     #define orxDLLIMPORT
 
-    #ifdef __orxFREEBASIC__
-
-      /** The function intend to be inlined. */
-      #define orxINLINE
-
-    #else /* __orxFREEBASIC__ */
+    #ifndef orxINLINE
 
       /** The function intend to be inlined. */
       #define orxINLINE         inline
 
-    #endif /* __orxFREEBASIC__ */
+    #endif /* !orxINLINE */
 
     /** The null address */
     #define orxNULL             (0)
