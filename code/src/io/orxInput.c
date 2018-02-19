@@ -3034,8 +3034,8 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   orxASSERT(_peID != orxNULL);
 
   /* Disables input logs */
-  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_INPUT);
-  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_INPUT, orxFALSE);
+  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_JOYSTICK);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, orxFALSE);
 
   /* For all input types */
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
@@ -3080,7 +3080,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   }
 
   /* Re-enables input logs */
-  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_INPUT, bDebugLevelBackup);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, bDebugLevelBackup);
 
   /* Failed? */
   if(eResult == orxSTATUS_FAILURE)
