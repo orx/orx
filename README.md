@@ -229,7 +229,6 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
   `__orxCPP__`            | orx is being compiled with a C++ compiler
   `__orxOBJC__`           | orx is being compiled with an Objective-C compiler
-  `__orxFREEBASIC__`      | orx is being compiled for FreeBasic, WIP
   `__orxPLUGIN__`         | a plugin for orx is being compiled
   `__orxEXTERN__`         | code using orx's library is being compiled
 
