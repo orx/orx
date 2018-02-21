@@ -1169,7 +1169,7 @@ orxSTATUS orxFASTCALL orxText_SetSize(orxTEXT *_pstText, orxFLOAT _fWidth, orxFL
           ;
 
         /* Updates extra */
-        *_pzExtra = (pcDst != orxCHAR_NULL) ? pcDst : orxSTRING_EMPTY;
+        *_pzExtra = (*pcDst != orxCHAR_NULL) ? pcDst : orxSTRING_EMPTY;
       }
       else
       {
