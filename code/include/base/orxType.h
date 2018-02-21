@@ -89,7 +89,7 @@
   #define orx2F(V)                ((orxFLOAT)(V))
   #define orx2D(V)                ((orxDOUBLE)(V))
 
-  #define orxENUM_NONE            0xFFFFFFFFL
+  #define orxENUM_NONE            0xFFFFFFFF
 
   /* Compiler specific */
   #ifdef __orxGCC__
@@ -159,7 +159,7 @@
     #define orx2F(V)              ((orxFLOAT)(V))
     #define orx2D(V)              ((orxDOUBLE)(V))
 
-    #define orxENUM_NONE          0xFFFFFFFFL
+    #define orxENUM_NONE          0xFFFFFFFF
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
