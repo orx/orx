@@ -69,6 +69,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifndef __orxWINDOWS__
+  #include <strings.h>
+#endif /* !__orxWINDOWS__ */
+
 #include "debug/orxDebug.h"
 
 
