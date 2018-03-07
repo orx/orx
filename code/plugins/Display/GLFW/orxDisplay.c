@@ -40,8 +40,8 @@
 
 #endif /* __orxMAC__ */
 
-#include "GL/glfw.h"
-#include "GL/glext.h"
+#define GLFW_INCLUDE_GLEXT
+#include "GLFW/glfw3.h"
 
 #if !defined(__orxMSVC__) || (_MSC_VER > 1600)
 #include "webp/decode.h"

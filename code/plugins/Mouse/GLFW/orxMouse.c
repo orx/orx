@@ -34,7 +34,7 @@
 
 #include "orxPluginAPI.h"
 
-#include "GL/glfw.h"
+#include "GLFW/glfw3.h"
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__
