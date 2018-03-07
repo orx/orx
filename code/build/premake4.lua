@@ -120,7 +120,7 @@ solution "orx"
     {
         "../include",
         "../../extern/dlmalloc",
-        "../../extern/glfw-2.7/include",
+        "../../extern/glfw-3/include",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
         "../../extern/openal-soft/include",
@@ -176,7 +176,7 @@ solution "orx"
     configuration {"linux", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/linux",
+            "../../extern/glfw-3/lib/linux",
             "../../extern/libsndfile-1.0.22/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
             "../../extern/libwebp/lib/linux"
@@ -190,7 +190,7 @@ solution "orx"
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/linux64",
+            "../../extern/glfw-3/lib/linux64",
             "../../extern/libsndfile-1.0.22/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
             "../../extern/libwebp/lib/linux64"
@@ -207,7 +207,7 @@ solution "orx"
     configuration {"macosx"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/mac",
+            "../../extern/glfw-3/lib/mac",
             "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
             "../../extern/libwebp/lib/mac"
@@ -239,20 +239,10 @@ solution "orx"
             "/MP"
         }
 
-    configuration {"vs2012"}
-        libdirs
-        {
-            "../../extern/glfw-2.7/lib/vc2012",
-            "../../extern/openal-soft/lib/vc2012",
-            "../../extern/libsndfile-1.0.22/lib/vc2012",
-            "../../extern/LiquidFun-1.1.0/lib/vc2012",
-            "../../extern/libwebp/lib/vc2012"
-        }
-
     configuration {"vs2013", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2013/32",
+            "../../extern/glfw-3/lib/vc2013/32",
             "../../extern/openal-soft/lib/vc2013/32",
             "../../extern/libsndfile-1.0.22/lib/vc2013/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2013/32",
@@ -262,7 +252,7 @@ solution "orx"
     configuration {"vs2013", "x64"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2013/64",
+            "../../extern/glfw-3/lib/vc2013/64",
             "../../extern/openal-soft/lib/vc2013/64",
             "../../extern/libsndfile-1.0.22/lib/vc2013/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2013/64",
@@ -272,7 +262,7 @@ solution "orx"
     configuration {"vs2015 or vs2017", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2015/32",
+            "../../extern/glfw-3/lib/vc2015/32",
             "../../extern/openal-soft/lib/vc2015/32",
             "../../extern/libsndfile-1.0.22/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
@@ -282,7 +272,7 @@ solution "orx"
     configuration {"vs2015 or vs2017", "x64"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2015/64",
+            "../../extern/glfw-3/lib/vc2015/64",
             "../../extern/openal-soft/lib/vc2015/64",
             "../../extern/libsndfile-1.0.22/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
@@ -292,7 +282,7 @@ solution "orx"
     configuration {"windows", "codeblocks or codelite or gmake"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/mingw",
+            "../../extern/glfw-3/lib/mingw",
             "../../extern/openal-soft/lib/mingw",
             "../../extern/libsndfile-1.0.22/lib/mingw",
             "../../extern/LiquidFun-1.1.0/lib/mingw",
@@ -441,7 +431,7 @@ project "orxLIB"
     configuration {"linux", "not *Core*"}
         links
         {
-            "glfw",
+            "glfw3",
             "openal",
             "sndfile",
             "GL",
@@ -482,7 +472,7 @@ project "orxLIB"
             "Foundation.framework",
             "IOKit.framework",
             "AppKit.framework",
-            "glfw",
+            "glfw3",
             "sndfile",
             "pthread",
             "OpenAL.framework",
@@ -532,7 +522,7 @@ project "orxLIB"
     configuration {"windows", "not *Core*"}
         links
         {
-            "glfw",
+            "glfw3",
             "openal32",
             "winmm",
             "sndfile"
