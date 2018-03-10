@@ -414,7 +414,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibitor(const orxEVENT *_ps
   return orxSTATUS_FAILURE;
 }
 
-static void GLFWCALL orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
+static void orxDisplay_GLFW_ResizeCallback(int _iWidth, int _iHeight)
 {
   /* Not ignoring event? */
   if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE))
