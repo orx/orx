@@ -105,16 +105,22 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   if(sstJoystick.astJoyInfoList[_u32ID].fTimeStamp != sstJoystick.pstClockInfo->fTime)
   {
     /* Is connected? */
-    if(glfwGetJoystickParam((int)_u32ID, GLFW_PRESENT) != GL_FALSE)
+    if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
     {
+      orxS32          iCount;
+      const orxFLOAT *afAxes;
+      const orxU8    *au8Buttons;
+
       /* Gets axes values */
-      glfwGetJoystickPos((int)_u32ID, sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, orxJOYSTICK_AXIS_SINGLE_NUMBER);
+      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iCount, orxJOYSTICK_AXIS_SINGLE_NUMBER));
 
       /* Updates connection status */
       sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
 
       /* Gets button values */
-      glfwGetJoystickButtons((int)_u32ID, sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER);
+      au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER));
     }
     else
     {
@@ -177,8 +183,8 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
-    /* Is GLFW window opened? */
-    if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
+    /* Is display plugin initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_DISPLAY) != orxFALSE)
     {
       orxCLOCK *pstClock;
 
