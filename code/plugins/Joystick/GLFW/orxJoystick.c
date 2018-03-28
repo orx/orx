@@ -180,38 +180,34 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
   /* Was already initialized. */
   if(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
+    orxCLOCK *pstClock;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
-    /* Is display plugin initialized? */
-    if(orxModule_IsInitialized(orxMODULE_ID_DISPLAY) != orxFALSE)
+    /* Gets core clock */
+    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+    /* Gets its info */
+    sstJoystick.pstClockInfo = orxClock_GetInfo(pstClock);
+
+    /* Success? */
+    if(sstJoystick.pstClockInfo != orxNULL)
     {
-      orxCLOCK *pstClock;
-
-      /* Gets core clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-      /* Gets its info */
-      sstJoystick.pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Registers event update function */
+      eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
 
       /* Success? */
-      if(sstJoystick.pstClockInfo != orxNULL)
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Registers event update function */
-        eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
+        /* Updates first joystick */
+        orxJoystick_GLFW_UpdateInfo(0);
 
-        /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          /* Updates first joystick */
-          orxJoystick_GLFW_UpdateInfo(0);
+        /* Updates status */
+        sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
 
-          /* Updates status */
-          sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
-        }
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
     }
   }
