@@ -1029,64 +1029,75 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
-  orxCHAR zFileName[384];
-
-#ifdef __orxDEBUG__
-
-  orxSTRING zDebugSuffix;
-
-  /* Pushes section */
-  orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
-
-#endif /* __ orxDEBUG__ */
+  const orxSTRING zExtension;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginFileName != orxNULL);
   orxASSERT(_zPluginName != orxNULL);
-  orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
 
-  /* Inits buffer */
-  zFileName[sizeof(zFileName) - 1] = orxCHAR_NULL;
+  /* Gets extension */
+  zExtension = _zPluginFileName + orxString_GetLength(_zPluginFileName) - orxString_GetLength(szPluginLibraryExt) - 1;
 
-#ifdef __orxDEBUG__
-
-  /* Gets debug suffix */
-  zDebugSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX);
-
-  /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
-
-  /* Loads it */
-  hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
-
-  /* Not valid? */
-  if(hResult == orxHANDLE_UNDEFINED)
-  {
-
-#endif /* __orxDEBUG__ */
-
-  /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
-
-  /* Loads it */
-  hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
-
-  /* Still not found? */
-  if(hResult == orxHANDLE_UNDEFINED)
+  /* Already contains extension? */
+  if((*zExtension++ == '.')
+  && (orxMemory_Compare(zExtension, szPluginLibraryExt, orxString_GetLength(szPluginLibraryExt)) == 0))
   {
     /* Loads it without any extension/suffix */
     hResult = orxPlugin_LoadInternal(_zPluginFileName, _zPluginName);
   }
+  else
+  {
+    orxCHAR zFileName[384];
 
 #ifdef __orxDEBUG__
 
-  }
+    orxSTRING zDebugSuffix;
 
-  /* Pops previous section */
-  orxConfig_PopSection();
+    /* Pushes section */
+    orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
+
+#endif /* __ orxDEBUG__ */
+
+    /* Checks */
+    orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
+
+    /* Inits buffer */
+    zFileName[sizeof(zFileName) - 1] = orxCHAR_NULL;
+
+#ifdef __orxDEBUG__
+
+    /* Gets debug suffix */
+    zDebugSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX);
+
+    /* Gets complete name */
+    orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
+
+    /* Loads it */
+    hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
+
+    /* Not valid? */
+    if(hResult == orxHANDLE_UNDEFINED)
+    {
 
 #endif /* __orxDEBUG__ */
+
+    /* Gets complete name */
+    orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
+
+    /* Loads it */
+    hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
+
+#ifdef __orxDEBUG__
+
+    }
+
+    /* Pops previous section */
+    orxConfig_PopSection();
+
+#endif /* __orxDEBUG__ */
+
+  }
 
 #else /* __orxPLUGIN_DYNAMIC__ */
 
