@@ -528,7 +528,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 
 /** Inits the bounce demo
  */
-static orxSTATUS orxBounce_Init()
+static orxSTATUS orxBounce_Init(orxPLUGIN_ENTRY_MODE _eMode)
 {
   orxU32    i;
   orxSTATUS eResult;

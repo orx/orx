@@ -115,7 +115,9 @@
 /** Misc
  */
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
-#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     "orxPlugin_MainInit"  /**< Plugin init function name */
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_INIT_FUNCTION_NAME) /**< Plugin init function name */
+#define orxPLUGIN_KZ_EXIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_EXIT_FUNCTION_NAME) /**< Plugin exit function name */
+#define orxPLUGIN_KZ_SWAP_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_SWAP_FUNCTION_NAME) /**< Plugin swap function name */
 
 #define orxPLUGIN_KC_DIRECTORY_SEPARATOR                    '/'
 

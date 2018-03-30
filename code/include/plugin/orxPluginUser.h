@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Plugin user header
  * This header is used to define structures & functions for plugin registration.
  *
@@ -57,21 +57,40 @@
  Constants
  *********************************************/
 
-/* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
-#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)   \
+/** Plugin entry mode enum
+ */
+typedef enum __orxPLUGIN_ENTRY_MODE_t
+{
+  orxPLUGIN_ENTRY_MODE_INIT = 0,
+  orxPLUGIN_ENTRY_MODE_EXIT,
+  orxPLUGIN_ENTRY_MODE_SWAP_IN,
+  orxPLUGIN_ENTRY_MODE_SWAP_OUT,
+
+  orxPLUGIN_ENTRY_MODE_NUMBER,
+
+  orxPLUGIN_ENTRY_MODE_NONE = orxENUM_NONE
+
+} orxPLUGIN_ENTRY_MODE;
+
+/** Plugin entry point function */
+typedef orxSTATUS (orxFASTCALL *orxPLUGIN_ENTRY_POINT)(orxPLUGIN_ENTRY_MODE _eMode);
+
+
+/* Defines a user plugin entry function (that takes an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)                                                                                 \
 extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
-{                                                       \
-  orxSTATUS eResult;                                    \
-                                                        \
-  /* Calls entry point function */                      \
-  eResult = ENTRY_FUNCTION();                           \
-                                                        \
-  /* Updates parameters */                              \
-  *_ps32Number  = 0;                                    \
-  *_ppstInfo    = orxNULL;                              \
-                                                        \
-  /* Done! */                                           \
-  return eResult;                                       \
+{                                                                                                                                     \
+  orxSTATUS eResult;                                                                                                                  \
+                                                                                                                                      \
+  /* Calls entry point function */                                                                                                    \
+  eResult = ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(orxPLUGIN_ENTRY_MODE_INIT);                                                       \
+                                                                                                                                      \
+  /* Updates parameters */                                                                                                            \
+  *_ps32Number  = 0;                                                                                                                  \
+  *_ppstInfo    = orxNULL;                                                                                                            \
+                                                                                                                                      \
+  /* Done! */                                                                                                                         \
+  return eResult;                                                                                                                     \
 }
 
 
