@@ -195,4 +195,4 @@ static orxSTATUS orxScroll_Init()
 }
 
 /** Declares the demo entry point */
-orxPLUGIN_DECLARE_ENTRY_POINT(orxScroll_Init);
+orxPLUGIN_DECLARE_INIT_ENTRY_POINT(orxScroll_Init);

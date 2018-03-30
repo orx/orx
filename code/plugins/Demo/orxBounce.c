@@ -526,9 +526,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxPROFILER_POP_MARKER();
 }
 
-/** Inits the bounce demo
+/** Handles bounce demo loading/unloading/swaping
  */
-static orxSTATUS orxBounce_Init(orxPLUGIN_ENTRY_MODE _eMode)
+static orxSTATUS orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 {
   orxU32    i;
   orxSTATUS eResult;
@@ -606,4 +606,4 @@ static orxSTATUS orxBounce_Init(orxPLUGIN_ENTRY_MODE _eMode)
 }
 
 /* Registers plugin entry */
-orxPLUGIN_DECLARE_ENTRY_POINT(orxBounce_Init);
+orxPLUGIN_DECLARE_INIT_ENTRY_POINT(orxBounce_EntryPoint);
