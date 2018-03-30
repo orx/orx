@@ -781,7 +781,7 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
     zPluginName = _azParams[i] + s32LastSeparatorIndex;
 
     /* Loads plugin */
-    eResult = (orxPlugin_LoadUsingExt(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (orxPlugin_Load(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
 
   /* Updates all modules */
@@ -789,6 +789,86 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
 
   /* Done! */
   return eResult;
+}
+
+/** Loads a plugin (using its exact complete name)
+ * @param[in] _zPluginFileName  The complete path of the plugin file, including its extension
+ * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
+ * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
+ */
+static orxHANDLE orxFASTCALL orxPlugin_LoadInternal(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
+{
+  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+
+#ifdef __orxPLUGIN_DYNAMIC__
+
+  orxSYSPLUGIN    pstSysPlugin;
+  orxPLUGIN_INFO *pstPluginInfo;
+
+  /* Opens plugin */
+  pstSysPlugin = orxPLUGIN_OPEN(_zPluginFileName);
+
+  /* Valid? */
+  if(pstSysPlugin != orxNULL)
+  {
+    /* Creates plugin info */
+    pstPluginInfo = orxPlugin_CreatePluginInfo();
+
+    /* Valid? */
+    if(pstPluginInfo != orxNULL)
+    {
+      /* Stores plugin info */
+      pstPluginInfo->pstSysPlugin = pstSysPlugin;
+      pstPluginInfo->hPluginHandle = (orxHANDLE)pstPluginInfo;
+
+      /* Registers plugin */
+      if(orxPlugin_RegisterPlugin(pstPluginInfo) != orxSTATUS_FAILURE)
+      {
+        /* Stores plugin name */
+        pstPluginInfo->zPluginName = _zPluginName;
+
+        /* Gets plugin handle */
+        hPluginHandle = pstPluginInfo->hPluginHandle;
+      }
+      else
+      {
+        /* Logs an error */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't register the plugin <%s>, closing it.", _zPluginFileName);
+
+        /* Closes plugin */
+        orxPLUGIN_CLOSE(pstSysPlugin);
+
+        /* Deletes allocated plugin info */
+        orxPlugin_DeletePluginInfo(pstPluginInfo);
+
+        /* Empty plugin */
+        hPluginHandle = orxHANDLE_UNDEFINED;
+      }
+    }
+    else
+    {
+      /* Logs an error */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't create a plugin info for plugin <%s>.", _zPluginFileName);
+
+      /* Closes plugin */
+      orxPLUGIN_CLOSE(pstSysPlugin);
+    }
+  }
+  else
+  {
+    /* Logs an error */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginFileName);
+  }
+
+#else /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+#endif /* __orxPLUGIN_DYNAMIC__ */
+
+  /* Returns its handle */
+  return hPluginHandle;
 }
 
 
@@ -936,104 +1016,18 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
   return orxNULL;
 }
 
-/** Loads a plugin (using its exact complete name)
- * @param[in] _zPluginFileName  The complete path of the plugin file, including its extension
+/** Loads a plugin (using OS common library extension + release/debug suffixes if not found)
+ * @param[in] _zPluginFileName  The complete path of the plugin file, without its library extension
  * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
 orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
 {
-  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+  orxHANDLE hResult;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
-  orxSYSPLUGIN    pstSysPlugin;
-  orxPLUGIN_INFO *pstPluginInfo;
-
-  /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zPluginFileName != orxNULL);
-  orxASSERT(_zPluginName != orxNULL);
-
-  /* Opens plugin */
-  pstSysPlugin = orxPLUGIN_OPEN(_zPluginFileName);
-
-  /* Valid? */
-  if(pstSysPlugin != orxNULL)
-  {
-    /* Creates plugin info */
-    pstPluginInfo = orxPlugin_CreatePluginInfo();
-
-    /* Valid? */
-    if(pstPluginInfo != orxNULL)
-    {
-      /* Stores plugin info */
-      pstPluginInfo->pstSysPlugin = pstSysPlugin;
-      pstPluginInfo->hPluginHandle = (orxHANDLE)pstPluginInfo;
-
-      /* Registers plugin */
-      if(orxPlugin_RegisterPlugin(pstPluginInfo) != orxSTATUS_FAILURE)
-      {
-        /* Stores plugin name */
-        pstPluginInfo->zPluginName = _zPluginName;
-
-        /* Gets plugin handle */
-        hPluginHandle = pstPluginInfo->hPluginHandle;
-      }
-      else
-      {
-        /* Logs an error */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't register the plugin <%s>, closing it.", _zPluginFileName);
-
-        /* Closes plugin */
-        orxPLUGIN_CLOSE(pstSysPlugin);
-
-        /* Deletes allocated plugin info */
-        orxPlugin_DeletePluginInfo(pstPluginInfo);
-
-        /* Empty plugin */
-        hPluginHandle = orxHANDLE_UNDEFINED;
-      }
-    }
-    else
-    {
-      /* Logs an error */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't create a plugin info for plugin <%s>.", _zPluginFileName);
-
-      /* Closes plugin */
-      orxPLUGIN_CLOSE(pstSysPlugin);
-    }
-  }
-  else
-  {
-    /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginFileName);
-  }
-
-#else /* __orxPLUGIN_DYNAMIC__ */
-
-  /* Logs message */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
-
-#endif /* __orxPLUGIN_DYNAMIC__ */
-
-  /* Returns its handle */
-  return hPluginHandle;
-}
-
-
-/** Loads a plugin using OS common library extension + release/debug suffixes
- * @param[in] _zPluginFileName  The complete path of the plugin file, without its library extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
- * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
- */
-orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
-{
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-
-#ifdef __orxPLUGIN_DYNAMIC__
-
-  orxCHAR zFileName[256];
+  orxCHAR zFileName[384];
 
 #ifdef __orxDEBUG__
 
@@ -1047,8 +1041,8 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginFileName != orxNULL);
-  orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
   orxASSERT(_zPluginName != orxNULL);
+  orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
 
   /* Inits buffer */
   zFileName[sizeof(zFileName) - 1] = orxCHAR_NULL;
@@ -1062,7 +1056,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
 
   /* Loads it */
-  hResult = orxPlugin_Load(zFileName, _zPluginName);
+  hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
 
   /* Not valid? */
   if(hResult == orxHANDLE_UNDEFINED)
@@ -1074,7 +1068,14 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   /* Loads it */
-  hResult = orxPlugin_Load(zFileName, _zPluginName);
+  hResult = orxPlugin_LoadInternal(zFileName, _zPluginName);
+
+  /* Still not found? */
+  if(hResult == orxHANDLE_UNDEFINED)
+  {
+    /* Loads it without any extension/suffix */
+    hResult = orxPlugin_LoadInternal(_zPluginFileName, _zPluginName);
+  }
 
 #ifdef __orxDEBUG__
 
@@ -1089,6 +1090,9 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
 
   /* Logs message */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
+
+  /* Updates result */
+  hResult = orxHANDLE_UNDEFINED;
 
 #endif /* __orxPLUGIN_DYNAMIC__ */
 
