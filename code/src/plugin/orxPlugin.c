@@ -1150,10 +1150,11 @@ orxHANDLE orxFASTCALL orxPlugin_LoadShadow(const orxSTRING _zPluginFileName, con
   }
   else
   {
+    orxCHAR acFileName[384];
+
 #ifdef __orxDEBUG__
 
     orxSTRING zDebugSuffix;
-    orxCHAR   acFileName[384];
 
     /* Pushes section */
     orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
