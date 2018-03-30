@@ -528,7 +528,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 
 /** Handles bounce demo loading/unloading/swaping
  */
-static orxSTATUS orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
+static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 {
   orxU32    i;
   orxSTATUS eResult;
