@@ -961,6 +961,9 @@ static orxSTATUS orxFASTCALL orxPlugin_EventHandler(const orxEVENT *_pstEvent)
             /* Pops config section */
             orxConfig_PopSection();
 
+            /* Clears config swap section */
+            orxConfig_ClearSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
+
             /* Updates status */
             orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_NONE, orxPLUGIN_KU32_STATIC_FLAG_SWAP);
           }
