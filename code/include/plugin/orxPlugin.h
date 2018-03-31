@@ -78,10 +78,9 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(const orxSTRING _
 
 /** Loads a plugin, doing a shadow copy and watching for any change on-disk to trigger an auto-swap
  * @param[in] _zPluginFileName  The complete path of the plugin file, with or without its library extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadShadow(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadShadow(const orxSTRING _zPluginFileName);
 
 /** Unloads a plugin
  * @param[in] _hPluginHandle The handle of the plugin to unload

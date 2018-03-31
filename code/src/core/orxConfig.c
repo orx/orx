@@ -3399,7 +3399,7 @@ void orxFASTCALL orxConfig_CommandAppendValue(orxU32 _u32ArgNumber, const orxCOM
   orxConfig_PushSection(_astArgList[0].zValue);
 
   /* Updates result */
-  _pstResult->zValue = (orxConfig_SetEntry(_astArgList[1].zValue, _astArgList[2].zValue, orxFALSE, orxTRUE) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
+  _pstResult->zValue = (orxConfig_AppendString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
   orxConfig_PopSection();
@@ -6736,6 +6736,28 @@ orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const or
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Appends a string value to a config list (will create a new entry if not already present)
+ * @param[in] _zKey             Key name
+ * @param[in] _zValue           Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_AppendString(const orxSTRING _zKey, const orxSTRING _zValue)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(_zValue != orxNULL);
+
+  /* Appends to existing entry */
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE, orxTRUE);
 
   /* Done! */
   return eResult;

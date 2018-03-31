@@ -530,75 +530,160 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  */
 static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 {
-  orxU32    i;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Loads config file and selects its section */
-  orxConfig_Load("Bounce.ini");
-  orxConfig_SelectSection("Bounce");
-
-  /* Loads input */
-  orxInput_Load(orxNULL);
-
-  /* Creates ball spawner */
-  spoBallSpawner = orxSpawner_CreateFromConfig("BallSpawner");
-
-  /* Valid? */
-  if(spoBallSpawner != orxNULL)
+  /* Depending on plugin entry mode */
+  switch(_eMode)
   {
-    orxOBJECT  *pstParticleSource;
-    orxCLOCK   *pstClock;
-
-    /* Creates particle source */
-    pstParticleSource = orxObject_CreateFromConfig("ParticleSource");
-
-    /* Valid? */
-    if(pstParticleSource != orxNULL)
+    case orxPLUGIN_ENTRY_MODE_INIT:
     {
-      /* Sets its parent */
-      orxObject_SetParent(pstParticleSource, spoBallSpawner);
+      orxU32 i;
+
+      /* Loads config file and selects its section */
+      orxConfig_Load("Bounce.ini");
+      orxConfig_SelectSection("Bounce");
+
+      /* Loads input */
+      orxInput_Load(orxNULL);
+
+      /* Creates ball spawner */
+      spoBallSpawner = orxSpawner_CreateFromConfig("BallSpawner");
+
+      /* Valid? */
+      if(spoBallSpawner != orxNULL)
+      {
+        orxOBJECT  *pstParticleSource;
+        orxCLOCK   *pstClock;
+
+        /* Creates particle source */
+        pstParticleSource = orxObject_CreateFromConfig("ParticleSource");
+
+        /* Valid? */
+        if(pstParticleSource != orxNULL)
+        {
+          /* Sets its parent */
+          orxObject_SetParent(pstParticleSource, spoBallSpawner);
+        }
+
+        /* Updates cursor */
+        orxMouse_ShowCursor(orxConfig_GetBool("ShowCursor"));
+
+        /* Creates walls */
+        spstWalls = orxObject_CreateFromConfig("Walls");
+
+        /* Inits trail */
+        for(i = 0; i < TRAIL_POINT_NUMBER; i++)
+        {
+          orxMouse_GetPosition(&savTrailPointList[i]);
+        }
+
+        /* Creates all viewports */
+        for(i = 0; i < (orxU32)orxConfig_GetListCount("ViewportList"); i++)
+        {
+          orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+        }
+
+        /* Gets rendering clock */
+        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+        /* Registers callback */
+        eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+        /* Registers update trail timer */
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+        /* Registers event handler */
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      }
+      else
+      {
+        /* Failure */
+        eResult = orxSTATUS_FAILURE;
+      }
+
+      break;
     }
 
-    /* Updates cursor */
-    orxMouse_ShowCursor(orxConfig_GetBool("ShowCursor"));
-
-    /* Creates walls */
-    spstWalls = orxObject_CreateFromConfig("Walls");
-
-    /* Inits trail */
-    for(i = 0; i < TRAIL_POINT_NUMBER; i++)
+    case orxPLUGIN_ENTRY_MODE_SWAP_IN:
     {
-      orxMouse_GetPosition(&savTrailPointList[i]);
+      orxCLOCK *pstClock;
+
+      /* Pushes section to save values when swapping */
+      orxConfig_PushSection("Hotswap");
+
+      /* Restores values we care about */
+      spoBallSpawner  = orxSPAWNER(orxStructure_Get(orxConfig_GetU64("BallSpawner")));
+      spstWalls       = orxOBJECT(orxStructure_Get(orxConfig_GetU64("Walls")));
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
+      /* Gets rendering clock */
+      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+      /* Registers callback */
+      eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+      /* Registers update trail timer */
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Registers event handler */
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      break;
     }
 
-    /* Creates all viewports */
-    for(i = 0; i < (orxU32)orxConfig_GetListCount("ViewportList"); i++)
+    case orxPLUGIN_ENTRY_MODE_SWAP_OUT:
     {
-      orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+      /* Pushes section to save values when swapping */
+      orxConfig_PushSection("Hotswap");
+
+      /* Saves values we care about */
+      orxConfig_SetU64("BallSpawner", orxStructure_GetGUID(spoBallSpawner));
+      orxConfig_SetU64("Walls", orxStructure_GetGUID(spstWalls));
+
+      /* Pops config section */
+      orxConfig_PopSection();
+
+      // Fall through
     }
 
-    /* Gets rendering clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+    case orxPLUGIN_ENTRY_MODE_EXIT:
+    {
+      orxCLOCK *pstClock;
 
-    /* Registers callback */
-    eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+      /* Gets rendering clock */
+      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
-    /* Registers update trail timer */
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      /* Registers callback */
+      orxClock_Unregister(pstClock, &orxBounce_Update);
 
-    /* Registers event handler */
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-  }
-  else
-  {
-    /* Failure */
-    eResult = orxSTATUS_FAILURE;
+      /* Registers update trail timer */
+      orxClock_Unregister(pstClock, &orxBounce_UpdateTrail);
+
+      /* Registers event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxBounce_EventHandler);
+
+      break;
+    }
   }
 
   /* Done! */
@@ -607,3 +692,4 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 
 /* Registers plugin entry */
 orxPLUGIN_DECLARE_INIT_ENTRY_POINT(orxBounce_EntryPoint);
+orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(orxBounce_EntryPoint);

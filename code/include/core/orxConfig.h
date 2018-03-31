@@ -510,6 +510,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetListString(const orxS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_AppendListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
+/** Appends a string value to a config list (will create a new entry if not already present)
+ * @param[in] _zKey             Key name
+ * @param[in] _zValue           Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_AppendString(const orxSTRING _zKey, const orxSTRING _zValue);
+
 /** Gets key count of the current section
  * @return Key count of the current section if valid, 0 otherwise
  */

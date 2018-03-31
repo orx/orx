@@ -44,6 +44,9 @@
 #include "orxInclude.h"
 
 
+#define orxRESOURCE_KZ_CONFIG_SECTION                     "Resource"
+#define orxRESOURCE_KZ_CONFIG_WATCH_LIST                  "WatchList"
+
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
 
 
