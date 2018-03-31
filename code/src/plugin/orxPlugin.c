@@ -1240,11 +1240,11 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orx
  */
 orxHANDLE orxFASTCALL orxPlugin_LoadShadow(const orxSTRING _zPluginFileName)
 {
-  const orxSTRING zLocation;
-  orxHANDLE       hResult;
+  orxHANDLE hResult;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
+  const orxSTRING zLocation;
   const orxSTRING zExtension;
 
   /* Checks */
