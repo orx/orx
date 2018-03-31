@@ -141,6 +141,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga3f470edfb16ff8e0382327fa8352df61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga3f470edfb16ff8e0382327fa8352df61">orxConfig_AppendListString</a> (const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)</td></tr>
 <tr class="separator:ga3f470edfb16ff8e0382327fa8352df61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga00abfc065126b54f7dd47d9ad3b53145"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga00abfc065126b54f7dd47d9ad3b53145">orxConfig_AppendString</a> (const orxSTRING _zKey, const orxSTRING _zValue)</td></tr>
+<tr class="separator:ga00abfc065126b54f7dd47d9ad3b53145"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7526b75f27415d1eff396fbaea6a3f97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7526b75f27415d1eff396fbaea6a3f97">orxConfig_Clear</a> ()</td></tr>
 <tr class="separator:ga7526b75f27415d1eff396fbaea6a3f97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0ef471810ad2d2ed9ff5e0726cacc545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545">orxConfig_ClearSection</a> (const orxSTRING _zSectionName)</td></tr>
@@ -391,6 +393,40 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_azValue</td><td>Values </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Number</td><td>Number of values </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga00abfc065126b54f7dd47d9ad3b53145"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_AppendString </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zValue</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a string value to a config list (will create a new entry if not already present) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zValue</td><td>Value </td></tr>
   </table>
   </dd>
 </dl>

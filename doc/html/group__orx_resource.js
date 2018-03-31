@@ -20,6 +20,8 @@ var group__orx_resource =
       [ "zTag", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a948054382e24c77ad514b54af3776ea3", null ]
     ] ],
     [ "orxRESOURCE_KC_LOCATION_SEPARATOR", "group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8", null ],
+    [ "orxRESOURCE_KZ_CONFIG_SECTION", "group__orx_resource.html#gaba06dd30357fea8510e90833fed8fad7", null ],
+    [ "orxRESOURCE_KZ_CONFIG_WATCH_LIST", "group__orx_resource.html#gae7014eaedd6c91c8b0227011924184f1", null ],
     [ "orxRESOURCE_FUNCTION_CLOSE", "group__orx_resource.html#ga0c5aa37cda5ee381d311b35a3b5bae6c", null ],
     [ "orxRESOURCE_FUNCTION_GET_SIZE", "group__orx_resource.html#ga21060f626cc481e82b4a627b5ddd90e5", null ],
     [ "orxRESOURCE_FUNCTION_GET_TIME", "group__orx_resource.html#ga4b348710f1e8cd649efe9adc2d1a0c4a", null ],

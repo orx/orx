@@ -17,13 +17,17 @@ var group__orx_plugin =
     [ "orxPLUGIN_CORE_FUNCTION_POINTER_NAME", "group__orx_plugin.html#ga0ff3c377c1f92fb4bb44c32de9a59705", null ],
     [ "orxPLUGIN_CORE_REGISTER_FUNCTION_NAME", "group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676", null ],
     [ "orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION", "group__orx_plugin.html#ga8dad35f3108817818eb52f76fad9ee7b", null ],
-    [ "orxPLUGIN_DECLARE_ENTRY_POINT", "group__orx_plugin.html#ga54c7c0d30722dd29d6932358feaeb5ec", null ],
+    [ "orxPLUGIN_DECLARE_EXIT_ENTRY_POINT", "group__orx_plugin.html#gafb2489467f262ab3aa1e6f3db37c60c3", null ],
+    [ "orxPLUGIN_DECLARE_INIT_ENTRY_POINT", "group__orx_plugin.html#ga332cdf65b4e565d9e6e4236147db3907", null ],
+    [ "orxPLUGIN_DECLARE_SWAP_ENTRY_POINT", "group__orx_plugin.html#gab2e29b8ce848b43bab2324be997a4174", null ],
     [ "orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE", "group__orx_plugin.html#gaf7c5ade5e5124ed9825f9d5c93821020", null ],
     [ "orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME", "group__orx_plugin.html#gadfac864e70947e7dc252dd75fcce8cf9", null ],
     [ "orxPLUGIN_DEFINE_CORE_FUNCTION", "group__orx_plugin.html#gae0e51824230ca264bda09d31bae1ea9d", null ],
     [ "orxPLUGIN_END_CORE_FUNCTION_ARRAY", "group__orx_plugin.html#ga63f65b2ef417367e3c41a4fe71859673", null ],
     [ "orxPLUGIN_K_CORE_INIT_FUNCTION_NAME", "group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee", null ],
+    [ "orxPLUGIN_K_EXIT_FUNCTION_NAME", "group__orx_plugin.html#gac16844bf957a17cacadb967cc585d80c", null ],
     [ "orxPLUGIN_K_INIT_FUNCTION_NAME", "group__orx_plugin.html#ga06446ed58fb59ad4b1208ea1281aed1b", null ],
+    [ "orxPLUGIN_K_SWAP_FUNCTION_NAME", "group__orx_plugin.html#ga8cf0bc666fd1ed3823a48e77e24bdd2a", null ],
     [ "orxPLUGIN_KU32_FLAG_CORE_ID", "group__orx_plugin.html#ga0d51db1f5de9f215f825897082484a86", null ],
     [ "orxPLUGIN_KU32_FUNCTION_ARG_SIZE", "group__orx_plugin.html#gaa6c1f8c5e57881b220104ade34166944", null ],
     [ "orxPLUGIN_KU32_MASK_FUNCTION_ID", "group__orx_plugin.html#ga2fd4a16dc14944caf2511cd55cbe72a2", null ],
@@ -38,6 +42,7 @@ var group__orx_plugin =
     [ "orxPLUGIN_USER_FUNCTION_ADD", "group__orx_plugin.html#gad033611e1320b1c74fd8c0a45b805949", null ],
     [ "orxPLUGIN_USER_FUNCTION_END", "group__orx_plugin.html#gaa3c1383e29b564fcdf59e9bd54136262", null ],
     [ "orxPLUGIN_USER_FUNCTION_START", "group__orx_plugin.html#gac61884b29f3bf244014c6c275eda4748", null ],
+    [ "orxPLUGIN_ENTRY_POINT", "group__orx_plugin.html#ga747bf37213d51817d4e790c566bc0c3b", null ],
     [ "orxPLUGIN_FUNCTION", "group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24", null ],
     [ "orxPLUGIN_INIT_FUNCTION", "group__orx_plugin.html#gad64f7622dcbd0df2b69058c876060835", null ],
     [ "orxPLUGIN_CORE_ID", "group__orx_plugin.html#gac8f3a703cf9f5799bff24a129beee67e", [
@@ -50,6 +55,14 @@ var group__orx_plugin =
       [ "orxPLUGIN_CORE_ID_SOUNDSYSTEM", "group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67ead30a87f7923011ef92c70c081103e174", null ],
       [ "orxPLUGIN_CORE_ID_NUMBER", "group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67ea50ad6e496f214c6f27b78cd1d1004e7c", null ],
       [ "orxPLUGIN_CORE_ID_NONE", "group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67ea9fb529cdf444ee5d8c6bb155e2a2aa95", null ]
+    ] ],
+    [ "orxPLUGIN_ENTRY_MODE", "group__orx_plugin.html#gae4664793e99ee7a0e349edec961af53f", [
+      [ "orxPLUGIN_ENTRY_MODE_INIT", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fafca2e2f6f250067ef00a9a49502f5d2f", null ],
+      [ "orxPLUGIN_ENTRY_MODE_EXIT", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fa26bad52b7f3846319d6de364a9b64e31", null ],
+      [ "orxPLUGIN_ENTRY_MODE_SWAP_IN", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fad8a983eb115ce6a0cdf49103107c80eb", null ],
+      [ "orxPLUGIN_ENTRY_MODE_SWAP_OUT", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fa0e588641c4f8795d92410de42aef5ec2", null ],
+      [ "orxPLUGIN_ENTRY_MODE_NUMBER", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fad3e542d79bf20afb474bec65d7766a7f", null ],
+      [ "orxPLUGIN_ENTRY_MODE_NONE", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fabee101bc028d407da6969ce7b583423d", null ]
     ] ],
     [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY", "group__orx_plugin.html#gab155bd6d5a09b625a08a9fc69c35bcb7", [
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a9deb266a63c47237ca614ca8908c45e9", null ],
@@ -249,7 +262,7 @@ var group__orx_plugin =
     [ "orxPlugin_GetName", "group__orx_plugin.html#gaa482dcf82d2bbbc6b86fa904fcecc67e", null ],
     [ "orxPlugin_Init", "group__orx_plugin.html#ga9fbf81b544a8420e59fdd7d1f629ce09", null ],
     [ "orxPlugin_Load", "group__orx_plugin.html#gae9bbec4c44f47e761a29f0ecba43f262", null ],
-    [ "orxPlugin_LoadUsingExt", "group__orx_plugin.html#ga58d434222f10d5d31aa93f8dc5d3a5ff", null ],
+    [ "orxPlugin_LoadShadow", "group__orx_plugin.html#gaffc5ee606be8da175a22c7caf10522e8", null ],
     [ "orxPlugin_RegisterCorePlugins", "group__orx_plugin.html#ga8978c9e645fa5b4228ae25cd40bc7ca3", null ],
     [ "orxPlugin_Setup", "group__orx_plugin.html#ga775864294d31f40c917329a84d6e6abf", null ],
     [ "orxPlugin_Unload", "group__orx_plugin.html#ga230eab1bb1033f4e1984d444f4cb7e92", null ]

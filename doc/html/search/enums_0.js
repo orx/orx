@@ -29,6 +29,7 @@ var searchData=
   ['orxobject_5fevent',['orxOBJECT_EVENT',['../group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1',1,'orxObject.h']]],
   ['orxphysics_5fevent',['orxPHYSICS_EVENT',['../group__orx_physics.html#ga1c4aaa4ece57611bd21ae6470a07a29d',1,'orxPhysics.h']]],
   ['orxplugin_5fcore_5fid',['orxPLUGIN_CORE_ID',['../group__orx_plugin.html#gac8f3a703cf9f5799bff24a129beee67e',1,'orxPlugin_CoreID.h']]],
+  ['orxplugin_5fentry_5fmode',['orxPLUGIN_ENTRY_MODE',['../group__orx_plugin.html#gae4664793e99ee7a0e349edec961af53f',1,'orxPluginUser.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fdisplay',['orxPLUGIN_FUNCTION_BASE_ID_DISPLAY',['../group__orx_plugin.html#gab155bd6d5a09b625a08a9fc69c35bcb7',1,'orxPlugin_Display.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fjoystick',['orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK',['../group__orx_plugin.html#ga59e301081bf23fee7f474326141f0bc7',1,'orxPlugin_Joystick.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fkeyboard',['orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD',['../group__orx_plugin.html#ga25158caaf5e4db6702d80d3c73b945fa',1,'orxPlugin_Keyboard.h']]],

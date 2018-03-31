@@ -28,6 +28,7 @@ var searchData=
   ['orxphysics_5fbody',['orxPHYSICS_BODY',['../group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6',1,'orxPhysics.h']]],
   ['orxphysics_5fbody_5fjoint',['orxPHYSICS_BODY_JOINT',['../group__orx_physics.html#gac0c9d300ee61b05b28a86313af67d137',1,'orxPhysics.h']]],
   ['orxphysics_5fbody_5fpart',['orxPHYSICS_BODY_PART',['../group__orx_physics.html#gad6ca00ed200d20d87023b977ea980526',1,'orxPhysics.h']]],
+  ['orxplugin_5fentry_5fpoint',['orxPLUGIN_ENTRY_POINT',['../group__orx_plugin.html#ga747bf37213d51817d4e790c566bc0c3b',1,'orxPluginUser.h']]],
   ['orxplugin_5ffunction',['orxPLUGIN_FUNCTION',['../group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24',1,'orxPluginType.h']]],
   ['orxplugin_5finit_5ffunction',['orxPLUGIN_INIT_FUNCTION',['../group__orx_plugin.html#gad64f7622dcbd0df2b69058c876060835',1,'orxPluginCore.h']]],
   ['orxresource_5ffunction_5fclose',['orxRESOURCE_FUNCTION_CLOSE',['../group__orx_resource.html#ga0c5aa37cda5ee381d311b35a3b5bae6c',1,'orxResource.h']]],
