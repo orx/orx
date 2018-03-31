@@ -1111,7 +1111,7 @@ static orxINLINE orxSTATUS                                orxString_ToFloat(cons
 
 /** Convert a string to a vector
  * @param[in]   _zString        String To convert
- * @param[out]  _pvOutValue     Converted value
+ * @param[out]  _pvOutValue     Converted value. N.B.: if only two components (x, y) are defined, the z component will be set to zero
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -1132,6 +1132,11 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
   if((*zString == orxSTRING_KC_VECTOR_START)
   || (*zString == orxSTRING_KC_VECTOR_START_ALT))
   {
+    orxCHAR cEndMarker;
+
+    /* Gets end marker */
+    cEndMarker = (*zString == orxSTRING_KC_VECTOR_START) ? orxSTRING_KC_VECTOR_END : orxSTRING_KC_VECTOR_END_ALT;
+
     /* Skips all white spaces */
     zString = orxString_SkipWhiteSpaces(zString + 1);
 
@@ -1165,14 +1170,22 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
               /* Skips all white spaces */
               zString = orxString_SkipWhiteSpaces(zString);
 
-              /* Has a valid ending marker? */
-              if((*zString == orxSTRING_KC_VECTOR_END)
-              || (*zString == orxSTRING_KC_VECTOR_END_ALT))
+              /* Has a valid end marker? */
+              if(*zString == cEndMarker)
               {
                 /* Updates result */
                 eResult = orxSTATUS_SUCCESS;
               }
             }
+          }
+          /* Has a valid end marker? */
+          else if(*zString == cEndMarker)
+          {
+            /* Clears Z component */
+            stValue.fZ = orxFLOAT_0;
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
           }
         }
       }
