@@ -91,6 +91,21 @@
  Structures
  *********************************************/
 
+/** Plugin entry mode enum
+ */
+typedef enum __orxPLUGIN_ENTRY_MODE_t
+{
+  orxPLUGIN_ENTRY_MODE_INIT = 0,
+  orxPLUGIN_ENTRY_MODE_EXIT,
+  orxPLUGIN_ENTRY_MODE_SWAP_IN,
+  orxPLUGIN_ENTRY_MODE_SWAP_OUT,
+
+  orxPLUGIN_ENTRY_MODE_NUMBER,
+
+  orxPLUGIN_ENTRY_MODE_NONE = orxENUM_NONE
+
+} orxPLUGIN_ENTRY_MODE;
+
 typedef enum __orxPLUGIN_FUNCTION_ID_t
 {
   orxPLUGIN_FUNCTION_ID_NONE = orxENUM_NONE

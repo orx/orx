@@ -130,7 +130,7 @@
 #define orxPLUGIN_KZ_CONFIG_SWAP_SECTION                    "-=PluginSwap=-"
 
 #define orxPLUGIN_KU32_SHADOW_BUFFER_SIZE                   131072
-#define orxPLUGIN_KZ_SHADOW_SUFFIX                          "_Shadow"
+#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow%03u"
 
 
 #ifdef __orxDEBUG__
@@ -199,6 +199,9 @@ typedef struct __orxPLUGIN_STATIC_t
 
   /* Resource group ID */
   orxU32 u32ResourceGroupID;
+
+  /* Shadow count */
+  orxU32 u32ShadowCount;
 
   /* Control flags */
   orxU32 u32Flags;
@@ -621,10 +624,10 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
   /* Swapping? */
   if(orxFLAG_TEST(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP))
   {
-    orxPLUGIN_ENTRY_POINT pfnSwap;
+    orxPLUGIN_SWAP_FUNCTION pfnSwap;
 
     /* Gets swap function */
-    pfnSwap = (orxPLUGIN_ENTRY_POINT)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+    pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
 
     /* Found? */
     if(pfnSwap != orxNULL)
@@ -927,10 +930,10 @@ static orxSTATUS orxFASTCALL orxPlugin_EventHandler(const orxEVENT *_pstEvent)
         /* Found? */
         if(orxString_ToCRC(pstPluginInfo->zPluginName) == pstPayload->u32NameID)
         {
-          orxPLUGIN_ENTRY_POINT pfnSwap;
+          orxPLUGIN_SWAP_FUNCTION pfnSwap;
 
           /* Gets swap function */
-          pfnSwap = (orxPLUGIN_ENTRY_POINT)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+          pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
 
           /* Found? */
           if(pfnSwap != orxNULL)
@@ -1324,7 +1327,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadShadow(const orxSTRING _zPluginFileName)
     acShadowLocation[sizeof(acShadowLocation) - 1] = orxCHAR_NULL;
 
     /* Gets shadow location */
-    orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s%s.%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, orxPLUGIN_KZ_SHADOW_SUFFIX, szPluginLibraryExt);
+    orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
 
     /* Opens both resources */
     hResource       = orxResource_Open(zLocation, orxFALSE);
@@ -1441,10 +1444,10 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
     /* Swapping? */
     if(orxFLAG_TEST(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP))
     {
-      orxPLUGIN_ENTRY_POINT pfnSwap;
+      orxPLUGIN_SWAP_FUNCTION pfnSwap;
 
       /* Gets swap function */
-      pfnSwap = (orxPLUGIN_ENTRY_POINT)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+      pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
 
       /* Found? */
       if(pfnSwap != orxNULL)
@@ -1455,10 +1458,10 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
     }
     else
     {
-      orxPLUGIN_ENTRY_POINT pfnExit;
+      orxPLUGIN_EXIT_FUNCTION pfnExit;
 
       /* Gets exit function */
-      pfnExit = (orxPLUGIN_ENTRY_POINT)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_EXIT_FUNCTION_NAME);
+      pfnExit = (orxPLUGIN_EXIT_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_EXIT_FUNCTION_NAME);
 
       /* Found? */
       if(pfnExit != orxNULL)

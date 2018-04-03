@@ -57,21 +57,6 @@
  Constants
  *********************************************/
 
-/** Plugin entry mode enum
- */
-typedef enum __orxPLUGIN_ENTRY_MODE_t
-{
-  orxPLUGIN_ENTRY_MODE_INIT = 0,
-  orxPLUGIN_ENTRY_MODE_EXIT,
-  orxPLUGIN_ENTRY_MODE_SWAP_IN,
-  orxPLUGIN_ENTRY_MODE_SWAP_OUT,
-
-  orxPLUGIN_ENTRY_MODE_NUMBER,
-
-  orxPLUGIN_ENTRY_MODE_NONE = orxENUM_NONE
-
-} orxPLUGIN_ENTRY_MODE;
-
 /** Plugin entry point function */
 typedef orxSTATUS (orxFASTCALL *orxPLUGIN_ENTRY_POINT)(orxPLUGIN_ENTRY_MODE _eMode);
 
@@ -106,7 +91,7 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_EXIT_FUNCTION_NAME()        
 extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_SWAP_FUNCTION_NAME(orxPLUGIN_ENTRY_MODE _eMode)                                   \
 {                                                                                                                                     \
   /* Done! */                                                                                                                         \
-  return ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(_eMode);                                                                             \
+  return ENTRY_FUNCTION(_eMode);                                                                                                      \
 }
 
 
