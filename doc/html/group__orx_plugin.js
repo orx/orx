@@ -43,8 +43,10 @@ var group__orx_plugin =
     [ "orxPLUGIN_USER_FUNCTION_END", "group__orx_plugin.html#gaa3c1383e29b564fcdf59e9bd54136262", null ],
     [ "orxPLUGIN_USER_FUNCTION_START", "group__orx_plugin.html#gac61884b29f3bf244014c6c275eda4748", null ],
     [ "orxPLUGIN_ENTRY_POINT", "group__orx_plugin.html#ga747bf37213d51817d4e790c566bc0c3b", null ],
+    [ "orxPLUGIN_EXIT_FUNCTION", "group__orx_plugin.html#ga6c228fc109ba85b133ea9e3521c11f00", null ],
     [ "orxPLUGIN_FUNCTION", "group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24", null ],
     [ "orxPLUGIN_INIT_FUNCTION", "group__orx_plugin.html#gad64f7622dcbd0df2b69058c876060835", null ],
+    [ "orxPLUGIN_SWAP_FUNCTION", "group__orx_plugin.html#gac50d70a0865e8a1cfb56ce5369574f7a", null ],
     [ "orxPLUGIN_CORE_ID", "group__orx_plugin.html#gac8f3a703cf9f5799bff24a129beee67e", [
       [ "orxPLUGIN_CORE_ID_DISPLAY", "group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67eab6ca28cfb6e0c5775e256296052c0e01", null ],
       [ "orxPLUGIN_CORE_ID_JOYSTICK", "group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67eab4149f7fa39d0733941f289021a9301c", null ],
