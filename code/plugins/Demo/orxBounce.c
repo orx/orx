@@ -684,6 +684,11 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 
       break;
     }
+
+    default:
+    {
+      break;
+    }
   }
 
   /* Done! */
