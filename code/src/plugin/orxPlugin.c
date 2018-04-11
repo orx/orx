@@ -67,6 +67,8 @@
 
   #define __orxPLUGIN_DYNAMIC__
 
+  #define __orxPLUGIN_MULTI_SHADOW__
+
 #else /* __orxWINDOWS__ */
 
   typedef void *                                            orxSYSPLUGIN;
@@ -130,7 +132,12 @@
 #define orxPLUGIN_KZ_CONFIG_SWAP_SECTION                    "-=PluginSwap=-"
 
 #define orxPLUGIN_KU32_SHADOW_BUFFER_SIZE                   131072
+
+#ifdef __orxPLUGIN_MULTI_SHADOW__
 #define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow%03u"
+#else /* __orxPLUGIN_MULTI_SHADOW__ */
+#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow"
+#endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
 
 #ifdef __orxDEBUG__
@@ -200,8 +207,10 @@ typedef struct __orxPLUGIN_STATIC_t
   /* Resource group ID */
   orxU32 u32ResourceGroupID;
 
+#ifdef __orxPLUGIN_MULTI_SHADOW__
   /* Shadow count */
   orxU32 u32ShadowCount;
+#endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
   /* Control flags */
   orxU32 u32Flags;
@@ -1327,7 +1336,11 @@ orxHANDLE orxFASTCALL orxPlugin_LoadShadow(const orxSTRING _zPluginFileName)
     acShadowLocation[sizeof(acShadowLocation) - 1] = orxCHAR_NULL;
 
     /* Gets shadow location */
+#ifdef __orxPLUGIN_MULTI_SHADOW__
     orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
+#else /* __orxPLUGIN_MULTI_SHADOW__ */
+    orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, szPluginLibraryExt);
+#endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
     /* Opens both resources */
     hResource       = orxResource_Open(zLocation, orxFALSE);
