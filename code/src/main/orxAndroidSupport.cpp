@@ -982,6 +982,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
   stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
   stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
   stAPKTypeInfo.pfnWrite   = orxNULL;
+  stAPKTypeInfo.pfnDelete  = orxNULL;
 
   /* Registers it */
   eResult = orxResource_RegisterType(&stAPKTypeInfo);
