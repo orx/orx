@@ -132,7 +132,7 @@ either req-ver = cur-ver [
 
 
 ; Sets environment variable
-new-env: (get-env env-variable) != env-path: mold to-local-file clean-path root/:env-path
+new-env: (get-env env-variable) != env-path: to-string to-local-file clean-path root/:env-path
 print ["== Setting environment: [" env-variable "=" env-path "]"]
 set-env env-variable env-path
 either platform = "windows" [
