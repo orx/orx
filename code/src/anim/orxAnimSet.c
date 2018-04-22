@@ -1,4 +1,4 @@
-﻿/* Orx - Portable Game Engine
+/* Orx - Portable Game Engine
  *
  * Copyright (c) 2008-2018 Orx-Project
  *
@@ -163,7 +163,7 @@
 #define orxANIMSET_KU32_CREATION_BANK_SIZE            256         /**< Creation bank size */
 #define orxANIMSET_KU32_BANK_SIZE                     128         /**< Bank size */
 
-#define orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS     4
+#define orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS     0
 
 
 /***************************************************************************
