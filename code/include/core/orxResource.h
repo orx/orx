@@ -44,10 +44,15 @@
 #include "orxInclude.h"
 
 
+/** Misc
+ */
 #define orxRESOURCE_KZ_CONFIG_SECTION                     "Resource"
 #define orxRESOURCE_KZ_CONFIG_WATCH_LIST                  "WatchList"
 
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
+
+#define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
+#define orxRESOURCE_KZ_TYPE_TAG_FILE                      "file"
 
 
 /** Resource asynchronous operation callback function
@@ -58,14 +63,15 @@ typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64
 /** Resource handlers
  */
 typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
-typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zPath);
-typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zPath, orxBOOL _bEraseMode);
+typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation);
+typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_SIZE)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_SEEK)(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_TELL)(orxHANDLE _hResource);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_READ)(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_WRITE)(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer);
+typedef orxSTATUS       (orxFASTCALL *orxRESOURCE_FUNCTION_DELETE)(const orxSTRING _zLocation);
 
 /** Resource type info
  */
@@ -81,6 +87,7 @@ typedef struct __orxRESOURCE_TYPE_INFO_t
   orxRESOURCE_FUNCTION_TELL     pfnTell;                  /**< Tell function, mandatory */
   orxRESOURCE_FUNCTION_READ     pfnRead;                  /**< Read function, mandatory */
   orxRESOURCE_FUNCTION_WRITE    pfnWrite;                 /**< Write function, optional, for write support */
+  orxRESOURCE_FUNCTION_DELETE   pfnDelete;                /**< Delete function, optional, for deletion support */
 
 } orxRESOURCE_TYPE_INFO;
 
@@ -262,6 +269,12 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Read(orxHA
  * @return Size of the written data, in bytes, 0 if nothing could be written/no write support for this resource type or -1 for successful asynchronous call
  */
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, const void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext);
+
+/** Deletes a resource, given its location
+ * @param[in] _zLocation        Location of the resource to delete
+ * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Delete(const orxSTRING _zLocation);
 
 
 /** Gets pending operation count for a given resource

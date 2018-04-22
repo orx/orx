@@ -80,10 +80,6 @@
 #define orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED     -1                              /**< Watch time uninitialized */
 #define orxRESOURCE_KF_WATCH_NOTIFICATION_DELAY       0.2                             /**< Watch notification delay */
 
-#define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
-
-#define orxRESOURCE_KZ_TYPE_TAG_FILE                  "file"                          /**< Resource type file tag */
-
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 #define orxRESOURCE_KU32_REQUEST_LIST_SIZE            2048                            /**< Request list size */
 
@@ -239,19 +235,19 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zSto
   return zResult;
 }
 
-static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zPath, orxBOOL _bEraseMode)
+static orxHANDLE orxFASTCALL orxResource_File_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   orxFILE  *pstFile;
   orxHANDLE hResult;
 
   /* Opens file */
-  pstFile = orxFile_Open(_zPath, (_bEraseMode != orxFALSE) ? orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY : orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
+  pstFile = orxFile_Open(_zLocation, (_bEraseMode != orxFALSE) ? orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY : orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
   /* Not in erase mode and couldn't open it? */
   if((_bEraseMode == orxFALSE) && (pstFile == orxNULL))
   {
     /* Opens it in read-only mode */
-    pstFile = orxFile_Open(_zPath, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+    pstFile = orxFile_Open(_zLocation, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
   }
 
   /* Updates result */
@@ -369,6 +365,17 @@ static orxS64 orxFASTCALL orxResource_File_Write(orxHANDLE _hResource, orxS64 _s
 
   /* Done! */
   return s64Result;
+}
+
+static orxSTATUS orxFASTCALL orxResource_File_Delete(const orxSTRING _zLocation)
+{
+  orxSTATUS eResult;
+
+  /* Deletes file */
+  eResult = orxFile_Delete(_zLocation);
+
+  /* Done! */
+  return eResult;
 }
 
 static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
@@ -1106,6 +1113,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
         stTypeInfo.pfnTell    = orxResource_File_Tell;
         stTypeInfo.pfnRead    = orxResource_File_Read;
         stTypeInfo.pfnWrite   = orxResource_File_Write;
+        stTypeInfo.pfnDelete  = orxResource_File_Delete;
 
         /* Registers it */
         eResult = orxResource_RegisterType(&stTypeInfo);
@@ -2375,6 +2383,62 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
 
   /* Done! */
   return s64Result;
+}
+
+/** Deletes a resource, given its location
+ * @param[in] _zLocation        Location of the resource to delete
+ * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxResource_Delete(const orxSTRING _zLocation)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zLocation != orxNULL);
+
+  /* Valid? */
+  if(*_zLocation != orxCHAR_NULL)
+  {
+    orxRESOURCE_TYPE *pstType;
+    orxU32            u32TagLength;
+
+    /* For all registered types */
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+        pstType != orxNULL;
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+    {
+      /* Gets tag length */
+      u32TagLength = orxString_GetLength(pstType->stInfo.zTag);
+
+      /* Match tag? */
+      if((orxString_NICompare(_zLocation, pstType->stInfo.zTag, u32TagLength) == 0)
+      && (*(_zLocation + u32TagLength) == orxRESOURCE_KC_LOCATION_SEPARATOR))
+      {
+        /* Selects it */
+        break;
+      }
+    }
+
+    /* Found? */
+    if(pstType != orxNULL)
+    {
+      /* Supports deletion? */
+      if(pstType->stInfo.pfnDelete != orxNULL)
+      {
+        /* Deletes it */
+        eResult = pstType->stInfo.pfnDelete(_zLocation + u32TagLength + 1);
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't delete resource <%s>: unknown resource type.", _zLocation);
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets pending operation count for a given resource
