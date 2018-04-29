@@ -668,7 +668,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
 /** Gets a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _u32Index         Index of shader to get
- * @return      orxSJADER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
 const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index)
 {
