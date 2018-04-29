@@ -1454,7 +1454,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
  * @param[in] _afValueList            Parameter's float value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
+orxSTATUS orxFASTCALL orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -1527,7 +1527,7 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxST
  * @param[in] _apstValueList          Parameter's texture value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
+orxSTATUS orxFASTCALL orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -1600,7 +1600,7 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orx
  * @param[in] _avValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
+orxSTATUS orxFASTCALL orxShader_SetVectorParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
