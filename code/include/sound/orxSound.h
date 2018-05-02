@@ -113,7 +113,7 @@ typedef struct __orxSOUND_STREAM_PACKET_t
   orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
   orxS32    s32ID;                            /**< Packet's ID : 20 */
-  orxFLOAT  fCursor;                          /**< Packet's cursor: 24 */
+  orxFLOAT  fTime;                            /**< Packet's time (cursor/play position): 24 */
 
 } orxSOUND_STREAM_PACKET;
 
@@ -276,12 +276,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetVolume(orxSOUND *_pstS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch);
 
-/** Sets a sound cursor (ie. play position from beginning)
+/** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @param[in]   _fCursor                              Cursor position, in seconds
+ * @param[in]   _fTime                                Time, in seconds
  * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime);
 
 /** Sets sound position
  * @param[in] _pstSound       Concerned Sound
@@ -324,11 +324,11 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(const orxSOUND 
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(const orxSOUND *_pstSound);
 
-/** Gets a sound's cursor (ie. play position from beginning)
+/** Gets a sound's time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @return Sound's cursor position, in seconds
+ * @return Sound's time (cursor/play position), in seconds
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetCursor(const orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetTime(const orxSOUND *_pstSound);
 
 /** Gets sound position
  * @param[in]  _pstSound      Concerned Sound

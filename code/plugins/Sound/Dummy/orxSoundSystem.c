@@ -118,7 +118,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSo
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetCursor(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fCursor)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetTime(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fTime)
 {
   return orxSTATUS_FAILURE;
 }
@@ -153,7 +153,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetPitch(const orxSOUNDSYSTEM_SOUND *_
   return orxFLOAT_0;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetCursor(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetTime(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxFLOAT_0;
 }
@@ -243,14 +243,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_Pause, SOUNDSYSTEM, PAUSE
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_Stop, SOUNDSYSTEM, STOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetPitch, SOUNDSYSTEM, SET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetCursor, SOUNDSYSTEM, SET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetTime, SOUNDSYSTEM, SET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetPosition, SOUNDSYSTEM, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetPitch, SOUNDSYSTEM, GET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetCursor, SOUNDSYSTEM, GET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetTime, SOUNDSYSTEM, GET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetPosition, SOUNDSYSTEM, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD( orxSoundSystem_Dummy_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
