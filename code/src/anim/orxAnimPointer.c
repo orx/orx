@@ -932,11 +932,11 @@ orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER
   return pstResult;
 }
 
-/** AnimPointer current Time get accessor
+/** AnimPointer time get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(const orxANIMPOINTER *_pstAnimPointer)
+orxFLOAT orxFASTCALL orxAnimPointer_GetTime(const orxANIMPOINTER *_pstAnimPointer)
 {
   register orxFLOAT fResult = orxFLOAT_0;
 
@@ -960,7 +960,7 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(const orxANIMPOINTER *_pstAni
   return fResult;
 }
 
-/** AnimPointer Frequency get accessor
+/** AnimPointer frequency get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      AnimPointer frequency
  */
@@ -1188,7 +1188,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimFromName(orxANIMPOINTER *_pstA
   return eResult;
 }
 
-/** AnimPointer current Time accessor
+/** AnimPointer current time set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fTime                        Time to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -1211,7 +1211,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, or
   return eResult;
 }
 
-/** AnimPointer Frequency set accessor
+/** AnimPointer frequency set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fFrequency                   Frequency to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

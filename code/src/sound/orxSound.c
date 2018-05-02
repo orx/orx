@@ -2337,12 +2337,12 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
   return eResult;
 }
 
-/** Sets a sound cursor (ie. play position from beginning)
+/** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @param[in]   _fCursor                              Cursor position, in seconds
+ * @param[in]   _fTime                                Time, in seconds
  * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor)
+orxSTATUS orxFASTCALL orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime)
 {
   orxSTATUS eResult;
 
@@ -2354,10 +2354,10 @@ orxSTATUS orxFASTCALL orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor)
   if(_pstSound->pstData != orxNULL)
   {
     /* Valid? */
-    if((_fCursor >= orxFLOAT_0) && (_fCursor < orxSound_GetDuration(_pstSound)))
+    if((_fTime >= orxFLOAT_0) && (_fTime < orxSound_GetDuration(_pstSound)))
     {
-      /* Sets its cursor */
-      eResult = orxSoundSystem_SetCursor(_pstSound->pstData, _fCursor);
+      /* Sets its time */
+      eResult = orxSoundSystem_SetTime(_pstSound->pstData, _fTime);
     }
     else
     {
@@ -2365,7 +2365,7 @@ orxSTATUS orxFASTCALL orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor)
       eResult = orxSTATUS_FAILURE;
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Can't set cursor" orxANSI_KZ_COLOR_FG_DEFAULT " to <%g>: out of bound value, valid range is " orxANSI_KZ_COLOR_FG_YELLOW "[0, %g[" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", orxSound_GetName(_pstSound), _fCursor, orxSound_GetDuration(_pstSound));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Can't set time" orxANSI_KZ_COLOR_FG_DEFAULT " to <%g>: out of bound value, valid range is " orxANSI_KZ_COLOR_FG_YELLOW "[0, %g[" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", orxSound_GetName(_pstSound), _fTime, orxSound_GetDuration(_pstSound));
     }
   }
   else
@@ -2551,11 +2551,11 @@ orxFLOAT orxFASTCALL orxSound_GetPitch(const orxSOUND *_pstSound)
   return fResult;
 }
 
-/** Gets a sound's cursor (ie. play position from beginning)
+/** Gets a sound's time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @return Sound's cursor position, in seconds
+ * @return Sound's time (cursor/play position), in seconds
  */
-orxFLOAT orxFASTCALL orxSound_GetCursor(const orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetTime(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -2567,7 +2567,7 @@ orxFLOAT orxFASTCALL orxSound_GetCursor(const orxSOUND *_pstSound)
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    fResult = orxSoundSystem_GetCursor(_pstSound->pstData);
+    fResult = orxSoundSystem_GetTime(_pstSound->pstData);
   }
   else
   {
