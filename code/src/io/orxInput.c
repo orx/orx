@@ -1361,6 +1361,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
   {
     orxU32            u32Index, u32PrefixLength;
     orxINPUT_SET     *pstSet;
+    orxCHAR           acBuffer[128] = {};
 
 #ifdef __orxMSVC__
 
@@ -1427,8 +1428,28 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
             if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
             {
               /* Adds it to config */
-              orxConfig_SetString(orxInput_GetBindingName(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID, pstEntry->astBindingList[i].eMode), pstEntry->zName);
+              orxConfig_AppendListString(orxInput_GetBindingName(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID, pstEntry->astBindingList[i].eMode), &pstEntry->zName, 1);
             }
+          }
+
+          /* Has a custom threshold? */
+          if(pstEntry->fThreshold != sstInput.fDefaultThreshold)
+          {
+            /* Gets threshold name */
+            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, pstEntry->zName);
+
+            /* Saves it */
+            orxConfig_SetFloat(acBuffer, pstEntry->fThreshold);
+          }
+
+          /* Has a custom multiplier? */
+          if(pstEntry->fMultiplier != sstInput.fDefaultMultiplier)
+          {
+            /* Gets multiplier name */
+            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, pstEntry->zName);
+
+            /* Saves it */
+            orxConfig_SetFloat(acBuffer, pstEntry->fMultiplier);
           }
         }
 
@@ -1450,11 +1471,19 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     /* Adds set list to config */
     orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
 
-    /* Adds default threshold */
-    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD, sstInput.fDefaultThreshold);
+    /* Has custom default threshold? */
+    if(sstInput.fDefaultThreshold != orxINPUT_KF_DEFAULT_THRESHOLD)
+    {
+      /* Saves it */
+      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD, sstInput.fDefaultThreshold);
+    }
 
-    /* Adds default multiplier */
-    orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER, sstInput.fDefaultMultiplier);
+    /* Has custom default multiplier */
+    if(sstInput.fDefaultMultiplier != orxINPUT_KF_DEFAULT_MULTIPLIER)
+    {
+      /* Saves it */
+      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER, sstInput.fDefaultMultiplier);
+    }
 
     /* Pops config section */
     orxConfig_PopSection();
