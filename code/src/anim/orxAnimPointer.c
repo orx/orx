@@ -216,6 +216,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       orxFLOAT              fEventStartTime;
       orxSTRUCTURE         *pstOwner;
       orxANIM_EVENT_PAYLOAD stPayload;
+      orxBOOL               bRecompute;
 
       /* Gets owner */
       pstOwner = orxStructure_GetOwner(_pstAnimPointer);
@@ -232,6 +233,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
         orxBOOL   bCut, bClearTarget;
         orxU32    u32NewAnim;
         orxFLOAT  fTimeBackup, fTimeCompare;
+
+        /* Clears recompute status */
+        bRecompute = orxFALSE;
 
         /* Gets a backup of current time */
         fTimeBackup = _pstAnimPointer->fCurrentAnimTime;
@@ -301,6 +305,13 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           }
           else
           {
+            /* Not yet at target? */
+            if(_pstAnimPointer->u32CurrentAnim != _pstAnimPointer->u32TargetAnim)
+            {
+              /* Asks for recompute */
+              bRecompute = orxTRUE;
+            }
+
             /* Not modified during callback? */
             if((_pstAnimPointer->u32CurrentAnim == u32NewAnim)
             && (_pstAnimPointer->u32TargetAnim == u32TargetAnim))
@@ -389,7 +400,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             }
           }
         }
-      } while(_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim));
+      } while((bRecompute != orxFALSE) || (_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim)));
 
       /* Has current anim? */
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
