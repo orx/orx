@@ -104,6 +104,9 @@ typedef struct __orxDEBUG_STATIC_t
   /* Control flags */
   orxU32 u32Flags;
 
+  /* Callback function pointer */
+  orxDEBUG_CALLBACK_FUNCTION pfnCallback;
+
 } orxDEBUG_STATIC;
 
 
@@ -395,6 +398,10 @@ void orxFASTCALL _orxDebug_Exit()
     {
        fclose(sstDebug.pstDebugFile);
        sstDebug.pstDebugFile = orxNULL;
+    }
+    if(sstDebug.pfnCallback != orxNULL)
+    {
+       sstDebug.pfnCallback = orxNULL;
     }
 
 #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
@@ -717,6 +724,18 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         orxConsole_Log(zBuffer);
       }
     }
+
+    /* Callback configured? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CALLBACK)
+    {
+      /* Is the pointer valid? */
+      if(sstDebug.pfnCallback != orxNULL)
+      {
+        /* Logs it */
+        sstDebug.pfnCallback(zBuffer);
+      }
+    }
+
   }
 
   /* Done */
@@ -885,6 +904,19 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     sstDebug.zLogFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
 }
+
+/** Sets log callback function
+* @param[in]   _pfnCallback                   Pointer to log callback function
+*/
+void orxFASTCALL _orxDebug_SetLogCallback(const orxDEBUG_CALLBACK_FUNCTION _pfnCallback)
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
+  /* Just set the callback */
+  sstDebug.pfnCallback = _pfnCallback;
+}
+
 
 #ifdef __orxMSVC__
 

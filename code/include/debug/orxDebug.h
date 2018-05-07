@@ -60,10 +60,11 @@
 #define orxDEBUG_KU32_STATIC_FLAG_FILE                0x00000010
 #define orxDEBUG_KU32_STATIC_FLAG_TERMINAL            0x00000020
 #define orxDEBUG_KU32_STATIC_FLAG_CONSOLE             0x00000040
+#define orxDEBUG_KU32_STATIC_FLAG_CALLBACK            0x00000080
 
 #define orxDEBUG_KU32_STATIC_MASK_DEFAULT             0x00000075
 
-#define orxDEBUG_KU32_STATIC_MASK_DEBUG               0x0000003D
+#define orxDEBUG_KU32_STATIC_MASK_DEBUG               0x000000BD
 
 #define orxDEBUG_KU32_STATIC_MASK_USER_ALL            0x0FFFFFFF
 
@@ -75,6 +76,8 @@
 #define orxDEBUG_KZ_DEFAULT_LOG_SUFFIX                ".log"
 #define orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX              "-debug.log"
 
+/* Log callback function */
+typedef void                              (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION) (const orxSTRING _zText);
 
 /* *** Debug Macros *** */
 
@@ -418,6 +421,11 @@ extern orxDLLAPI void orxFASTCALL             _orxDebug_SetDebugFile(const orxST
  * @param[in]   _zFileName                    Log file name
  */
 extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogFile(const orxSTRING _zFileName);
+
+/** Sets log callback function
+* @param[in]   _pfnCallback                   Pointer to log callback function
+*/
+extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogCallback(const orxDEBUG_CALLBACK_FUNCTION _pfnCallback);
 
 #endif /* __orxDEBUG_H_ */
 
