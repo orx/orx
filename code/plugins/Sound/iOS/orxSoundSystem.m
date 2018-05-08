@@ -924,7 +924,8 @@ static void orxFASTCALL orxSoundSystem_iOS_UpdateRecording(const orxCLOCK_INFO *
     /* For all packets */
     while(iSampleNumber > 0)
     {
-      orxU32 u32PacketSampleNumber;
+      orxU32    u32PacketSampleNumber;
+      orxFLOAT  fDT;
 
       /* Gets sample number for this packet */
       u32PacketSampleNumber = (orxU32)orxMIN(iSampleNumber, sstSoundSystem.s32StreamBufferSize);
@@ -969,7 +970,8 @@ static void orxFASTCALL orxSoundSystem_iOS_UpdateRecording(const orxCLOCK_INFO *
       iSampleNumber -= (ALCint)u32PacketSampleNumber;
 
       /* Updates timestamp and time */
-      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+      fDT = orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += fDT;
       sstSoundSystem.stRecordingPayload.stStream.stPacket.fTime += fDT;
     }
 
