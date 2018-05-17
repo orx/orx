@@ -257,9 +257,9 @@ project "[name]"
 -- Mac OS X
 
     configuration {"macosx", "xcode*"}
-        postbuildcommands {"$(shell [ -f [code-path]/lib/dynamic/liborx.dylib ] && cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+        postbuildcommands {"$([ -f [code-path]/lib/dynamic/liborx.dylib ] && cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
     configuration {"macosx", "not xcode*"}
-        postbuildcommands {"$([ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
 
 -- Windows
