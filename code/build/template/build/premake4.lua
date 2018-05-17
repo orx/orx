@@ -88,10 +88,10 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 
 --
--- Solution: [orx]
+-- Solution: [name]
 --
 
-solution "[orx]"
+solution "[name]"
 
     language ("C++")
 
@@ -112,13 +112,15 @@ solution "[orx]"
     includedirs
     {
         "../include",
-        "$(ORX)/include"
+        "$(ORX)/include",
+        "[code-path]/include"
     }
 
     libdirs
     {
         "../lib",
-        "$(ORX)/lib/dynamic"
+        "$(ORX)/lib/dynamic",
+        "[code-path]/lib/dynamic"
     }
 
     targetdir ("../bin")
@@ -220,10 +222,10 @@ solution "[orx]"
 
 
 --
--- Project: [orx]
+-- Project: [name]
 --
 
-project "[orx]"
+project "[name]"
 
     files
     {
