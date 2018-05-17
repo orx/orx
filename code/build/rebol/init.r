@@ -125,7 +125,7 @@ if dir? name: clean-path to-rebol-file name [clear back tail name]
 
 ; Inits project directory
 either exists? name [
-  log [{[} to-local-file name {] already exists, overriding!}]
+  log [{[} to-local-file name {] already exists, overwriting!}]
 ] [
   make-dir/deep name
 ]
