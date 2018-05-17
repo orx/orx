@@ -109,16 +109,6 @@ solution "[name]"
         initplatforms ()
     }
 
-    includedirs
-    {
-        "../include"
-    }
-
-    libdirs
-    {
-        "../lib"
-    }
-
     targetdir ("../bin")
 
     flags
