@@ -111,16 +111,12 @@ solution "[name]"
 
     includedirs
     {
-        "../include",
-        "$(ORX)/include",
-        "[code-path]/include"
+        "../include"
     }
 
     libdirs
     {
-        "../lib",
-        "$(ORX)/lib/dynamic",
-        "[code-path]/lib/dynamic"
+        "../lib"
     }
 
     targetdir ("../bin")
@@ -138,6 +134,14 @@ solution "[name]"
         "Symbols",
         "StaticRuntime"
     }
+
+    configuration {"not xcode*"}
+        includedirs {"$(ORX)/include"}
+        libdirs {"$(ORX)/lib/dynamic"}
+
+    configuration {"xcode*"}
+        includedirs {"[code-path]/include"}
+        libdirs {"[code-path]/lib/dynamic"}
 
     configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
@@ -252,7 +256,9 @@ project "[name]"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "xcode*"}
+        postbuildcommands {"$(shell [ -f [code-path]/lib/dynamic/liborx.dylib ] && cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+    configuration {"macosx", "not xcode*"}
         postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
 
