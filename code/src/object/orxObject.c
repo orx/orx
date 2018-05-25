@@ -1985,7 +1985,6 @@ void orxFASTCALL orxObject_CommandSetClock(orxU32 _u32ArgNumber, const orxCOMMAN
         {
           /* Deletes it */
           orxClock_Delete(pstClock);
-          pstClock = orxNULL;
         }
       }
     }
@@ -3442,7 +3441,7 @@ orxOBJECT *orxFASTCALL orxObject_Create()
  */
 orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
