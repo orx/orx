@@ -586,9 +586,8 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 
 static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext, orxRESOURCE_OPEN_INFO *_pstResourceInfo)
 {
-  volatile orxRESOURCE_REQUEST *pstRequest;
-  orxU32                        u32NextRequestIndex;
-  orxBOOL                       bAdd = orxTRUE;
+  orxU32  u32NextRequestIndex;
+  orxBOOL bAdd = orxTRUE;
 
   /* Checks */
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
@@ -643,6 +642,8 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
   /* Should add request? */
   if(bAdd != orxFALSE)
   {
+    volatile orxRESOURCE_REQUEST *pstRequest;
+
     /* Gets current request */
     pstRequest = &(sstResource.astRequestList[sstResource.u32RequestInIndex]);
 
@@ -2630,8 +2631,7 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
  */
 orxSTATUS orxFASTCALL orxResource_ClearCache()
 {
-  orxRESOURCE_GROUP  *pstGroup;
-  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -2639,6 +2639,8 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
   /* Doesn't have a watch set? */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
   {
+    orxRESOURCE_GROUP *pstGroup;
+
     /* For all groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         pstGroup != orxNULL;

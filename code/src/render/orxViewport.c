@@ -163,7 +163,6 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
     /* Set video mode */
     case orxDISPLAY_EVENT_SET_VIDEO_MODE:
     {
-      orxVIEWPORT              *pstViewport;
       orxDISPLAY_EVENT_PAYLOAD *pstPayload;
       orxFLOAT                  fWidthRatio, fHeightRatio;
 
@@ -177,6 +176,8 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
       /* Changed? */
       if((fWidthRatio != orxFLOAT_1) || (fHeightRatio != orxFLOAT_1))
       {
+        orxVIEWPORT *pstViewport;
+
         /* For all viewports */
         for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
             pstViewport != orxNULL;

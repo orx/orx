@@ -597,8 +597,6 @@ static void orxAndroid_Display_DestroySurface()
 
 static void orxAndroid_Display_CreateContext()
 {
-  EGLBoolean result;
-
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Creating new EGL Context");
 
   sstDisplay.display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -3665,7 +3663,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
-    int     iWidth, iHeight, iDepth, iRefreshRate;
+    int iWidth, iHeight;
 
     /* recreate surface */
     orxAndroid_Display_DestroySurface();
@@ -3673,6 +3671,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
     if( eResult == orxSTATUS_SUCCESS )
     {
+      int iDepth, iRefreshRate;
+
       /* Gets its info */
       eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &iWidth);
       eglASSERT();

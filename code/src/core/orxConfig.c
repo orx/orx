@@ -4779,7 +4779,7 @@ orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const 
  */
 orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConfig_SelectSection");

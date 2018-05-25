@@ -905,14 +905,16 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
 
 static void orxFASTCALL orxPhysics_LiquidFun_ResetSmoothedStates()
 {
-  orxPHYSICS_BODY          *pstPhysicBody;
-  b2Body                   *poBody;
+  orxPHYSICS_BODY *pstPhysicBody;
 
   /* For all physical bodies */
   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
       pstPhysicBody != NULL;
       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
   {
+    b2Body *poBody;
+
+    /* Gets body */
     poBody = pstPhysicBody->poBody;
 
     /* Non-static and awake? */
@@ -933,9 +935,8 @@ static void orxFASTCALL orxPhysics_LiquidFun_ResetSmoothedStates()
  */
 static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  orxPHYSICS_BODY          *pstPhysicBody;
-  b2Body                   *poBody;
+  orxPHYSICS_BODY  *pstPhysicBody;
+  b2Body           *poBody;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxPhysics_Update");
@@ -1042,7 +1043,8 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
   /* Is simulation enabled? */
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
-    orxU32 u32Steps, i;
+    orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+    orxU32                    u32Steps, i;
 
     /* Stores DT */
     sstPhysics.fLastDT = _pstClockInfo->fDT;

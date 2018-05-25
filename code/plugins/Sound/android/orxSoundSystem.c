@@ -287,7 +287,6 @@ static orxINLINE void orxSoundSystem_Android_CloseFile(orxSOUNDSYSTEM_DATA *_pst
 static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstData, orxU32 _u32FrameNumber, void *_pBuffer)
 {
   orxU32 u32Result, u32RequestBytes, u32BytesRead, u32FrameSize;
-  char *pBuffer;
   int current_section;
 
   /* Checks */
@@ -296,6 +295,8 @@ static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstDat
   /* Has valid file? */
   if(_pstData->hResource != orxNULL)
   {
+    char *pBuffer;
+
     pBuffer = (char*) _pBuffer;
     u32FrameSize = _pstData->stInfo.u32ChannelNumber * sizeof(orxS16);
     u32RequestBytes = _u32FrameNumber * u32FrameSize;
