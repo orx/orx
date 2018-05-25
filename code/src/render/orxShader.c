@@ -378,7 +378,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       orxS32 i;
 
 #ifdef __orxMSVC__
-      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING *));
+      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING));
 #else /* __orxMSVC__ */
       const orxSTRING azCodeList[s32Count];
 #endif /* __orxMSVC__ */
