@@ -370,7 +370,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           if(orxConfig_GetBool("DisplayTrail"))
           {
             /* Draws trail */
-            orxBounce_DisplayTrail(orxTexture_GetBitmap(orxTEXTURE(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC)))));
+            orxBounce_DisplayTrail(orxTexture_GetBitmap(orxObject_GetWorkingTexture(orxOBJECT(_pstEvent->hSender))));
           }
 
           /* Pops config section */
