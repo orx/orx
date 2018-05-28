@@ -697,7 +697,9 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
               if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED))
               {
                 /* Updates its value */
+                orxConfig_PushSection(pstSpawner->zReference);
                 orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(pstSpawner->vSpeed));
+                orxConfig_PopSection();
               }
 
               /* Use relative speed? */
