@@ -4362,11 +4362,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glASSERT();
 
     /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX));
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX) : &(sstDisplay.astVertexList[0].fX));
     glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU));
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU) : &(sstDisplay.astVertexList[0].fU));
     glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA));
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA) : &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
     /* Stores config values */
