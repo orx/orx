@@ -284,6 +284,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Stores target anim */
           u32TargetAnim = _pstAnimPointer->u32TargetAnim;
 
+          /* Stores cut time */
+          stPayload.stCut.fTime = (bCut != orxFALSE) ? fTimeBackup : orxFLOAT_0;
+
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP, pstOwner, pstOwner, &stPayload);
 
@@ -295,13 +298,6 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
 
             /* Updates flags */
             orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
-
-            /* Should clear target? */
-            if(bClearTarget != orxFALSE)
-            {
-              /* Removes it */
-              _pstAnimPointer->u32TargetAnim = orxU32_UNDEFINED;
-            }
           }
           else
           {
@@ -1005,9 +1001,9 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
     if(_u32AnimID < orxAnimSet_GetAnimCount(_pstAnimPointer->pstAnimSet))
     {
       orxANIM_EVENT_PAYLOAD stPayload;
-      orxANIM              *pstAnim;
       orxSTRUCTURE         *pstOwner;
       orxU32                u32CurrentAnim;
+      orxFLOAT              fCurrentAnimTime;
 
       /* Updates its status */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT, orxANIMPOINTER_KU32_FLAG_NONE);
@@ -1018,14 +1014,18 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       /* Gets owner */
       pstOwner = orxStructure_GetOwner(_pstAnimPointer);
 
-      /* Stores current anim */
-      u32CurrentAnim = _pstAnimPointer->u32CurrentAnim;
+      /* Stores current anim & time */
+      u32CurrentAnim    = _pstAnimPointer->u32CurrentAnim;
+      fCurrentAnimTime  = _pstAnimPointer->fCurrentAnimTime;
 
       /* Stores ID */
       _pstAnimPointer->u32CurrentAnim = _u32AnimID;
 
       /* Clears target anim */
       _pstAnimPointer->u32TargetAnim  = orxU32_UNDEFINED;
+
+      /* Clears anim time */
+      _pstAnimPointer->fCurrentAnimTime = orxFLOAT_0;
 
       /* Clears current key */
       _pstAnimPointer->u32CurrentKey  = 0;
@@ -1037,27 +1037,29 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       if(u32CurrentAnim != orxU32_UNDEFINED)
       {
         /* Inits event payload */
-        pstAnim             = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, u32CurrentAnim);
-        stPayload.pstAnim   = pstAnim;
-        stPayload.zAnimName = orxAnim_GetName(pstAnim);
+        stPayload.pstAnim     = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, u32CurrentAnim);
+        stPayload.zAnimName   = orxAnim_GetName(stPayload.pstAnim);
+        stPayload.stCut.fTime = fCurrentAnimTime;
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_CUT, pstOwner, pstOwner, &stPayload);
       }
 
-      /* Inits event payload */
-      pstAnim             = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
-      stPayload.pstAnim   = pstAnim;
-      stPayload.zAnimName = orxAnim_GetName(pstAnim);
+      /* Not modified during cut callback? */
+      if((_pstAnimPointer->u32CurrentAnim == _u32AnimID)
+      && (_pstAnimPointer->u32TargetAnim == orxU32_UNDEFINED))
+      {
+        /* Inits event payload */
+        stPayload.pstAnim     = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
+        stPayload.zAnimName   = orxAnim_GetName(stPayload.pstAnim);
+        stPayload.stCut.fTime = orxFLOAT_0;
 
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, pstOwner, pstOwner, &stPayload);
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, pstOwner, pstOwner, &stPayload);
+      }
 
       /* Updates flags */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
-
-      /* Computes animpointer from start */
-      _pstAnimPointer->fCurrentAnimTime = orxFLOAT_0;
 
       /* Computes animpointer */
       eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);

@@ -106,6 +106,12 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
       orxU32          u32Count;               /**< Loop count : 12 */
     } stLoop;
 
+    /* Cut event */
+    struct
+    {
+      orxFLOAT        fTime;                  /**< Anim time when cut: 12 */
+    } stCut;
+
     /* Custom event */
     struct
     {
