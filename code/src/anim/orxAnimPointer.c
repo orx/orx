@@ -407,27 +407,27 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       {
         orxANIM  *pstAnim;
         orxFLOAT  fTimeCompare;
-        orxU32    u32BackupKey;
+        orxU32    u32CurrentKey;
 
         /* Gets current anim */
         pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
 
-        /* Backups current key */
-        u32BackupKey = _pstAnimPointer->u32CurrentKey;
-
-        /* Updates current anim */
-        eResult = orxAnim_Update(pstAnim, _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
+        /* Gets current key */
+        u32CurrentKey = orxAnim_GetKey(pstAnim, _pstAnimPointer->fCurrentAnimTime);
 
         /* Keeps current time for comparison */
         fTimeCompare = _pstAnimPointer->fCurrentAnimTime;
 
         /* New key? */
-        if(_pstAnimPointer->u32CurrentKey != u32BackupKey)
+        if(u32CurrentKey != _pstAnimPointer->u32CurrentKey)
         {
+          /* Stores it */
+          _pstAnimPointer->u32CurrentKey = u32CurrentKey;
+
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->u32CurrentAnim);
-          stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+          stPayload.pstAnim   = pstAnim;
+          stPayload.zAnimName = orxAnim_GetName(pstAnim);
 
           /* Sends it */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_UPDATE, pstOwner, pstOwner, &stPayload);
