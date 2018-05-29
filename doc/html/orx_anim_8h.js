@@ -24,6 +24,7 @@ var orx_anim_8h =
     [ "orxAnim_Exit", "group__orx_anim.html#ga7eeb4d40ed5926bd87727e9473dbcdbb", null ],
     [ "orxAnim_GetEventCount", "group__orx_anim.html#ga70266ab2ac7d44c1b34f185f347e821c", null ],
     [ "orxAnim_GetEventStorageSize", "group__orx_anim.html#ga1bfc89cc39b93778b2969e7d4e2353b7", null ],
+    [ "orxAnim_GetKey", "group__orx_anim.html#ga3e53f9009441570b4f2290a96d9fe5f7", null ],
     [ "orxAnim_GetKeyCount", "group__orx_anim.html#ga55bbbc91c5ee3d9728f66d0c7d71803a", null ],
     [ "orxAnim_GetKeyData", "group__orx_anim.html#ga09b7c42ef668e8b4ab37ef42a4b04ce0", null ],
     [ "orxAnim_GetKeyStorageSize", "group__orx_anim.html#gaa10cd82b5d68b0bcfe85787ff3229625", null ],
@@ -35,6 +36,5 @@ var orx_anim_8h =
     [ "orxAnim_RemoveAllKeys", "group__orx_anim.html#ga507824bc2f1f7ca266b505503f0a5177", null ],
     [ "orxAnim_RemoveLastEvent", "group__orx_anim.html#ga024213648a185234bd60311b96c4fb8e", null ],
     [ "orxAnim_RemoveLastKey", "group__orx_anim.html#ga1c5dd06056fb50465d577913a3e0aed8", null ],
-    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ],
-    [ "orxAnim_Update", "group__orx_anim.html#ga5f2181fce48279ff3f34841909cb59ef", null ]
+    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ]
 ];

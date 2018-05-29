@@ -52,7 +52,7 @@ var NAVTREEINDEX =
 "group__orx_tree.html#ga5a7dc6e58ae762c6024acf7606ae2e3d",
 "group__orx_viewport.html#ga62cc1ead8c95201bf187d58c1d14452a",
 "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#a69518db6a92b5448e2c44a7cd3ce7961",
-"structorx_r_g_b_a.html#a572a6b83dbc3dd6007d48dd137797f3f"
+"structorx_r_g_b_a.html#a1d098c654c5068c202e1576293fe71b6"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
