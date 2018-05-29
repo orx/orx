@@ -1080,49 +1080,32 @@ const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pst
   return pstResult;
 }
 
-/** Updates animation given a timestamp
+/** Gets animation's key index from a time stamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     TimeStamp for animation update
- * @param[out]  _pu32CurrentKey Current key as a result of update
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _fTimeStamp     TimeStamp of the desired animation key
+ * @return      Animation key index / orxU32_UNDEFINED
  */
-orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey)
+orxU32 orxFASTCALL orxAnim_GetKey(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
-  orxU32    u32Index;
-  orxSTATUS eResult;
+  orxU32    u32Result;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pu32CurrentKey != orxNULL);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
-  /* Finds corresponding key index */
-  u32Index = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
+  /* Updates result */
+  u32Result = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
 
-  /* Found? */
-  if(u32Index != orxU32_UNDEFINED)
-  {
-    /* Updates current key */
-    *_pu32CurrentKey = u32Index;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
+  /* Not found? */
+  if(u32Result == orxU32_UNDEFINED)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Timestamp does not exist in animation.");
-
-    /* Updates current key */
-    *_pu32CurrentKey = orxU32_UNDEFINED;
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "[%s] Timestamp <%g> not found!", _pstAnim->zName, _fTimeStamp);
   }
 
   /* Done! */
-  return eResult;
+  return u32Result;
 }
 
 /** Animation key data accessor

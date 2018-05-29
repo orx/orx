@@ -204,13 +204,12 @@ extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllEvents(orxANIM *_
 extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 
-/** Updates anim given a timestamp
+/** Gets animation's key index from a time stamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     TimeStamp for animation update
- * @param[out]  _pu32CurrentKey Current key as a result of update
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _fTimeStamp     TimeStamp of the desired animation key
+ * @return      Animation key index / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKey(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 /** Anim key data accessor
  * @param[in]   _pstAnim        Concerned animation
