@@ -527,28 +527,43 @@ void orxFASTCALL orxProfiler_PushMarker(orxS32 _s32MarkerID)
           pstData->s32MarkerCount++;
         }
 
-        /* Is unique and already by someone else pushed? */
-        if(orxFLAG_TEST(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_UNIQUE) && (pstEntry->u32PushCount != 0) && (pstMarkerInfo->s32ParentID != pstData->s32CurrentMarker))
+        /* Is unique? */
+        if(orxFLAG_TEST(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_UNIQUE))
         {
-          orxS32 i;
-
-          /* Updates flags */
-          orxFLAG_SET(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_PUSHED|orxPROFILER_KU32_FLAG_INIT|orxPROFILER_KU32_FLAG_DEFINED, orxPROFILER_KU32_FLAG_UNIQUE);
-
-          /* For all markers */
-          for(i = 0; i < sstProfiler.s32MarkerCount; i++)
+          /* Is already pushed by someone else? */
+          if((pstEntry->u32PushCount != 0) && (pstMarkerInfo->s32ParentID != pstData->s32CurrentMarker))
           {
-            orxPROFILER_MARKER_INFO *pstTestMarkerInfo;
+            orxS32 i;
 
-            /* Gets it */
-            pstTestMarkerInfo = &(pstData->astMarkerInfoList[i]);
+            /* Updates flags */
+            orxFLAG_SET(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_PUSHED|orxPROFILER_KU32_FLAG_INIT|orxPROFILER_KU32_FLAG_DEFINED, orxPROFILER_KU32_FLAG_UNIQUE);
 
-            /* Is child of current marker? */
-            if(pstTestMarkerInfo->s32ParentID == s32ID)
+            /* For all markers */
+            for(i = 0; i < sstProfiler.s32MarkerCount; i++)
             {
-              /* Updates its depth */
-              pstData->aastHistory[pstData->u32HistoryIndex][i].u32Depth--;
+              orxPROFILER_MARKER_INFO *pstTestMarkerInfo;
+
+              /* Gets it */
+              pstTestMarkerInfo = &(pstData->astMarkerInfoList[i]);
+
+              /* Is child of current marker? */
+              if(pstTestMarkerInfo->s32ParentID == s32ID)
+              {
+                /* Updates its depth */
+                pstData->aastHistory[pstData->u32HistoryIndex][i].u32Depth--;
+              }
             }
+          }
+          /* Is parent non-unique? */
+          else if((pstData->s32CurrentMarker >= 0) && (!orxFLAG_TEST(pstData->astMarkerInfoList[pstData->s32CurrentMarker].u32Flags, orxPROFILER_KU32_FLAG_UNIQUE)))
+          {
+            /* Updates flags */
+            orxFLAG_SET(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_PUSHED|orxPROFILER_KU32_FLAG_INIT|orxPROFILER_KU32_FLAG_DEFINED, orxPROFILER_KU32_FLAG_UNIQUE);
+          }
+          else
+          {
+            /* Updates flags */
+            orxFLAG_SET(pstMarkerInfo->u32Flags, orxPROFILER_KU32_FLAG_PUSHED|orxPROFILER_KU32_FLAG_INIT|orxPROFILER_KU32_FLAG_DEFINED, orxPROFILER_KU32_FLAG_NONE);
           }
         }
         else
