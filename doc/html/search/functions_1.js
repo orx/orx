@@ -383,6 +383,7 @@ var searchData=
   ['orxevent_5fremovehandlerwithcontext',['orxEvent_RemoveHandlerWithContext',['../group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5',1,'orxEvent.h']]],
   ['orxevent_5fsend',['orxEvent_Send',['../group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8',1,'orxEvent.h']]],
   ['orxevent_5fsendshort',['orxEvent_SendShort',['../group__orx_event.html#ga2305585afe32179ee80f9277892d555d',1,'orxEvent.h']]],
+  ['orxevent_5fsethandlerflags',['orxEvent_SetHandlerFlags',['../group__orx_event.html#ga55b1e487586bc7f8867a99cf3d9b6248',1,'orxEvent.h']]],
   ['orxevent_5fsetup',['orxEvent_Setup',['../group__orx_event.html#ga3d093133b3664650417542f56e95f322',1,'orxEvent.h']]],
   ['orxfile_5fclose',['orxFile_Close',['../group__orx_file.html#ga8e45150c5019dc189069413c4ced085b',1,'orxFile.h']]],
   ['orxfile_5fdelete',['orxFile_Delete',['../group__orx_file.html#ga360a1b530115d4a1d3d4361ebb2f0b49',1,'orxFile.h']]],

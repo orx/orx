@@ -1,5 +1,13 @@
 var NAVTREEINDEX23 =
 {
+"structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#a6f1cfa7e832d15bb3ba471e63f75d712":[1,2,1,2],
+"structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#a739744b7eb5d43f58c574ac909f25e7a":[1,2,1,1],
+"structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#ae611d9a4f1194d30fc3696acecb54fa3":[1,2,1,3],
+"structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html":[1,2,2],
+"structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a673c71415d15ff8ff7e2ab6bb5ea72e6":[1,2,2,1],
+"structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a7bc3e0ae280a1a1e3f9f8640fca4d463":[1,2,2,2],
+"structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#ab4cad326be6bad13365c249bf5d9031c":[1,2,2,0],
+"structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html":[1,2,3],
 "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#a69518db6a92b5448e2c44a7cd3ce7961":[1,2,3,0],
 "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html#ad5eb0e190c36a0f14343f2412e83bfab":[1,2,3,1],
 "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html":[1,3,0],
@@ -241,13 +249,5 @@ var NAVTREEINDEX23 =
 "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071":[1,41,1,0],
 "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a124c1581a96127e9ec4f90065cc97a4a":[1,41,1,6],
 "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a2798a46e56e58d95524af974a1ccae29":[1,41,1,1],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a6b43de5bfa2eb4389e4505e40dedc0dc":[1,41,1,3],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a7cfd554c9170f173cea714f304b254a3":[1,41,1,9],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a826168d1d30b8d34285ad1c16c35e2b4":[1,41,1,4],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a948054382e24c77ad514b54af3776ea3":[1,41,1,10],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac1c9fb9344200a727f50c5ac3365eeba":[1,41,1,7],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ac86a5c3beb69681f5ae1d286a31a9695":[1,41,1,5],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae2b0d0bbbfbb0772338857d5be454a11":[1,41,1,2],
-"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae5b87aec335d24b4314377aa79d3d9b0":[1,41,1,8],
-"structorx_r_g_b_a.html":[1,15,7]
+"structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a6b43de5bfa2eb4389e4505e40dedc0dc":[1,41,1,3]
 };

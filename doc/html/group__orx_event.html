@@ -124,8 +124,14 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga7ba6a099c034c590b2e6adb364510dfd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga7ba6a099c034c590b2e6adb364510dfd">orxEVENT_GET_FLAG</a>(ID)                                              &#160;&#160;&#160;((orxU32)(1U &lt;&lt; (orxU32)(ID)))</td></tr>
+<tr class="separator:ga7ba6a099c034c590b2e6adb364510dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a878336878f2e429bc83fda86366fdf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf">orxEVENT_INIT</a>(EVENT,  TYPE,  ID,  SENDER,  RECIPIENT,  PAYLOAD)</td></tr>
 <tr class="separator:ga5a878336878f2e429bc83fda86366fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga698547d801a1bd663403c5388b191da0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga698547d801a1bd663403c5388b191da0">orxEVENT_KU32_FLAG_ID_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
+<tr class="separator:ga698547d801a1bd663403c5388b191da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga024045cd7a6a30e8eedd27ee92d52826"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga024045cd7a6a30e8eedd27ee92d52826">orxEVENT_KU32_MASK_ID_ALL</a>&#160;&#160;&#160;0xFFFFFFFF</td></tr>
+<tr class="separator:ga024045cd7a6a30e8eedd27ee92d52826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadd3bf5f445d7d85ddafa5ae01aaf8607"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607">orxEVENT_SEND</a>(TYPE,  ID,  SENDER,  RECIPIENT,  PAYLOAD)              </td></tr>
 <tr class="separator:gadd3bf5f445d7d85ddafa5ae01aaf8607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -189,12 +195,32 @@ Functions</h2></td></tr>
 <tr class="separator:ga9d15d61e0e499037fd039bb38a2fedf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2305585afe32179ee80f9277892d555d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga2305585afe32179ee80f9277892d555d">orxEvent_SendShort</a> (<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxENUM _eEventID)</td></tr>
 <tr class="separator:ga2305585afe32179ee80f9277892d555d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga55b1e487586bc7f8867a99cf3d9b6248"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga55b1e487586bc7f8867a99cf3d9b6248">orxEvent_SetHandlerFlags</a> (<a class="el" href="group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5">orxEVENT_HANDLER</a> _pfnEventHandler, <a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxU32 _u32AddIDFlags, orxU32 _u32RemoveIDFlags)</td></tr>
+<tr class="separator:ga55b1e487586bc7f8867a99cf3d9b6248"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d093133b3664650417542f56e95f322"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga3d093133b3664650417542f56e95f322">orxEvent_Setup</a> ()</td></tr>
 <tr class="separator:ga3d093133b3664650417542f56e95f322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Event module Module that handles internal events </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="ga7ba6a099c034c590b2e6adb364510dfd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxEVENT_GET_FLAG</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ID</td><td>)</td>
+          <td>&#160;&#160;&#160;((orxU32)(1U &lt;&lt; (orxU32)(ID)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00068">68</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga5a878336878f2e429bc83fda86366fdf"></a>
 <div class="memitem">
 <div class="memproto">
@@ -243,10 +269,38 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                  \</div><div class="line">{                                                                   \</div><div class="line">  EVENT.eType       = (<a class="code" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(TYPE);                        \</div><div class="line">  EVENT.eID         = (orxENUM)(ID);                                \</div><div class="line">  EVENT.hSender     = (orxHANDLE)(SENDER);                          \</div><div class="line">  EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \</div><div class="line">  EVENT.pstPayload  = (<span class="keywordtype">void</span> *)(PAYLOAD);                            \</div><div class="line">} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a>)</div><div class="ttc" id="group__orx_type_html_ga28f15ac5afeea074c02dbfc96a98ce14"><div class="ttname"><a href="group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14">orxFALSE</a></div><div class="ttdeci">#define orxFALSE</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00185">orxType.h:185</a></div></div>
-<div class="ttc" id="group__orx_event_html_ga4576598772ee9b827a80ca5b6c9a6cd8"><div class="ttname"><a href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a></div><div class="ttdeci">orxEVENT_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="orx_event_8h_source.html#l00071">orxEvent.h:71</a></div></div>
+<div class="ttc" id="group__orx_event_html_ga4576598772ee9b827a80ca5b6c9a6cd8"><div class="ttname"><a href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a></div><div class="ttdeci">orxEVENT_TYPE</div><div class="ttdef"><b>Definition:</b> <a href="orx_event_8h_source.html#l00075">orxEvent.h:75</a></div></div>
 </div><!-- fragment --><p>Helper defines </p>
 
 <p>Definition at line <a class="el" href="orx_event_8h_source.html#l00050">50</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga698547d801a1bd663403c5388b191da0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxEVENT_KU32_FLAG_ID_NONE&#160;&#160;&#160;0x00000000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00069">69</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga024045cd7a6a30e8eedd27ee92d52826"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxEVENT_KU32_MASK_ID_ALL&#160;&#160;&#160;0xFFFFFFFF</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00070">70</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
 
 </div>
 </div>
@@ -311,7 +365,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Event handler type / return orxSTATUS_FAILURE if events processing should be stopped for the current event, orxSTATUS_FAILURE otherwise </p>
 
-<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00121">121</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00125">125</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
 
 </div>
 </div>
@@ -375,7 +429,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00071">71</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_event_8h_source.html#l00075">75</a> of file <a class="el" href="orx_event_8h_source.html">orxEvent.h</a>.</p>
 
 </div>
 </div>
@@ -625,6 +679,54 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_eEventType</td><td>Event type </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_eEventID</td><td>Event ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga55b1e487586bc7f8867a99cf3d9b6248"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxEvent_SetHandlerFlags </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5">orxEVENT_HANDLER</a>&#160;</td>
+          <td class="paramname"><em>_pfnEventHandler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>&#160;</td>
+          <td class="paramname"><em>_eEventType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32AddIDFlags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32RemoveIDFlags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets an event handler's flags (use <a class="el" href="group__orx_event.html#ga7ba6a099c034c590b2e6adb364510dfd">orxEVENT_GET_FLAG(ID)</a> in order to get the flag that matches an ID) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnEventHandler</td><td>Concerned event handler, must have been previously added for the given type </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eEventType</td><td>Concerned type of event </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32AddIDFlags</td><td>ID flags to add </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32RemoveIDFlags</td><td>ID flags to remove </td></tr>
   </table>
   </dd>
 </dl>
