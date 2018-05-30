@@ -404,6 +404,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
   orxEVENT_HANDLER_STORAGE *pstStorage;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxEvent_Send");
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstEvent != orxNULL);
@@ -455,6 +458,9 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
       sstEvent.s32EventSendCount--;
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
