@@ -65,6 +65,10 @@ do                                                                  \
   orxEvent_Send(&stEvent);                                          \
 } while(orxFALSE)
 
+#define orxEVENT_GET_FLAG(ID)                         ((orxU32)(1U << (orxU32)(ID)))
+#define orxEVENT_KU32_FLAG_ID_NONE                    0x00000000
+#define orxEVENT_KU32_MASK_ID_ALL                     0xFFFFFFFF
+
 
 /** Event type enum
  */
@@ -163,6 +167,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eE
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler, void *_pContext);
+
+/** Sets an event handler's flags (use orxEVENT_GET_FLAG(ID) in order to get the flag that matches an ID)
+ * @param[in] _pfnEventHandler      Concerned event handler, must have been previously added for the given type
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _u32AddIDFlags        ID flags to add
+ * @param[in] _u32RemoveIDFlags     ID flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SetHandlerFlags(orxEVENT_HANDLER _pfnEventHandler, orxEVENT_TYPE _eEventType, orxU32 _u32AddIDFlags, orxU32 _u32RemoveIDFlags);
 
 /** Sends an event
  * @param[in] _pstEvent             Event to send
