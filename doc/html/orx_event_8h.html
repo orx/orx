@@ -133,8 +133,14 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga7ba6a099c034c590b2e6adb364510dfd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga7ba6a099c034c590b2e6adb364510dfd">orxEVENT_GET_FLAG</a>(ID)                                              &#160;&#160;&#160;((orxU32)(1U &lt;&lt; (orxU32)(ID)))</td></tr>
+<tr class="separator:ga7ba6a099c034c590b2e6adb364510dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a878336878f2e429bc83fda86366fdf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf">orxEVENT_INIT</a>(EVENT,  TYPE,  ID,  SENDER,  RECIPIENT,  PAYLOAD)</td></tr>
 <tr class="separator:ga5a878336878f2e429bc83fda86366fdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga698547d801a1bd663403c5388b191da0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga698547d801a1bd663403c5388b191da0">orxEVENT_KU32_FLAG_ID_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
+<tr class="separator:ga698547d801a1bd663403c5388b191da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga024045cd7a6a30e8eedd27ee92d52826"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga024045cd7a6a30e8eedd27ee92d52826">orxEVENT_KU32_MASK_ID_ALL</a>&#160;&#160;&#160;0xFFFFFFFF</td></tr>
+<tr class="separator:ga024045cd7a6a30e8eedd27ee92d52826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadd3bf5f445d7d85ddafa5ae01aaf8607"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607">orxEVENT_SEND</a>(TYPE,  ID,  SENDER,  RECIPIENT,  PAYLOAD)              </td></tr>
 <tr class="separator:gadd3bf5f445d7d85ddafa5ae01aaf8607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -198,6 +204,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga9d15d61e0e499037fd039bb38a2fedf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2305585afe32179ee80f9277892d555d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga2305585afe32179ee80f9277892d555d">orxEvent_SendShort</a> (<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxENUM _eEventID)</td></tr>
 <tr class="separator:ga2305585afe32179ee80f9277892d555d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga55b1e487586bc7f8867a99cf3d9b6248"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga55b1e487586bc7f8867a99cf3d9b6248">orxEvent_SetHandlerFlags</a> (<a class="el" href="group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5">orxEVENT_HANDLER</a> _pfnEventHandler, <a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxU32 _u32AddIDFlags, orxU32 _u32RemoveIDFlags)</td></tr>
+<tr class="separator:ga55b1e487586bc7f8867a99cf3d9b6248"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d093133b3664650417542f56e95f322"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga3d093133b3664650417542f56e95f322">orxEvent_Setup</a> ()</td></tr>
 <tr class="separator:ga3d093133b3664650417542f56e95f322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
