@@ -332,6 +332,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxMouse_GLFW_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxMouse_GLFW_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
 
         /* Registers mouse position callback */
         glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);

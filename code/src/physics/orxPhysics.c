@@ -361,6 +361,7 @@ orxSTATUS orxFASTCALL orxPhysics_Init()
 {
   /* Adds event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
+  orxEvent_SetHandlerIDFlags(orxPhysics_EventHandler, orxEVENT_TYPE_CONFIG, orxNULL, orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_START) | orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Init)();
 }

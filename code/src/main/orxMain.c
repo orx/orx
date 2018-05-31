@@ -126,6 +126,7 @@ orxSTATUS orxFASTCALL orxMain_Init()
 
     /* Registers custom system event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxMain_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)

@@ -351,6 +351,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxSoundPointer_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_PAUSE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_UNPAUSE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUNDPOINTER_KU32_BANK_SIZE, &orxSoundPointer_Update);
 

@@ -1075,6 +1075,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
 
               /* Add event handler */
               orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
+              orxEvent_SetHandlerIDFlags(orxSoundSystem_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOREGROUND) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_BACKGROUND), orxEVENT_KU32_MASK_ID_ALL);
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;

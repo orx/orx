@@ -4513,6 +4513,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        /* Filters relevant event IDs */
+        orxEvent_SetHandlerIDFlags(orxDisplay_GLFW_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+
         /* Creates banks */
         sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
         sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);

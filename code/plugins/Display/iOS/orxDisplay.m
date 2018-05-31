@@ -4094,6 +4094,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxDisplay_iOS_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
         /* Gets render buffer's size */
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);

@@ -460,6 +460,7 @@ orxSTATUS orxFASTCALL orxFX_Init()
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxFX_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
     }
     else
     {

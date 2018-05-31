@@ -1131,6 +1131,9 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     {
       const orxSTRING zPreviousSet;
 
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxConsole_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Backups previous input set */
       zPreviousSet = orxInput_GetCurrentSet();
 
