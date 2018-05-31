@@ -765,7 +765,7 @@ var searchData=
   ['orxevent_5fremovehandlerwithcontext',['orxEvent_RemoveHandlerWithContext',['../group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5',1,'orxEvent.h']]],
   ['orxevent_5fsend',['orxEvent_Send',['../group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8',1,'orxEvent_Send(orxEVENT *_pstEvent):&#160;orxEvent.h'],['../group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607',1,'orxEVENT_SEND():&#160;orxEvent.h']]],
   ['orxevent_5fsendshort',['orxEvent_SendShort',['../group__orx_event.html#ga2305585afe32179ee80f9277892d555d',1,'orxEvent.h']]],
-  ['orxevent_5fsethandlerflags',['orxEvent_SetHandlerFlags',['../group__orx_event.html#ga55b1e487586bc7f8867a99cf3d9b6248',1,'orxEvent.h']]],
+  ['orxevent_5fsethandleridflags',['orxEvent_SetHandlerIDFlags',['../group__orx_event.html#ga6a6dee64c647bc2ca1ed9d6172dff75c',1,'orxEvent.h']]],
   ['orxevent_5fsetup',['orxEvent_Setup',['../group__orx_event.html#ga3d093133b3664650417542f56e95f322',1,'orxEvent.h']]],
   ['orxevent_5ftype',['orxEVENT_TYPE',['../group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8',1,'orxEvent.h']]],
   ['orxevent_5ftype_5fanim',['orxEVENT_TYPE_ANIM',['../group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a30fb817733e3b2e80de4040437fc1f0a',1,'orxEvent.h']]],
