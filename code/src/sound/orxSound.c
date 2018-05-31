@@ -1447,8 +1447,10 @@ orxSTATUS orxFASTCALL orxSound_Init()
               orxSound_GetBus(sstSound.u32MasterBusID, orxTRUE);
 
               /* Adds event handlers */
-              orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
               orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxSound_EventHandler);
+              orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSound_EventHandler);
+              orxEvent_SetHandlerIDFlags(orxSound_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+              orxEvent_SetHandlerIDFlags(orxSound_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
 
               /* Inits Flags */
               orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY, orxSOUND_KU32_STATIC_FLAG_NONE);

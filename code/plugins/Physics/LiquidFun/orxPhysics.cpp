@@ -3080,6 +3080,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
 
             /* Adds event handler */
             orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_LiquidFun_EventHandler);
+            orxEvent_SetHandlerIDFlags(orxPhysics_LiquidFun_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 

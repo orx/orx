@@ -267,7 +267,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Filters relevant event IDs */
-      orxEvent_SetHandlerIDFlags(orxShaderPointer_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START)|orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_STOP)|orxEVENT_GET_FLAG(orxRENDER_EVENT_VIEWPORT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxShaderPointer_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START) | orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_STOP) | orxEVENT_GET_FLAG(orxRENDER_EVENT_VIEWPORT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADERPOINTER_KU32_BANK_SIZE, orxNULL);

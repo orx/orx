@@ -409,6 +409,7 @@ orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
     {
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxKeyboard_GLFW_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxKeyboard_GLFW_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Registers key callback */
       glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);

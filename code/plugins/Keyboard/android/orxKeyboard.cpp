@@ -239,7 +239,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
-    
+
     /* Adds our mouse event handlers */
     if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
@@ -362,7 +362,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 
   /* Clears all buffer indices */
   sstKeyboard.u32KeyReadIndex   =
-  sstKeyboard.u32KeyWriteIndex  = 
+  sstKeyboard.u32KeyWriteIndex  =
   sstKeyboard.u32CharReadIndex  =
   sstKeyboard.u32CharWriteIndex = 0;
 
