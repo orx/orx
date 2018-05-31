@@ -40,6 +40,6 @@ var orx_event_8h =
     [ "orxEvent_RemoveHandlerWithContext", "group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5", null ],
     [ "orxEvent_Send", "group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8", null ],
     [ "orxEvent_SendShort", "group__orx_event.html#ga2305585afe32179ee80f9277892d555d", null ],
-    [ "orxEvent_SetHandlerFlags", "group__orx_event.html#ga55b1e487586bc7f8867a99cf3d9b6248", null ],
+    [ "orxEvent_SetHandlerIDFlags", "group__orx_event.html#ga6a6dee64c647bc2ca1ed9d6172dff75c", null ],
     [ "orxEvent_Setup", "group__orx_event.html#ga3d093133b3664650417542f56e95f322", null ]
 ];
