@@ -238,11 +238,23 @@ project "orxCrypt"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
-            "AppKit.framework",
+            "AppKit.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework AppKit"
+        }
+
+    configuration {"macosx"}
+        links
+        {
             "pthread"
         }
 

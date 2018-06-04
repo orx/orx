@@ -300,12 +300,25 @@ project "orxFontGen"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "AppKit.framework",
-            "OpenGL.framework",
+            "OpenGL.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework AppKit",
+            "-framework OpenGL"
+        }
+
+    configuration {"macosx"}
+        links
+        {
             "z",
             "pthread"
         }
