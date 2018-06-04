@@ -125,11 +125,11 @@ solution "[name]"
         "StaticRuntime"
     }
 
-    configuration {"not xcode*"}
+    configuration {"not macosx"}
         includedirs {"$(ORX)/include"}
         libdirs {"$(ORX)/lib/dynamic"}
 
-    configuration {"xcode*"}
+    configuration {"macosx"}
         includedirs {"[code-path]/include"}
         libdirs {"[code-path]/lib/dynamic"}
 
@@ -187,15 +187,24 @@ solution "[name]"
             "-gdwarf-2",
             "-Wno-write-strings"
         }
+        linkoptions
+        {
+            "-mmacosx-version-min=10.6",
+            "-dead_strip"
+        }
+
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "AppKit.framework"
         }
+
+    configuration {"macosx", "codelite or codeblocks"}
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
-            "-dead_strip"
+            "-framework Foundation",
+            "-framework AppKit"
         }
 
     configuration {"macosx", "x32"}
@@ -246,10 +255,8 @@ project "[name]"
 
 -- Mac OS X
 
-    configuration {"macosx", "xcode*"}
+    configuration {"macosx"}
         postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-    configuration {"macosx", "not xcode*"}
-        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
 
 -- Windows
