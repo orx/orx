@@ -171,7 +171,7 @@ if build [
     log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
       log/only [{  *} config]
-      call/shell/wait reform [mold to-local-file clean-path platform-info/premake config]
+      call/shell/wait rejoin [{"} to-local-file clean-path platform-info/premake {" } config]
     ]
   ]
 ]
