@@ -2740,7 +2740,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
 
       /* No viewport specified or is position depth in camera frustum? */
       if((_pstViewport == orxNULL)
-      || ((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ)
+      || ((_pvWorldPosition->fZ >= stCameraFrustum.vTL.fZ)
        && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ)))
       {
         orxAABOX  stViewportBox;
