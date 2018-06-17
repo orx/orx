@@ -1064,7 +1064,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
                 sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
               }
 
-              /* Stores reciprocal dimenstion ratio */
+              /* Stores it */
+              orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
+
+              /* Stores reciprocal dimension ratio */
               sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
               /* Updates status */
