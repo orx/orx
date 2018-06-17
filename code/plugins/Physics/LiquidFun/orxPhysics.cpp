@@ -3001,6 +3001,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       sstPhysics.fDimensionRatio = orxPhysics::sfDefaultDimensionRatio;
     }
 
+    /* Stores it */
+    orxConfig_SetFloat(orxPHYSICS_KZ_CONFIG_RATIO, sstPhysics.fDimensionRatio);
+
     /* Inits world gravity */
     vWorldGravity.Set(sstPhysics.fDimensionRatio * vGravity.fX, sstPhysics.fDimensionRatio * vGravity.fY);
 
