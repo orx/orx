@@ -347,8 +347,12 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         /* Gets event payload */
         pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-        /* Logs info */
-        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        /* Not first frame? (to prevent looping track flood) */
+        if(pstPayload->fTimeStamp != orxFLOAT_0)
+        {
+          /* Logs info */
+          orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        }
       }
 
       break;
@@ -487,6 +491,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
   }
 
+  /* Clears ray hit */
+  orxConfig_SetString("RayHit", orxSTRING_EMPTY);
+
   /* Spawning */
   if(orxInput_IsActive("Spawn"))
   {
@@ -509,6 +516,33 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     {
       /* Adds FX */
       orxObject_AddUniqueFX(pstObject, "Pick");
+    }
+  }
+  /* Raycasting? */
+  else if(orxInput_IsActive("RayCast"))
+  {
+    orxOBJECT  *pstRayHit;
+    orxU32      u32SelfFlags = 0, u32CheckMask = 0;
+    orxS32      i;
+
+    /* Gets flags & mask */
+    for(i = 0; i < orxConfig_GetListCount("RaySelfFlags"); i++)
+    {
+      u32SelfFlags |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RaySelfFlags", i));
+    }
+    for(i = 0; i < orxConfig_GetListCount("RayCheckMask"); i++)
+    {
+      u32CheckMask |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RayCheckMask", i));
+    }
+
+    /* Casts ray */
+    pstRayHit = orxObject_Raycast(&orxVECTOR_0, &vMousePos, (orxU16)u32SelfFlags, (orxU16)u32CheckMask, orxFALSE, orxNULL, orxNULL);
+
+    /* Hit? */
+    if(pstRayHit != orxNULL)
+    {
+      /* Stores its name */
+      orxConfig_SetString("RayHit", orxObject_GetName(pstRayHit));
     }
   }
 
