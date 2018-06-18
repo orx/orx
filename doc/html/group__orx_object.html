@@ -344,8 +344,8 @@ Physics / dynamics</h2></td></tr>
 <tr class="separator:ga18cda5b99a03836e4d9b8452434630b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga021bd243b2dbde61a32f33456ee3a956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga021bd243b2dbde61a32f33456ee3a956">orxObject_ApplyImpulse</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvImpulse, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint)</td></tr>
 <tr class="separator:ga021bd243b2dbde61a32f33456ee3a956"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga410c5d027af684442bc39f7dd7c1b9dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga410c5d027af684442bc39f7dd7c1b9dc">orxObject_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
-<tr class="separator:ga410c5d027af684442bc39f7dd7c1b9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5d833ebee1dec1bcc0715edd58d775af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga5d833ebee1dec1bcc0715edd58d775af">orxObject_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvBegin, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
+<tr class="separator:ga5d833ebee1dec1bcc0715edd58d775af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Text</h2></td></tr>
@@ -2761,7 +2761,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga410c5d027af684442bc39f7dd7c1b9dc"></a>
+<a class="anchor" id="ga5d833ebee1dec1bcc0715edd58d775af"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2769,7 +2769,7 @@ Picking</h2></td></tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_Raycast </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStart</em>, </td>
+          <td class="paramname"><em>_pvBegin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2816,7 +2816,7 @@ Picking</h2></td></tr>
 </div><div class="memdoc">
 <p>Issues a raycast to test for potential objects in the way. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStart</td><td>Start of raycast </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvBegin</td><td>Beginning of raycast </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvEnd</td><td>End of raycast </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u16SelfFlags</td><td>Selfs flags used for filtering (0xFFFF for no filtering) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u16CheckMask</td><td>Check mask used for filtering (0xFFFF for no filtering) </td></tr>

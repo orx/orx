@@ -90,7 +90,7 @@ var group__orx_object =
     [ "orxObject_PauseRecursive", "group__orx_object.html#ga645f6c4285a135184de3478402492ae5", null ],
     [ "orxObject_Pick", "group__orx_object.html#gaa7f5946ded728ecc944e0f38b4d73676", null ],
     [ "orxObject_Play", "group__orx_object.html#ga44aceac5c9186acab63d968a21f8ab64", null ],
-    [ "orxObject_Raycast", "group__orx_object.html#ga410c5d027af684442bc39f7dd7c1b9dc", null ],
+    [ "orxObject_Raycast", "group__orx_object.html#ga5d833ebee1dec1bcc0715edd58d775af", null ],
     [ "orxObject_RemoveFX", "group__orx_object.html#ga43abc9ef140d0b03f10991c3a9fd8dc8", null ],
     [ "orxObject_RemoveShader", "group__orx_object.html#gada022dc8a3ef36235ccb5b6cc6e6b06a", null ],
     [ "orxObject_RemoveSound", "group__orx_object.html#gab166e5f18d9efe2cb4c63a955cc6d4af", null ],
