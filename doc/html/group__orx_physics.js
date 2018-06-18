@@ -170,7 +170,7 @@ var group__orx_physics =
     [ "orxPhysics_Init", "group__orx_physics.html#gaef90eaf6b2c4f4724d7aa7f999e43907", null ],
     [ "orxPhysics_IsFixedRotation", "group__orx_physics.html#ga8b4f976090d0ad05062297fb950027ec", null ],
     [ "orxPhysics_IsPartSolid", "group__orx_physics.html#gaac179ef90f225b63cbf2d4acfb3b0d62", null ],
-    [ "orxPhysics_Raycast", "group__orx_physics.html#gadc8ab81f58b2a172aac1ff8a79d5f42f", null ],
+    [ "orxPhysics_Raycast", "group__orx_physics.html#gaa020e4468042819f0bcc561681c766eb", null ],
     [ "orxPhysics_SetAngularDamping", "group__orx_physics.html#ga0e53fbc164d83fb779df469636b03da1", null ],
     [ "orxPhysics_SetAngularVelocity", "group__orx_physics.html#ga29ca71d106c12ecd60fd2e94dd292005", null ],
     [ "orxPhysics_SetCustomGravity", "group__orx_physics.html#gaeaf969b29852a47bda3aa5c7885fbc78", null ],

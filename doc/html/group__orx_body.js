@@ -40,7 +40,7 @@ var group__orx_body =
     [ "orxBody_Init", "group__orx_body.html#ga027908adf63c94d330b53155432ffb14", null ],
     [ "orxBody_IsFixedRotation", "group__orx_body.html#gae3b6abaf62b05ddc4f25e55d440d5df6", null ],
     [ "orxBody_IsPartSolid", "group__orx_body.html#gad0dad8a12d22a3e37a78d54a9ac305f0", null ],
-    [ "orxBody_Raycast", "group__orx_body.html#ga60bb6bd3200d8fd5f97ab238703bf180", null ],
+    [ "orxBody_Raycast", "group__orx_body.html#ga3d05d78f014cbfcc21c26518a1dfefe3", null ],
     [ "orxBody_RemoveJoint", "group__orx_body.html#ga6bcab53b65ae5bf60ffe3c0bc4d924ec", null ],
     [ "orxBody_RemovePart", "group__orx_body.html#gad0bc02565cf5ba05eb743c928c076eb7", null ],
     [ "orxBody_RemovePartFromConfig", "group__orx_body.html#gacc5bb9e9fae5eac3bde16037cca9b6c7", null ],
