@@ -192,6 +192,19 @@ do                                                                        \
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Internal buffer mode
+ */
+typedef enum __orxDISPLAY_BUFFER_MODE_t
+{
+  orxDISPLAY_BUFFER_MODE_INDIRECT = 0,
+  orxDISPLAY_BUFFER_MODE_DIRECT,
+
+  orxDISPLAY_BUFFER_MODE_NUMBER,
+
+  orxDISPLAY_BUFFER_MODE_NONE = orxENUM_NONE
+
+} orxDISPLAY_BUFFER_MODE;
+
 /** Internal matrix structure
  */
 typedef struct __orxDISPLAY_MATRIX_t
@@ -301,6 +314,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
+  orxDISPLAY_BUFFER_MODE    eLastBufferMode;
   orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
@@ -1607,7 +1621,23 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
   return;
 }
 
-static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static void orxFASTCALL orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE _eBufferMode)
+{
+  /* New blend mode? */
+  if(_eBufferMode != sstDisplay.eLastBufferMode)
+  {
+    /* Draws remaining items */
+    orxDisplay_GLFW_DrawArrays();
+
+    /* Stores it */
+    sstDisplay.eLastBufferMode = _eBufferMode;
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxDISPLAY_BUFFER_MODE _eBufferMode)
 {
   orxBOOL bSmoothing;
 
@@ -1708,6 +1738,9 @@ static void orxFASTCALL orxDisplay_GLFW_PrepareBitmap(const orxBITMAP *_pstBitma
   /* Sets blend mode */
   orxDisplay_GLFW_SetBlendMode(_eBlendMode);
 
+  /* Sets buffer mode */
+  orxDisplay_GLFW_SetBufferMode(_eBufferMode);
+
   /* Done! */
   return;
 }
@@ -1717,7 +1750,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   GLfloat fWidth, fHeight;
 
   /* Prepares bitmap for drawing */
-  orxDisplay_GLFW_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode);
+  orxDisplay_GLFW_PrepareBitmap(_pstBitmap, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_INDIRECT);
 
   /* Gets bitmap working size */
   fWidth  = (GLfloat)(_pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX);
@@ -1939,7 +1972,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   fHeight = _pstMap->fCharacterHeight;
 
   /* Prepares font for drawing */
-  orxDisplay_GLFW_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode);
+  orxDisplay_GLFW_PrepareBitmap(_pstFont, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_INDIRECT);
 
   /* For all characters */
   for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = 0.0f, fY = 0.0f;
@@ -2216,7 +2249,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
 
   /* Prepares bitmap for drawing */
-  orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
+  orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
 
   /* Gets bitmap working size */
   fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
@@ -2308,7 +2341,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCustomMesh(orxCUSTOM_MESH * _pstCustom
   if ((_pstCustomMesh->pstBitmap != orxNULL) && (_pstCustomMesh->u32ElementCount > 0))
   {
     /* Prepares bitmap for drawing */
-    orxDisplay_GLFW_PrepareBitmap(_pstCustomMesh->pstBitmap, _pstCustomMesh->eSmoothing, _pstCustomMesh->eBlendMode);
+    orxDisplay_GLFW_PrepareBitmap(_pstCustomMesh->pstBitmap, _pstCustomMesh->eSmoothing, _pstCustomMesh->eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
 
     /* Apply bitmap clipping */
     orxDisplay_SetBitmapClipping(_pstCustomMesh->pstBitmap, _pstCustomMesh->u32BitmapClipTLX, _pstCustomMesh->u32BitmapClipTLY, _pstCustomMesh->u32BitmapClipBRX, _pstCustomMesh->u32BitmapClipBRY);
@@ -3301,6 +3334,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
       orxDisplay_GLFW_DrawArrays();
     }
 
+    /* Sets buffer mode */
+    orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE_INDIRECT);
+
     /* Defines the vertex list */
     sstDisplay.astVertexList[0].fX  =
     sstDisplay.astVertexList[1].fX  = sstDisplay.apstDestinationBitmapList[0]->stClip.vTL.fX;
@@ -3352,7 +3388,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
       GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
 
       /* Prepares bitmap for drawing */
-      orxDisplay_GLFW_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode);
+      orxDisplay_GLFW_PrepareBitmap(_pstSrc, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_INDIRECT);
 
       /* Inits bitmap height */
       fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
@@ -4452,8 +4488,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     sstDisplay.adMRUBitmapList[i]     = orxDOUBLE_0;
   }
 
-  /* Clears last blend mode */
+  /* Clears last modes */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
+  sstDisplay.eLastBufferMode= orxDISPLAY_BUFFER_MODE_NUMBER;
 
   /* Done! */
   return eResult;
@@ -4708,6 +4745,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             /* Inits info */
             sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
             sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
+            sstDisplay.eLastBufferMode    = orxDISPLAY_BUFFER_MODE_NUMBER;
 
             /* Gets clock */
             pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
