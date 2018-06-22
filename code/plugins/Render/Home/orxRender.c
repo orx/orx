@@ -1771,15 +1771,15 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               /* For all camera group IDs */
               for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
-                orxU32 u32GroupID;
+                orxSTRINGID stGroupID;
 
                 /* Gets it */
-                u32GroupID = orxCamera_GetGroupID(pstCamera, i);
+                stGroupID = orxCamera_GetGroupID(pstCamera, i);
 
                 /* For all objects in this group */
-                for(pstObject = orxObject_GetNext(orxNULL, u32GroupID);
+                for(pstObject = orxObject_GetNext(orxNULL, stGroupID);
                     pstObject != orxNULL;
-                    pstObject = orxObject_GetNext(pstObject, u32GroupID))
+                    pstObject = orxObject_GetNext(pstObject, stGroupID))
                 {
                   /* Is object enabled? */
                   if(orxObject_IsEnabled(pstObject) != orxFALSE)

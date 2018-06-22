@@ -129,7 +129,7 @@ struct __orxSPAWNER_t
 typedef struct __orxSPAWNER_STATIC_t
 {
   orxSPAWNER         *pstCurrentSpawner;          /**< Current spawner */
-  orxU32              u32DefaultGroupID;          /**< Default group ID */
+  orxSTRINGID         stDefaultGroupID;           /**< Default group ID */
   orxU32              u32Flags;                   /**< Control flags */
 
 } orxSPAWNER_STATIC;
@@ -725,7 +725,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             if(pstOwner != orxNULL)
             {
               /* Doesn't have a group? */
-              if(orxObject_GetGroupID(pstObject) == sstSpawner.u32DefaultGroupID)
+              if(orxObject_GetGroupID(pstObject) == sstSpawner.stDefaultGroupID)
               {
                 /* Transfers group ID */
                 orxObject_SetGroupID(pstObject, orxObject_GetGroupID(pstOwner));
@@ -842,7 +842,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Is config group? */
-        if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+        if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
         {
           orxSPAWNER *pstSpawner;
 
@@ -855,7 +855,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
             {
               /* Match origin? */
-              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->u32NameID)
+              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
               {
                 /* Re-processes its config data */
                 orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
@@ -1068,7 +1068,7 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Stores default group ID */
-        sstSpawner.u32DefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+        sstSpawner.stDefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
 
         /* Inits Flags */
         orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_READY, orxSPAWNER_KU32_STATIC_MASK_ALL);

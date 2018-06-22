@@ -325,7 +325,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Is config group? */
-      if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
       {
         orxTEXT *pstText;
 
@@ -335,7 +335,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             pstText = orxTEXT(orxStructure_GetNext(pstText)))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxText_ProcessConfigData(pstText);

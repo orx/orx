@@ -1130,8 +1130,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
  */
 orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
@@ -1139,7 +1140,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
   orxASSERT((_zSoundConfigID != orxNULL) && (_zSoundConfigID != orxSTRING_EMPTY));
 
   /* Gets sound ID */
-  u32ID = orxString_ToCRC(_zSoundConfigID);
+  stID = orxString_ToCRC(_zSoundConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
@@ -1153,7 +1154,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
     if(pstSound != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxSound_GetName(pstSound)) == u32ID)
+      if(orxString_ToCRC(orxSound_GetName(pstSound)) == stID)
       {
         orxSOUND_EVENT_PAYLOAD  stPayload;
         orxSTRUCTURE           *pstOwner;
