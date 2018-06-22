@@ -186,6 +186,7 @@ typedef struct __orxRESOURCE_STATIC_t
   orxTHREAD_SEMAPHORE*      pstWorkerSemaphore;                                       /**< Worker semaphore */
   orxLINKLIST               stTypeList;                                               /**< Type list */
   orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
+  orxSTRINGID               stLastWatchedGroupID;                                     /**< Last watched group ID */
   volatile orxSTATUS        eThreadResult;                                            /**< Thread result */
   orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   volatile orxRESOURCE_REQUEST astRequestList[orxRESOURCE_KU32_REQUEST_LIST_SIZE];    /**< Request list */
@@ -778,7 +779,6 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
   {
     orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
-    static orxSTRINGID  sstLastGroupID = orxSTRINGID_UNDEFINED;
 
     /* Gets its ID */
     stGroupID = orxString_ToCRC(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
@@ -797,13 +797,13 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* New group? */
-      if(stGroupID != sstLastGroupID)
+      if(stGroupID != sstResource.stLastWatchedGroupID)
       {
         /* Resets iterator */
         shIterator = orxHANDLE_UNDEFINED;
 
         /* Stores group ID */
-        sstLastGroupID = stGroupID;
+        sstResource.stLastWatchedGroupID = stGroupID;
       }
 
       /* For all its cached resources */
@@ -1140,6 +1140,9 @@ orxSTATUS orxFASTCALL orxResource_Init()
           {
             /* Registers commands */
             orxResource_RegisterCommands();
+
+            /* Inits vars */
+            sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
 
 #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
