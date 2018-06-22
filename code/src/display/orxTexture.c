@@ -82,7 +82,7 @@
 struct __orxTEXTURE_t
 {
   orxSTRUCTURE    stStructure;                  /**< Public structure, first structure member : 32 */
-  orxU32          u32ID;                        /**< Associated name ID : 36 */
+  orxSTRINGID     stID;                         /**< Associated name ID : 36 */
   orxFLOAT        fWidth;                       /**< Width : 40 */
   orxFLOAT        fHeight;                      /**< Height : 44 */
   orxHANDLE       hData;                        /**< Data : 48 */
@@ -95,7 +95,7 @@ typedef struct __orxTEXTURE_STATIC_t
   orxHASHTABLE   *pstTable;                     /**< Bitmap hashtable */
   orxTEXTURE     *pstScreen;                    /**< Screen texture */
   orxTEXTURE     *pstPixel;                     /**< Pixel texture */
-  orxU32          u32ResourceGroupID;           /**< Resource group ID */
+  orxSTRINGID     stResourceGroupID;            /**< Resource group ID */
   orxU32          u32LoadCount;                 /**< Load count */
   orxU32          u32Flags;                     /**< Control flags */
 
@@ -131,12 +131,12 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Is texture group? */
-      if(pstPayload->u32GroupID == sstTexture.u32ResourceGroupID)
+      if(pstPayload->stGroupID == sstTexture.stResourceGroupID)
       {
         orxTEXTURE *pstTexture;
 
         /* Gets texture */
-        pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->u32NameID);
+        pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->stNameID);
 
         /* Found? */
         if(pstTexture != orxNULL)
@@ -231,7 +231,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Gets texture */
-      pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->stBitmap.u32FilenameID);
+      pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, pstPayload->stBitmap.stFilenameID);
 
       /* Found? */
       if(pstTexture != orxNULL)
@@ -645,7 +645,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                   orxDisplay_SetTempBitmap(pstBitmap);
 
                   /* Inits values */
-                  sstTexture.u32ResourceGroupID = orxString_GetID(orxTEXTURE_KZ_RESOURCE_GROUP);
+                  sstTexture.stResourceGroupID = orxString_GetID(orxTEXTURE_KZ_RESOURCE_GROUP);
 
                   /* Adds event handler */
                   orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTexture_EventHandler);
@@ -984,13 +984,13 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) == orxFALSE)
   {
     orxTEXTURE *pstTexture;
-    orxU32      u32ID;
+    orxSTRINGID stID;
 
     /* Gets ID */
-    u32ID = orxString_GetID(_zDataName);
+    stID = orxString_GetID(_zDataName);
 
     /* Gets texture from hash table */
-    pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, u32ID);
+    pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, stID);
 
     /* Not found? */
     if(pstTexture == orxNULL)
@@ -1014,10 +1014,10 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBI
       orxDisplay_GetBitmapSize(_pstBitmap, &(_pstTexture->fWidth), &(_pstTexture->fHeight));
 
       /* Updates texture ID */
-      _pstTexture->u32ID = u32ID;
+      _pstTexture->stID = stID;
 
       /* Adds it to hash table */
-      orxHashTable_Add(sstTexture.pstTable, u32ID, _pstTexture);
+      orxHashTable_Add(sstTexture.pstTable, stID, _pstTexture);
     }
     else
     {
@@ -1070,10 +1070,10 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     _pstTexture->hData = orxHANDLE_UNDEFINED;
 
     /* Removes from hash table */
-    orxHashTable_Remove(sstTexture.pstTable, _pstTexture->u32ID);
+    orxHashTable_Remove(sstTexture.pstTable, _pstTexture->stID);
 
     /* Clears ID */
-    _pstTexture->u32ID = 0;
+    _pstTexture->stID = orxSTRINGID_UNDEFINED;
   }
   else
   {
@@ -1170,7 +1170,7 @@ const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
   orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Updates result */
-  zResult = (_pstTexture->u32ID != 0) ? orxString_GetFromID(_pstTexture->u32ID) : orxSTRING_EMPTY;
+  zResult = (_pstTexture->stID != orxSTRINGID_UNDEFINED) ? orxString_GetFromID(_pstTexture->stID) : orxSTRING_EMPTY;
 
   /* Done! */
   return zResult;

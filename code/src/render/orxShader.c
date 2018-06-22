@@ -431,7 +431,7 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxSHADER *pstShader;
 
@@ -444,7 +444,7 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
         if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxShader_ProcessConfigData(pstShader);
@@ -700,7 +700,7 @@ orxSHADER *orxFASTCALL orxShader_Create()
  */
 orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxU32      u32ID;
+  orxSTRINGID stID;
   orxSHADER  *pstResult;
 
   /* Checks */
@@ -708,10 +708,10 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets shader ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_ToCRC(_zConfigID);
 
   /* Search for reference */
-  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, u32ID);
+  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -732,7 +732,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
       if(pstResult != orxNULL)
       {
         /* Adds it to reference table */
-        if(orxHashTable_Add(sstShader.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
+        if(orxHashTable_Add(sstShader.pstReferenceTable, stID, pstResult) != orxSTATUS_FAILURE)
         {
           /* Stores its reference */
           pstResult->zReference = orxConfig_GetCurrentSection();

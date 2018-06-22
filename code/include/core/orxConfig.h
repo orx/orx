@@ -182,9 +182,9 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetOrigin(const orxSTRIN
 
 /** Gets section origin ID (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file)
  * @param[in] _zSectionName     Concerned section name
- * @return String ID if found, 0 otherwise
+ * @return String ID if found, orxSTRINGID_UNDEFINED otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetOriginID(const orxSTRING _zSectionName);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxConfig_GetOriginID(const orxSTRING _zSectionName);
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created

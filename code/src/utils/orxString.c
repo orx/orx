@@ -50,9 +50,7 @@
 
 /** Defines
  */
-#define orxSTRING_KU32_ID_TABLE_SIZE                      16384
-
-#define orxSTRING_KU32_ID_BUFFER_SIZE                     131072
+#define orxSTRING_KU32_ID_TABLE_SIZE                      32768
 
 
 /***************************************************************************
@@ -227,10 +225,10 @@ void orxFASTCALL orxString_Exit()
  * @param[in]   _zString        Concerned string
  * @return      String's ID
  */
-orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
+orxSTRINGID orxFASTCALL orxString_GetID(const orxSTRING _zString)
 {
   const orxSTRING  *pzBucket;
-  orxU32            u32Result = 0;
+  orxSTRINGID       stResult = 0;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_GetID");
@@ -240,10 +238,10 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Gets its ID */
-  u32Result = orxString_ToCRC(_zString);
+  stResult = orxString_ToCRC(_zString);
 
   /* Gets stored string bucket */
-  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, u32Result);
+  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, stResult);
 
   /* Checks */
   orxASSERT(pzBucket != orxNULL);
@@ -270,14 +268,14 @@ orxU32 orxFASTCALL orxString_GetID(const orxSTRING _zString)
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return u32Result;
+  return stResult;
 }
 
 /** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
- * @param[in]   _u32ID          Concerned string ID
+ * @param[in]   _stID           Concerned string ID
  * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
  */
-const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
+const orxSTRING orxFASTCALL orxString_GetFromID(orxSTRINGID _stID)
 {
   const orxSTRING zResult;
 
@@ -285,7 +283,7 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxU32 _u32ID)
   orxPROFILER_PUSH_MARKER("orxString_GetFromID");
 
   /* Gets string from table */
-  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, _u32ID);
+  zResult = (const orxSTRING)orxHashTable_Get(sstString.pstIDTable, _stID);
 
   /* Invalid? */
   if(zResult == orxNULL)
@@ -309,7 +307,7 @@ const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
 {
   const orxSTRING  *pzBucket;
   const orxSTRING   zResult;
-  orxU32            u32ID;
+  orxSTRINGID       stID;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxString_Store");
@@ -319,10 +317,10 @@ const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Gets its ID */
-  u32ID = orxString_ToCRC(_zString);
+  stID = orxString_ToCRC(_zString);
 
   /* Gets stored string bucket */
-  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, u32ID);
+  pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, stID);
 
   /* Checks */
   orxASSERT(pzBucket != orxNULL);
