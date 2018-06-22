@@ -224,6 +224,7 @@ typedef struct __orxFRAME_INFO_t
   orxGRAPHIC             *pstGraphic;
   const orxSTRING         zEventName;
   orxFLOAT                fEventValue;
+  orxFLOAT                fDuration;
 
 } orxFRAME_INFO;
 
@@ -1634,6 +1635,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     orxVECTOR       vTextureOrigin = {}, vTextureSize = {}, vFrameSize = {};
     const orxSTRING zPrefix;
     const orxSTRING zParent;
+    const orxSTRING zCurrentSection;
     orxU32          u32Digits;
     orxBOOL         bContinue = orxTRUE;
     orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
@@ -1659,11 +1661,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zAnimSet);
     }
 
+    /* Pushes it */
+    orxConfig_PushSection(acBuffer);
+
     /* Sets its parent */
     orxConfig_SetParent(acBuffer, zAnimSet);
 
-    /* Pushes it */
-    orxConfig_PushSection(acBuffer);
+    /* Stores it */
+    zCurrentSection = orxConfig_GetCurrentSection();
 
     /* From config? */
     if(bFromConfig != orxFALSE)
@@ -1935,7 +1940,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
 
         /* Pushes its section */
-        orxConfig_PushSection(acBuffer);
+        orxConfig_SelectSection(acBuffer);
 
         /* From config? */
         if(bFromConfig != orxFALSE)
@@ -1950,9 +1955,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acBuffer);
-
-              /* Stops */
-              orxConfig_PopSection();
               break;
             }
 
@@ -1999,8 +2001,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
             else
             {
-              /* Stops */
-              orxConfig_PopSection();
               break;
             }
           }
@@ -2036,22 +2036,19 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           u32EventCount++;
         }
 
-        /* Pops config section */
-        orxConfig_PopSection();
-
         /* Gets current parent */
         zParent = orxConfig_GetParent(acBuffer);
 
         /* Already has parent? */
         if((zParent != orxNULL)
-        && (orxString_Compare(zParent, orxConfig_GetCurrentSection()) != 0))
+        && (orxString_Compare(zParent, zCurrentSection) != 0))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, orxConfig_GetCurrentSection());
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zCurrentSection);
         }
 
         /* Sets section's parent */
-        orxConfig_SetParent(acBuffer, orxConfig_GetCurrentSection());
+        orxConfig_SetParent(acBuffer, zCurrentSection);
 
         /* Disables display logs */
         bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
@@ -2076,6 +2073,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           pstFrameInfo->pstGraphic  = pstGraphic;
           pstFrameInfo->zEventName  = zEventName;
           pstFrameInfo->fEventValue = fEventValue;
+          pstFrameInfo->fDuration   = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
         }
         else
         {
@@ -2083,6 +2081,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           break;
         }
       }
+
+      /* Restores config section */
+      orxConfig_SelectSection(zCurrentSection);
 
       /* Gets frame count */
       u32FrameCount = orxBank_GetCount(sstAnimSet.pstCreationBank);
@@ -2108,13 +2109,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
           {
             const orxSTRING zName;
-            orxFLOAT        fFrameDuration;
 
             /* Gets its name */
             zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
-
-            /* Pushes its section */
-            orxConfig_PushSection(zName);
 
             /* Has event? */
             if(pstFrameInfo->zEventName != orxNULL)
@@ -2123,17 +2120,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
             }
 
-            /* Gets frame duration */
-            fFrameDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
-
-            /* Pops config section */
-            orxConfig_PopSection();
-
             /* Valid? */
-            if(fFrameDuration > orxFLOAT_0)
+            if(pstFrameInfo->fDuration > orxFLOAT_0)
             {
               /* Updates its timestamp */
-              fTimeStamp += fFrameDuration;
+              fTimeStamp += pstFrameInfo->fDuration;
 
               /* Adds it */
               if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
