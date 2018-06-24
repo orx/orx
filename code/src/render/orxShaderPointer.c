@@ -784,8 +784,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
  */
 orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -793,7 +794,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zShaderConfigID);
+  stID = orxString_ToCRC(_zShaderConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
@@ -807,7 +808,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
     if(pstShader != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxShader_GetName(pstShader)) == u32ID)
+      if(orxString_ToCRC(orxShader_GetName(pstShader)) == stID)
       {
         /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);

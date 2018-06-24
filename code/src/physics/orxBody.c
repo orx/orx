@@ -1130,7 +1130,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
  */
 orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID)
 {
-  orxU32        u32ID;
+  orxSTRINGID   stID;
   orxBODY_PART *pstPart;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
@@ -1139,7 +1139,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Gets part ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_ToCRC(_zConfigID);
 
   /* For all parts */
   for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
@@ -1147,7 +1147,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
       pstPart = orxBody_GetNextPart(_pstBody, pstPart))
   {
     /* Found? */
-    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == u32ID)
+    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == stID)
     {
       /* Removes it */
       eResult = orxBody_RemovePart(pstPart);

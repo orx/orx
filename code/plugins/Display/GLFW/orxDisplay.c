@@ -224,7 +224,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
-  orxU32                    u32FilenameID;
+  orxSTRINGID               stFilenameID;
   orxU32                    u32Flags;
 };
 
@@ -232,10 +232,10 @@ struct __orxBITMAP_t
  */
 typedef struct __orxDISPLAY_SAVE_INFO_t
 {
-  orxU8  *pu8ImageData;
-  orxU32  u32Width;
-  orxU32  u32Height;
-  orxU32  u32FilenameID;
+  orxU8      *pu8ImageData;
+  orxU32      u32Width;
+  orxU32      u32Height;
+  orxSTRINGID stFilenameID;
 
 } orxDISPLAY_SAVE_INFO;
 
@@ -945,7 +945,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
 
     /* Inits payload */
     stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
-    stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+    stPayload.stBitmap.stFilenameID   = pstInfo->pstBitmap->stFilenameID;
     stPayload.stBitmap.u32ID          = (pstInfo->pu8ImageBuffer != orxNULL) ? (orxU32)pstInfo->pstBitmap->uiTexture : orxU32_UNDEFINED;
 
     /* Sends event */
@@ -1165,7 +1165,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmapData(void *_pContext)
   pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
 
   /* Gets filename */
-  zFilename = orxString_GetFromID(pstInfo->u32FilenameID);
+  zFilename = orxString_GetFromID(pstInfo->stFilenameID);
 
   /* Gets file name's length */
   u32Length = orxString_GetLength(zFilename);
@@ -2352,7 +2352,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_CreateBitmap(orxU32 _u32Width, orxU32 _u3
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
-    pstBitmap->u32FilenameID  = 0;
+    pstBitmap->stFilenameID   = orxSTRINGID_UNDEFINED;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -3409,7 +3409,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
       {
         /* Inits it */
         pstInfo->pu8ImageData   = pu8ImageData;
-        pstInfo->u32FilenameID  = orxString_GetID(_zFilename);
+        pstInfo->stFilenameID   = orxString_GetID(_zFilename);
         pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
         pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
 
@@ -3487,7 +3487,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFilename)
       /* Inits it */
       pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
       pstResult->zLocation      = zResourceLocation;
-      pstResult->u32FilenameID  = orxString_GetID(_zFilename);
+      pstResult->stFilenameID   = orxString_GetID(_zFilename);
       pstResult->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
