@@ -1064,7 +1064,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pst
 
 /** Sets group ID of an object and all its children.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _stroupID       Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 
