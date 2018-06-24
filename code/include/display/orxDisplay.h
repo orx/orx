@@ -245,7 +245,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
     struct
     {
       const orxSTRING zLocation;                            /**< File location : 40 */
-      orxU32          u32FilenameID;                        /**< File name ID : 44 */
+      orxSTRINGID     stFilenameID;                         /**< File name ID : 44 */
       orxU32          u32ID;                                /**< Bitmap (hardware texture) ID : 48 */
 
     } stBitmap;

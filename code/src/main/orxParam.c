@@ -140,7 +140,7 @@ static orxPARAM_STATIC sstParam;
  * @param[in] _zParamName Name of the parameter (with short or long prefix inside)
  * @return Returns the pointer on the param info if found, else returns orxNULL
  */
-static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
+static orxINLINE orxPARAM_INFO *orxParam_Get(orxSTRINGID _stParamName)
 {
   orxPARAM_INFO *pstParamInfo; /* Parameters info extracted from the Hash Table */
 
@@ -148,7 +148,7 @@ static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Get the parameter pointer */
-  pstParamInfo = (orxPARAM_INFO *)orxHashTable_Get(sstParam.pstHashTable, _u32ParamName);
+  pstParamInfo = (orxPARAM_INFO *)orxHashTable_Get(sstParam.pstHashTable, _stParamName);
 
   /* Returns it */
   return pstParamInfo;
@@ -186,23 +186,23 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
   }
   else
   {
-    orxU32 u32Index;          /* Index to traverse extra parameters */
-    orxU32 u32LongPrefixCRC;  /* CRC for the long prefix string */
+    orxU32      u32Index;          /* Index to traverse extra parameters */
+    orxSTRINGID stLongPrefixCRC;  /* CRC for the long prefix string */
 
     /* Create the CRC value of the prefix */
-    u32LongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
+    stLongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
 
     /* Display the long description of the extra parameters only */
     for(u32Index = 1; u32Index < _u32NbParam; u32Index++)
     {
-      orxU32 u32Name;               /* CRC Name of the long option */
+      orxSTRINGID stName;           /* CRC Name of the long option */
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
-      u32Name = orxString_ContinueCRC(_azParams[u32Index], u32LongPrefixCRC);
+      stName = orxString_ContinueCRC(_azParams[u32Index], stLongPrefixCRC);
 
       /* Get the parameter info */
-      pstParamInfo = (orxPARAM_INFO *)orxParam_Get(u32Name);
+      pstParamInfo = (orxPARAM_INFO *)orxParam_Get(stName);
 
       /* Valid info ? */
       if(pstParamInfo != orxNULL)
@@ -615,16 +615,16 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
       _pstParam->zShortDesc != orxNULL &&
       _pstParam->pfnParser  != orxNULL)
   {
-    orxU32 u32ShortName;
+    orxSTRINGID stShortName;
 
     /* Creates CRC for the Short Name */
-    u32ShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
-    u32ShortName = orxString_ContinueCRC(_pstParam->zShortName, u32ShortName);
+    stShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
+    stShortName = orxString_ContinueCRC(_pstParam->zShortName, stShortName);
 
     /* Check if options with the same name don't have already been registered */
-    if(orxParam_Get(u32ShortName) == orxNULL)
+    if(orxParam_Get(stShortName) == orxNULL)
     {
-      orxU32 u32LongName = 0;
+      orxSTRINGID stLongName = 0;
       orxBOOL bStoreParam = orxTRUE; /* No problem at the moment, we can store the parameter */
 
       /* Check if the long name has not already been registered too */
@@ -634,11 +634,11 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
         bStoreParam = orxFALSE;
 
         /* Create CRC For the long name */
-        u32LongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
-        u32LongName = orxString_ContinueCRC(_pstParam->zLongName, u32LongName);
+        stLongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
+        stLongName = orxString_ContinueCRC(_pstParam->zLongName, stLongName);
 
         /* Found ? */
-        if(orxParam_Get(u32LongName) == orxNULL)
+        if(orxParam_Get(stLongName) == orxNULL)
         {
           /* No Params have been found, we can store it */
           bStoreParam = orxTRUE;
@@ -663,13 +663,13 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
           orxMemory_Copy(&(pstParamInfo->stParam), _pstParam, sizeof(orxPARAM));
 
           /* Store Params in the hash Table (with short name as key) */
-          orxHashTable_Add(sstParam.pstHashTable, u32ShortName, pstParamInfo);
+          orxHashTable_Add(sstParam.pstHashTable, stShortName, pstParamInfo);
 
           /* Store Param with long name as key if it exists */
           if(_pstParam->zLongName != orxNULL)
           {
             /* Adds it to table */
-            orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfo);
+            orxHashTable_Add(sstParam.pstHashTable, stLongName, pstParamInfo);
           }
 
           /* Process params */

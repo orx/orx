@@ -780,8 +780,9 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
@@ -790,7 +791,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -804,7 +805,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -832,7 +833,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
  */
 orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
 {
-  orxU32        i, u32ID;
+  orxSTRINGID   stID;
+  orxU32        i;
   orxSTRUCTURE *pstOwner;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
@@ -845,7 +847,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -859,7 +861,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
       {
         orxFX_EVENT_PAYLOAD stPayload;
 

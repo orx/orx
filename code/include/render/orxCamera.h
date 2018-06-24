@@ -106,18 +106,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_Delete(orxCAME
 
 /** Adds a group ID to a camera
  * @param[in] _pstCamera        Concerned camera
- * @param[in] _u32GroupID       ID of the group to add
+ * @param[in] _stGroupID        ID of the group to add
  * @param[in] _bAddFirst        If true this group will be used *before* any already added ones, otherwise it'll be used *after* all of them
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxSTRINGID _stGroupID, orxBOOL _bAddFirst);
 
 /** Removes a group ID from a camera
  * @param[in] _pstCamera        Concerned camera
- * @param[in] _u32GroupID       ID of the group to remove
+ * @param[in] _stGroupID        ID of the group to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID);
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxSTRINGID _stGroupID);
 
 /** Gets number of group IDs of camera
  * @param[in] _pstCamera        Concerned camera
@@ -128,9 +128,9 @@ extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCoun
 /** Gets the group ID of a camera at the given index
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID
- * @return Group ID if index is valid, orxU32_UNDEFINED otherwise
+ * @return Group ID if index is valid, orxSTRINGID_UNDEFINED otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index);
+extern orxDLLAPI orxSTRINGID orxFASTCALL                orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index);
 
 
 /** Sets camera frustum

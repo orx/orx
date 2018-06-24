@@ -12,6 +12,7 @@ var searchData=
   ['orxstring_5feol',['orxSTRING_EOL',['../group__orx_type.html#ga4a31f472b61a07c2b79005543d7d0480',1,'orxType.h']]],
   ['orxstring_5ffalse',['orxSTRING_FALSE',['../group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb',1,'orxType.h']]],
   ['orxstring_5ftrue',['orxSTRING_TRUE',['../group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182',1,'orxType.h']]],
+  ['orxstringid_5fundefined',['orxSTRINGID_UNDEFINED',['../group__orx_type.html#ga26f449027c0bfe2d30439d3695d1bf19',1,'orxType.h']]],
   ['orxu16_5fundefined',['orxU16_UNDEFINED',['../group__orx_type.html#ga44b8a4d07838f3c2d4736f878b7da5bf',1,'orxType.h']]],
   ['orxu32_5fundefined',['orxU32_UNDEFINED',['../group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21',1,'orxType.h']]],
   ['orxu64_5fundefined',['orxU64_UNDEFINED',['../group__orx_type.html#ga80e4595b5e266cac8ff88a26ccfd48d0',1,'orxType.h']]],
