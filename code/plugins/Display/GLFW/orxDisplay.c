@@ -1546,9 +1546,13 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
       /* No offset in the index list */
       pIndexContext = (GLvoid *)0;
 
-      /* Copies vertex buffer */
-      glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
-      glASSERT();
+      /* Indirect mode? */
+      if(sstDisplay.eLastBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
+      {
+        /* Copies vertex buffer */
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
+        glASSERT();
+      }
     }
     else
     {
@@ -1605,7 +1609,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     }
     else
     {
-      /* Draws arrays */
+      /* Draws elements */
       glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1)), GL_UNSIGNED_SHORT, pIndexContext);
       glASSERT();
     }
@@ -2237,7 +2241,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
 {
   const orxBITMAP  *pstBitmap;
   orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef;
-  orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
+  orxU32            u32VertexNumber = _u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2263,17 +2267,18 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   fXCoef = pstBitmap->fRecRealWidth * fWidth;
   fYCoef = pstBitmap->fRecRealHeight * fHeight;
 
-  /* End of buffer? */
-  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 3)
+  //! TODO: Only limit when no index buffer has been specified
+  /* No index list and end of buffer? */
+  if(sstDisplay.s32BufferIndex + _u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
   {
     /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
 
     /* Too many vertices? */
-    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2)
+    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
     {
       /* Updates vertex number */
-      u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2;
+      u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE;
 
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
@@ -2283,42 +2288,38 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     }
   }
 
-  /* For all vertices */
-  for(i = 0, iIndex = 0; i < u32VertexNumber; i++, iIndex++)
+  /* Has VBO support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
   {
-    /* Copies position */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fX = _astVertexList[i].fX;
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
+    /* Copies vertex buffer */
+    glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _astVertexList);
+    glASSERT();
 
-    /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
-
-    /* Copies color */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
-
-    /* Quad extremity? */
-    if((i != 1) && ((i & 1) == 1))
-    {
-      /* Copies last two vertices */
-      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 1]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
-      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 2]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), sizeof(orxDISPLAY_VERTEX));
-
-      /* Updates index */
-      iIndex += 2;
-    }
+    /* Updates index */
+    sstDisplay.s32BufferIndex += u32VertexNumber;
   }
-
-  /* Not enough vertices for a final quad in the triangle strip? */
-  while(iIndex & 3)
+  else
   {
-    /* Completes the quad */
-    orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
-    iIndex++;
-  }
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].stRGBA));
+    glASSERT();
 
-  /* Updates index */
-  sstDisplay.s32BufferIndex += iIndex;
+    /* Draws elements */
+    glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(u32VertexNumber + (u32VertexNumber >> 1)), GL_UNSIGNED_SHORT, (GLvoid *)&(sstDisplay.au16IndexList));
+    glASSERT();
+
+    /* Selects arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
+  }
 
   /* Done! */
   return eResult;

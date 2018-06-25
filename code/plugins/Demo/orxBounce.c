@@ -70,7 +70,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
 {
 #define STORE_VERTEX(INDEX, X, Y, U, V, RGBA) astVertexList[INDEX].fX = X; astVertexList[INDEX].fY = Y; astVertexList[INDEX].fU = U; astVertexList[INDEX].fV = V; astVertexList[INDEX].stRGBA = RGBA;
 
-  orxDISPLAY_VERTEX astVertexList[TRAIL_POINT_NUMBER * 2];
+  orxDISPLAY_VERTEX astVertexList[TRAIL_POINT_NUMBER * 4 - 2];
   orxVECTOR         vOffset;
   orxU32            i;
 
@@ -88,7 +88,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     if(i < TRAIL_POINT_NUMBER - 1)
     {
       /* Gets offset vector */
-      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(40.0f) / orxMath_Pow(orxS2F(i), orx2F(0.6f)));
+      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(40.0f) / orxMath_Pow(orxS2F(i + 1), orx2F(0.6f)));
     }
 
     /* Computes vertices positions */
@@ -96,12 +96,18 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     orxVector_Sub(&vVertex2, &savTrailPointList[u32Index], &vOffset);
 
     /* Stores vertices */
-    STORE_VERTEX(i * 2, vVertex1.fX, vVertex1.fY, orxFLOAT_0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
-    STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, orxFLOAT_1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+    STORE_VERTEX(i * 4, vVertex1.fX, vVertex1.fY, orxFLOAT_0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+    STORE_VERTEX(i * 4 + 1, vVertex2.fX, vVertex2.fY, orxFLOAT_1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+
+    if(i > 0)
+    {
+      STORE_VERTEX(i * 4 - 2, vVertex1.fX, vVertex1.fY, orxFLOAT_0, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+      STORE_VERTEX(i * 4 - 1, vVertex2.fX, vVertex2.fY, orxFLOAT_1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
+    }
   }
 
   /* Draws trail */
-  orxDisplay_DrawMesh(_pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA, TRAIL_POINT_NUMBER * 2, astVertexList);
+  orxDisplay_DrawMesh(_pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA, TRAIL_POINT_NUMBER * 4 - 4, astVertexList);
 }
 
 /** Updates trail
