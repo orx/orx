@@ -71,6 +71,7 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
 #define STORE_VERTEX(INDEX, X, Y, U, V, RGBA) astVertexList[INDEX].fX = X; astVertexList[INDEX].fY = Y; astVertexList[INDEX].fU = U; astVertexList[INDEX].fV = V; astVertexList[INDEX].stRGBA = RGBA;
 
   orxDISPLAY_VERTEX astVertexList[TRAIL_POINT_NUMBER * 4 - 2];
+  orxDISPLAY_MESH   stMesh;
   orxVECTOR         vOffset;
   orxU32            i;
 
@@ -106,8 +107,14 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     }
   }
 
+  /* Inits mesh */
+  orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
+  stMesh.astVertexList    = astVertexList;
+  stMesh.u32VertexNumber  = (TRAIL_POINT_NUMBER - 1) * 4;
+  stMesh.u32ElementNumber = (TRAIL_POINT_NUMBER - 1) * 2;
+
   /* Draws trail */
-  orxDisplay_DrawMesh(_pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA, TRAIL_POINT_NUMBER * 4 - 4, astVertexList);
+  orxDisplay_DrawMesh(&stMesh, _pstBitmap, orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
 }
 
 /** Updates trail

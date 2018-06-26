@@ -540,8 +540,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* Desired depth? */
           if(orxProfiler_GetUniqueMarkerDepth(s32MarkerID) == sstRender.u32SelectedMarkerDepth)
           {
-            orxCOLOR  stBarColor, stTempColor;
-            orxRGBA   stLowRGBA, stHighRGBA;
+            orxDISPLAY_MESH stMesh;
+            orxCOLOR        stBarColor, stTempColor;
+            orxRGBA         stLowRGBA, stHighRGBA;
 
             /* Gets associated colors */
             stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
@@ -584,8 +585,14 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             /* Resets query frame */
             orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
 
+            /* Inits mesh */
+            orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
+            stMesh.astVertexList    = astVertexList;
+            stMesh.u32VertexNumber  = 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1);
+            stMesh.u32ElementNumber = orxPROFILER_KU32_HISTORY_LENGTH;
+
             /* Draws it */
-            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
+            orxDisplay_DrawMesh(&stMesh, pstBitmap, orxDISPLAY_DRAW_MODE_TRIANGLES, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
           }
         }
       }
