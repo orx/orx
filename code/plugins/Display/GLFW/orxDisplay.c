@@ -135,8 +135,8 @@
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
 
-#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 2048)  /**< 2048 items batch capacity */
-#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 2048)  /**< 2048 items batch capacity */
+#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 16384) /**< 16384 items batch capacity */
+#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 16384) /**< 16384 items batch capacity */
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
@@ -2237,17 +2237,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_DRAW_MODE _eDrawMode, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxBITMAP  *pstBitmap;
-  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef;
-  orxU32            u32VertexNumber = _u32VertexNumber;
+  orxU32            u32VertexNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32VertexNumber > 2);
-  orxASSERT(_astVertexList != orxNULL);
+  orxASSERT(_pstMesh != orxNULL);
+  orxASSERT(_pstMesh->u32VertexNumber > 1);
+  orxASSERT(_pstMesh->u32ElementNumber > 0);
 
   /* Gets bitmap to use */
   pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
@@ -2255,44 +2255,37 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   /* Prepares bitmap for drawing */
   orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
 
-  /* Gets bitmap working size */
-  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
-  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
-
-  /* Gets top-left corner  */
-  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
-  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
-
-  /* Gets X & Y coefs */
-  fXCoef = pstBitmap->fRecRealWidth * fWidth;
-  fYCoef = pstBitmap->fRecRealHeight * fHeight;
+  /* Gets number of vertices */
+  u32VertexNumber = _pstMesh->u32VertexNumber;
 
   //! TODO: Only limit when no index buffer has been specified
   /* No index list and end of buffer? */
-  if(sstDisplay.s32BufferIndex + _u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
+  if(sstDisplay.s32BufferIndex + u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
   {
     /* Draws arrays */
     orxDisplay_GLFW_DrawArrays();
 
     /* Too many vertices? */
-    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
+    if(u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
     {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", orxDISPLAY_KU32_VERTEX_BUFFER_SIZE, u32VertexNumber);
+
       /* Updates vertex number */
       u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE;
-
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
   }
 
+  //! TODO: Store number of elements + index buffer + draw mode
+
   /* Has VBO support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
   {
     /* Copies vertex buffer */
-    glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _astVertexList);
+    glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _pstMesh->astVertexList);
     glASSERT();
 
     /* Updates index */
@@ -2301,12 +2294,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
   else
   {
     /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].fX));
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fX));
     glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].fU));
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fU));
     glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(_astVertexList[0].stRGBA));
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].stRGBA));
     glASSERT();
+
+    //! TODO: Use converted draw mode
 
     /* Draws elements */
     glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)(u32VertexNumber + (u32VertexNumber >> 1)), GL_UNSIGNED_SHORT, (GLvoid *)&(sstDisplay.au16IndexList));
@@ -2319,70 +2314,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxBITMAP *_pstBitmap, orxD
     glASSERT();
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawCustomMesh(orxCUSTOM_MESH * _pstCustomMesh)
-{
-  orxU32            u32VertexNumber = _pstCustomMesh->u32VertexNumber;
-  orxSTATUS         eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstCustomMesh->u32VertexNumber > 2);
-  orxASSERT(_pstCustomMesh->astVertexList != orxNULL);
-
-  /* Clear the buffer anyway because we're going to use custom draw mode */
-  orxDisplay_GLFW_DrawArrays();
-
-  /* Gets bitmap to use */
-  if ((_pstCustomMesh->pstBitmap != orxNULL) && (_pstCustomMesh->u32ElementCount > 0))
-  {
-    /* Prepares bitmap for drawing */
-    orxDisplay_GLFW_PrepareBitmap(_pstCustomMesh->pstBitmap, _pstCustomMesh->eSmoothing, _pstCustomMesh->eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
-
-    /* Apply bitmap clipping */
-    orxDisplay_SetBitmapClipping(_pstCustomMesh->pstBitmap, _pstCustomMesh->u32BitmapClipTLX, _pstCustomMesh->u32BitmapClipTLY, _pstCustomMesh->u32BitmapClipBRX, _pstCustomMesh->u32BitmapClipBRY);
-
-    GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-    GLint last_scissor_box[4]; glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
-    glScissor(_pstCustomMesh->u32BitmapClipTLX, _pstCustomMesh->u32BitmapClipTLY, _pstCustomMesh->u32BitmapClipBRX, _pstCustomMesh->u32BitmapClipBRY);
-
-    /* Has VBO support? */
-    if (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
-        {
-        /* Delete old index bugger */
-        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-        glASSERT();
-
-        /* Copies vertex buffer */
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, _pstCustomMesh->u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _pstCustomMesh->astVertexList);
-        glASSERT();
-
-        /* Draws arrays */
-        glDrawElements((GLenum)_pstCustomMesh->eDrawMode, (GLsizei)_pstCustomMesh->u32ElementCount, GL_UNSIGNED_SHORT, (GLvoid *)/*0*/_pstCustomMesh->au16IndexList);
-        glASSERT();
-
-        /* Restore old index buffer */
-        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
-        glASSERT();
-
-        /* Fills IBO */
-        glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW_ARB);
-        glASSERT();
-        }
-    else
-        {
-        /* Draws arrays */
-        glDrawElements((GLenum)_pstCustomMesh->eDrawMode, (GLsizei)_pstCustomMesh->u32ElementCount, GL_UNSIGNED_SHORT, (GLvoid *)_pstCustomMesh->au16IndexList);
-        glASSERT();
-        }
-
-    // Restore modified state
-    glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
   }
 
   /* Done! */
@@ -5600,7 +5531,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawPolygon, DISPLAY, DRAW_POLY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCircle, DISPLAY, DRAW_CIRCLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawOBox, DISPLAY, DRAW_OBOX);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawMesh, DISPLAY, DRAW_MESH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DrawCustomMesh, DISPLAY, DRAW_CUSTOM_MESH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_HasShaderSupport, DISPLAY, HAS_SHADER_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateShader, DISPLAY, CREATE_SHADER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteShader, DISPLAY, DELETE_SHADER);

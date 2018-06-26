@@ -104,6 +104,18 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 
 } orxDISPLAY_TRANSFORM;
 
+/** Mesh structure
+ */
+typedef struct __orxDISPLAY_MESH_t
+{
+  const orxDISPLAY_VERTEX * astVertexList;
+  const orxU16 *            au16IndexList;
+  orxU32                    u32VertexNumber;
+  orxU32                    u32IndexNumber;
+  orxU32                    u32ElementNumber;
+
+} orxDISPLAY_MESH;
+
 /** Video mode structure
  */
 typedef struct __orxDISPLAY_VIDEO_MODE_t
@@ -161,8 +173,8 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
 
 } orxDISPLAY_BLEND_MODE;
 
-/** Drawing mode enum
-*/
+/** Draw mode enum
+ */
 typedef enum __orxDISPLAY_DRAW_MODE_t
 {
   orxDISPLAY_DRAW_MODE_POINTS = 0,
@@ -172,26 +184,10 @@ typedef enum __orxDISPLAY_DRAW_MODE_t
   orxDISPLAY_DRAW_MODE_TRIANGLES,
   orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP,
   orxDISPLAY_DRAW_MODE_TRIANGLE_FAN,
-  orxDISPLAY_DRAW_MODE_QUADS,
-  orxDISPLAY_DRAW_MODE_QUAD_STRIP,
-  orxDISPLAY_DRAW_MODE_POLYGON,
- 
+
   orxDISPLAY_DRAW_MODE_NONE = orxENUM_NONE
 
 } orxDISPLAY_DRAW_MODE;
-
-/** Drawing mode enum
-*/
-typedef enum __orxDISPLAY_INDEX_TYPE_t
-{
-  orxDISPLAY_INDEX_TYPE_U8 = 0,
-  orxDISPLAY_INDEX_TYPE_U16,
-  orxDISPLAY_INDEX_TYPE_U32,
-
-  orxDISPLAY_INDEX_TYPE_NONE = orxENUM_NONE
-
-} orxDISPLAY_INDEX_TYPE;
-
 
 /** Color structure
  */
@@ -207,25 +203,6 @@ typedef struct __orxCOLOR_t
 
 } orxCOLOR;
 
-/** Color structure
- */
-typedef struct __orxCUSTOM_MESH
-{
-  orxBITMAP *                 pstBitmap;
-  orxU32                      u32BitmapClipTLX;
-  orxU32                      u32BitmapClipTLY;
-  orxU32                      u32BitmapClipBRX;
-  orxU32                      u32BitmapClipBRY;
-  orxDISPLAY_SMOOTHING        eSmoothing;
-  orxDISPLAY_BLEND_MODE       eBlendMode;
-  orxDISPLAY_DRAW_MODE        eDrawMode;
-  orxU32                      u32VertexNumber;
-  const orxDISPLAY_VERTEX *   astVertexList;
-  orxU32                      u32IndexesCount;
-  const orxU16 *              au16IndexList;
-  orxU32                      u32ElementCount;
-
-} orxCUSTOM_MESH;
 
 /** Config parameters
  */
@@ -1092,24 +1069,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
 
 /** Draws a textured mesh
+ * @param[in]   _pstMesh                              Mesh to draw
  * @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
+ * @param[in]   _eDrawMode                            Draw mode to use (triangles, triangle strip, lines, points, ...)
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
- * @param[in]   _u32VertexNumber                      Number of vertices in the mesh
- * @param[in]   _astVertexList                        List of vertices (XY coordinates are in pixels and UV ones are normalized)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList);
-
-/** Draws a custom mash primitive
-* @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
-* @param[in]   _eSmoothing                           Bitmap smoothing type
-* @param[in]   _eBlendMode                           Blend mode
-* @param[in]   _eDrawMode                            Specifies what kind of primitives to render.
-* @param[in]   _u32VertexNumber                      Number of vertices in the mesh
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCustomMesh(orxCUSTOM_MESH *_pstCustomMesh);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_DRAW_MODE _eDrawMode, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE
