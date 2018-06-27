@@ -589,10 +589,10 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
             stMesh.astVertexList    = astVertexList;
             stMesh.u32VertexNumber  = 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1);
-            stMesh.u32ElementNumber = orxPROFILER_KU32_HISTORY_LENGTH;
+            stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP;
 
             /* Draws it */
-            orxDisplay_DrawMesh(&stMesh, pstBitmap, orxDISPLAY_DRAW_MODE_TRIANGLES, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+            orxDisplay_DrawMesh(&stMesh, pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
           }
         }
       }

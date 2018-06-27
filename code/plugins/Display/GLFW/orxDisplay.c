@@ -147,6 +147,7 @@
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
+#define orxDISPLAY_DEFAULT_PRIMITIVE            GL_TRIANGLE_STRIP
 
 
 /**  Misc defines
@@ -316,7 +317,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
   orxDISPLAY_BUFFER_MODE    eLastBufferMode;
-  orxDISPLAY_DRAW_MODE      eLastDrawMode;
+  GLenum                    ePrimitive;
   orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
@@ -1577,7 +1578,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
         orxDisplay_GLFW_InitShader(pstShader);
 
         /* Draws elements */
-        glDrawElements(sstDisplay.eLastDrawMode, (GLsizei)sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, pIndexContext);
+        glDrawElements(sstDisplay.ePrimitive, (GLsizei)sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, pIndexContext);
         glASSERT();
 
         /* Gets next shader */
@@ -1613,7 +1614,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
     else
     {
       /* Draws elements */
-      glDrawElements(sstDisplay.eLastDrawMode, (GLsizei)sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, pIndexContext);
+      glDrawElements(sstDisplay.ePrimitive, (GLsizei)sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, pIndexContext);
       glASSERT();
     }
 
@@ -1640,8 +1641,8 @@ static void orxFASTCALL orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE _eB
     /* Indirect? */
     if(_eBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
     {
-      /* Reverts back to triangle strip */
-      sstDisplay.eLastDrawMode = orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP;
+      /* Reverts back to default primitive */
+      sstDisplay.ePrimitive = orxDISPLAY_DEFAULT_PRIMITIVE;
 
       /* Was using custom IBO? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
@@ -1934,30 +1935,23 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   return;
 }
 
-static orxINLINE GLenum orxDisplay_GLFW_GetOpenGLDrawMode(orxDISPLAY_DRAW_MODE _eDrawMode)
+static orxINLINE GLenum orxDisplay_GLFW_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE _ePrimitive)
 {
-  GLenum eResult = GL_TRIANGLE_STRIP;
+  GLenum eResult;
 
-#define orxDISPLAY_DRAW_MODE_CASE(MODE)   case orxDISPLAY_DRAW_MODE_##MODE: eResult = GL_##MODE; break
+#define orxDISPLAY_PRIMITIVE_CASE(TYPE)   case orxDISPLAY_PRIMITIVE_##TYPE: eResult = GL_##TYPE; break
 
   /* Depending on mode */
-  switch(_eDrawMode)
+  switch(_ePrimitive)
   {
-    orxDISPLAY_DRAW_MODE_CASE(POINTS);
-    orxDISPLAY_DRAW_MODE_CASE(LINES);
-    orxDISPLAY_DRAW_MODE_CASE(LINE_LOOP);
-    orxDISPLAY_DRAW_MODE_CASE(LINE_STRIP);
-    orxDISPLAY_DRAW_MODE_CASE(TRIANGLES);
-    orxDISPLAY_DRAW_MODE_CASE(TRIANGLE_STRIP);
-    orxDISPLAY_DRAW_MODE_CASE(TRIANGLE_FAN);
-
-    default:
-    {
-      /* Checks */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid draw mode <%X>.", _eDrawMode);
-      orxASSERT(orxFALSE);
-      break;
-    }
+    orxDISPLAY_PRIMITIVE_CASE(POINTS);
+    orxDISPLAY_PRIMITIVE_CASE(LINES);
+    orxDISPLAY_PRIMITIVE_CASE(LINE_LOOP);
+    orxDISPLAY_PRIMITIVE_CASE(LINE_STRIP);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLES);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_STRIP);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_FAN);
+    default: eResult = orxDISPLAY_DEFAULT_PRIMITIVE; break;
   }
 
   /* Done! */
@@ -2291,18 +2285,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_DRAW_MODE _eDrawMode, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxBITMAP  *pstBitmap;
-  orxU32            u32VertexNumber;
+  orxU32            u32VertexNumber, u32ElementNumber;
+  GLenum            ePrimitive;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstMesh != orxNULL);
   orxASSERT(_pstMesh->u32VertexNumber > 1);
-  orxASSERT((_pstMesh->au16IndexList == orxNULL) || (_pstMesh->u32ElementNumber > 1));
-  orxASSERT(_eDrawMode < orxDISPLAY_DRAW_MODE_NUMBER);
+  orxASSERT((_pstMesh->au16IndexList == orxNULL) || (_pstMesh->u32IndexNumber > 1));
+  orxASSERT((_pstMesh->ePrimitive < orxDISPLAY_PRIMITIVE_NUMBER) || ((_pstMesh->ePrimitive == orxDISPLAY_PRIMITIVE_NONE) && (_pstMesh->au16IndexList == orxNULL)));
 
   /* Gets bitmap to use */
   pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
@@ -2333,28 +2328,28 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     }
   }
 
+  /* Gets primitive */
+  ePrimitive = orxDisplay_GLFW_GetOpenGLPrimitive(_pstMesh->ePrimitive);
+
+  /* Gets index number */
+  u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
+
   /* Has VBO support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
   {
-    /* New draw mode? */
-    if(_eDrawMode != sstDisplay.eLastDrawMode)
+    /* New primitive? */
+    if(ePrimitive != sstDisplay.ePrimitive)
     {
       /* Draws arrays */
       orxDisplay_GLFW_DrawArrays();
 
       /* Stores it */
-      sstDisplay.eLastDrawMode = _eDrawMode;
+      sstDisplay.ePrimitive = ePrimitive;
     }
 
     /* Copies vertex buffer */
     glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _pstMesh->astVertexList);
     glASSERT();
-
-    /* Updates element number */
-    sstDisplay.s32ElementNumber += _pstMesh->u32ElementNumber;
-
-    /* Updates index */
-    sstDisplay.s32BufferIndex += u32VertexNumber;
 
     /* Has index buffer? */
     if((_pstMesh->au16IndexList != orxNULL)
@@ -2367,14 +2362,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
       /* Updates flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
-    else
-    {
-      /* No element number? */
-      if(_pstMesh->u32ElementNumber == 0)
-      {
-        sstDisplay.s32ElementNumber += u32VertexNumber + (u32VertexNumber >> 1);
-      }
-    }
+
+    /* Updates index */
+    sstDisplay.s32BufferIndex += u32VertexNumber;
+
+    /* Updates element number */
+    sstDisplay.s32ElementNumber += u32ElementNumber;
   }
   else
   {
@@ -2387,7 +2380,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     glASSERT();
 
     /* Draws elements */
-    glDrawElements(orxDisplay_GLFW_GetOpenGLDrawMode(_eDrawMode), (GLsizei)_pstMesh->u32ElementNumber, GL_UNSIGNED_SHORT, (GLvoid *)((_pstMesh->au16IndexList != orxNULL) ? _pstMesh->au16IndexList : sstDisplay.au16IndexList));
+    glDrawElements(ePrimitive, (GLsizei)u32ElementNumber, GL_UNSIGNED_SHORT, (GLvoid *)((_pstMesh->au16IndexList != orxNULL) ? _pstMesh->au16IndexList : sstDisplay.au16IndexList));
     glASSERT();
 
     /* Selects global arrays */
@@ -4508,7 +4501,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Clears last modes */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
   sstDisplay.eLastBufferMode= orxDISPLAY_BUFFER_MODE_NUMBER;
-  sstDisplay.eLastDrawMode  = orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP;
+
+  /* Resets primitive */
+  sstDisplay.ePrimitive     = orxDISPLAY_DEFAULT_PRIMITIVE;
 
   /* Done! */
   return eResult;
@@ -4764,7 +4759,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
             sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
             sstDisplay.eLastBufferMode    = orxDISPLAY_BUFFER_MODE_NUMBER;
-            sstDisplay.eLastDrawMode      = orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP;
+            sstDisplay.ePrimitive         = orxDISPLAY_DEFAULT_PRIMITIVE;
 
             /* Gets clock */
             pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
