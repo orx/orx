@@ -38,6 +38,17 @@ var orx_display_8h =
       [ "orxDISPLAY_BLEND_MODE_NUMBER", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca57ef77a9ca5752adf6295bd6f9270f23", null ],
       [ "orxDISPLAY_BLEND_MODE_NONE", "group__orx_display.html#ggad54faad16cd6fe98b24adbdde00137fca106d823cb026561c0ceb34f18ff0d820", null ]
     ] ],
+    [ "orxDISPLAY_DRAW_MODE", "group__orx_display.html#gaf84f4d56d7468347084b28cdc28aaa28", [
+      [ "orxDISPLAY_DRAW_MODE_POINTS", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a58e2856d513d59304291a41b2f76f5f2", null ],
+      [ "orxDISPLAY_DRAW_MODE_LINES", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a6688053bfaf72c593bd47c413ef4c732", null ],
+      [ "orxDISPLAY_DRAW_MODE_LINE_LOOP", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28aaf1de3d18688a2a7a83e2be193a9767c", null ],
+      [ "orxDISPLAY_DRAW_MODE_LINE_STRIP", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a7570fb558e0ecd851b21be3e8912613b", null ],
+      [ "orxDISPLAY_DRAW_MODE_TRIANGLES", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a6c1b01b436db32423cf6c5465988194b", null ],
+      [ "orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a91e8d4e49c4e48efae8ee09f4eb54127", null ],
+      [ "orxDISPLAY_DRAW_MODE_TRIANGLE_FAN", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28acc62269c0a25f613205bccc74db8f8e3", null ],
+      [ "orxDISPLAY_DRAW_MODE_NUMBER", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28ab48e90e13db3bbe23795e8151a76fb01", null ],
+      [ "orxDISPLAY_DRAW_MODE_NONE", "group__orx_display.html#ggaf84f4d56d7468347084b28cdc28aaa28a1c7cef8550bfb089e7ad28fea97fb41a", null ]
+    ] ],
     [ "orxDISPLAY_EVENT", "group__orx_display.html#ga28840e9c6ef7b5e7eaf61f0108e806a4", [
       [ "orxDISPLAY_EVENT_SET_VIDEO_MODE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4aee50ab60b03798af8d1529d9684ff464", null ],
       [ "orxDISPLAY_EVENT_LOAD_BITMAP", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567", null ],
@@ -68,7 +79,7 @@ var orx_display_8h =
     [ "orxDisplay_DeleteShader", "group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2", null ],
     [ "orxDisplay_DrawCircle", "group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332", null ],
     [ "orxDisplay_DrawLine", "group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031", null ],
-    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga47a084f4f087d6ace1c5d63e57f037e4", null ],
+    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga8e7d92d479f1483cecca85db1ac4a42b", null ],
     [ "orxDisplay_DrawOBox", "group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c", null ],
     [ "orxDisplay_DrawPolygon", "group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258", null ],
     [ "orxDisplay_DrawPolyline", "group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3", null ],
