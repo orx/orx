@@ -111,10 +111,10 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
   orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
   stMesh.astVertexList    = astVertexList;
   stMesh.u32VertexNumber  = (TRAIL_POINT_NUMBER - 1) * 4;
-  stMesh.u32ElementNumber = (TRAIL_POINT_NUMBER - 1) * 2;
+  stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_NONE;
 
   /* Draws trail */
-  orxDisplay_DrawMesh(&stMesh, _pstBitmap, orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_DrawMesh(&stMesh, _pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
 }
 
 /** Updates trail

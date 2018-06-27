@@ -104,6 +104,24 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 
 } orxDISPLAY_TRANSFORM;
 
+/** Primitive enum
+ */
+typedef enum __orxDISPLAY_PRIMITIVE_t
+{
+  orxDISPLAY_PRIMITIVE_POINTS = 0,
+  orxDISPLAY_PRIMITIVE_LINES,
+  orxDISPLAY_PRIMITIVE_LINE_LOOP,
+  orxDISPLAY_PRIMITIVE_LINE_STRIP,
+  orxDISPLAY_PRIMITIVE_TRIANGLES,
+  orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP,
+  orxDISPLAY_PRIMITIVE_TRIANGLE_FAN,
+
+  orxDISPLAY_PRIMITIVE_NUMBER,
+
+  orxDISPLAY_PRIMITIVE_NONE = orxENUM_NONE
+
+} orxDISPLAY_PRIMITIVE;
+
 /** Mesh structure
  */
 typedef struct __orxDISPLAY_MESH_t
@@ -112,7 +130,7 @@ typedef struct __orxDISPLAY_MESH_t
   const orxU16 *            au16IndexList;
   orxU32                    u32VertexNumber;
   orxU32                    u32IndexNumber;
-  orxU32                    u32ElementNumber;
+  orxDISPLAY_PRIMITIVE      ePrimitive;
 
 } orxDISPLAY_MESH;
 
@@ -172,24 +190,6 @@ typedef enum __orxDISPLAY_BLEND_MODE_t
   orxDISPLAY_BLEND_MODE_NONE = orxENUM_NONE
 
 } orxDISPLAY_BLEND_MODE;
-
-/** Draw mode enum
- */
-typedef enum __orxDISPLAY_DRAW_MODE_t
-{
-  orxDISPLAY_DRAW_MODE_POINTS = 0,
-  orxDISPLAY_DRAW_MODE_LINES,
-  orxDISPLAY_DRAW_MODE_LINE_LOOP,
-  orxDISPLAY_DRAW_MODE_LINE_STRIP,
-  orxDISPLAY_DRAW_MODE_TRIANGLES,
-  orxDISPLAY_DRAW_MODE_TRIANGLE_STRIP,
-  orxDISPLAY_DRAW_MODE_TRIANGLE_FAN,
-
-  orxDISPLAY_DRAW_MODE_NUMBER,
-
-  orxDISPLAY_DRAW_MODE_NONE = orxENUM_NONE
-
-} orxDISPLAY_DRAW_MODE;
 
 /** Color structure
  */
@@ -1071,14 +1071,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
 
 /** Draws a textured mesh
- * @param[in]   _pstMesh                              Mesh to draw
+ * @param[in]   _pstMesh                              Mesh to draw, if no primitive and no index buffer is given, separate quad arrangement will be assumed
  * @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
- * @param[in]   _eDrawMode                            Draw mode to use (triangles, triangle strip, lines, points, ...)
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_DRAW_MODE _eDrawMode, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE
