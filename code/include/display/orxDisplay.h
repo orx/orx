@@ -946,7 +946,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orx
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Sets a bitmap clipping for blitting (both as source and destination)
- * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _pstBitmap                            Concerned bitmap, orxNULL to target the first destination bitmap
  * @param[in]   _u32TLX                               Top left X coord in pixels
  * @param[in]   _u32TLY                               Top left Y coord in pixels
  * @param[in]   _u32BRX                               Bottom right X coord in pixels
