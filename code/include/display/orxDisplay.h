@@ -1071,7 +1071,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
 
 /** Draws a textured mesh
- * @param[in]   _pstMesh                              Mesh to draw, if no primitive and no index buffer is given, separate quad arrangement will be assumed
+ * @param[in]   _pstMesh                              Mesh to draw, if no primitive and no index buffer is given, separate quads arrangement will be assumed
  * @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
