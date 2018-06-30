@@ -3666,7 +3666,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
+
+  /* No destination bitmap? */
+  if(_pstBitmap == orxNULL)
+  {
+    /* Defaults to first destination */
+    _pstBitmap = sstDisplay.apstDestinationBitmapList[0];
+  }
 
   /* Destination bitmap? */
   if(_pstBitmap == sstDisplay.apstDestinationBitmapList[0])
