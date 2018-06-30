@@ -1644,15 +1644,23 @@ static void orxFASTCALL orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE _eB
       /* Reverts back to default primitive */
       sstDisplay.ePrimitive = orxDISPLAY_DEFAULT_PRIMITIVE;
 
-      /* Was using custom IBO? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
+      /* Has VBO support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
       {
-        /* Fills IBO */
-        glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STREAM_DRAW_ARB);
+        /* Inits VBO */
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_GLFW_VERTEX), NULL, GL_DYNAMIC_DRAW_ARB);
         glASSERT();
 
-        /* Updates flags */
-        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO);
+        /* Was using custom IBO? */
+        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
+        {
+          /* Fills IBO */
+          glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW_ARB);
+          glASSERT();
+
+          /* Updates flags */
+          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO);
+        }
       }
     }
 
@@ -2287,118 +2295,78 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawOBox(const orxOBOX *_pstBox, orxRGBA _
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  const orxBITMAP  *pstBitmap;
+  orxU32            u32ElementNumber;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstMesh != orxNULL);
+  orxASSERT(_pstMesh->u32VertexNumber > 1);
+  orxASSERT((_pstMesh->au16IndexList == orxNULL) || (_pstMesh->u32IndexNumber > 1));
+  orxASSERT((_pstMesh->ePrimitive < orxDISPLAY_PRIMITIVE_NUMBER) || ((_pstMesh->ePrimitive == orxDISPLAY_PRIMITIVE_NONE) && (_pstMesh->au16IndexList == orxNULL)));
 
-  /* No mesh? */
-  if(_pstMesh == orxNULL)
+  /* Gets bitmap to use */
+  pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
+
+  /* Prepares bitmap for drawing */
+  orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
+
+  /* Stores primitive */
+  sstDisplay.ePrimitive = orxDisplay_GLFW_GetOpenGLPrimitive(_pstMesh->ePrimitive);
+
+  /* Gets element number */
+  u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
+
+  /* Has VBO support? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
   {
-    /* Draws arrays */
+    /* Fills VBO */
+    glBufferDataARB(GL_ARRAY_BUFFER_ARB, _pstMesh->u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _pstMesh->astVertexList, GL_STREAM_DRAW_ARB);
+    glASSERT();
+
+    /* Has index buffer? */
+    if((_pstMesh->au16IndexList != orxNULL)
+    && (_pstMesh->u32IndexNumber > 1))
+    {
+      /* Fills IBO */
+      glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, _pstMesh->u32IndexNumber * sizeof(GLushort), _pstMesh->au16IndexList, GL_STREAM_DRAW_ARB);
+      glASSERT();
+
+      /* Updates flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+
+    /* Updates index */
+    sstDisplay.s32BufferIndex = _pstMesh->u32VertexNumber;
+
+    /* Updates element number */
+    sstDisplay.s32ElementNumber = u32ElementNumber;
+
+    /* Draws mesh */
     orxDisplay_GLFW_DrawArrays();
   }
   else
   {
-    /* Checks */
-    orxASSERT(_pstMesh->u32VertexNumber > 1);
-    orxASSERT((_pstMesh->au16IndexList == orxNULL) || (_pstMesh->u32IndexNumber > 1));
-    orxASSERT((_pstMesh->ePrimitive < orxDISPLAY_PRIMITIVE_NUMBER) || ((_pstMesh->ePrimitive == orxDISPLAY_PRIMITIVE_NONE) && (_pstMesh->au16IndexList == orxNULL)));
+    /* Selects local arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].stRGBA));
+    glASSERT();
 
-    /* End of buffer? */
-    if(sstDisplay.s32BufferIndex + _pstMesh->u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
-    {
-      /* Draws arrays */
-      orxDisplay_GLFW_DrawArrays();
+    /* Draws mesh */
+    glDrawElements(sstDisplay.ePrimitive, (GLsizei)u32ElementNumber, GL_UNSIGNED_SHORT, (GLvoid *)((_pstMesh->au16IndexList != orxNULL) ? _pstMesh->au16IndexList : sstDisplay.au16IndexList));
+    glASSERT();
 
-      /* Too many vertices? */
-      if(_pstMesh->u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE)
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw mesh: %u vertices found, max is %u vertices, aborting!", _pstMesh->u32VertexNumber, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE);
-
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
-    }
-
-    /* Sucess? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      const orxBITMAP  *pstBitmap;
-      orxU32            u32ElementNumber;
-      GLenum            ePrimitive;
-
-      /* Gets bitmap to use */
-      pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
-
-      /* Prepares bitmap for drawing */
-      orxDisplay_GLFW_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode, orxDISPLAY_BUFFER_MODE_DIRECT);
-
-      /* Gets primitive */
-      ePrimitive = orxDisplay_GLFW_GetOpenGLPrimitive(_pstMesh->ePrimitive);
-
-      /* Gets index number */
-      u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
-
-      /* Has VBO support? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
-      {
-        /* New primitive? */
-        if(ePrimitive != sstDisplay.ePrimitive)
-        {
-          /* Draws arrays */
-          orxDisplay_GLFW_DrawArrays();
-
-          /* Stores it */
-          sstDisplay.ePrimitive = ePrimitive;
-        }
-
-        /* Copies vertex buffer */
-        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), _pstMesh->u32VertexNumber * sizeof(orxDISPLAY_GLFW_VERTEX), _pstMesh->astVertexList);
-        glASSERT();
-
-        /* Has index buffer? */
-        if((_pstMesh->au16IndexList != orxNULL)
-        && (_pstMesh->u32IndexNumber > 1))
-        {
-          /* Fills IBO */
-          glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, _pstMesh->u32IndexNumber * sizeof(GLushort), _pstMesh->au16IndexList, GL_STREAM_DRAW_ARB);
-          glASSERT();
-
-          /* Updates flags */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-
-        /* Updates index */
-        sstDisplay.s32BufferIndex += _pstMesh->u32VertexNumber;
-
-        /* Updates element number */
-        sstDisplay.s32ElementNumber += u32ElementNumber;
-      }
-      else
-      {
-        /* Selects local arrays */
-        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fX));
-        glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fU));
-        glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].stRGBA));
-        glASSERT();
-
-        /* Draws elements */
-        glDrawElements(ePrimitive, (GLsizei)u32ElementNumber, GL_UNSIGNED_SHORT, (GLvoid *)((_pstMesh->au16IndexList != orxNULL) ? _pstMesh->au16IndexList : sstDisplay.au16IndexList));
-        glASSERT();
-
-        /* Selects global arrays */
-        glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
-        glASSERT();
-        glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
-        glASSERT();
-        glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
-        glASSERT();
-      }
-    }
+    /* Selects global arrays */
+    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+    glASSERT();
+    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+    glASSERT();
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+    glASSERT();
   }
 
   /* Done! */
@@ -4278,11 +4246,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           glASSERT();
 
           /* Inits VBO */
-          glBufferDataARB(GL_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_GLFW_VERTEX), NULL, GL_STREAM_DRAW_ARB);
+          glBufferDataARB(GL_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_GLFW_VERTEX), NULL, GL_DYNAMIC_DRAW_ARB);
           glASSERT();
 
           /* Fills IBO */
-          glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STREAM_DRAW_ARB);
+          glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW_ARB);
           glASSERT();
         }
 
