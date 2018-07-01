@@ -1801,7 +1801,7 @@ static void orxFASTCALL orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE 
     if(_eBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
     {
       /* Reverts back to default primitive */
-      sstDisplay.ePrimitive = orxDISPLAY_DEFAULT_PRIMITIVE;
+      sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
       /* Inits VBO */
       glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_Android_VERTEX), NULL, GL_DYNAMIC_DRAW);
@@ -3990,7 +3990,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   sstDisplay.eLastBufferMode= orxDISPLAY_BUFFER_MODE_NUMBER;
 
   /* Resets primitive */
-  sstDisplay.ePrimitive     = orxDISPLAY_DEFAULT_PRIMITIVE;
+  sstDisplay.ePrimitive     = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
   /* Done! */
   return eResult;
@@ -4158,7 +4158,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
         sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
         sstDisplay.eLastBufferMode    = orxDISPLAY_BUFFER_MODE_NUMBER;
-        sstDisplay.ePrimitive         = orxDISPLAY_DEFAULT_PRIMITIVE;
+        sstDisplay.ePrimitive         = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
         /* Allocates screen bitmap */
         sstDisplay.pstScreen = (orxBITMAP *) orxBank_Allocate(sstDisplay.pstBitmapBank);
