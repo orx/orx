@@ -84,8 +84,8 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     for(i = 0; i < TRAIL_POINT_NUMBER - 1; i++)
     {
       /* Stores indices */
-      sau16IndexList[i * 2]      = i * 2;
-      sau16IndexList[i * 2 + 1]  = i * 2 + 1;
+      sau16IndexList[i * 2]      = (orxU16)(i * 2);
+      sau16IndexList[i * 2 + 1]  = (orxU16)(i * 2 + 1);
     }
 
     /* Updates status */
