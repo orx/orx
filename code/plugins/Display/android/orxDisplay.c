@@ -1804,7 +1804,7 @@ static void orxFASTCALL orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE 
       sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
       /* Inits VBO */
-      glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_Android_VERTEX), NULL, GL_DYNAMIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_ANDROID_VERTEX), NULL, GL_DYNAMIC_DRAW);
       glASSERT();
 
       /* Was using custom IBO? */
@@ -2412,7 +2412,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxDISPLAY_MESH *_pstMes
   u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
 
   /* Fills VBO */
-  glBufferData(GL_ARRAY_BUFFER, _pstMesh->u32VertexNumber * sizeof(orxDISPLAY_Android_VERTEX), _pstMesh->astVertexList, GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, _pstMesh->u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX), _pstMesh->astVertexList, GL_STREAM_DRAW);
   glASSERT();
 
   /* Has index buffer? */
