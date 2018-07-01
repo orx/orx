@@ -69,11 +69,10 @@ static void orxBounce_ApplyCurrentVideoMode()
 static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
 {
 #define STORE_VERTEX(INDEX, X, Y, U, V, RGBA) astVertexList[INDEX].fX = X; astVertexList[INDEX].fY = Y; astVertexList[INDEX].fU = U; astVertexList[INDEX].fV = V; astVertexList[INDEX].stRGBA = RGBA;
-#define BUFFER_SIZE ((TRAIL_POINT_NUMBER - 1) * 2)
 
-  static orxU16     sau16IndexList[BUFFER_SIZE];
+  static orxU16     sau16IndexList[(TRAIL_POINT_NUMBER - 1) * 2];
   static orxBOOL    sbInit = orxFALSE;
-  orxDISPLAY_VERTEX astVertexList[BUFFER_SIZE];
+  orxDISPLAY_VERTEX astVertexList[(TRAIL_POINT_NUMBER - 1) * 2];
   orxDISPLAY_MESH   stMesh;
   orxVECTOR         vOffset;
   orxU32            i;
@@ -118,9 +117,9 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
   /* Inits mesh */
   orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
   stMesh.astVertexList    = astVertexList;
-  stMesh.u32VertexNumber  = BUFFER_SIZE;
+  stMesh.u32VertexNumber  = orxARRAY_GET_ITEM_COUNT(astVertexList);
   stMesh.au16IndexList    = sau16IndexList;
-  stMesh.u32IndexNumber   = BUFFER_SIZE;
+  stMesh.u32IndexNumber   = orxARRAY_GET_ITEM_COUNT(sau16IndexList);
   stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP;
 
   /* Draws trail */
