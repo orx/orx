@@ -147,7 +147,7 @@
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
-#define orxDISPLAY_DEFAULT_PRIMITIVE            GL_TRIANGLE_STRIP
+#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLE_STRIP
 
 
 /**  Misc defines
@@ -1642,7 +1642,7 @@ static void orxFASTCALL orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE _eB
     if(_eBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
     {
       /* Reverts back to default primitive */
-      sstDisplay.ePrimitive = orxDISPLAY_DEFAULT_PRIMITIVE;
+      sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
       /* Has VBO support? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO))
@@ -1959,7 +1959,7 @@ static orxINLINE GLenum orxDisplay_GLFW_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE 
     orxDISPLAY_PRIMITIVE_CASE(TRIANGLES);
     orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_STRIP);
     orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_FAN);
-    default: eResult = orxDISPLAY_DEFAULT_PRIMITIVE; break;
+    default: eResult = orxDISPLAY_KE_DEFAULT_PRIMITIVE; break;
   }
 
   /* Done! */
@@ -2337,7 +2337,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
 
-    /* Updates index */
+    /* Updates buffer index */
     sstDisplay.s32BufferIndex = _pstMesh->u32VertexNumber;
 
     /* Updates element number */
@@ -4486,7 +4486,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   sstDisplay.eLastBufferMode= orxDISPLAY_BUFFER_MODE_NUMBER;
 
   /* Resets primitive */
-  sstDisplay.ePrimitive     = orxDISPLAY_DEFAULT_PRIMITIVE;
+  sstDisplay.ePrimitive     = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
   /* Done! */
   return eResult;
@@ -4742,7 +4742,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             sstDisplay.bDefaultSmoothing  = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
             sstDisplay.eLastBlendMode     = orxDISPLAY_BLEND_MODE_NUMBER;
             sstDisplay.eLastBufferMode    = orxDISPLAY_BUFFER_MODE_NUMBER;
-            sstDisplay.ePrimitive         = orxDISPLAY_DEFAULT_PRIMITIVE;
+            sstDisplay.ePrimitive         = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
             /* Gets clock */
             pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
