@@ -351,7 +351,7 @@ static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxFX *pstFX;
 
@@ -364,7 +364,7 @@ static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
         if((pstFX->zReference != orxNULL) && (pstFX->zReference != orxSTRING_EMPTY))
         {
           /* Matches? */
-          if(orxConfig_GetOriginID(pstFX->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstFX->zReference) == pstPayload->stNameID)
           {
             orxU32 i;
 
@@ -460,6 +460,7 @@ orxSTATUS orxFASTCALL orxFX_Init()
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxFX_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
     }
     else
     {
@@ -564,18 +565,18 @@ orxFX *orxFASTCALL orxFX_Create()
  */
 orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxU32  u32ID;
-  orxFX  *pstResult;
+  orxSTRINGID stID;
+  orxFX      *pstResult;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets FX ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_ToCRC(_zConfigID);
 
   /* Search for reference */
-  pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, u32ID);
+  pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -605,7 +606,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
           if(orxConfig_GetBool(orxFX_KZ_CONFIG_DO_NOT_CACHE) == orxFALSE)
           {
             /* Adds it to reference table */
-            if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
+            if(orxHashTable_Add(sstFX.pstReferenceTable, stID, pstResult) != orxSTATUS_FAILURE)
             {
               /* Should keep it in cache? */
               if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)

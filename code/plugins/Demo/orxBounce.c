@@ -70,12 +70,30 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
 {
 #define STORE_VERTEX(INDEX, X, Y, U, V, RGBA) astVertexList[INDEX].fX = X; astVertexList[INDEX].fY = Y; astVertexList[INDEX].fU = U; astVertexList[INDEX].fV = V; astVertexList[INDEX].stRGBA = RGBA;
 
-  orxDISPLAY_VERTEX astVertexList[TRAIL_POINT_NUMBER * 2];
+  static orxU16     sau16IndexList[(TRAIL_POINT_NUMBER - 1) * 2];
+  static orxBOOL    sbInit = orxFALSE;
+  orxDISPLAY_VERTEX astVertexList[(TRAIL_POINT_NUMBER - 1) * 2];
+  orxDISPLAY_MESH   stMesh;
   orxVECTOR         vOffset;
   orxU32            i;
 
+  /* Not initialized? */
+  if(sbInit == orxFALSE)
+  {
+    /* Inits index buffer */
+    for(i = 0; i < TRAIL_POINT_NUMBER - 1; i++)
+    {
+      /* Stores indices */
+      sau16IndexList[i * 2]      = (orxU16)(i * 2);
+      sau16IndexList[i * 2 + 1]  = (orxU16)(i * 2 + 1);
+    }
+
+    /* Updates status */
+    sbInit = orxTRUE;
+  }
+
   /* For all points */
-  for(i = 0; i < TRAIL_POINT_NUMBER; i++)
+  for(i = 0; i < TRAIL_POINT_NUMBER - 1; i++)
   {
     orxVECTOR vVertex1, vVertex2;
     orxU32    u32Index, u32NextIndex;
@@ -84,12 +102,8 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     u32Index      = (i + su32TrailIndex) % TRAIL_POINT_NUMBER;
     u32NextIndex  = (i + 1 + su32TrailIndex) % TRAIL_POINT_NUMBER;
 
-    /* Not at the end? */
-    if(i < TRAIL_POINT_NUMBER - 1)
-    {
-      /* Gets offset vector */
-      orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(40.0f) / orxMath_Pow(orxS2F(i), orx2F(0.6f)));
-    }
+    /* Gets offset vector */
+    orxVector_Mulf(&vOffset, orxVector_Normalize(&vOffset, orxVector_2DRotate(&vOffset, orxVector_Sub(&vOffset, &savTrailPointList[u32NextIndex], &savTrailPointList[u32Index]), orxMATH_KF_PI_BY_2)), orx2F(40.0f) / orxMath_Pow(orxS2F(i + 1), orx2F(0.6f)));
 
     /* Computes vertices positions */
     orxVector_Add(&vVertex1, &savTrailPointList[u32Index], &vOffset);
@@ -100,8 +114,16 @@ static void orxBounce_DisplayTrail(const orxBITMAP *_pstBitmap)
     STORE_VERTEX(i * 2 + 1, vVertex2.fX, vVertex2.fY, orxFLOAT_1, orxU2F(i) / orxU2F(TRAIL_POINT_NUMBER - 1), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF * i / (TRAIL_POINT_NUMBER + 50)));
   }
 
+  /* Inits mesh */
+  orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
+  stMesh.astVertexList    = astVertexList;
+  stMesh.u32VertexNumber  = orxARRAY_GET_ITEM_COUNT(astVertexList);
+  stMesh.au16IndexList    = sau16IndexList;
+  stMesh.u32IndexNumber   = orxARRAY_GET_ITEM_COUNT(sau16IndexList);
+  stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP;
+
   /* Draws trail */
-  orxDisplay_DrawMesh(_pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA, TRAIL_POINT_NUMBER * 2, astVertexList);
+  orxDisplay_DrawMesh(&stMesh, _pstBitmap, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
 }
 
 /** Updates trail
@@ -347,8 +369,12 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         /* Gets event payload */
         pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-        /* Logs info */
-        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        /* Not first frame? (to prevent looping track flood) */
+        if(pstPayload->fTimeStamp != orxFLOAT_0)
+        {
+          /* Logs info */
+          orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        }
       }
 
       break;
@@ -370,7 +396,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           if(orxConfig_GetBool("DisplayTrail"))
           {
             /* Draws trail */
-            orxBounce_DisplayTrail(orxTexture_GetBitmap(orxTEXTURE(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC)))));
+            orxBounce_DisplayTrail(orxTexture_GetBitmap(orxObject_GetWorkingTexture(orxOBJECT(_pstEvent->hSender))));
           }
 
           /* Pops config section */
@@ -487,6 +513,9 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxSpawner_SetPosition(spoBallSpawner, &vMousePos);
   }
 
+  /* Clears ray hit */
+  orxConfig_SetString("RayHit", orxSTRING_EMPTY);
+
   /* Spawning */
   if(orxInput_IsActive("Spawn"))
   {
@@ -502,13 +531,40 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     vMousePos.fZ -= orx2F(0.1f);
 
     /* Picks object under mouse */
-    pstObject = orxObject_Pick(&vMousePos, orxU32_UNDEFINED);
+    pstObject = orxObject_Pick(&vMousePos, orxSTRINGID_UNDEFINED);
 
     /* Found? */
     if(pstObject)
     {
       /* Adds FX */
       orxObject_AddUniqueFX(pstObject, "Pick");
+    }
+  }
+  /* Raycasting? */
+  else if(orxInput_IsActive("RayCast"))
+  {
+    orxOBJECT  *pstRayHit;
+    orxU32      u32SelfFlags = 0, u32CheckMask = 0;
+    orxS32      i;
+
+    /* Gets flags & mask */
+    for(i = 0; i < orxConfig_GetListCount("RaySelfFlags"); i++)
+    {
+      u32SelfFlags |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RaySelfFlags", i));
+    }
+    for(i = 0; i < orxConfig_GetListCount("RayCheckMask"); i++)
+    {
+      u32CheckMask |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RayCheckMask", i));
+    }
+
+    /* Casts ray */
+    pstRayHit = orxObject_Raycast(&orxVECTOR_0, &vMousePos, (orxU16)u32SelfFlags, (orxU16)u32CheckMask, orxFALSE, orxNULL, orxNULL);
+
+    /* Hit? */
+    if(pstRayHit != orxNULL)
+    {
+      /* Stores its name */
+      orxConfig_SetString("RayHit", orxObject_GetName(pstRayHit));
     }
   }
 

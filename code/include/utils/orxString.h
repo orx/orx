@@ -1111,7 +1111,7 @@ static orxINLINE orxSTATUS                                orxString_ToFloat(cons
 
 /** Convert a string to a vector
  * @param[in]   _zString        String To convert
- * @param[out]  _pvOutValue     Converted value
+ * @param[out]  _pvOutValue     Converted value. N.B.: if only two components (x, y) are defined, the z component will be set to zero
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -1132,6 +1132,11 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
   if((*zString == orxSTRING_KC_VECTOR_START)
   || (*zString == orxSTRING_KC_VECTOR_START_ALT))
   {
+    orxCHAR cEndMarker;
+
+    /* Gets end marker */
+    cEndMarker = (*zString == orxSTRING_KC_VECTOR_START) ? orxSTRING_KC_VECTOR_END : orxSTRING_KC_VECTOR_END_ALT;
+
     /* Skips all white spaces */
     zString = orxString_SkipWhiteSpaces(zString + 1);
 
@@ -1165,14 +1170,22 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
               /* Skips all white spaces */
               zString = orxString_SkipWhiteSpaces(zString);
 
-              /* Has a valid ending marker? */
-              if((*zString == orxSTRING_KC_VECTOR_END)
-              || (*zString == orxSTRING_KC_VECTOR_END_ALT))
+              /* Has a valid end marker? */
+              if(*zString == cEndMarker)
               {
                 /* Updates result */
                 eResult = orxSTATUS_SUCCESS;
               }
             }
+          }
+          /* Has a valid end marker? */
+          else if(*zString == cEndMarker)
+          {
+            /* Clears Z component */
+            stValue.fZ = orxFLOAT_0;
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
           }
         }
       }
@@ -1324,11 +1337,11 @@ static orxINLINE orxSTRING                                orxString_UpperCase(or
 
 /** Continues a CRC with a string one
  * @param[in] _zString        String used to continue the given CRC
- * @param[in] _u32CRC         Base CRC.
+ * @param[in] _stCRC          Base CRC
  * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC.
+ * @return The resulting CRC (orxSTRINGID)
  */
-static orxINLINE orxU32                                   orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
+static orxINLINE orxSTRINGID                              orxString_NContinueCRC(const orxSTRING _zString, orxSTRINGID _stCRC, orxU32 _u32CharNumber)
 {
   orxU32        u32CRC, u32Length;
   const orxU8  *pu8;
@@ -1364,7 +1377,7 @@ static orxINLINE orxU32                                   orxString_NContinueCRC
   orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
 
   /* Inits CRC */
-  u32CRC = ~_u32CRC;
+  u32CRC = ~(orxU32)_stCRC;
 
   /* For all slices */
   for(u32Length = _u32CharNumber, pu8 = (const orxU8 *)_zString; u32Length >= 8; u32Length -= 8, pu8 += 8)
@@ -1405,31 +1418,31 @@ static orxINLINE orxU32                                   orxString_NContinueCRC
 #undef orxCRC_INDEX_7
 
   /* Done! */
-  return ~u32CRC;
+  return (orxSTRINGID)~u32CRC;
 }
 
 /** Continues a CRC with a string one
  * @param[in] _zString        String used to continue the given CRC
- * @param[in] _u32CRC         Base CRC.
- * @return The resulting CRC.
+ * @param[in] _stCRC          Base CRC
+ * @return The resulting CRC (orxSTRINGID)
  */
-static orxINLINE orxU32                                   orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC)
+static orxINLINE orxSTRINGID                              orxString_ContinueCRC(const orxSTRING _zString, orxSTRINGID _stCRC)
 {
-  orxU32 u32CRC;
+  orxSTRINGID stCRC;
 
   /* Updates CRC */
-  u32CRC = orxString_NContinueCRC(_zString, _u32CRC, orxString_GetLength(_zString));
+  stCRC = orxString_NContinueCRC(_zString, _stCRC, orxString_GetLength(_zString));
 
   /* Done! */
-  return u32CRC;
+  return stCRC;
 }
 
 /** Converts a string to a CRC
  * @param[in] _zString        String To convert
  * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC.
+ * @return The resulting CRC (orxSTRINGID)
  */
-static orxINLINE orxU32                                   orxString_NToCRC(const orxSTRING _zString, orxU32 _u32CharNumber)
+static orxINLINE orxSTRINGID                              orxString_NToCRC(const orxSTRING _zString, orxU32 _u32CharNumber)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -1441,9 +1454,9 @@ static orxINLINE orxU32                                   orxString_NToCRC(const
 
 /** Converts a string to a CRC
  * @param[in] _zString          String To convert
- * @return The resulting CRC.
+ * @return The resulting CRC (orxSTRINGID)
  */
-static orxINLINE orxU32                                   orxString_ToCRC(const orxSTRING _zString)
+static orxINLINE orxSTRINGID                              orxString_ToCRC(const orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -1673,13 +1686,13 @@ extern orxDLLAPI void orxFASTCALL                         orxString_Exit();
  * @param[in]   _zString        Concerned string
  * @return      String's ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxString_GetID(const orxSTRING _zString);
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_GetID(const orxSTRING _zString);
 
 /** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
  * @param[in]   _u32ID          Concerned string ID
  * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxU32 _u32ID);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxSTRINGID _u32ID);
 
 /** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
  * @param[in]   _zString        Concerned string

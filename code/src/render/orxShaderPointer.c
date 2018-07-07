@@ -266,6 +266,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxShaderPointer_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START) | orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_STOP) | orxEVENT_GET_FLAG(orxRENDER_EVENT_VIEWPORT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADERPOINTER_KU32_BANK_SIZE, orxNULL);
 
@@ -668,7 +671,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
 /** Gets a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _u32Index         Index of shader to get
- * @return      orxSJADER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
 const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index)
 {
@@ -781,8 +784,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
  */
 orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -790,7 +794,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zShaderConfigID);
+  stID = orxString_ToCRC(_zShaderConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
@@ -804,7 +808,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
     if(pstShader != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxShader_GetName(pstShader)) == u32ID)
+      if(orxString_ToCRC(orxShader_GetName(pstShader)) == stID)
       {
         /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);

@@ -163,7 +163,6 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
     /* Set video mode */
     case orxDISPLAY_EVENT_SET_VIDEO_MODE:
     {
-      orxVIEWPORT              *pstViewport;
       orxDISPLAY_EVENT_PAYLOAD *pstPayload;
       orxFLOAT                  fWidthRatio, fHeightRatio;
 
@@ -177,6 +176,8 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
       /* Changed? */
       if((fWidthRatio != orxFLOAT_1) || (fHeightRatio != orxFLOAT_1))
       {
+        orxVIEWPORT *pstViewport;
+
         /* For all viewports */
         for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
             pstViewport != orxNULL;
@@ -320,6 +321,9 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxViewport_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxVIEWPORT_KU32_BANK_SIZE, orxNULL);
 

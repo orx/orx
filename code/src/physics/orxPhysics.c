@@ -361,6 +361,7 @@ orxSTATUS orxFASTCALL orxPhysics_Init()
 {
   /* Adds event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
+  orxEvent_SetHandlerIDFlags(orxPhysics_EventHandler, orxEVENT_TYPE_CONFIG, orxNULL, orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_START) | orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Init)();
 }
@@ -578,9 +579,9 @@ orxFLOAT orxFASTCALL orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOI
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetJointReactionTorque)(_pstBodyJoint);
 }
 
-orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvStart, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 }
 
 void orxFASTCALL orxPhysics_EnableSimulation(orxBOOL _bEnable)

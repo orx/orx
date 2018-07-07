@@ -85,6 +85,7 @@
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000002  /**< Has depth buffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00000004  /**< Custom IBO flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -98,8 +99,8 @@
 #define orxDISPLAY_KU32_BITMAP_BANK_SIZE        128
 #define orxDISPLAY_KU32_SHADER_BANK_SIZE        16
 
-#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 1024)  /**< 1024 items batch capacity */
-#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 1024)  /**< 1024 items batch capacity */
+#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 16384) /**< 16384 items batch capacity */
+#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 16384) /**< 16384 items batch capacity */
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
 #define orxDISPLAY_KF_BORDER_FIX                0.1f
@@ -111,6 +112,7 @@
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
+#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLE_STRIP
 
 
 /**  Misc defines
@@ -233,7 +235,7 @@ struct __orxBITMAP_t
   orxU32                    u32DataSize;
   orxRGBA                   stColor;
   const orxSTRING           zLocation;
-  orxU32                    u32FilenameID;
+  orxSTRINGID               stFilenameID;
   orxU32                    u32Flags;
 };
 
@@ -241,10 +243,10 @@ struct __orxBITMAP_t
  */
 typedef struct __orxDISPLAY_SAVE_INFO_t
 {
-  orxU8  *pu8ImageData;
-  orxU32  u32Width;
-  orxU32  u32Height;
-  orxU32  u32FilenameID;
+  orxU8      *pu8ImageData;
+  orxU32      u32Width;
+  orxU32      u32Height;
+  orxSTRINGID stFilenameID;
 
 } orxDISPLAY_SAVE_INFO;
 
@@ -334,6 +336,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
+  GLenum                    ePrimitive;
   orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
@@ -343,6 +346,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLuint                    uiIndexBuffer;
   GLint                     iTextureUnitNumber;
   orxS32                    s32BufferIndex;
+  orxS32                    s32ElementNumber;
   orxDOUBLE                 dTouchTimeCorrection;
   orxU32                    u32EventInfoNumber;
   orxView                  *poView;
@@ -1499,7 +1503,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmapCallback(void *_pCon
 
   /* Inits payload */
   stPayload.stBitmap.zLocation      = pstInfo->pstBitmap->zLocation;
-  stPayload.stBitmap.u32FilenameID  = pstInfo->pstBitmap->u32FilenameID;
+  stPayload.stBitmap.stFilenameID   = pstInfo->pstBitmap->stFilenameID;
   stPayload.stBitmap.u32ID          = (orxU32)pstInfo->pstBitmap->uiTexture;
 
   /* Sends event */
@@ -1796,7 +1800,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmapData(void *_pContext)
   pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
 
   /* Gets filename */
-  zFilename = orxString_GetFromID(pstInfo->u32FilenameID);
+  zFilename = orxString_GetFromID(pstInfo->stFilenameID);
 
   /* Gets file name's length */
   u32Length = orxString_GetLength(zFilename);
@@ -2188,7 +2192,7 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
         orxDisplay_iOS_InitShader(pstShader);
 
         /* Draws elements */
-        glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, 0);
+        glDrawElements(sstDisplay.ePrimitive, sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, 0);
         glASSERT();
 
         /* Gets next shader */
@@ -2219,13 +2223,14 @@ static void orxFASTCALL orxDisplay_iOS_DrawArrays()
     }
     else
     {
-      /* Draws arrays */
-      glDrawElements(GL_TRIANGLE_STRIP, sstDisplay.s32BufferIndex + (sstDisplay.s32BufferIndex >> 1), GL_UNSIGNED_SHORT, 0);
+      /* Draws elements */
+      glDrawElements(sstDisplay.ePrimitive, sstDisplay.s32ElementNumber, GL_UNSIGNED_SHORT, 0);
       glASSERT();
     }
 
-    /* Clears buffer index */
-    sstDisplay.s32BufferIndex = 0;
+    /* Clears buffer index & element number */
+    sstDisplay.s32BufferIndex   =
+    sstDisplay.s32ElementNumber = 0;
 
     /* Profiles */
     orxPROFILER_POP_MARKER();
@@ -2332,6 +2337,17 @@ static orxINLINE void orxDisplay_iOS_PrepareBitmap(const orxBITMAP *_pstBitmap, 
   /* Sets blend mode */
   orxDisplay_iOS_SetBlendMode(_eBlendMode);
 
+  /* Was using custom IBO? */
+  if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
+  {
+    /* Fills IBO */
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW);
+    glASSERT();
+
+    /* Updates flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO);
+  }
+
   /* Done! */
   return;
 }
@@ -2380,8 +2396,9 @@ static orxINLINE void orxDisplay_iOS_DrawBitmap(const orxBITMAP *_pstBitmap, con
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstBitmap->stColor;
 
-  /* Updates index */
-  sstDisplay.s32BufferIndex += 4;
+  /* Updates index & element number */
+  sstDisplay.s32BufferIndex   += 4;
+  sstDisplay.s32ElementNumber += 6;
 
   /* Done! */
   return;
@@ -2468,6 +2485,29 @@ static void orxFASTCALL orxDisplay_iOS_DrawPrimitive(orxU32 _u32VertexNumber, or
 
   /* Done! */
   return;
+}
+
+static orxINLINE GLenum orxDisplay_iOS_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE _ePrimitive)
+{
+  GLenum eResult;
+
+#define orxDISPLAY_PRIMITIVE_CASE(TYPE)   case orxDISPLAY_PRIMITIVE_##TYPE: eResult = GL_##TYPE; break
+
+  /* Depending on mode */
+  switch(_ePrimitive)
+  {
+    orxDISPLAY_PRIMITIVE_CASE(POINTS);
+    orxDISPLAY_PRIMITIVE_CASE(LINES);
+    orxDISPLAY_PRIMITIVE_CASE(LINE_LOOP);
+    orxDISPLAY_PRIMITIVE_CASE(LINE_STRIP);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLES);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_STRIP);
+    orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_FAN);
+    default: eResult = orxDISPLAY_KE_DEFAULT_PRIMITIVE; break;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Event handler
@@ -2595,8 +2635,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstFont->stColor;
 
-          /* Updates count */
-          sstDisplay.s32BufferIndex += 4;
+          /* Updates index & element number */
+          sstDisplay.s32BufferIndex   += 4;
+          sstDisplay.s32ElementNumber += 6;
         }
         else
         {
@@ -2777,17 +2818,18 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_DrawOBox(const orxOBOX *_pstBox, orxRGBA _s
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iOS_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList)
+orxSTATUS orxFASTCALL orxDisplay_iOS_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   const orxBITMAP  *pstBitmap;
-  orxFLOAT          fWidth, fHeight, fTop, fLeft, fXCoef, fYCoef;
-  orxU32            i, iIndex, u32VertexNumber = _u32VertexNumber;
+  orxU32            u32ElementNumber;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32VertexNumber > 2);
-  orxASSERT(_astVertexList != orxNULL);
+  orxASSERT(_pstMesh != orxNULL);
+  orxASSERT(_pstMesh->u32VertexNumber > 1);
+  orxASSERT((_pstMesh->au16IndexList == orxNULL) || (_pstMesh->u32IndexNumber > 1));
+  orxASSERT((_pstMesh->ePrimitive < orxDISPLAY_PRIMITIVE_NUMBER) || ((_pstMesh->ePrimitive == orxDISPLAY_PRIMITIVE_NONE) && (_pstMesh->au16IndexList == orxNULL)));
 
   /* Gets bitmap to use */
   pstBitmap = (_pstBitmap != orxNULL) ? _pstBitmap : sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit];
@@ -2795,74 +2837,51 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_DrawMesh(const orxBITMAP *_pstBitmap, orxDI
   /* Prepares bitmap for drawing */
   orxDisplay_iOS_PrepareBitmap(pstBitmap, _eSmoothing, _eBlendMode);
 
-  /* Gets bitmap working size */
-  fWidth  = pstBitmap->stClip.vBR.fX - pstBitmap->stClip.vTL.fX;
-  fHeight = pstBitmap->stClip.vBR.fY - pstBitmap->stClip.vTL.fY;
+  /* Stores primitive */
+  sstDisplay.ePrimitive = orxDisplay_iOS_GetOpenGLPrimitive(_pstMesh->ePrimitive);
 
-  /* Gets top-left corner  */
-  fTop  = pstBitmap->fRecRealHeight * pstBitmap->stClip.vTL.fY;
-  fLeft = pstBitmap->fRecRealWidth * pstBitmap->stClip.vTL.fX;
+  /* Gets element number */
+  u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
 
-  /* Gets X & Y coefs */
-  fXCoef = pstBitmap->fRecRealWidth * fWidth;
-  fYCoef = pstBitmap->fRecRealHeight * fHeight;
+  /* Selects local arrays */
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fX));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fU));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].stRGBA));
+  glASSERT();
 
-  /* End of buffer? */
-  if(sstDisplay.s32BufferIndex + (2 * _u32VertexNumber) > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE - 3)
+  /* Has index buffer? */
+  if((_pstMesh->au16IndexList != orxNULL)
+  && (_pstMesh->u32IndexNumber > 1))
   {
-    /* Draws arrays */
-    orxDisplay_iOS_DrawArrays();
+    /* Fills IBO */
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _pstMesh->u32IndexNumber * sizeof(GLushort), _pstMesh->au16IndexList, GL_STREAM_DRAW);
+    glASSERT();
 
-    /* Too many vertices? */
-    if(_u32VertexNumber > orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2)
-    {
-      /* Updates vertex number */
-      u32VertexNumber = orxDISPLAY_KU32_VERTEX_BUFFER_SIZE / 2;
-
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't draw full mesh: only drawing %d vertices out of %d.", u32VertexNumber, _u32VertexNumber);
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Updates flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
   }
 
-  /* For all vertices */
-  for(i = 0, iIndex = 0; i < u32VertexNumber; i++, iIndex++)
-  {
-    /* Copies position */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fX = _astVertexList[i].fX;
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fY = _astVertexList[i].fY;
+  /* Updates buffer index  */
+  sstDisplay.s32BufferIndex = _pstMesh->u32VertexNumber;
 
-    /* Updates UV */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fU = (GLfloat)(fLeft + (fXCoef * _astVertexList[i].fU));
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].fV = (GLfloat)(fTop + (fYCoef * _astVertexList[i].fV));
+  /* Updates element number */
+  sstDisplay.s32ElementNumber = u32ElementNumber;
 
-    /* Copies color */
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex].stRGBA = _astVertexList[i].stRGBA;
+  /* Draws mesh */
+  orxDisplay_iOS_DrawArrays();
 
-    /* Quad extremity? */
-    if((i != 1) && ((i & 1) == 1))
-    {
-      /* Copies last two vertices */
-      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 1]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
-      orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex + 2]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), sizeof(orxDISPLAY_VERTEX));
+  /* Selects global arrays */
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
+  glASSERT();
+  glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
+  glASSERT();
 
-      /* Updates index */
-      iIndex += 2;
-    }
-  }
-
-  /* Not enough vertices for a final quad in the triangle strip? */
-  while(iIndex & 3)
-  {
-    /* Completes the quad */
-    orxMemory_Copy(&(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex]), &(sstDisplay.astVertexList[sstDisplay.s32BufferIndex + iIndex - 1]), sizeof(orxDISPLAY_VERTEX));
-    iIndex++;
-  }
-
-  /* Updates index */
-  sstDisplay.s32BufferIndex += iIndex;
+  /* Restores primitive */
+  sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
   /* Done! */
   return eResult;
@@ -2928,7 +2947,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_CreateBitmap(orxU32 _u32Width, orxU32 _u32
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
     pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
-    pstBitmap->u32FilenameID  = 0;
+    pstBitmap->stFilenameID   = orxSTRINGID_UNDEFINED;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
     orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
     orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
@@ -3485,6 +3504,17 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
       orxDisplay_iOS_DrawArrays();
     }
 
+    /* Was using custom IBO? */
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
+    {
+      /* Fills IBO */
+      glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW);
+      glASSERT();
+
+      /* Updates flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO);
+    }
+
     /* Defines the vertex list */
     sstDisplay.astVertexList[0].fX  =
     sstDisplay.astVertexList[1].fX  = sstDisplay.pstDestinationBitmap->stClip.vTL.fX;
@@ -3511,8 +3541,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
 
-    /* Updates count */
-    sstDisplay.s32BufferIndex = 4;
+    /* Updates index & element number */
+    sstDisplay.s32BufferIndex   += 4;
+    sstDisplay.s32ElementNumber += 6;
 
     /* Draws arrays */
     orxDisplay_iOS_DrawArrays();
@@ -3613,8 +3644,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _pstSrc->stColor;
 
-          /* Updates count */
-          sstDisplay.s32BufferIndex += 4;
+          /* Updates index & element number */
+          sstDisplay.s32BufferIndex   += 4;
+          sstDisplay.s32ElementNumber += 6;
         }
       }
     }
@@ -3657,7 +3689,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
       {
         /* Inits it */
         pstInfo->pu8ImageData   = pu8ImageData;
-        pstInfo->u32FilenameID  = orxString_GetID(_zFilename);
+        pstInfo->stFilenameID   = orxString_GetID(_zFilename);
         pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
         pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
 
@@ -3735,7 +3767,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       /* Inits it */
       pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
       pstBitmap->zLocation      = zResourceLocation;
-      pstBitmap->u32FilenameID  = orxString_GetID(_zFilename);
+      pstBitmap->stFilenameID   = orxString_GetID(_zFilename);
       pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
@@ -3796,7 +3828,13 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapClipping(orxBITMAP *_pstBitmap, or
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
+
+  /* No destination bitmap? */
+  if(_pstBitmap == orxNULL)
+  {
+    /* Defaults to destination */
+    _pstBitmap = sstDisplay.pstDestinationBitmap;
+  }
 
   /* Destination bitmap? */
   if(_pstBitmap == sstDisplay.pstDestinationBitmap)
@@ -4006,6 +4044,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
 
+  /* Resets primitive */
+  sstDisplay.ePrimitive     = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
+
   /* Done! */
   return eResult;
 }
@@ -4094,6 +4135,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
 
         /* Adds event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxDisplay_iOS_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
         /* Gets render buffer's size */
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
@@ -4115,6 +4157,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         orxVector_Copy(&(sstDisplay.pstScreen->stClip.vTL), &orxVECTOR_0);
         orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
         sstDisplay.eLastBlendMode             = orxDISPLAY_BLEND_MODE_NUMBER;
+        sstDisplay.ePrimitive                 = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
         sstDisplay.dTouchTimeCorrection       = orxSystem_GetTime() - orx2D([[NSProcessInfo processInfo] systemUptime]);
         sstDisplay.u32EventInfoNumber         = 0;
 
@@ -4182,7 +4225,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
 
         /* Fills it */
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), &(sstDisplay.au16IndexList), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW);
         glASSERT();
 
         /* Inits event payload */

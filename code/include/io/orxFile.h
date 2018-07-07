@@ -168,6 +168,12 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS6
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
+/** Deletes a file
+ * @param[in] _zFileName           Full file's path to delete
+ * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Delete(const orxSTRING _zFileName);
+
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file
  * @param[in] _s64Position          Position (from start) where to set the indicator

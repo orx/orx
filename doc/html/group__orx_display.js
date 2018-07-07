@@ -18,10 +18,10 @@ var group__orx_display =
     ] ],
     [ "orxDISPLAY_EVENT_PAYLOAD", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html", [
       [ "bFullScreen", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#abb131f973635560a61e36ba54309a389", null ],
-      [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a92666d99eca84c3f679ecc22b9f7466f", null ],
-      [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#aa4cac613321f9cd331ae5b926c860001", null ],
+      [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#adfc168e1520fac098bb6462269120e8b", null ],
+      [ "stFilenameID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#aa73f169dbbe11fac4622c666ba32430f", null ],
+      [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3909c19a0952b3fbe95826368e1c8dac", null ],
       [ "u32Depth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a83b0b72b22599076d557733a1ce4649a", null ],
-      [ "u32FilenameID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a5deb59a00d46485264ae548c77d43613", null ],
       [ "u32Height", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3", null ],
       [ "u32ID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a61c2eddbf4069fd19a1b8ab665d348d5", null ],
       [ "u32PreviousDepth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a680f22e8d18e09ca63319d563c295242", null ],
@@ -31,6 +31,13 @@ var group__orx_display =
       [ "u32RefreshRate", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a7911b5fd6b34107c04ea9c7d8313df3f", null ],
       [ "u32Width", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3dd9e7e575ea285a59e773dc78383e6d", null ],
       [ "zLocation", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f", null ]
+    ] ],
+    [ "orxDISPLAY_MESH", "structorx_d_i_s_p_l_a_y___m_e_s_h.html", [
+      [ "astVertexList", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#a3f5cc67bf9fa5a277b3365fcd6badaf2", null ],
+      [ "au16IndexList", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#a9311c22fe1a3e613eac78b54e4c977f2", null ],
+      [ "ePrimitive", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#a8544c4ecc68c9159022c28be377b16e7", null ],
+      [ "u32IndexNumber", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#a7494d600cbaee7dcdece0e37c0e1015d", null ],
+      [ "u32VertexNumber", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#acdf7b863cc8cc6f7c6086f53926a7327", null ]
     ] ],
     [ "orxDISPLAY_TRANSFORM", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html", [
       [ "fDstX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a54b8a1dee3c659bf3abdfff81b78bb75", null ],
@@ -107,6 +114,17 @@ var group__orx_display =
       [ "orxDISPLAY_EVENT_NUMBER", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
     ] ],
+    [ "orxDISPLAY_PRIMITIVE", "group__orx_display.html#ga459ca91299563deac47f45c51c8a0ba1", [
+      [ "orxDISPLAY_PRIMITIVE_POINTS", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a61b0e6b90eaa73455b903eae3918fa90", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINES", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1aed919801f8b85d216e8a7bbc43e6ca61", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINE_LOOP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1aea9fbd2d6eedd08ca2c0baa49957e6bb", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINE_STRIP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a62becccfcab43341ef6b0c30922c5b08", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLES", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1ad06bafdae4f8c51b418e6939092ebe91", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a2d23f72d89f16d7f93cf85fbb357925a", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLE_FAN", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a14043f5b08802cb8548299264b540048", null ],
+      [ "orxDISPLAY_PRIMITIVE_NUMBER", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a46bb5fa819697baf2c5daaee345853d9", null ],
+      [ "orxDISPLAY_PRIMITIVE_NONE", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a89557596ba3964b7cf5c8a338b04c192", null ]
+    ] ],
     [ "orxDISPLAY_SMOOTHING", "group__orx_display.html#ga06d1a571694db550938b75f1c66cd331", [
       [ "orxDISPLAY_SMOOTHING_DEFAULT", "group__orx_display.html#gga06d1a571694db550938b75f1c66cd331ad3caa8b13c52378a4e39235285f82be1", null ],
       [ "orxDISPLAY_SMOOTHING_ON", "group__orx_display.html#gga06d1a571694db550938b75f1c66cd331a01a725709f5f8b09ea2ecb4ba518d8a0", null ],
@@ -131,7 +149,7 @@ var group__orx_display =
     [ "orxDisplay_DeleteShader", "group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2", null ],
     [ "orxDisplay_DrawCircle", "group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332", null ],
     [ "orxDisplay_DrawLine", "group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031", null ],
-    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga47a084f4f087d6ace1c5d63e57f037e4", null ],
+    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga59ecb6f37a12bc9a754d6ca2cf462fbf", null ],
     [ "orxDisplay_DrawOBox", "group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c", null ],
     [ "orxDisplay_DrawPolygon", "group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258", null ],
     [ "orxDisplay_DrawPolyline", "group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3", null ],

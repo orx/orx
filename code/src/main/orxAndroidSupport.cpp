@@ -392,8 +392,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_startOrx(JNIEnv* env, jobje
     orxAndroid_Init(env, activity);
 
     /* Run the application code! */
-    int status;
-    status = main(0, orxNULL);
+    main(0, orxNULL);
 
     orxAndroid_Exit(env);
 
@@ -611,9 +610,6 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnJoystickUp(JNIEnv* 
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
-  int ident;
-  int events;
-
   LOGI("orxAndroid_GetNativeWindow()");
 
   while(sstAndroid.window == NULL && !sstAndroid.bDestroyRequested)
@@ -982,6 +978,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
   stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
   stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
   stAPKTypeInfo.pfnWrite   = orxNULL;
+  stAPKTypeInfo.pfnDelete  = orxNULL;
 
   /* Registers it */
   eResult = orxResource_RegisterType(&stAPKTypeInfo);

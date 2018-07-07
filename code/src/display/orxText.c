@@ -325,7 +325,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Is config group? */
-      if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
       {
         orxTEXT *pstText;
 
@@ -335,7 +335,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             pstText = orxTEXT(orxStructure_GetNext(pstText)))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxText_ProcessConfigData(pstText);
@@ -637,6 +637,9 @@ orxSTATUS orxFASTCALL orxText_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxText_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTEXT_KU32_BANK_SIZE, orxNULL);
 
@@ -648,6 +651,7 @@ orxSTATUS orxFASTCALL orxText_Init()
 
         /* Adds event handler for resources */
         orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxText_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxText_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
       }
       else
       {

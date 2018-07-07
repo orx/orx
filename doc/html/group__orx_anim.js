@@ -9,7 +9,8 @@ var group__orx_anim =
       [ "fTime", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a6ba56dbaf67c49e69faaa6ecaf93f07d", null ],
       [ "fValue", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a8a699cad24685261e35554263d204d71", null ],
       [ "pstAnim", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ab9257a59b2cb5e9100e7cd0183128288", null ],
-      [ "stCustom", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a972ed40c49ddf7a8823f56c191943714", null ],
+      [ "stCustom", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ad8d51538e0386b4c02886c0cfa85f9bd", null ],
+      [ "stCut", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a407cad254712d6422c5081d5bea3c9ec", null ],
       [ "stLoop", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a6e744d1da5c400dd13646fd1da9768d8", null ],
       [ "u32Count", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ae3b962c5b42f605b1832a43c6c050c22", null ],
       [ "zAnimName", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a28f4e3c82eadb6774ec63b8226ed992e", null ],
@@ -39,6 +40,7 @@ var group__orx_anim =
     [ "orxAnim_Exit", "group__orx_anim.html#ga7eeb4d40ed5926bd87727e9473dbcdbb", null ],
     [ "orxAnim_GetEventCount", "group__orx_anim.html#ga70266ab2ac7d44c1b34f185f347e821c", null ],
     [ "orxAnim_GetEventStorageSize", "group__orx_anim.html#ga1bfc89cc39b93778b2969e7d4e2353b7", null ],
+    [ "orxAnim_GetKey", "group__orx_anim.html#ga3e53f9009441570b4f2290a96d9fe5f7", null ],
     [ "orxAnim_GetKeyCount", "group__orx_anim.html#ga55bbbc91c5ee3d9728f66d0c7d71803a", null ],
     [ "orxAnim_GetKeyData", "group__orx_anim.html#ga09b7c42ef668e8b4ab37ef42a4b04ce0", null ],
     [ "orxAnim_GetKeyStorageSize", "group__orx_anim.html#gaa10cd82b5d68b0bcfe85787ff3229625", null ],
@@ -50,6 +52,5 @@ var group__orx_anim =
     [ "orxAnim_RemoveAllKeys", "group__orx_anim.html#ga507824bc2f1f7ca266b505503f0a5177", null ],
     [ "orxAnim_RemoveLastEvent", "group__orx_anim.html#ga024213648a185234bd60311b96c4fb8e", null ],
     [ "orxAnim_RemoveLastKey", "group__orx_anim.html#ga1c5dd06056fb50465d577913a3e0aed8", null ],
-    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ],
-    [ "orxAnim_Update", "group__orx_anim.html#ga5f2181fce48279ff3f34841909cb59ef", null ]
+    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ]
 ];

@@ -646,7 +646,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
 
 
 /** Issues a raycast to test for potential physics bodies in the way
- * @param[in]   _pvStart                              Start of raycast
+ * @param[in]   _pvBegin                              Beginning of raycast
  * @param[in]   _pvEnd                                End of raycast
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
@@ -655,7 +655,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Enables/disables physics simulation

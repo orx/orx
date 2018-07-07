@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Header that defines all IDs of the display plugin
  *
  * @{

@@ -22,9 +22,9 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code
 platform-data:  compose/deep [
-  "windows"   [premake "windows"                                                                config ["gmake" "codelite" "codeblocks" "vs2013" "vs2015" "vs2017"]                                                                             env-mesg "Please restart your favorite IDE before using orx."]
-  "mac"       [premake "mac"                                                                    config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                             env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
-  "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])  config ["gmake" "codelite" "codeblocks"                           ]   deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-mesg "Please logout/login to refresh your environment if you're using an IDE."]
+  "windows"   [premake "windows"                                                                config ["gmake" "codelite" "codeblocks" "vs2013" "vs2015" "vs2017"]                                                                             env-msg "Please restart your favorite IDE before using orx."]
+  "mac"       [premake "mac"                                                                    config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                             env-msg "Please logout/login to refresh your environment if you're using an IDE."]
+  "linux"     [premake (either find to-string system/platform/2 "x64" ["linux64"] ["linux32"])  config ["gmake" "codelite" "codeblocks"                           ]   deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
 ]
 
 
@@ -132,7 +132,7 @@ either req-ver = cur-ver [
 
 
 ; Sets environment variable
-new-env: (get-env env-variable) != env-path: mold to-local-file clean-path root/:env-path
+new-env: (get-env env-variable) != env-path: to-string to-local-file clean-path root/:env-path
 print ["== Setting environment: [" env-variable "=" env-path "]"]
 set-env env-variable env-path
 either platform = "windows" [
@@ -274,8 +274,8 @@ if find platform-info 'deps [
 ]
 all [
   new-env
-  find platform-info 'env-mesg
-  print [newline "== IMPORTANT - New environment detected:" platform-info/env-mesg newline]
+  find platform-info 'env-msg
+  print [newline "== IMPORTANT - New environment detected:" platform-info/env-msg newline]
 ]
 end: now/time
 print ["== [" (end - begin) "] Setup successful!"]

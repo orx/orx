@@ -338,12 +338,24 @@ project "orx"
 
 -- Mac OS X
 
-    configuration {"macosx", "not xcode*", "*Core*"}
+    configuration {"macosx", "gmake", "*Core*"}
         links
         {
             "Foundation.framework",
             "IOKit.framework",
             "AppKit.framework",
+            "pthread"
+        }
+
+    configuration {"macosx", "codelite or codeblocks", "*Core*"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework IOKit",
+            "-framework AppKit"
+        }
+        links
+        {
             "pthread"
         }
 
@@ -466,17 +478,33 @@ project "orxLIB"
 
 -- Mac OS X
 
-    configuration {"macosx", "not *Core*"}
+    configuration {"macosx", "not *Core*", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "IOKit.framework",
             "AppKit.framework",
             "glfw3",
-            "sndfile",
-            "pthread",
             "OpenAL.framework",
             "OpenGL.framework"
+        }
+
+    configuration {"macosx", "not *Core*", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework IOKit",
+            "-framework AppKit",
+            "-framework OpenAL",
+            "-framework OpenGL"
+        }
+
+    configuration {"macosx", "not *Core*"}
+        links
+        {
+            "glfw",
+            "sndfile",
+            "pthread"
         }
 
     configuration{"macosx"}

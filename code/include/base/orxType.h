@@ -83,6 +83,7 @@
 
   typedef char                    orxCHAR;
   #define orxSTRING               orxCHAR *
+  typedef orxU32                  orxSTRINGID;
 
   typedef orxU32                  orxENUM;
 
@@ -153,6 +154,7 @@
 
     typedef char                  orxCHAR;
     #define orxSTRING             orxCHAR *
+    typedef orxU32                orxSTRINGID;
 
     typedef orxU32                orxENUM;
 
@@ -203,6 +205,7 @@ static const orxU32               orxU32_UNDEFINED      = (orxU32)(-1);
 static const orxU16               orxU16_UNDEFINED      = (orxU16)(-1);
 static const orxU8                orxU8_UNDEFINED       = (orxU8)(-1);
 static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
+static const orxSTRINGID          orxSTRINGID_UNDEFINED = (orxSTRINGID)(-1);
 
 
 /* *** String & character constants *** */
