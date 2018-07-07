@@ -44,6 +44,17 @@ var orx_display_8h =
       [ "orxDISPLAY_EVENT_NUMBER", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
     ] ],
+    [ "orxDISPLAY_PRIMITIVE", "group__orx_display.html#ga459ca91299563deac47f45c51c8a0ba1", [
+      [ "orxDISPLAY_PRIMITIVE_POINTS", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a61b0e6b90eaa73455b903eae3918fa90", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINES", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1aed919801f8b85d216e8a7bbc43e6ca61", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINE_LOOP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1aea9fbd2d6eedd08ca2c0baa49957e6bb", null ],
+      [ "orxDISPLAY_PRIMITIVE_LINE_STRIP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a62becccfcab43341ef6b0c30922c5b08", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLES", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1ad06bafdae4f8c51b418e6939092ebe91", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a2d23f72d89f16d7f93cf85fbb357925a", null ],
+      [ "orxDISPLAY_PRIMITIVE_TRIANGLE_FAN", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a14043f5b08802cb8548299264b540048", null ],
+      [ "orxDISPLAY_PRIMITIVE_NUMBER", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a46bb5fa819697baf2c5daaee345853d9", null ],
+      [ "orxDISPLAY_PRIMITIVE_NONE", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a89557596ba3964b7cf5c8a338b04c192", null ]
+    ] ],
     [ "orxDISPLAY_SMOOTHING", "group__orx_display.html#ga06d1a571694db550938b75f1c66cd331", [
       [ "orxDISPLAY_SMOOTHING_DEFAULT", "group__orx_display.html#gga06d1a571694db550938b75f1c66cd331ad3caa8b13c52378a4e39235285f82be1", null ],
       [ "orxDISPLAY_SMOOTHING_ON", "group__orx_display.html#gga06d1a571694db550938b75f1c66cd331a01a725709f5f8b09ea2ecb4ba518d8a0", null ],
@@ -68,7 +79,7 @@ var orx_display_8h =
     [ "orxDisplay_DeleteShader", "group__orx_display.html#ga37a6f1e12616eca46dac46f8ff81a9d2", null ],
     [ "orxDisplay_DrawCircle", "group__orx_display.html#gae54539ad1fb9d830e14995d4ec17e332", null ],
     [ "orxDisplay_DrawLine", "group__orx_display.html#gab275ecf8c3dca3fb702b57d6bf6f0031", null ],
-    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga47a084f4f087d6ace1c5d63e57f037e4", null ],
+    [ "orxDisplay_DrawMesh", "group__orx_display.html#ga59ecb6f37a12bc9a754d6ca2cf462fbf", null ],
     [ "orxDisplay_DrawOBox", "group__orx_display.html#gad49f19c1e34d7dc1e535cfbede0d967c", null ],
     [ "orxDisplay_DrawPolygon", "group__orx_display.html#ga52875e1d17d6f0f0ec3c5e81427a5258", null ],
     [ "orxDisplay_DrawPolyline", "group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3", null ],

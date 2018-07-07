@@ -86,6 +86,15 @@ namespace orxPhysics
   static const orxU32   su32MessageBankSize     = 512;
   static const orxU32   su32BodyBankSize        = 512;
   static const orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+  static const orxU32   su32RayBankSize         = 128;
+  static const b2Color  stRayMissColor          = b2Color(0x00, 0xFF, 0x00);
+  static const b2Color  stRayBeforeHitColor     = b2Color(0xFF, 0xFF, 0x00);
+  static const b2Color  stRayAfterHitColor      = b2Color(0xFF, 0x00, 0x00);
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 }
 
 /***************************************************************************
@@ -126,6 +135,16 @@ public:
 
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
+/** Debug ray
+ */
+typedef struct __orxPHYSICS_DEBUG_RAY_t
+{
+  b2Vec2                      vBegin;
+  b2Vec2                      vEnd;
+  b2Color                     stColor;
+
+} orxPHYSICS_DEBUG_RAY;
+
 /** Debug draw
  */
 class orxPhysicsDebugDraw : public b2Draw
@@ -162,12 +181,13 @@ typedef struct __orxPHYSICS_STATIC_t
 
   orxFLOAT                    fFixedTimestepAccumulatorRatio;
   orxFLOAT                    fOneMinusRatio;
-  orxLINKLIST                 stBodyList;            /**< Body link list */
-  orxBANK                    *pstBodyBank;           /**< Body bank */
+  orxLINKLIST                 stBodyList;             /**< Body link list */
+  orxBANK                    *pstBodyBank;            /**< Body bank */
 
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
   orxPhysicsDebugDraw        *poDebugDraw;            /**< Debug draw */
+  orxBANK                    *pstRayBank;             /**< Debug ray bank */
 
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
@@ -402,8 +422,8 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* For all vertices */
         for(i = 0; i < _s32VertexNumber; i++)
@@ -465,8 +485,8 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* For all vertices */
         for(i = 0; i < _s32VertexNumber; i++)
@@ -531,8 +551,8 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* Inits center & temp vectors */
         orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), fZ);
@@ -590,8 +610,8 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* Inits center & temp vectors */
         orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), fZ);
@@ -624,7 +644,7 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
 {
   orxVIEWPORT  *pstViewport;
   orxCOLOR      stColor;
-  orxVECTOR     vStart, vEnd;
+  orxVECTOR     vBegin, vEnd;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -653,15 +673,15 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* Inits points */
-        orxVector_Set(&vStart, sstPhysics.fRecDimensionRatio * orx2F(_rvP1.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP1.y), fZ);
+        orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_rvP1.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP1.y), fZ);
         orxVector_Set(&vEnd, sstPhysics.fRecDimensionRatio * orx2F(_rvP2.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP2.y), fZ);
 
         /* Gets their screen positions */
-        orxRender_GetScreenPosition(&vStart, pstViewport, &vStart);
+        orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
         orxRender_GetScreenPosition(&vEnd, pstViewport, &vEnd);
 
         /* Sets color */
@@ -669,7 +689,7 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
         stColor.fAlpha = orxFLOAT_1;
 
         /* Draws segment */
-        orxDisplay_DrawLine(&vStart, &vEnd, orxColor_ToRGBA(&stColor));
+        orxDisplay_DrawLine(&vBegin, &vEnd, orxColor_ToRGBA(&stColor));
       }
     }
   }
@@ -694,7 +714,7 @@ void orxPhysicsDebugDraw::DrawParticles(const b2Vec2 *_avCenterList, float32 _fR
 void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
 {
   orxVIEWPORT    *pstViewport;
-  orxVECTOR       vStart, vEndX, vEndY;
+  orxVECTOR       vBegin, vEndX, vEndY;
   const orxFLOAT  fScale = orx2F(0.4f);
 
   /* For all viewports */
@@ -724,22 +744,22 @@ void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
         /* Gets its frustum */
         orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Stores it bottom Z */
-        fZ = stFrustum.vBR.fZ + vCameraPosition.fZ;
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* Inits points */
-        orxVector_Set(&vStart, sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.y), fZ);
-        orxVector_Set(&vEndX, vStart.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), vStart.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.s), fZ);
-        orxVector_Set(&vEndY, vStart.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(-_rstTransform.q.s), vStart.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), fZ);
+        orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.y), fZ);
+        orxVector_Set(&vEndX, vBegin.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), vBegin.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.s), fZ);
+        orxVector_Set(&vEndY, vBegin.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(-_rstTransform.q.s), vBegin.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), fZ);
 
         /* Gets their screen positions */
-        orxRender_GetScreenPosition(&vStart, pstViewport, &vStart);
+        orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
         orxRender_GetScreenPosition(&vEndX, pstViewport, &vEndX);
         orxRender_GetScreenPosition(&vEndY, pstViewport, &vEndY);
 
         /* Draws segments */
-        orxDisplay_DrawLine(&vStart, &vEndX, orx2RGBA(0xFF, 0x00, 0x00, 0xFF));
-        orxDisplay_DrawLine(&vStart, &vEndY, orx2RGBA(0x00, 0xFF, 0x00, 0xFF));
+        orxDisplay_DrawLine(&vBegin, &vEndX, orx2RGBA(0xFF, 0x00, 0x00, 0xFF));
+        orxDisplay_DrawLine(&vBegin, &vEndY, orx2RGBA(0x00, 0xFF, 0x00, 0xFF));
       }
     }
   }
@@ -764,9 +784,23 @@ static orxSTATUS orxFASTCALL orxPhysics_LiquidFun_EventHandler(const orxEVENT *_
     /* Show debug? */
     if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_SHOW_DEBUG) != orxFALSE)
     {
+      orxPHYSICS_DEBUG_RAY *pstRay;
+
       /* Draws debug */
       sstPhysics.poWorld->DrawDebugData();
+
+      /* For all rays */
+      for(pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, orxNULL);
+          pstRay != orxNULL;
+          pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, pstRay))
+      {
+        /* Draws it */
+        sstPhysics.poDebugDraw->DrawSegment(pstRay->vBegin, pstRay->vEnd, pstRay->stColor);
+      }
     }
+
+    /* Clears ray bank */
+    orxBank_Clear(sstPhysics.pstRayBank);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -905,14 +939,16 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
 
 static void orxFASTCALL orxPhysics_LiquidFun_ResetSmoothedStates()
 {
-  orxPHYSICS_BODY          *pstPhysicBody;
-  b2Body                   *poBody;
+  orxPHYSICS_BODY *pstPhysicBody;
 
   /* For all physical bodies */
   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
       pstPhysicBody != NULL;
       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
   {
+    b2Body *poBody;
+
+    /* Gets body */
     poBody = pstPhysicBody->poBody;
 
     /* Non-static and awake? */
@@ -933,9 +969,8 @@ static void orxFASTCALL orxPhysics_LiquidFun_ResetSmoothedStates()
  */
 static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  orxPHYSICS_BODY          *pstPhysicBody;
-  b2Body                   *poBody;
+  orxPHYSICS_BODY  *pstPhysicBody;
+  b2Body           *poBody;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxPhysics_Update");
@@ -1042,7 +1077,8 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
   /* Is simulation enabled? */
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
-    orxU32 u32Steps, i;
+    orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+    orxU32                    u32Steps, i;
 
     /* Stores DT */
     sstPhysics.fLastDT = _pstClockInfo->fDT;
@@ -2826,19 +2862,19 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSolid(orxPHYSICS_BO
   return eResult;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
-  b2Vec2          vStart, vEnd;
+  b2Vec2          vBegin, vEnd;
   RayCastCallback oRaycastCallback;
   orxHANDLE       hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvBegin != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
   /* Gets extremities */
-  vStart.Set(sstPhysics.fDimensionRatio * _pvStart->fX, sstPhysics.fDimensionRatio * _pvStart->fY);
+  vBegin.Set(sstPhysics.fDimensionRatio * _pvBegin->fX, sstPhysics.fDimensionRatio * _pvBegin->fY);
   vEnd.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
 
   /* Inits filter data */
@@ -2849,7 +2885,7 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
   oRaycastCallback.bEarlyExit   = _bEarlyExit;
 
   /* Issues Raycast */
-  sstPhysics.poWorld->RayCast(&oRaycastCallback, vStart, vEnd);
+  sstPhysics.poWorld->RayCast(&oRaycastCallback, vBegin, vEnd);
 
   /* Found? */
   if(oRaycastCallback.hResult != orxHANDLE_UNDEFINED)
@@ -2861,7 +2897,7 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
     if(_pvContact != orxNULL)
     {
       /* Updates it */
-      orxVector_Set(_pvContact, oRaycastCallback.vContact.fX, oRaycastCallback.vContact.fY, _pvStart->fZ);
+      orxVector_Set(_pvContact, oRaycastCallback.vContact.fX, oRaycastCallback.vContact.fY, _pvBegin->fZ);
     }
 
     /* Asked for normal? */
@@ -2871,6 +2907,43 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
       orxVector_Copy(_pvNormal, &(oRaycastCallback.vNormal));
     }
   }
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+  /* Hit? */
+  if(oRaycastCallback.hResult != orxHANDLE_UNDEFINED)
+  {
+    orxPHYSICS_DEBUG_RAY *pstBeforeHitRay, *pstAfterHitRay;
+
+    /* Allocates debug rays */
+    pstBeforeHitRay  = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    pstAfterHitRay   = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    orxASSERT(pstBeforeHitRay != orxNULL);
+    orxASSERT(pstAfterHitRay != orxNULL);
+
+    /* Inits them */
+    pstBeforeHitRay->vBegin   = vBegin;
+    pstBeforeHitRay->vEnd.Set(sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fX, sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fY);
+    pstBeforeHitRay->stColor  = orxPhysics::stRayBeforeHitColor;
+    pstAfterHitRay->vBegin.Set(sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fX, sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fY);
+    pstAfterHitRay->vEnd      = vEnd;
+    pstAfterHitRay->stColor   = orxPhysics::stRayAfterHitColor;
+  }
+  else
+  {
+    orxPHYSICS_DEBUG_RAY *pstMissRay;
+
+    /* Allocates debug ray */
+    pstMissRay = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    orxASSERT(pstMissRay != orxNULL);
+
+    /* Inits it */
+    pstMissRay->vBegin  = vBegin;
+    pstMissRay->vEnd    = vEnd;
+    pstMissRay->stColor = orxPhysics::stRayMissColor;
+  }
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
   /* Done! */
   return hResult;
@@ -2999,6 +3072,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       sstPhysics.fDimensionRatio = orxPhysics::sfDefaultDimensionRatio;
     }
 
+    /* Stores it */
+    orxConfig_SetFloat(orxPHYSICS_KZ_CONFIG_RATIO, sstPhysics.fDimensionRatio);
+
     /* Inits world gravity */
     vWorldGravity.Set(sstPhysics.fDimensionRatio * vGravity.fX, sstPhysics.fDimensionRatio * vGravity.fY);
 
@@ -3067,6 +3143,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
           {
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
+            /* Creates ray bank */
+            sstPhysics.pstRayBank = orxBank_Create(orxPhysics::su32RayBankSize, sizeof(orxPHYSICS_DEBUG_RAY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
+
             /* Creates debug draw */
             sstPhysics.poDebugDraw = new orxPhysicsDebugDraw();
 
@@ -3078,6 +3157,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
 
             /* Adds event handler */
             orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_LiquidFun_EventHandler);
+            orxEvent_SetHandlerIDFlags(orxPhysics_LiquidFun_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
@@ -3165,6 +3245,9 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_Exit()
 
     /* Deletes debug draw */
     delete sstPhysics.poDebugDraw;
+
+    /* Deletes ray bank */
+    orxBank_Delete(sstPhysics.pstRayBank);
 
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 

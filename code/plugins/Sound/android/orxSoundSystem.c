@@ -141,8 +141,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
       orxBOOL                 bStopping     : 1;
       orxBOOL                 bPause        : 1;
       orxS32                  s32PacketID;
-      orxFLOAT                fCursor;
-      orxFLOAT                fSetCursor;
+      orxFLOAT                fTime;
+      orxFLOAT                fSetTime;
       orxSOUNDSYSTEM_DATA     stData;
 
       ALuint                  auiBufferList[0];
@@ -287,7 +287,6 @@ static orxINLINE void orxSoundSystem_Android_CloseFile(orxSOUNDSYSTEM_DATA *_pst
 static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstData, orxU32 _u32FrameNumber, void *_pBuffer)
 {
   orxU32 u32Result, u32RequestBytes, u32BytesRead, u32FrameSize;
-  char *pBuffer;
   int current_section;
 
   /* Checks */
@@ -296,6 +295,8 @@ static orxINLINE orxU32 orxSoundSystem_Android_Read(orxSOUNDSYSTEM_DATA *_pstDat
   /* Has valid file? */
   if(_pstData->hResource != orxNULL)
   {
+    char *pBuffer;
+
     pBuffer = (char*) _pBuffer;
     u32FrameSize = _pstData->stInfo.u32ChannelNumber * sizeof(orxS16);
     u32RequestBytes = _u32FrameNumber * u32FrameSize;
@@ -339,7 +340,7 @@ static orxINLINE void orxSoundSystem_Android_Rewind(orxSOUNDSYSTEM_DATA *_pstDat
   return;
 }
 
-static orxINLINE void orxSoundSystem_Android_Seek(orxSOUNDSYSTEM_DATA *_pstData, orxFLOAT _fCursor)
+static orxINLINE void orxSoundSystem_Android_Seek(orxSOUNDSYSTEM_DATA *_pstData, orxFLOAT _fTime)
 {
   /* Checks */
   orxASSERT(_pstData != orxNULL);
@@ -348,7 +349,7 @@ static orxINLINE void orxSoundSystem_Android_Seek(orxSOUNDSYSTEM_DATA *_pstData,
   if(_pstData->hResource != orxNULL)
   {
     /* Seeks position */
-    ov_time_seek(&_pstData->stVf, (ogg_int64_t)orxF2S(_fCursor * orx2F(1000.0f)));
+    ov_time_seek(&_pstData->stVf, (ogg_int64_t)orxF2S(_fTime * orx2F(1000.0f)));
   }
 
   /* Done! */
@@ -393,15 +394,15 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
   /* Valid? */
   if(_pstSound->fDuration != orxFLOAT_0)
   {
-    /* Has set cursor? */
-    if(_pstSound->fSetCursor != orxFLOAT_0)
+    /* Has set time? */
+    if(_pstSound->fSetTime != orxFLOAT_0)
     {
       /* Seeks position */
-      orxSoundSystem_Android_Seek(&(_pstSound->stData), _pstSound->fSetCursor);
+      orxSoundSystem_Android_Seek(&(_pstSound->stData), _pstSound->fSetTime);
 
-      /* Updates cursors */
-      _pstSound->fCursor = _pstSound->fSetCursor;
-      _pstSound->fSetCursor = orxFLOAT_0;
+      /* Updates times */
+      _pstSound->fTime = _pstSound->fSetTime;
+      _pstSound->fSetTime = orxFLOAT_0;
     }
 
     /* Not stopped? */
@@ -473,7 +474,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
         /* Clears payload */
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
-        /* Stores recording name */
+        /* Stores name */
         stPayload.stStream.zSoundName = _pstSound->zReference;
 
         /* Stores stream info */
@@ -499,7 +500,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
           stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
           stPayload.stStream.stPacket.bDiscard        = orxFALSE;
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
-          stPayload.stStream.stPacket.fCursor         = _pstSound->fCursor;
+          stPayload.stStream.stPacket.fTime           = _pstSound->fTime;
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);
@@ -514,8 +515,8 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
               alBufferData(puiBufferList[i], (_pstSound->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, (ALsizei)(stPayload.stStream.stPacket.u32SampleNumber * sizeof(orxS16)), (ALsizei)_pstSound->stData.stInfo.u32SampleRate);
               alASSERT();
 
-              /* Updates cursor */
-              _pstSound->fCursor += orxU2F(stPayload.stStream.stPacket.u32SampleNumber) / (orxU2F(_pstSound->stData.stInfo.u32ChannelNumber) * orxU2F(_pstSound->stData.stInfo.u32SampleRate));
+              /* Updates time */
+              _pstSound->fTime += orxU2F(stPayload.stStream.stPacket.u32SampleNumber) / (orxU2F(_pstSound->stData.stInfo.u32ChannelNumber) * orxU2F(_pstSound->stData.stInfo.u32SampleRate));
 
               /* Queues it */
               alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
@@ -548,8 +549,8 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
               /* Rewinds file */
               orxSoundSystem_Android_Rewind(&(_pstSound->stData));
 
-              /* Resets cursor */
-              _pstSound->fCursor = orxFLOAT_0;
+              /* Resets time */
+              _pstSound->fTime = orxFLOAT_0;
 
               /* Not looping? */
               if(_pstSound->bLoop == orxFALSE)
@@ -623,8 +624,8 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
         /* Rewinds file */
         orxSoundSystem_Android_Rewind(&(_pstSound->stData));
 
-        /* Resets cursor */
-        _pstSound->fCursor = orxFLOAT_0;
+        /* Resets time */
+        _pstSound->fTime = orxFLOAT_0;
 
         /* Gets actual state */
         alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
@@ -1063,7 +1064,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
                 sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
               }
 
-              /* Stores reciprocal dimenstion ratio */
+              /* Stores it */
+              orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
+
+              /* Stores reciprocal dimension ratio */
               sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
               /* Updates status */
@@ -1074,6 +1078,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_Init()
 
               /* Add event handler */
               orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_Android_EventHandler);
+              orxEvent_SetHandlerIDFlags(orxSoundSystem_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOREGROUND) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_BACKGROUND), orxEVENT_KU32_MASK_ID_ALL);
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
@@ -1514,8 +1519,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStream(orxU32 _u3
       pstResult->bStop      = orxTRUE;
       pstResult->bStopping  = orxFALSE;
       pstResult->s32PacketID= 0;
-      pstResult->fCursor    = orxFLOAT_0;
-      pstResult->fSetCursor = orxFLOAT_0;
+      pstResult->fTime      = orxFLOAT_0;
+      pstResult->fSetTime   = orxFLOAT_0;
 
       /* Adds it to the list */
       orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
@@ -1580,8 +1585,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Android_CreateStreamFromFile(co
         pstResult->bStop      = orxTRUE;
         pstResult->bStopping  = orxFALSE;
         pstResult->s32PacketID= 0;
-        pstResult->fCursor    = orxFLOAT_0;
-        pstResult->fSetCursor = orxFLOAT_0;
+        pstResult->fTime      = orxFLOAT_0;
+        pstResult->fSetTime   = orxFLOAT_0;
 
         /* Generates openAL source */
         alGenSources(1, &(pstResult->uiSource));
@@ -1836,7 +1841,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetPitch(orxSOUNDSYSTEM_SOUND *_pst
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Android_SetCursor(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fCursor)
+orxSTATUS orxFASTCALL orxSoundSystem_Android_SetTime(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fTime)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1847,13 +1852,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_Android_SetCursor(orxSOUNDSYSTEM_SOUND *_ps
   /* Stream? */
   if(_pstSound->bIsStream != orxFALSE)
   {
-    /* Sets stream cursor */
-    _pstSound->fSetCursor = _fCursor;
+    /* Sets stream time */
+    _pstSound->fSetTime = _fTime;
   }
   else
   {
-    /* Sets source's cursor */
-    alSourcef(_pstSound->uiSource, AL_SEC_OFFSET, _fCursor);
+    /* Sets source's time */
+    alSourcef(_pstSound->uiSource, AL_SEC_OFFSET, _fTime);
     alASSERT();
   }
 
@@ -1967,7 +1972,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_Android_GetPitch(const orxSOUNDSYSTEM_SOUND 
   return fResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_Android_GetCursor(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_Android_GetTime(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1979,7 +1984,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_Android_GetCursor(const orxSOUNDSYSTEM_SOUND
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Updates result */
-    fResult = _pstSound->fCursor;
+    fResult = _pstSound->fTime;
   }
   else
   {
@@ -2244,14 +2249,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_StopRecording, SOUNDSYST
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetPitch, SOUNDSYSTEM, SET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetCursor, SOUNDSYSTEM, SET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetTime, SOUNDSYSTEM, SET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetPosition, SOUNDSYSTEM, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetPitch, SOUNDSYSTEM, GET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetCursor, SOUNDSYSTEM, GET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetTime, SOUNDSYSTEM, GET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetPosition, SOUNDSYSTEM, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Android_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);

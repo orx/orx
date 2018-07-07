@@ -1,6 +1,7 @@
 var structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o =
 [
     [ "pfnClose", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071", null ],
+    [ "pfnDelete", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a2798a46e56e58d95524af974a1ccae29", null ],
     [ "pfnGetSize", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#ae2b0d0bbbfbb0772338857d5be454a11", null ],
     [ "pfnGetTime", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a6b43de5bfa2eb4389e4505e40dedc0dc", null ],
     [ "pfnLocate", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a826168d1d30b8d34285ad1c16c35e2b4", null ],

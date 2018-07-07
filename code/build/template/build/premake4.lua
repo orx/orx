@@ -88,10 +88,10 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 
 --
--- Solution: [orx]
+-- Solution: [name]
 --
 
-solution "[orx]"
+solution "[name]"
 
     language ("C++")
 
@@ -109,18 +109,6 @@ solution "[orx]"
         initplatforms ()
     }
 
-    includedirs
-    {
-        "../include",
-        "$(ORX)/include"
-    }
-
-    libdirs
-    {
-        "../lib",
-        "$(ORX)/lib/dynamic"
-    }
-
     targetdir ("../bin")
 
     flags
@@ -136,6 +124,14 @@ solution "[orx]"
         "Symbols",
         "StaticRuntime"
     }
+
+    configuration {"not macosx"}
+        includedirs {"$(ORX)/include"}
+        libdirs {"$(ORX)/lib/dynamic"}
+
+    configuration {"macosx"}
+        includedirs {"[code-path]/include"}
+        libdirs {"[code-path]/lib/dynamic"}
 
     configuration {"not vs2013", "not vs2015", "not vs2017"}
         flags {"EnableSSE2"}
@@ -191,15 +187,24 @@ solution "[orx]"
             "-gdwarf-2",
             "-Wno-write-strings"
         }
+        linkoptions
+        {
+            "-mmacosx-version-min=10.6",
+            "-dead_strip"
+        }
+
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "AppKit.framework"
         }
+
+    configuration {"macosx", "codelite or codeblocks"}
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
-            "-dead_strip"
+            "-framework Foundation",
+            "-framework AppKit"
         }
 
     configuration {"macosx", "x32"}
@@ -220,10 +225,10 @@ solution "[orx]"
 
 
 --
--- Project: [orx]
+-- Project: [name]
 --
 
-project "[orx]"
+project "[name]"
 
     files
     {
@@ -245,16 +250,16 @@ project "[orx]"
 -- Linux
 
     configuration {"linux"}
-        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.so ] && cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
 
 -- Mac OS X
 
     configuration {"macosx"}
-        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+        postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
 
 -- Windows
 
     configuration {"windows"}
-        postbuildcommands {"cmd /c if exist $(ORX)\\lib\\dynamic\\orx.dll copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+        postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}

@@ -207,7 +207,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER
  * @param[in] _afValueList            Parameter's float value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
@@ -216,7 +216,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(orxSHADE
  * @param[in] _apstValueList          Parameter's texture value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
@@ -225,7 +225,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(orxSHA
  * @param[in] _avValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetVectorParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);
 
 /** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader

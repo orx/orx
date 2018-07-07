@@ -129,7 +129,7 @@ struct __orxSPAWNER_t
 typedef struct __orxSPAWNER_STATIC_t
 {
   orxSPAWNER         *pstCurrentSpawner;          /**< Current spawner */
-  orxU32              u32DefaultGroupID;          /**< Default group ID */
+  orxSTRINGID         stDefaultGroupID;           /**< Default group ID */
   orxU32              u32Flags;                   /**< Control flags */
 
 } orxSPAWNER_STATIC;
@@ -697,7 +697,9 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
               if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_RANDOM_OBJECT_SPEED))
               {
                 /* Updates its value */
+                orxConfig_PushSection(pstSpawner->zReference);
                 orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(pstSpawner->vSpeed));
+                orxConfig_PopSection();
               }
 
               /* Use relative speed? */
@@ -723,7 +725,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             if(pstOwner != orxNULL)
             {
               /* Doesn't have a group? */
-              if(orxObject_GetGroupID(pstObject) == sstSpawner.u32DefaultGroupID)
+              if(orxObject_GetGroupID(pstObject) == sstSpawner.stDefaultGroupID)
               {
                 /* Transfers group ID */
                 orxObject_SetGroupID(pstObject, orxObject_GetGroupID(pstOwner));
@@ -840,7 +842,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Is config group? */
-        if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+        if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
         {
           orxSPAWNER *pstSpawner;
 
@@ -853,7 +855,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
             {
               /* Match origin? */
-              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->u32NameID)
+              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
               {
                 /* Re-processes its config data */
                 orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
@@ -1056,6 +1058,9 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxSpawner_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SPAWNER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSPAWNER_KU32_BANK_SIZE, &orxSpawner_Update);
 
@@ -1063,13 +1068,14 @@ orxSTATUS orxFASTCALL orxSpawner_Init()
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Stores default group ID */
-        sstSpawner.u32DefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+        sstSpawner.stDefaultGroupID = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
 
         /* Inits Flags */
         orxFLAG_SET(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_READY, orxSPAWNER_KU32_STATIC_MASK_ALL);
 
         /* Adds resource event handler */
         orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxSpawner_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxSpawner_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
       }
       else
       {

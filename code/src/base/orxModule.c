@@ -541,7 +541,7 @@ orxBOOL orxFASTCALL orxModule_IsInitialized(orxMODULE_ID _eModuleID)
  */
 const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);

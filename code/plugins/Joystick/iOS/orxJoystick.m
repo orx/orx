@@ -104,6 +104,9 @@ orxSTATUS orxFASTCALL orxJoystick_iOS_Init()
     /* Adds our joystick event handlers */
     if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler)) != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxJoystick_iOS_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_ACCELERATE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
     }
@@ -120,11 +123,11 @@ void orxFASTCALL orxJoystick_iOS_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler);
-    
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }
-  
+
   return;
 }
 

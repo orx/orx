@@ -590,7 +590,7 @@ static orxSTATUS orxFASTCALL orxFont_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxFONT *pstFont;
 
@@ -603,7 +603,7 @@ static orxSTATUS orxFASTCALL orxFont_EventHandler(const orxEVENT *_pstEvent)
         if((pstFont != sstFont.pstDefaultFont) && (pstFont->zReference != orxNULL) && (pstFont->zReference != orxSTRING_EMPTY))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstFont->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstFont->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxFont_ProcessConfigData(pstFont);
@@ -711,6 +711,7 @@ orxSTATUS orxFASTCALL orxFont_Init()
 
     /* Adds event handler */
     orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFont_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxFont_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
   }
   else
   {

@@ -126,7 +126,7 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
 
       break;
     }
-      
+
     default:
     {
       break;
@@ -164,6 +164,9 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
     /* Adds our mouse event handlers */
     if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxMouse_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_BEGIN) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_MOVE) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_END), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Updates status */
       sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 

@@ -120,10 +120,6 @@ void orxAndroid_JNI_SetupThread(void) {
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
 {
-  int ident;
-  int events;
-  android_poll_source* source;
-
   LOGI("orxAndroid_GetNativeWindow()");
 
   while(sstAndroid.app_->window == NULL && !sstAndroid.app_->destroyRequested)
@@ -472,8 +468,7 @@ void android_main( android_app* state )
     }
 
     /* Run the application code! */
-    int status;
-    status = main(0, orxNULL);
+    main(0, orxNULL);
 
     if(sstAndroid.zAndroidInternalFilesPath)
     {
@@ -657,6 +652,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
   stAPKTypeInfo.pfnTell    = orxResource_APK_Tell;
   stAPKTypeInfo.pfnRead    = orxResource_APK_Read;
   stAPKTypeInfo.pfnWrite   = orxNULL;
+  stAPKTypeInfo.pfnDelete  = orxNULL;
 
   /* Registers it */
   eResult = orxResource_RegisterType(&stAPKTypeInfo);

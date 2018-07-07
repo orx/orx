@@ -9,6 +9,7 @@ var searchData=
   ['_5forxdebug_5flog',['_orxDebug_Log',['../group__orx_debug.html#ga629ee22b4d60797e9756cd2a2b71fba1',1,'orxDebug.h']]],
   ['_5forxdebug_5fsetdebugfile',['_orxDebug_SetDebugFile',['../group__orx_debug.html#ga4185e57bfe9a71085ccbeadc034b0d5d',1,'orxDebug.h']]],
   ['_5forxdebug_5fsetflags',['_orxDebug_SetFlags',['../group__orx_debug.html#ga2a07443eda6e7bb62cdd4b446c843766',1,'orxDebug.h']]],
+  ['_5forxdebug_5fsetlogcallback',['_orxDebug_SetLogCallback',['../group__orx_debug.html#gab4b5f7a2b785e131090c7d3ba556eade',1,'orxDebug.h']]],
   ['_5forxdebug_5fsetlogfile',['_orxDebug_SetLogFile',['../group__orx_debug.html#ga624ce02bb92e42e3f9e61e86b46cc172',1,'orxDebug.h']]],
   ['_5forxobject_5fgetstructure',['_orxObject_GetStructure',['../group__orx_object.html#ga16b071f6b40931ce6617479ca3294b49',1,'orxObject.h']]],
   ['_5forxstructure_5fgetpointer',['_orxStructure_GetPointer',['../group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb',1,'orxStructure.h']]]

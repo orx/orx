@@ -467,6 +467,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_PROFILER_HISTORY))
   {
     orxDISPLAY_VERTEX astVertexList[2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1)];
+    orxU16            au16IndexList[2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1)];
     orxDOUBLE         adStartTimeList[orxPROFILER_KU32_HISTORY_LENGTH - 1], dFrameRecDuration = orxDOUBLE_0;
     orxBOOL           bFirst;
 
@@ -486,6 +487,13 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       astVertexList[2 * i + 1].fU =
       astVertexList[2 * i].fV     =
       astVertexList[2 * i + 1].fV = orxFLOAT_0;
+    }
+
+    /* For all indices */
+    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(au16IndexList); i++)
+    {
+      /* Inits indices */
+      au16IndexList[i] = (orxU16)i;
     }
 
     /* For all sorted markers */
@@ -540,8 +548,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
           /* Desired depth? */
           if(orxProfiler_GetUniqueMarkerDepth(s32MarkerID) == sstRender.u32SelectedMarkerDepth)
           {
-            orxCOLOR  stBarColor, stTempColor;
-            orxRGBA   stLowRGBA, stHighRGBA;
+            orxDISPLAY_MESH stMesh;
+            orxCOLOR        stBarColor, stTempColor;
+            orxRGBA         stLowRGBA, stHighRGBA;
 
             /* Gets associated colors */
             stBarColor.fAlpha   = orxRENDER_KF_PROFILER_HISTOGRAM_ALPHA;
@@ -584,8 +593,16 @@ static orxINLINE void orxRender_Home_RenderProfiler()
             /* Resets query frame */
             orxProfiler_SelectQueryFrame(0, sstRender.u32SelectedThread);
 
+            /* Inits mesh */
+            orxMemory_Zero(&stMesh, sizeof(orxDISPLAY_MESH));
+            stMesh.astVertexList    = astVertexList;
+            stMesh.u32VertexNumber  = orxARRAY_GET_ITEM_COUNT(astVertexList);
+            stMesh.au16IndexList    = au16IndexList;
+            stMesh.u32IndexNumber   = orxARRAY_GET_ITEM_COUNT(au16IndexList);
+            stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP;
+
             /* Draws it */
-            orxDisplay_DrawMesh(pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA, 2 * (orxPROFILER_KU32_HISTORY_LENGTH - 1), astVertexList);
+            orxDisplay_DrawMesh(&stMesh, pstBitmap, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
           }
         }
       }
@@ -1771,15 +1788,15 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               /* For all camera group IDs */
               for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
-                orxU32 u32GroupID;
+                orxSTRINGID stGroupID;
 
                 /* Gets it */
-                u32GroupID = orxCamera_GetGroupID(pstCamera, i);
+                stGroupID = orxCamera_GetGroupID(pstCamera, i);
 
                 /* For all objects in this group */
-                for(pstObject = orxObject_GetNext(orxNULL, u32GroupID);
+                for(pstObject = orxObject_GetNext(orxNULL, stGroupID);
                     pstObject != orxNULL;
-                    pstObject = orxObject_GetNext(pstObject, u32GroupID))
+                    pstObject = orxObject_GetNext(pstObject, stGroupID))
                 {
                   /* Is object enabled? */
                   if(orxObject_IsEnabled(pstObject) != orxFALSE)
@@ -2740,7 +2757,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
 
       /* No viewport specified or is position depth in camera frustum? */
       if((_pstViewport == orxNULL)
-      || ((_pvWorldPosition->fZ > stCameraFrustum.vTL.fZ)
+      || ((_pvWorldPosition->fZ >= stCameraFrustum.vTL.fZ)
        && (_pvWorldPosition->fZ <= stCameraFrustum.vBR.fZ)))
       {
         orxAABOX  stViewportBox;
@@ -2895,6 +2912,9 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxRender_Home_EventHandler);
             orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxRender_Home_EventHandler);
             orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxRender_Home_EventHandler);
+            orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
+            orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
+            orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
             /* Gets screen size */
             orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);

@@ -68,6 +68,7 @@ typedef struct __orxEVENT_HANDLER_INFO_t
   orxLINKLIST_NODE  stNode;
   orxEVENT_HANDLER  pfnHandler;
   void             *pContext;
+  orxU32            u32IDFlags;
 
 } orxEVENT_HANDLER_INFO;
 
@@ -309,6 +310,9 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
       /* Stores context */
       pstInfo->pContext = _pContext;
 
+      /* Inits its ID flags */
+      pstInfo->u32IDFlags = orxEVENT_KU32_MASK_ID_ALL;
+
       /* Adds it to the list */
       eResult = orxLinkList_AddEnd(&(pstStorage->stList), &(pstInfo->stNode));
     }
@@ -396,6 +400,54 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventTyp
   return eResult;
 }
 
+/** Sets an event handler's ID flags (use orxEVENT_GET_FLAG(ID) in order to get the flag that matches an ID)
+ * @param[in] _pfnEventHandler      Concerned event handler, must have been previously added for the given type
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pContext             Context of the handler to update, orxNULL for updating all occurrences regardless of their context
+ * @param[in] _u32AddIDFlags        ID flags to add
+ * @param[in] _u32RemoveIDFlags     ID flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxEvent_SetHandlerIDFlags(orxEVENT_HANDLER _pfnEventHandler, orxEVENT_TYPE _eEventType, void *_pContext, orxU32 _u32AddIDFlags, orxU32 _u32RemoveIDFlags)
+{
+  orxEVENT_HANDLER_STORAGE *pstStorage;
+  orxSTATUS                 eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pfnEventHandler != orxNULL);
+
+  /* Gets corresponding storage */
+  pstStorage = (_eEventType < orxEVENT_TYPE_CORE_NUMBER) ? sstEvent.astCoreHandlerStorageList[_eEventType] : (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _eEventType);
+
+  /* Valid? */
+  if(pstStorage != orxNULL)
+  {
+    orxEVENT_HANDLER_INFO *pstInfo;
+
+    /* For all handlers */
+    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
+        pstInfo != orxNULL;
+        pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
+    {
+      /* Found? */
+      if((pstInfo->pfnHandler == _pfnEventHandler)
+      && ((_pContext == orxNULL)
+       || (_pContext == _pfnEventHandler)))
+      {
+        /* Updates its ID flags */
+        orxFLAG_SET(pstInfo->u32IDFlags, _u32AddIDFlags, _u32RemoveIDFlags);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sends an event
  * @param[in] _pstEvent             Event to send
  */
@@ -404,9 +456,13 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
   orxEVENT_HANDLER_STORAGE *pstStorage;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxEvent_Send");
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstEvent != orxNULL);
+  orxASSERT((_pstEvent->eID >= 0) && (_pstEvent->eID < 32));
 
   /* Gets corresponding storage */
   pstStorage = (_pstEvent->eType < orxEVENT_TYPE_CORE_NUMBER) ? sstEvent.astCoreHandlerStorageList[_pstEvent->eType] : (orxEVENT_HANDLER_STORAGE *)orxHashTable_Get(sstEvent.pstHandlerStorageTable, _pstEvent->eType);
@@ -414,47 +470,61 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
   /* Valid? */
   if(pstStorage != orxNULL)
   {
-    /* Main thread? */
-    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
-    {
-      /* Updates event send count */
-      sstEvent.s32EventSendCount++;
-    }
-
     /* Has handler(s)? */
     if(orxLinkList_GetCount(&(pstStorage->stList)) != 0)
     {
-      orxEVENT_HANDLER_INFO *pstInfo;
+      orxEVENT_HANDLER_INFO  *pstInfo;
+      orxU32                  u32IDFlag, u32CurrentThread;
+
+      /* Get its ID flag */
+      u32IDFlag = orxEVENT_GET_FLAG(_pstEvent->eID);
+
+      /* Gets current thread */
+      u32CurrentThread = orxThread_GetCurrent();
+
+      /* Main thread? */
+      if(u32CurrentThread == orxTHREAD_KU32_MAIN_THREAD_ID)
+      {
+        /* Updates event send count */
+        sstEvent.s32EventSendCount++;
+      }
 
       /* For all handlers */
       for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
           pstInfo != orxNULL;
           pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
       {
-        /* Stores context */
-        _pstEvent->pContext = pstInfo->pContext;
-
-        /* Calls it */
-        if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
+        /* Should process? */
+        if(orxFLAG_TEST(pstInfo->u32IDFlags, u32IDFlag))
         {
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
+          /* Stores context */
+          _pstEvent->pContext = pstInfo->pContext;
 
-          break;
+          /* Calls it */
+          if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
+          {
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+
+            break;
+          }
         }
       }
 
       /* Clears context */
       _pstEvent->pContext = orxNULL;
-    }
 
-    /* Main thread? */
-    if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
-    {
-      /* Updates event send count */
-      sstEvent.s32EventSendCount--;
+      /* Main thread? */
+      if(u32CurrentThread == orxTHREAD_KU32_MAIN_THREAD_ID)
+      {
+        /* Updates event send count */
+        sstEvent.s32EventSendCount--;
+      }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;

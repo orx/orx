@@ -125,7 +125,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_RemoveShader(or
 /** Gets a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _u32Index         Index of shader to get
- * @return      orxSJADER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
 extern orxDLLAPI const orxSHADER *orxFASTCALL   orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index);
 

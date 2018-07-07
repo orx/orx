@@ -113,7 +113,7 @@ typedef struct __orxSOUND_STREAM_PACKET_t
   orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
   orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
   orxS32    s32ID;                            /**< Packet's ID : 20 */
-  orxFLOAT  fCursor;                          /**< Packet's cursor: 24 */
+  orxFLOAT  fTime;                            /**< Packet's time (cursor/play position): 24 */
 
 } orxSOUND_STREAM_PACKET;
 
@@ -276,12 +276,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetVolume(orxSOUND *_pstS
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch);
 
-/** Sets a sound cursor (ie. play position from beginning)
+/** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @param[in]   _fCursor                              Cursor position, in seconds
+ * @param[in]   _fTime                                Time, in seconds
  * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetCursor(orxSOUND *_pstSound, orxFLOAT _fCursor);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime);
 
 /** Sets sound position
  * @param[in] _pstSound       Concerned Sound
@@ -324,11 +324,11 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(const orxSOUND 
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(const orxSOUND *_pstSound);
 
-/** Gets a sound's cursor (ie. play position from beginning)
+/** Gets a sound's time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
- * @return Sound's cursor position, in seconds
+ * @return Sound's time (cursor/play position), in seconds
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetCursor(const orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetTime(const orxSOUND *_pstSound);
 
 /** Gets sound position
  * @param[in]  _pstSound      Concerned Sound
@@ -377,90 +377,90 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxSound_GetName(const orxSOUND *_
 /** Gets master bus ID
  * @return      Master bus ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetMasterBusID();
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxSound_GetMasterBusID();
 
 /** Gets sound's bus ID
  * @param[in]   _pstSound     Concerned sound
  * @return      Sound's bus ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusID(const orxSOUND *_pstSound);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxSound_GetBusID(const orxSOUND *_pstSound);
 
 /** Sets sound's bus ID
  * @param[in]   _pstSound     Concerned sound
- * @param[in]   _u32BusID     Bus ID to set
+ * @param[in]   _stBusID      Bus ID to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusID(orxSOUND *_pstSound, orxU32 _u32BusID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusID(orxSOUND *_pstSound, orxSTRINGID _stBusID);
 
 /** Gets next sound in bus
  * @param[in]   _pstSound     Concerned sound, orxNULL to get the first one
- * @param[in]   _u32BusID     Bus ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stBusID      Bus ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxSOUND / orxNULL
  */
-extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_GetNext(const orxSOUND *_pstSound, orxU32 _u32BusID);
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_GetNext(const orxSOUND *_pstSound, orxSTRINGID _stBusID);
 
 /** Gets bus parent
- * @param[in]   _u32BusID     Concerned bus ID
- * @return      Parent bus ID / orxU32_UNDEFINED
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return      Parent bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusParent(orxU32 _u32BusID);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxSound_GetBusParent(orxSTRINGID _stBusID);
 
 /** Gets bus child
- * @param[in]   _u32BusID     Concerned bus ID
- * @return      Child bus ID / orxU32_UNDEFINED
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return      Child bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusChild(orxU32 _u32BusID);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxSound_GetBusChild(orxSTRINGID _stBusID);
 
 /** Gets bus sibling
- * @param[in]   _u32BusID     Concerned bus ID
- * @return      Sibling bus ID / orxU32_UNDEFINED
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return      Sibling bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxSound_GetBusSibling(orxU32 _u32BusID);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxSound_GetBusSibling(orxSTRINGID _stBusID);
 
 /** Sets a bus parent
- * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
- * @param[in]   _u32ParentBusID ID of the bus to use as parent, will create it if not already existing
+ * @param[in]   _stBusID      Concerned bus ID, will create it if not already existing
+ * @param[in]   _stParentBusID  ID of the bus to use as parent, will create it if not already existing
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusParent(orxU32 _u32BusID, orxU32 _u32ParentBusID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusParent(orxSTRINGID _stBusID, orxSTRINGID _stParentBusID);
 
 /** Gets bus volume (local, ie. unaffected by the whole bus hierarchy)
- * @param[in]   _u32BusID     Concerned bus ID
+ * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusVolume(orxU32 _u32BusID);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusVolume(orxSTRINGID _stBusID);
 
 /** Gets bus pitch (local, ie. unaffected by the whole bus hierarchy)
- * @param[in]   _u32BusID     Concerned bus ID
+ * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusPitch(orxU32 _u32BusID);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusPitch(orxSTRINGID _stBusID);
 
 /** Sets bus volume
- * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _stBusID      Concerned bus ID, will create it if not already existing
  * @param[in]   _fVolume      Desired volume (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusVolume(orxU32 _u32BusID, orxFLOAT _fVolume);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusVolume(orxSTRINGID _stBusID, orxFLOAT _fVolume);
 
 /** Sets bus pitch
- * @param[in]   _u32BusID     Concerned bus ID, will create it if not already existing
+ * @param[in]   _stBusID      Concerned bus ID, will create it if not already existing
  * @param[in]   _fPitch       Desired pitch
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusPitch(orxU32 _u32BusID, orxFLOAT _fPitch);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetBusPitch(orxSTRINGID _stBusID, orxFLOAT _fPitch);
 
 /** Gets bus global volume, ie. taking into account the whole bus hierarchy
- * @param[in]   _u32BusID     Concerned bus ID
+ * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalVolume(orxU32 _u32BusID);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalVolume(orxSTRINGID _stBusID);
 
 /** Gets bus global pitch, ie. taking into account the whole bus hierarchy
- * @param[in]   _u32BusID     Concerned bus ID
+ * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalPitch(orxU32 _u32BusID);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalPitch(orxSTRINGID _stBusID);
 
 #endif /*_orxSOUND_H_*/
 
