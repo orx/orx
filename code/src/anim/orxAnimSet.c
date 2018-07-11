@@ -1784,7 +1784,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* Should continue? */
     if(bContinue != orxFALSE)
     {
-      orxVECTOR       vFrameOrigin, vCurrentSize;
+      orxVECTOR       vFrameOrigin = {}, vCurrentSize;
       orxU32          u32FrameCount, u32EventCount, i;
       orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
       const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;

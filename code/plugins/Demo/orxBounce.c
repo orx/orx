@@ -501,7 +501,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   }
 
   /* Gets mouse world position */
-  orxRender_GetWorldPosition(&vMousePos, orxNULL, orxMouse_GetPosition(&vMousePos));
+  orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos);
 
   /* Updates position */
   vMousePos.fZ += orx2F(0.5f);
