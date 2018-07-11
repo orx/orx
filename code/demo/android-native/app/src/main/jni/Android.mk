@@ -10,5 +10,5 @@ LOCAL_STATIC_LIBRARIES := orxd
 LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)
-
+$(call import-add-path,$(ORX))
 $(call import-module,lib/static/android-native)
