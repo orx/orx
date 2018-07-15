@@ -120,7 +120,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000200  /**< Depthbuffer support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000400  /**< No resize flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000800 /**< Ignore resize event flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */ 
+#define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00002000  /**< Custom IBO flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
@@ -1992,13 +1992,21 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Render stop? */
-  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  if((_pstEvent->eType == orxEVENT_TYPE_RENDER) && (_pstEvent->eID == orxRENDER_EVENT_STOP))
   {
     /* Draws remaining items */
     orxDisplay_GLFW_DrawArrays();
 
     /* Polls events */
     glfwPollEvents();
+  }
+  else
+  {
+    /* Checks */
+    orxASSERT(_pstEvent->pstPayload != orxNULL);
+
+    /* Sends windows back */
+    *((GLFWwindow **)(_pstEvent->pstPayload)) = sstDisplay.pstWindow;
   }
 
   /* Done! */
@@ -4119,11 +4127,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Creates window */
       sstDisplay.pstWindow = glfwCreateWindow(iWidth, iHeight, "", (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, orxNULL);
 
-      /* Updates result */
-      eResult = (sstDisplay.pstWindow != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
       /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
+      if(sstDisplay.pstWindow != orxNULL)
       {
         orxDISPLAY_EVENT_PAYLOAD stPayload;
 
@@ -4385,6 +4390,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
       }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
   }
 
@@ -4631,8 +4641,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Adds event handler */
+      /* Adds event handlers */
       eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+      eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler) : orxSTATUS_FAILURE;
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
@@ -4867,8 +4878,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         /* Exits from GLFW */
         glfwTerminate();
 
+        /* Removes event handlers */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
+
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to register event handler.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to register event handlers.");
       }
     }
     else
@@ -4898,8 +4913,9 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     /* Exits from GLFW */
     glfwTerminate();
 
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
     orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_GLFW_Update);

@@ -63,10 +63,10 @@
 typedef struct __orxMOUSE_STATIC_t
 {
   orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
+  GLFWwindow *pstWindow;
   orxU32      u32Flags;
-  orxFLOAT    fWheelMove, fInternalWheelMove;
+  orxFLOAT    fWheelMove, fInternalWheelMove, fWheelPos;
   orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor, bUpdateCursor;
-  orxS32      s32WheelPos;
 
 } orxMOUSE_STATIC;
 
@@ -86,15 +86,15 @@ static orxMOUSE_STATIC sstMouse;
 
 /** Position callback
  */
-static void GLFWCALL orxMouse_GLFW_MousePositionCallback(int _iX, int _iY)
+static void orxMouse_GLFW_CursorPositionCallback(GLFWwindow *_pstWindow, double _dX, double _dY)
 {
   /* Updates mouse move */
-  sstMouse.vMouseMove.fX += orxS2F(_iX) - sstMouse.vMouseBackup.fX + sstMouse.vMouseAcc.fX;
-  sstMouse.vMouseMove.fY += orxS2F(_iY) - sstMouse.vMouseBackup.fY + sstMouse.vMouseAcc.fY;
+  sstMouse.vMouseMove.fX += orx2F(_dX) - sstMouse.vMouseBackup.fX + sstMouse.vMouseAcc.fX;
+  sstMouse.vMouseMove.fY += orx2F(_dY) - sstMouse.vMouseBackup.fY + sstMouse.vMouseAcc.fY;
 
   /* Stores last mouse position */
-  sstMouse.vMouseBackup.fX = orxS2F(_iX);
-  sstMouse.vMouseBackup.fY = orxS2F(_iY);
+  sstMouse.vMouseBackup.fX = orx2F(_dX);
+  sstMouse.vMouseBackup.fY = orx2F(_dY);
 
   /* Clears mouse accumulator */
   sstMouse.vMouseAcc.fX = sstMouse.vMouseAcc.fY = orxFLOAT_0;
@@ -105,14 +105,14 @@ static void GLFWCALL orxMouse_GLFW_MousePositionCallback(int _iX, int _iY)
 
 /** Wheel callback
  */
-static void GLFWCALL orxMouse_GLFW_MouseWheelCallback(int _iWheel)
+static void orxMouse_GLFW_ScrollCallback(GLFWwindow *_pstWindow, double _dX, double _dY)
 {
   /* Updates wheel moves */
-  sstMouse.fWheelMove         += orxS2F(_iWheel - sstMouse.s32WheelPos);
-  sstMouse.fInternalWheelMove += orxS2F(_iWheel - sstMouse.s32WheelPos);
+  sstMouse.fWheelMove         += orx2F(_dY) - sstMouse.fWheelPos;
+  sstMouse.fInternalWheelMove += orx2F(_dY) - sstMouse.fWheelPos;
 
   /* Stores last wheel position */
-  sstMouse.s32WheelPos = _iWheel;
+  sstMouse.fWheelPos = orx2F(_dY);
 
   /* Done! */
   return;
@@ -127,11 +127,14 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
 
+  /* Retrieves current window */
+  orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED, 0, orxNULL, orxNULL, &(sstMouse.pstWindow));
+
   /* Registers mouse position callback */
-  glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
+  glfwSetCursorPosCallback(sstMouse.pstWindow, orxMouse_GLFW_CursorPositionCallback);
 
   /* Registers mouse wheel callback */
-  glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+  glfwSetScrollCallback(sstMouse.pstWindow, orxMouse_GLFW_ScrollCallback);
 
   /* Asks for cursor update */
   sstMouse.bUpdateCursor = orxTRUE;
@@ -153,11 +156,11 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
     /* Restores cursor status */
     if(sstMouse.bShowCursor != orxFALSE)
     {
-      glfwEnable(GLFW_MOUSE_CURSOR);
+      glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     else
     {
-      glfwDisable(GLFW_MOUSE_CURSOR);
+      glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 
     /* Updates status */
@@ -165,7 +168,7 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
   }
 
   /* Is left button pressed? */
-  if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
+  if(glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
   {
     orxSYSTEM_EVENT_PAYLOAD stPayload;
 
@@ -276,11 +279,11 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
   /* Show cursor? */
   if(_bShow != orxFALSE)
   {
-    glfwEnable(GLFW_MOUSE_CURSOR);
+    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   }
   else
   {
-    glfwDisable(GLFW_MOUSE_CURSOR);
+    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
   }
 
   /* Done! */
@@ -297,8 +300,11 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    /* Is GLFW window opened? */
-    if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
+    /* Retrieves current window */
+    orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED, 0, orxNULL, orxNULL, &(sstMouse.pstWindow));
+
+    /* Success? */
+    if(sstMouse.pstWindow != orxNULL)
     {
       orxCLOCK *pstClock;
 
@@ -335,10 +341,10 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
         orxEvent_SetHandlerIDFlags(orxMouse_GLFW_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
 
         /* Registers mouse position callback */
-        glfwSetMousePosCallback(orxMouse_GLFW_MousePositionCallback);
+        glfwSetCursorPosCallback(sstMouse.pstWindow, orxMouse_GLFW_CursorPositionCallback);
 
         /* Registers mouse wheel callback */
-        glfwSetMouseWheelCallback(orxMouse_GLFW_MouseWheelCallback);
+        glfwSetScrollCallback(sstMouse.pstWindow, orxMouse_GLFW_ScrollCallback);
 
         /* Pushes config section */
         orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
@@ -388,21 +394,21 @@ void orxFASTCALL orxMouse_GLFW_Exit()
 
 orxSTATUS orxFASTCALL orxMouse_GLFW_SetPosition(const orxVECTOR *_pvPosition)
 {
-  orxS32    s32X, s32Y;
+  orxDOUBLE dX, dY;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* Gets mouse position */
-  glfwGetMousePos((int *)&s32X, (int *)&s32Y);
+  glfwGetCursorPos(sstMouse.pstWindow, (double *)&dX, (double *)&dY);
 
   /* Updates accumulator */
-  sstMouse.vMouseAcc.fX += orxS2F(s32X) - _pvPosition->fX;
-  sstMouse.vMouseAcc.fY += orxS2F(s32Y) - _pvPosition->fY;
+  sstMouse.vMouseAcc.fX += orx2F(dX) - _pvPosition->fX;
+  sstMouse.vMouseAcc.fY += orx2F(dY) - _pvPosition->fY;
 
   /* Moves mouse */
-  glfwSetMousePos((int)orxF2S(_pvPosition->fX), (int)orxF2S(_pvPosition->fY));
+  glfwSetCursorPos(sstMouse.pstWindow, (double)_pvPosition->fX, (double)_pvPosition->fY);
 
   /* Done! */
   return eResult;
@@ -410,7 +416,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_SetPosition(const orxVECTOR *_pvPosition)
 
 orxVECTOR *orxFASTCALL orxMouse_GLFW_GetPosition(orxVECTOR *_pvPosition)
 {
-  orxS32      s32X, s32Y;
+  orxDOUBLE dX, dY;
   orxVECTOR  *pvResult = _pvPosition;
 
   /* Checks */
@@ -418,11 +424,11 @@ orxVECTOR *orxFASTCALL orxMouse_GLFW_GetPosition(orxVECTOR *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets mouse position */
-  glfwGetMousePos((int *)&s32X, (int *)&s32Y);
+  glfwGetCursorPos(sstMouse.pstWindow, (double *)&dX, (double *)&dY);
 
   /* Updates result */
-  _pvPosition->fX = orxS2F(s32X);
-  _pvPosition->fY = orxS2F(s32Y);
+  _pvPosition->fX = orx2F(dX);
+  _pvPosition->fY = orx2F(dY);
   _pvPosition->fZ = orxFLOAT_0;
 
   /* Done! */
@@ -443,35 +449,35 @@ orxBOOL orxFASTCALL orxMouse_GLFW_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     case orxMOUSE_BUTTON_LEFT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_RIGHT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_RIGHT) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_MIDDLE:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_MIDDLE) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_MIDDLE) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_1:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_4) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_4) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_2:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(GLFW_MOUSE_BUTTON_5) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_5) != GL_FALSE) ? orxTRUE : orxFALSE;
       break;
     }
 
