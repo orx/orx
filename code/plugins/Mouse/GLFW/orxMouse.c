@@ -168,7 +168,7 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
   }
 
   /* Is left button pressed? */
-  if(glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE)
+  if(glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE)
   {
     orxSYSTEM_EVENT_PAYLOAD stPayload;
 
@@ -449,35 +449,35 @@ orxBOOL orxFASTCALL orxMouse_GLFW_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     case orxMOUSE_BUTTON_LEFT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_RIGHT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_RIGHT) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_RIGHT) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_MIDDLE:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_MIDDLE) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_MIDDLE) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_1:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_4) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_4) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_2:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_5) != GL_FALSE) ? orxTRUE : orxFALSE;
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_5) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
       break;
     }
 
