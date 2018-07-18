@@ -76,6 +76,7 @@ typedef struct __orxKEYBOARD_STATIC_t
   orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
   orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
   orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
+  GLFWwindow       *pstWindow;
   orxU32            u32Flags;
 } orxKEYBOARD_STATIC;
 
@@ -363,7 +364,7 @@ static GLFWKey orxFASTCALL orxKeyboard_GLFW_GetGLFWKey(orxKEYBOARD_KEY _eKey)
 
 /** Key callback
  */
-static void orxKeyboard_GLFW_KeyCallback(int _iKey, int _iAction)
+static void orxKeyboard_GLFW_KeyCallback(GLFWwindow *_pstWindow, int _iKey, int _iScanCode, int _iAction, int _iMod)
 {
   /* Pressed? */
   if(_iAction == GLFW_PRESS)
@@ -386,10 +387,10 @@ static void orxKeyboard_GLFW_KeyCallback(int _iKey, int _iAction)
 
 /** Char callback
  */
-static void orxKeyboard_GLFW_CharCallback(int _iKey, int _iAction)
+static void orxKeyboard_GLFW_CharCallback(GLFWwindow *_pstWindow, unsigned int _uiCodePoint)
 {
   /* Stores it */
-  sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = (orxU32)_iKey;
+  sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = (orxU32)_uiCodePoint;
   sstKeyboard.u32CharWriteIndex = (sstKeyboard.u32CharWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
 
   /* Full? */
@@ -412,11 +413,14 @@ static orxSTATUS orxFASTCALL orxKeyboard_GLFW_EventHandler(const orxEVENT *_pstE
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
 
+  /* Retrieves current window */
+  orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED, 0, orxNULL, orxNULL, &(sstKeyboard.pstWindow));
+
   /* Registers key callback */
-  glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);
+  glfwSetKeyCallback(sstKeyboard.pstWindow, orxKeyboard_GLFW_KeyCallback);
 
   /* Registers char callback */
-  glfwSetCharCallback(orxKeyboard_GLFW_CharCallback);
+  glfwSetCharCallback(sstKeyboard.pstWindow, orxKeyboard_GLFW_CharCallback);
 
   /* Done! */
   return eResult;
@@ -432,18 +436,21 @@ orxSTATUS orxFASTCALL orxKeyboard_GLFW_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
-    /* Is GLFW window opened? */
-    if(glfwGetWindowParam(GLFW_OPENED) != GL_FALSE)
+    /* Retrieves current window */
+    orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED, 0, orxNULL, orxNULL, &(sstKeyboard.pstWindow));
+
+    /* Success? */
+    if(sstKeyboard.pstWindow != orxNULL)
     {
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxKeyboard_GLFW_EventHandler);
       orxEvent_SetHandlerIDFlags(orxKeyboard_GLFW_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Registers key callback */
-      glfwSetKeyCallback(orxKeyboard_GLFW_KeyCallback);
+      glfwSetKeyCallback(sstKeyboard.pstWindow, orxKeyboard_GLFW_KeyCallback);
 
       /* Registers char callback */
-      glfwSetCharCallback(orxKeyboard_GLFW_CharCallback);
+      glfwSetCharCallback(sstKeyboard.pstWindow, orxKeyboard_GLFW_CharCallback);
 
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
@@ -462,12 +469,6 @@ void orxFASTCALL orxKeyboard_GLFW_Exit()
   /* Wasn't initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
-    /* Unregisters key callback */
-    glfwSetKeyCallback(NULL);
-
-    /* Unregisters char callback */
-    glfwSetCharCallback(NULL);
-
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxKeyboard_GLFW_EventHandler);
 
@@ -494,7 +495,7 @@ orxBOOL orxFASTCALL orxKeyboard_GLFW_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   if(eGLFWKey != GLFW_KEY_UNKNOWN)
   {
     /* Updates result */
-    bResult = (glfwGetKey((int)eGLFWKey) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+    bResult = (glfwGetKey(sstKeyboard.pstWindow, (int)eGLFWKey) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
   }
   else
   {
