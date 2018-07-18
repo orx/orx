@@ -4650,15 +4650,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         && (sstDisplay.pstShaderBank != orxNULL))
         {
           orxDISPLAY_VIDEO_MODE stVideoMode;
-          GLFWvidmode           stDesktopMode;
+          const GLFWvidmode    *pstDesktopMode;
 
           /* Gets desktop mode */
-          glfwGetVideoMode(glfwGetPrimaryMonitor());
+          pstDesktopMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
           /* Updates default mode */
-          sstDisplay.u32DefaultWidth        = (orxU32)stDesktopMode.width;
-          sstDisplay.u32DefaultHeight       = (orxU32)stDesktopMode.height;
-          sstDisplay.u32DefaultDepth        = (orxU32)(stDesktopMode.redBits + stDesktopMode.greenBits +stDesktopMode.blueBits);
+          sstDisplay.u32DefaultWidth        = (orxU32)pstDesktopMode->width;
+          sstDisplay.u32DefaultHeight       = (orxU32)pstDesktopMode->height;
+          sstDisplay.u32DefaultDepth        = (orxU32)(pstDesktopMode->redBits + pstDesktopMode->greenBits +pstDesktopMode->blueBits);
 
           /* 24-bit? */
           if(sstDisplay.u32DefaultDepth == 24)
@@ -4668,7 +4668,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           }
 
           /* Hack: Corrects imprecise refresh rate reports for default mode */
-          switch(stDesktopMode.refreshRate)
+          switch(pstDesktopMode->refreshRate)
           {
             case 59:
             case 60:
@@ -4688,7 +4688,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
             default:
             {
-              sstDisplay.u32DefaultRefreshRate = stDesktopMode.refreshRate;
+              sstDisplay.u32DefaultRefreshRate = pstDesktopMode->refreshRate;
               break;
             }
           }
@@ -4702,14 +4702,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
           stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
           stVideoMode.bFullScreen     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN);
-
-          /* No decoration? */
-          if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE)
-          && (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "This GLFW plugin can't create windows with no decorations.");
-          }
 
           /* Sets module as ready */
           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
@@ -4729,7 +4721,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           }
 
           /* No decoration? */
-          if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+          if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE) && (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE))
           {
             /* Updates flags */
             orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION, orxDISPLAY_KU32_STATIC_FLAG_NONE);
