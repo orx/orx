@@ -466,23 +466,56 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   /* Has window? */
   if(sstDisplay.pstWindow != orxNULL)
   {
-    /* Should close? */
-    if(glfwWindowShouldClose(sstDisplay.pstWindow) != 0)
+    /* Foreground? */
+    if(glfwGetWindowAttrib(sstDisplay.pstWindow, GLFW_ICONIFIED) == GLFW_FALSE)
     {
-      /* Closes the window */
-      glfwDestroyWindow(sstDisplay.pstWindow);
-      sstDisplay.pstWindow = orxNULL;
+      /* Wasn't in the foreground before? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
+      {
+        /* Has backup clock tick size? */
+        if(sstDisplay.fClockTickSize >= orxFLOAT_0)
+        {
+          orxCLOCK *pstClock;
+
+          /* Gets core clock */
+          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+          /* Valid? */
+          if(pstClock != orxNULL)
+          {
+            /* Restores its tick size */
+            orxClock_SetTickSize(pstClock, sstDisplay.fClockTickSize);
+          }
+        }
+
+        /* Sends foreground event */
+        if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
+        {
+          /* Removes render inhibitor */
+          orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
+        }
+
+        /* Updates foreground status */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND);
+      }
     }
+    /* Background */
     else
     {
-      /* Foreground? */
-      if(glfwGetWindowAttrib(sstDisplay.pstWindow, GLFW_ICONIFIED) == GLFW_FALSE)
+      /* Wasn't in the background before? */
+      if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
       {
-        /* Wasn't in the foreground before? */
-        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
+        /* Clears backup clock tick size */
+        sstDisplay.fClockTickSize = -orxFLOAT_1;
+
+        /* Sends background event */
+        if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
         {
-          /* Has backup clock tick size? */
-          if(sstDisplay.fClockTickSize >= orxFLOAT_0)
+          /* Adds render inhibitor */
+          orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
+
+          /* Is VSync on? */
+          if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
           {
             orxCLOCK *pstClock;
 
@@ -492,99 +525,56 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
             /* Valid? */
             if(pstClock != orxNULL)
             {
-              /* Restores its tick size */
-              orxClock_SetTickSize(pstClock, sstDisplay.fClockTickSize);
+              /* Backups its tick size */
+              sstDisplay.fClockTickSize = orxClock_GetInfo(pstClock)->fTickSize;
+
+              /* Sets its tick size to match the refresh rate */
+              orxClock_SetTickSize(pstClock, orxFLOAT_1 / orxU2F(sstDisplay.u32RefreshRate));
             }
           }
-
-          /* Sends foreground event */
-          if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND) != orxSTATUS_FAILURE)
-          {
-            /* Removes render inhibitor */
-            orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
-          }
-
-          /* Updates foreground status */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND);
         }
-      }
 
-      /* Has focus? */
-      if(glfwGetWindowAttrib(sstDisplay.pstWindow, GLFW_FOCUSED) != GLFW_FALSE)
+        /* Updates background status */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+      }
+    }
+
+    /* Has focus? */
+    if(glfwGetWindowAttrib(sstDisplay.pstWindow, GLFW_FOCUSED) != GLFW_FALSE)
+    {
+      /* Didn't have focus before? */
+      if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
       {
-        /* Didn't have focus before? */
-        if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
-        {
-          /* Sends focus gained event */
-          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+        /* Sends focus gained event */
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
 
-          /* Updates focus status */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
+        /* Updates focus status */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS, orxDISPLAY_KU32_STATIC_FLAG_NONE);
       }
-      else
+    }
+    /* Out of focus */
+    else
+    {
+      /* Had focus before? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
       {
-        /* Had focus before? */
-        if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FOCUS))
-        {
-          /* Sends focus lost event */
-          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+        /* Sends focus lost event */
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
 
-          /* Updates focus status */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FOCUS);
-        }
+        /* Updates focus status */
+        orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FOCUS);
       }
+    }
 
-      /* Background? */
-      if(glfwGetWindowAttrib(sstDisplay.pstWindow, GLFW_ICONIFIED) != GLFW_FALSE)
-      {
-        /* Wasn't in the background before? */
-        if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
-        {
-          /* Clears backup clock tick size */
-          sstDisplay.fClockTickSize = -orxFLOAT_1;
+    /* Should close window? */
+    if(glfwWindowShouldClose(sstDisplay.pstWindow) != GLFW_FALSE)
+    {
+      /* Deletes window */
+      glfwDestroyWindow(sstDisplay.pstWindow);
+      sstDisplay.pstWindow = orxNULL;
 
-          /* Sends background event */
-          if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
-          {
-            /* Adds render inhibitor */
-            orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_RenderInhibitor);
-
-            /* Is VSync on? */
-            if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
-            {
-              orxCLOCK *pstClock;
-
-              /* Gets core clock */
-              pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-              /* Valid? */
-              if(pstClock != orxNULL)
-              {
-                /* Backups its tick size */
-                sstDisplay.fClockTickSize = orxClock_GetInfo(pstClock)->fTickSize;
-
-                /* Sets its tick size to match the refresh rate */
-                orxClock_SetTickSize(pstClock, orxFLOAT_1 / orxU2F(sstDisplay.u32RefreshRate));
-              }
-            }
-          }
-
-          /* Updates background status */
-          orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-        }
-      }
-
-      /* Should close window? */
-      if(glfwWindowShouldClose(sstDisplay.pstWindow) != 0)
-      {
-        /* Deletes window */
-        glfwDestroyWindow(sstDisplay.pstWindow);
-        sstDisplay.pstWindow = orxNULL;
-
-        /* Sends system close event */
-        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-      }
+      /* Sends system close event */
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
     }
   }
 
