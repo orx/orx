@@ -481,6 +481,27 @@ orxBOOL orxFASTCALL orxMouse_GLFW_IsButtonPressed(orxMOUSE_BUTTON _eButton)
       break;
     }
 
+    case orxMOUSE_BUTTON_EXTRA_3:
+    {
+      /* Updates result */
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_6) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      break;
+    }
+
+    case orxMOUSE_BUTTON_EXTRA_4:
+    {
+      /* Updates result */
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_7) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      break;
+    }
+
+    case orxMOUSE_BUTTON_EXTRA_5:
+    {
+      /* Updates result */
+      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_8) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      break;
+    }
+
     case orxMOUSE_BUTTON_WHEEL_UP:
     {
       /* Updates result */
