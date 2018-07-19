@@ -111,16 +111,20 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
       const orxFLOAT *afAxes;
       const orxU8    *au8Buttons;
 
-      /* Gets axes values */
-      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iCount, orxJOYSTICK_AXIS_SINGLE_NUMBER));
-
       /* Updates connection status */
       sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
 
+      /* Gets axes values */
+      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+
+      /* Remaps U & V axes */
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orx2F(0.5f) * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + orx2F(0.5f);
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orx2F(0.5f) * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + orx2F(0.5f);
+
       /* Gets button values */
       au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER));
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
     }
     else
     {
