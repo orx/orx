@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxMouse
- * 
+ *
  * Mouse plugin module
  * Plugin module that handles mouse-like peripherals
  *
@@ -57,6 +57,9 @@ typedef enum __orxMOUSE_BUTTON_t
   orxMOUSE_BUTTON_MIDDLE,
   orxMOUSE_BUTTON_EXTRA_1,
   orxMOUSE_BUTTON_EXTRA_2,
+  orxMOUSE_BUTTON_EXTRA_3,
+  orxMOUSE_BUTTON_EXTRA_4,
+  orxMOUSE_BUTTON_EXTRA_5,
   orxMOUSE_BUTTON_WHEEL_UP,
   orxMOUSE_BUTTON_WHEEL_DOWN,
   orxMOUSE_BUTTON_NUMBER,
