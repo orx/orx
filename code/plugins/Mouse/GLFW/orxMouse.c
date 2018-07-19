@@ -65,7 +65,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxVECTOR   vMouseMove, vMouseBackup, vMouseAcc, vMouseTouch;
   GLFWwindow *pstWindow;
   orxU32      u32Flags;
-  orxFLOAT    fWheelMove, fInternalWheelMove, fWheelPos;
+  orxFLOAT    fWheelMove, fInternalWheelMove;
   orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor, bUpdateCursor;
 
 } orxMOUSE_STATIC;
@@ -108,11 +108,8 @@ static void orxMouse_GLFW_CursorPositionCallback(GLFWwindow *_pstWindow, double 
 static void orxMouse_GLFW_ScrollCallback(GLFWwindow *_pstWindow, double _dX, double _dY)
 {
   /* Updates wheel moves */
-  sstMouse.fWheelMove         += orx2F(_dY) - sstMouse.fWheelPos;
-  sstMouse.fInternalWheelMove += orx2F(_dY) - sstMouse.fWheelPos;
-
-  /* Stores last wheel position */
-  sstMouse.fWheelPos = orx2F(_dY);
+  sstMouse.fWheelMove         += orx2F(_dY);
+  sstMouse.fInternalWheelMove += orx2F(_dY);
 
   /* Done! */
   return;
