@@ -223,6 +223,7 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_GetKeyDisplayName, const orxSTRING, orxKEYBOARD_KEY);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadKey, orxKEYBOARD_KEY, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ReadString, const orxSTRING, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, void, void);
@@ -236,6 +237,7 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(KEYBOARD)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, INIT, orxKeyboard_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, EXIT, orxKeyboard_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, IS_KEY_PRESSED, orxKeyboard_IsKeyPressed)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, GET_KEY_DISPLAY_NAME, orxKeyboard_GetKeyDisplayName)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_KEY, orxKeyboard_ReadKey)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ_STRING, orxKeyboard_ReadString)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
@@ -267,6 +269,15 @@ void orxFASTCALL orxKeyboard_Exit()
 orxBOOL orxFASTCALL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_IsKeyPressed)(_eKey);
+}
+
+/** Gets key display name, layout-dependent
+ * @param[in] _eKey       Concerned key
+ * @return UTF-8 encoded key's name if valid, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxKeyboard_GetKeyDisplayName(orxKEYBOARD_KEY _eKey)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_GetKeyDisplayName)(_eKey);
 }
 
 /** Gets the next key from the keyboard buffer and removes it from there

@@ -206,6 +206,12 @@ extern orxDLLAPI void orxFASTCALL             orxKeyboard_Exit();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
 
+/** Gets key display name, layout-dependent
+ * @param[in] _eKey       Concerned key
+ * @return UTF-8 encoded key's name if valid, orxSTRING_EMPTY otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxKeyboard_GetKeyDisplayName(orxKEYBOARD_KEY _eKey);
+
 /** Gets the next key from the keyboard buffer and removes it from there
  * @return orxKEYBOARD_KEY, orxKEYBOARD_KEY_NONE if the buffer is empty
  */
