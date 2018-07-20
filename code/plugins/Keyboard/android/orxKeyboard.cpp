@@ -103,7 +103,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
     case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
     case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGE_UP; break;}
     case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGE_DOWN; break;}
-    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}
+    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_NUMPAD_ADD; break;}
     case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_NUMPAD_MULTIPLY; break;}
     case AKEYCODE_MEDIA_PLAY_PAUSE:   {eResult = orxKEYBOARD_KEY_PAUSE; break;}
     case AKEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}
