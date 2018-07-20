@@ -126,6 +126,7 @@ var orx_keyboard_8h =
     ] ],
     [ "orxKeyboard_ClearBuffer", "group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a", null ],
     [ "orxKeyboard_Exit", "group__orx_keyboard.html#ga0d09f92bcd5854e4955faf3ce86863c2", null ],
+    [ "orxKeyboard_GetKeyDisplayName", "group__orx_keyboard.html#gaca8a443b809e5d22280caf513b5be638", null ],
     [ "orxKeyboard_GetKeyName", "group__orx_keyboard.html#ga1e2d858b8ecd23c4e0d56aad0137e520", null ],
     [ "orxKeyboard_Init", "group__orx_keyboard.html#ga3d60dc20025f2febc61feec215dd4dbf", null ],
     [ "orxKeyboard_IsKeyPressed", "group__orx_keyboard.html#ga7687c5ca36f6a69d86ce91b3ac24b908", null ],
