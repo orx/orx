@@ -3894,18 +3894,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Has specified video mode? */
   if(_pstVideoMode != orxNULL)
   {
-    int     iWidth, iHeight, iDepth, iRefreshRate;
-    orxBOOL bCreateNewWindow = orxFALSE;
-    orxU32  u32OldFlags;
+    int iWidth, iHeight, iDepth, iRefreshRate;
 
     /* Gets its info */
     iWidth        = (int)_pstVideoMode->u32Width;
     iHeight       = (int)_pstVideoMode->u32Height;
     iDepth        = (int)_pstVideoMode->u32Depth;
     iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
-
-    /* Retrieves current flags */
-    u32OldFlags = orxFLAG_GET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE | orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION | orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER);
 
     /* Doesn't allow resize? */
     if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE) == orxFALSE)
@@ -3941,19 +3936,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     {
       /* Updates flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER);
-    }
-
-    /* Updates window hints */
-    glfwWindowHint(GLFW_RESIZABLE, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE) ? GLFW_FALSE : GLFW_TRUE);
-    glfwWindowHint(GLFW_DECORATED, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION) ? GLFW_FALSE : GLFW_TRUE);
-    glfwWindowHint(GLFW_REFRESH_RATE, iRefreshRate);
-
-    /* Different depth or different setup? */
-    if((_pstVideoMode->u32Depth != sstDisplay.u32Depth)
-    || (orxFLAG_GET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE | orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION | orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER) != u32OldFlags))
-    {
-      /* Requests new window */
-      bCreateNewWindow = orxTRUE;
     }
 
     /* Depending on video depth */
@@ -4008,8 +3990,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         }
       }
 
-      /* Should create a new window? */
-      if(bCreateNewWindow != orxFALSE)
+      /* Different depth? */
+      if(_pstVideoMode->u32Depth != sstDisplay.u32Depth)
       {
         GLFWwindow *pstNewWindow;
 
@@ -4048,6 +4030,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Ignores resize event for now */
         sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
 
+        /* Updates window attributes */
+        glfwSetWindowAttrib(sstDisplay.pstWindow, GLFW_RESIZABLE, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE) ? GLFW_FALSE : GLFW_TRUE);
+        glfwSetWindowAttrib(sstDisplay.pstWindow, GLFW_DECORATED, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION) ? GLFW_FALSE : GLFW_TRUE);
+
         /* Applies monitor status */
         glfwSetWindowMonitor(sstDisplay.pstWindow, (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, (int)sstDisplay.vWindowPosition.fX, (int)sstDisplay.vWindowPosition.fY, iWidth, iHeight, iRefreshRate);
 
@@ -4060,6 +4046,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     }
     else
     {
+      /* Updates window hints */
+      glfwWindowHint(GLFW_RESIZABLE, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE) ? GLFW_FALSE : GLFW_TRUE);
+      glfwWindowHint(GLFW_DECORATED, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION) ? GLFW_FALSE : GLFW_TRUE);
+      glfwWindowHint(GLFW_REFRESH_RATE, iRefreshRate);
+
       /* Creates window */
       sstDisplay.pstWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, orxNULL);
 
