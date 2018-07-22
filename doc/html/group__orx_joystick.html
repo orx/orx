@@ -121,14 +121,14 @@ Macros</h2></td></tr>
 <tr class="separator:ga47fc13efaaf1addba0b1fc4bb37d8bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga06372ec36e21dbb99b89c082c1097e6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga06372ec36e21dbb99b89c082c1097e6c">orxJOYSTICK_DECLARE_BUTTON_ENUM</a>(ID)</td></tr>
 <tr class="separator:ga06372ec36e21dbb99b89c082c1097e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4ed84fe48884a92869e7b3c18fb76a0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga4ed84fe48884a92869e7b3c18fb76a0b">orxJOYSTICK_GET_AXIS_FOR_PLAYER</a>(AXIS,  PLAYER)      &#160;&#160;&#160;(((AXIS) % <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>))</td></tr>
-<tr class="separator:ga4ed84fe48884a92869e7b3c18fb76a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad8902abd753c78b918deacfeacdab4c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gad8902abd753c78b918deacfeacdab4c5">orxJOYSTICK_GET_BUTTON_FOR_PLAYER</a>(BUTTON,  PLAYER)&#160;&#160;&#160;(((BUTTON) % <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>))</td></tr>
-<tr class="separator:gad8902abd753c78b918deacfeacdab4c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac81888d6b46dcde7d481a4d19292b99d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gac81888d6b46dcde7d481a4d19292b99d">orxJOYSTICK_GET_PLAYER_FROM_AXIS</a>(AXIS)                    &#160;&#160;&#160;(((AXIS) / <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + 1)</td></tr>
-<tr class="separator:gac81888d6b46dcde7d481a4d19292b99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga14729988d1cb33795d874ed0a054651c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga14729988d1cb33795d874ed0a054651c">orxJOYSTICK_GET_PLAYER_FROM_BUTTON</a>(BUTTON)            &#160;&#160;&#160;(((BUTTON) / <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + 1)</td></tr>
-<tr class="separator:ga14729988d1cb33795d874ed0a054651c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab77285394fe306f2077e9647086d7604"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gab77285394fe306f2077e9647086d7604">orxJOYSTICK_GET_AXIS</a>(AXIS,  ID)                &#160;&#160;&#160;((((orxU32)AXIS) % <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + ((ID - 1) * <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>))</td></tr>
+<tr class="separator:gab77285394fe306f2077e9647086d7604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3775b7637ef336c1b912e700b7e74529"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga3775b7637ef336c1b912e700b7e74529">orxJOYSTICK_GET_BUTTON</a>(BUTTON,  ID)        &#160;&#160;&#160;((((orxU32)BUTTON) % <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + ((ID - 1) * <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>))</td></tr>
+<tr class="separator:ga3775b7637ef336c1b912e700b7e74529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0d8bce4e8cc6613c25eea5fadb5f1e28"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga0d8bce4e8cc6613c25eea5fadb5f1e28">orxJOYSTICK_GET_ID_FROM_AXIS</a>(AXIS)        &#160;&#160;&#160;((((orxU32)AXIS) / <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + 1)</td></tr>
+<tr class="separator:ga0d8bce4e8cc6613c25eea5fadb5f1e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae68737bb1b4e6da340c7606ac4927790"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gae68737bb1b4e6da340c7606ac4927790">orxJOYSTICK_GET_ID_FROM_BUTTON</a>(BUTTON)&#160;&#160;&#160;((((orxU32)BUTTON) / <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + 1)</td></tr>
+<tr class="separator:gae68737bb1b4e6da340c7606ac4927790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -252,6 +252,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga1ab26b1f55c5e0e104b8ff00ae833990"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3b060fab3b7afd5484d9a29e3af826b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga3b060fab3b7afd5484d9a29e3af826b4">orxJoystick_IsButtonPressed</a> (<a class="el" href="group__orx_joystick.html#gab6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
 <tr class="separator:ga3b060fab3b7afd5484d9a29e3af826b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae0bb802edd10bd4bcc2ee401aca2c700"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gae0bb802edd10bd4bcc2ee401aca2c700">orxJoystick_IsConnected</a> (orxU32 _u32ID)</td></tr>
+<tr class="separator:gae0bb802edd10bd4bcc2ee401aca2c700"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga303b00feabf090588da3658e3fa3fd84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga303b00feabf090588da3658e3fa3fd84">orxJoystick_Setup</a> ()</td></tr>
 <tr class="separator:ga303b00feabf090588da3658e3fa3fd84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -294,12 +296,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga4ed84fe48884a92869e7b3c18fb76a0b"></a>
+<a class="anchor" id="gab77285394fe306f2077e9647086d7604"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxJOYSTICK_GET_AXIS_FOR_PLAYER</td>
+          <td class="memname">#define orxJOYSTICK_GET_AXIS</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">AXIS, </td>
@@ -308,12 +310,12 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">PLAYER&#160;</td>
+          <td class="paramname">ID&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((AXIS) % <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>))</td>
+          <td></td><td>&#160;&#160;&#160;((((orxU32)AXIS) % <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + ((ID - 1) * <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -323,12 +325,12 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gad8902abd753c78b918deacfeacdab4c5"></a>
+<a class="anchor" id="ga3775b7637ef336c1b912e700b7e74529"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxJOYSTICK_GET_BUTTON_FOR_PLAYER</td>
+          <td class="memname">#define orxJOYSTICK_GET_BUTTON</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">BUTTON, </td>
@@ -337,12 +339,12 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">PLAYER&#160;</td>
+          <td class="paramname">ID&#160;</td>
         </tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(((BUTTON) % <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>))</td>
+          <td></td><td>&#160;&#160;&#160;((((orxU32)BUTTON) % <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + ((ID - 1) * <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -351,16 +353,16 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gac81888d6b46dcde7d481a4d19292b99d"></a>
+<a class="anchor" id="ga0d8bce4e8cc6613c25eea5fadb5f1e28"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxJOYSTICK_GET_PLAYER_FROM_AXIS</td>
+          <td class="memname">#define orxJOYSTICK_GET_ID_FROM_AXIS</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">AXIS</td><td>)</td>
-          <td>&#160;&#160;&#160;(((AXIS) / <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + 1)</td>
+          <td>&#160;&#160;&#160;((((orxU32)AXIS) / <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + 1)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -369,16 +371,16 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga14729988d1cb33795d874ed0a054651c"></a>
+<a class="anchor" id="gae68737bb1b4e6da340c7606ac4927790"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxJOYSTICK_GET_PLAYER_FROM_BUTTON</td>
+          <td class="memname">#define orxJOYSTICK_GET_ID_FROM_BUTTON</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">BUTTON</td><td>)</td>
-          <td>&#160;&#160;&#160;(((BUTTON) / <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + 1)</td>
+          <td>&#160;&#160;&#160;((((orxU32)BUTTON) / <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + 1)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -459,7 +461,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_joystick_8h_source.html#l00148">148</a> of file <a class="el" href="orx_joystick_8h_source.html">orxJoystick.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_joystick_8h_source.html#l00147">147</a> of file <a class="el" href="orx_joystick_8h_source.html">orxJoystick.h</a>.</p>
 
 </div>
 </div>
@@ -699,7 +701,30 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>orxTRUE if presse / orxFALSE otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE if pressed / orxFALSE otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gae0bb802edd10bd4bcc2ee401aca2c700"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxJoystick_IsConnected </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32ID</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is joystick connected? </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32ID</td><td>ID of the joystick, 1-based index </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE if connected / orxFALSE otherwise </dd></dl>
 
 </div>
 </div>
