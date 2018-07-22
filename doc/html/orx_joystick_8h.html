@@ -127,6 +127,10 @@ $(document).ready(function(){initNavTree('orx_joystick_8h.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:ga47fc13efaaf1addba0b1fc4bb37d8bd9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga47fc13efaaf1addba0b1fc4bb37d8bd9">orxJOYSTICK_DECLARE_AXIS_ENUM</a>(ID)  </td></tr>
+<tr class="separator:ga47fc13efaaf1addba0b1fc4bb37d8bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06372ec36e21dbb99b89c082c1097e6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga06372ec36e21dbb99b89c082c1097e6c">orxJOYSTICK_DECLARE_BUTTON_ENUM</a>(ID)</td></tr>
+<tr class="separator:ga06372ec36e21dbb99b89c082c1097e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4ed84fe48884a92869e7b3c18fb76a0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#ga4ed84fe48884a92869e7b3c18fb76a0b">orxJOYSTICK_GET_AXIS_FOR_PLAYER</a>(AXIS,  PLAYER)      &#160;&#160;&#160;(((AXIS) % <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a664e54db63fe749b5bd4c1cbf5888a45">orxJOYSTICK_AXIS_SINGLE_NUMBER</a>))</td></tr>
 <tr class="separator:ga4ed84fe48884a92869e7b3c18fb76a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad8902abd753c78b918deacfeacdab4c5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#gad8902abd753c78b918deacfeacdab4c5">orxJOYSTICK_GET_BUTTON_FOR_PLAYER</a>(BUTTON,  PLAYER)&#160;&#160;&#160;(((BUTTON) % <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>) + ((PLAYER - 1) * <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3cc4fa305a53df43e56bd42271e2b837">orxJOYSTICK_BUTTON_SINGLE_NUMBER</a>))</td></tr>
@@ -155,23 +159,26 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ad14b2bada72911711d650ee55ccf32f1">orxJOYSTICK_AXIS_U_2</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a996ffd3ccdb83493d731371528e8a85e">orxJOYSTICK_AXIS_V_2</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ada98e017a19ebd935e8a3af035cf059e">orxJOYSTICK_AXIS_X_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a215bfc4dbbf955daaf9d5cb6a48a28f7">orxJOYSTICK_AXIS_Y_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a89f095c9a6d951c9e598de7f951c2394">orxJOYSTICK_AXIS_Z_3</a>, 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a1b1e6b00c00d27ae757705bcca6b2731">orxJOYSTICK_AXIS_R_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a05a4f6c5ec171dc7ec531ffce6205372">orxJOYSTICK_AXIS_U_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a99754be8a5056197ec4a3b517da7e434">orxJOYSTICK_AXIS_V_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ad88c95a589c414bf6f6e2aa6547295c4">orxJOYSTICK_AXIS_X_4</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a1c1a0fde9f3900c2296528a9cb5114fc">orxJOYSTICK_AXIS_Y_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a563608794ca8c24e0f1eb4c620e170da">orxJOYSTICK_AXIS_Z_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ac55a5f540a3ff5df8752f11a3c1f7f93">orxJOYSTICK_AXIS_R_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ac357d185d9b9ffdebfbc3857a7345dca">orxJOYSTICK_AXIS_U_4</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a241cada2deabe77e985727b323977469">orxJOYSTICK_AXIS_V_4</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf">orxJOYSTICK_DECLARE_AXIS_ENUM</a> =(3), 
 <a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642ac52ac7753dbd143d7cb99b408570fc72">orxJOYSTICK_AXIS_NUMBER</a>, 
-<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a36c2411191309f66be9f317ba66c8841">orxJOYSTICK_AXIS_NONE</a> = orxENUM_NONE
+<br />
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a36c2411191309f66be9f317ba66c8841">orxJOYSTICK_AXIS_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:gaac676f97aec33fc1dad588ae845d5642"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -217,48 +224,26 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baf6a781bd670d3d0b93da4ca528080820">orxJOYSTICK_BUTTON_15_2</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bab3492a8327627bc6a155d753b700dd7c">orxJOYSTICK_BUTTON_16_2</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba7dab56312aad7e30fbd64c601f679db2">orxJOYSTICK_BUTTON_1_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba51461c7118da896a01b4bc2340a230ef">orxJOYSTICK_BUTTON_2_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba061ae742a82ab1cf044da89853faddfa">orxJOYSTICK_BUTTON_3_3</a>, 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94babd8c52d599a7cbf1dbaeca7b2d7d48d0">orxJOYSTICK_BUTTON_4_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bae3db9144c2848aa99d311199c273c0fd">orxJOYSTICK_BUTTON_5_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba8f8bdc0e0387d8666e230e6ee193f338">orxJOYSTICK_BUTTON_6_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baae47a9b21e0b41a7288d9140ec972dcd">orxJOYSTICK_BUTTON_7_3</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba47a53406d5469b1bd661a2c06b5e7892">orxJOYSTICK_BUTTON_8_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bac3c6f141cc05c6cafed0580022879460">orxJOYSTICK_BUTTON_9_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba75a97939f5d1507a4f1af4361e995170">orxJOYSTICK_BUTTON_10_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba37c99ddb73a6b3b5eddd6e04ac796ba5">orxJOYSTICK_BUTTON_11_3</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
 <br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bae79ec666dd5f4eb5c29e86dd0e533587">orxJOYSTICK_BUTTON_12_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baba790ecd12faae7a5714b1e44be64bc7">orxJOYSTICK_BUTTON_13_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba7551d1b71514055ac98a1dffcac74810">orxJOYSTICK_BUTTON_14_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba750060deabfa014636f29c69ea00e2ef">orxJOYSTICK_BUTTON_15_3</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba999298019b228c049722a6a7869f97cb">orxJOYSTICK_BUTTON_16_3</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5886269f635e8651cc29e529560220cd">orxJOYSTICK_BUTTON_1_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba07bbb6d2e2611aa8d778cbd98186a86a">orxJOYSTICK_BUTTON_2_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bab0955b43a4103f6da68016a97bec4815">orxJOYSTICK_BUTTON_3_4</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba88cc81e2f047f89c5644a15cb4a650f1">orxJOYSTICK_BUTTON_4_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bab717c3aedceb429ea45dbc6699c34081">orxJOYSTICK_BUTTON_5_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baefc99dd15523f76e28720936582c9d03">orxJOYSTICK_BUTTON_6_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba038d9b3e2ff55e032a1168152edf28bc">orxJOYSTICK_BUTTON_7_4</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba950c0f70ecec0650fae4099aa740d0de">orxJOYSTICK_BUTTON_8_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94bae079b68b97a8b39f08cd4d717a053c92">orxJOYSTICK_BUTTON_9_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baf0ea153ca6bc312273e0db9343459801">orxJOYSTICK_BUTTON_10_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba2165612bc5b6c73b0a588c07f41fb5e2">orxJOYSTICK_BUTTON_11_4</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba68ce461f63a438d5a6366a002787c529">orxJOYSTICK_BUTTON_12_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3c31af5760267975f82b1150cef8e9b3">orxJOYSTICK_BUTTON_13_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94baaac014c829c76fc6d2f76aa3cc7b3b23">orxJOYSTICK_BUTTON_14_4</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba0d51c97c17146475bf10b840724e2650">orxJOYSTICK_BUTTON_15_4</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3291c27cb3fde085f4cd3a35dbaf65b4">orxJOYSTICK_BUTTON_16_4</a>, 
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
+<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba5f3828df8c1636c83936e90dde81df62">orxJOYSTICK_DECLARE_BUTTON_ENUM</a> =(3), 
 <a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba7d82ee1fc48a128d71473a455fabf9e8">orxJOYSTICK_BUTTON_NUMBER</a>, 
-<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3d556a8e9a44212fe17a739e5b0a11d6">orxJOYSTICK_BUTTON_NONE</a> = orxENUM_NONE
+<br />
+&#160;&#160;<a class="el" href="group__orx_joystick.html#ggab6cecefc4e8f1578ed021880bb9cc94ba3d556a8e9a44212fe17a739e5b0a11d6">orxJOYSTICK_BUTTON_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:gab6cecefc4e8f1578ed021880bb9cc94b"><td class="memSeparator" colspan="2">&#160;</td></tr>
