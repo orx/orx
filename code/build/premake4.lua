@@ -485,6 +485,7 @@ project "orxLIB"
             "IOKit.framework",
             "AppKit.framework",
             "glfw3",
+            "CoreVideo.framework",
             "OpenAL.framework",
             "OpenGL.framework"
         }
@@ -495,6 +496,7 @@ project "orxLIB"
             "-framework Foundation",
             "-framework IOKit",
             "-framework AppKit",
+            "-framework CoreVideo",
             "-framework OpenAL",
             "-framework OpenGL"
         }
