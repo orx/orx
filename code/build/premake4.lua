@@ -502,7 +502,7 @@ project "orxLIB"
     configuration {"macosx", "not *Core*"}
         links
         {
-            "glfw",
+            "glfw3",
             "sndfile",
             "pthread"
         }
