@@ -2,10 +2,10 @@ var group__orx_joystick =
 [
     [ "orxJOYSTICK_DECLARE_AXIS_ENUM", "group__orx_joystick.html#ga47fc13efaaf1addba0b1fc4bb37d8bd9", null ],
     [ "orxJOYSTICK_DECLARE_BUTTON_ENUM", "group__orx_joystick.html#ga06372ec36e21dbb99b89c082c1097e6c", null ],
-    [ "orxJOYSTICK_GET_AXIS_FOR_PLAYER", "group__orx_joystick.html#ga4ed84fe48884a92869e7b3c18fb76a0b", null ],
-    [ "orxJOYSTICK_GET_BUTTON_FOR_PLAYER", "group__orx_joystick.html#gad8902abd753c78b918deacfeacdab4c5", null ],
-    [ "orxJOYSTICK_GET_PLAYER_FROM_AXIS", "group__orx_joystick.html#gac81888d6b46dcde7d481a4d19292b99d", null ],
-    [ "orxJOYSTICK_GET_PLAYER_FROM_BUTTON", "group__orx_joystick.html#ga14729988d1cb33795d874ed0a054651c", null ],
+    [ "orxJOYSTICK_GET_AXIS", "group__orx_joystick.html#gab77285394fe306f2077e9647086d7604", null ],
+    [ "orxJOYSTICK_GET_BUTTON", "group__orx_joystick.html#ga3775b7637ef336c1b912e700b7e74529", null ],
+    [ "orxJOYSTICK_GET_ID_FROM_AXIS", "group__orx_joystick.html#ga0d8bce4e8cc6613c25eea5fadb5f1e28", null ],
+    [ "orxJOYSTICK_GET_ID_FROM_BUTTON", "group__orx_joystick.html#gae68737bb1b4e6da340c7606ac4927790", null ],
     [ "orxJOYSTICK_AXIS", "group__orx_joystick.html#gaac676f97aec33fc1dad588ae845d5642", [
       [ "orxJOYSTICK_AXIS_X_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a5885213a8f24f370e7465cec7be914bf", null ],
       [ "orxJOYSTICK_AXIS_Y_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a40fe7fc2eb538abe00c366c07c849c13", null ],
@@ -94,5 +94,6 @@ var group__orx_joystick =
     [ "orxJoystick_GetButtonName", "group__orx_joystick.html#ga9fa9d45b47c18a7b1730eece66c7e398", null ],
     [ "orxJoystick_Init", "group__orx_joystick.html#ga1ab26b1f55c5e0e104b8ff00ae833990", null ],
     [ "orxJoystick_IsButtonPressed", "group__orx_joystick.html#ga3b060fab3b7afd5484d9a29e3af826b4", null ],
+    [ "orxJoystick_IsConnected", "group__orx_joystick.html#gae0bb802edd10bd4bcc2ee401aca2c700", null ],
     [ "orxJoystick_Setup", "group__orx_joystick.html#ga303b00feabf090588da3658e3fa3fd84", null ]
 ];
