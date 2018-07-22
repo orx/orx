@@ -264,7 +264,7 @@ void orxFASTCALL orxKeyboard_Exit()
 
 /** Is key pressed?
  * @param[in] _eKey       Key to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 orxBOOL orxFASTCALL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {

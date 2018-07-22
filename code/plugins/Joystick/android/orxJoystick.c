@@ -37,7 +37,7 @@
 #include "main/orxAndroid.h"
 #include <android/sensor.h>
 
-#define orxANDROID_LAST_JOYSTICK                  3
+#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   4
 
 /** Module flags
  */
@@ -65,8 +65,8 @@ typedef struct __orxJOYSTICK_INFO_t
 typedef struct __orxJOYSTICK_STATIC_t {
   orxU32                u32Flags;
 
-  orxJOYSTICK_INFO      astJoyInfoList[orxANDROID_LAST_JOYSTICK + 1];
-  orxS32                au32DeviceIds[orxANDROID_LAST_JOYSTICK + 1];
+  orxJOYSTICK_INFO      astJoyInfoList[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
+  orxS32                au32DeviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
   orxBOOL               bUseJoystick;
 
   orxVECTOR             vAcceleration;
@@ -136,7 +136,7 @@ static void disableSensorManager()
 
 static orxS32 getDeviceIndex(orxU32 _u32DeviceId)
 {
-  for(orxS32 i = 0; i < orxANDROID_LAST_JOYSTICK + 1; i++)
+  for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
   {
     if(sstJoystick.au32DeviceIds[i] == _u32DeviceId)
     {
@@ -149,7 +149,7 @@ static orxS32 getDeviceIndex(orxU32 _u32DeviceId)
 
 static orxSTATUS newDeviceIndex(orxU32 _u32DeviceId)
 {
-  for(orxS32 i = 0; i < orxANDROID_LAST_JOYSTICK + 1; i++)
+  for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
   {
     if(sstJoystick.au32DeviceIds[i] == 0)
     {
@@ -588,10 +588,10 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   else
   {
     /* Gets ID */
-    u32ID = (orxU32)_eAxis / orxJOYSTICK_AXIS_SINGLE_NUMBER;
+    u32ID = orxJOYSTICK_GET_ID_FROM_AXIS(_eAxis) - 1;
 
     /* Is ID valid? */
-    if(u32ID <= (orxU32)orxANDROID_LAST_JOYSTICK)
+    if(u32ID < orxANDROID_KU32_MAX_JOYSTICK_NUMBER)
     {
       /* Plugged? */
       if(sstJoystick.au32DeviceIds[u32ID] != 0)
@@ -637,10 +637,10 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eBut
   orxASSERT(_eButton < orxJOYSTICK_BUTTON_NUMBER);
 
   /* Gets ID */
-  u32ID = (orxU32)_eButton / orxJOYSTICK_BUTTON_SINGLE_NUMBER;
+  u32ID = orxJOYSTICK_GET_ID_FROM_BUTTON(_eButton) - 1;
 
   /* Is ID valid? */
-  if(u32ID <= orxANDROID_LAST_JOYSTICK)
+  if(u32ID < orxANDROID_KU32_MAX_JOYSTICK_NUMBER)
   {
     /* Plugged? */
     if(sstJoystick.au32DeviceIds[u32ID] != 0)
@@ -675,6 +675,21 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eBut
   return bResult;
 }
 
+orxBOOL orxFASTCALL orxJoystick_Android_IsConnected(orxU32 _u32ID)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32ID > 0) && (_u32ID <= orxANDROID_KU32_MAX_JOYSTICK_NUMBER));
+
+  /* Updates result */
+  bResult = (sstJoystick.au32DeviceIds[_u32ID - 1] != 0) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
@@ -683,4 +698,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_Init, JOYSTICK, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_Exit, JOYSTICK, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Android_IsConnected, JOYSTICK, IS_CONNECTED);
 orxPLUGIN_USER_CORE_FUNCTION_END();
