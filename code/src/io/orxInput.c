@@ -2409,6 +2409,14 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     orxINPUT_ENTRY *pstEntry;
     orxSTRINGID     stEntryID;
 
+    /* Non-axis type or no mode set? */
+    if(((_eType != orxINPUT_TYPE_MOUSE_AXIS) && (_eType != orxINPUT_TYPE_JOYSTICK_AXIS))
+    || (_eMode == orxINPUT_MODE_NONE))
+    {
+      /* Defaults to full */
+      _eMode = orxINPUT_MODE_FULL;
+    }
+
     /* Gets entry ID */
     stEntryID = orxString_ToCRC(_zName);
 
@@ -2965,8 +2973,11 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
 
       default:
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+        if((_eType == orxINPUT_TYPE_MOUSE_AXIS) || (_eType == orxINPUT_TYPE_JOYSTICK_AXIS))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+        }
 
         break;
       }
