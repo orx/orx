@@ -342,9 +342,7 @@ project "orx"
         links
         {
             "Foundation.framework",
-            "IOKit.framework",
-            "AppKit.framework",
-            "pthread"
+            "IOKit.framework"
         }
 
     configuration {"macosx", "codelite or codeblocks", "*Core*"}
@@ -352,11 +350,6 @@ project "orx"
         {
             "-framework Foundation",
             "-framework IOKit",
-            "-framework AppKit"
-        }
-        links
-        {
-            "pthread"
         }
 
 
@@ -484,7 +477,6 @@ project "orxLIB"
             "Foundation.framework",
             "IOKit.framework",
             "AppKit.framework",
-            "glfw3",
             "CoreVideo.framework",
             "OpenAL.framework",
             "OpenGL.framework"
