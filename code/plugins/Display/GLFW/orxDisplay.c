@@ -571,12 +571,12 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
     /* Should close window? */
     if(glfwWindowShouldClose(sstDisplay.pstWindow) != GLFW_FALSE)
     {
-      /* Deletes window */
-      glfwDestroyWindow(sstDisplay.pstWindow);
-      sstDisplay.pstWindow = orxNULL;
-
       /* Sends system close event */
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+      if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE) == orxSTATUS_FAILURE)
+      {
+        /* Resets close status */
+        glfwSetWindowShouldClose(sstDisplay.pstWindow, GLFW_FALSE);
+      }
     }
   }
 
