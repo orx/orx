@@ -166,6 +166,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxJOYSTICK_AXIS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxJOYSTICK_BUTTON);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsConnected, orxBOOL, orxU32);
 
 
 /* *** Core function info array *** */
@@ -176,6 +177,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, INIT, orxJoystick_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, EXIT, orxJoystick_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, GET_AXIS_VALUE, orxJoystick_GetAxisValue)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, IS_BUTTON_PRESSED, orxJoystick_IsButtonPressed)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, IS_CONNECTED, orxJoystick_IsConnected)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 
@@ -208,9 +210,18 @@ orxFLOAT orxFASTCALL orxJoystick_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 
 /** Is joystick button pressed?
  * @param[in] _u32ID        ID of the joystick to test
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 orxBOOL orxFASTCALL orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_IsButtonPressed)(_eButton);
+}
+
+/** Is joystick connected?
+ * @param[in] _u32ID        ID of the joystick, 1-based index
+ * @return orxTRUE if connected / orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxJoystick_IsConnected(orxU32 _u32ID)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_IsConnected)(_u32ID);
 }

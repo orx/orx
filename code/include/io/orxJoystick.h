@@ -49,11 +49,11 @@
 
 /** Helpers
  */
-#define orxJOYSTICK_GET_AXIS_FOR_PLAYER(AXIS, PLAYER)     (((AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
-#define orxJOYSTICK_GET_BUTTON_FOR_PLAYER(BUTTON, PLAYER) (((BUTTON) % orxJOYSTICK_BUTTON_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_BUTTON_SINGLE_NUMBER))
+#define orxJOYSTICK_GET_AXIS(AXIS, ID)          ((((orxU32)AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
+#define orxJOYSTICK_GET_BUTTON(BUTTON, ID)      ((((orxU32)BUTTON) % orxJOYSTICK_BUTTON_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_BUTTON_SINGLE_NUMBER))
 
-#define orxJOYSTICK_GET_PLAYER_FROM_AXIS(AXIS)            (((AXIS) / orxJOYSTICK_AXIS_SINGLE_NUMBER) + 1)
-#define orxJOYSTICK_GET_PLAYER_FROM_BUTTON(BUTTON)        (((BUTTON) / orxJOYSTICK_BUTTON_SINGLE_NUMBER) + 1)
+#define orxJOYSTICK_GET_ID_FROM_AXIS(AXIS)      ((((orxU32)AXIS) / orxJOYSTICK_AXIS_SINGLE_NUMBER) + 1)
+#define orxJOYSTICK_GET_ID_FROM_BUTTON(BUTTON)  ((((orxU32)BUTTON) / orxJOYSTICK_BUTTON_SINGLE_NUMBER) + 1)
 
 #define orxJOYSTICK_DECLARE_BUTTON_ENUM(ID) \
   orxJOYSTICK_BUTTON_1_##ID,                \
@@ -142,7 +142,6 @@ typedef enum __orxJOYSTICK_BUTTON_t
 
 } orxJOYSTICK_BUTTON;
 
-
 /** Axis enum
  */
 typedef enum __orxJOYSTICK_AXIS_t
@@ -218,7 +217,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxJOYSTI
 
 /** Is joystick button pressed?
  * @param[in] _eButton      Joystick button to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON _eButton);
 
@@ -233,6 +232,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetButtonName(orxJOYST
  * @return Axis's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
+
+/** Is joystick connected?
+ * @param[in] _u32ID        ID of the joystick, 1-based index
+ * @return orxTRUE if connected / orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsConnected(orxU32 _u32ID);
 
 #endif /* _orxJOYSTICK_H_ */
 

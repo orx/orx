@@ -118,7 +118,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxMouse_GetPosition(orxVECTOR *_p
 
 /** Is mouse button pressed?
  * @param[in] _eButton          Mouse button to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 

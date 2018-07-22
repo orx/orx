@@ -331,6 +331,21 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   return bResult;
 }
 
+orxBOOL orxFASTCALL orxJoystick_GLFW_IsConnected(orxU32 _u32ID)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32ID > 0) && (_u32ID <= (orxJOYSTICK_BUTTON_NUMBER / orxJOYSTICK_BUTTON_SINGLE_NUMBER)));
+
+  /* Updates result */
+  bResult = (glfwJoystickPresent(_u32ID - 1) != GLFW_FALSE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -341,4 +356,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_GLFW_Init, JOYSTICK, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_GLFW_Exit, JOYSTICK, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_GLFW_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_GLFW_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_GLFW_IsConnected, JOYSTICK, IS_CONNECTED);
 orxPLUGIN_USER_CORE_FUNCTION_END();
