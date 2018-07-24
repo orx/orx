@@ -1008,9 +1008,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Removes a global timer function (ie. from the main core clock) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Concerned timer callback to remove </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fDelay</td><td>Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context of the timer to remove, orxNULL for removing all occurrences regardless of their context </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fDelay</td><td>Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context of the timer to remove, orxNULL to remove all occurrences regardless of their context </td></tr>
   </table>
   </dd>
 </dl>
@@ -1056,9 +1056,9 @@ Functions</h2></td></tr>
 <p>Removes a timer function from a clock </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstClock</td><td>Concerned clock </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Concerned timer callback to remove </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fDelay</td><td>Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context of the timer to remove, orxNULL for removing all occurrences regardless of their context </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnCallback</td><td>Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fDelay</td><td>Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context of the timer to remove, orxNULL to remove all occurrences regardless of their context </td></tr>
   </table>
   </dd>
 </dl>
