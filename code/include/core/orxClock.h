@@ -319,10 +319,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddTimer(orxCLOCK
 
 /** Removes a timer function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
-* @return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext);
 
@@ -336,9 +336,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveTimer(orxCL
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext);
 
 /** Removes a global timer function (ie. from the main core clock)
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext);
