@@ -110,12 +110,12 @@ typedef enum __orxINPUT_EVENT_t
  */
 typedef struct __orxINPUT_EVENT_PAYLOAD_t
 {
-  const orxSTRING zSetName;                               /**< Set name : 4 */
-  const orxSTRING zInputName;                             /**< Input name : 8 */
-  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 24 */
-  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 40 */
-  orxINPUT_MODE   aeMode[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding Mode : 56 */
-  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 72 */
+const orxSTRING zSetName;                               /**< Set name : 4/8 */
+  const orxSTRING zInputName;                             /**< Input name : 8/16 */
+  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 40/48 */
+  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 72/80 */
+  orxINPUT_MODE   aeMode[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding Mode : 104/112 */
+  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 136/144 */
 
 } orxINPUT_EVENT_PAYLOAD;
 
