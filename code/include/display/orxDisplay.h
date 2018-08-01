@@ -223,6 +223,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
 #define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
 #define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
+#define orxDISPLAY_KZ_CONFIG_MONITOR        "Monitor"
 
 
 /** Shader texture suffixes
