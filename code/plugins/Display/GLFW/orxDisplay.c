@@ -457,6 +457,23 @@ static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, 
     }
   }
 
+  /* Done! */
+  return;
+}
+
+static void orxDisplay_GLFW_DropCallback(GLFWwindow *_pstWindow, int _iNumber, const char **_azPaths)
+{
+  orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+  /* Inits payload */
+  orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+  stPayload.stDrop.azValueList  = (const orxSTRING *)_azPaths;
+  stPayload.stDrop.u32Number    = (orxU32)_iNumber;
+
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_DROP, orxNULL, orxNULL, &stPayload);
+
+  /* Done! */
   return;
 }
 
@@ -4016,6 +4033,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           /* Registers resize callback */
           glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
 
+          /* Registers drop callback */
+          glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
+
           /* Reactivates resize event */
           sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
         }
@@ -4643,6 +4663,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
               /* Registers resize callback */
               glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
+
+              /* Registers drop callback */
+              glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
 
               /* Reactivates resize event */
               sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;

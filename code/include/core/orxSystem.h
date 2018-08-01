@@ -66,6 +66,8 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
 
+  orxSYSTEM_EVENT_DROP,
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -94,6 +96,14 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       orxDOUBLE dTime;
       orxVECTOR vAcceleration;
     } stAccelerometer;
+
+    /* Drop event */
+    struct
+    {
+      const orxSTRING  *azValueList;
+      orxU32            u32Number;
+
+    } stDrop;
   };
 
 } orxSYSTEM_EVENT_PAYLOAD;
