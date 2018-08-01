@@ -2131,22 +2131,70 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Render stop? */
-  if((_pstEvent->eType == orxEVENT_TYPE_RENDER) && (_pstEvent->eID == orxRENDER_EVENT_STOP))
+  /* Depending on event */
+  switch(_pstEvent->eType)
   {
-    /* Draws remaining items */
-    orxDisplay_GLFW_DrawArrays();
+    case orxEVENT_TYPE_RENDER:
+    {
+      /* Render stop? */
+      if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+      {
+        /* Draws remaining items */
+        orxDisplay_GLFW_DrawArrays();
 
-    /* Polls events */
-    glfwPollEvents();
-  }
-  else
-  {
-    /* Checks */
-    orxASSERT(_pstEvent->pstPayload != orxNULL);
+        /* Polls events */
+        glfwPollEvents();
+      }
+      break;
+    }
 
-    /* Sends windows back */
-    *((GLFWwindow **)(_pstEvent->pstPayload)) = sstDisplay.pstWindow;
+    case orxEVENT_TYPE_SYSTEM:
+    {
+      orxSYSTEM_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxSYSTEM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Valid? */
+      if(pstPayload != orxNULL)
+      {
+        /* Get? */
+        if(pstPayload->stClipboard.zValue == orxNULL)
+        {
+          /* Updates payload */
+          pstPayload->stClipboard.zValue = glfwGetClipboardString(sstDisplay.pstWindow);
+        }
+        /* Set */
+        else
+        {
+          /* Updates clipboard */
+          glfwSetClipboardString(sstDisplay.pstWindow, pstPayload->stClipboard.zValue);
+        }
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_FIRST_RESERVED:
+    {
+      /* Checks */
+      orxASSERT(_pstEvent->pstPayload != orxNULL);
+
+      /* Sends windows back */
+      *((GLFWwindow **)(_pstEvent->pstPayload)) = sstDisplay.pstWindow;
+      break;
+    }
+
+    default:
+    {
+      eResult = orxSTATUS_FAILURE;
+      break;
+    }
   }
 
   /* Done! */
@@ -4666,6 +4714,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     {
       /* Adds event handlers */
       eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+      eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_GLFW_EventHandler) : orxSTATUS_FAILURE;
       eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler) : orxSTATUS_FAILURE;
 
       /* Success? */
@@ -4673,6 +4722,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
       {
         /* Filters relevant event IDs */
         orxEvent_SetHandlerIDFlags(orxDisplay_GLFW_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+        orxEvent_SetHandlerIDFlags(orxDisplay_GLFW_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLIPBOARD), orxEVENT_KU32_MASK_ID_ALL);
 
         /* Creates banks */
         sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -4842,6 +4892,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
         /* Removes event handlers */
         orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_GLFW_EventHandler);
         orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
 
         /* Logs message */
@@ -4877,6 +4928,7 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
 
     /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_GLFW_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxDisplay_GLFW_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
