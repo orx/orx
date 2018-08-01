@@ -435,6 +435,137 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibitor(const orxEVENT *_ps
   return orxSTATUS_FAILURE;
 }
 
+static orxINLINE GLFWmonitor *orxDisplay_GLFW_GetMonitor()
+{
+  GLFWmonitor **apstMonitors;
+  int           iCount;
+  GLFWmonitor  *pstResult = NULL;
+
+  /* Gets monitor list */
+  apstMonitors = glfwGetMonitors(&iCount);
+
+  /* Valid? */
+  if(apstMonitors != NULL)
+  {
+    orxU32 u32Monitor;
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Gets config monitor */
+    u32Monitor = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_MONITOR);
+
+    /* Valid? */
+    if(u32Monitor != 0)
+    {
+      /* Is index in range? */
+      if(u32Monitor <= (orxU32)iCount)
+      {
+        /* Updates result */
+        pstResult = apstMonitors[u32Monitor - 1];
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid monitor: index [%u] out of range, max is [%d]. Reverting to current monitor.", u32Monitor, iCount);
+      }
+    }
+
+    /* Not found? */
+    if(pstResult == NULL)
+    {
+      /* Is full screen? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
+      {
+        /* Gets current monitor */
+        pstResult = glfwGetWindowMonitor(sstDisplay.pstWindow);
+      }
+
+      /* Still no monitor? */
+      if(pstResult == NULL)
+      {
+        /* Defaults to primary monitor */
+        pstResult   = glfwGetPrimaryMonitor();
+        u32Monitor  = 1;
+      }
+      else
+      {
+        orxS32 i;
+
+        /* For all monitors */
+        for(i = 0; i < iCount; i++)
+        {
+          /* Found? */
+          if(apstMonitors[i] == pstResult)
+          {
+            /* Gets its ID */
+            u32Monitor = (orxU32)(i + 1);
+            break;
+          }
+        }
+      }
+
+      /* Stores it */
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MONITOR, u32Monitor);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return (pstResult != NULL) ? pstResult : orxNULL;
+}
+
+static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
+{
+  const GLFWvidmode *pstDesktopMode;
+
+  /* Gets desktop mode */
+  pstDesktopMode = glfwGetVideoMode(orxDisplay_GLFW_GetMonitor());
+
+  /* Updates default mode */
+  sstDisplay.u32DefaultWidth  = (orxU32)pstDesktopMode->width;
+  sstDisplay.u32DefaultHeight = (orxU32)pstDesktopMode->height;
+  sstDisplay.u32DefaultDepth  = (orxU32)(pstDesktopMode->redBits + pstDesktopMode->greenBits + pstDesktopMode->blueBits);
+
+  /* 24-bit? */
+  if(sstDisplay.u32DefaultDepth == 24)
+  {
+    /* Gets 32-bit instead */
+    sstDisplay.u32DefaultDepth = 32;
+  }
+
+  /* Hack: Corrects imprecise refresh rate reports for default mode */
+  switch(pstDesktopMode->refreshRate)
+  {
+    case 59:
+    case 60:
+    case 61:
+    {
+      sstDisplay.u32DefaultRefreshRate = 60;
+      break;
+    }
+
+    case 49:
+    case 50:
+    case 51:
+    {
+      sstDisplay.u32DefaultRefreshRate = 50;
+      break;
+    }
+
+    default:
+    {
+      sstDisplay.u32DefaultRefreshRate = pstDesktopMode->refreshRate;
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, int _iHeight)
 {
   /* Not ignoring event? */
@@ -3730,7 +3861,7 @@ orxU32 orxFASTCALL orxDisplay_GLFW_GetVideoModeCount()
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Gets video mode list */
-  glfwGetVideoModes(glfwGetPrimaryMonitor(), (int *)&u32Result);
+  glfwGetVideoModes(orxDisplay_GLFW_GetMonitor(), (int *)&u32Result);
 
   /* Done! */
   return u32Result;
@@ -3746,8 +3877,11 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_GLFW_GetVideoMode(orxU32 _u32Index
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstVideoMode != orxNULL);
 
+  /* Updates default mode */
+  orxDisplay_GLFW_UpdateDefaultMode();
+
   /* Gets video mode list */
-  astModeList = glfwGetVideoModes(glfwGetPrimaryMonitor(), (int *)&u32Count);
+  astModeList = glfwGetVideoModes(orxDisplay_GLFW_GetMonitor(), (int *)&u32Count);
 
   /* Request the default mode? */
   if(_u32Index == orxU32_UNDEFINED)
@@ -3812,7 +3946,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
   orxASSERT(_pstVideoMode != orxNULL);
 
   /* Gets video mode list */
-  astModeList = glfwGetVideoModes(glfwGetPrimaryMonitor(), (int *)&s32Count);
+  astModeList = glfwGetVideoModes(orxDisplay_GLFW_GetMonitor(), (int *)&s32Count);
 
   /* For all mode */
   for(i = 0; i < s32Count; i++)
@@ -3912,6 +4046,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   if(_pstVideoMode != orxNULL)
   {
     int iWidth, iHeight, iDepth, iRefreshRate;
+    GLFWmonitor *pstMonitor;
 
     /* Gets its info */
     iWidth        = (int)_pstVideoMode->u32Width;
@@ -3984,6 +4119,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       }
     }
 
+    /* Gets default monitor */
+    pstMonitor = orxDisplay_GLFW_GetMonitor();
+
     /* Has a window? */
     if(sstDisplay.pstWindow != orxNULL)
     {
@@ -4013,7 +4151,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         GLFWwindow *pstNewWindow;
 
         /* Creates new window sharing the context */
-        pstNewWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, sstDisplay.pstWindow);
+        pstNewWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? pstMonitor : orxNULL, sstDisplay.pstWindow);
 
         /* Success? */
         if(pstNewWindow != orxNULL)
@@ -4055,7 +4193,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glfwSetWindowAttrib(sstDisplay.pstWindow, GLFW_DECORATED, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION) ? GLFW_FALSE : GLFW_TRUE);
 
         /* Applies monitor status */
-        glfwSetWindowMonitor(sstDisplay.pstWindow, (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, (int)sstDisplay.vWindowPosition.fX, (int)sstDisplay.vWindowPosition.fY, iWidth, iHeight, iRefreshRate);
+        glfwSetWindowMonitor(sstDisplay.pstWindow, (_pstVideoMode->bFullScreen != orxFALSE) ? pstMonitor : orxNULL, (int)sstDisplay.vWindowPosition.fX, (int)sstDisplay.vWindowPosition.fY, iWidth, iHeight, iRefreshRate);
 
         /* Resizes window */
         glfwSetWindowSize(sstDisplay.pstWindow, iWidth, iHeight);
@@ -4072,7 +4210,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glfwWindowHint(GLFW_REFRESH_RATE, iRefreshRate);
 
       /* Creates window */
-      sstDisplay.pstWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? glfwGetPrimaryMonitor() : orxNULL, orxNULL);
+      sstDisplay.pstWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? pstMonitor : orxNULL, orxNULL);
 
       /* Success? */
       if(sstDisplay.pstWindow != orxNULL)
@@ -4545,48 +4683,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         && (sstDisplay.pstShaderBank != orxNULL))
         {
           orxDISPLAY_VIDEO_MODE stVideoMode;
-          const GLFWvidmode    *pstDesktopMode;
-
-          /* Gets desktop mode */
-          pstDesktopMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
           /* Updates default mode */
-          sstDisplay.u32DefaultWidth        = (orxU32)pstDesktopMode->width;
-          sstDisplay.u32DefaultHeight       = (orxU32)pstDesktopMode->height;
-          sstDisplay.u32DefaultDepth        = (orxU32)(pstDesktopMode->redBits + pstDesktopMode->greenBits +pstDesktopMode->blueBits);
-
-          /* 24-bit? */
-          if(sstDisplay.u32DefaultDepth == 24)
-          {
-            /* Gets 32-bit instead */
-            sstDisplay.u32DefaultDepth = 32;
-          }
-
-          /* Hack: Corrects imprecise refresh rate reports for default mode */
-          switch(pstDesktopMode->refreshRate)
-          {
-            case 59:
-            case 60:
-            case 61:
-            {
-              sstDisplay.u32DefaultRefreshRate = 60;
-              break;
-            }
-
-            case 49:
-            case 50:
-            case 51:
-            {
-              sstDisplay.u32DefaultRefreshRate = 50;
-              break;
-            }
-
-            default:
-            {
-              sstDisplay.u32DefaultRefreshRate = pstDesktopMode->refreshRate;
-              break;
-            }
-          }
+          orxDisplay_GLFW_UpdateDefaultMode();
 
           /* Pushes display section */
           orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
