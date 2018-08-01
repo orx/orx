@@ -67,6 +67,7 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_MOTION_SHAKE,
 
   orxSYSTEM_EVENT_DROP,
+  orxSYSTEM_EVENT_CLIPBOARD,
 
   orxSYSTEM_EVENT_NUMBER,
 
@@ -104,6 +105,13 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       orxU32            u32Number;
 
     } stDrop;
+
+    /* Clipboard event */
+    struct
+    {
+      const orxSTRING zValue;
+
+    } stClipboard;
   };
 
 } orxSYSTEM_EVENT_PAYLOAD;
