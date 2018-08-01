@@ -2,7 +2,7 @@ var group__orx_render =
 [
     [ "orxRENDER_EVENT_PAYLOAD", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", [
       [ "pstTransform", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a53efcddf712cdc8ab7d3333306759ea7", null ],
-      [ "stObject", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#ab58f7c0e014e9123687a855ca5c4fa22", null ]
+      [ "stObject", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#af8090204463866991f7a3551e618ef4d", null ]
     ] ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],
     [ "orxRENDER_KZ_CONFIG_MIN_FREQUENCY", "group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3", null ],

@@ -14,6 +14,7 @@ var orx_system_8h =
       [ "orxSYSTEM_EVENT_ACCELERATE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeacb1022e05c114dc1585aa4d2a6ca3baa", null ],
       [ "orxSYSTEM_EVENT_MOTION_SHAKE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba", null ],
       [ "orxSYSTEM_EVENT_DROP", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1fc12da454507a92e8dfa69f99969658", null ],
+      [ "orxSYSTEM_EVENT_CLIPBOARD", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeead6857f594a254105192d0992ba424529", null ],
       [ "orxSYSTEM_EVENT_NUMBER", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea890ffd6d7f0092ac3e7934bed628ca11", null ],
       [ "orxSYSTEM_EVENT_NONE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1275060ea784dbdba516171f9c02bb95", null ]
     ] ],
