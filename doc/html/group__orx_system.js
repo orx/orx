@@ -7,12 +7,14 @@ var group__orx_system =
       [ "fX", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a5a485dbc8abdd55a9e9984ddb00a3d8e", null ],
       [ "fY", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#afa397a944c58aba55102e489d98517e2", null ],
       [ "stAccelerometer", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ae1e64a2c483de914ddffd4b24963f95c", null ],
+      [ "stClipboard", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a04d65758a6ddd90dbe7fd1907f0d4287", null ],
       [ "stDrop", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a6f1487515fe48fc29d9615bef98b3c03", null ],
       [ "stTouch", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a07669219942faf4327f8cb03747fa81d", null ],
       [ "u32FrameCount", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#abe6cc98c7668bc1fbc26449075e92e5b", null ],
       [ "u32ID", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#acac2246d17351b95043ae2ccc1bf707d", null ],
       [ "u32Number", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ac4dd08cf4421e222c2d70b6427e21df4", null ],
-      [ "vAcceleration", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f", null ]
+      [ "vAcceleration", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a7de1cf6b648afb68c65c2065a5a4931f", null ],
+      [ "zValue", "structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a629f3f55d53e43bbe1bec48681a53a9a", null ]
     ] ],
     [ "orxSYSTEM_EVENT", "group__orx_system.html#ga064bb4565c24e8324d940ff70964afee", [
       [ "orxSYSTEM_EVENT_CLOSE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea4c0d8e36c6666eab9c357345f6634532", null ],
@@ -28,6 +30,7 @@ var group__orx_system =
       [ "orxSYSTEM_EVENT_ACCELERATE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeacb1022e05c114dc1585aa4d2a6ca3baa", null ],
       [ "orxSYSTEM_EVENT_MOTION_SHAKE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba", null ],
       [ "orxSYSTEM_EVENT_DROP", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1fc12da454507a92e8dfa69f99969658", null ],
+      [ "orxSYSTEM_EVENT_CLIPBOARD", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeead6857f594a254105192d0992ba424529", null ],
       [ "orxSYSTEM_EVENT_NUMBER", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea890ffd6d7f0092ac3e7934bed628ca11", null ],
       [ "orxSYSTEM_EVENT_NONE", "group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1275060ea784dbdba516171f9c02bb95", null ]
     ] ],
