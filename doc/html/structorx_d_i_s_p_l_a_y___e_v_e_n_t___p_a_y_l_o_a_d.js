@@ -1,9 +1,9 @@
 var structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d =
 [
     [ "bFullScreen", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#abb131f973635560a61e36ba54309a389", null ],
-    [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#adfc168e1520fac098bb6462269120e8b", null ],
+    [ "stBitmap", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a16134631f29ac6a327aadc367270cdf6", null ],
     [ "stFilenameID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#aa73f169dbbe11fac4622c666ba32430f", null ],
-    [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a3909c19a0952b3fbe95826368e1c8dac", null ],
+    [ "stVideoMode", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a33ff6ab1cc9c7542fef563db8b37b899", null ],
     [ "u32Depth", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a83b0b72b22599076d557733a1ce4649a", null ],
     [ "u32Height", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a255778263b039420b1337b302ccc78c3", null ],
     [ "u32ID", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a61c2eddbf4069fd19a1b8ab665d348d5", null ],
