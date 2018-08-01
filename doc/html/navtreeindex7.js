@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_file.html#gab3f0c189fe842c6628177e5bdbd89166":[1,20,19],
+"group__orx_file.html#gabe30b394d1ce98d5f0f2cc466ea9c789":[3,0,0,5,0,14],
 "group__orx_file.html#gabe30b394d1ce98d5f0f2cc466ea9c789":[1,20,15],
 "group__orx_file.html#gac8fd28773af6bc29e0d059144e1d652e":[3,0,0,5,0,27],
 "group__orx_file.html#gac8fd28773af6bc29e0d059144e1d652e":[1,20,28],
@@ -52,8 +54,8 @@ var NAVTREEINDEX7 =
 "group__orx_font.html#gab691adc491d2136ac68d160d1f14bc1d":[1,21,1],
 "group__orx_font.html#gac3f1cf184136cd0ffd837143e79bfe31":[3,0,0,4,1,16],
 "group__orx_font.html#gac3f1cf184136cd0ffd837143e79bfe31":[1,21,16],
-"group__orx_font.html#gae5665dd0101cf568132b829c58082309":[3,0,0,4,1,18],
 "group__orx_font.html#gae5665dd0101cf568132b829c58082309":[1,21,18],
+"group__orx_font.html#gae5665dd0101cf568132b829c58082309":[3,0,0,4,1,18],
 "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e":[1,21,20],
 "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e":[3,0,0,4,1,20],
 "group__orx_font.html#gaf1446182084028517a65da805684338b":[3,0,0,4,1,10],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_graphic.html#gad0b7848ab955c0b014102bb63a1a1e33":[3,0,0,4,2,27],
 "group__orx_graphic.html#gad0b7848ab955c0b014102bb63a1a1e33":[1,23,27],
 "group__orx_graphic.html#gad0ea89789965f89177851d21ab0e3094":[3,0,0,4,2,55],
-"group__orx_graphic.html#gad0ea89789965f89177851d21ab0e3094":[1,23,55],
-"group__orx_graphic.html#gad20bbafee6054aa89d9fb5dcca9444c5":[3,0,0,4,2,29],
-"group__orx_graphic.html#gad20bbafee6054aa89d9fb5dcca9444c5":[1,23,29]
+"group__orx_graphic.html#gad0ea89789965f89177851d21ab0e3094":[1,23,55]
 };
