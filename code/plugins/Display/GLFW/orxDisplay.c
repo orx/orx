@@ -1152,9 +1152,6 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       /* Deletes it */
       orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
     }
-
-    /* Frees load info */
-    orxMemory_Free(pstInfo);
   }
   else
   {
@@ -1171,10 +1168,10 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       stbi_image_free(pstInfo->pu8ImageSource);
       pstInfo->pu8ImageSource = orxNULL;
     }
-
-    /* Frees load info */
-    orxMemory_Free(pstInfo);
   }
+
+  /* Frees load info */
+  orxMemory_Free(pstInfo);
 
   /* Done! */
   return eResult;
