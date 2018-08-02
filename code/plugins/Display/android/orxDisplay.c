@@ -765,19 +765,25 @@ static int orxDisplay_Android_EOFSTBICallback(void *_hResource)
 
 static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer, void *_pContext)
 {
-  orxBITMAP      *pstBitmap;
+  orxDISPLAY_EVENT_PAYLOAD  stPayload;
+  orxBITMAP                *pstBitmap;
 
   /* Gets associated bitmap */
   pstBitmap = (orxBITMAP *)_pContext;
 
+  /* Inits payload */
+  stPayload.stBitmap.zLocation      = pstBitmap->zLocation;
+  stPayload.stBitmap.stFilenameID   = pstBitmap->stFilenameID;
+  stPayload.stBitmap.u32ID          = orxU32_UNDEFINED;
+
   if(_s64Size >= sizeof(KTX_header))
   {
-    KTX_header     *stHeader;
-    unsigned char  *pu8ImageData;
-    orxBOOL         bCompressed = orxFALSE;
-    GLint           previousUnpackAlignment;
-    GLuint          uiWidth, uiHeight;
-    GLenum          eInternalFormat;
+    KTX_header *stHeader;
+    orxU8      *pu8ImageData;
+    orxBOOL     bCompressed = orxFALSE;
+    GLint       previousUnpackAlignment;
+    GLuint      uiWidth, uiHeight;
+    GLenum      eInternalFormat;
 
     stHeader = (KTX_header*)_pBuffer;
     uiWidth  = stHeader->pixelWidth;
@@ -807,20 +813,19 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     }
 
     /* Loads image */
-    pu8ImageData = (unsigned char*)_pBuffer;
+    pu8ImageData = (orxU8 *)_pBuffer;
 
     if(_s64Size >= sizeof(KTX_header) + stHeader->bytesOfKeyValueData)
     {
-      orxU32          u32DataSize, u32DataSizeRounded;
-      GLuint          uiRealWidth, uiRealHeight;
-      orxS32          i;
-      orxU8          *pu8ImageBuffer;
-      orxDISPLAY_EVENT_PAYLOAD  stPayload;
+      orxU32  u32DataSize, u32RoundedDataSize;
+      GLuint  uiRealWidth, uiRealHeight;
+      orxS32  i;
+      orxU8  *pu8ImageBuffer;
 
       /* Skip header */
-      pu8ImageData = (unsigned char*)(pu8ImageData + sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
-      u32DataSize = *((orxU32*)pu8ImageData);
-      u32DataSizeRounded = (u32DataSize + 3) & ~(orxU32)3;
+      pu8ImageData        = (orxU8 *)(pu8ImageData + sizeof(KTX_header) + stHeader->bytesOfKeyValueData);
+      u32DataSize         = *((orxU32 *)pu8ImageData);
+      u32RoundedDataSize  = orxALIGN(u32DataSize, 4);
 
       /* Uses image buffer */
       pu8ImageBuffer = pu8ImageData + sizeof(u32DataSize);
@@ -837,7 +842,7 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       pstBitmap->u32Depth       = 32;
       pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
       pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
-      pstBitmap->u32DataSize    = u32DataSizeRounded;
+      pstBitmap->u32DataSize    = u32RoundedDataSize;
       orxVector_Copy(&(pstBitmap->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(pstBitmap->stClip.vBR), pstBitmap->fWidth, pstBitmap->fHeight, orxFLOAT_0);
 
@@ -887,10 +892,8 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
         }
       }
 
-      /* Inits payload */
-      stPayload.stBitmap.zLocation      = pstBitmap->zLocation;
-      stPayload.stBitmap.stFilenameID   = pstBitmap->stFilenameID;
-      stPayload.stBitmap.u32ID          = (orxU32)pstBitmap->uiTexture;
+      /* Updates payload */
+      stPayload.stBitmap.u32ID = (orxU32)pstBitmap->uiTexture;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
@@ -898,18 +901,36 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       /* Clears loading flag */
       orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
       orxMEMORY_BARRIER();
-
-      /* Asked for deletion? */
-      if(orxFLAG_TEST(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
-      {
-        /* Deletes it */
-        orxDisplay_DeleteBitmap(pstBitmap);
-      }
     }
     else
     {
+      /* Clears info */
+      pstBitmap->fWidth         =
+      pstBitmap->fHeight        = orxFLOAT_1;
+      pstBitmap->u32RealWidth   =
+      pstBitmap->u32RealHeight  = 1;
+
+      /* Creates new texture */
+      glGenTextures(1, &pstBitmap->uiTexture);
+      glASSERT();
+      glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+      glASSERT();
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
 
       /* Clears loading flag */
       orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
@@ -922,11 +943,43 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
   }
   else
   {
+    /* Clears info */
+    pstBitmap->fWidth         =
+    pstBitmap->fHeight        = orxFLOAT_1;
+    pstBitmap->u32RealWidth   =
+    pstBitmap->u32RealHeight  = 1;
+
+    /* Creates new texture */
+    glGenTextures(1, &pstBitmap->uiTexture);
+    glASSERT();
+    glBindTexture(GL_TEXTURE_2D, pstBitmap->uiTexture);
+    glASSERT();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstBitmap->u32RealWidth, (GLsizei)pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+    glASSERT();
+
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
 
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
+
     /* Clears loading flag */
     orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+  }
+
+  /* Asked for deletion? */
+  if(orxFLAG_TEST(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
+  {
+    /* Deletes it */
+    orxDisplay_DeleteBitmap(pstBitmap);
   }
 
   /* Frees buffer */
@@ -1040,9 +1093,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
       /* Deletes it */
       orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
     }
-
-    /* Frees load info */
-    orxMemory_Free(pstInfo);
   }
   else
   {
@@ -1059,10 +1109,10 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
       stbi_image_free(pstInfo->pu8ImageSource);
       pstInfo->pu8ImageSource = orxNULL;
     }
-
-    /* Frees load info */
-    orxMemory_Free(pstInfo);
   }
+
+  /* Frees load info */
+  orxMemory_Free(pstInfo);
 
   /* Done! */
   return eResult;
@@ -1082,11 +1132,11 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
   /* Hasn't exited yet? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    unsigned char  *pu8ImageData;
-    GLuint          uiBytesPerPixel;
+    orxU8  *pu8ImageData;
+    GLuint  uiBytesPerPixel;
 
     /* Loads image */
-    pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+    pu8ImageData = stbi_load_from_memory((orxU8 *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
 
     /* Valid? */
     if(pu8ImageData != NULL)
