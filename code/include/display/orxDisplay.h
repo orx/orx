@@ -224,6 +224,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
 #define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
 #define orxDISPLAY_KZ_CONFIG_MONITOR        "Monitor"
+#define orxDISPLAY_KZ_CONFIG_CURSOR         "Cursor"
 
 
 /** Shader texture suffixes

@@ -195,6 +195,27 @@ do                                                                        \
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Standard cursor list
+ */
+#define orxDISPLAY_DECLARE_CURSOR(NAME) {#NAME, GLFW_##NAME##_CURSOR}
+
+struct
+{
+  const orxSTRING zName;
+  int             iShape;
+} sastStandardCursorList[] =
+{
+  orxDISPLAY_DECLARE_CURSOR(ARROW),
+  orxDISPLAY_DECLARE_CURSOR(IBEAM),
+  orxDISPLAY_DECLARE_CURSOR(CROSSHAIR),
+  orxDISPLAY_DECLARE_CURSOR(HAND),
+  orxDISPLAY_DECLARE_CURSOR(HRESIZE),
+  orxDISPLAY_DECLARE_CURSOR(VRESIZE),
+  {"NONE", 0}
+};
+
+#undef orxDISPLAY_DECLARE_CURSOR
+
 /** Internal buffer mode
  */
 typedef enum __orxDISPLAY_BUFFER_MODE_t
@@ -313,6 +334,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxLINKLIST               stActiveShaderList;
   orxBOOL                   bDefaultSmoothing;
   GLFWwindow               *pstWindow;
+  GLFWcursor               *pstCursor;
   orxBITMAP                *pstScreen;
   const orxBITMAP          *pstTempBitmap;
   orxVECTOR                 vWindowPosition;
@@ -4475,6 +4497,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Successful? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    const orxSTRING zCursor;
+
     /* Isn't fullscreen? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
@@ -4483,6 +4507,66 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
       /* Updates window's position */
       glfwSetWindowPos(sstDisplay.pstWindow, (int)sstDisplay.vWindowPosition.fX, (int)sstDisplay.vWindowPosition.fY);
+    }
+
+    /* Gets cursor */
+    zCursor = orxConfig_GetListString(orxDISPLAY_KZ_CONFIG_CURSOR, 0);
+
+    /* Valid? */
+    if(*zCursor != orxCHAR_NULL)
+    {
+      orxBOOL bFound;
+      orxU32  i;
+
+      /* For all internal cursors */
+      for(i = 0, bFound = orxFALSE; i < orxARRAY_GET_ITEM_COUNT(sastStandardCursorList); i++)
+      {
+        /* Matches? */
+        if(orxString_ICompare(zCursor, sastStandardCursorList[i].zName) == 0)
+        {
+          /* Has cursor? */
+          if(sstDisplay.pstCursor != NULL)
+          {
+            /* Deletes it */
+            glfwDestroyCursor(sstDisplay.pstCursor);
+          }
+
+          /* Defined? */
+          if(sastStandardCursorList[i].iShape != 0)
+          {
+            /* Creates cursor */
+            sstDisplay.pstCursor = glfwCreateStandardCursor(sastStandardCursorList[i].iShape);
+
+            /* Success? */
+            if(sstDisplay.pstCursor != NULL)
+            {
+              /* Sets it */
+              glfwSetCursor(sstDisplay.pstWindow, sstDisplay.pstCursor);
+            }
+          }
+
+          /* Updates status */
+          bFound = orxTRUE;
+
+          break;
+        }
+      }
+
+      /* Not found? */
+      if(bFound == orxFALSE)
+      {
+        //! TODO
+      }
+    }
+    else
+    {
+      /* Has cursor? */
+      if(sstDisplay.pstCursor != NULL)
+      {
+        /* Deletes it */
+        glfwDestroyCursor(sstDisplay.pstCursor);
+        sstDisplay.pstCursor = NULL;
+      }
     }
 
     /* Updates its title */
@@ -4918,6 +5002,13 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
       /* Deletes default shaders */
       orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
       orxDisplay_DeleteShader(sstDisplay.pstNoTextureShader);
+    }
+
+    /* Has cursor? */
+    if(sstDisplay.pstCursor != NULL)
+    {
+      /* Deletes it */
+      glfwDestroyCursor(sstDisplay.pstCursor);
     }
 
     /* Exits from GLFW */
