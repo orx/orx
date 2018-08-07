@@ -699,6 +699,7 @@ var searchData=
   ['orxdisplay_5fkc_5fshader_5fextension_5fadd',['orxDISPLAY_KC_SHADER_EXTENSION_ADD',['../group__orx_display.html#ga34697a5e408ccb6977ea4b7e963cb3b1',1,'orxDisplay.h']]],
   ['orxdisplay_5fkc_5fshader_5fextension_5fremove',['orxDISPLAY_KC_SHADER_EXTENSION_REMOVE',['../group__orx_display.html#ga71c5a6cd2d093bdc13776c21a474bcad',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fallow_5fresize',['orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE',['../group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3',1,'orxDisplay.h']]],
+  ['orxdisplay_5fkz_5fconfig_5fcursor',['orxDISPLAY_KZ_CONFIG_CURSOR',['../group__orx_display.html#ga723241e00679a903a70a4224ac1ba2f8',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fdecoration',['orxDISPLAY_KZ_CONFIG_DECORATION',['../group__orx_display.html#ga331cf2e2393d0d6831efb6c24952b507',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fdepth',['orxDISPLAY_KZ_CONFIG_DEPTH',['../group__orx_display.html#ga3cd69c245850b123fa561396ee82eb3a',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fdepthbuffer',['orxDISPLAY_KZ_CONFIG_DEPTHBUFFER',['../group__orx_display.html#ga84a632229162932161247c99e67605fd',1,'orxDisplay.h']]],
