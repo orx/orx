@@ -32,7 +32,9 @@
 
 #include "io/orxMouse.h"
 #include "plugin/orxPluginCore.h"
+#include "display/orxDisplay.h"
 #include "core/orxCommand.h"
+#include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 
 
@@ -84,6 +86,31 @@ void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: SetCursor
+ */
+void orxFASTCALL orxMouse_CommandSetCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTATUS eResult;
+
+  /* Has arguments? */
+  if(_u32ArgNumber != 0)
+  {
+    /* Updates cursor */
+    eResult = orxMouse_SetCursor(_astArgList[0].zValue, (_u32ArgNumber > 1) ? &(_astArgList[1].vValue) : orxNULL);
+  }
+  else
+  {
+    /* Clears cursor */
+    eResult = orxMouse_SetCursor(orxNULL, orxNULL);
+  }
+
+  /* Updates result */
+  _pstResult->bValue = (eResult != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the mouse commands
  */
 static orxINLINE void orxMouse_RegisterCommands()
@@ -95,9 +122,11 @@ static orxINLINE void orxMouse_RegisterCommands()
 
   /* Command: ShowCursor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: SetCursor */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetCursor, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Name = none", orxCOMMAND_VAR_TYPE_STRING}, {"Pivot = (0, 0)", orxCOMMAND_VAR_TYPE_VECTOR});
 }
 
-/** Registers all the mouse commands
+/** Unregisters all the mouse commands
  */
 static orxINLINE void orxMouse_UnregisterCommands()
 {
@@ -107,6 +136,8 @@ static orxINLINE void orxMouse_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
   /* Command: ShowCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
+  /* Command: SetCursor */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetCursor);
 }
 
 
@@ -203,6 +234,63 @@ const orxSTRING orxFASTCALL orxMouse_GetAxisName(orxMOUSE_AXIS _eAxis)
   return zResult;
 }
 
+/** Sets mouse (hardware) cursor
+ * @param[in] _zName       Cursor's name can be: a standard name (arrow, ibeam, hand, crosshair, hresize or vresize), a file name or orxNULL to reset the hardware cursor to default
+ * @param[in] _pvPivot     Cursor's pivot (aka hotspot), orxNULL will default to (0, 0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR *_pvPivot)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+#if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
+
+#else /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+  /* Pushes display config section */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+  /* Has name? */
+  if(_zName != orxNULL)
+  {
+    /* Has pivot? */
+    if(_pvPivot != orxNULL)
+    {
+      orxCHAR acBuffer[128] = {};
+
+      /* Prints name & pivot */
+      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s#(%g,%g)", _zName, _pvPivot->fX, _pvPivot->fY);
+
+      /* Stores it */
+      orxConfig_SetString(orxDISPLAY_KZ_CONFIG_CURSOR, acBuffer);
+    }
+    else
+    {
+      /* Stores cursor's name */
+      orxConfig_SetString(orxDISPLAY_KZ_CONFIG_CURSOR, _zName);
+    }
+  }
+  else
+  {
+    /* Clears cursor value */
+    orxConfig_ClearValue(orxDISPLAY_KZ_CONFIG_CURSOR);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Updates display */
+  orxDisplay_SetVideoMode(orxNULL);
+
+#endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -271,9 +359,9 @@ void orxFASTCALL orxMouse_Exit()
 }
 
 /** Sets mouse position
-* @param[in] _pvPosition  Mouse position
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+ * @param[in] _pvPosition  Mouse position
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxMouse_SetPosition(const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_SetPosition)(_pvPosition);
@@ -314,9 +402,9 @@ orxFLOAT orxFASTCALL orxMouse_GetWheelDelta()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetWheelDelta)();
 }
 
-/** Shows mouse cursor
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+/** Shows mouse (hardware) cursor
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxMouse_ShowCursor(orxBOOL _bShow)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_ShowCursor)(_bShow);

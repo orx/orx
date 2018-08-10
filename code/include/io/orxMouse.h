@@ -46,6 +46,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 #include "math/orxVector.h"
+#include "utils/orxString.h"
 
 
 /** Button enum
@@ -105,9 +106,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_Init();
 extern orxDLLAPI void orxFASTCALL             orxMouse_Exit();
 
 /** Sets mouse position
-* @param[in] _pvPosition  Mouse position
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+ * @param[in] _pvPosition  Mouse position
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_SetPosition(const orxVECTOR *_pvPosition);
 
 /** Gets mouse position
@@ -133,10 +134,17 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxMouse_GetMoveDelta(orxVECTOR *_
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxMouse_GetWheelDelta();
 
-/** Shows mouse cursor
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+/** Shows mouse (hardware) cursor
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_ShowCursor(orxBOOL _bShow);
+
+/** Sets mouse (hardware) cursor
+ * @param[in] _zName       Cursor's name can be: a standard name (arrow, ibeam, hand, crosshair, hresize or vresize), a file name or orxNULL to reset the hardware cursor to default
+ * @param[in] _pvPivot     Cursor's pivot (aka hotspot), orxNULL will default to (0, 0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR *_pvPivot);
 
 /** Gets button literal name
  * @param[in] _eButton          Concerned button
