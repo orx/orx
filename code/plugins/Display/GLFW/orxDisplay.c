@@ -212,7 +212,7 @@ struct
   orxDISPLAY_DECLARE_CURSOR(HAND),
   orxDISPLAY_DECLARE_CURSOR(HRESIZE),
   orxDISPLAY_DECLARE_CURSOR(VRESIZE),
-  {"NONE", 0}
+  {"DEFAULT", 0}
 };
 
 #undef orxDISPLAY_DECLARE_CURSOR
@@ -4585,6 +4585,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           {
             /* Deletes it */
             glfwDestroyCursor(sstDisplay.pstCursor);
+            sstDisplay.pstCursor = NULL;
           }
 
           /* Defined? */
