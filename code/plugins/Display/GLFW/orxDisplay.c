@@ -200,7 +200,7 @@ do                                                                        \
  */
 #define orxDISPLAY_DECLARE_CURSOR(NAME) {#NAME, GLFW_##NAME##_CURSOR}
 
-struct
+static struct
 {
   const orxSTRING zName;
   int             iShape;
