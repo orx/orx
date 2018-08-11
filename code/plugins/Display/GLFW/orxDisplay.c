@@ -119,7 +119,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000100  /**< Framebuffer support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000200  /**< Depthbuffer support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000400  /**< No resize flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE 0x00000800 /**< Ignore resize event flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT 0x00000800 /**< Ignore event flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
@@ -592,7 +592,7 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
 static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, int _iHeight)
 {
   /* Not ignoring event? */
-  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE))
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT))
   {
     /* Valid? */
     if((_iWidth > 0) && (_iHeight > 0))
@@ -626,6 +626,25 @@ static void orxDisplay_GLFW_DropCallback(GLFWwindow *_pstWindow, int _iNumber, c
 
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_DROP, orxNULL, orxNULL, &stPayload);
+
+  /* Done! */
+  return;
+}
+
+static void orxDisplay_GLFW_PosCallback(GLFWwindow *_pstWindow, int _iX, int _iY)
+{
+  /* Not ignoring event and not fullscreen? */
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, (orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT | orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN)))
+  {
+    /* Stores values */
+    sstDisplay.vWindowPosition.fX = orx2F(_iX);
+    sstDisplay.vWindowPosition.fY = orx2F(_iY);
+
+    /* Stores it in config */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_POSITION, &(sstDisplay.vWindowPosition));
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -4248,26 +4267,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     /* Has a window? */
     if(sstDisplay.pstWindow != orxNULL)
     {
-      /* Not currently fullscreen? */
-      if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
-      {
-        int iX, iY;
-
-        /* Clears any lingering error */
-        glfwGetError(NULL);
-
-        /* Retrieves current position */
-        glfwGetWindowPos(sstDisplay.pstWindow, &iX, &iY);
-
-        /* Success? */
-        if(glfwGetError(NULL) == GLFW_NO_ERROR)
-        {
-          /* Stores it */
-          sstDisplay.vWindowPosition.fX = orxS2F(iX);
-          sstDisplay.vWindowPosition.fY = orxS2F(iY);
-        }
-      }
-
       /* Different depth? */
       if(_pstVideoMode->u32Depth != sstDisplay.u32Depth)
       {
@@ -4289,7 +4288,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           glfwMakeContextCurrent(sstDisplay.pstWindow);
 
           /* Ignores resize event for now */
-          sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+          sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
 
           /* Registers resize callback */
           glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
@@ -4297,8 +4296,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           /* Registers drop callback */
           glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
 
+          /* Registers position callback */
+          glfwSetWindowPosCallback(sstDisplay.pstWindow, orxDisplay_GLFW_PosCallback);
+
           /* Reactivates resize event */
-          sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+          sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
         }
         else
         {
@@ -4309,7 +4311,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       else
       {
         /* Ignores resize event for now */
-        sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+        sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
 
         /* Updates window attributes */
         glfwSetWindowAttrib(sstDisplay.pstWindow, GLFW_RESIZABLE, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE) ? GLFW_FALSE : GLFW_TRUE);
@@ -4322,7 +4324,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glfwSetWindowSize(sstDisplay.pstWindow, iWidth, iHeight);
 
         /* Reactivates resize event */
-        sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+        sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
       }
     }
     else
@@ -4991,7 +4993,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
             {
               /* Ignores resize event for now */
-              sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+              sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
 
               /* Registers resize callback */
               glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
@@ -4999,8 +5001,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
               /* Registers drop callback */
               glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
 
+              /* Registers position callback */
+              glfwSetWindowPosCallback(sstDisplay.pstWindow, orxDisplay_GLFW_PosCallback);
+
               /* Reactivates resize event */
-              sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_RESIZE;
+              sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
             }
             else
             {
