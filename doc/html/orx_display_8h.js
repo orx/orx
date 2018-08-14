@@ -13,6 +13,7 @@ var orx_display_8h =
     [ "orxDISPLAY_KZ_CONFIG_DEPTHBUFFER", "group__orx_display.html#ga84a632229162932161247c99e67605fd", null ],
     [ "orxDISPLAY_KZ_CONFIG_FULLSCREEN", "group__orx_display.html#gac69de78a168e653e5b92467f294328d1", null ],
     [ "orxDISPLAY_KZ_CONFIG_HEIGHT", "group__orx_display.html#gad5566d8dc330ac06b979eda31d80e3ca", null ],
+    [ "orxDISPLAY_KZ_CONFIG_ICON_LIST", "group__orx_display.html#ga6254ae6ddf5bdeaef7d1f8997b83be2d", null ],
     [ "orxDISPLAY_KZ_CONFIG_MONITOR", "group__orx_display.html#ga09bb1d4fa2432c56e5eb9fe3cb4c5265", null ],
     [ "orxDISPLAY_KZ_CONFIG_POSITION", "group__orx_display.html#gaa287680bea018a30033b8429defc2d99", null ],
     [ "orxDISPLAY_KZ_CONFIG_REFRESH_RATE", "group__orx_display.html#ga093b52d235bab6c2688aa558a8ad41c7", null ],
