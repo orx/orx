@@ -132,6 +132,7 @@
 #define orxDISPLAY_KU32_BITMAP_FLAG_LOADING     0x00000001  /**< Loading flag */
 #define orxDISPLAY_KU32_BITMAP_FLAG_DELETE      0x00000002  /**< Delete flag */
 #define orxDISPLAY_KU32_BITMAP_FLAG_CURSOR      0x00000004  /**< Cursor flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_ICON        0x00000008  /**< Icon flag */
 
 #define orxDISPLAY_KU32_BITMAP_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
@@ -151,6 +152,8 @@
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
 #define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLE_STRIP
 #define orxDISPLAY_KV_DEFAULT_DECORATED_POSITION orx2F(100.0f), orx2F(120.0f), orxFLOAT_0
+
+#define orxDISPLAY_KU32_MAX_ICON_NUMBER         16
 
 
 /**  Misc defines
@@ -339,6 +342,8 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *pstScreen;
   const orxBITMAP          *pstTempBitmap;
   orxVECTOR                 vWindowPosition;
+  GLFWimage                 astIconList[orxDISPLAY_KU32_MAX_ICON_NUMBER];
+  orxS32                    s32IconNumber, s32PendingIconCount;
   orxRGBA                   stLastColor;
   orxU32                    u32LastClipX, u32LastClipY, u32LastClipWidth, u32LastClipHeight;
   orxDISPLAY_BLEND_MODE     eLastBlendMode;
@@ -1131,24 +1136,65 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
           glfwSetCursor(sstDisplay.pstWindow, sstDisplay.pstCursor);
         }
 
-        /* Frees image buffer */
-        if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
-        {
-          orxMemory_Free(pstInfo->pu8ImageBuffer);
-        }
-        pstInfo->pu8ImageBuffer = orxNULL;
-
-        /* Frees source */
-        if(pstInfo->pu8ImageSource != orxNULL)
-        {
-          stbi_image_free(pstInfo->pu8ImageSource);
-          pstInfo->pu8ImageSource = orxNULL;
-        }
-
-        /* Deletes bitmap */
-        orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
+        /* Frees data */
+        stbi_image_free(pstInfo->pu8ImageBuffer);
       }
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+
+      /* Deletes bitmap */
+      orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
     }
+    /* Icon? */
+    else if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_ICON))
+    {
+      /* Successful? */
+      if(pstInfo->pu8ImageBuffer != orxNULL)
+      {
+        /* Adds icon image */
+        sstDisplay.astIconList[sstDisplay.s32IconNumber].width  = (int)(pstInfo->uiWidth);
+        sstDisplay.astIconList[sstDisplay.s32IconNumber].height = (int)(pstInfo->uiHeight);
+        sstDisplay.astIconList[sstDisplay.s32IconNumber].pixels = (unsigned char *)pstInfo->pu8ImageSource;
+        sstDisplay.s32IconNumber++;
+      }
+
+      /* Clears loading flag */
+      orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+
+      /* Last icon? */
+      if(sstDisplay.s32PendingIconCount == 1)
+      {
+        orxS32 i;
+
+        /* Has icons? */
+        if(sstDisplay.s32IconNumber > 0)
+        {
+          /* Sets window icons */
+          glfwSetWindowIcon(sstDisplay.pstWindow, (int)sstDisplay.s32IconNumber, sstDisplay.astIconList);
+        }
+
+        /* For all icons */
+        for(i = 0; i < sstDisplay.s32IconNumber; i++)
+        {
+          /* Frees its data */
+          stbi_image_free(sstDisplay.astIconList[i].pixels);
+
+          /* Clears it */
+          orxMemory_Zero(&(sstDisplay.astIconList[i]), sizeof(GLFWimage));
+        }
+
+        /* Resets icon list */
+        sstDisplay.s32IconNumber = 0;
+      }
+
+      /* Deletes bitmap */
+      orxDisplay_DeleteBitmap(pstInfo->pstBitmap);
+
+      /* Updates pending icon count */
+      sstDisplay.s32PendingIconCount--;
+    }
+    /* Texture */
     else
     {
       orxDISPLAY_EVENT_PAYLOAD  stPayload;
@@ -1293,8 +1339,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
     /* Valid? */
     if(pu8ImageData != NULL)
     {
-      /* Has NPOT texture support? */
-      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+      /* Has NPOT texture support or cursor/icon? */
+      if((orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+      || (orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON)))
       {
         /* Uses image buffer */
         pstInfo->pu8ImageBuffer = pu8ImageData;
@@ -1516,8 +1563,8 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
           /* Successful asynchronous call? */
           if(s64Size < 0)
           {
-            /* Not a cursor? */
-            if(!orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR))
+            /* Not a cursor nor an icon? */
+            if(!orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON))
             {
               /* Inits bitmap info using temp */
               _pstBitmap->uiTexture       = sstDisplay.pstTempBitmap->uiTexture;
@@ -2217,6 +2264,197 @@ static orxINLINE GLenum orxDisplay_GLFW_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE 
 
   /* Done! */
   return eResult;
+}
+
+static orxINLINE void orxDisplay_GLFW_UpdateCursor()
+{
+  const orxSTRING zCursor;
+
+  /* Gets cursor */
+  zCursor = orxConfig_GetListString(orxDISPLAY_KZ_CONFIG_CURSOR, 0);
+
+  /* Valid? */
+  if(*zCursor != orxCHAR_NULL)
+  {
+    orxBOOL bFound;
+    orxU32  i;
+
+    /* For all internal cursors */
+    for(i = 0, bFound = orxFALSE; i < orxARRAY_GET_ITEM_COUNT(sastStandardCursorList); i++)
+    {
+      /* Matches? */
+      if(orxString_ICompare(zCursor, sastStandardCursorList[i].zName) == 0)
+      {
+        /* Has cursor? */
+        if(sstDisplay.pstCursor != NULL)
+        {
+          /* Deletes it */
+          glfwDestroyCursor(sstDisplay.pstCursor);
+          sstDisplay.pstCursor = NULL;
+        }
+
+        /* Defined? */
+        if(sastStandardCursorList[i].iShape != 0)
+        {
+          /* Creates cursor */
+          sstDisplay.pstCursor = glfwCreateStandardCursor(sastStandardCursorList[i].iShape);
+
+          /* Success? */
+          if(sstDisplay.pstCursor != NULL)
+          {
+            /* Sets it */
+            glfwSetCursor(sstDisplay.pstWindow, sstDisplay.pstCursor);
+          }
+        }
+
+        /* Updates status */
+        bFound = orxTRUE;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(bFound == orxFALSE)
+    {
+      const orxSTRING zResourceLocation;
+
+      /* Locates resource */
+      zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, zCursor);
+
+      /* Success? */
+      if(zResourceLocation != orxNULL)
+      {
+        orxBITMAP *pstBitmap;
+
+        /* Allocates bitmap */
+        pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+        /* Valid? */
+        if(pstBitmap != orxNULL)
+        {
+          /* Clears it */
+          orxMemory_Zero(pstBitmap, sizeof(orxBITMAP));
+
+          /* Inits it */
+          pstBitmap->zLocation    = zResourceLocation;
+          pstBitmap->stFilenameID = orxString_GetID(zCursor);
+          pstBitmap->u32Flags     = orxDISPLAY_KU32_BITMAP_FLAG_CURSOR;
+
+          /* Has pivot? */
+          if(orxConfig_GetListCount(orxDISPLAY_KZ_CONFIG_CURSOR) > 1)
+          {
+            orxVECTOR vPivot;
+
+            /* Gets it */
+            if(orxConfig_GetListVector(orxDISPLAY_KZ_CONFIG_CURSOR, 1, &vPivot) != orxNULL)
+            {
+              /* Stores it */
+              pstBitmap->fWidth   = vPivot.fX;
+              pstBitmap->fHeight  = vPivot.fY;
+            }
+          }
+
+          /* Loads bitmap's data */
+          if(orxDisplay_GLFW_LoadBitmapData(pstBitmap) == orxSTATUS_FAILURE)
+          {
+            /* Deletes it */
+            orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    /* Has cursor? */
+    if(sstDisplay.pstCursor != NULL)
+    {
+      /* Deletes it */
+      glfwDestroyCursor(sstDisplay.pstCursor);
+      sstDisplay.pstCursor = NULL;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static orxINLINE void orxDisplay_GLFW_UpdateIconList()
+{
+  /* Can update? */
+  if(sstDisplay.s32PendingIconCount == 0)
+  {
+    orxS32 s32Count;
+
+    /* Gets icon count */
+    s32Count = orxConfig_GetListCount(orxDISPLAY_KZ_CONFIG_ICON_LIST);
+
+    /* Found? */
+    if(s32Count > 0)
+    {
+      orxS32 i;
+
+      /* Too many? */
+      if(s32Count > orxDISPLAY_KU32_MAX_ICON_NUMBER)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set <%d> icons: only the first <%d> will be used.", s32Count, orxDISPLAY_KU32_MAX_ICON_NUMBER);
+
+        /* Updates count */
+        s32Count = orxDISPLAY_KU32_MAX_ICON_NUMBER;
+      }
+
+      /* For all icons */
+      for(i = 0, sstDisplay.s32IconNumber = 0; i < s32Count; i++)
+      {
+        const orxSTRING zIcon;
+        const orxSTRING zResourceLocation;
+
+        /* Gets it */
+        zIcon = orxConfig_GetListString(orxDISPLAY_KZ_CONFIG_ICON_LIST, i);
+
+        /* Locates its resource */
+        zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, zIcon);
+
+        /* Success? */
+        if(zResourceLocation != orxNULL)
+        {
+          orxBITMAP *pstBitmap;
+
+          /* Allocates bitmap */
+          pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
+
+          /* Valid? */
+          if(pstBitmap != orxNULL)
+          {
+            /* Clears it */
+            orxMemory_Zero(pstBitmap, sizeof(orxBITMAP));
+
+            /* Inits it */
+            pstBitmap->zLocation    = zResourceLocation;
+            pstBitmap->stFilenameID = orxString_GetID(zIcon);
+            pstBitmap->u32Flags     = orxDISPLAY_KU32_BITMAP_FLAG_ICON;
+
+            /* Loads bitmap's data */
+            if(orxDisplay_GLFW_LoadBitmapData(pstBitmap) != orxSTATUS_FAILURE)
+            {
+              /* Updates pending icon count */
+              sstDisplay.s32PendingIconCount++;
+            }
+            else
+            {
+              /* Deletes it */
+              orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Event handler
@@ -4555,8 +4793,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   /* Successful? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    const orxSTRING zCursor;
-
     /* Isn't fullscreen? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
@@ -4567,111 +4803,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glfwSetWindowPos(sstDisplay.pstWindow, (int)sstDisplay.vWindowPosition.fX, (int)sstDisplay.vWindowPosition.fY);
     }
 
-    /* Gets cursor */
-    zCursor = orxConfig_GetListString(orxDISPLAY_KZ_CONFIG_CURSOR, 0);
+    /* Updates cursor */
+    orxDisplay_GLFW_UpdateCursor();
 
-    /* Valid? */
-    if(*zCursor != orxCHAR_NULL)
-    {
-      orxBOOL bFound;
-      orxU32  i;
-
-      /* For all internal cursors */
-      for(i = 0, bFound = orxFALSE; i < orxARRAY_GET_ITEM_COUNT(sastStandardCursorList); i++)
-      {
-        /* Matches? */
-        if(orxString_ICompare(zCursor, sastStandardCursorList[i].zName) == 0)
-        {
-          /* Has cursor? */
-          if(sstDisplay.pstCursor != NULL)
-          {
-            /* Deletes it */
-            glfwDestroyCursor(sstDisplay.pstCursor);
-            sstDisplay.pstCursor = NULL;
-          }
-
-          /* Defined? */
-          if(sastStandardCursorList[i].iShape != 0)
-          {
-            /* Creates cursor */
-            sstDisplay.pstCursor = glfwCreateStandardCursor(sastStandardCursorList[i].iShape);
-
-            /* Success? */
-            if(sstDisplay.pstCursor != NULL)
-            {
-              /* Sets it */
-              glfwSetCursor(sstDisplay.pstWindow, sstDisplay.pstCursor);
-            }
-          }
-
-          /* Updates status */
-          bFound = orxTRUE;
-
-          break;
-        }
-      }
-
-      /* Not found? */
-      if(bFound == orxFALSE)
-      {
-        const orxSTRING zResourceLocation;
-
-        /* Locates resource */
-        zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, zCursor);
-
-        /* Success? */
-        if(zResourceLocation != orxNULL)
-        {
-          orxBITMAP *pstBitmap;
-
-          /* Allocates bitmap */
-          pstBitmap = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
-
-          /* Valid? */
-          if(pstBitmap != orxNULL)
-          {
-            /* Clears it */
-            orxMemory_Zero(pstBitmap, sizeof(orxBITMAP));
-
-            /* Inits it */
-            pstBitmap->zLocation      = zResourceLocation;
-            pstBitmap->stFilenameID   = orxString_GetID(zCursor);
-            pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_CURSOR;
-
-            /* Has pivot? */
-            if(orxConfig_GetListCount(orxDISPLAY_KZ_CONFIG_CURSOR) > 1)
-            {
-              orxVECTOR vPivot;
-
-              /* Gets it */
-              if(orxConfig_GetListVector(orxDISPLAY_KZ_CONFIG_CURSOR, 1, &vPivot) != orxNULL)
-              {
-                /* Stores it */
-                pstBitmap->fWidth   = vPivot.fX;
-                pstBitmap->fHeight  = vPivot.fY;
-              }
-            }
-
-            /* Loads bitmap's data */
-            if(orxDisplay_GLFW_LoadBitmapData(pstBitmap) == orxSTATUS_FAILURE)
-            {
-              /* Deletes it */
-              orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
-            }
-          }
-        }
-      }
-    }
-    else
-    {
-      /* Has cursor? */
-      if(sstDisplay.pstCursor != NULL)
-      {
-        /* Deletes it */
-        glfwDestroyCursor(sstDisplay.pstCursor);
-        sstDisplay.pstCursor = NULL;
-      }
-    }
+    /* Updates icons */
+    orxDisplay_GLFW_UpdateIconList();
 
     /* Updates its title */
     glfwSetWindowTitle(sstDisplay.pstWindow, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE));
