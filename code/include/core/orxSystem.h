@@ -171,6 +171,17 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionFullString();
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxSystem_GetVersionNumeric();
 
+/** Gets clipboard's content
+ * @return Clipboard's content / orxNULL, valid until next call to orxSystem_GetClipboard/orxSystem_SetClipboard
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetClipboard();
+
+/** Sets clipboard's content
+ * @param[in] _zValue               Value to set in the clipboard, orxNULL to clear
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSystem_SetClipboard(const orxSTRING _zValue);
+
 
 #endif /* _orxSYSTEM_H_ */
 

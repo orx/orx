@@ -2490,6 +2490,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
       /* Valid? */
       if(pstPayload != orxNULL)
       {
+        /* Clears error */
+        glfwGetError(NULL);
+
         /* Get? */
         if(pstPayload->stClipboard.zValue == orxNULL)
         {
@@ -2502,13 +2505,15 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
           /* Updates clipboard */
           glfwSetClipboardString(sstDisplay.pstWindow, pstPayload->stClipboard.zValue);
         }
+
+        /* Updates result */
+        eResult = (glfwGetError(NULL) == GLFW_NO_ERROR) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
       else
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
       }
-
       break;
     }
 

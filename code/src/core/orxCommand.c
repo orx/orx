@@ -2162,6 +2162,28 @@ void orxFASTCALL orxCommand_CommandLogAllStructures(orxU32 _u32ArgNumber, const 
   return;
 }
 
+/** Command: GetClipboard
+ */
+void orxFASTCALL orxCommand_CommandGetClipboard(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxSystem_GetClipboard();
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetClipboard
+ */
+void orxFASTCALL orxCommand_CommandSetClipboard(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxSystem_SetClipboard(_astArgList[0].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -2240,6 +2262,11 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Command: LogAllStructures */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+
+  /* Command: GetClipboard */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetClipboard, "Content", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+  /* Command: SetClipboard */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, SetClipboard, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Content", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
@@ -2345,6 +2372,14 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Structure.LogAll */
   orxCommand_AddAlias("Structure.LogAll", "Command.LogAllStructures", orxNULL);
+
+  /* Alias: Clipboard.Get */
+  orxCommand_AddAlias("Clipboard.Get", "Command.GetClipboard", orxNULL);
+  /* Alias: Clipboard.Set */
+  orxCommand_AddAlias("Clipboard.Set", "Command.SetClipboard", orxNULL);
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the command commands
@@ -2455,6 +2490,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Structure.LogAll */
   orxCommand_RemoveAlias("Structure.LogAll");
 
+  /* Alias: Clipboard.Get */
+  orxCommand_RemoveAlias("Clipboard.Get");
+  /* Alias: Clipboard.Set */
+  orxCommand_RemoveAlias("Clipboard.Set");
+
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 
@@ -2529,6 +2569,14 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: LogAllStructures */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, LogAllStructures);
+
+  /* Command: GetClipboard */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetClipboard);
+  /* Command: SetClipboard */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, SetClipboard);
+
+  /* Done! */
+  return;
 }
 
 /***************************************************************************
@@ -2544,6 +2592,7 @@ void orxFASTCALL orxCommand_Setup()
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 
   /* Done! */
