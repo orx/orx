@@ -36,6 +36,7 @@ var group__orx_system =
     ] ],
     [ "orxSystem_Delay", "group__orx_system.html#ga619076c8c23194cbdcb437fff14335bd", null ],
     [ "orxSystem_Exit", "group__orx_system.html#ga74d43ae1172730cfce4c9ced3be48b8c", null ],
+    [ "orxSystem_GetClipboard", "group__orx_system.html#gad46981af69bcbb1b41e928aff41e106a", null ],
     [ "orxSystem_GetRealTime", "group__orx_system.html#ga4b649194b085ba82221c05b5aa6170cd", null ],
     [ "orxSystem_GetSystemTime", "group__orx_system.html#gae1ae3f9be6749dda433622a0060a4a55", null ],
     [ "orxSystem_GetTime", "group__orx_system.html#gad0379fde6ecee8fba3a24a8e018debeb", null ],
@@ -44,5 +45,6 @@ var group__orx_system =
     [ "orxSystem_GetVersionNumeric", "group__orx_system.html#gaf94e2630cf8c78766c3ac24c6e9f81ff", null ],
     [ "orxSystem_GetVersionString", "group__orx_system.html#gadda64c2d6b400caf3d7e511aed3ca6e0", null ],
     [ "orxSystem_Init", "group__orx_system.html#ga8f8e70a14127981e4a4632b3442c9ee4", null ],
+    [ "orxSystem_SetClipboard", "group__orx_system.html#gac371ba2c73d19993c4a62815b50013df", null ],
     [ "orxSystem_Setup", "group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6", null ]
 ];
