@@ -1853,9 +1853,9 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
       /* Indirect mode? */
       if(sstDisplay.eLastBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
       {
-      /* Copies vertex buffer */
-      glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
-      glASSERT();
+        /* Copies vertex buffer */
+        glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_GLFW_VERTEX), sstDisplay.astVertexList);
+        glASSERT();
       }
     }
     else
@@ -2436,14 +2436,15 @@ static orxINLINE void orxDisplay_GLFW_UpdateIconList()
             pstBitmap->stFilenameID = orxString_GetID(zIcon);
             pstBitmap->u32Flags     = orxDISPLAY_KU32_BITMAP_FLAG_ICON;
 
+            /* Updates pending icon count */
+            sstDisplay.s32PendingIconCount++;
+
             /* Loads bitmap's data */
-            if(orxDisplay_GLFW_LoadBitmapData(pstBitmap) != orxSTATUS_FAILURE)
+            if(orxDisplay_GLFW_LoadBitmapData(pstBitmap) == orxSTATUS_FAILURE)
             {
               /* Updates pending icon count */
-              sstDisplay.s32PendingIconCount++;
-            }
-            else
-            {
+              sstDisplay.s32PendingIconCount--;
+
               /* Deletes it */
               orxBank_Free(sstDisplay.pstBitmapBank, pstBitmap);
             }
