@@ -64,7 +64,6 @@
 typedef struct __orxJOYSTICK_INFO_t
 {
   orxBOOL               bIsConnected;
-  orxFLOAT              fTimeStamp;
   float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
   unsigned char         au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
 
@@ -75,7 +74,6 @@ typedef struct __orxJOYSTICK_INFO_t
 typedef struct __orxJOYSTICK_STATIC_t
 {
   orxU32                u32Flags;
-  const orxCLOCK_INFO  *pstClockInfo;
   orxJOYSTICK_INFO      astJoyInfoList[GLFW_JOYSTICK_LAST + 1];
 
 } orxJOYSTICK_STATIC;
@@ -101,43 +99,36 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   /* Checks */
   orxASSERT(_u32ID <= GLFW_JOYSTICK_LAST);
 
-  /* Needs update? */
-  if(sstJoystick.astJoyInfoList[_u32ID].fTimeStamp != sstJoystick.pstClockInfo->fTime)
+  /* Clears info */
+  orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
+
+  /* Is connected? */
+  if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
   {
-    /* Clears info */
-    orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
+    orxS32          iAxisCount = 0, iButtonCount = 0;
+    const orxFLOAT *afAxes;
+    const orxU8    *au8Buttons;
 
-    /* Is connected? */
-    if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
+    /* Updates connection status */
+    sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
+
+    /* Gets axes values */
+    afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
+    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+
+    /* Remaps U & V axes */
+    if(iAxisCount > orxJOYSTICK_AXIS_U_1)
     {
-      orxS32          iAxisCount = 0, iButtonCount = 0;
-      const orxFLOAT *afAxes;
-      const orxU8    *au8Buttons;
-
-      /* Updates connection status */
-      sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
-
-      /* Gets axes values */
-      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
-
-      /* Remaps U & V axes */
-      if(iAxisCount > orxJOYSTICK_AXIS_U_1)
-      {
-        sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + 0.5f;
-      }
-      if(iAxisCount > orxJOYSTICK_AXIS_V_1)
-      {
-        sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + 0.5f;
-      }
-
-      /* Gets button values */
-      au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + 0.5f;
+    }
+    if(iAxisCount > orxJOYSTICK_AXIS_V_1)
+    {
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + 0.5f;
     }
 
-    /* Updates time stamp */
-    sstJoystick.astJoyInfoList[_u32ID].fTimeStamp = sstJoystick.pstClockInfo->fTime;
+    /* Gets button values */
+    au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
+    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
   }
 
   /* Done! */
@@ -148,11 +139,17 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
  */
 static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  orxU32 i;
+
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxJoystick_Update");
 
-  /* Updates first joystick */
-  orxJoystick_GLFW_UpdateInfo(0);
+  /* For all joysticks */
+  for(i = 0; i <= GLFW_JOYSTICK_LAST; i++)
+  {
+    /* Updates its info */
+    orxJoystick_GLFW_UpdateInfo(i);
+  }
 
   /* Is connected? */
   if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)
@@ -184,35 +181,20 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
   /* Was already initialized. */
   if(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
-    orxCLOCK *pstClock;
-
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
-    /* Gets core clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-
-    /* Gets its info */
-    sstJoystick.pstClockInfo = orxClock_GetInfo(pstClock);
+    /* Registers event update function */
+    eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
 
     /* Success? */
-    if(sstJoystick.pstClockInfo != orxNULL)
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Registers event update function */
-      eResult = orxClock_Register(pstClock, orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
+      /* Updates status */
+      sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
 
-      /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Updates first joystick */
-        orxJoystick_GLFW_UpdateInfo(0);
-
-        /* Updates status */
-        sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -250,9 +232,6 @@ orxFLOAT orxFASTCALL orxJoystick_GLFW_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-    /* Updates its info */
-    orxJoystick_GLFW_UpdateInfo(u32ID);
-
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
     {
@@ -298,9 +277,6 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
   /* Is ID valid? */
   if(u32ID <= (orxU32)GLFW_JOYSTICK_LAST)
   {
-    /* Updates its info */
-    orxJoystick_GLFW_UpdateInfo(u32ID);
-
     /* Plugged? */
     if(sstJoystick.astJoyInfoList[u32ID].bIsConnected != orxFALSE)
     {
