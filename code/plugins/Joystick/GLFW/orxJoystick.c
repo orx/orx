@@ -63,9 +63,9 @@
  */
 typedef struct __orxJOYSTICK_INFO_t
 {
-  float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
   orxBOOL               bIsConnected;
   orxFLOAT              fTimeStamp;
+  float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
   unsigned char         au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
 
 } orxJOYSTICK_INFO;
@@ -104,10 +104,13 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   /* Needs update? */
   if(sstJoystick.astJoyInfoList[_u32ID].fTimeStamp != sstJoystick.pstClockInfo->fTime)
   {
+    /* Clears info */
+    orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
+
     /* Is connected? */
     if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
     {
-      orxS32          iCount;
+      orxS32          iAxisCount = 0, iButtonCount = 0;
       const orxFLOAT *afAxes;
       const orxU8    *au8Buttons;
 
@@ -115,21 +118,22 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
       sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
 
       /* Gets axes values */
-      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
 
       /* Remaps U & V axes */
-      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orx2F(0.5f) * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + orx2F(0.5f);
-      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orx2F(0.5f) * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + orx2F(0.5f);
+      if(iAxisCount > orxJOYSTICK_AXIS_U_1)
+      {
+        sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + 0.5f;
+      }
+      if(iAxisCount > orxJOYSTICK_AXIS_V_1)
+      {
+        sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + 0.5f;
+      }
 
       /* Gets button values */
-      au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
-    }
-    else
-    {
-      /* Clears info */
-      orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
+      au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
     }
 
     /* Updates time stamp */
@@ -147,27 +151,23 @@ static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockIn
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxJoystick_Update");
 
-  /* Was first joystick present since the beginning? */
+  /* Updates first joystick */
+  orxJoystick_GLFW_UpdateInfo(0);
+
+  /* Is connected? */
   if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)
   {
-     /* Updates it */
-     orxJoystick_GLFW_UpdateInfo(0);
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
 
-     /* Still connected? */
-     if(sstJoystick.astJoyInfoList[0].bIsConnected != orxFALSE)
-     {
-       orxSYSTEM_EVENT_PAYLOAD stPayload;
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    stPayload.stAccelerometer.dTime = orxSystem_GetTime();
+    stPayload.stAccelerometer.vAcceleration.fX = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_X_1];
+    stPayload.stAccelerometer.vAcceleration.fY = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Y_1];
+    stPayload.stAccelerometer.vAcceleration.fZ = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Z_1];
 
-       /* Inits event payload */
-       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-       stPayload.stAccelerometer.dTime = orxSystem_GetTime();
-       stPayload.stAccelerometer.vAcceleration.fX = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_X_1];
-       stPayload.stAccelerometer.vAcceleration.fY = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Y_1];
-       stPayload.stAccelerometer.vAcceleration.fZ = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Z_1];
-
-       /* Sends accelerometer event */
-       orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stPayload);
-     }
+    /* Sends accelerometer event */
+    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stPayload);
   }
 
   /* Profiles */
