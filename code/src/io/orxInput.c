@@ -574,7 +574,6 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
 
-
   /* For all entries */
   for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList));
       pstEntry != orxNULL;
@@ -890,7 +889,7 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
 
 /** Updates inputs
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext       Context sent when registering callback to the clock
  */
 static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
