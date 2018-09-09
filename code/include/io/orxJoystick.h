@@ -49,12 +49,37 @@
 
 /** Helpers
  */
-#define orxJOYSTICK_GET_AXIS_FOR_PLAYER(AXIS, PLAYER)     (((AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
-#define orxJOYSTICK_GET_BUTTON_FOR_PLAYER(BUTTON, PLAYER) (((BUTTON) % orxJOYSTICK_BUTTON_SINGLE_NUMBER) + ((PLAYER - 1) * orxJOYSTICK_BUTTON_SINGLE_NUMBER))
+#define orxJOYSTICK_GET_AXIS(AXIS, ID)          ((((orxU32)AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
+#define orxJOYSTICK_GET_BUTTON(BUTTON, ID)      ((((orxU32)BUTTON) % orxJOYSTICK_BUTTON_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_BUTTON_SINGLE_NUMBER))
 
-#define orxJOYSTICK_GET_PLAYER_FROM_AXIS(AXIS)            (((AXIS) / orxJOYSTICK_AXIS_SINGLE_NUMBER) + 1)
-#define orxJOYSTICK_GET_PLAYER_FROM_BUTTON(BUTTON)        (((BUTTON) / orxJOYSTICK_BUTTON_SINGLE_NUMBER) + 1)
+#define orxJOYSTICK_GET_ID_FROM_AXIS(AXIS)      ((((orxU32)AXIS) / orxJOYSTICK_AXIS_SINGLE_NUMBER) + 1)
+#define orxJOYSTICK_GET_ID_FROM_BUTTON(BUTTON)  ((((orxU32)BUTTON) / orxJOYSTICK_BUTTON_SINGLE_NUMBER) + 1)
 
+#define orxJOYSTICK_DECLARE_BUTTON_ENUM(ID) \
+  orxJOYSTICK_BUTTON_1_##ID,                \
+  orxJOYSTICK_BUTTON_2_##ID,                \
+  orxJOYSTICK_BUTTON_3_##ID,                \
+  orxJOYSTICK_BUTTON_4_##ID,                \
+  orxJOYSTICK_BUTTON_5_##ID,                \
+  orxJOYSTICK_BUTTON_6_##ID,                \
+  orxJOYSTICK_BUTTON_7_##ID,                \
+  orxJOYSTICK_BUTTON_8_##ID,                \
+  orxJOYSTICK_BUTTON_9_##ID,                \
+  orxJOYSTICK_BUTTON_10_##ID,               \
+  orxJOYSTICK_BUTTON_11_##ID,               \
+  orxJOYSTICK_BUTTON_12_##ID,               \
+  orxJOYSTICK_BUTTON_13_##ID,               \
+  orxJOYSTICK_BUTTON_14_##ID,               \
+  orxJOYSTICK_BUTTON_15_##ID,               \
+  orxJOYSTICK_BUTTON_16_##ID
+
+#define orxJOYSTICK_DECLARE_AXIS_ENUM(ID)   \
+  orxJOYSTICK_AXIS_X_##ID,                  \
+  orxJOYSTICK_AXIS_Y_##ID,                  \
+  orxJOYSTICK_AXIS_Z_##ID,                  \
+  orxJOYSTICK_AXIS_R_##ID,                  \
+  orxJOYSTICK_AXIS_U_##ID,                  \
+  orxJOYSTICK_AXIS_V_##ID
 
 /** Button enum
  */
@@ -96,46 +121,26 @@ typedef enum __orxJOYSTICK_BUTTON_t
   orxJOYSTICK_BUTTON_15_2,
   orxJOYSTICK_BUTTON_16_2,
 
-  orxJOYSTICK_BUTTON_1_3,
-  orxJOYSTICK_BUTTON_2_3,
-  orxJOYSTICK_BUTTON_3_3,
-  orxJOYSTICK_BUTTON_4_3,
-  orxJOYSTICK_BUTTON_5_3,
-  orxJOYSTICK_BUTTON_6_3,
-  orxJOYSTICK_BUTTON_7_3,
-  orxJOYSTICK_BUTTON_8_3,
-  orxJOYSTICK_BUTTON_9_3,
-  orxJOYSTICK_BUTTON_10_3,
-  orxJOYSTICK_BUTTON_11_3,
-  orxJOYSTICK_BUTTON_12_3,
-  orxJOYSTICK_BUTTON_13_3,
-  orxJOYSTICK_BUTTON_14_3,
-  orxJOYSTICK_BUTTON_15_3,
-  orxJOYSTICK_BUTTON_16_3,
-
-  orxJOYSTICK_BUTTON_1_4,
-  orxJOYSTICK_BUTTON_2_4,
-  orxJOYSTICK_BUTTON_3_4,
-  orxJOYSTICK_BUTTON_4_4,
-  orxJOYSTICK_BUTTON_5_4,
-  orxJOYSTICK_BUTTON_6_4,
-  orxJOYSTICK_BUTTON_7_4,
-  orxJOYSTICK_BUTTON_8_4,
-  orxJOYSTICK_BUTTON_9_4,
-  orxJOYSTICK_BUTTON_10_4,
-  orxJOYSTICK_BUTTON_11_4,
-  orxJOYSTICK_BUTTON_12_4,
-  orxJOYSTICK_BUTTON_13_4,
-  orxJOYSTICK_BUTTON_14_4,
-  orxJOYSTICK_BUTTON_15_4,
-  orxJOYSTICK_BUTTON_16_4,
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(3),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(4),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(5),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(6),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(7),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(8),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(9),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(10),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(11),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(12),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(13),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(14),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(15),
+  orxJOYSTICK_DECLARE_BUTTON_ENUM(16),
 
   orxJOYSTICK_BUTTON_NUMBER,
 
   orxJOYSTICK_BUTTON_NONE = orxENUM_NONE
 
 } orxJOYSTICK_BUTTON;
-
 
 /** Axis enum
  */
@@ -147,7 +152,6 @@ typedef enum __orxJOYSTICK_AXIS_t
   orxJOYSTICK_AXIS_R_1,
   orxJOYSTICK_AXIS_U_1,
   orxJOYSTICK_AXIS_V_1,
-  orxJOYSTICK_AXIS_POV_1,
 
   orxJOYSTICK_AXIS_SINGLE_NUMBER,
 
@@ -157,29 +161,30 @@ typedef enum __orxJOYSTICK_AXIS_t
   orxJOYSTICK_AXIS_R_2,
   orxJOYSTICK_AXIS_U_2,
   orxJOYSTICK_AXIS_V_2,
-  orxJOYSTICK_AXIS_POV_2,
 
-  orxJOYSTICK_AXIS_X_3,
-  orxJOYSTICK_AXIS_Y_3,
-  orxJOYSTICK_AXIS_Z_3,
-  orxJOYSTICK_AXIS_R_3,
-  orxJOYSTICK_AXIS_U_3,
-  orxJOYSTICK_AXIS_V_3,
-  orxJOYSTICK_AXIS_POV_3,
-
-  orxJOYSTICK_AXIS_X_4,
-  orxJOYSTICK_AXIS_Y_4,
-  orxJOYSTICK_AXIS_Z_4,
-  orxJOYSTICK_AXIS_R_4,
-  orxJOYSTICK_AXIS_U_4,
-  orxJOYSTICK_AXIS_V_4,
-  orxJOYSTICK_AXIS_POV_4,
+  orxJOYSTICK_DECLARE_AXIS_ENUM(3),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(4),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(5),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(6),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(7),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(8),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(9),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(10),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(11),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(12),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(13),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(14),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(15),
+  orxJOYSTICK_DECLARE_AXIS_ENUM(16),
 
   orxJOYSTICK_AXIS_NUMBER,
 
   orxJOYSTICK_AXIS_NONE = orxENUM_NONE
 
 } orxJOYSTICK_AXIS;
+
+#undef orxJOYSTICK_DECLARE_BUTTON_ENUM
+#undef orxJOYSTICK_DECLARE_AXIS_ENUM
 
 
 /***************************************************************************
@@ -212,7 +217,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxJOYSTI
 
 /** Is joystick button pressed?
  * @param[in] _eButton      Joystick button to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON _eButton);
 
@@ -227,6 +232,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetButtonName(orxJOYST
  * @return Axis's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
+
+/** Is joystick connected?
+ * @param[in] _u32ID        ID of the joystick, 1-based index
+ * @return orxTRUE if connected / orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsConnected(orxU32 _u32ID);
 
 #endif /* _orxJOYSTICK_H_ */
 

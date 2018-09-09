@@ -8,8 +8,8 @@ REBOL [
 ; Variables
 source: %../template/
 extern: %../../../extern/
-params: reduce [
-  'name       {Project name, relative or full path}   _
+params: [
+   name       {Project name, relative or full path}   _
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2013} {vs2015} {vs2017}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]

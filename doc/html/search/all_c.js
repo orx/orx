@@ -17,6 +17,7 @@ var searchData=
   ['u32keycode',['u32KeyCode',['../structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#a6f1cfa7e832d15bb3ba471e63f75d712',1,'orxANDROID_JOYSTICK_EVENT::u32KeyCode()'],['../structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a673c71415d15ff8ff7e2ab6bb5ea72e6',1,'orxANDROID_KEY_EVENT::u32KeyCode()']]],
   ['u32major',['u32Major',['../structorx_v_e_r_s_i_o_n.html#aca66ab9da0ad5dee526e1ad16b604d26',1,'orxVERSION']]],
   ['u32minor',['u32Minor',['../structorx_v_e_r_s_i_o_n.html#af144e97c6bdc8e8af5467b7627921b6e',1,'orxVERSION']]],
+  ['u32number',['u32Number',['../structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#ac4dd08cf4421e222c2d70b6427e21df4',1,'orxSYSTEM_EVENT_PAYLOAD']]],
   ['u32previousdepth',['u32PreviousDepth',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a680f22e8d18e09ca63319d563c295242',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32previousheight',['u32PreviousHeight',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a80c983b650878822e3c0919ffe75ad54',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32previousrefreshrate',['u32PreviousRefreshRate',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a',1,'orxDISPLAY_EVENT_PAYLOAD']]],

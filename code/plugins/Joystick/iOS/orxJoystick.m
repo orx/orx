@@ -195,6 +195,17 @@ orxBOOL orxFASTCALL orxJoystick_iOS_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
   return bResult;
 }
 
+orxBOOL orxFASTCALL orxJoystick_iOS_IsConnected(orxU32 _u32ID)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Not available on this platform!");
+
+  /* Done! */
+  return bResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -205,4 +216,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Init, JOYSTICK, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Exit, JOYSTICK, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_IsConnected, JOYSTICK, IS_CONNECTED);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -183,13 +183,13 @@ solution "[name]"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-mmacosx-version-min=10.7",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-mmacosx-version-min=10.7",
             "-dead_strip"
         }
 

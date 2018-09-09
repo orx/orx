@@ -79,16 +79,16 @@
 #define orxCONSOLE_KE_KEY_DELETE                      orxKEYBOARD_KEY_BACKSPACE       /**< Delete key */
 #define orxCONSOLE_KE_KEY_DELETE_AFTER                orxKEYBOARD_KEY_DELETE          /**< Delete after key */
 #define orxCONSOLE_KE_KEY_TOGGLE_MODE                 orxKEYBOARD_KEY_INSERT          /**< Toggle mode key */
-#define orxCONSOLE_KE_KEY_ENTER                       orxKEYBOARD_KEY_RETURN          /**< Enter key */
-#define orxCONSOLE_KE_KEY_ENTER_ALTERNATE             orxKEYBOARD_KEY_NUMPAD_RETURN   /**< Enter alternate key */
+#define orxCONSOLE_KE_KEY_ENTER                       orxKEYBOARD_KEY_ENTER           /**< Enter key */
+#define orxCONSOLE_KE_KEY_ENTER_ALTERNATE             orxKEYBOARD_KEY_NUMPAD_ENTER    /**< Enter alternate key */
 #define orxCONSOLE_KE_KEY_PREVIOUS                    orxKEYBOARD_KEY_UP              /**< Previous key */
 #define orxCONSOLE_KE_KEY_NEXT                        orxKEYBOARD_KEY_DOWN            /**< Next key */
 #define orxCONSOLE_KE_KEY_LEFT                        orxKEYBOARD_KEY_LEFT            /**< Left key */
 #define orxCONSOLE_KE_KEY_RIGHT                       orxKEYBOARD_KEY_RIGHT           /**< Right key */
 #define orxCONSOLE_KE_KEY_START                       orxKEYBOARD_KEY_HOME            /**< Start key */
 #define orxCONSOLE_KE_KEY_END                         orxKEYBOARD_KEY_END             /**< End key */
-#define orxCONSOLE_KE_KEY_SCROLL_UP                   orxKEYBOARD_KEY_PAGEUP          /**< Scroll up key */
-#define orxCONSOLE_KE_KEY_SCROLL_DOWN                 orxKEYBOARD_KEY_PAGEDOWN        /**< Scroll down key */
+#define orxCONSOLE_KE_KEY_SCROLL_UP                   orxKEYBOARD_KEY_PAGE_UP         /**< Scroll up key */
+#define orxCONSOLE_KE_KEY_SCROLL_DOWN                 orxKEYBOARD_KEY_PAGE_DOWN       /**< Scroll down key */
 #define orxCONSOLE_KE_BUTTON_SCROLL_UP                orxMOUSE_BUTTON_WHEEL_UP        /**< Scroll up button */
 #define orxCONSOLE_KE_BUTTON_SCROLL_DOWN              orxMOUSE_BUTTON_WHEEL_DOWN      /**< Scroll down button */
 
