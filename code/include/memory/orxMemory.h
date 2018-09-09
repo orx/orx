@@ -81,7 +81,7 @@
   #define orxMEMORY_BARRIER()
   #undef orxHAS_MEMORY_BARRIER
 
-  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.
+  #warning !!WARNING!! This compiler does not have any builtin hardware memory barrier.
 #endif
 
 

@@ -5,6 +5,7 @@ var orx_plugin___joystick_8h =
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7aed21b2a00c74b547f67ca0ba858b65a4", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_GET_AXIS_VALUE", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01", null ]
     ] ]

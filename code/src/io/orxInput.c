@@ -574,7 +574,6 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
 
-
   /* For all entries */
   for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList));
       pstEntry != orxNULL;
@@ -890,7 +889,7 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
 
 /** Updates inputs
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
- * @param[in]   _pContext     Context sent when registering callback to the clock
+ * @param[in]   _pContext       Context sent when registering callback to the clock
  */
 static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
@@ -2409,6 +2408,14 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     orxINPUT_ENTRY *pstEntry;
     orxSTRINGID     stEntryID;
 
+    /* Non-axis type or no mode set? */
+    if(((_eType != orxINPUT_TYPE_MOUSE_AXIS) && (_eType != orxINPUT_TYPE_JOYSTICK_AXIS))
+    || (_eMode == orxINPUT_MODE_NONE))
+    {
+      /* Defaults to full */
+      _eMode = orxINPUT_MODE_FULL;
+    }
+
     /* Gets entry ID */
     stEntryID = orxString_ToCRC(_zName);
 
@@ -2965,8 +2972,11 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
 
       default:
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+        if((_eType == orxINPUT_TYPE_MOUSE_AXIS) || (_eType == orxINPUT_TYPE_JOYSTICK_AXIS))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+        }
 
         break;
       }

@@ -107,6 +107,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7aed21b2a00c74b547f67ca0ba858b65a4", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_GET_AXIS_VALUE", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE", "group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01", null ]
     ] ],
@@ -114,6 +115,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab016aa54cfa2a1c0f2c0566ea582d31b", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER", "group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458", null ],

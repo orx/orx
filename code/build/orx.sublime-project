@@ -3,7 +3,7 @@
     [
         {
             "path": "..",
-            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb", "*.exe", "*.", "*.so", "*.dylib", "*.pdb", "*.ilk", "*.idb", "*.opensdf"],
+            "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.d", "*.suo", "*.ncb", "*.exe", "*.", "*.so", "*.dylib", "*.pdb", "*.ilk", "*.idb", "*.opensdf", "*.opendb", "*.tmp", "*.ipch"],
             "folder_exclude_patterns": ["obj", "lib"]
         },
         {

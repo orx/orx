@@ -276,7 +276,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_GET_AXIS_VALUE</a>, 
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED</a>, 
+<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER</a>, 
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
@@ -285,14 +286,15 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT</a> = 0, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED</a>, 
-<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab016aa54cfa2a1c0f2c0566ea582d31b">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faabcb4ec884c1904f969926ef13519220a">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_SHOW</a>, 
-<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:ga25158caaf5e4db6702d80d3c73b945fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1323,6 +1325,8 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED&#160;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED&#160;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE&#160;</td><td class="fielddoc">
@@ -1348,6 +1352,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faab016aa54cfa2a1c0f2c0566ea582d31b"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY&#160;</td><td class="fielddoc">
 </td></tr>
