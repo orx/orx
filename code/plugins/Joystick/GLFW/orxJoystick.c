@@ -64,6 +64,8 @@
 typedef struct __orxJOYSTICK_INFO_t
 {
   orxBOOL               bIsConnected;
+  orxBOOL               bIsGamepad;
+  orxBOOL               bIsLTriggerRemapped, bIsRTriggerRemapped;
   float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
   unsigned char         au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
 
@@ -99,36 +101,74 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   /* Checks */
   orxASSERT(_u32ID <= GLFW_JOYSTICK_LAST);
 
-  /* Clears info */
-  orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
-
   /* Is connected? */
   if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
   {
-    orxS32          iAxisCount = 0, iButtonCount = 0;
-    const orxFLOAT *afAxes;
-    const orxU8    *au8Buttons;
+    GLFWgamepadstate  stState = {};
+    orxS32            iButtonCount = 0;
+    const orxU8      *au8Buttons;
 
     /* Updates connection status */
     sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
-
-    /* Gets axes values */
-    afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
-    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
-
-    /* Remaps U & V axes */
-    if(iAxisCount > orxJOYSTICK_AXIS_U_1)
-    {
-      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_U_1] + 0.5f;
-    }
-    if(iAxisCount > orxJOYSTICK_AXIS_V_1)
-    {
-      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_V_1] + 0.5f;
-    }
+    sstJoystick.astJoyInfoList[_u32ID].bIsGamepad   = glfwJoystickIsGamepad((int)_u32ID);
 
     /* Gets button values */
     au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
-    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER) * sizeof(orxU8));
+    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1) * sizeof(unsigned char));
+
+    /* Is gamepad and can retrieve its state? */
+    if((sstJoystick.astJoyInfoList[_u32ID].bIsGamepad != GLFW_FALSE)
+    && (glfwGetGamepadState((int)_u32ID, &stState) != GLFW_FALSE))
+    {
+      /* Stores button values */
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, stState.buttons, orxMIN(GLFW_GAMEPAD_BUTTON_LAST + 1, orxJOYSTICK_BUTTON_1_1) * sizeof(unsigned char));
+
+      /* Stores axes values */
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, stState.axes, orxMIN(GLFW_GAMEPAD_AXIS_LAST + 1, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(float));
+    }
+    else
+    {
+      orxS32          iAxisCount = 0;
+      const orxFLOAT *afAxes;
+
+      /* Gets axes values */
+      afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+
+      /* Mirrors low level buttons to high level ones */
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, (GLFW_GAMEPAD_BUTTON_LAST + 1) * sizeof(unsigned char));
+    }
+
+    /* Should remap left trigger? */
+    if(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] < -orxMATH_KF_EPSILON)
+    {
+      /* Updates status */
+      sstJoystick.astJoyInfoList[_u32ID].bIsLTriggerRemapped = orxTRUE;
+    }
+    /* Should remap right trigger? */
+    if(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] < -orxMATH_KF_EPSILON)
+    {
+      /* Updates status */
+      sstJoystick.astJoyInfoList[_u32ID].bIsRTriggerRemapped = orxTRUE;
+    }
+
+    /* Is left trigger remapped? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsLTriggerRemapped != orxFALSE)
+    {
+      /* Applies remapping */
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] + 0.5f;
+    }
+    /* Is right trigger remapped? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsRTriggerRemapped != orxFALSE)
+    {
+      /* Applies remapping */
+      sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] = 0.5f * sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] + 0.5f;
+    }
+  }
+  else
+  {
+    /* Clears info */
+    orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
   }
 
   /* Done! */
@@ -159,9 +199,9 @@ static void orxFASTCALL orxJoystick_GLFW_Update(const orxCLOCK_INFO *_pstClockIn
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
     stPayload.stAccelerometer.dTime = orxSystem_GetTime();
-    stPayload.stAccelerometer.vAcceleration.fX = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_X_1];
-    stPayload.stAccelerometer.vAcceleration.fY = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Y_1];
-    stPayload.stAccelerometer.vAcceleration.fZ = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_Z_1];
+    stPayload.stAccelerometer.vAcceleration.fX = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_LX_1];
+    stPayload.stAccelerometer.vAcceleration.fY = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_LY_1];
+    stPayload.stAccelerometer.vAcceleration.fZ = sstJoystick.astJoyInfoList[0].afAxisInfoList[orxJOYSTICK_AXIS_RX_1];
 
     /* Sends accelerometer event */
     orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_ACCELERATE, orxNULL, orxNULL, &stPayload);
