@@ -138,10 +138,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Depending on axis */
   switch(_eAxis)
   {
-    case orxJOYSTICK_AXIS_X_1:
-    case orxJOYSTICK_AXIS_X_2:
-    case orxJOYSTICK_AXIS_X_3:
-    case orxJOYSTICK_AXIS_X_4:
+    case orxJOYSTICK_AXIS_LX_1:
+    case orxJOYSTICK_AXIS_LX_2:
+    case orxJOYSTICK_AXIS_LX_3:
+    case orxJOYSTICK_AXIS_LX_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fX;
@@ -149,10 +149,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
       break;
     }
 
-    case orxJOYSTICK_AXIS_Y_1:
-    case orxJOYSTICK_AXIS_Y_2:
-    case orxJOYSTICK_AXIS_Y_3:
-    case orxJOYSTICK_AXIS_Y_4:
+    case orxJOYSTICK_AXIS_LY_1:
+    case orxJOYSTICK_AXIS_LY_2:
+    case orxJOYSTICK_AXIS_LY_3:
+    case orxJOYSTICK_AXIS_LY_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fY;
@@ -160,10 +160,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
       break;
     }
 
-    case orxJOYSTICK_AXIS_Z_1:
-    case orxJOYSTICK_AXIS_Z_2:
-    case orxJOYSTICK_AXIS_Z_3:
-    case orxJOYSTICK_AXIS_Z_4:
+    case orxJOYSTICK_AXIS_RX_1:
+    case orxJOYSTICK_AXIS_RX_2:
+    case orxJOYSTICK_AXIS_RX_3:
+    case orxJOYSTICK_AXIS_RX_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fZ;
