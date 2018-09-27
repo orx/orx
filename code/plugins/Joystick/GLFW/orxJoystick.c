@@ -54,6 +54,8 @@
 
 #define orxJOYSTICK_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
 
+#define orxJOYSTICK_KZ_CONFIG_MAPPING_LIST    "MappingList"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -230,6 +232,28 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Is config module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CONFIG) != orxFALSE)
+      {
+        orxS32 i, s32Count;
+
+        /* Pushes input section */
+        orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+        /* For all defined mappings */
+        for(i = 0, s32Count = orxConfig_GetListCount(orxJOYSTICK_KZ_CONFIG_MAPPING_LIST); i < s32Count; i++)
+        {
+          /* Updates database mappings */
+          glfwUpdateGamepadMappings(orxConfig_GetListString(orxJOYSTICK_KZ_CONFIG_MAPPING_LIST, i));
+        }
+
+        /* Clears any error */
+        glfwGetError(NULL);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
+
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
 
