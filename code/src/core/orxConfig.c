@@ -4127,9 +4127,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
           acBuffer[u32Size++] = orxCHAR_LF;
         }
 
-        /* Updates offset */
-        u32Offset = ((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE)) ? orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH : 0;
-
         /* Processes buffer */
         u32Offset = orxConfig_ProcessBuffer(_zFileName, acBuffer, u32Size, u32Offset);
 
