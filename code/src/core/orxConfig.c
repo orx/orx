@@ -4112,12 +4112,18 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Uses encryption? */
-        if((bUseEncryption != orxFALSE)
-        && (bFirstTime == orxFALSE))
+        /* Not first time? */
+        if(bFirstTime == orxFALSE)
         {
-          /* Decrypts all new characters */
-          orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+          /* Uses encryption? */
+          if(bUseEncryption != orxFALSE)
+          {
+            /* Decrypts all new characters */
+            orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+          }
+
+          /* Resets offset */
+          u32Offset = 0;
         }
 
         /* End of file reached? */
