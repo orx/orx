@@ -276,10 +276,10 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
   /* Is 0? */
   if(u32Value == 0)
   {
-    orxU32 u32Count, i;
+    orxS32 s32Count, i;
 
     /* For all elements */
-    for(i = 0, u32Count = orxConfig_GetListCount(_zConfigID); i < u32Count; i++)
+    for(i = 0, s32Count = orxConfig_GetListCount(_zConfigID); i < s32Count; i++)
     {
       /* Updates result with numerical value */
       u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
