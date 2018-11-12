@@ -620,6 +620,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_FreeSample(void *_pContext)
   /* Deletes sample  */
   orxBank_Free(sstSoundSystem.pstSampleBank, pstSample);
 
+  /* Tracks audio memory */
+  orxMEMORY_TRACK(AUDIO, pstSample->stData.stInfo.u32ChannelNumber * pstSample->stData.stInfo.u32FrameNumber * sizeof(orxS16), orxFALSE);
+
   /* Done! */
   return eResult;
 }
@@ -1104,6 +1107,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
       /* Success? */
       if(u32ReadFrameNumber == pstSample->stData.stInfo.u32FrameNumber)
       {
+        /* Tracks audio memory */
+        orxMEMORY_TRACK(AUDIO, u32BufferSize, orxTRUE);
+
         /* Transfers the data */
         alBufferData(uiBuffer, (pstSample->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)pstSample->stData.stInfo.u32SampleRate);
         alASSERT();
@@ -1324,8 +1330,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         if(sstSoundSystem.poContext != NULL)
         {
           /* Creates banks */
-          sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-          sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
+          sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
 
           /* Valid? */
           if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
@@ -1532,7 +1538,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
       u32BufferSize = _u32FrameNumber * _u32ChannelNumber * sizeof(orxS16);
 
       /* Allocates buffer */
-      if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN)) != orxNULL)
+      if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_TEMP)) != orxNULL)
       {
         /* Clears it */
         orxMemory_Zero(pBuffer, u32BufferSize);
@@ -1540,6 +1546,9 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
         /* Generates an OpenAL buffer */
         alGenBuffers(1, (ALuint *)&(pstResult->uiBuffer));
         alASSERT();
+
+        /* Tracks audio memory */
+        orxMEMORY_TRACK(AUDIO, u32BufferSize, orxTRUE);
 
         /* Transfers the data */
         alBufferData(pstResult->uiBuffer, (_u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)_u32SampleRate);
