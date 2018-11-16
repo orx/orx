@@ -339,6 +339,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
   #if defined(__orxLINUX__)
