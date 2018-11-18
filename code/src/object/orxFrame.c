@@ -638,7 +638,7 @@ static void orxFASTCALL orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_p
  */
 static orxINLINE void orxFrame_DeleteAll()
 {
-  register orxFRAME *pstFrame;
+  orxFRAME *pstFrame;
 
   /* Gets first frame */
   pstFrame = orxFRAME(orxStructure_GetChild(sstFrame.pstRoot));

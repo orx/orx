@@ -211,7 +211,7 @@ static orxINLINE void orxAnim_SetKeyCount(orxANIM *_pstAnim, orxU32 _u32KeyCount
  */
 static orxINLINE void orxAnim_IncreaseKeyCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32KeyCount;
+  orxU32 u32KeyCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -230,7 +230,7 @@ static orxINLINE void orxAnim_IncreaseKeyCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DecreaseKeyCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32KeyCount;
+  orxU32 u32KeyCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -281,7 +281,7 @@ static orxINLINE void orxAnim_SetEventCount(orxANIM *_pstAnim, orxU32 _u32EventC
  */
 static orxINLINE void orxAnim_IncreaseEventCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32EventCount;
+  orxU32 u32EventCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -300,7 +300,7 @@ static orxINLINE void orxAnim_IncreaseEventCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DecreaseEventCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32EventCount;
+  orxU32 u32EventCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -318,7 +318,7 @@ static orxINLINE void orxAnim_DecreaseEventCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DeleteAll()
 {
-  register orxANIM *pstAnim;
+  orxANIM *pstAnim;
 
   /* Gets first anim */
   pstAnim = orxANIM (orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM));

@@ -281,7 +281,7 @@ static orxINLINE void orxTexture_DeleteAll()
  */
 static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
 {
-  register orxTEXTURE *pstTexture;
+  orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
   pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
@@ -1091,7 +1091,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
  */
 orxBITMAP *orxFASTCALL orxTexture_GetBitmap(const orxTEXTURE *_pstTexture)
 {
-  register orxBITMAP *pstBitmap = orxNULL;
+  orxBITMAP *pstBitmap = orxNULL;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);

@@ -225,9 +225,9 @@ static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE
  */
 static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
 {
-  register const orxCLOCK_MOD_TYPE *peModType;
-  register const orxFLOAT          *pfModValue;
-  register orxFLOAT                 fResult;
+  const orxCLOCK_MOD_TYPE *peModType;
+  const orxFLOAT          *pfModValue;
+  orxFLOAT                 fResult;
 
   /* Using global one? */
   if(_pstClockInfo == orxNULL)

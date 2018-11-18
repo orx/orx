@@ -124,7 +124,7 @@ static orxANIMPOINTER_STATIC sstAnimPointer;
  */
 static orxINLINE void orxAnimPointer_DeleteAll()
 {
-  register orxANIMPOINTER *pstAnimPointer;
+  orxANIMPOINTER *pstAnimPointer;
 
   /* Gets first anim pointer */
   pstAnimPointer = orxANIMPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER));
@@ -456,7 +456,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
  */
 static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
-  register orxANIMPOINTER *pstAnimPointer;
+  orxANIMPOINTER *pstAnimPointer;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxAnimPointer_Update");
@@ -532,7 +532,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to register AnimPointer module.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to AnimPointer module.");
   }
 
   /* Done! */
@@ -945,7 +945,7 @@ orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER
  */
 orxFLOAT orxFASTCALL orxAnimPointer_GetTime(const orxANIMPOINTER *_pstAnimPointer)
 {
-  register orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);

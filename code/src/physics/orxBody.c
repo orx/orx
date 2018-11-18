@@ -247,7 +247,7 @@ static orxBODY_STATIC sstBody;
  */
 static orxINLINE void orxBody_DeleteAll()
 {
-  register orxBODY *pstBody;
+  orxBODY *pstBody;
 
   /* Gets first body */
   pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
