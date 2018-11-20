@@ -174,7 +174,7 @@ static orxINLINE orxOBOX *                    orxOBox_Move(orxOBOX *_pstRes, con
  */
 static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes, const orxOBOX *_pstOp, orxFLOAT _fAngle)
 {
-  register orxFLOAT fSin, fCos;
+  orxFLOAT fSin, fCos;
 
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -210,7 +210,7 @@ static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes,
  */
 static orxINLINE orxBOOL                      orxOBox_IsInside(const orxOBOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  register orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
   orxFLOAT            fProj;
   orxVECTOR           vToPos;
 
@@ -250,7 +250,7 @@ static orxINLINE orxBOOL                      orxOBox_IsInside(const orxOBOX *_p
  */
 static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  register orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
   orxFLOAT            fProj, fSize;
   orxVECTOR           vToPos;
 
@@ -287,7 +287,7 @@ static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *
  */
 static orxINLINE orxBOOL                      orxOBox_ZAlignedTestIntersection(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)
 {
-  register orxBOOL bResult;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);

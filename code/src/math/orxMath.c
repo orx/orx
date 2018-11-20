@@ -46,7 +46,7 @@ static orxU32 su32X = 123456789, su32Y = 362436069, su32Z = 521288629, su32W = 8
 
 static orxINLINE orxU32 orxMath_Xor128()
 {
-  register orxU32 u32Temp;
+  orxU32 u32Temp;
 
   u32Temp = su32X ^ (su32X << 11);
   su32X   = su32Y; su32Y = su32Z; su32Z = su32W;

@@ -330,7 +330,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
  */
 static orxINLINE void orxGraphic_DeleteAll()
 {
-  register orxGRAPHIC *pstGraphic;
+  orxGRAPHIC *pstGraphic;
 
   /* Gets first graphic */
   pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));

@@ -531,8 +531,8 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
  */
 static orxINLINE void orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
-  register orxU32 u32Index;
-  register orxU8 u8Mask;
+  orxU32 u32Index;
+  orxU8 u8Mask;
 
   /* Checks */
   orxASSERT(_pstInfo != orxNULL);
@@ -556,8 +556,8 @@ static orxINLINE void orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU
  */
 static orxINLINE void orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
-  register orxU32 u32Index;
-  register orxU8 u8Mask;
+  orxU32 u32Index;
+  orxU8 u8Mask;
 
   /* Checks */
   orxASSERT(_pstInfo != orxNULL);
@@ -608,8 +608,8 @@ static orxINLINE void orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, or
  */
 static orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
-  register orxU32 u32Index;
-  register orxU8 u8Mask;
+  orxU32 u32Index;
+  orxU8 u8Mask;
 
   /* Checks */
   orxASSERT(_pstInfo != orxNULL);
@@ -1062,7 +1062,7 @@ static orxINLINE void orxAnimSet_SetAnimCount(orxANIMSET *_pstAnimSet, orxU32 _u
  */
 static orxINLINE void orxAnimSet_IncreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
-  register orxU32 u32AnimCount;
+  orxU32 u32AnimCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnimSet);
@@ -1081,7 +1081,7 @@ static orxINLINE void orxAnimSet_IncreaseAnimCount(orxANIMSET *_pstAnimSet)
  */
 static orxINLINE void orxAnimSet_DecreaseAnimCount(orxANIMSET *_pstAnimSet)
 {
-  register orxU32 u32AnimCount;
+  orxU32 u32AnimCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnimSet);
@@ -2532,7 +2532,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to register AnimSet module.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to AnimSet module.");
   }
 
   /* Done! */
