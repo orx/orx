@@ -62,6 +62,7 @@
 #define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
 #define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
 #define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
+#define orxCONSOLE_KZ_INPUT_PASTE                     "Paste"                         /**< Paste input */
 #define orxCONSOLE_KZ_INPUT_SCROLL_DOWN               "ScrollDown"                    /**< Log scroll down */
 #define orxCONSOLE_KZ_INPUT_SCROLL_UP                 "ScrollUp"                      /**< Log scroll up */
 

@@ -9,7 +9,7 @@ REBOL [
 source: %../template/
 extern: %../../../extern/
 params: [
-   name       {Project name, relative or full path}   _
+   name       {Project name (relative or full path)}   _
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2013} {vs2015} {vs2017}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
@@ -88,14 +88,27 @@ either system/options/args [
   either (length? system/options/args) > ((length? params) / 3) [
     usage/message [{Too many arguments:} mold system/options/args]
   ] [
-    use [arg] [
-      arg: system/options/args
+    use [interactive? arg] [
+      if interactive?: zero? length? arg: system/options/args [
+        print {== No argument, switching to interactive mode}
+      ]
       foreach [param desc default] params [
         either tail? arg [
-          either default [
-            set param default
-          ] [
-            usage/message [{Not enough arguments:} mold system/options/args]
+          case [
+            interactive? [
+              loop-until [
+                any [
+                  not empty? set param trim ask rejoin [{ * } desc {? }]
+                  set param default
+                ]
+              ]
+            ]
+            default [
+              set param default
+            ]
+            true [
+              usage/message [{Not enough arguments:} mold system/options/args]
+            ]
           ]
         ] [
           set param arg/1

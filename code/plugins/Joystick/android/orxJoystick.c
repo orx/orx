@@ -205,57 +205,71 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
         {
           case 19: // KEYCODE_DPAD_UP
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_11_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_UP_1] = 1;
             break;
           case 20: // KEYCODE_DPAD_DOWN
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1]   = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_DOWN_1] = 1;
             break;
           case 21: // KEYCODE_DPAD_LEFT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1]   = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LEFT_1] = 1;
             break;
           case 22: // KEYCODE_DPAD_RIGHT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1]     = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RIGHT_1]  = 1;
             break;
           case 96: // KEYCODE_BUTTON_A
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_A_1] = 1;
             break;
           case 97: // KEYCODE_BUTTON_B
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_2_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_B_1] = 1;
             break;
           case 98: // KEYCODE_BUTTON_C
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_15_1] = 1;
             break;
           case 99: // KEYCODE_BUTTON_X
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_3_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_X_1] = 1;
             break;
           case 100: // KEYCODE_BUTTON_Y
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_4_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_Y_1] = 1;
             break;
           case 101: // KEYCODE_BUTTON_Z
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_16_1] = 1;
             break;
           case 102: // KEYCODE_BUTTON_L1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1]        = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LBUMPER_1]  = 1;
             break;
           case 103: // KEYCODE_BUTTON_R1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1]        = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RBUMPER_1]  = 1;
             break;
           case 104: // KEYCODE_BUTTON_L2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orxFLOAT_1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] = orxFLOAT_1;
             break;
           case 105: // KEYCODE_BUTTON_R2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orxFLOAT_1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] = orxFLOAT_1;
             break;
           case 106: // KEYCODE_BUTTON_THUMBL
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1]      = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LTHUMB_1] = 1;
             break;
           case 107: // KEYCODE_BUTTON_THUMBR
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1]     = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RTHUMB_1] = 1;
             break;
           case 108: // KEYCODE_BUTTON_START
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1]      = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_START_1]  = 1;
             break;
           case 109: // KEYCODE_BUTTON_SELECT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1] = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1]    = 1;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_BACK_1] = 1;
             break;
           default:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown keycode %d", pstJoystickEvent->u32KeyCode);
@@ -277,57 +291,71 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
         {
           case 19: // KEYCODE_DPAD_UP
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_11_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_UP_1] = 0;
             break;
           case 20: // KEYCODE_DPAD_DOWN
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1]   = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_DOWN_1] = 0;
             break;
           case 21: // KEYCODE_DPAD_LEFT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1]   = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LEFT_1] = 0;
             break;
           case 22: // KEYCODE_DPAD_RIGHT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1]     = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RIGHT_1]  = 0;
             break;
           case 96: // KEYCODE_BUTTON_A
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_A_1] = 0;
             break;
           case 97: // KEYCODE_BUTTON_B
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_2_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_B_1] = 0;
             break;
           case 98: // KEYCODE_BUTTON_C
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_15_1] = 0;
             break;
           case 99: // KEYCODE_BUTTON_X
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_3_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_X_1] = 0;
             break;
           case 100: // KEYCODE_BUTTON_Y
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_4_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_Y_1] = 0;
             break;
           case 101: // KEYCODE_BUTTON_Z
             sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_16_1] = 0;
             break;
           case 102: // KEYCODE_BUTTON_L1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1]        = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LBUMPER_1]  = 0;
             break;
           case 103: // KEYCODE_BUTTON_R1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1]        = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RBUMPER_1]  = 0;
             break;
           case 104: // KEYCODE_BUTTON_L2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = orxFLOAT_0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] = orxFLOAT_0;
             break;
           case 105: // KEYCODE_BUTTON_R2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = orxFLOAT_0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] = orxFLOAT_0;
             break;
           case 106: // KEYCODE_BUTTON_THUMBL
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1]      = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LTHUMB_1] = 0;
             break;
           case 107: // KEYCODE_BUTTON_THUMBR
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1]     = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RTHUMB_1] = 0;
             break;
           case 108: // KEYCODE_BUTTON_START
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1]      = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_START_1]  = 0;
             break;
           case 109: // KEYCODE_BUTTON_SELECT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1] = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1]    = 0;
+            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_BACK_1] = 0;
             break;
           default:
             orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown keycode %d", pstJoystickEvent->u32KeyCode);
@@ -345,12 +373,12 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxE
 
       if(s32DeviceIndex != -1)
       {
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_X_1] = pstJoystickEvent->stAxisData.fX;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_Y_1] = pstJoystickEvent->stAxisData.fY;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_Z_1] = pstJoystickEvent->stAxisData.fZ;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_R_1] = pstJoystickEvent->stAxisData.fRZ;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_U_1] = pstJoystickEvent->stAxisData.fLTRIGGER;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_V_1] = pstJoystickEvent->stAxisData.fRTRIGGER;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LX_1]        = pstJoystickEvent->stAxisData.fX;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LY_1]        = pstJoystickEvent->stAxisData.fY;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RX_1]        = pstJoystickEvent->stAxisData.fZ;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RY_1]        = pstJoystickEvent->stAxisData.fRZ;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1]  = pstJoystickEvent->stAxisData.fLTRIGGER;
+        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1]  = pstJoystickEvent->stAxisData.fRTRIGGER;
       }
       else
       {
@@ -542,10 +570,10 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
     /* Depending on axis */
     switch (_eAxis)
     {
-      case orxJOYSTICK_AXIS_X_1:
-      case orxJOYSTICK_AXIS_X_2:
-      case orxJOYSTICK_AXIS_X_3:
-      case orxJOYSTICK_AXIS_X_4:
+      case orxJOYSTICK_AXIS_LX_1:
+      case orxJOYSTICK_AXIS_LX_2:
+      case orxJOYSTICK_AXIS_LX_3:
+      case orxJOYSTICK_AXIS_LX_4:
       {
         /* Updates result */
         fResult = sstJoystick.vAcceleration.fX;
@@ -553,10 +581,10 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
         break;
       }
 
-      case orxJOYSTICK_AXIS_Y_1:
-      case orxJOYSTICK_AXIS_Y_2:
-      case orxJOYSTICK_AXIS_Y_3:
-      case orxJOYSTICK_AXIS_Y_4:
+      case orxJOYSTICK_AXIS_LY_1:
+      case orxJOYSTICK_AXIS_LY_2:
+      case orxJOYSTICK_AXIS_LY_3:
+      case orxJOYSTICK_AXIS_LY_4:
       {
         /* Updates result */
         fResult = sstJoystick.vAcceleration.fY;
@@ -564,10 +592,10 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
         break;
       }
 
-      case orxJOYSTICK_AXIS_Z_1:
-      case orxJOYSTICK_AXIS_Z_2:
-      case orxJOYSTICK_AXIS_Z_3:
-      case orxJOYSTICK_AXIS_Z_4:
+      case orxJOYSTICK_AXIS_RX_1:
+      case orxJOYSTICK_AXIS_RX_2:
+      case orxJOYSTICK_AXIS_RX_3:
+      case orxJOYSTICK_AXIS_RX_4:
       {
         /* Updates result */
         fResult = sstJoystick.vAcceleration.fZ;

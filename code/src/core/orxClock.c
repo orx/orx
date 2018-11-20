@@ -1612,7 +1612,7 @@ orxSTATUS orxFASTCALL orxClock_AddTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNC
 orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)
 {
   orxCLOCK_TIMER_STORAGE *pstTimerStorage;
-  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+  orxSTATUS               eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -1633,6 +1633,9 @@ orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_F
     {
       /* Marks it for deletion */
       pstTimerStorage->s32Repetition = 0;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 

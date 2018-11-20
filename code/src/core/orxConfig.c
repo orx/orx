@@ -3218,6 +3218,17 @@ void orxFASTCALL orxConfig_CommandClearSection(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: GetCurrentSection
+ */
+void orxFASTCALL orxConfig_CommandGetCurrentSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetCurrentSection();
+
+  /* Done! */
+  return;
+}
+
 /** Command: ClearValue
  */
 void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3510,6 +3521,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ClearSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetCurrentSection */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetCurrentSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: HasValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
@@ -3539,6 +3552,9 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Get", "Config.GetValue", orxNULL);
   /* Alias: GetRaw */
   orxCommand_AddAlias("GetRaw", "Config.GetRawValue", orxNULL);
+
+  /* Alias: @ */
+  orxCommand_AddAlias("@", "Config.GetCurrentSection", orxNULL);
 }
 
 /** Unregisters all the config commands
@@ -3559,6 +3575,9 @@ static orxINLINE void orxConfig_UnregisterCommands()
   /* Alias: GetRaw */
   orxCommand_RemoveAlias("GetRaw");
 
+  /* Alias: @ */
+  orxCommand_RemoveAlias("@");
+
   /* Command: Load */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Load);
   /* Command: Save */
@@ -3578,6 +3597,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
   /* Command: ClearSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, ClearSection);
+  /* Command: GetCurrentSection */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetCurrentSection);
 
   /* Command: HasValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasValue);
@@ -4112,12 +4133,18 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Uses encryption? */
-        if((bUseEncryption != orxFALSE)
-        && (bFirstTime == orxFALSE))
+        /* Not first time? */
+        if(bFirstTime == orxFALSE)
         {
-          /* Decrypts all new characters */
-          orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+          /* Uses encryption? */
+          if(bUseEncryption != orxFALSE)
+          {
+            /* Decrypts all new characters */
+            orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+          }
+
+          /* Resets offset */
+          u32Offset = 0;
         }
 
         /* End of file reached? */
@@ -4126,9 +4153,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
           /* Adds an extra EOL */
           acBuffer[u32Size++] = orxCHAR_LF;
         }
-
-        /* Updates offset */
-        u32Offset = ((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE)) ? orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH : 0;
 
         /* Processes buffer */
         u32Offset = orxConfig_ProcessBuffer(_zFileName, acBuffer, u32Size, u32Offset);

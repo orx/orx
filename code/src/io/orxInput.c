@@ -62,12 +62,6 @@
 
 /** Defines
  */
-#define orxINPUT_KZ_CONFIG_SECTION                    "Input"     /**< Input set name */
-#define orxINPUT_KZ_CONFIG_SET_LIST                   "SetList"   /**< Input set list */
-#define orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD          "DefaultThreshold" /**< Input default threshold */
-#define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
-#define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList" /**< Combine input list */
-
 #define orxINPUT_KZ_INPUT_EXTERNAL                    "EXTERNAL"  /**< External input */
 
 #define orxINPUT_KZ_THRESHOLD_FORMAT                  "%sThreshold" /**< Threshold format */
