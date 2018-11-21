@@ -15,6 +15,10 @@ public class MainActivity extends NativeActivity {
     private Handler mHandler = new Handler();
     private View mDecorView;
 
+    static {
+        System.loadLibrary("c++_shared");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
