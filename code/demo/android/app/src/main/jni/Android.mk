@@ -4,7 +4,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := orxTest
 
-LOCAL_SRC_FILES := orxTest.c
+$(call import-add-path,$(LOCAL_PATH)/../../../../../../)
+
+LOCAL_SRC_FILES := orxTest.cpp
 LOCAL_STATIC_LIBRARIES := orxd
 
 LOCAL_ARM_MODE := arm
