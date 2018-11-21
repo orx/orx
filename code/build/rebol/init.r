@@ -93,26 +93,25 @@ either system/options/args [
         print {== No argument, switching to interactive mode}
       ]
       foreach [param desc default] params [
-        either tail? arg [
-          case [
-            interactive? [
-              loop-until [
-                any [
-                  not empty? set param trim ask rejoin [{ * } desc {? }]
-                  set param default
-                ]
+        case [
+          not tail? arg [
+            set param arg/1
+            arg: next arg
+          ]
+          interactive? [
+            loop-until [
+              any [
+                not empty? set param trim ask rejoin [{ * } desc {? }]
+                set param default
               ]
             ]
-            default [
-              set param default
-            ]
-            true [
-              usage/message [{Not enough arguments:} mold system/options/args]
-            ]
           ]
-        ] [
-          set param arg/1
-          arg: next arg
+          default [
+            set param default
+          ]
+          true [
+            usage/message [{Not enough arguments:} mold system/options/args]
+          ]
         ]
       ]
     ]
