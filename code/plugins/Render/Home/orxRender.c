@@ -117,12 +117,12 @@
 typedef struct __orxRENDER_RENDER_NODE_t
 {
   orxLINKLIST_NODE      stNode;                     /**< Linklist node : 12 */
-  orxFLOAT              fZ;                         /**< Z coordinate : 16 */
-  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 20 */
-  const orxSHADER      *pstShader;                  /**< Shader pointer : 24 */
-  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 28 */
-  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 32 */
-  orxOBJECT            *pstObject;                  /**< Object pointer : 36 */
+  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 16 */
+  const orxSHADER      *pstShader;                  /**< Shader pointer : 20 */
+  orxOBJECT            *pstObject;                  /**< Object pointer : 24 */
+  orxFLOAT              fZ;                         /**< Z coordinate : 28 */
+  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 32 */
+  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 36 */
   orxFLOAT              fDepthCoef;                 /**< Depth coef : 40 */
 
 } orxRENDER_NODE;

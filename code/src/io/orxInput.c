@@ -139,11 +139,11 @@ typedef struct __orxINPUT_ENTRY_t
 typedef struct __orxINPUT_SET_t
 {
   orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
-  orxSTRINGID       stID;                                         /**< Set CRC : 16 */
-  const orxSTRING   zName;                                        /**< Set name : 20 */
-  orxU32            u32Flags;                                     /** Flags : 24 */
-  orxBANK          *pstEntryBank;                                 /**< Entry bank : 28 */
-  orxLINKLIST       stEntryList;                                  /**< Entry list : 42 */
+  const orxSTRING   zName;                                        /**< Set name : 16 */
+  orxBANK          *pstEntryBank;                                 /**< Entry bank : 20 */
+  orxLINKLIST       stEntryList;                                  /**< Entry list : 32 */
+  orxSTRINGID       stID;                                         /**< Set CRC : 36 */
+  orxU32            u32Flags;                                     /** Flags : 40 */
 
 } orxINPUT_SET;
 

@@ -188,56 +188,55 @@ typedef struct __orxBODY_JOINT_DEF_t
   orxVECTOR     vDstScale;                            /**< Destination scale : 24 */
   orxVECTOR     vSrcAnchor;                           /**< Source body anchor : 36 */
   orxVECTOR     vDstAnchor;                           /**< Destination body anchor : 48 */
-  orxU32        u32Flags;                             /**< Control flags : 52 */
 
   union
   {
     struct
     {
-      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 56 */
-      orxFLOAT  fMinRotation;                         /**< Min rotation : 60 */
-      orxFLOAT  fMaxRotation;                         /**< Max rotation : 64 */
-      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 68 */
-      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 72 */
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 52 */
+      orxFLOAT  fMinRotation;                         /**< Min rotation : 56 */
+      orxFLOAT  fMaxRotation;                         /**< Max rotation : 60 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 64 */
+      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 68 */
 
-    } stRevolute;                                     /**< Revolute : 72 */
-
-    struct
-    {
-      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 56 */
-      orxVECTOR vTranslationAxis;                     /**< Translation axis : 68 */
-      orxFLOAT  fMinTranslation;                      /**< Min translation : 72 */
-      orxFLOAT  fMaxTranslation;                      /**< Max translation : 76 */
-      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 80 */
-      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 84 */
-
-    } stPrismatic;                                    /**< Prismatic : 84 */
+    } stRevolute;                                     /**< Revolute : 68 */
 
     struct
     {
-      orxFLOAT  fLength;                              /**< Length : 56 */
-      orxFLOAT  fFrequency;                           /**< Frequency : 60 */
-      orxFLOAT  fDamping;                             /**< Damping : 64 */
+      orxVECTOR vTranslationAxis;                     /**< Translation axis : 60 */
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 64 */
+      orxFLOAT  fMinTranslation;                      /**< Min translation : 68 */
+      orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
+      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
 
-    } stSpring;                                       /**< Spring : 64 */
-
-    struct
-    {
-      orxFLOAT  fLength;                              /**< Length : 56 */
-
-    } stRope;                                         /**< Rope : 56 */
+    } stPrismatic;                                    /**< Prismatic : 80 */
 
     struct
     {
-      orxFLOAT  fLengthRatio;                         /**< Length ratio : 56 */
-      orxVECTOR vSrcGroundAnchor;                     /**< Source ground anchor : 68 */
-      orxVECTOR vDstGroundAnchor;                     /**< Destination ground anchor : 80 */
-      orxFLOAT  fSrcLength;                           /**< Source length : 84 */
-      orxFLOAT  fMaxSrcLength;                        /**< Max source length : 88 */
-      orxFLOAT  fDstLength;                           /**< Destination length : 92 */
-      orxFLOAT  fMaxDstLength;                        /**< Max destination length : 96 */
+      orxFLOAT  fLength;                              /**< Length : 52 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 56 */
+      orxFLOAT  fDamping;                             /**< Damping : 60 */
 
-    } stPulley;                                       /**< Pulley : 96 */
+    } stSpring;                                       /**< Spring : 60 */
+
+    struct
+    {
+      orxFLOAT  fLength;                              /**< Length : 52 */
+
+    } stRope;                                         /**< Rope : 52 */
+
+    struct
+    {
+      orxVECTOR vSrcGroundAnchor;                     /**< Source ground anchor : 60 */
+      orxVECTOR vDstGroundAnchor;                     /**< Destination ground anchor : 72 */
+      orxFLOAT  fLengthRatio;                         /**< Length ratio : 76 */
+      orxFLOAT  fSrcLength;                           /**< Source length : 80 */
+      orxFLOAT  fMaxSrcLength;                        /**< Max source length : 84 */
+      orxFLOAT  fDstLength;                           /**< Destination length : 88 */
+      orxFLOAT  fMaxDstLength;                        /**< Max destination length : 92 */
+
+    } stPulley;                                       /**< Pulley : 92 */
 
     struct
     {
@@ -270,7 +269,9 @@ typedef struct __orxBODY_JOINT_DEF_t
 
     } stGear;                                         /**< Gear : 64 */
 
-  };                                                  /**< Joint : 96 */
+  };                                                  /**< Joint : 92 */
+
+  orxU32        u32Flags;                             /**< Control flags : 96 */
 
 } orxBODY_JOINT_DEF;
 

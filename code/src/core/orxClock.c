@@ -95,8 +95,8 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 20 */
-  void                       *pContext;         /**< Clock function context : 24 */
+  void                       *pContext;         /**< Clock function context : 20 */
+  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 24 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 28 */
 
 } orxCLOCK_FUNCTION_STORAGE;
