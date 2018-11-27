@@ -3015,7 +3015,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     orxDisplay_GLFW_DrawArrays();
   }
   else
-    {
+  {
     /* Selects local arrays */
     glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), &(_pstMesh->astVertexList[0].fX));
     glASSERT();

@@ -142,12 +142,28 @@ extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxU32 _u32Seed);
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax);
 
+/** Gets a random orxFLOAT value using step increments
+ * @param[in]   _fMin                           Minimum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (exclusive)
+ * @param[in]   _fStep                          Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetSteppedRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax, orxFLOAT _fStep);
+
 /** Gets a random orxU32 value
  * @param[in]   _u32Min                         Minimum boundary (inclusive)
  * @param[in]   _u32Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max);
+
+/** Gets a random U32 value using step increments
+ * @param[in]   _u32Min                         Minimum boundary (inclusive)
+ * @param[in]   _u32Max                         Maximum boundary (inclusive)
+ * @param[in]   _u32Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetSteppedRandomU32(orxU32 _u32Min, orxU32 _u32Max, orxU32 _u32Step);
 
 /** Gets a random orxS32 value
  * @param[in]   _s32Min                         Minimum boundary (inclusive)
@@ -156,6 +172,14 @@ extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetRandomU32(orxU32 _u32Min, orxU3
  */
 extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max);
 
+/** Gets a random S32 value using step increments
+ * @param[in]   _s32Min                         Minimum boundary (inclusive)
+ * @param[in]   _s32Max                         Maximum boundary (inclusive)
+ * @param[in]   _s32Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetSteppedRandomS32(orxS32 _s32Min, orxS32 _s32Max, orxS32 _s32Step);
+
 /** Gets a random orxU64 value
  * @param[in]   _u64Min                         Minimum boundary (inclusive)
  * @param[in]   _u64Max                         Maximum boundary (inclusive)
@@ -163,12 +187,28 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
  */
 extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetRandomU64(orxU64 _u64Min, orxU64 _u64Max);
 
+/** Gets a random U64 value using step increments
+ * @param[in]   _u64Min                         Minimum boundary (inclusive)
+ * @param[in]   _u64Max                         Maximum boundary (inclusive)
+ * @param[in]   _u64Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetSteppedRandomU64(orxU64 _u64Min, orxU64 _u64Max, orxU64 _u64Step);
+
 /** Gets a random orxS64 value
  * @param[in]   _s64Min                         Minimum boundary (inclusive)
  * @param[in]   _s64Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max);
+
+/** Gets a random S64 value using step increments
+ * @param[in]   _s64Min                         Minimum boundary (inclusive)
+ * @param[in]   _s64Max                         Maximum boundary (inclusive)
+ * @param[in]   _s64Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetSteppedRandomS64(orxS64 _s64Min, orxS64 _s64Max, orxS64 _s64Step);
 
 /** Gets the current random seeds
  * @param[out]  _au32Seeds                      Current seeds
