@@ -918,47 +918,38 @@ orxSTATUS orxFASTCALL orxFXPointer_Synchronize(orxFXPOINTER *_pstFXPointer, cons
   /* For all FXs */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
   {
-    orxFXPOINTER_HOLDER *pstFX;
+    orxFXPOINTER_HOLDER  *pstFX;
+    orxS32                j;
 
     /* Gets it */
     pstFX = &_pstFXPointer->astFXList[i];
 
-    /* Valid? */
-    if(pstFX != orxNULL)
+    /* For all FXs on model */
+    for(j = 0; j < orxFXPOINTER_KU32_FX_NUMBER; j++)
     {
-      orxS32 j;
+      const orxFXPOINTER_HOLDER *pstModelFX;
 
-      /* For all FXs on model */
-      for(j = 0; j < orxFXPOINTER_KU32_FX_NUMBER; j++)
+      /* Gets it */
+      pstModelFX = &_pstModel->astFXList[j];
+
+      /* Matches? */
+      if(pstModelFX->pstFX == pstFX->pstFX)
       {
-        const orxFXPOINTER_HOLDER *pstModelFX;
+        /* Synchronizes start time */
+        pstFX->fStartTime = pstModelFX->fStartTime;
 
-        /* Gets it */
-        pstModelFX = &_pstModel->astFXList[j];
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
 
-        /* Valid? */
-        if(pstModelFX != orxNULL)
-        {
-          /* Matches? */
-          if(pstModelFX->pstFX == pstFX->pstFX)
-          {
-            /* Synchronizes start time */
-            pstFX->fStartTime = pstModelFX->fStartTime;
-
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
-
-            break;
-          }
-        }
+        break;
       }
+    }
 
-      /* Not found? */
-      if(j == orxFXPOINTER_KU32_FX_NUMBER)
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
-      }
+    /* Not found? */
+    if(j == orxFXPOINTER_KU32_FX_NUMBER)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
     }
   }
 

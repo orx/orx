@@ -202,11 +202,9 @@ typedef struct __orxCONFIG_VALUE_t
 typedef struct __orxCONFIG_ENTRY_t
 {
   orxLINKLIST_NODE  stNode;                 /**< List node : 12 */
-  orxSTRINGID       stID;                   /**< Key ID : 16 */
-
   orxCONFIG_VALUE   stValue;                /**< Entry value : 52 */
-
-  orxSTRINGID       stOriginID;             /**< Origin : 56 */
+  orxSTRINGID       stID;                   /**< Key ID : 56 */
+  orxSTRINGID       stOriginID;             /**< Origin : 60 */
 
 } orxCONFIG_ENTRY;
 
@@ -3921,7 +3919,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(orxString_GetLength(_zBaseName) < orxCONFIG_KU32_BASE_FILENAME_LENGTH - 5);
+  orxASSERT((_zBaseName == orxNULL) || (orxString_GetLength(_zBaseName) < orxCONFIG_KU32_BASE_FILENAME_LENGTH - 5));
 
   /* Valid? */
   if((_zBaseName != orxNULL) && (_zBaseName != orxSTRING_EMPTY))

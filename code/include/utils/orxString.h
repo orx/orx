@@ -1360,7 +1360,7 @@ static orxINLINE orxSTRINGID                              orxString_NContinueCRC
 
 #else /* __orxLITTLE_ENDIAN__ */
 
-#define orxCRC_GET_FIRST(VALUE) ((VALUE >> 24) | ((VALUE >> 8) & 0x0000FF00) | ((VALUE << 8) & 0x00FF0000) | (VALUE << 24))
+#define orxCRC_GET_FIRST(VALUE) (((VALUE) >> 24) | (((VALUE) >> 8) & 0x0000FF00) | (((VALUE) << 8) & 0x00FF0000) | ((VALUE) << 24))
 #define orxCRC_INDEX_0          3
 #define orxCRC_INDEX_1          2
 #define orxCRC_INDEX_2          1

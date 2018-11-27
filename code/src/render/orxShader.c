@@ -217,14 +217,14 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     /* Valid? */
     if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
     {
-      orxU8   au8ValueBuffer[256 * sizeof(orxVECTOR)];
-      orxS32  s32ParamListCount;
+      orxVECTOR astValueBuffer[256];
+      orxS32    s32ParamListCount;
 
       /* Gets param's list count */
       s32ParamListCount = (bIsList != orxFALSE) ? orxConfig_GetListCount(zParamName) : 0;
 
       /* Is a vector? */
-      if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)au8ValueBuffer)[0])) != orxNULL)
+      if(orxConfig_GetVector(zParamName, &(astValueBuffer[0])) != orxNULL)
       {
         /* Is a list? */
         if(bIsList != orxFALSE)
@@ -235,12 +235,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           for(j = 0; j < s32ParamListCount; j++)
           {
             /* Stores its vector */
-            orxConfig_GetListVector(zParamName, j, &(((orxVECTOR *)au8ValueBuffer)[j]));
+            orxConfig_GetListVector(zParamName, j, &(astValueBuffer[j]));
           }
         }
 
         /* Adds vector param */
-        orxShader_AddVectorParam(_pstShader, zParamName, s32ParamListCount, (orxVECTOR *)au8ValueBuffer);
+        orxShader_AddVectorParam(_pstShader, zParamName, s32ParamListCount, astValueBuffer);
       }
       else
       {
@@ -250,7 +250,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
         zValue = orxConfig_GetString(zParamName);
 
         /* Is a float? */
-        if(orxString_ToFloat(zValue, (orxFLOAT *)au8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToFloat(zValue, (orxFLOAT *)astValueBuffer, orxNULL) != orxSTATUS_FAILURE)
         {
           /* Is a list? */
           if(bIsList != orxFALSE)
@@ -261,12 +261,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
             for(j = 0; j < s32ParamListCount; j++)
             {
               /* Stores its vector */
-              ((orxFLOAT *)au8ValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
+              ((orxFLOAT *)astValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
             }
           }
 
           /* Adds float param */
-          orxShader_AddFloatParam(_pstShader, zParamName, s32ParamListCount, (orxFLOAT *)au8ValueBuffer);
+          orxShader_AddFloatParam(_pstShader, zParamName, s32ParamListCount, (orxFLOAT *)astValueBuffer);
         }
         else
         {
@@ -309,12 +309,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                 }
 
                 /* Creates texture */
-                ((orxTEXTURE **)au8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue, orxFALSE);
+                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_CreateFromFile(zValue, orxFALSE);
               }
               else
               {
                 /* No texture */
-                ((orxTEXTURE **)au8ValueBuffer)[j] = orxNULL;
+                ((orxTEXTURE **)astValueBuffer)[j] = orxNULL;
               }
             }
           }
@@ -342,13 +342,13 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
               else
               {
                 /* Creates texture */
-                ((orxTEXTURE **)au8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue, orxFALSE);
+                ((orxTEXTURE **)astValueBuffer)[0] = orxTexture_CreateFromFile(zValue, orxFALSE);
               }
             }
             else
             {
               /* No texture */
-              ((orxTEXTURE **)au8ValueBuffer)[0] = orxNULL;
+              ((orxTEXTURE **)astValueBuffer)[0] = orxNULL;
             }
           }
 
@@ -361,7 +361,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           else
           {
             /* Adds texture param */
-            orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCount, (const orxTEXTURE **)au8ValueBuffer);
+            orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCount, (const orxTEXTURE **)astValueBuffer);
           }
         }
       }

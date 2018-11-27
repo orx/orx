@@ -3470,9 +3470,7 @@ orxSTATUS orxFASTCALL orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, c
       else
       {
         /* Hexadecimal, binary or octal?? */
-        if((_astArgList[i].zValue[0] != orxCHAR_EOL)
-        && (_astArgList[i].zValue[0] == '0')
-        && (_astArgList[i].zValue[1] != orxCHAR_EOL)
+        if((_astArgList[i].zValue[0] == '0')
         && (((_astArgList[i].zValue[1] | 0x20) == 'x')
          || ((_astArgList[i].zValue[1] | 0x20) == 'b')
          || ((_astArgList[i].zValue[1] >= '0')

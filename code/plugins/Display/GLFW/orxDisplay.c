@@ -5991,6 +5991,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
   /* Gets shader */
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
+  /* No bitmap? */
+  if(_pstValue == orxNULL)
+  {
+    /* Uses screen bitmap */
+    _pstValue = sstDisplay.pstScreen;
+  }
+
   /* For all already used texture units */
   for(i = 0; i < pstShader->iTextureCount; i++)
   {
@@ -6029,13 +6036,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetShaderBitmap(orxHANDLE _hShader, orxS32
       /* Valid? */
       if(_s32ID >= 0)
       {
-        /* No bitmap? */
-        if(_pstValue == orxNULL)
-        {
-          /* Uses screen bitmap */
-          _pstValue = sstDisplay.pstScreen;
-        }
-
         /* Updates texture info */
         pstShader->astTextureInfoList[pstShader->iTextureCount].iLocation = pstShader->astParamInfoList[_s32ID].iLocation;
         pstShader->astTextureInfoList[pstShader->iTextureCount].pstBitmap = _pstValue;

@@ -1000,9 +1000,6 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
   orxSTRUCTURE_ASSERT(_pstTimeLine);
   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
 
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstTimeLine);
-
   /* Finds an empty track */
   for(u32Index = 0; (u32Index < orxTIMELINE_KU32_TRACK_NUMBER) && (_pstTimeLine->astTrackList[u32Index].pstTrack != orxNULL); u32Index++);
 

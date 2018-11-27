@@ -694,7 +694,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       s32MarkerID = orxProfiler_GetNextSortedMarkerID(s32MarkerID))
   {
     /* Is unique and has been pushed? */
-    if((orxProfiler_GetMarkerPushCount(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE) && (orxProfiler_GetMarkerPushCount(s32MarkerID) > 0))
+    if((orxProfiler_GetMarkerPushCount(s32MarkerID) > 0) && (orxProfiler_IsUniqueMarker(s32MarkerID) != orxFALSE))
     {
       orxDOUBLE dTime, dStartTime;
       orxCOLOR  stBarColor;

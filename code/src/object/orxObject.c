@@ -3518,12 +3518,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zIgnoreFromParent;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
-        orxFLOAT        fAge = orxFLOAT_0;
+        orxFLOAT        fAge;
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
         orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
-
 
         /* Gets age */
         fAge = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_AGE);

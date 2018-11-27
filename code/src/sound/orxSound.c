@@ -808,7 +808,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             const orxSTRING zName;
 
             /* Gets its value */
-            zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
+            zName = orxConfig_GetString(azProperties[i]);
 
             /* Uses locale? */
             if((*zName == orxSOUND_KC_LOCALE_MARKER) && (*(zName + 1) != orxSOUND_KC_LOCALE_MARKER))

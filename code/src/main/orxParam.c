@@ -293,8 +293,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
   {
     /* Look at the number of time that this parameter as been set on the command line, and if multiple instance are allowed */
     if(((_pstParamInfo->u32Count == 0)
-    || ((_pstParamInfo->u32Count > 0)
-     && (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED)))))
+    || (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
     {
       orxU32 u32ParamCount, u32RemainingNumber = 0;
 

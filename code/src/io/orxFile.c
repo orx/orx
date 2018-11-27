@@ -984,7 +984,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
       orxCHAR acBuffer[orxFILE_KU32_BUFFER_SIZE];
 
       /* Is local buffer big enough? */
-      if((orxU32)(zBaseName - _zFileName - 1) < sizeof(acBuffer) - 1)
+      if((orxU32)(zBaseName - _zFileName - 1) < (orxU32)sizeof(acBuffer) - 1)
       {
         /* Copies path locally */
         acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", zBaseName - _zFileName - 1, _zFileName)] = orxCHAR_NULL;
