@@ -40,19 +40,19 @@ var NAVTREEINDEX =
 "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a2ff996c8e0d26b2f91b529d1b3eefc67",
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea3d4fb77824c2f533f8d3d5936e3c8893",
 "group__orx_locale.html#gae67c6431b36e6177917e71dd11890138",
-"group__orx_module.html#ggada33eee351097708b92f32d0c5972708ab6131c56be12fcc6a5b3f5d23825e2ec",
-"group__orx_object.html#ga8ae9653187ddb4763e8fd727bddae643",
-"group__orx_physics.html#ga8ce7e4f2a2590fae1d458f003a4f6fe8",
-"group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da71cb8b8411f4707bd4d87b220681e5a1",
-"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa2f787dcf36c7946cedec49c3835c6e12",
-"group__orx_resource.html#ga8a058c9512ae7ebbc7cbb62956e95f34",
-"group__orx_sound.html#gad7ac60220902db5d08dab4c44a734d5f",
-"group__orx_spawner.html#ga7bec65434ff5b1832830178154868743",
-"group__orx_structure.html#ga729e081eb94e229eb9862e64d466feec",
-"group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a",
-"group__orx_vector.html#ga4d21972e46bbd1b8080869f1c3ba8d11",
-"orx_math_8h.html",
-"structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html"
+"group__orx_module.html#ggada33eee351097708b92f32d0c5972708aa6f773be1c333e991778cd44f4269312",
+"group__orx_object.html#ga7f4cf74a30aa02d5d589f3bd238c7986",
+"group__orx_physics.html#ga83c29d08014f8eef7c2d07b8500a6add",
+"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f",
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa0926f217eff623f979df70ccd848cfae",
+"group__orx_resource.html#ga806289b02f8b8313bddb6a142a685a2b",
+"group__orx_sound.html#gac16a5c3ffb107b25e54fedf21f6a263a",
+"group__orx_spawner.html#ga6c94749a259a77ea86dfb600a2f85278",
+"group__orx_structure.html#ga639a4f06fa6b47197a3138bb4228bebb",
+"group__orx_texture.html#gaa5bb1fc43b78535e0dc48b278cf661f5",
+"group__orx_vector.html#ga3b61ba77225f4bbac5e852bcd0f606b8",
+"orx_joystick_8h.html",
+"structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
