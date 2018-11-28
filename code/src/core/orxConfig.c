@@ -190,7 +190,6 @@ typedef struct __orxCONFIG_VALUE_t
     orxU32              u32AltValue;        /**< Alternate U32 value : 28 */
     orxS32              s32AltValue;        /**< Alternate S32 value : 28 */
     orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
-    orxBOOL             bAltValue;          /**< Alternate bool value : 28 */
   };                                        /**< Union value : 36 */
 
   orxU32               *au32ListIndexTable; /**< List index table : 40 */
@@ -1595,19 +1594,8 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxS32 s32OtherValue;
 
@@ -1721,19 +1709,8 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxU32 u32OtherValue;
 
@@ -1847,19 +1824,8 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxS64 s64OtherValue;
 
@@ -1973,19 +1939,8 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxU64 u64OtherValue;
 
@@ -2099,19 +2054,8 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxFLOAT fOtherValue;
 
@@ -2330,19 +2274,8 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
       orxS32 s32RandomSeparatorIndex;
 
       /* Random? */
-      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-      }
-      else
-      {
-        /* No random */
-        s32RandomSeparatorIndex = -1;
-      }
-
-      /* Random? */
-      if(s32RandomSeparatorIndex >= 0)
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
+      && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
         orxVECTOR vOtherValue;
 
