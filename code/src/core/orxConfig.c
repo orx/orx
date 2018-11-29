@@ -192,7 +192,17 @@ typedef struct __orxCONFIG_VALUE_t
     orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
   };                                        /**< Union value : 36 */
 
-  orxU32               *au32ListIndexTable; /**< List index table : 40 */
+  union
+  {
+    orxVECTOR           vStepValue;         /**< Step vector value : 48 */
+    orxU64              u64StepValue;       /**< Step U64 value : 44 */
+    orxS64              s64StepValue;       /**< Step S64 value : 44 */
+    orxU32              u32StepValue;       /**< Step U32 value : 40 */
+    orxS32              s32StepValue;       /**< Step S32 value : 40 */
+    orxFLOAT            fStepValue;         /**< Step float value : 40 */
+  };                                        /**< Union value : 48 */
+
+  orxU32               *au32ListIndexTable; /**< List index table : 52 */
 
 } orxCONFIG_VALUE;
 
@@ -1571,7 +1581,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Updates result */
-      *_ps32Result = orxMath_GetRandomS32(_pstValue->s32Value, _pstValue->s32AltValue);
+      *_ps32Result = (_pstValue->s32StepValue != 0) ? orxMath_GetSteppedRandomS32(_pstValue->s32Value, _pstValue->s32AltValue, _pstValue->s32StepValue) : orxMath_GetRandomS32(_pstValue->s32Value, _pstValue->s32AltValue);
     }
     else
     {
@@ -1597,19 +1607,44 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxS32 s32OtherValue;
+        orxS32  s32OtherValue, s32StepValue = 0;
+        orxBOOL bRandom = orxFALSE;
 
         /* Has another value? */
-        if(orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            s32StepValue = s32OtherValue;
+
+            /* Can get other value? */
+            if((s32StepValue > 0) && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S32;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           _pstValue->s32Value       = s32Value;
           _pstValue->s32AltValue    = s32OtherValue;
+          _pstValue->s32StepValue   = s32StepValue;
 
           /* Updates result */
-          *_ps32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
+          *_ps32Result = (s32StepValue != 0) ? orxMath_GetSteppedRandomS32(s32Value, s32OtherValue, s32StepValue) : orxMath_GetRandomS32(s32Value, s32OtherValue);
         }
         else
         {
@@ -1630,6 +1665,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s32Value       = s32Value;
         _pstValue->s32AltValue    = s32Value;
+        _pstValue->s32StepValue   = 0;
 
         /* Updates result */
         *_ps32Result = s32Value;
@@ -1686,7 +1722,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Updates result */
-      *_pu32Result = orxMath_GetRandomU32(_pstValue->u32Value, _pstValue->u32AltValue);
+      *_pu32Result = (_pstValue->u32StepValue != 0) ? orxMath_GetSteppedRandomU32(_pstValue->u32Value, _pstValue->u32AltValue, _pstValue->u32StepValue) : orxMath_GetRandomU32(_pstValue->u32Value, _pstValue->u32AltValue);
     }
     else
     {
@@ -1712,19 +1748,44 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxU32 u32OtherValue;
+        orxU32  u32OtherValue, u32StepValue = 0;
+        orxBOOL bRandom = orxFALSE;
 
         /* Has another value? */
-        if(orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            u32StepValue = u32OtherValue;
+
+            /* Can get other value? */
+            if((u32StepValue > 0) && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U32;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           _pstValue->u32Value       = u32Value;
           _pstValue->u32AltValue    = u32OtherValue;
+          _pstValue->u32StepValue   = u32StepValue;
 
           /* Updates result */
-          *_pu32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
+          *_pu32Result = (u32StepValue != 0) ? orxMath_GetSteppedRandomU32(u32Value, u32OtherValue, u32StepValue) : orxMath_GetRandomU32(u32Value, u32OtherValue);
         }
         else
         {
@@ -1745,6 +1806,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u32Value       = u32Value;
         _pstValue->u32AltValue    = u32Value;
+        _pstValue->u32StepValue   = 0;
 
         /* Updates result */
         *_pu32Result = u32Value;
@@ -1801,7 +1863,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Updates result */
-      *_ps64Result = orxMath_GetRandomS64(_pstValue->s64Value, _pstValue->s64AltValue);
+      *_ps64Result = (_pstValue->s64StepValue != 0) ? orxMath_GetSteppedRandomS64(_pstValue->s64Value, _pstValue->s64AltValue, _pstValue->s64StepValue) : orxMath_GetRandomS64(_pstValue->s64Value, _pstValue->s64AltValue);
     }
     else
     {
@@ -1827,19 +1889,44 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxS64 s64OtherValue;
+        orxS64  s64OtherValue, s64StepValue = 0;
+        orxBOOL bRandom = orxFALSE;
 
         /* Has another value? */
-        if(orxString_ToS64(zRemainder + s32RandomSeparatorIndex + 1, &s64OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToS64(zRemainder + s32RandomSeparatorIndex + 1, &s64OtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            s64StepValue = s64OtherValue;
+
+            /* Can get other value? */
+            if((s64StepValue > 0) && (orxString_ToS64(zRemainder + s32RandomSeparatorIndex + 1, &s64OtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_S64;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           _pstValue->s64Value       = s64Value;
           _pstValue->s64AltValue    = s64OtherValue;
+          _pstValue->s64StepValue   = s64StepValue;
 
           /* Updates result */
-          *_ps64Result = orxMath_GetRandomS64(s64Value, s64OtherValue);
+          *_ps64Result = (s64StepValue != 0) ? orxMath_GetSteppedRandomS64(s64Value, s64OtherValue, s64StepValue) : orxMath_GetRandomS64(s64Value, s64OtherValue);
         }
         else
         {
@@ -1860,6 +1947,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->s64Value       = s64Value;
         _pstValue->s64AltValue    = s64Value;
+        _pstValue->s64StepValue   = 0;
 
         /* Updates result */
         *_ps64Result = s64Value;
@@ -1916,7 +2004,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Updates result */
-      *_pu64Result = orxMath_GetRandomU64(_pstValue->u64Value, _pstValue->u64AltValue);
+      *_pu64Result = (_pstValue->u64StepValue != 0) ? orxMath_GetSteppedRandomU64(_pstValue->u64Value, _pstValue->u64AltValue, _pstValue->u64StepValue) : orxMath_GetRandomU64(_pstValue->u64Value, _pstValue->u64AltValue);
     }
     else
     {
@@ -1942,19 +2030,44 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxU64 u64OtherValue;
+        orxU64  u64OtherValue, u64StepValue = 0;
+        orxBOOL bRandom = orxFALSE;
 
         /* Has another value? */
-        if(orxString_ToU64(zRemainder + s32RandomSeparatorIndex + 1, &u64OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToU64(zRemainder + s32RandomSeparatorIndex + 1, &u64OtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            u64StepValue = u64OtherValue;
+
+            /* Can get other value? */
+            if((u64StepValue > 0) && (orxString_ToU64(zRemainder + s32RandomSeparatorIndex + 1, &u64OtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_U64;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           _pstValue->u64Value       = u64Value;
           _pstValue->u64AltValue    = u64OtherValue;
+          _pstValue->u64StepValue   = u64StepValue;
 
           /* Updates result */
-          *_pu64Result = orxMath_GetRandomU64(u64Value, u64OtherValue);
+          *_pu64Result = (u64StepValue != 0) ? orxMath_GetSteppedRandomU64(u64Value, u64OtherValue, u64StepValue) : orxMath_GetRandomU64(u64Value, u64OtherValue);
         }
         else
         {
@@ -1975,6 +2088,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->u64Value       = u64Value;
         _pstValue->u64AltValue    = u64Value;
+        _pstValue->u64StepValue   = 0;
 
         /* Updates result */
         *_pu64Result = u64Value;
@@ -2031,7 +2145,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Updates result */
-      *_pfResult = orxMath_GetRandomFloat(_pstValue->fValue, _pstValue->fAltValue);
+      *_pfResult = (_pstValue->fStepValue != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pstValue->fValue, _pstValue->fAltValue, _pstValue->fStepValue) : orxMath_GetRandomFloat(_pstValue->fValue, _pstValue->fAltValue);
     }
     else
     {
@@ -2057,19 +2171,44 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxFLOAT fOtherValue;
+        orxFLOAT  fOtherValue, fStepValue = orxFLOAT_0;
+        orxBOOL   bRandom = orxFALSE;
 
         /* Has another value? */
-        if(orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            fStepValue = fOtherValue;
+
+            /* Can get other value? */
+            if((fStepValue > orxFLOAT_0) && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_FLOAT;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           _pstValue->fValue         = fValue;
           _pstValue->fAltValue      = fOtherValue;
+          _pstValue->fStepValue     = fStepValue;
 
           /* Updates result */
-          *_pfResult = orxMath_GetRandomFloat(fValue, fOtherValue);
+          *_pfResult = (fStepValue != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(fValue, fOtherValue, fStepValue) : orxMath_GetRandomFloat(fValue, fOtherValue);
         }
         else
         {
@@ -2090,6 +2229,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         _pstValue->fValue         = fValue;
         _pstValue->fAltValue      = fValue;
+        _pstValue->fStepValue     = orxFLOAT_0;
 
         /* Updates result */
         *_pfResult = fValue;
@@ -2250,9 +2390,9 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
     {
       /* Gets random values from cache */
-      _pvResult->fX = orxMath_GetRandomFloat(_pstValue->vValue.fX, _pstValue->vAltValue.fX);
-      _pvResult->fY = orxMath_GetRandomFloat(_pstValue->vValue.fY, _pstValue->vAltValue.fY);
-      _pvResult->fZ = orxMath_GetRandomFloat(_pstValue->vValue.fZ, _pstValue->vAltValue.fZ);
+      _pvResult->fX = (_pstValue->vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pstValue->vValue.fX, _pstValue->vAltValue.fX, _pstValue->vStepValue.fX) : orxMath_GetRandomFloat(_pstValue->vValue.fX, _pstValue->vAltValue.fX);
+      _pvResult->fY = (_pstValue->vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pstValue->vValue.fY, _pstValue->vAltValue.fY, _pstValue->vStepValue.fY) : orxMath_GetRandomFloat(_pstValue->vValue.fY, _pstValue->vAltValue.fY);
+      _pvResult->fZ = (_pstValue->vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pstValue->vValue.fZ, _pstValue->vAltValue.fZ, _pstValue->vStepValue.fZ) : orxMath_GetRandomFloat(_pstValue->vValue.fZ, _pstValue->vAltValue.fZ);
     }
     else
     {
@@ -2277,21 +2417,53 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
       if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM)
       && ((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0))
       {
-        orxVECTOR vOtherValue;
+        orxVECTOR vOtherValue, vStepValue;
+        orxBOOL   bRandom = orxFALSE;
+
+        /* Clears step */
+        orxVector_SetAll(&vStepValue, orxFLOAT_0);
 
         /* Has another value? */
-        if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            vStepValue = vOtherValue;
+
+            /* Can get other value? */
+            if((orxVector_IsNull(&vStepValue) == orxFALSE)
+            && (vStepValue.fX >= orxFLOAT_0)
+            && (vStepValue.fY >= orxFLOAT_0)
+            && (vStepValue.fZ >= orxFLOAT_0)
+            && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+            {
+              /* Updates status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
         {
           /* Updates cache */
           _pstValue->u16Type        = (orxU16)orxCONFIG_VALUE_TYPE_VECTOR;
           _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
           orxVector_Copy(&(_pstValue->vValue), _pvResult);
           orxVector_Copy(&(_pstValue->vAltValue), &vOtherValue);
+          orxVector_Copy(&(_pstValue->vStepValue), &vStepValue);
 
           /* Updates result */
-          _pvResult->fX = orxMath_GetRandomFloat(_pvResult->fX, vOtherValue.fX);
-          _pvResult->fY = orxMath_GetRandomFloat(_pvResult->fY, vOtherValue.fY);
-          _pvResult->fZ = orxMath_GetRandomFloat(_pvResult->fZ, vOtherValue.fZ);
+          _pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(_pvResult->fX, vOtherValue.fX);
+          _pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(_pvResult->fY, vOtherValue.fY);
+          _pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(_pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(_pvResult->fZ, vOtherValue.fZ);
         }
         else
         {
@@ -2309,6 +2481,7 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
         _pstValue->u16CacheIndex  = (orxU16)_s32ListIndex;
         orxVector_Copy(&(_pstValue->vValue), _pvResult);
         orxVector_Copy(&(_pstValue->vAltValue), _pvResult);
+        orxVector_SetAll(&(_pstValue->vStepValue), orxFLOAT_0);
       }
 
       /* Command? */
