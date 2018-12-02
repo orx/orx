@@ -8208,8 +8208,8 @@ orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT 
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get repeat.", orxObject_GetName(_pstObject));
+    /* Updates result */
+    *_pfRepeatX = *_pfRepeatY = orxFLOAT_1;
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -8221,7 +8221,7 @@ orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT 
 
 /** Sets object blend mode.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none), orxDISPLAY_BLEND_MODE_NUMBER to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode)
@@ -8240,7 +8240,7 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
   if(pstGraphic != orxNULL)
   {
     /* Sets its blend mode */
-    eResult = orxGraphic_SetBlendMode(pstGraphic, _eBlendMode);
+    eResult = (_eBlendMode != orxDISPLAY_BLEND_MODE_NUMBER) ? orxGraphic_SetBlendMode(pstGraphic, _eBlendMode) : orxGraphic_ClearBlendMode(pstGraphic);
   }
   else
   {
@@ -8253,6 +8253,38 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
 
   /* Done! */
   return eResult;
+}
+
+/** Object has blend mode accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_HasBlendMode(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Has blend mode? */
+    bResult = orxGraphic_HasBlendMode(pstGraphic);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets object blend mode.

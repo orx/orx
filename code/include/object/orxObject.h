@@ -1011,6 +1011,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetRepeat(const orxOBJECT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+/** Object has blend mode accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasBlendMode(const orxOBJECT *_pstObject);
+
 /** Gets object blend mode.
  * @param[in]   _pstObject     Concerned object
  * @return Blend mode (alpha, multiply, add or none)
