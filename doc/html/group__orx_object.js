@@ -77,6 +77,7 @@ var group__orx_object =
     [ "orxObject_GetWorldPosition", "group__orx_object.html#ga7588acf1390e57c8915dc84aecb8f37a", null ],
     [ "orxObject_GetWorldRotation", "group__orx_object.html#ga36e3983274c47c012a7043856e8160ef", null ],
     [ "orxObject_GetWorldScale", "group__orx_object.html#gaa1acf2e0cc77d28420e0734feda38ce6", null ],
+    [ "orxObject_HasBlendMode", "group__orx_object.html#ga8bbb8627dee5c8f6577948c5625e2aec", null ],
     [ "orxObject_HasColor", "group__orx_object.html#ga11619a4851d3c57e768301fce73da901", null ],
     [ "orxObject_Init", "group__orx_object.html#ga3675869d71f33d2670ce92836b681775", null ],
     [ "orxObject_IsCurrentAnim", "group__orx_object.html#ga61f256f82e24d32d9e00cf5a60df956f", null ],
