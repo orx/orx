@@ -588,6 +588,9 @@ void orxFASTCALL orxParam_Exit()
   /* Module initialized ? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)
   {
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
+
     /* Module not ready now */
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
   }
@@ -709,15 +712,35 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Stores info */
-  sstParam.u32ParamNumber = _u32NbParams;
-  sstParam.azParams       = _azParams;
+  /* Had parameters? */
+  if(sstParam.azParams != orxNULL)
+  {
+    orxU32 i;
+
+    /* Deletes them */
+    for(i = 0; i < sstParam.u32ParamNumber; i++)
+    {
+      free(sstParam.azParams[i]);
+    }
+    free(sstParam.azParams);
+    sstParam.u32ParamNumber = 0;
+    sstParam.azParams       = orxNULL;
+  }
 
   /* Has parameters? */
   if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
     orxS32  s32Index, s32NextIndex;
+    orxU32  i;
     orxCHAR zLocalName[256], zPath[256];
+
+    /* Stores them */
+    sstParam.u32ParamNumber = _u32NbParams;
+    sstParam.azParams       = (orxSTRING *)malloc(_u32NbParams * sizeof(orxSTRING));
+    for(i = 0; i < _u32NbParams; i++)
+    {
+      sstParam.azParams[i] = strdup(_azParams[i]);
+    }
 
     /* Copies it locally */
     orxString_NPrint(zLocalName, sizeof(zLocalName) - 1, "%s", sstParam.azParams[0]);
