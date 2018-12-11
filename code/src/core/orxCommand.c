@@ -598,34 +598,38 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 {
                   case orxCOMMAND_VAR_TYPE_STRING:
                   {
-                    const orxCHAR *pc = zValue;
-
                     /* Updates pointer */
                     zValue = pstEntry->stValue.zValue;
 
-                    /* For all characters */
-                    do
+                    /* Is not in block? */
+                    if(bInBlock == orxFALSE)
                     {
-                      /* Is a white space? */
-                      if((*pc == orxCHAR_NULL) || (orxCommand_IsWhiteSpace(*pc) != orxFALSE))
-                      {
-                        /* Has room? */
-                        if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
-                        {
-                          /* Adds block marker */
-                          *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
+                      const orxCHAR *pc = zValue;
 
-                          /* Updates string marker status */
-                          bUseStringMarker = orxTRUE;
+                      /* For all characters */
+                      do
+                      {
+                        /* Is a white space? */
+                        if((*pc == orxCHAR_NULL) || (orxCommand_IsWhiteSpace(*pc) != orxFALSE))
+                        {
+                          /* Has room? */
+                          if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                          {
+                            /* Adds block marker */
+                            *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
+
+                            /* Updates string marker status */
+                            bUseStringMarker = orxTRUE;
+                          }
+
+                          break;
                         }
 
-                        break;
-                      }
+                        /* Gets next character */
+                        pc++;
 
-                      /* Gets next character */
-                      pc++;
-
-                    } while(*pc != orxCHAR_NULL);
+                      } while(*pc != orxCHAR_NULL);
+                    }
 
                     break;
                   }
@@ -798,8 +802,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                 /* Fall through */
               }
-              /* Not in block? */
-              else if(bInBlock == orxFALSE)
+              else
               {
                 orxVECTOR vValue;
 
