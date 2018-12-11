@@ -802,7 +802,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                 /* Fall through */
               }
-              else
+              /* Not in block? */
+              else if(bInBlock == orxFALSE)
               {
                 orxVECTOR vValue;
 
