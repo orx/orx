@@ -152,6 +152,8 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_VELOCITY", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae87f0668832cbf194a296e5256078165", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5a27b9c2ae05fd8cf0cf050fb4d54d70", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_FIXED_ROTATION", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa69fbcc19ab9abe0f9d1328e9fd629833", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_DYNAMIC", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa4acf5ac6100cd2b01ce82b4586fb6386", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ALLOW_MOVING", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa94d41306052f3171fd4a7fc7b84d3279", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ROTATION", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa01517346f0a5f90ee94e801aaa399648", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c", null ],
