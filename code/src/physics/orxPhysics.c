@@ -276,6 +276,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetAngularVelocity, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetCustomGravity, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetFixedRotation, orxSTATUS, orxPHYSICS_BODY *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetDynamic, orxSTATUS, orxPHYSICS_BODY *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetAllowMoving, orxSTATUS, orxPHYSICS_BODY *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, const orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, const orxPHYSICS_BODY *, orxVECTOR *);
@@ -322,6 +324,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_SPEED, orxPhysics_SetSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ANGULAR_VELOCITY, orxPhysics_SetAngularVelocity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_CUSTOM_GRAVITY, orxPhysics_SetCustomGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_FIXED_ROTATION, orxPhysics_SetFixedRotation)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_DYNAMIC, orxPhysics_SetDynamic)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_ALLOW_MOVING, orxPhysics_SetAllowMoving)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_POSITION, orxPhysics_GetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_ROTATION, orxPhysics_GetRotation)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_SPEED, orxPhysics_GetSpeed)
@@ -442,6 +446,16 @@ orxSTATUS orxFASTCALL orxPhysics_SetCustomGravity(orxPHYSICS_BODY *_pstBody, con
 orxSTATUS orxFASTCALL orxPhysics_SetFixedRotation(orxPHYSICS_BODY *_pstBody, orxBOOL _bFixed)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetFixedRotation)(_pstBody, _bFixed);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetDynamic(orxPHYSICS_BODY *_pstBody, orxBOOL _bDynamic)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetDynamic)(_pstBody, _bDynamic);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetAllowMoving(orxPHYSICS_BODY *_pstBody, orxBOOL _bAllowMoving)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetAllowMoving)(_pstBody, _bAllowMoving);
 }
 
 orxVECTOR *orxFASTCALL orxPhysics_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)

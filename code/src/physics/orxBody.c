@@ -58,6 +58,8 @@
 
 #define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
 #define orxBODY_KU32_FLAG_HAS_GRAVITY         0x00000002  /**< Has custom gravity flag */
+#define orxBODY_KU32_FLAG_DYNAMIC             0x00000004  /**< Dynamic type body flag */
+#define orxBODY_KU32_FLAG_CAN_MOVE            0x00000008  /**< Static body is allowed to move through direct user access */
 
 #define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< User all ID mask */
 
@@ -455,6 +457,8 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
     /* Valid? */
     if(pstBody->pstData != orxNULL)
     {
+      orxU32 u32Flags = orxBODY_KU32_FLAG_HAS_DATA;
+
       /* Stores owner */
       orxStructure_SetOwner(pstBody, pstObject);
 
@@ -464,8 +468,20 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Stores its definition flags */
       pstBody->u32DefFlags = _pstBodyDef->u32Flags;
 
+      /* Dynamic? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_DYNAMIC;
+      }
+
+      /* Can move? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_CAN_MOVE;
+      }
+
       /* Updates flags */
-      orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
+      orxStructure_SetFlags(pstBody, u32Flags, orxBODY_KU32_FLAG_NONE);
 
       /* Increases count */
       orxStructure_IncreaseCount(pstBody);
@@ -2229,6 +2245,74 @@ orxSTATUS orxFASTCALL orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixe
   return eResult;
 }
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bDynamic       Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetDynamic(orxBODY *_pstBody, orxBOOL _bDynamic)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetDynamic(_pstBody->pstData, _bDynamic);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bDynamic != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_DYNAMIC);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bAllowMoving   Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetAllowMoving(orxBODY *_pstBody, orxBOOL _bAllowMoving)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetAllowMoving(_pstBody->pstData, _bAllowMoving);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bAllowMoving != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_CAN_MOVE);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -2421,6 +2505,44 @@ orxBOOL orxFASTCALL orxBody_IsFixedRotation(const orxBODY *_pstBody)
 
   /* Updates result */
   bResult = orxPhysics_IsFixedRotation(_pstBody->pstData);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets the dynamic property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsDynamic(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets the "allow moving" property of a body, only relevant for non-dynamic bodies
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_GetAllowMoving(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

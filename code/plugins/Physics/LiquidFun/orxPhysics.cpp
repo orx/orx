@@ -2259,6 +2259,62 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetFixedRotation(orxPHYSIC
   return eResult;
 }
 
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetDynamic(orxPHYSICS_BODY * _pstBody, orxBOOL _bDynamic)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody->poBody;
+
+  /* Dynamic? */
+  if(_bDynamic != orxFALSE)
+  {
+    /* Updates its type */
+    poBody->SetType(b2_dynamicBody);
+  }
+  else
+  {
+    orxBODY *pstBody;
+
+    /* Gets associated body */
+    pstBody = orxBODY(poBody->GetUserData());
+
+    /* Updates its type */
+    poBody->SetType(orxBody_GetAllowMoving(pstBody) != orxFALSE ? b2_kinematicBody : b2_staticBody);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetAllowMoving(orxPHYSICS_BODY * _pstBody, orxBOOL _bAllowMoving)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody->poBody;
+
+  /* Not dynamic? */
+  if(poBody->GetType() != b2_dynamicBody)
+  {
+    /* Updates its type */
+    poBody->SetType(_bAllowMoving != orxFALSE ? b2_kinematicBody : b2_staticBody);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxVECTOR *orxFASTCALL orxPhysics_LiquidFun_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   b2Body     *poBody;
@@ -3283,6 +3339,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetSpeed, PHYSICS, SET_SPE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetAngularVelocity, PHYSICS, SET_ANGULAR_VELOCITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetCustomGravity, PHYSICS, SET_CUSTOM_GRAVITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetFixedRotation, PHYSICS, SET_FIXED_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetDynamic, PHYSICS, SET_DYNAMIC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetAllowMoving, PHYSICS, SET_ALLOW_MOVING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPosition, PHYSICS, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetRotation, PHYSICS, GET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetSpeed, PHYSICS, GET_SPEED);

@@ -57,7 +57,7 @@
 #define orxBODY_DEF_KU32_FLAG_DYNAMIC                 0x00000002  /**< Dynamic type body def flag */
 #define orxBODY_DEF_KU32_FLAG_HIGH_SPEED              0x00000004  /**< High speed type body def flag */
 #define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION          0x00000008  /**< Body can't be rotated by physics */
-#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000010  /**< Static body is allowed to move by user direct access */
+#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000010  /**< Static body is allowed to move through direct user access */
 #define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000020  /**< Allow sleep body def flag */
 
 #define orxBODY_DEF_KU32_MASK_ALL                     0xFFFFFFFF  /**< Body def all mask */
@@ -457,6 +457,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCustomGravit
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetFixedRotation(orxPHYSICS_BODY *_pstBody, orxBOOL _bFixed);
+
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _bDynamic                             Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetDynamic(orxPHYSICS_BODY *_pstBody, orxBOOL _bDynamic);
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _bAllowMoving                         Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAllowMoving(orxPHYSICS_BODY *_pstBody, orxBOOL _bAllowMoving);
 
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
