@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -2578,7 +2578,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   {
     orxCAMERA *pstCamera;
 
-    /* Is active and has camera or is selected? */
+    /* Is active or is selected, and has camera? */
     if((((_pstViewport == orxNULL)
       && (orxViewport_IsEnabled(pstViewport) != orxFALSE))
      || (_pstViewport == pstViewport))
