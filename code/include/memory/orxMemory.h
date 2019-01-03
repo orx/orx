@@ -62,7 +62,7 @@
     #define orxMEMORY_BARRIER()     \
     {                               \
       long lBarrier;                \
-      InterlockedOr(&lBarrier, 0);  \
+      _InterlockedOr(&lBarrier, 0); \
     }
 #endif /* __orx64__ */
   #define orxHAS_MEMORY_BARRIER
