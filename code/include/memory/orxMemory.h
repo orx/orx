@@ -50,13 +50,22 @@
 #include "debug/orxDebug.h"
 
 #include <string.h>
+#include <Windows.h>
 
 /** Memory barrier macros */
 #if defined(__orxGCC__) || defined(__orxLLVM__)
   #define orxMEMORY_BARRIER()                             __sync_synchronize()
   #define orxHAS_MEMORY_BARRIER
 #elif defined(__orxMSVC__)
-  #define orxMEMORY_BARRIER()                             __faststorefence()
+  #ifdef __orx64__
+    #define orxMEMORY_BARRIER()                           __faststorefence()
+#else /* __orx64__ */
+    #define orxMEMORY_BARRIER()     \
+    {                               \
+      long lBarrier;                \
+      InterlockedOr(&lBarrier, 0);  \
+    }
+#endif /* __orx64__ */
   #define orxHAS_MEMORY_BARRIER
 #else
   #define orxMEMORY_BARRIER()
