@@ -50,7 +50,6 @@
 #include "debug/orxDebug.h"
 
 #include <string.h>
-#include <Windows.h>
 
 /** Memory barrier macros */
 #if defined(__orxGCC__) || defined(__orxLLVM__)
