@@ -55,6 +55,9 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+
   typedef HINSTANCE                                         orxSYSPLUGIN;
 
   #define orxPLUGIN_OPEN(PLUGIN)                            LoadLibrary(PLUGIN)

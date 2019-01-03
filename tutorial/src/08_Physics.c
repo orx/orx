@@ -69,7 +69,7 @@
  * We also register to the physics events to add a visual FXs on two colliding objects.
  * By default the FX is a fast color flash and is, as usual, tweakable in realtime (ie. reloading
  * the config history will apply the new settings immediately as the FX isn't kept in cache by default).
- * 
+ *
  * Updating an object scale (including changing its scale with FXs) will update its physical properties.
  * Keep in mind that scaling an object with a physical body is more expensive as we have to delete
  * the current shapes and recreate them at the correct size.
@@ -121,7 +121,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   {
     /* Computes rotation delta */
     fDeltaRotation = orx2F(4.0f) * _pstClockInfo->fDT;
-  }    
+  }
   /* Rotating right? */
   if(orxInput_IsActive("RotateRight"))
   {
@@ -244,19 +244,6 @@ int main(int argc, char **argv)
   /* Executes a new instance of tutorial */
   orx_Execute(argc, argv, Init, Run, Exit);
 
-  return EXIT_SUCCESS;
-}
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
   return EXIT_SUCCESS;
 }
 

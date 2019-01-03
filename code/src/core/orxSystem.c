@@ -38,7 +38,12 @@
 
 #include <time.h>
 
-#ifndef __orxWINDOWS__
+#ifdef __orxWINDOWS__
+
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+
+#else /* __orxWINDOWS__ */
 
   #if defined(__orxMAC__) || defined(__orxIOS__)
 
@@ -49,7 +54,7 @@
   #include <unistd.h>
   #include <sys/time.h>
 
-#endif /* !__orxWINDOWS__ */
+#endif /* __orxWINDOWS__ */
 
 
 /** Module flags

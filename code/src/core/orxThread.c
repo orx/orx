@@ -29,8 +29,6 @@
  *
  */
 
-#define NO_WIN32_LEAN_AND_MEAN
-
 #include "core/orxThread.h"
 
 #include "core/orxClock.h"
@@ -41,6 +39,9 @@
 
 #ifdef __orxWINDOWS__
 
+  #define NO_WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef NO_WIN32_LEAN_AND_MEAN
   #include <process.h>
 
 #else /* __orxWINDOWS__ */

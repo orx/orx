@@ -49,22 +49,7 @@
 /** Maths related includes
  */
 #include <math.h>
-
 #ifdef __orxMSVC__
-  #ifdef NO_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-  #else /* NO_WIN32_LEAN_AND_MEAN */
-    #ifndef WIN32_LEAN_AND_MEAN
-      #define WIN32_LEAN_AND_MEAN
-      #define DEFINED_WIN32_LEAN_AND_MEAN
-    #endif /* !WIN32_LEAN_AND_MEAN */
-  #endif /* NO_WIN32_LEAN_AND_MEAN */
-  #include <windows.h>
-  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-    #undef DEFINED_WIN32_LEAN_AND_MEAN
-  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
-  #undef NO_WIN32_LEAN_AND_MEAN
   #include <intrin.h>
 #endif /* __orxMSVC__ */
 
@@ -261,7 +246,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Va
 #ifdef __orxMSVC__
 
   /* Uses intrinsic */
-  _BitScanForward((DWORD *)&u32Result, _u32Value);
+  _BitScanForward((unsigned long *)&u32Result, _u32Value);
 
 #else /* __orxMSVC__ */
 
@@ -290,7 +275,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64
   #ifdef __orx64__
 
   /* Uses intrinsic */
-  _BitScanForward64((DWORD *)&u32Result, _u64Value);
+  _BitScanForward64((unsigned long *)&u32Result, _u64Value);
 
   #else /* __orx64__ */
 

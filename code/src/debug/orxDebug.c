@@ -42,6 +42,13 @@
 
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
+#ifdef __orxWINDOWS__
+
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+
+#endif /* __orxWINDOWS__ */
+
 #ifdef __orxMSVC__
 
   #pragma warning(disable : 4996)

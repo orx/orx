@@ -69,13 +69,13 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   {
     /* Rotates Parent object CCW */
     orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) - orxMATH_KF_PI * _pstClockInfo->fDT);
-  }    
+  }
   /* Is rotate right input active? */
   if(orxInput_IsActive("RotateRight"))
   {
     /* Rotates Parent object CW */
     orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orxMATH_KF_PI * _pstClockInfo->fDT);
-  }    
+  }
 
   /* Is scale up input active? */
   if(orxInput_IsActive("ScaleUp"))
@@ -191,19 +191,6 @@ int main(int argc, char **argv)
   /* Executes a new instance of tutorial */
   orx_Execute(argc, argv, Init, Run, Exit);
 
-  return EXIT_SUCCESS;
-}
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
   return EXIT_SUCCESS;
 }
 
