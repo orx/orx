@@ -795,6 +795,9 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           {
             /* Stores object */
             sstSpawner.pstCurrentSpawner->pstPendingObject = orxOBJECT(_pstEvent->hSender);
+
+            /* Stores ourself as temporary parent in payload */
+            *((orxSPAWNER **)_pstEvent->pstPayload) = sstSpawner.pstCurrentSpawner;
           }
 
           break;

@@ -3498,10 +3498,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxEVENT stEvent;
+      orxEVENT      stEvent;
+      orxSTRUCTURE *pstParent = orxNULL;
 
       /* Inits event */
-      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PREPARE, pstResult, orxNULL, orxNULL);
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PREPARE, pstResult, orxNULL, &pstParent);
 
       /* Sends event */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
@@ -3522,7 +3523,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
-        orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE;
+        orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
 
         /* Gets age */
         fAge = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_AGE);
@@ -3571,24 +3572,24 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxString_ICompare(zAutoScrolling, orxOBJECT_KZ_X) == 0)
         {
           /* Updates frame flags */
-          u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_X;
+          u32FrameFlags = orxFRAME_KU32_FLAG_SCROLL_X;
         }
         /* Y auto scrolling? */
         else if(orxString_ICompare(zAutoScrolling, orxOBJECT_KZ_Y) == 0)
         {
           /* Updates frame flags */
-          u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_Y;
+          u32FrameFlags = orxFRAME_KU32_FLAG_SCROLL_Y;
         }
         /* Both auto scrolling? */
         else if(orxString_ICompare(zAutoScrolling, orxOBJECT_KZ_BOTH) == 0)
         {
           /* Updates frame flags */
-          u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_X | orxFRAME_KU32_FLAG_SCROLL_Y;
+          u32FrameFlags = orxFRAME_KU32_FLAG_SCROLL_X | orxFRAME_KU32_FLAG_SCROLL_Y;
         }
         else
         {
           /* Updates frame flags */
-          u32FrameFlags   = orxFRAME_KU32_FLAG_NONE;
+          u32FrameFlags = orxFRAME_KU32_FLAG_NONE;
         }
 
         /* Gets flipping value */
@@ -3681,44 +3682,97 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates parent status */
             bHasParent = orxTRUE;
 
-            /* Has parent scale value? */
-            if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)
-            {
-              const orxSTRING zUseParentScale;
-
-              /* Gets its literal version */
-              zUseParentScale = orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
-
-              /* Scale only? */
-              if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_SCALE) == 0)
-              {
-                /* Updates status */
-                bUseParentPosition  = orxFALSE;
-              }
-              /* Position only? */
-              else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_POSITION) == 0)
-              {
-                /* Updates status */
-                bUseParentScale     = orxFALSE;
-              }
-              /* Not both? */
-              else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_BOTH) != 0)
-              {
-                /* Is false? */
-                if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
-                {
-                  /* Updates status */
-                  bUseParentScale     = orxFALSE;
-                  bUseParentPosition  = orxFALSE;
-                }
-              }
-            }
+            /* Updates parent space status */
+            bUseParentSpace = orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
 
             /* Gets camera frustum */
             orxCamera_GetFrustum(pstCamera, &stFrustum);
 
             /* Gets parent size */
             orxVector_Sub(&vParentSize, &(stFrustum.vBR), &(stFrustum.vTL));
+          }
+        }
+        else
+        {
+          /* Has temporary parent? */
+          if(pstParent != orxNULL)
+          {
+            /* Updates parent space status */
+            bUseParentSpace = orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
+
+            /* Has parent space? */
+            if(bUseParentSpace != orxFALSE)
+            {
+              /* Depending on parent type */
+              switch(orxStructure_GetID(pstParent))
+              {
+                /* Spawner? */
+                case orxSTRUCTURE_ID_SPAWNER:
+                {
+                  /* Gets its owner */
+                  pstParent = orxStructure_GetOwner(pstParent);
+
+                  /* Valid? */
+                  if((pstParent != orxNULL) && (orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT))
+                  {
+                    /* Fall through */
+                  }
+                  else
+                  {
+                    break;
+                  }
+                }
+
+                /* Object? */
+                case orxSTRUCTURE_ID_OBJECT:
+                {
+                  /* Updates parent status */
+                  bHasParent = orxTRUE;
+
+                  /* Gets its size */
+                  orxObject_GetSize(orxOBJECT(pstParent), &vParentSize);
+                  break;
+                }
+
+                default:
+                {
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        /* Has parent & parent space? */
+        if((bHasParent != orxFALSE) && (bUseParentSpace != orxFALSE))
+        {
+          const orxSTRING zUseParentScale;
+
+          /* Gets its literal version */
+          zUseParentScale = orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
+
+          /* Scale only? */
+          if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_SCALE) == 0)
+          {
+            /* Updates status */
+            bUseParentPosition    = orxFALSE;
+          }
+          /* Position only? */
+          else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_POSITION) == 0)
+          {
+            /* Updates status */
+            bUseParentScale       = orxFALSE;
+          }
+          /* Not both? */
+          else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_BOTH) != 0)
+          {
+            /* Is false? */
+            if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
+            {
+              /* Updates status */
+              bUseParentScale     = orxFALSE;
+              bUseParentPosition  = orxFALSE;
+            }
           }
         }
 
