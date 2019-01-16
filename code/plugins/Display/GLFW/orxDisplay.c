@@ -5541,7 +5541,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
                 /* Updates extension string */
                 zExtension++;
 
-                /* Fallthrough */
+                /* Fall through */
               }
 
               default:

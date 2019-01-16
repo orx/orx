@@ -1833,7 +1833,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             fRowBoundary      = -vTextureSize.fX;
             fRowSign          = -orxFLOAT_1;
 
-            /* Fallthrough */
+            /* Fall through */
           }
 
           case orxDIRECTION_RIGHT:
@@ -1856,7 +1856,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             fRowBoundary      = -vTextureSize.fY;
             fRowSign          = -orxFLOAT_1;
 
-            /* Fallthrough */
+            /* Fall through */
           }
 
           case orxDIRECTION_DOWN:
