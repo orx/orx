@@ -215,6 +215,7 @@ typedef struct __orxOBJECT_STATIC_t
   orxBANK      *pstAgeBank;                     /**< Age bank */
   orxHASHTABLE *pstGroupTable;                  /**< Group table */
   orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
+  orxOBJECT    *pstCurrentObject;               /**< Current object */
   orxSTRINGID   stDefaultGroupID;               /**< Default group ID */
   orxSTRINGID   stCurrentGroupID;               /**< Current group ID */
   orxSTRINGID   stCachedGroupID;                /**< Cached group ID */
@@ -3006,6 +3007,29 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
   return eResult;
 }
 
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+  orxASSERT(_pstEvent->eID == orxOBJECT_EVENT_PREPARE);
+
+  /* Has current object? */
+  if(sstObject.pstCurrentObject != orxNULL)
+  {
+    /* Stores current object as temporary parent in payload */
+    *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentObject;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Deletes all the objects
  */
 static orxINLINE void orxObject_DeleteAll()
@@ -3270,34 +3294,62 @@ orxSTATUS orxFASTCALL orxObject_Init()
       /* Valid? */
       if(sstObject.pstClock != orxNULL)
       {
-        /* Registers object update function to clock */
-        eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
+        /* Adds event handler */
+        eResult = orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
 
-        /* Success? */
+        /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Creates banks */
-          sstObject.pstGroupBank  = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-          sstObject.pstAgeBank    = orxBank_Create(orxOBJECT_KU32_AGE_BANK_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          /* Filters relevant event IDs */
+          orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+
+          /* Registers object update function to clock */
+          eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
 
           /* Success? */
-          if((sstObject.pstGroupBank != orxNULL) && (sstObject.pstAgeBank != orxNULL))
+          if(eResult != orxSTATUS_FAILURE)
           {
-            /* Creates group table */
-            sstObject.pstGroupTable = orxHashTable_Create(orxOBJECT_KU32_GROUP_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+            /* Creates banks */
+            sstObject.pstGroupBank  = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+            sstObject.pstAgeBank    = orxBank_Create(orxOBJECT_KU32_AGE_BANK_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
             /* Success? */
-            if(sstObject.pstGroupTable != orxNULL)
+            if((sstObject.pstGroupBank != orxNULL) && (sstObject.pstAgeBank != orxNULL))
             {
-              /* Registers commands */
-              orxObject_RegisterCommands();
+              /* Creates group table */
+              sstObject.pstGroupTable = orxHashTable_Create(orxOBJECT_KU32_GROUP_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-              /* Stores default group ID */
-              sstObject.stDefaultGroupID  = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
-              sstObject.stCurrentGroupID  = sstObject.stDefaultGroupID;
+              /* Success? */
+              if(sstObject.pstGroupTable != orxNULL)
+              {
+                /* Registers commands */
+                orxObject_RegisterCommands();
 
-              /* Inits Flags */
-              sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+                /* Stores default group ID */
+                sstObject.stDefaultGroupID  = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+                sstObject.stCurrentGroupID  = sstObject.stDefaultGroupID;
+
+                /* Inits Flags */
+                sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+              }
+              else
+              {
+                /* Updates result */
+                eResult = orxSTATUS_FAILURE;
+
+                /* Removes event handler */
+                orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+
+                /* Deletes banks */
+                orxBank_Delete(sstObject.pstGroupBank);
+                orxBank_Delete(sstObject.pstAgeBank);
+
+                /* Unregisters from clock */
+                orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+                /* Unregisters structure type */
+                orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
+              }
             }
             else
             {
@@ -3305,11 +3357,20 @@ orxSTATUS orxFASTCALL orxObject_Init()
               eResult = orxSTATUS_FAILURE;
 
               /* Deletes banks */
-              orxBank_Delete(sstObject.pstGroupBank);
-              orxBank_Delete(sstObject.pstAgeBank);
+              if(sstObject.pstGroupBank != orxNULL)
+              {
+                orxBank_Delete(sstObject.pstGroupBank);
+              }
+              if(sstObject.pstAgeBank != orxNULL)
+              {
+                orxBank_Delete(sstObject.pstAgeBank);
+              }
 
               /* Unregisters from clock */
               orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+              /* Removes event handler */
+              orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
 
               /* Unregisters structure type */
               orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -3317,21 +3378,8 @@ orxSTATUS orxFASTCALL orxObject_Init()
           }
           else
           {
-            /* Updates result */
-            eResult = orxSTATUS_FAILURE;
-
-            /* Deletes banks */
-            if(sstObject.pstGroupBank != orxNULL)
-            {
-              orxBank_Delete(sstObject.pstGroupBank);
-            }
-            if(sstObject.pstAgeBank != orxNULL)
-            {
-              orxBank_Delete(sstObject.pstAgeBank);
-            }
-
-            /* Unregisters from clock */
-            orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+            /* Removes event handler */
+            orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
 
             /* Unregisters structure type */
             orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -3342,6 +3390,11 @@ orxSTATUS orxFASTCALL orxObject_Init()
           /* Unregisters structure type */
           orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
         }
+      }
+      else
+      {
+        /* Unregisters structure type */
+        orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
       }
     }
     else
@@ -3370,6 +3423,9 @@ void orxFASTCALL orxObject_Exit()
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+
     /* Unregisters commands */
     orxObject_UnregisterCommands();
 
@@ -3519,11 +3575,18 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zIgnoreFromParent;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
+        orxOBJECT      *pstPreviousObject;
         orxFLOAT        fAge;
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
         orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
+
+        /* Backups current spawner */
+        pstPreviousObject = sstObject.pstCurrentObject;
+
+        /* Clears current object */
+        sstObject.pstCurrentObject = orxNULL;
 
         /* Gets age */
         fAge = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_AGE);
@@ -4085,6 +4148,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxS32      i, s32JointNumber;
           orxOBJECT  *pstLastChild;
 
+          /* Stores current object */
+          sstObject.pstCurrentObject = pstResult;
+
           /* Gets child joint list number */
           s32JointNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST);
 
@@ -4384,6 +4450,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_NONE, orxOBJECT_KU32_STATIC_FLAG_AGE);
           }
         }
+
+        /* Restores previous object */
+        sstObject.pstCurrentObject = pstPreviousObject;
       }
       else
       {
