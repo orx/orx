@@ -103,7 +103,6 @@
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_CLOCK               "Clock"
 #define orxOBJECT_KZ_CONFIG_SPAWNER             "Spawner"
-#define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
 #define orxOBJECT_KZ_CONFIG_COLOR               "Color"
@@ -137,6 +136,14 @@
 #define orxOBJECT_KZ_CONFIG_GROUP               "Group"
 #define orxOBJECT_KZ_CONFIG_AGE                 "Age"
 #define orxOBJECT_KZ_CONFIG_IGNORE_FROM_PARENT  "IgnoreFromParent"
+#define orxOBJECT_KZ_CENTERED_PIVOT             "center"
+#define orxOBJECT_KZ_TRUNCATE_PIVOT             "truncate"
+#define orxOBJECT_KZ_ROUND_PIVOT                "round"
+#define orxOBJECT_KZ_TOP_PIVOT                  "top"
+#define orxOBJECT_KZ_LEFT_PIVOT                 "left"
+#define orxOBJECT_KZ_BOTTOM_PIVOT               "bottom"
+#define orxOBJECT_KZ_RIGHT_PIVOT                "right"
+
 
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
@@ -2894,6 +2901,100 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
 }
 
+/** Sets relative pivot
+ */
+static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _u32AlignFlags)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Updates its relative pivot */
+    orxGraphic_SetRelativePivot(pstGraphic, _u32AlignFlags);
+  }
+  else
+  {
+    orxVECTOR vSize;
+
+    /* Valid size? */
+    if(orxObject_GetSize(_pstObject, &vSize) != orxNULL)
+    {
+      orxFLOAT fHeight, fWidth;
+
+      /* Gets graphic size */
+      fWidth  = vSize.fX;
+      fHeight = vSize.fY;
+
+      /* Pivot left? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
+      {
+        /* Updates x position */
+        _pstObject->vPivot.fX = orxFLOAT_0;
+      }
+      /* Align right? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
+      {
+        /* Updates x position */
+        _pstObject->vPivot.fX = fWidth;
+      }
+      /* Align center */
+      else
+      {
+        /* Updates x position */
+        _pstObject->vPivot.fX = orx2F(0.5f) * fWidth;
+      }
+
+      /* Align top? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
+      {
+        /* Updates y position */
+        _pstObject->vPivot.fY = orxFLOAT_0;
+      }
+      /* Align bottom? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
+      {
+        /* Updates y position */
+        _pstObject->vPivot.fY = fHeight;
+      }
+      /* Align center */
+      else
+      {
+        /* Updates y position */
+        _pstObject->vPivot.fY = orx2F(0.5f) * fHeight;
+      }
+
+      /* Truncate? */
+      if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+      {
+        /* Updates position */
+        orxVector_Floor(&(_pstObject->vPivot), &(_pstObject->vPivot));
+      }
+      /* Round? */
+      else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+      {
+        /* Updates position */
+        orxVector_Round(&(_pstObject->vPivot), &(_pstObject->vPivot));
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid size retrieved from object.");
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Creates an empty object
  */
 static orxINLINE orxOBJECT *orxObject_CreateInternal()
@@ -3916,18 +4017,76 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Pivot/Size *** */
 
+        /* Has size? */
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
+        {
+          /* Updates object size */
+          orxObject_SetSize(pstResult, &vValue);
+        }
+
         /* Has pivot? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vValue) != orxNULL)
         {
           /* Updates object pivot */
           orxObject_SetPivot(pstResult, &vValue);
         }
-
-        /* Has size? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
+        /* Has relative pivot point? */
+        else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_PIVOT) != orxFALSE)
         {
-          /* Updates object size */
-          orxObject_SetSize(pstResult, &vValue);
+          orxCHAR   acBuffer[64];
+          orxSTRING zRelativePos;
+          orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
+
+          /* Gets lower case value */
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT), sizeof(acBuffer) - 1));
+
+          /* Left? */
+          if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_LEFT_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
+          }
+          /* Right? */
+          else if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_RIGHT_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
+          }
+
+          /* Top? */
+          if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_TOP_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
+          }
+          /* Bottom? */
+          else if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_BOTTOM_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
+          }
+
+          /* Truncate? */
+          if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_TRUNCATE_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
+          }
+          /* Round? */
+          else if(orxString_SearchString(zRelativePos, orxOBJECT_KZ_ROUND_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
+          }
+
+          /* Valid? */
+          if((u32AlignmentFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
+          || (orxString_SearchString(zRelativePos, orxOBJECT_KZ_CENTERED_PIVOT) != orxNULL))
+          {
+            /* Applies it */
+            orxObject_SetRelativePivot(pstResult, u32AlignmentFlags);
+          }
         }
 
         /* *** Scale *** */
