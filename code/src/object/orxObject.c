@@ -4419,6 +4419,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Should apply age? */
           if(fAge > orxFLOAT_0)
           {
+            orxCLOCK_INFO         stAgeClockInfo;
             orxCLOCK             *pstClock;
             const orxCLOCK_INFO  *pstClockInfo;
 
@@ -4430,16 +4431,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             pstClockInfo = orxClock_GetInfo(pstClock);
             orxASSERT(pstClockInfo != orxNULL);
 
+            /* Copies it */
+            orxMemory_Copy(&stAgeClockInfo, pstClockInfo, sizeof(orxCLOCK_INFO));
+
             /* For all time slices */
-            for(; fAge > orxFLOAT_0; fAge -= pstClockInfo->fDT)
+            for(; fAge > orxFLOAT_0; fAge -= stAgeClockInfo.fDT)
             {
+              /* Computes age DT */
+              stAgeClockInfo.fDT = orxCLAMP(stAgeClockInfo.fDT, orx2F(0.01f), fAge);
+
               /* For all aging objects */
               for(ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, orxNULL);
                   ppstObject != orxNULL;
                   ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, ppstObject))
               {
                 /* Updates it */
-                orxObject_UpdateInternal(*ppstObject, pstClockInfo);
+                orxObject_UpdateInternal(*ppstObject, &stAgeClockInfo);
               }
             }
 
