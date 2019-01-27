@@ -418,6 +418,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Inits array for storing block ends at each depth */
   orxMemory_Zero(adDepthBlockEndTime, orxRENDER_KU32_MAX_MARKER_DEPTH * sizeof(orxDOUBLE));
 
+  /* Resets frame selection */
+  orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
+
   /* Gets marker total time, reciprocal total time and start time */
   dTotalTime    = orxProfiler_GetResetTime();
   dRecTotalTime = orxDOUBLE_1 / dTotalTime;
