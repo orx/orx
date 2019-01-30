@@ -3672,7 +3672,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zBodyName;
         const orxSTRING zClockName;
         const orxSTRING zSpawnerName;
-        const orxSTRING zCameraName;
+        const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
@@ -3681,7 +3681,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
-        orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxTRUE, bUseParentPosition = orxTRUE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
+        orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
 
         /* Backups current spawner */
         pstPreviousObject = sstObject.pstCurrentObject;
@@ -3818,15 +3818,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Parent *** */
 
         /* Gets camera file name */
-        zCameraName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
+        zParentName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
 
         /* Valid? */
-        if((zCameraName != orxNULL) && (zCameraName != orxSTRING_EMPTY))
+        if((zParentName != orxNULL) && (zParentName != orxSTRING_EMPTY))
         {
           orxCAMERA *pstCamera;
 
           /* Gets camera */
-          pstCamera = orxCamera_CreateFromConfig(zCameraName);
+          pstCamera = orxCamera_CreateFromConfig(zParentName);
 
           /* Valid? */
           if(pstCamera != orxNULL)
@@ -3843,11 +3843,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Sets it as parent */
             orxObject_SetParent(pstResult, pstCamera);
 
-            /* Updates parent status */
-            bHasParent = orxTRUE;
-
-            /* Updates parent space status */
-            bUseParentSpace = orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
+            /* Updates default status */
+            bUseParentSpace = bUseParentScale = bUseParentPosition = orxTRUE;
 
             /* Gets camera frustum */
             orxCamera_GetFrustum(pstCamera, &stFrustum);
@@ -3883,6 +3880,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   }
                   else
                   {
+                    /* Updates status */
+                    bUseParentSpace = orxFALSE;
                     break;
                   }
                 }
@@ -3890,16 +3889,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Object? */
                 case orxSTRUCTURE_ID_OBJECT:
                 {
-                  /* Updates parent status */
-                  bHasParent = orxTRUE;
-
-                  /* Gets its size */
+                  /* Gets its size & name */
                   orxObject_GetSize(orxOBJECT(pstParent), &vParentSize);
+                  zParentName = orxObject_GetName(orxOBJECT(pstParent));
                   break;
                 }
 
                 default:
                 {
+                  /* Updates status */
+                  bUseParentSpace = orxFALSE;
                   break;
                 }
               }
@@ -3907,35 +3906,47 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* Has parent & parent space? */
-        if((bHasParent != orxFALSE) && (bUseParentSpace != orxFALSE))
+        /* Has parent space? */
+        if(bUseParentSpace != orxFALSE)
         {
-          const orxSTRING zUseParentScale;
+          const orxSTRING zUseParentSpace;
 
           /* Gets its literal version */
-          zUseParentScale = orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
+          zUseParentSpace = orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
 
-          /* Scale only? */
-          if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_SCALE) == 0)
+          /* Defined? */
+          if((zUseParentSpace != orxNULL) && (zUseParentSpace != orxSTRING_EMPTY))
           {
-            /* Updates status */
-            bUseParentPosition    = orxFALSE;
-          }
-          /* Position only? */
-          else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_POSITION) == 0)
-          {
-            /* Updates status */
-            bUseParentScale       = orxFALSE;
-          }
-          /* Not both? */
-          else if(orxString_ICompare(zUseParentScale, orxOBJECT_KZ_BOTH) != 0)
-          {
-            /* Is false? */
-            if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
+            /* Scale only? */
+            if(orxString_ICompare(zUseParentSpace, orxOBJECT_KZ_SCALE) == 0)
+            {
+              /* Updates status */
+              bUseParentScale     = orxTRUE;
+              bUseParentPosition  = orxFALSE;
+            }
+            /* Position only? */
+            else if(orxString_ICompare(zUseParentSpace, orxOBJECT_KZ_POSITION) == 0)
             {
               /* Updates status */
               bUseParentScale     = orxFALSE;
-              bUseParentPosition  = orxFALSE;
+              bUseParentPosition  = orxTRUE;
+            }
+            /* Both? */
+            else if(orxString_ICompare(zUseParentSpace, orxOBJECT_KZ_BOTH) == 0)
+            {
+              /* Updates status */
+              bUseParentScale     = orxTRUE;
+              bUseParentPosition  = orxTRUE;
+            }
+            else
+            {
+              /* Updates status */
+              if(orxString_ToBool(zUseParentSpace, &bUseParentSpace, orxNULL) != orxSTATUS_FAILURE)
+              {
+                /* Updates status */
+                bUseParentScale     = bUseParentSpace;
+                bUseParentPosition  = bUseParentSpace;
+              }
             }
           }
         }
@@ -4106,9 +4117,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxVector_SetAll(&vValue, fScale);
           }
 
-          /* Has a valid parent and uses its scale? */
-          if((bHasParent != orxFALSE)
-          && (bUseParentScale != orxFALSE))
+          /* Uses parent's scale? */
+          if(bUseParentScale != orxFALSE)
           {
             orxVECTOR vSize;
 
@@ -4122,7 +4132,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               orxVector_SetAll(&vSize, orxFLOAT_1);
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> can't use relative scale from parent <%s> as it doesn't have any size. Assuming size (1, 1, 1).", _zConfigID, zCameraName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> can't use relative scale from parent <%s> as it doesn't have any size. Assuming size (1, 1, 1).", _zConfigID, zParentName);
+            }
+            else if((vParentSize.fX <= orxFLOAT_0) || (vParentSize.fY <= orxFLOAT_0))
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> won't have a size as its parent <%s> doesn't have any size.", _zConfigID, zParentName);
             }
 
             /* No scale on Z */
@@ -4284,9 +4299,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has a position? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
         {
-          /* Has valid parent and uses its position? */
-          if((bHasParent != orxFALSE)
-          && (bUseParentPosition != orxFALSE))
+          /* Uses parent's position? */
+          if(bUseParentPosition != orxFALSE)
           {
             /* Gets world space values */
             orxVector_Mul(&vValue, &vValue, &vParentSize);
