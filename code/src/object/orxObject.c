@@ -3681,7 +3681,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
-        orxBOOL         bHasParent = orxFALSE, bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
+        orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
 
         /* Backups current spawner */
         pstPreviousObject = sstObject.pstCurrentObject;
