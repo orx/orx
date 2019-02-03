@@ -4016,6 +4016,41 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Updates animation pointer frequency */
                 orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FREQUENCY));
               }
+
+              /* Doesn't have a graphic? */
+              if(pstResult->astStructureList[orxSTRUCTURE_ID_GRAPHIC].pstStructure == orxNULL)
+              {
+                orxGRAPHIC *pstGraphic;
+
+                /* Gets current graphic */
+                pstGraphic = orxObject_GetWorkingGraphic(pstResult);
+
+                /* Valid? */
+                if(pstGraphic != orxNULL)
+                {
+                  /* Creates a clone */
+                  pstGraphic = orxGraphic_CreateFromConfig(orxGraphic_GetName(pstGraphic));
+
+                  /* Valid? */
+                  if(pstGraphic != orxNULL)
+                  {
+                    /* Links it structures */
+                    if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
+                    {
+                      /* Updates flags */
+                      orxFLAG_SET(pstResult->astStructureList[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+                      /* Updates its owner */
+                      orxStructure_SetOwner(pstGraphic, pstResult);
+                    }
+                    else
+                    {
+                      /* Deletes it */
+                      orxGraphic_Delete(pstGraphic);
+                    }
+                  }
+                }
+              }
             }
             else
             {
@@ -8430,7 +8465,7 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set RGB values.", orxObject_GetName(_pstObject));
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set alpha values.", orxObject_GetName(_pstObject));
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
