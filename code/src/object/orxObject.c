@@ -2358,13 +2358,31 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
     /* Is asking for current anim? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      /* Sets its current anim */
-      orxObject_SetCurrentAnim(pstObject, _astArgList[1].zValue);
+      /* Recursive? */
+      if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
+      {
+        /* Sets its current anim */
+        orxObject_SetCurrentAnimRecursive(pstObject, _astArgList[1].zValue);
+      }
+      else
+      {
+        /* Sets its current anim */
+        orxObject_SetCurrentAnim(pstObject, _astArgList[1].zValue);
+      }
     }
     else
     {
-      /* Sets its target anim */
-      orxObject_SetTargetAnim(pstObject, _astArgList[1].zValue);
+      /* Recursive? */
+      if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
+      {
+        /* Sets its target anim */
+        orxObject_SetTargetAnimRecursive(pstObject, _astArgList[1].zValue);
+      }
+      else
+      {
+        /* Sets its target anim */
+        orxObject_SetTargetAnim(pstObject, _astArgList[1].zValue);
+      }
     }
 
     /* Updates result */
@@ -2716,7 +2734,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
 
   /* Command: SetAnim */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetAnimFrequency */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT});
 
@@ -6580,6 +6598,13 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxS
   return eResult;
 }
 
+/** Sets current animation for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetCurrentAnim, const orxSTRING);
+
 /** Sets target animation for object. The animations are sequenced on an object according to the animation link graph
  * defined by its AnimationSet. The sequence follows the graph and tries to reach the target animation. Use
  * orxObject_SetCurrentAnim() to switch the animation without using the link graph.
@@ -6614,6 +6639,13 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxST
   /* Done! */
   return eResult;
 }
+
+/** Sets target animation for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetTargetAnim, const orxSTRING);
 
 /** Sets an object speed.
  * @param[in]   _pstObject      Concerned object
