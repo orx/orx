@@ -1,6 +1,50 @@
 Orx - Portable Game Engine  (Version 1.8rc0)
 =========================================
 
+orx 1.10
+-----
+* IMPORTANT: Migrated display, mouse, joystick and keyboard plugins from GLFW 2.7 to GLFW 3.3
+* IMPORTANT: Modified orxDisplay_DrawMesh() to support more primitive types (points, lines/loop/strip, triangles/strip/fan)
+* IMPORTANT: Inputs can now be bound/unbound using a binding index, for complete control over rebinding
+* IMPORTANT: Resource types can now optionally support deletion (+ added deletion support to file resources)
+* IMPORTANT: Two-component vectors, ie. (x, y), are now accepted anywhere vector literals are, z component is then set to 0
+* IMPORTANT: Changed default number of digits for animation frames from 4 to 0 (ie. no leading 0-based prefixes by default)
+* IMPORTANT: Events can now be filtered out based on IDs before reaching the handler with orxEvent_SetHandlerIDFlags()
+* IMPORTANT: Updated some key names (NUMPAD_ prefix, *RETURN -> *ENTER, F16-F25, PRINT_SCREEN, ...) + added orxDisplay_GetKeyName()
+* IMPORTANT: Multiple monitors support: display can be positioned across all monitors and the current monitor will be tracked when the windows is moved
+* IMPORTANT: Added support for up to 16 joysticks + added new button/axis names (A, B, X, Y, LX, LY, RX, RY, ...)
+* IMPORTANT: Added support for gamepad mappings (as per SDL database) + custom mappings through Input.MappingList config property
+* IMPORTANT: Added drop (as in drag'n'drop) support for file names (orxSYSTEM_EVENT_DROP)
+* IMPORTANT: Copy/Paste support through event, direct function calls and commands (+ paste support inside the interactive console)
+* IMPORTANT: Hardware cursor support: for both OS builtins (arrow, ibeam, crosshair, hand, ...) and user-provided ones
+* IMPORTANT: Added support for application icon list (+ on-the-fly update)
+* IMPORTANT: Added steps variants to orxMath_GetRandom*() functions + associated config syntax (ie. val1 ~step~ val2)
+* IMPORTANT: Objects with animation sets do not require a graphic anymore, by default a copy of the first frame of the initial animation will be used
+* IMPORTANT: Prefixed animations/frames will now use an intermediate parent based on the non-prefixed animation/frame: allows for global settings
+* IMPORTANT: OSX 10.6 support has been dropped
+* IMPORTANT: Android API level raised from 14 to 19
+* IMPORTANT: Dropped 32bit support for OSX targets
+
+* Added support for UseParentSpace for objects created from a ChildList or from a spawner
+* Added support for pivot literals in object config sections
+* Added recursive version of orxObject_Set*Anim() and updated associated commands accordingly
+* Blend mode and colors can now be modified on a per-frame basis within an animation
+* Fixed a couple of minor issues in profiler's display
+* Added interactive mode to init script (when launched without any argument)
+* Console enhancement: tooltip is displayed when multiple results are returned from completion
+* orxDisplay_SetBitmapClipping() will now work by default (when orxNULL is passed) on the main destination bitmap
+* Added debug draw for physics raycasts
+* Profiler's scrolling is now pause/unpaused by pressing 'space'
+* Renamed orxSound*_GetCursor() -> orxSound*_GetTime() and orxSOUND_STREAM_PACKET.fCursor -> orxSOUND_STREAM_PACKET.fTime
+* Fixed multi-inputs/thresholds/multipliers save support
+* Fixed 1-frame delay when doing multiple animation transition in a row
+* Custom logging callback can now be provided with orxDEBUG_SET_LOG_CALLBACK()
+* orxRender_GetScreenPosition() is now inclusive with respect to near plane
+* All timers occurrences using the same callback can now be removed from a single call, even when using different contexts
+* Fixed config files not being properly loaded when using an UTF-8 BOM
+* Removed __orxFREEBASIC__
+* Misc fixes, optimizations and additions
+
 orx 1.9
 -----
 * IMPORTANT: Added support for Visual Studio 2017

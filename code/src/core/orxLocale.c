@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -270,50 +270,46 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
   {
     orxS32 i, s32LanguageCount;
 
-    /* Valid? */
-    if(_zLanguage != orxSTRING_EMPTY)
+    /* Pushes locale config section */
+    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+    /* Gets language count */
+    s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+
+    /* For all languages */
+    for(i = 0; i < s32LanguageCount; i++)
     {
-      /* Pushes locale config section */
-      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-      /* Gets language count */
-      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-      /* For all languages */
-      for(i = 0; i < s32LanguageCount; i++)
+      /* Found? */
+      if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
       {
-        /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
+        /* Pushes its section */
+        eResult = orxConfig_PushSection(_zLanguage);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
         {
-          /* Pushes its section */
-          eResult = orxConfig_PushSection(_zLanguage);
+          orxLOCALE_EVENT_PAYLOAD stPayload;
 
-          /* Success? */
-          if(eResult != orxSTATUS_FAILURE)
-          {
-            orxLOCALE_EVENT_PAYLOAD stPayload;
+          /* Stores its reference */
+          sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
 
-            /* Stores its reference */
-            sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
+          /* Pops config section */
+          orxConfig_PopSection();
 
-            /* Pops config section */
-            orxConfig_PopSection();
+          /* Inits event payload */
+          orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+          stPayload.zLanguage = sstLocale.zCurrentLanguage;
 
-            /* Inits event payload */
-            orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
-            stPayload.zLanguage = sstLocale.zCurrentLanguage;
-
-            /* Sends it */
-            orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
-          }
-
-          break;
+          /* Sends it */
+          orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
         }
-      }
 
-      /* Pops config section */
-      orxConfig_PopSection();
+        break;
+      }
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -363,31 +359,27 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
   {
     orxS32 i, s32LanguageCount;
 
-    /* Valid? */
-    if(_zLanguage != orxSTRING_EMPTY)
+    /* Pushes locale config section */
+    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+    /* Gets language count */
+    s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
+
+    /* For all languages */
+    for(i = 0; i < s32LanguageCount; i++)
     {
-      /* Pushes locale config section */
-      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-      /* Gets language count */
-      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-      /* For all languages */
-      for(i = 0; i < s32LanguageCount; i++)
+      /* Found? */
+      if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
       {
-        /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
-        {
-          /* Updates result */
-          bResult = orxConfig_HasSection(_zLanguage);
+        /* Updates result */
+        bResult = orxConfig_HasSection(_zLanguage);
 
-          break;
-        }
+        break;
       }
-
-      /* Pops config section */
-      orxConfig_PopSection();
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */

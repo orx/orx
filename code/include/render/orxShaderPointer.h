@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -125,7 +125,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_RemoveShader(or
 /** Gets a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _u32Index         Index of shader to get
- * @return      orxSJADER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
 extern orxDLLAPI const orxSHADER *orxFASTCALL   orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index);
 

@@ -17,6 +17,7 @@ var annotated_dup =
     [ "orxCOMMAND_VAR", "structorx_c_o_m_m_a_n_d___v_a_r.html", "structorx_c_o_m_m_a_n_d___v_a_r" ],
     [ "orxCOMMAND_VAR_DEF", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f" ],
     [ "orxDISPLAY_EVENT_PAYLOAD", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d" ],
+    [ "orxDISPLAY_MESH", "structorx_d_i_s_p_l_a_y___m_e_s_h.html", "structorx_d_i_s_p_l_a_y___m_e_s_h" ],
     [ "orxDISPLAY_TRANSFORM", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m" ],
     [ "orxDISPLAY_VERTEX", "structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html", "structorx_d_i_s_p_l_a_y___v_e_r_t_e_x" ],
     [ "orxDISPLAY_VIDEO_MODE", "structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html", "structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e" ],

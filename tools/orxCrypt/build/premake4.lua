@@ -46,17 +46,10 @@ function initplatforms ()
             }
         end
     elseif os.is ("macosx") then
-        if string.find(string.lower(_ACTION), "xcode") then
-            return
-            {
-                "Universal"
-            }
-        else
-            return
-            {
-                "x32", "x64"
-            }
-        end
+        return
+        {
+            "x64"
+        }
     end
 end
 
@@ -187,13 +180,13 @@ solution "orxCrypt"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-mmacosx-version-min=10.7",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-mmacosx-version-min=10.7",
             "-dead_strip"
         }
         postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
@@ -238,11 +231,23 @@ project "orxCrypt"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
-            "AppKit.framework",
+            "AppKit.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework AppKit"
+        }
+
+    configuration {"macosx"}
+        links
+        {
             "pthread"
         }
 

@@ -91,7 +91,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     case orxANIM_EVENT_CUT:
     {
       /* Logs info */
-      orxLOG("Animation <%s>@<%s> has been cut!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      orxLOG("Animation <%s>@<%s> has been cut [time: %.2f]!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), pstPayload->stCut.fTime);
 
       break;
     }
@@ -99,7 +99,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
     case orxANIM_EVENT_LOOP:
     {
       /* Logs info */
-      orxLOG("Animation <%s>@<%s> has looped!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      orxLOG("Animation <%s>@<%s> has looped [count: %u]!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)), pstPayload->stLoop.u32Count);
 
       break;
     }
@@ -238,18 +238,3 @@ int main(int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

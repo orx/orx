@@ -8,6 +8,7 @@ var orx_debug_8h =
     [ "orxDEBUG_INIT", "group__orx_debug.html#ga433c07645f10b00f0b859670d1163352", null ],
     [ "orxDEBUG_IS_LEVEL_ENABLED", "group__orx_debug.html#ga697867e95a050e42382f7ca7ee713e7b", null ],
     [ "orxDEBUG_KS32_BUFFER_OUTPUT_SIZE", "group__orx_debug.html#gaa926078fe1ff0af68e746861de4f5992", null ],
+    [ "orxDEBUG_KU32_STATIC_FLAG_CALLBACK", "group__orx_debug.html#ga33aa2c69d02dc0552434e18f24a5fe01", null ],
     [ "orxDEBUG_KU32_STATIC_FLAG_CONSOLE", "group__orx_debug.html#gaab3cd7862497cad837a89b74049d9fe8", null ],
     [ "orxDEBUG_KU32_STATIC_FLAG_FILE", "group__orx_debug.html#gaa44c8eb9f5e2444a81db57c2e93e4071", null ],
     [ "orxDEBUG_KU32_STATIC_FLAG_FULL_TIMESTAMP", "group__orx_debug.html#ga68c4bb3a289caab5454f5884336ed3bb", null ],
@@ -31,9 +32,11 @@ var orx_debug_8h =
     [ "orxDEBUG_KZ_TYPE_WARNING_FORMAT", "group__orx_debug.html#gaa4520876b1dac6a9669d4414290fda6e", null ],
     [ "orxDEBUG_PRINT", "group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2", null ],
     [ "orxDEBUG_SET_FLAGS", "group__orx_debug.html#gaf00cf24f2d5881602fa5e1eb0e3f7cf0", null ],
+    [ "orxDEBUG_SET_LOG_CALLBACK", "group__orx_debug.html#ga8a6844ca5481ba8c064d8eed5c641d2b", null ],
     [ "orxDEBUG_SETBASEFILENAME", "group__orx_debug.html#gaf759a250e945c1f6e3f7014b305cb50a", null ],
     [ "orxDEBUG_SETDEBUGFILE", "group__orx_debug.html#ga90a2d4e5b531f4d44e0faebd2ecccb8e", null ],
     [ "orxDEBUG_SETLOGFILE", "group__orx_debug.html#gae976ea28bfe7551c5ec24a441e80b805", null ],
+    [ "orxDEBUG_CALLBACK_FUNCTION", "group__orx_debug.html#gae0b8709d32707d5377660d1dbc6435f8", null ],
     [ "orxDEBUG_LEVEL", "group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb", [
       [ "orxDEBUG_LEVEL_ANIM", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba699428ca415508277a926f8d1df637d7", null ],
       [ "orxDEBUG_LEVEL_CONFIG", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba4d0a63b9dc12f7c6c4a1c1ed6224bae2", null ],
@@ -72,5 +75,6 @@ var orx_debug_8h =
     [ "_orxDebug_Log", "group__orx_debug.html#ga629ee22b4d60797e9756cd2a2b71fba1", null ],
     [ "_orxDebug_SetDebugFile", "group__orx_debug.html#ga4185e57bfe9a71085ccbeadc034b0d5d", null ],
     [ "_orxDebug_SetFlags", "group__orx_debug.html#ga2a07443eda6e7bb62cdd4b446c843766", null ],
+    [ "_orxDebug_SetLogCallback", "group__orx_debug.html#gab4b5f7a2b785e131090c7d3ba556eade", null ],
     [ "_orxDebug_SetLogFile", "group__orx_debug.html#ga624ce02bb92e42e3f9e61e86b46cc172", null ]
 ];

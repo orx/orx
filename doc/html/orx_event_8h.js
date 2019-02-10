@@ -1,6 +1,9 @@
 var orx_event_8h =
 [
+    [ "orxEVENT_GET_FLAG", "group__orx_event.html#ga7ba6a099c034c590b2e6adb364510dfd", null ],
     [ "orxEVENT_INIT", "group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf", null ],
+    [ "orxEVENT_KU32_FLAG_ID_NONE", "group__orx_event.html#ga698547d801a1bd663403c5388b191da0", null ],
+    [ "orxEVENT_KU32_MASK_ID_ALL", "group__orx_event.html#ga024045cd7a6a30e8eedd27ee92d52826", null ],
     [ "orxEVENT_SEND", "group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607", null ],
     [ "orxEVENT_HANDLER", "group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5", null ],
     [ "orxEVENT_TYPE", "group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8", [
@@ -37,5 +40,6 @@ var orx_event_8h =
     [ "orxEvent_RemoveHandlerWithContext", "group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5", null ],
     [ "orxEvent_Send", "group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8", null ],
     [ "orxEvent_SendShort", "group__orx_event.html#ga2305585afe32179ee80f9277892d555d", null ],
+    [ "orxEvent_SetHandlerIDFlags", "group__orx_event.html#ga6a6dee64c647bc2ca1ed9d6172dff75c", null ],
     [ "orxEvent_Setup", "group__orx_event.html#ga3d093133b3664650417542f56e95f322", null ]
 ];

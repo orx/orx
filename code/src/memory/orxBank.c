@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -376,7 +376,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
     orxBOOL bFound;
 
     /* For all map parts */
-    for(u32BitIndex = 0, u32MapPartIndex = 0, bFound = orxFALSE; !bFound && (u32MapPartIndex < (orxU32)_pstBank->u16SizeSegmentBitField); u32MapPartIndex++)
+    for(u32BitIndex = 0, u32MapPartIndex = 0, bFound = orxFALSE; u32MapPartIndex < (orxU32)_pstBank->u16SizeSegmentBitField; u32MapPartIndex++)
     {
       orxU32 u32MapPartValue;
 

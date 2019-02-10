@@ -10,6 +10,7 @@ var orx_file_8h =
     [ "orxFILE_KU32_FLAG_OPEN_WRITE", "group__orx_file.html#ga2c82721c615d262bd4595d52909b6d26", null ],
     [ "orxFILE", "group__orx_file.html#ga5805808ea6ca32b9b4f559ca6ad96c82", null ],
     [ "orxFile_Close", "group__orx_file.html#ga8e45150c5019dc189069413c4ced085b", null ],
+    [ "orxFile_Delete", "group__orx_file.html#ga360a1b530115d4a1d3d4361ebb2f0b49", null ],
     [ "orxFile_Exists", "group__orx_file.html#ga784ed4314bd3c15827cf819acf2845bf", null ],
     [ "orxFile_Exit", "group__orx_file.html#ga17da9576f2412f099656dd62e02076c6", null ],
     [ "orxFile_FindClose", "group__orx_file.html#gaf9175eb2f39f2e2a1d60250b8c2bdd81", null ],

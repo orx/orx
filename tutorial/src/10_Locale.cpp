@@ -47,9 +47,6 @@
  * an argc/argv style parameter list that contains the executable name, otherwise the default loaded config file will be
  * orx.ini instead of being based on our executable name (ie. 10_Locale.ini).
  *
- * For visual studio users (windows), it can easily be achieved by writing a WinMain() function instead of main(),
- * and by getting the executable name (or hardcoding it).
- *
  * This tutorial simply display orx's logo and a localized legend. Press space to cycle through
  * all the availables languages for the legend's text.
  *
@@ -298,18 +295,3 @@ int main(int argc, char **argv)
   // Done!
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Game::Init, Game::Run, Game::Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

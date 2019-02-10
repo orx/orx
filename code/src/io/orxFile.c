@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -984,7 +984,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
       orxCHAR acBuffer[orxFILE_KU32_BUFFER_SIZE];
 
       /* Is local buffer big enough? */
-      if((orxU32)(zBaseName - _zFileName - 1) < sizeof(acBuffer) - 1)
+      if((orxU32)(zBaseName - _zFileName - 1) < (orxU32)sizeof(acBuffer) - 1)
       {
         /* Copies path locally */
         acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", zBaseName - _zFileName - 1, _zFileName)] = orxCHAR_NULL;
@@ -1050,6 +1050,27 @@ orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize,
 
   /* Returns the number of read elements */
   return s64Ret;
+}
+
+/** Deletes a file
+ * @param[in] _zFileName           Full file's path to delete
+ * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxFile_Delete(const orxSTRING _zFileName)
+{
+  orxSTATUS eResult;
+
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Checks inputs */
+  orxASSERT(_zFileName != orxNULL);
+
+  /* Deletes it */
+  eResult = (remove(_zFileName) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Seeks to a position in the given file

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,10 +52,11 @@
  */
 #define orxGRAPHIC_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x20000000  /**< Has color flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x40000000  /**< Has pivot flag  */
-#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x80000000  /**< Relative pivot flag */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE       0x40000000  /**< Has color flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x80000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x01000000  /**< Relative pivot flag */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x02000000  /**< Smoothing on flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x04000000  /**< Smoothing off flag  */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
@@ -330,7 +331,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
  */
 static orxINLINE void orxGraphic_DeleteAll()
 {
-  register orxGRAPHIC *pstGraphic;
+  orxGRAPHIC *pstGraphic;
 
   /* Gets first graphic */
   pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
@@ -387,6 +388,9 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxGraphic_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxGRAPHIC_KU32_BANK_SIZE, orxNULL);
 
@@ -475,6 +479,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create()
 
     /* Clears its color */
     orxGraphic_ClearColor(pstGraphic);
+
+    /* Clears its blend mode */
+    orxGraphic_ClearBlendMode(pstGraphic);
 
     /* Sets its repeat value to default */
     orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
@@ -792,57 +799,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has blend mode? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
         {
-          const orxSTRING       zBlendMode;
-          orxDISPLAY_BLEND_MODE eBlendMode;
-
-          /* Gets blend mode value */
-          zBlendMode = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE);
-          eBlendMode = orxDisplay_GetBlendModeFromString(zBlendMode);
-
-          /* Depending on blend mode */
-          switch(eBlendMode)
-          {
-            case orxDISPLAY_BLEND_MODE_ALPHA:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_MULTIPLY:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_ADD:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_PREMUL:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
-
-              break;
-            }
-
-            default:
-            {
-            }
-          }
-        }
-        else
-        {
-          /* Defaults to alpha */
-          u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+          /* Sets blend mode */
+          orxGraphic_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE)));
         }
 
         /* Stores its reference key */
@@ -939,7 +897,7 @@ const orxSTRING orxFASTCALL orxGraphic_GetName(const orxGRAPHIC *_pstGraphic)
  */
 orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *_pstData)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
@@ -1636,11 +1594,16 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
       break;
     }
 
-    default:
+    case orxDISPLAY_BLEND_MODE_NONE:
     {
       /* Updates status */
       orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
 
+      break;
+    }
+
+    default:
+    {
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
 
@@ -1648,8 +1611,53 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
     }
   }
 
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates its flag */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE, orxGRAPHIC_KU32_FLAG_NONE);
+  }
+
   /* Done! */
   return eResult;
+}
+
+/** Clears graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_ClearBlendMode(orxGRAPHIC *_pstGraphic)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE | orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Graphic has blend mode accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxGraphic_HasBlendMode(const orxGRAPHIC *_pstGraphic)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets graphic blend mode
@@ -1664,49 +1672,61 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Depending on blend flags */
-  switch(orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL))
+  /* Has blendmode? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE))
   {
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA:
+    /* Depending on blend flags */
+    switch(orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL))
     {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_ALPHA;
 
-      break;
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_PREMUL;
+
+        break;
+      }
+
+      default:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_NONE;
+
+        break;
+      }
     }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Blend mode not set on graphic.");
 
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
-
-      break;
-    }
-
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ADD;
-
-      break;
-    }
-
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
-
-      break;
-    }
-
-    default:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_NONE;
-
-      break;
-    }
-}
+    /* Clears result */
+    eResult = orxDISPLAY_BLEND_MODE_NONE;
+  }
 
   /* Done! */
   return eResult;

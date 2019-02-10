@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxMouse
- * 
+ *
  * Mouse plugin module
  * Plugin module that handles mouse-like peripherals
  *
@@ -46,6 +46,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 #include "math/orxVector.h"
+#include "utils/orxString.h"
 
 
 /** Button enum
@@ -57,6 +58,9 @@ typedef enum __orxMOUSE_BUTTON_t
   orxMOUSE_BUTTON_MIDDLE,
   orxMOUSE_BUTTON_EXTRA_1,
   orxMOUSE_BUTTON_EXTRA_2,
+  orxMOUSE_BUTTON_EXTRA_3,
+  orxMOUSE_BUTTON_EXTRA_4,
+  orxMOUSE_BUTTON_EXTRA_5,
   orxMOUSE_BUTTON_WHEEL_UP,
   orxMOUSE_BUTTON_WHEEL_DOWN,
   orxMOUSE_BUTTON_NUMBER,
@@ -102,9 +106,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_Init();
 extern orxDLLAPI void orxFASTCALL             orxMouse_Exit();
 
 /** Sets mouse position
-* @param[in] _pvPosition  Mouse position
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+ * @param[in] _pvPosition  Mouse position
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_SetPosition(const orxVECTOR *_pvPosition);
 
 /** Gets mouse position
@@ -115,7 +119,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxMouse_GetPosition(orxVECTOR *_p
 
 /** Is mouse button pressed?
  * @param[in] _eButton          Mouse button to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 
@@ -130,10 +134,17 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxMouse_GetMoveDelta(orxVECTOR *_
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxMouse_GetWheelDelta();
 
-/** Shows mouse cursor
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+/** Shows mouse (hardware) cursor
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_ShowCursor(orxBOOL _bShow);
+
+/** Sets mouse (hardware) cursor
+ * @param[in] _zName       Cursor's name can be: a standard name (arrow, ibeam, hand, crosshair, hresize or vresize), a file name or orxNULL to reset the hardware cursor to default
+ * @param[in] _pvPivot     Cursor's pivot (aka hotspot), orxNULL will default to (0, 0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR *_pvPivot);
 
 /** Gets button literal name
  * @param[in] _eButton          Concerned button

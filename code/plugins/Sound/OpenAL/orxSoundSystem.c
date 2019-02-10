@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -182,8 +182,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
       orxBOOL                 bStopping     : 1;
       orxBOOL                 bPause        : 1;
       orxS32                  s32PacketID;
-      orxFLOAT                fCursor;
-      orxFLOAT                fSetCursor;
+      orxFLOAT                fTime;
+      orxFLOAT                fSetTime;
       orxSOUNDSYSTEM_DATA     stData;
 
       ALuint                  auiBufferList[0];
@@ -564,7 +564,7 @@ static orxINLINE void orxSoundSystem_OpenAL_Rewind(orxSOUNDSYSTEM_DATA *_pstData
   return;
 }
 
-static orxINLINE void orxSoundSystem_OpenAL_Seek(orxSOUNDSYSTEM_DATA *_pstData, orxFLOAT _fCursor)
+static orxINLINE void orxSoundSystem_OpenAL_Seek(orxSOUNDSYSTEM_DATA *_pstData, orxFLOAT _fTime)
 {
   /* Checks */
   orxASSERT(_pstData != orxNULL);
@@ -576,7 +576,7 @@ static orxINLINE void orxSoundSystem_OpenAL_Seek(orxSOUNDSYSTEM_DATA *_pstData, 
     if(_pstData->vorbis.pstFile != orxNULL)
     {
       /* Seeks position */
-      stb_vorbis_seek(_pstData->vorbis.pstFile, orxF2U(_fCursor * orxU2F(_pstData->stInfo.u32SampleRate)));
+      stb_vorbis_seek(_pstData->vorbis.pstFile, orxF2U(_fTime * orxU2F(_pstData->stInfo.u32SampleRate)));
     }
   }
   /* sndfile */
@@ -586,7 +586,7 @@ static orxINLINE void orxSoundSystem_OpenAL_Seek(orxSOUNDSYSTEM_DATA *_pstData, 
     if(_pstData->sndfile.pstFile != orxNULL)
     {
       /* Seeks position */
-      sf_seek(_pstData->sndfile.pstFile, orxF2U(_fCursor * orxU2F(_pstData->stInfo.u32SampleRate)), SEEK_SET);
+      sf_seek(_pstData->sndfile.pstFile, orxF2U(_fTime * orxU2F(_pstData->stInfo.u32SampleRate)), SEEK_SET);
     }
   }
 
@@ -620,6 +620,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_FreeSample(void *_pContext)
   /* Deletes sample  */
   orxBank_Free(sstSoundSystem.pstSampleBank, pstSample);
 
+  /* Tracks audio memory */
+  orxMEMORY_TRACK(AUDIO, pstSample->stData.stInfo.u32ChannelNumber * pstSample->stData.stInfo.u32FrameNumber * sizeof(orxS16), orxFALSE);
+
   /* Done! */
   return eResult;
 }
@@ -632,15 +635,15 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
   /* Valid? */
   if(_pstSound->fDuration != orxFLOAT_0)
   {
-    /* Has set cursor? */
-    if(_pstSound->fSetCursor != orxFLOAT_0)
+    /* Has set time? */
+    if(_pstSound->fSetTime != orxFLOAT_0)
     {
       /* Seeks position */
-      orxSoundSystem_OpenAL_Seek(&(_pstSound->stData), _pstSound->fSetCursor);
+      orxSoundSystem_OpenAL_Seek(&(_pstSound->stData), _pstSound->fSetTime);
 
-      /* Updates cursors */
-      _pstSound->fCursor = _pstSound->fSetCursor;
-      _pstSound->fSetCursor = orxFLOAT_0;
+      /* Updates times */
+      _pstSound->fTime = _pstSound->fSetTime;
+      _pstSound->fSetTime = orxFLOAT_0;
     }
 
     /* Not stopped? */
@@ -712,7 +715,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         /* Clears payload */
         orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
-        /* Stores recording name */
+        /* Stores name */
         stPayload.stStream.zSoundName = _pstSound->zReference;
 
         /* Stores stream info */
@@ -738,7 +741,7 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           stPayload.stStream.stPacket.as16SampleList  = sstSoundSystem.as16StreamBuffer;
           stPayload.stStream.stPacket.bDiscard        = orxFALSE;
           stPayload.stStream.stPacket.s32ID           = _pstSound->s32PacketID++;
-          stPayload.stStream.stPacket.fCursor         = _pstSound->fCursor;
+          stPayload.stStream.stPacket.fTime           = _pstSound->fTime;
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound, orxNULL, &stPayload);
@@ -757,8 +760,8 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
               alSourceQueueBuffers(_pstSound->uiSource, 1, &puiBufferList[i]);
               alASSERT();
 
-              /* Updates cursor */
-              _pstSound->fCursor += orxU2F(stPayload.stStream.stPacket.u32SampleNumber) / (orxU2F(_pstSound->stData.stInfo.u32ChannelNumber) * orxU2F(_pstSound->stData.stInfo.u32SampleRate));
+              /* Updates time */
+              _pstSound->fTime += orxU2F(stPayload.stStream.stPacket.u32SampleNumber) / (orxU2F(_pstSound->stData.stInfo.u32ChannelNumber) * orxU2F(_pstSound->stData.stInfo.u32SampleRate));
 
               /* End of file? */
               if(u32FrameNumber < u32BufferFrameNumber)
@@ -787,8 +790,8 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
               /* Rewinds file */
               orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
 
-              /* Resets cursor */
-              _pstSound->fCursor = orxFLOAT_0;
+              /* Resets time */
+              _pstSound->fTime = orxFLOAT_0;
 
               /* Not looping? */
               if(_pstSound->bLoop == orxFALSE)
@@ -862,8 +865,8 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         /* Rewinds file */
         orxSoundSystem_OpenAL_Rewind(&(_pstSound->stData));
 
-        /* Resets cursor */
-        _pstSound->fCursor = orxFLOAT_0;
+        /* Resets time */
+        _pstSound->fTime = orxFLOAT_0;
 
         /* Gets actual state */
         alGetSourcei(_pstSound->uiSource, AL_SOURCE_STATE, &iState);
@@ -956,10 +959,10 @@ static void orxFASTCALL orxSoundSystem_OpenAL_UpdateRecording(const orxCLOCK_INF
       /* Updates remaining sample number */
       iSampleNumber -= (ALCint)u32PacketSampleNumber;
 
-      /* Updates timestamp and cursor */
+      /* Updates timestamp and time */
       fDT = orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
       sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp += fDT;
-      sstSoundSystem.stRecordingPayload.stStream.stPacket.fCursor += fDT;
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTime += fDT;
     }
 
     /* Updates packet's timestamp */
@@ -1104,6 +1107,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_LoadSampleTask(void *_pContex
       /* Success? */
       if(u32ReadFrameNumber == pstSample->stData.stInfo.u32FrameNumber)
       {
+        /* Tracks audio memory */
+        orxMEMORY_TRACK(AUDIO, u32BufferSize, orxTRUE);
+
         /* Transfers the data */
         alBufferData(uiBuffer, (pstSample->stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)pstSample->stData.stInfo.u32SampleRate);
         alASSERT();
@@ -1324,8 +1330,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
         if(sstSoundSystem.poContext != NULL)
         {
           /* Creates banks */
-          sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-          sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
+          sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND) + sstSoundSystem.s32StreamBufferNumber * sizeof(ALuint), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
 
           /* Valid? */
           if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank))
@@ -1368,7 +1374,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_Init()
                 sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
               }
 
-              /* Stores reciprocal dimenstion ratio */
+              /* Stores it */
+              orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
+
+              /* Stores reciprocal dimension ratio */
               sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
               /* Updates status */
@@ -1529,7 +1538,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
       u32BufferSize = _u32FrameNumber * _u32ChannelNumber * sizeof(orxS16);
 
       /* Allocates buffer */
-      if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN)) != orxNULL)
+      if((pBuffer = orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_TEMP)) != orxNULL)
       {
         /* Clears it */
         orxMemory_Zero(pBuffer, u32BufferSize);
@@ -1537,6 +1546,9 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
         /* Generates an OpenAL buffer */
         alGenBuffers(1, (ALuint *)&(pstResult->uiBuffer));
         alASSERT();
+
+        /* Tracks audio memory */
+        orxMEMORY_TRACK(AUDIO, u32BufferSize, orxTRUE);
 
         /* Transfers the data */
         alBufferData(pstResult->uiBuffer, (_u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pBuffer, (ALsizei)u32BufferSize, (ALsizei)_u32SampleRate);
@@ -1818,8 +1830,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStream(orxU32 _u32
       pstResult->bStop      = orxTRUE;
       pstResult->bStopping  = orxFALSE;
       pstResult->s32PacketID= 0;
-      pstResult->fCursor    = orxFLOAT_0;
-      pstResult->fSetCursor = orxFLOAT_0;
+      pstResult->fTime      = orxFLOAT_0;
+      pstResult->fSetTime   = orxFLOAT_0;
 
       /* Adds it to the list */
       orxThread_WaitSemaphore(sstSoundSystem.pstStreamSemaphore);
@@ -1884,8 +1896,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateStreamFromFile(con
         pstResult->bStop      = orxTRUE;
         pstResult->bStopping  = orxFALSE;
         pstResult->s32PacketID= 0;
-        pstResult->fCursor    = orxFLOAT_0;
-        pstResult->fSetCursor = orxFLOAT_0;
+        pstResult->fTime      = orxFLOAT_0;
+        pstResult->fSetTime   = orxFLOAT_0;
 
         /* Generates openAL source */
         alGenSources(1, &(pstResult->uiSource));
@@ -2117,9 +2129,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
           /* Starts capture device */
           alcCaptureStart(sstSoundSystem.poCaptureDevice);
 
-          /* Updates packet's timestamp and cursor */
+          /* Updates packet's timestamp and time */
           sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp  = (orxFLOAT)orxSystem_GetTime();
-          sstSoundSystem.stRecordingPayload.stStream.stPacket.fCursor     = orxFLOAT_0;
+          sstSoundSystem.stRecordingPayload.stStream.stPacket.fTime       = orxFLOAT_0;
 
           /* Updates status */
           orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
@@ -2279,7 +2291,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstS
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetCursor(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fCursor)
+orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetTime(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fTime)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2290,13 +2302,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_SetCursor(orxSOUNDSYSTEM_SOUND *_pst
   /* Stream? */
   if(_pstSound->bIsStream != orxFALSE)
   {
-    /* Sets stream cursor */
-    _pstSound->fSetCursor = _fCursor;
+    /* Sets stream time */
+    _pstSound->fSetTime = _fTime;
   }
   else
   {
-    /* Sets source's cursor */
-    alSourcef(_pstSound->uiSource, AL_SEC_OFFSET, _fCursor);
+    /* Sets source's time */
+    alSourcef(_pstSound->uiSource, AL_SEC_OFFSET, _fTime);
     alASSERT();
   }
 
@@ -2410,7 +2422,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetPitch(const orxSOUNDSYSTEM_SOUND *
   return fResult;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetCursor(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetTime(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -2422,7 +2434,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_OpenAL_GetCursor(const orxSOUNDSYSTEM_SOUND 
   if(_pstSound->bIsStream != orxFALSE)
   {
     /* Updates result */
-    fResult = _pstSound->fCursor;
+    fResult = _pstSound->fTime;
   }
   else
   {
@@ -2687,14 +2699,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_StopRecording, SOUNDSYSTE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetPitch, SOUNDSYSTEM, SET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetCursor, SOUNDSYSTEM, SET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetTime, SOUNDSYSTEM, SET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetPosition, SOUNDSYSTEM, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetPitch, SOUNDSYSTEM, GET_PITCH);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetCursor, SOUNDSYSTEM, GET_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetTime, SOUNDSYSTEM, GET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetPosition, SOUNDSYSTEM, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_OpenAL_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);

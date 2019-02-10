@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -83,13 +83,14 @@
 
   typedef char                    orxCHAR;
   #define orxSTRING               orxCHAR *
+  typedef orxU32                  orxSTRINGID;
 
   typedef orxU32                  orxENUM;
 
   #define orx2F(V)                ((orxFLOAT)(V))
   #define orx2D(V)                ((orxDOUBLE)(V))
 
-  #define orxENUM_NONE            0xFFFFFFFFL
+  #define orxENUM_NONE            0xFFFFFFFF
 
   /* Compiler specific */
   #ifdef __orxGCC__
@@ -153,13 +154,14 @@
 
     typedef char                  orxCHAR;
     #define orxSTRING             orxCHAR *
+    typedef orxU32                orxSTRINGID;
 
     typedef orxU32                orxENUM;
 
     #define orx2F(V)              ((orxFLOAT)(V))
     #define orx2D(V)              ((orxDOUBLE)(V))
 
-    #define orxENUM_NONE          0xFFFFFFFFL
+    #define orxENUM_NONE          0xFFFFFFFF
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
@@ -203,6 +205,7 @@ static const orxU32               orxU32_UNDEFINED      = (orxU32)(-1);
 static const orxU16               orxU16_UNDEFINED      = (orxU16)(-1);
 static const orxU8                orxU8_UNDEFINED       = (orxU8)(-1);
 static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
+static const orxSTRINGID          orxSTRINGID_UNDEFINED = (orxSTRINGID)(-1);
 
 
 /* *** String & character constants *** */

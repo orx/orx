@@ -7,15 +7,18 @@ REBOL [
 
 ; Variables
 source: %../template/
-template: {[orx]}
 extern: %../../../extern/
-params: reduce [
-  'name       {Project name, relative or full path}   _
+params: [
+   name       {Project name (relative or full path)}   _
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2013} {vs2015} {vs2017}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
   {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
   {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+]
+templates: [
+  name
+  code-path
 ]
 
 ; Helpers
@@ -42,14 +45,21 @@ log: func [
   ]
   either no-break [prin message] [print/eval message]
 ]
+to-template: func [
+  {Gets template literal}
+  name [word! string!]
+] [
+  rejoin [{[} name {]}]
+]
 
 ; Inits
+change-dir root: system/options/path
+code-path: {..}
 switch platform: lowercase to-string system/platform/1 [
-  {macintosh} [platform: {mac}]
+  {macintosh} [platform: {mac} code-path: to-local-file root/code]
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
-change-dir root: system/options/path
 
 ; Usage
 usage: func [
@@ -78,18 +88,30 @@ either system/options/args [
   either (length? system/options/args) > ((length? params) / 3) [
     usage/message [{Too many arguments:} mold system/options/args]
   ] [
-    use [arg] [
-      arg: system/options/args
+    use [interactive? arg] [
+      if interactive?: zero? length? arg: system/options/args [
+        print {== No argument, switching to interactive mode}
+      ]
       foreach [param desc default] params [
-        either tail? arg [
-          either default [
+        case [
+          not tail? arg [
+            set param arg/1
+            arg: next arg
+          ]
+          interactive? [
+            loop-until [
+              any [
+                not empty? set param trim ask rejoin [{ * } desc {? }]
+                set param default
+              ]
+            ]
+          ]
+          default [
             set param default
-          ] [
+          ]
+          true [
             usage/message [{Not enough arguments:} mold system/options/args]
           ]
-        ] [
-          set param arg/1
-          arg: next arg
         ]
       ]
     ]
@@ -115,7 +137,7 @@ if dir? name: clean-path to-rebol-file name [clear back tail name]
 
 ; Inits project directory
 either exists? name [
-  log [{[} to-local-file name {] already exists, overriding!}]
+  log [{[} to-local-file name {] already exists, overwriting!}]
 ] [
   make-dir/deep name
 ]
@@ -133,7 +155,7 @@ eval copy-files: func [
 ] [
   foreach file read from [
     src: from/:file
-    dst: replace to/:file template name
+    dst: replace to/:file to-template 'name name
     if file = %build/ [
       set 'build dst
     ]
@@ -142,7 +164,11 @@ eval copy-files: func [
       copy-files src dst
     ] [
       log/only [{  +} to-local-file dst]
-      write dst replace/all read src template name
+      buffer: read src
+      foreach template templates [
+        replace/all buffer to-template template get template
+      ]
+      write dst buffer
     ]
   ]
 ] source name
@@ -157,7 +183,7 @@ if build [
     log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
       log/only [{  *} config]
-      call/shell/wait reform [to-local-file clean-path platform-info/premake config]
+      call/shell/wait rejoin [{"} to-local-file clean-path platform-info/premake {" } config]
     ]
   ]
 ]

@@ -276,7 +276,8 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7ab115afa2d7d68f8d9aa0c00ade6510b5">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_GET_AXIS_VALUE</a>, 
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED</a>, 
+<a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER</a>, 
 <a class="el" href="group__orx_plugin.html#gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01">orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
@@ -285,14 +286,15 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT</a> = 0, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED</a>, 
-<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab016aa54cfa2a1c0f2c0566ea582d31b">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faa97456f5eb1af71fe153aeb6d0af3d143">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faac0796031a5c898079f75ebd3089d9458">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER</a>, 
 <a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faabcb4ec884c1904f969926ef13519220a">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_SHOW</a>, 
-<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER</a>, 
+<a class="el" href="group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faaa6618eed1d087696ca51d13f35d377b8">orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:ga25158caaf5e4db6702d80d3c73b945fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -333,44 +335,47 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5a27b9c2ae05fd8cf0cf050fb4d54d70">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa69fbcc19ab9abe0f9d1328e9fd629833">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_FIXED_ROTATION</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa4acf5ac6100cd2b01ce82b4586fb6386">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_DYNAMIC</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa94d41306052f3171fd4a7fc7b84d3279">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ALLOW_MOVING</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa01517346f0a5f90ee94e801aaa399648">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ROTATION</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa500767375cba78f76af4b04db1680e6c">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa838b852881ab17f337251ea9179168aa">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_SPEED_AT_WORLD_POSITION</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3aba8832f5d8e591b618f342d03ba646">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_VELOCITY</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3aba8832f5d8e591b618f342d03ba646">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_VELOCITY</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae591ffcada284f5b50d3111624843314">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_CUSTOM_GRAVITY</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa2dc0599fd02bff04463c29fa5c7bde36">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_FIXED_ROTATION</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa2dc0599fd02bff04463c29fa5c7bde36">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_FIXED_ROTATION</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faa6357e5200935495237ccb148490b32d">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_MASS</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa79a384e8031cde3fe5d4887755c8328a">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_MASS_CENTER</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa79a384e8031cde3fe5d4887755c8328a">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_MASS_CENTER</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa6cf2831f29b6357703cd3eed88843bd9">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_LINEAR_DAMPING</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa0926f217eff623f979df70ccd848cfae">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_DAMPING</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa0926f217eff623f979df70ccd848cfae">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_DAMPING</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa1f27d6d791d07962a044655585034a46">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_LINEAR_DAMPING</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5e0c2221ed3ea190eee29bf9ceb6a50a">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_DAMPING</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa5e0c2221ed3ea190eee29bf9ceb6a50a">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ANGULAR_DAMPING</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa118589bf28aa7989e02ca31b10508328">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_APPLY_TORQUE</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fad7f49d7bcaf6e1f87bd039b50f100493">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_APPLY_FORCE</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fad7f49d7bcaf6e1f87bd039b50f100493">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_APPLY_FORCE</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa54aed1c0ca9abd112e63eed88d8b6277">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_APPLY_IMPULSE</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faec36f4572d821f244039db3f3094c0fb">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SELF_FLAGS</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faec36f4572d821f244039db3f3094c0fb">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SELF_FLAGS</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3c4b5fa73db60d80e7711cc503fbf4b2">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_CHECK_MASK</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa1089d3fb9ea2cbd86833acff41d11b13">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_SELF_FLAGS</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa1089d3fb9ea2cbd86833acff41d11b13">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_SELF_FLAGS</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faae3c4f70d44eccfe4c9d26fb84968425">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_CHECK_MASK</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa45f55d771edef59966f5d5421a017552">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_PART_SOLID</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa45f55d771edef59966f5d5421a017552">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_PART_SOLID</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa9aa56496367d7eeb92465df7c64856fd">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_SOLID</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae085816e6955b60a3b9ed64f6e641fff">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_MOTOR</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae085816e6955b60a3b9ed64f6e641fff">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_MOTOR</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa07f32ca9754613d30e5b404f85e6b046">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MOTOR_SPEED</a>, 
-<br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3b20b6b9312440f2d77e19eccd39354b">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MAX_MOTOR_TORQUE</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3b20b6b9312440f2d77e19eccd39354b">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MAX_MOTOR_TORQUE</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa8609de992b7c39e2a05ea7c69bd362b6">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_FORCE</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999facfecda94f86238300e594f4c3649aa8e">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_TORQUE</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fac752337ee36cdbf463a21f91065e9ce6">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_RAYCAST</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faab1dbf6ba119ff677f292f5863e013e1">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_SIMULATION</a>, 
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999facfecda94f86238300e594f4c3649aa8e">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_TORQUE</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fac752337ee36cdbf463a21f91065e9ce6">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_RAYCAST</a>, 
+<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faab1dbf6ba119ff677f292f5863e013e1">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_SIMULATION</a>, 
 <a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fad17aa31612eb3d6a50299197f2e4757e">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NUMBER</a>, 
-<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7144145763d2c913da38ec1cfdc1e436">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE</a> = orxENUM_NONE
+<br />
+&#160;&#160;<a class="el" href="group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7144145763d2c913da38ec1cfdc1e436">orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:gafc2c82a23f06f10aee546a81239c999f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -409,7 +414,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bac17c3f647c9c202c57d211554cad3cd7">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_HAS_RECORDING_SUPPORT</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baf132e67c0f22b457cd73f04221d9da5a">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_VOLUME</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba70be4982dd207dc353491b704676ee50">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_PITCH</a>, 
-<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba04a9119e96291f4876947092d654db43">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_CURSOR</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baea1184ac7561b457e22c1cc85897ed2c">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_TIME</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba7ccb7f7fd5837d332ec5f77ef78d73d2">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_POSITION</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4436ee95f3203ab9bcb8a5b4458ae6a3">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_ATTENUATION</a>, 
@@ -418,7 +423,7 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba247f44c2212aa056834c1d8a81b75576">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_VOLUME</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba1c3e15d578c12838fb838eaa2c08ad30">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_PITCH</a>, 
-<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba28f91de8cc7f8e2e78b8637e1ffb396f">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_CURSOR</a>, 
+<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba3a9b43286f1c10046241d6dfd6af9cde">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_TIME</a>, 
 <a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117baa32ed62e1b6427ee639b76ffccf633b9">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_POSITION</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba3276277e80e91197ca97e672aa3d6e3a">orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_ATTENUATION</a>, 
@@ -533,9 +538,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">if</span>(u32UserPluginFunctionCount &lt; u32UserPluginFunctionMaxNumber) \</div><div class="line">  { \</div><div class="line">    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].pfnFunction   = (<a class="code" href="group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24">orxPLUGIN_FUNCTION</a>) FUNCTION; \</div><div class="line">    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].eFunctionID   = FUNCTION_ID; \</div><div class="line">    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionName = #NAME; \</div><div class="line">    orxString_NCopy(pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionArgs, ARGS, <a class="code" href="group__orx_plugin.html#gaa6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a> - 1); \</div><div class="line">    pstUserPluginFunctionInfo[u32UserPluginFunctionCount].zFunctionArgs[<a class="code" href="group__orx_plugin.html#gaa6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a> - 1] = <a class="code" href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a>; \</div><div class="line">    u32UserPluginFunctionCount++; \</div><div class="line">  } \</div><div class="line">  else \</div><div class="line">  { \</div><div class="line">    <span class="comment">/* Logs message */</span> \</div><div class="line">    orxDEBUG_PRINT(<a class="code" href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, <span class="stringliteral">&quot;Maximum number of plugin functions reached.&quot;</span>); \</div><div class="line">  }</div><div class="ttc" id="group__orx_plugin_html_gaa6c1f8c5e57881b220104ade34166944"><div class="ttname"><a href="group__orx_plugin.html#gaa6c1f8c5e57881b220104ade34166944">orxPLUGIN_KU32_FUNCTION_ARG_SIZE</a></div><div class="ttdeci">#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE</div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_type_8h_source.html#l00061">orxPluginType.h:61</a></div></div>
-<div class="ttc" id="group__orx_debug_html_ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02"><div class="ttname"><a href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_debug_8h_source.html#l00346">orxDebug.h:346</a></div></div>
+<div class="ttc" id="group__orx_debug_html_ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02"><div class="ttname"><a href="group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_debug_8h_source.html#l00101">orxDebug.h:101</a></div></div>
 <div class="ttc" id="group__orx_plugin_html_gae61dd662dec45e388aab60f29f4a6c24"><div class="ttname"><a href="group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24">orxPLUGIN_FUNCTION</a></div><div class="ttdeci">orxSTATUS(orxFASTCALL * orxPLUGIN_FUNCTION)()</div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_type_8h_source.html#l00098">orxPluginType.h:98</a></div></div>
-<div class="ttc" id="group__orx_type_html_gad58b3d9f4ca60582629662f36c5a7b6c"><div class="ttname"><a href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a></div><div class="ttdeci">#define orxCHAR_NULL</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00214">orxType.h:214</a></div></div>
+<div class="ttc" id="group__orx_type_html_gad58b3d9f4ca60582629662f36c5a7b6c"><div class="ttname"><a href="group__orx_type.html#gad58b3d9f4ca60582629662f36c5a7b6c">orxCHAR_NULL</a></div><div class="ttdeci">#define orxCHAR_NULL</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00217">orxType.h:217</a></div></div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_plugin_user_8h_source.html#l00083">83</a> of file <a class="el" href="orx_plugin_user_8h_source.html">orxPluginUser.h</a>.</p>
 
@@ -663,7 +668,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#ga06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a>(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \</div><div class="line">{                                                       \</div><div class="line">  orxSTATUS eResult;                                    \</div><div class="line">                                                        \</div><div class="line">  <span class="comment">/* Calls entry point function */</span>                      \</div><div class="line">  eResult = ENTRY_FUNCTION();                           \</div><div class="line">                                                        \</div><div class="line">  <span class="comment">/* Updates parameters */</span>                              \</div><div class="line">  *_ps32Number  = 0;                                    \</div><div class="line">  *_ppstInfo    = orxNULL;                              \</div><div class="line">                                                        \</div><div class="line">  <span class="comment">/* Done! */</span>                                           \</div><div class="line">  return eResult;                                       \</div><div class="line">}</div><div class="ttc" id="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o_html"><div class="ttname"><a href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_core_8h_source.html#l00071">orxPluginCore.h:71</a></div></div>
 <div class="ttc" id="group__orx_plugin_html_ga06446ed58fb59ad4b1208ea1281aed1b"><div class="ttname"><a href="group__orx_plugin.html#ga06446ed58fb59ad4b1208ea1281aed1b">orxPLUGIN_K_INIT_FUNCTION_NAME</a></div><div class="ttdeci">#define orxPLUGIN_K_INIT_FUNCTION_NAME</div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_type_8h_source.html#l00073">orxPluginType.h:73</a></div></div>
-<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00243">orxType.h:243</a></div></div>
+<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00246">orxType.h:246</a></div></div>
 <div class="ttc" id="group__orx_decl_html_gab970a40e167e4b5346aec7ae059d8929"><div class="ttname"><a href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a></div><div class="ttdeci">#define orxIMPORT</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00233">orxDecl.h:233</a></div></div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_plugin_user_8h_source.html#l00061">61</a> of file <a class="el" href="orx_plugin_user_8h_source.html">orxPluginUser.h</a>.</p>
@@ -685,7 +690,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL <a class="code" href="group__orx_plugin.html#gadfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME)()  \</div><div class="line">  {                                                                                         \</div><div class="line">    return(<a class="code" href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a>(#FUNCTION_NAME, __FILE__, __LINE__));              \</div><div class="line">  }</div><div class="ttc" id="group__orx_plugin_html_ga9533c138e64ba45a78b4f50fb819a919"><div class="ttname"><a href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a></div><div class="ttdeci">orxDLLAPI void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line)</div></div>
 <div class="ttc" id="group__orx_plugin_html_gadfac864e70947e7dc252dd75fcce8cf9"><div class="ttname"><a href="group__orx_plugin.html#gadfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a></div><div class="ttdeci">#define orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)</div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_core_8h_source.html#l00128">orxPluginCore.h:128</a></div></div>
-<div class="ttc" id="group__orx_decl_html_gae6527efdaa8c25ec0ea370a9acb1c2ba"><div class="ttname"><a href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a></div><div class="ttdeci">#define orxDLLAPI</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00394">orxDecl.h:394</a></div></div>
+<div class="ttc" id="group__orx_decl_html_gae6527efdaa8c25ec0ea370a9acb1c2ba"><div class="ttname"><a href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a></div><div class="ttdeci">#define orxDLLAPI</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00381">orxDecl.h:381</a></div></div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_plugin_core_8h_source.html#l00131">131</a> of file <a class="el" href="orx_plugin_core_8h_source.html">orxPluginCore.h</a>.</p>
 
@@ -760,9 +765,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">};                                                                            \</div><div class="line">  extern <a class="code" href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxU32 *, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **); \</div><div class="line">  extern <a class="code" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> <a class="code" href="group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676">orxPLUGIN_CORE_REGISTER_FUNCTION_NAME</a>(PLUGIN_SUFFIX)()  \</div><div class="line">  {                                                                             \</div><div class="line">    orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX);                                \</div><div class="line">    return;                                                                     \</div><div class="line">  }</div><div class="ttc" id="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o_html"><div class="ttname"><a href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_core_8h_source.html#l00071">orxPluginCore.h:71</a></div></div>
-<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00243">orxType.h:243</a></div></div>
+<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00246">orxType.h:246</a></div></div>
 <div class="ttc" id="group__orx_decl_html_gab970a40e167e4b5346aec7ae059d8929"><div class="ttname"><a href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a></div><div class="ttdeci">#define orxIMPORT</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00233">orxDecl.h:233</a></div></div>
-<div class="ttc" id="group__orx_decl_html_gae6527efdaa8c25ec0ea370a9acb1c2ba"><div class="ttname"><a href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a></div><div class="ttdeci">#define orxDLLAPI</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00394">orxDecl.h:394</a></div></div>
+<div class="ttc" id="group__orx_decl_html_gae6527efdaa8c25ec0ea370a9acb1c2ba"><div class="ttname"><a href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a></div><div class="ttdeci">#define orxDLLAPI</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00381">orxDecl.h:381</a></div></div>
 <div class="ttc" id="group__orx_plugin_html_ga81f3f1728c3da86b79d65c43b78fefee"><div class="ttname"><a href="group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a></div><div class="ttdeci">#define orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(SUFFIX)      </div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_type_8h_source.html#l00083">orxPluginType.h:83</a></div></div>
 <div class="ttc" id="group__orx_plugin_html_ga87c12bc67d2607a888c7d01cb1199676"><div class="ttname"><a href="group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676">orxPLUGIN_CORE_REGISTER_FUNCTION_NAME</a></div><div class="ttdeci">#define orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)</div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin___core_define_8h_source.html#l00048">orxPlugin_CoreDefine.h:48</a></div></div>
 </div><!-- fragment -->
@@ -1021,10 +1026,10 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \</div><div class="line">  extern <a class="code" href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a> orxDLLEXPORT <a class="code" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> <a class="code" href="group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a>(PLUGIN_SUFFIX)(orxS32 *_ps32Number, <a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a> **_ppstInfo) \</div><div class="line">  { \</div><div class="line">    orxSTATUS eResult = <a class="code" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a>; \</div><div class="line">    orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);</div><div class="ttc" id="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o_html"><div class="ttname"><a href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_core_8h_source.html#l00071">orxPluginCore.h:71</a></div></div>
-<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00243">orxType.h:243</a></div></div>
+<div class="ttc" id="group__orx_type_html_ga18b11c4d0ed79ac2f8542e3bcfac340d"><div class="ttname"><a href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a></div><div class="ttdeci">orxSTATUS</div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00246">orxType.h:246</a></div></div>
 <div class="ttc" id="group__orx_decl_html_gab970a40e167e4b5346aec7ae059d8929"><div class="ttname"><a href="group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929">orxIMPORT</a></div><div class="ttdeci">#define orxIMPORT</div><div class="ttdef"><b>Definition:</b> <a href="orx_decl_8h_source.html#l00233">orxDecl.h:233</a></div></div>
 <div class="ttc" id="group__orx_plugin_html_ga81f3f1728c3da86b79d65c43b78fefee"><div class="ttname"><a href="group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee">orxPLUGIN_K_CORE_INIT_FUNCTION_NAME</a></div><div class="ttdeci">#define orxPLUGIN_K_CORE_INIT_FUNCTION_NAME(SUFFIX)      </div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_type_8h_source.html#l00083">orxPluginType.h:83</a></div></div>
-<div class="ttc" id="group__orx_type_html_gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29"><div class="ttname"><a href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00246">orxType.h:246</a></div></div>
+<div class="ttc" id="group__orx_type_html_gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29"><div class="ttname"><a href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340daa6e69ea5eed3a5ce25b8d3aed7d24e29">orxSTATUS_SUCCESS</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_type_8h_source.html#l00249">orxType.h:249</a></div></div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_plugin_user_8h_source.html#l00117">117</a> of file <a class="el" href="orx_plugin_user_8h_source.html">orxPluginUser.h</a>.</p>
 
@@ -1120,7 +1125,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">{ \</div><div class="line">  orxU32 u32UserPluginFunctionCount = 0; \</div><div class="line">  orxU32 u32UserPluginFunctionMaxNumber = <span class="keyword">sizeof</span>(STRUCTURE) / <span class="keyword">sizeof</span>(<a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a>); \</div><div class="line">  orxPLUGIN_USER_FUNCTION_INFO *pstUserPluginFunctionInfo = STRUCTURE; <a class="code" href="group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b">\</a></div><div class="line"><a class="code" href="group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b">  orxMemory_Zero</a>(pstUserPluginFunctionInfo, u32UserPluginFunctionMaxNumber * <span class="keyword">sizeof</span>(<a class="code" href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a>));</div><div class="ttc" id="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o_html"><div class="ttname"><a href="structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html">orxPLUGIN_USER_FUNCTION_INFO</a></div><div class="ttdef"><b>Definition:</b> <a href="orx_plugin_core_8h_source.html#l00071">orxPluginCore.h:71</a></div></div>
-<div class="ttc" id="group__orx_memory_html_ga7f70ead10f92ac27e0634d35f4e3b67b"><div class="ttname"><a href="group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b">orxMemory_Zero</a></div><div class="ttdeci">static orxINLINE void * orxMemory_Zero(void *_pDest, orxU32 _u32Size)</div><div class="ttdef"><b>Definition:</b> <a href="orx_memory_8h_source.html#l00221">orxMemory.h:221</a></div></div>
+<div class="ttc" id="group__orx_memory_html_ga7f70ead10f92ac27e0634d35f4e3b67b"><div class="ttname"><a href="group__orx_memory.html#ga7f70ead10f92ac27e0634d35f4e3b67b">orxMemory_Zero</a></div><div class="ttdeci">static orxINLINE void * orxMemory_Zero(void *_pDest, orxU32 _u32Size)</div><div class="ttdef"><b>Definition:</b> <a href="orx_memory_8h_source.html#l00210">orxMemory.h:210</a></div></div>
 </div><!-- fragment -->
 <p>Definition at line <a class="el" href="orx_plugin_user_8h_source.html#l00099">99</a> of file <a class="el" href="orx_plugin_user_8h_source.html">orxPluginUser.h</a>.</p>
 
@@ -1323,6 +1328,8 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a1e52316c94af4ff5125fbd0e087467dd"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_BUTTON_PRESSED&#160;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a910a59fa7347d32da6a5c7490d493ea2"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_IS_CONNECTED&#160;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a5243d739abb01f0097d85e9ad6f1de38"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga59e301081bf23fee7f474326141f0bc7a33945bbb1de1c90654e4263d9aa4dc01"></a>orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE&#160;</td><td class="fielddoc">
@@ -1348,6 +1355,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faace9b014f05f259bb2ea8136b2847d335"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faa89d812c992a77cefe7091fd1060a031c"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faab016aa54cfa2a1c0f2c0566ea582d31b"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga25158caaf5e4db6702d80d3c73b945faa24054f0da10f3a043c8e490d6c17b194"></a>orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY&#160;</td><td class="fielddoc">
 </td></tr>
@@ -1444,6 +1453,10 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggafc2c82a23f06f10aee546a81239c999fa5a27b9c2ae05fd8cf0cf050fb4d54d70"></a>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggafc2c82a23f06f10aee546a81239c999fa69fbcc19ab9abe0f9d1328e9fd629833"></a>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_FIXED_ROTATION&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggafc2c82a23f06f10aee546a81239c999fa4acf5ac6100cd2b01ce82b4586fb6386"></a>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_DYNAMIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggafc2c82a23f06f10aee546a81239c999fa94d41306052f3171fd4a7fc7b84d3279"></a>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ALLOW_MOVING&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggafc2c82a23f06f10aee546a81239c999fa98cd6b814651f54a93be49e18c6c03b7"></a>orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION&#160;</td><td class="fielddoc">
 </td></tr>
@@ -1589,7 +1602,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba70be4982dd207dc353491b704676ee50"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_PITCH&#160;</td><td class="fielddoc">
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba04a9119e96291f4876947092d654db43"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_CURSOR&#160;</td><td class="fielddoc">
+<tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117baea1184ac7561b457e22c1cc85897ed2c"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_TIME&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba7ccb7f7fd5837d332ec5f77ef78d73d2"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_POSITION&#160;</td><td class="fielddoc">
 </td></tr>
@@ -1603,7 +1616,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba1c3e15d578c12838fb838eaa2c08ad30"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_PITCH&#160;</td><td class="fielddoc">
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba28f91de8cc7f8e2e78b8637e1ffb396f"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_CURSOR&#160;</td><td class="fielddoc">
+<tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117ba3a9b43286f1c10046241d6dfd6af9cde"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_TIME&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga52930271b93c1ba2aaad22d49a86117baa32ed62e1b6427ee639b76ffccf633b9"></a>orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_GET_POSITION&#160;</td><td class="fielddoc">
 </td></tr>

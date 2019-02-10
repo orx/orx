@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -95,8 +95,8 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 20 */
-  void                       *pContext;         /**< Clock function context : 24 */
+  void                       *pContext;         /**< Clock function context : 20 */
+  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 24 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 28 */
 
 } orxCLOCK_FUNCTION_STORAGE;
@@ -225,9 +225,9 @@ static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE
  */
 static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
 {
-  register const orxCLOCK_MOD_TYPE *peModType;
-  register const orxFLOAT          *pfModValue;
-  register orxFLOAT                 fResult;
+  const orxCLOCK_MOD_TYPE *peModType;
+  const orxFLOAT          *pfModValue;
+  orxFLOAT                 fResult;
 
   /* Using global one? */
   if(_pstClockInfo == orxNULL)
@@ -1604,20 +1604,19 @@ orxSTATUS orxFASTCALL orxClock_AddTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNC
 
 /** Removes a timer function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)
 {
   orxCLOCK_TIMER_STORAGE *pstTimerStorage;
-  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+  orxSTATUS               eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
 
   /* For all stored timers */
   for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList));
@@ -1625,7 +1624,8 @@ orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_F
       pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode)))
   {
     /* Matches criteria? */
-    if((pstTimerStorage->pfnCallback == _pfnCallback)
+    if(((_pfnCallback == orxNULL)
+     || (pstTimerStorage->pfnCallback == _pfnCallback))
     && ((_fDelay < orxFLOAT_0)
      || (pstTimerStorage->fDelay == _fDelay))
     && ((_pContext == orxNULL)
@@ -1633,6 +1633,9 @@ orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_F
     {
       /* Marks it for deletion */
       pstTimerStorage->s32Repetition = 0;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -1671,9 +1674,9 @@ orxSTATUS orxFASTCALL orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallba
 }
 
 /** Removes a global timer function (ie. from the main core clock)
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)
@@ -1683,7 +1686,6 @@ orxSTATUS orxFASTCALL orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCal
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pfnCallback != orxNULL);
 
   /* Gets core clock */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);

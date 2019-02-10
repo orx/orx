@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,6 +104,9 @@ orxSTATUS orxFASTCALL orxJoystick_iOS_Init()
     /* Adds our joystick event handlers */
     if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler)) != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxJoystick_iOS_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_ACCELERATE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Updates status */
       sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
     }
@@ -120,11 +123,11 @@ void orxFASTCALL orxJoystick_iOS_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_iOS_EventHandler);
-    
+
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   }
-  
+
   return;
 }
 
@@ -135,10 +138,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
   /* Depending on axis */
   switch(_eAxis)
   {
-    case orxJOYSTICK_AXIS_X_1:
-    case orxJOYSTICK_AXIS_X_2:
-    case orxJOYSTICK_AXIS_X_3:
-    case orxJOYSTICK_AXIS_X_4:
+    case orxJOYSTICK_AXIS_LX_1:
+    case orxJOYSTICK_AXIS_LX_2:
+    case orxJOYSTICK_AXIS_LX_3:
+    case orxJOYSTICK_AXIS_LX_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fX;
@@ -146,10 +149,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
       break;
     }
 
-    case orxJOYSTICK_AXIS_Y_1:
-    case orxJOYSTICK_AXIS_Y_2:
-    case orxJOYSTICK_AXIS_Y_3:
-    case orxJOYSTICK_AXIS_Y_4:
+    case orxJOYSTICK_AXIS_LY_1:
+    case orxJOYSTICK_AXIS_LY_2:
+    case orxJOYSTICK_AXIS_LY_3:
+    case orxJOYSTICK_AXIS_LY_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fY;
@@ -157,10 +160,10 @@ orxFLOAT orxFASTCALL orxJoystick_iOS_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
       break;
     }
 
-    case orxJOYSTICK_AXIS_Z_1:
-    case orxJOYSTICK_AXIS_Z_2:
-    case orxJOYSTICK_AXIS_Z_3:
-    case orxJOYSTICK_AXIS_Z_4:
+    case orxJOYSTICK_AXIS_RX_1:
+    case orxJOYSTICK_AXIS_RX_2:
+    case orxJOYSTICK_AXIS_RX_3:
+    case orxJOYSTICK_AXIS_RX_4:
     {
       /* Updates result */
       fResult = sstJoystick.vAcceleration.fZ;
@@ -192,6 +195,17 @@ orxBOOL orxFASTCALL orxJoystick_iOS_IsButtonPressed(orxJOYSTICK_BUTTON _eButton)
   return bResult;
 }
 
+orxBOOL orxFASTCALL orxJoystick_iOS_IsConnected(orxU32 _u32ID)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Not available on this platform!");
+
+  /* Done! */
+  return bResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -202,4 +216,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Init, JOYSTICK, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_Exit, JOYSTICK, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_iOS_IsConnected, JOYSTICK, IS_CONNECTED);
 orxPLUGIN_USER_CORE_FUNCTION_END();

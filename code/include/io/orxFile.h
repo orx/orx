@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -167,6 +167,12 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS6
  * @return Returns the number of written elements (not bytes)
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
+
+/** Deletes a file
+ * @param[in] _zFileName           Full file's path to delete
+ * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Delete(const orxSTRING _zFileName);
 
 /** Seeks to a position in the given file
  * @param[in] _pstFile              Concerned file

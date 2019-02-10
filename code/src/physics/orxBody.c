@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -58,6 +58,8 @@
 
 #define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
 #define orxBODY_KU32_FLAG_HAS_GRAVITY         0x00000002  /**< Has custom gravity flag */
+#define orxBODY_KU32_FLAG_DYNAMIC             0x00000004  /**< Dynamic type body flag */
+#define orxBODY_KU32_FLAG_CAN_MOVE            0x00000008  /**< Static body is allowed to move through direct user access */
 
 #define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< User all ID mask */
 
@@ -247,7 +249,7 @@ static orxBODY_STATIC sstBody;
  */
 static orxINLINE void orxBody_DeleteAll()
 {
-  register orxBODY *pstBody;
+  orxBODY *pstBody;
 
   /* Gets first body */
   pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
@@ -276,10 +278,10 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
   /* Is 0? */
   if(u32Value == 0)
   {
-    orxU32 u32Count, i;
+    orxS32 s32Count, i;
 
     /* For all elements */
-    for(i = 0, u32Count = orxConfig_GetListCount(_zConfigID); i < u32Count; i++)
+    for(i = 0, s32Count = orxConfig_GetListCount(_zConfigID); i < s32Count; i++)
     {
       /* Updates result with numerical value */
       u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
@@ -455,6 +457,8 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
     /* Valid? */
     if(pstBody->pstData != orxNULL)
     {
+      orxU32 u32Flags = orxBODY_KU32_FLAG_HAS_DATA;
+
       /* Stores owner */
       orxStructure_SetOwner(pstBody, pstObject);
 
@@ -464,8 +468,20 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Stores its definition flags */
       pstBody->u32DefFlags = _pstBodyDef->u32Flags;
 
+      /* Dynamic? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_DYNAMIC;
+      }
+
+      /* Can move? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_CAN_MOVE;
+      }
+
       /* Updates flags */
-      orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
+      orxStructure_SetFlags(pstBody, u32Flags, orxBODY_KU32_FLAG_NONE);
 
       /* Increases count */
       orxStructure_IncreaseCount(pstBody);
@@ -1130,7 +1146,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
  */
 orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID)
 {
-  orxU32        u32ID;
+  orxSTRINGID   stID;
   orxBODY_PART *pstPart;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
@@ -1139,7 +1155,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Gets part ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_ToCRC(_zConfigID);
 
   /* For all parts */
   for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
@@ -1147,7 +1163,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
       pstPart = orxBody_GetNextPart(_pstBody, pstPart))
   {
     /* Found? */
-    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == u32ID)
+    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == stID)
     {
       /* Removes it */
       eResult = orxBody_RemovePart(pstPart);
@@ -2229,6 +2245,74 @@ orxSTATUS orxFASTCALL orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixe
   return eResult;
 }
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bDynamic       Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetDynamic(orxBODY *_pstBody, orxBOOL _bDynamic)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetDynamic(_pstBody->pstData, _bDynamic);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bDynamic != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_DYNAMIC);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bAllowMoving   Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetAllowMoving(orxBODY *_pstBody, orxBOOL _bAllowMoving)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetAllowMoving(_pstBody->pstData, _bAllowMoving);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bAllowMoving != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_CAN_MOVE);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -2421,6 +2505,44 @@ orxBOOL orxFASTCALL orxBody_IsFixedRotation(const orxBODY *_pstBody)
 
   /* Updates result */
   bResult = orxPhysics_IsFixedRotation(_pstBody->pstData);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets the dynamic property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsDynamic(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets the "allow moving" property of a body, only relevant for non-dynamic bodies
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_GetAllowMoving(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -2795,7 +2917,7 @@ orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _
 }
 
 /** Issues a raycast to test for potential bodies in the way
- * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
@@ -2804,18 +2926,18 @@ orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   orxHANDLE hRaycastResult;
   orxBODY  *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvBegin != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
   /* Issues raycast */
-  hRaycastResult = orxPhysics_Raycast(_pvStart, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  hRaycastResult = orxPhysics_Raycast(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 
   /* Found? */
   if(hRaycastResult != orxHANDLE_UNDEFINED)

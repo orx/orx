@@ -1,18 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "org.orxproject.orxtestnative"
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         ndk{
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a"
+            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
         }
 
     }
@@ -21,15 +20,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            jniDebuggable true
+        }
     }
 
     externalNativeBuild {
         ndkBuild {
-            path 'src/main/cpp/Android.mk'
+            path 'src/main/jni/Android.mk'
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

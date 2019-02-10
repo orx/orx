@@ -38,7 +38,7 @@
  *
  * See tutorial 01_Object for more info about the basic object creation.
  * Here we register our callback on 2 different clocks for didactic purpose only. All objects
- * can of course be updated with only one clock, and the given clock context is also used here 
+ * can of course be updated with only one clock, and the given clock context is also used here
  * for demonstration only.
  * The first clock runs at 100 Hz and the second one at 5 Hz.
  * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
@@ -108,7 +108,7 @@ void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstConte
   orxConfig_PopSection();
 
   /* *** CLOCK TIME STRETCHING SECTION *** */
-  
+
   /* Finds first user created clock (clock1).
    * We could have stored the clock at creation, of course, but this is done here for didactic purpose. */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_USER);
@@ -232,18 +232,3 @@ int main(int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

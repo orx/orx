@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -541,7 +541,7 @@ orxBOOL orxFASTCALL orxModule_IsInitialized(orxMODULE_ID _eModuleID)
  */
 const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);

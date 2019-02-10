@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -638,7 +638,7 @@ static void orxFASTCALL orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_p
  */
 static orxINLINE void orxFrame_DeleteAll()
 {
-  register orxFRAME *pstFrame;
+  orxFRAME *pstFrame;
 
   /* Gets first frame */
   pstFrame = orxFRAME(orxStructure_GetChild(sstFrame.pstRoot));

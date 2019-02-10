@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -217,14 +217,14 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     /* Valid? */
     if((zParamName != orxNULL) && (zParamName != orxSTRING_EMPTY))
     {
-      orxS8   as8ValueBuffer[256 * sizeof(orxVECTOR)];
-      orxS32  s32ParamListCount;
+      orxVECTOR astValueBuffer[256];
+      orxS32    s32ParamListCount;
 
       /* Gets param's list count */
       s32ParamListCount = (bIsList != orxFALSE) ? orxConfig_GetListCount(zParamName) : 0;
 
       /* Is a vector? */
-      if(orxConfig_GetVector(zParamName, &(((orxVECTOR *)as8ValueBuffer)[0])) != orxNULL)
+      if(orxConfig_GetVector(zParamName, &(astValueBuffer[0])) != orxNULL)
       {
         /* Is a list? */
         if(bIsList != orxFALSE)
@@ -235,12 +235,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           for(j = 0; j < s32ParamListCount; j++)
           {
             /* Stores its vector */
-            orxConfig_GetListVector(zParamName, j, &(((orxVECTOR *)as8ValueBuffer)[j]));
+            orxConfig_GetListVector(zParamName, j, &(astValueBuffer[j]));
           }
         }
 
         /* Adds vector param */
-        orxShader_AddVectorParam(_pstShader, zParamName, s32ParamListCount, (orxVECTOR *)as8ValueBuffer);
+        orxShader_AddVectorParam(_pstShader, zParamName, s32ParamListCount, astValueBuffer);
       }
       else
       {
@@ -250,7 +250,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
         zValue = orxConfig_GetString(zParamName);
 
         /* Is a float? */
-        if(orxString_ToFloat(zValue, (orxFLOAT *)as8ValueBuffer, orxNULL) != orxSTATUS_FAILURE)
+        if(orxString_ToFloat(zValue, (orxFLOAT *)astValueBuffer, orxNULL) != orxSTATUS_FAILURE)
         {
           /* Is a list? */
           if(bIsList != orxFALSE)
@@ -261,12 +261,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
             for(j = 0; j < s32ParamListCount; j++)
             {
               /* Stores its vector */
-              ((orxFLOAT *)as8ValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
+              ((orxFLOAT *)astValueBuffer)[j] = orxConfig_GetListFloat(zParamName, j);
             }
           }
 
           /* Adds float param */
-          orxShader_AddFloatParam(_pstShader, zParamName, s32ParamListCount, (orxFLOAT *)as8ValueBuffer);
+          orxShader_AddFloatParam(_pstShader, zParamName, s32ParamListCount, (orxFLOAT *)astValueBuffer);
         }
         else
         {
@@ -309,12 +309,12 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                 }
 
                 /* Creates texture */
-                ((orxTEXTURE **)as8ValueBuffer)[j] = orxTexture_CreateFromFile(zValue, orxFALSE);
+                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_CreateFromFile(zValue, orxFALSE);
               }
               else
               {
                 /* No texture */
-                ((orxTEXTURE **)as8ValueBuffer)[j] = orxNULL;
+                ((orxTEXTURE **)astValueBuffer)[j] = orxNULL;
               }
             }
           }
@@ -339,14 +339,16 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
                 }
               }
-
-              /* Creates texture */
-              ((orxTEXTURE **)as8ValueBuffer)[0] = orxTexture_CreateFromFile(zValue, orxFALSE);
+              else
+              {
+                /* Creates texture */
+                ((orxTEXTURE **)astValueBuffer)[0] = orxTexture_CreateFromFile(zValue, orxFALSE);
+              }
             }
             else
             {
               /* No texture */
-              ((orxTEXTURE **)as8ValueBuffer)[0] = orxNULL;
+              ((orxTEXTURE **)astValueBuffer)[0] = orxNULL;
             }
           }
 
@@ -359,7 +361,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           else
           {
             /* Adds texture param */
-            orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCount, (const orxTEXTURE **)as8ValueBuffer);
+            orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCount, (const orxTEXTURE **)astValueBuffer);
           }
         }
       }
@@ -378,7 +380,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       orxS32 i;
 
 #ifdef __orxMSVC__
-      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING *));
+      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING));
 #else /* __orxMSVC__ */
       const orxSTRING azCodeList[s32Count];
 #endif /* __orxMSVC__ */
@@ -431,7 +433,7 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxSHADER *pstShader;
 
@@ -444,7 +446,7 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
         if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxShader_ProcessConfigData(pstShader);
@@ -543,6 +545,7 @@ orxSTATUS orxFASTCALL orxShader_Init()
 
           /* Adds event handler */
           orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxShader_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxShader_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
         }
         else
         {
@@ -699,7 +702,7 @@ orxSHADER *orxFASTCALL orxShader_Create()
  */
 orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxU32      u32ID;
+  orxSTRINGID stID;
   orxSHADER  *pstResult;
 
   /* Checks */
@@ -707,10 +710,10 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets shader ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_ToCRC(_zConfigID);
 
   /* Search for reference */
-  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, u32ID);
+  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -731,7 +734,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
       if(pstResult != orxNULL)
       {
         /* Adds it to reference table */
-        if(orxHashTable_Add(sstShader.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
+        if(orxHashTable_Add(sstShader.pstReferenceTable, stID, pstResult) != orxSTATUS_FAILURE)
         {
           /* Stores its reference */
           pstResult->zReference = orxConfig_GetCurrentSection();
@@ -1454,7 +1457,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
  * @param[in] _afValueList            Parameter's float value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
+orxSTATUS orxFASTCALL orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -1527,7 +1530,7 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(orxSHADER *_pstShader, const orxST
  * @param[in] _apstValueList          Parameter's texture value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
+orxSTATUS orxFASTCALL orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -1600,7 +1603,7 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(orxSHADER *_pstShader, const orx
  * @param[in] _avValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_SetVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
+orxSTATUS orxFASTCALL orxShader_SetVectorParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList)
 {
   orxSHADER_PARAM  *pstParam;
   orxSTATUS         eResult = orxSTATUS_FAILURE;

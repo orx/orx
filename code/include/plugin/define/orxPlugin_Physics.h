@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -68,6 +68,8 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_t
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ANGULAR_VELOCITY,
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_CUSTOM_GRAVITY,
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_FIXED_ROTATION,
+  orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_DYNAMIC,
+  orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_ALLOW_MOVING,
 
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_POSITION,
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_ROTATION,

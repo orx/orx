@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -265,6 +265,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCustomGravity(orxBODY *
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixed);
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bDynamic       Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetDynamic(orxBODY *_pstBody, orxBOOL _bDynamic);
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bAllowMoving   Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAllowMoving(orxBODY *_pstBody, orxBOOL _bAllowMoving);
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -311,6 +325,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orx
  * @return      orxTRUE if fixed rotation, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsFixedRotation(const orxBODY *_pstBody);
+
+/** Gets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsDynamic(const orxBODY *_pstBody);
+
+/** Gets the "allow moving" property of a body, only relevant for non-dynamic bodies
+ * @param[in]   _pstBody        Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_GetAllowMoving(const orxBODY *_pstBody);
 
 /** Gets a body mass
  * @param[in]   _pstBody        Concerned body
@@ -454,7 +480,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(con
 
 
 /** Issues a raycast to test for potential bodies in the way
- * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
@@ -463,7 +489,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(con
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 #endif /* _orxBODY_H_ */
 

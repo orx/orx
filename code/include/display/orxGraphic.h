@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -287,6 +287,18 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(const 
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Clears graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearBlendMode(orxGRAPHIC *_pstGraphic);
+
+/** Graphic has blend mode accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasBlendMode(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic blend mode
  * @param[in]   _pstGraphic     Concerned graphic

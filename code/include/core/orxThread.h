@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,7 +57,7 @@
 
 #define orxTHREAD_KU32_FLAG_NONE                      0           /**< Flag none (for orxThread_Enable) */
 #define orxTHREAD_KU32_MASK_ALL                       (((1 << orxTHREAD_KU32_MAX_THREAD_NUMBER) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
-#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1 << ID)   /**< Gets thread flag from ID */
+#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1 << (ID)) /**< Gets thread flag from ID */
 
 
 /** Semaphore structure */

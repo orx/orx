@@ -1,0 +1,16 @@
+cache/
+code/bin/
+code/build/
+extern/
+code/demo/
+code/include/base/orxBuild\.h
+code/lib/
+tools/orxCrypt/bin/
+tools/orxCrypt/build/
+tools/orxCrypt/lib/
+tools/orxFontGen/bin/
+tools/orxFontGen/build/
+tools/orxFontGen/lib/
+tutorial/bin/
+tutorial/build/
+tutorial/lib/

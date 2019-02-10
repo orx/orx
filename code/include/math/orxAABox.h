@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -140,7 +140,7 @@ static orxINLINE orxAABOX *                   orxAABox_Set(orxAABOX *_pstRes, co
  */
 static orxINLINE orxBOOL                      orxAABox_IsInside(const orxAABOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  register orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox != orxNULL);
@@ -175,7 +175,7 @@ static orxINLINE orxBOOL                      orxAABox_IsInside(const orxAABOX *
  */
 static orxINLINE orxBOOL                      orxAABox_TestIntersection(const orxAABOX *_pstBox1, const orxAABOX *_pstBox2)
 {
-  register orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
@@ -210,7 +210,7 @@ static orxINLINE orxBOOL                      orxAABox_TestIntersection(const or
  */
 static orxINLINE orxBOOL                      orxAABox_Test2DIntersection(const orxAABOX *_pstBox1, const orxAABOX *_pstBox2)
 {
-  register orxBOOL bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);

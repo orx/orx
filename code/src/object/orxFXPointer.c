@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -780,8 +780,9 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
@@ -790,7 +791,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -804,7 +805,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -832,7 +833,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
  */
 orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
 {
-  orxU32        i, u32ID;
+  orxSTRINGID   stID;
+  orxU32        i;
   orxSTRUCTURE *pstOwner;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
@@ -845,7 +847,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_ToCRC(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -859,7 +861,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
       {
         orxFX_EVENT_PAYLOAD stPayload;
 
@@ -916,47 +918,38 @@ orxSTATUS orxFASTCALL orxFXPointer_Synchronize(orxFXPOINTER *_pstFXPointer, cons
   /* For all FXs */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
   {
-    orxFXPOINTER_HOLDER *pstFX;
+    orxFXPOINTER_HOLDER  *pstFX;
+    orxS32                j;
 
     /* Gets it */
     pstFX = &_pstFXPointer->astFXList[i];
 
-    /* Valid? */
-    if(pstFX != orxNULL)
+    /* For all FXs on model */
+    for(j = 0; j < orxFXPOINTER_KU32_FX_NUMBER; j++)
     {
-      orxS32 j;
+      const orxFXPOINTER_HOLDER *pstModelFX;
 
-      /* For all FXs on model */
-      for(j = 0; j < orxFXPOINTER_KU32_FX_NUMBER; j++)
+      /* Gets it */
+      pstModelFX = &_pstModel->astFXList[j];
+
+      /* Matches? */
+      if(pstModelFX->pstFX == pstFX->pstFX)
       {
-        const orxFXPOINTER_HOLDER *pstModelFX;
+        /* Synchronizes start time */
+        pstFX->fStartTime = pstModelFX->fStartTime;
 
-        /* Gets it */
-        pstModelFX = &_pstModel->astFXList[j];
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
 
-        /* Valid? */
-        if(pstModelFX != orxNULL)
-        {
-          /* Matches? */
-          if(pstModelFX->pstFX == pstFX->pstFX)
-          {
-            /* Synchronizes start time */
-            pstFX->fStartTime = pstModelFX->fStartTime;
-
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
-
-            break;
-          }
-        }
+        break;
       }
+    }
 
-      /* Not found? */
-      if(j == orxFXPOINTER_KU32_FX_NUMBER)
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
-      }
+    /* Not found? */
+    if(j == orxFXPOINTER_KU32_FX_NUMBER)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't synchronize FX <%s> as it wasn't found on model.", orxFX_GetName(pstFX->pstFX));
     }
   }
 

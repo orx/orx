@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,37 +51,26 @@
 
 #include <string.h>
 
-
-#ifdef __orxWINDOWS__
-  #ifdef NO_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-  #else /* NO_WIN32_LEAN_AND_MEAN */
-    #ifndef WIN32_LEAN_AND_MEAN
-      #define WIN32_LEAN_AND_MEAN
-      #define DEFINED_WIN32_LEAN_AND_MEAN
-    #endif /* !WIN32_LEAN_AND_MEAN */
-  #endif /* NO_WIN32_LEAN_AND_MEAN */
-  #include <windows.h>
-  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-    #undef DEFINED_WIN32_LEAN_AND_MEAN
-  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
-  #undef NO_WIN32_LEAN_AND_MEAN
-#endif /* __orxWINDOWS__ */
-
-
 /** Memory barrier macros */
 #if defined(__orxGCC__) || defined(__orxLLVM__)
   #define orxMEMORY_BARRIER()                             __sync_synchronize()
   #define orxHAS_MEMORY_BARRIER
 #elif defined(__orxMSVC__)
-  #define orxMEMORY_BARRIER()                             MemoryBarrier()
+  #ifdef __orx64__
+    #define orxMEMORY_BARRIER()                           __faststorefence()
+#else /* __orx64__ */
+    #define orxMEMORY_BARRIER()     \
+    {                               \
+      long lBarrier;                \
+      _InterlockedOr(&lBarrier, 0); \
+    }
+#endif /* __orx64__ */
   #define orxHAS_MEMORY_BARRIER
 #else
   #define orxMEMORY_BARRIER()
   #undef orxHAS_MEMORY_BARRIER
 
-  #warning !!WARNING!! This compiler does not have any hardware memory barrier builtin.
+  #warning !!WARNING!! This compiler does not have any builtin hardware memory barrier.
 #endif
 
 

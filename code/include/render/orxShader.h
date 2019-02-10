@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -72,8 +72,8 @@ typedef enum __orxSHADER_PARAM_TYPE_t
 typedef struct __orxSHADER_PARAM_t
 {
   orxLINKLIST_NODE      stNode;                 /**< Linklist node : 12 */
-  orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 16 */
-  const orxSTRING       zName;                  /**< Parameter literal name : 20 */
+  const orxSTRING       zName;                  /**< Parameter literal name : 26 */
+  orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 20 */
   orxU32                u32ArraySize;           /**< Parameter array size : 24 */
 
 } orxSHADER_PARAM;
@@ -103,15 +103,15 @@ typedef struct __orxSHADER_EVENT_PAYLOAD_t
   const orxSHADER      *pstShader;              /**< Shader reference : 4 */
   const orxSTRING       zShaderName;            /**< Shader name : 8 */
 
-  orxSHADER_PARAM_TYPE  eParamType;             /**< Parameter type : 12 */
-  const orxSTRING       zParamName;             /**< Parameter name : 16 */
+  const orxSTRING       zParamName;             /**< Parameter name : 12 */
+  orxSHADER_PARAM_TYPE  eParamType;             /**< Parameter type : 16 */
   orxS32                s32ParamIndex;          /**< Parameter index : 20 */
 
   union
   {
     orxFLOAT            fValue;                 /**< Float value : 24 */
     const orxTEXTURE   *pstValue;               /**< Texture value : 24 */
-    orxVECTOR           vValue;                 /**< Vector value : 24 */
+    orxVECTOR           vValue;                 /**< Vector value : 32 */
   };                                            /**< Union value : 32 */
 
 } orxSHADER_EVENT_PAYLOAD;
@@ -207,7 +207,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER
  * @param[in] _afValueList            Parameter's float value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
@@ -216,7 +216,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(orxSHADE
  * @param[in] _apstValueList          Parameter's texture value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
@@ -225,7 +225,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(orxSHA
  * @param[in] _avValueList            Parameter's vector value list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetVectorParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxVECTOR *_avValueList);
 
 /** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader

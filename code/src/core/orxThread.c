@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,8 +29,6 @@
  *
  */
 
-#define NO_WIN32_LEAN_AND_MEAN
-
 #include "core/orxThread.h"
 
 #include "core/orxClock.h"
@@ -41,6 +39,9 @@
 
 #ifdef __orxWINDOWS__
 
+  #define NO_WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef NO_WIN32_LEAN_AND_MEAN
   #include <process.h>
 
 #else /* __orxWINDOWS__ */
@@ -339,6 +340,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
   #if defined(__orxLINUX__)

@@ -1,18 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "org.orxproject.orxtest"
-        minSdkVersion 14
-        targetSdkVersion 19
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
         ndk{
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a"
+            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
         }
 
     }
@@ -21,11 +21,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            jniDebuggable true
+        }
     }
 
     externalNativeBuild {
         ndkBuild {
-            path 'src/main/cpp/Android.mk'
+            path 'src/main/jni/Android.mk'
         }
     }
 }
@@ -38,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:25.4.0'
-    compile(name:'orx-lib', ext:'aar')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation(name: 'orx-lib', ext: 'aar')
+    implementation 'com.android.support:support-fragment:28.0.0'
 }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,6 +104,36 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 
 } orxDISPLAY_TRANSFORM;
 
+/** Primitive enum
+ */
+typedef enum __orxDISPLAY_PRIMITIVE_t
+{
+  orxDISPLAY_PRIMITIVE_POINTS = 0,
+  orxDISPLAY_PRIMITIVE_LINES,
+  orxDISPLAY_PRIMITIVE_LINE_LOOP,
+  orxDISPLAY_PRIMITIVE_LINE_STRIP,
+  orxDISPLAY_PRIMITIVE_TRIANGLES,
+  orxDISPLAY_PRIMITIVE_TRIANGLE_STRIP,
+  orxDISPLAY_PRIMITIVE_TRIANGLE_FAN,
+
+  orxDISPLAY_PRIMITIVE_NUMBER,
+
+  orxDISPLAY_PRIMITIVE_NONE = orxENUM_NONE
+
+} orxDISPLAY_PRIMITIVE;
+
+/** Mesh structure
+ */
+typedef struct __orxDISPLAY_MESH_t
+{
+  const orxDISPLAY_VERTEX * astVertexList;
+  const orxU16 *            au16IndexList;
+  orxU32                    u32VertexNumber;
+  orxU32                    u32IndexNumber;
+  orxDISPLAY_PRIMITIVE      ePrimitive;
+
+} orxDISPLAY_MESH;
+
 /** Video mode structure
  */
 typedef struct __orxDISPLAY_VIDEO_MODE_t
@@ -193,6 +223,9 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
 #define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
 #define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
+#define orxDISPLAY_KZ_CONFIG_MONITOR        "Monitor"
+#define orxDISPLAY_KZ_CONFIG_CURSOR         "Cursor"
+#define orxDISPLAY_KZ_CONFIG_ICON_LIST      "IconList"
 
 
 /** Shader texture suffixes
@@ -245,7 +278,7 @@ typedef struct __orxDISPLAY_EVENT_PAYLOAD_t
     struct
     {
       const orxSTRING zLocation;                            /**< File location : 40 */
-      orxU32          u32FilenameID;                        /**< File name ID : 44 */
+      orxSTRINGID     stFilenameID;                         /**< File name ID : 44 */
       orxU32          u32ID;                                /**< Bitmap (hardware texture) ID : 48 */
 
     } stBitmap;
@@ -916,7 +949,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_ClearBitmap(orx
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Sets a bitmap clipping for blitting (both as source and destination)
- * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _pstBitmap                            Concerned bitmap, orxNULL to target the first destination bitmap
  * @param[in]   _u32TLX                               Top left X coord in pixels
  * @param[in]   _u32TLY                               Top left Y coord in pixels
  * @param[in]   _u32BRX                               Bottom right X coord in pixels
@@ -1041,14 +1074,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawCircle(cons
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawOBox(const orxOBOX *_pstBox, orxRGBA _stColor, orxBOOL _bFill);
 
 /** Draws a textured mesh
+ * @param[in]   _pstMesh                              Mesh to draw, if no primitive and no index buffer is given, separate quads arrangement will be assumed
  * @param[in]   _pstBitmap                            Bitmap to use for texturing, orxNULL to use the current one
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
- * @param[in]   _u32VertexNumber                      Number of vertices in the mesh
- * @param[in]   _astVertexList                        List of vertices (XY coordinates are in pixels and UV ones are normalized)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode, orxU32 _u32VertexNumber, const orxDISPLAY_VERTEX *_astVertexList);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_DrawMesh(const orxDISPLAY_MESH *_pstMesh, const orxBITMAP *_pstBitmap, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Has shader support?
  * @return orxTRUE / orxFALSE

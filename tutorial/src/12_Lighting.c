@@ -206,13 +206,13 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
   /* Valid? */
   if(zName && zName != orxSTRING_EMPTY)
   {
-    orxU32 u32CRC;
+    orxSTRINGID stCRC;
 
     /* Gets its CRC */
-    u32CRC = orxString_ToCRC(zName);
+    stCRC = orxString_ToCRC(zName);
 
     /* Does not already exist? */
-    if(!orxHashTable_Get(pstTextureTable, u32CRC))
+    if(!orxHashTable_Get(pstTextureTable, stCRC))
     {
       orxFLOAT    fWidth, fHeight;
       orxU32      u32BufferSize;
@@ -261,7 +261,7 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName, orxFALSE);
 
       /* Add it to the table using the CRC of the original as key */
-      orxHashTable_Add(pstTextureTable, u32CRC, pstNMTexture);
+      orxHashTable_Add(pstTextureTable, stCRC, pstNMTexture);
     }
   }
 }

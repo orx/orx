@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -126,6 +126,7 @@ orxSTATUS orxFASTCALL orxMain_Init()
 
     /* Registers custom system event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxMain_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
@@ -188,7 +189,7 @@ orxSTATUS orxFASTCALL orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    static orxBOOL sbHomePressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
+    static orxBOOL sbInsertPressed = orxFALSE, sbF11Pressed = orxFALSE, sbF12Pressed = orxFALSE;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
@@ -197,26 +198,26 @@ orxSTATUS orxFASTCALL orxMain_Run()
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
     }
 
-    /* Was home pressed? */
-    if(sbHomePressed != orxFALSE)
+    /* Was insert pressed? */
+    if(sbInsertPressed != orxFALSE)
     {
       /* No longer pressed? */
       if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) == orxFALSE)
       {
         /* Updates key status */
-        sbHomePressed = orxFALSE;
+        sbInsertPressed = orxFALSE;
       }
     }
     else
     {
-      /* Is home pressed? */
+      /* Is insert pressed? */
       if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_INSERT) != orxFALSE)
       {
         /* Reloads config history */
         orxConfig_ReloadHistory();
 
         /* Updates key status */
-        sbHomePressed = orxTRUE;
+        sbInsertPressed = orxTRUE;
       }
     }
 
@@ -291,16 +292,3 @@ int main(int argc, char **argv)
   /* Done! */
   return EXIT_SUCCESS;
 }
-
-#ifdef __orxMSVC__
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  /* Executes orx */
-  orx_WinExecute(orxMain_Init, orxMain_Run, orxMain_Exit);
-
-  /* Done! */
-  return EXIT_SUCCESS;
-}
-
-#endif /* __orxMSVC__ */

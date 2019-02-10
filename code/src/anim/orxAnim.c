@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -211,7 +211,7 @@ static orxINLINE void orxAnim_SetKeyCount(orxANIM *_pstAnim, orxU32 _u32KeyCount
  */
 static orxINLINE void orxAnim_IncreaseKeyCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32KeyCount;
+  orxU32 u32KeyCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -230,7 +230,7 @@ static orxINLINE void orxAnim_IncreaseKeyCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DecreaseKeyCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32KeyCount;
+  orxU32 u32KeyCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -281,7 +281,7 @@ static orxINLINE void orxAnim_SetEventCount(orxANIM *_pstAnim, orxU32 _u32EventC
  */
 static orxINLINE void orxAnim_IncreaseEventCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32EventCount;
+  orxU32 u32EventCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -300,7 +300,7 @@ static orxINLINE void orxAnim_IncreaseEventCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DecreaseEventCount(orxANIM *_pstAnim)
 {
-  register orxU32 u32EventCount;
+  orxU32 u32EventCount;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -318,7 +318,7 @@ static orxINLINE void orxAnim_DecreaseEventCount(orxANIM *_pstAnim)
  */
 static orxINLINE void orxAnim_DeleteAll()
 {
-  register orxANIM *pstAnim;
+  orxANIM *pstAnim;
 
   /* Gets first anim */
   pstAnim = orxANIM (orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM));
@@ -1080,49 +1080,32 @@ const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pst
   return pstResult;
 }
 
-/** Updates animation given a timestamp
+/** Gets animation's key index from a time stamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     TimeStamp for animation update
- * @param[out]  _pu32CurrentKey Current key as a result of update
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _fTimeStamp     TimeStamp of the desired animation key
+ * @return      Animation key index / orxU32_UNDEFINED
  */
-orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey)
+orxU32 orxFASTCALL orxAnim_GetKey(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
-  orxU32    u32Index;
-  orxSTATUS eResult;
+  orxU32    u32Result;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pu32CurrentKey != orxNULL);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
-  /* Finds corresponding key index */
-  u32Index = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
+  /* Updates result */
+  u32Result = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
 
-  /* Found? */
-  if(u32Index != orxU32_UNDEFINED)
-  {
-    /* Updates current key */
-    *_pu32CurrentKey = u32Index;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
+  /* Not found? */
+  if(u32Result == orxU32_UNDEFINED)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Timestamp does not exist in animation.");
-
-    /* Updates current key */
-    *_pu32CurrentKey = orxU32_UNDEFINED;
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "[%s] Timestamp <%g> not found!", _pstAnim->zName, _fTimeStamp);
   }
 
   /* Done! */
-  return eResult;
+  return u32Result;
 }
 
 /** Animation key data accessor

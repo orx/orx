@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -80,6 +80,14 @@ orxBOOL orxFASTCALL orxJoystick_Dummy_IsButtonPressed(orxJOYSTICK_BUTTON _eButto
   return bResult;
 }
 
+orxBOOL orxFASTCALL orxJoystick_Dummy_IsConnected(orxU32 _u32ID)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -90,4 +98,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Dummy_Init, JOYSTICK, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Dummy_Exit, JOYSTICK, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Dummy_GetAxisValue, JOYSTICK, GET_AXIS_VALUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Dummy_IsButtonPressed, JOYSTICK, IS_BUTTON_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Dummy_IsConnected, JOYSTICK, IS_CONNECTED);
 orxPLUGIN_USER_CORE_FUNCTION_END();

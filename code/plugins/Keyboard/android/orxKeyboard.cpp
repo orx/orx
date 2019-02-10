@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008-2019 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -97,14 +97,14 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
   {
     case AKEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
     case AKEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}
-    case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_RETURN; break;}
-    case AKEYCODE_BUTTON_SELECT:      {eResult = orxKEYBOARD_KEY_RETURN; break;}
+    case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_ENTER; break;}
+    case AKEYCODE_BUTTON_SELECT:      {eResult = orxKEYBOARD_KEY_ENTER; break;}
     case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
     case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
-    case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGEUP; break;}
-    case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGEDOWN; break;}
-    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_ADD; break;}
-    case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_MULTIPLY; break;}
+    case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGE_UP; break;}
+    case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGE_DOWN; break;}
+    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_NUMPAD_ADD; break;}
+    case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_NUMPAD_MULTIPLY; break;}
     case AKEYCODE_MEDIA_PLAY_PAUSE:   {eResult = orxKEYBOARD_KEY_PAUSE; break;}
     case AKEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}
     case AKEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}
@@ -239,7 +239,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
-    
+
     /* Adds our mouse event handlers */
     if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
@@ -295,6 +295,27 @@ extern "C" orxBOOL orxFASTCALL orxKeyboard_Android_IsKeyPressed(orxKEYBOARD_KEY 
   return bResult;
 }
 
+extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_GetKeyDisplayName(orxKEYBOARD_KEY _eKey)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(_eKey < orxKEYBOARD_KEY_NUMBER);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
+  /* Gets key name */
+  zResult = orxKeyboard_GetKeyName(_eKey);
+
+  /* Success? */
+  if(zResult != orxSTRING_EMPTY)
+  {
+    /* Skips prefix */
+    zResult += 4;
+  }
+
+  /* Done! */
+  return zResult;
+}
 
 extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 {
@@ -362,7 +383,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 
   /* Clears all buffer indices */
   sstKeyboard.u32KeyReadIndex   =
-  sstKeyboard.u32KeyWriteIndex  = 
+  sstKeyboard.u32KeyWriteIndex  =
   sstKeyboard.u32CharReadIndex  =
   sstKeyboard.u32CharWriteIndex = 0;
 
@@ -391,6 +412,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_GetKeyDisplayName, KEYBOARD, GET_KEY_DISPLAY_NAME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Android_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
