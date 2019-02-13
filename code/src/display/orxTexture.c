@@ -1128,7 +1128,7 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
   if(_pstTexture == sstTexture.pstScreen)
   {
     /* Updates its size (screen might have changed) */
-    orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &(((orxTEXTURE *)_pstTexture)->fWidth), &(((orxTEXTURE *)_pstTexture)->fHeight));
+    orxDisplay_GetScreenSize(&(((orxTEXTURE *)_pstTexture)->fWidth), &(((orxTEXTURE *)_pstTexture)->fHeight));
   }
 
   /* Has size? */

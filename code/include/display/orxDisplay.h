@@ -197,49 +197,50 @@ typedef struct __orxCOLOR_t
 {
   union
   {
-    orxVECTOR vRGB;                     /**< RGB components: 12 */
-    orxVECTOR vHSL;                     /**< HSL components: 12 */
-    orxVECTOR vHSV;                     /**< HSV components: 12 */
+    orxVECTOR vRGB;                                         /**< RGB components: 12 */
+    orxVECTOR vHSL;                                         /**< HSL components: 12 */
+    orxVECTOR vHSV;                                         /**< HSV components: 12 */
   };
-  orxFLOAT  fAlpha;                     /**< Alpha component: 16 */
+  orxFLOAT  fAlpha;                                         /**< Alpha component: 16 */
 
 } orxCOLOR;
 
 
 /** Config parameters
  */
-#define orxDISPLAY_KZ_CONFIG_SECTION        "Display"
-#define orxDISPLAY_KZ_CONFIG_WIDTH          "ScreenWidth"
-#define orxDISPLAY_KZ_CONFIG_HEIGHT         "ScreenHeight"
-#define orxDISPLAY_KZ_CONFIG_DEPTH          "ScreenDepth"
-#define orxDISPLAY_KZ_CONFIG_POSITION       "ScreenPosition"
-#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE   "RefreshRate"
-#define orxDISPLAY_KZ_CONFIG_FULLSCREEN     "FullScreen"
-#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE   "AllowResize"
-#define orxDISPLAY_KZ_CONFIG_DECORATION     "Decoration"
-#define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
-#define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
-#define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
-#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
-#define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
-#define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
-#define orxDISPLAY_KZ_CONFIG_MONITOR        "Monitor"
-#define orxDISPLAY_KZ_CONFIG_CURSOR         "Cursor"
-#define orxDISPLAY_KZ_CONFIG_ICON_LIST      "IconList"
+#define orxDISPLAY_KZ_CONFIG_SECTION                        "Display"
+#define orxDISPLAY_KZ_CONFIG_WIDTH                          "ScreenWidth"
+#define orxDISPLAY_KZ_CONFIG_HEIGHT                         "ScreenHeight"
+#define orxDISPLAY_KZ_CONFIG_DEPTH                          "ScreenDepth"
+#define orxDISPLAY_KZ_CONFIG_POSITION                       "ScreenPosition"
+#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE                   "RefreshRate"
+#define orxDISPLAY_KZ_CONFIG_FULLSCREEN                     "FullScreen"
+#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE                   "AllowResize"
+#define orxDISPLAY_KZ_CONFIG_DECORATION                     "Decoration"
+#define orxDISPLAY_KZ_CONFIG_TITLE                          "Title"
+#define orxDISPLAY_KZ_CONFIG_SMOOTH                         "Smoothing"
+#define orxDISPLAY_KZ_CONFIG_VSYNC                          "VSync"
+#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER                    "DepthBuffer"
+#define orxDISPLAY_KZ_CONFIG_SHADER_VERSION                 "ShaderVersion"
+#define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST          "ShaderExtensionList"
+#define orxDISPLAY_KZ_CONFIG_MONITOR                        "Monitor"
+#define orxDISPLAY_KZ_CONFIG_CURSOR                         "Cursor"
+#define orxDISPLAY_KZ_CONFIG_ICON_LIST                      "IconList"
+#define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
 
 
 /** Shader texture suffixes
  */
-#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP     "_top"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP                     "_top"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT                    "_left"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM                  "_bottom"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT                   "_right"
 
 
 /** Shader extension actions
  */
-#define orxDISPLAY_KC_SHADER_EXTENSION_ADD  '+'
-#define orxDISPLAY_KC_SHADER_EXTENSION_REMOVE '-'
+#define orxDISPLAY_KC_SHADER_EXTENSION_ADD                  '+'
+#define orxDISPLAY_KC_SHADER_EXTENSION_REMOVE               '-'
 
 
 /** Event enum
