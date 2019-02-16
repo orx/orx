@@ -210,11 +210,14 @@ solution "orx"
             "-x c++",
             "-gdwarf-2",
             "-Wno-write-strings",
-            "-fvisibility-inlines-hidden"
+            "-fvisibility-inlines-hidden",
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++"
         }
         linkoptions
         {
-            "-dead_strip"
+            "-dead_strip",
+            "-stdlib=libc++"
         }
 
     configuration {"macosx", "x32"}
