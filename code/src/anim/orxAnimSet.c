@@ -3429,7 +3429,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
   /* Computes link table if needed */
   if(orxAnimSet_ComputeLinkTable(pstWorkTable) != orxSTATUS_FAILURE)
   {
-    orxU32  u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim, u32TargetAnim;
+    orxU32 u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim, u32TargetAnim;
 
     /* Defaults to not cut */
     *_pbCut = orxFALSE;
@@ -3513,7 +3513,7 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Couldn't compute next animation.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Couldn't compute next animation when trying " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " -> " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", orxAnimSet_GetName(_pstAnimSet), orxAnim_GetName(_pstAnimSet->pastAnim[u32Anim]), (_u32DstAnim != orxU32_UNDEFINED) ? orxAnim_GetName(_pstAnimSet->pastAnim[_u32DstAnim]) : "NO TARGET");
 
           /* Not found */
           u32Result = orxU32_UNDEFINED;
