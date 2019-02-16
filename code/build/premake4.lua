@@ -216,8 +216,9 @@ solution "orx"
         }
         linkoptions
         {
-            "-dead_strip",
-            "-stdlib=libc++"
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++",
+            "-dead_strip"
         }
 
     configuration {"macosx", "x32"}
