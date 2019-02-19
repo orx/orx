@@ -340,7 +340,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #endif /* __orxIOS__ */
 
-#endif /* __orxPLUGIN__ */
+#endif /* !__orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 
