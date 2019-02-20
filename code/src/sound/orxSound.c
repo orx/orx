@@ -974,14 +974,14 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   /* Changed? */
   if(eNewStatus != pstSound->eStatus)
   {
+    orxSOUND_EVENT_PAYLOAD stPayload;
+
     /* Stores new status */
     pstSound->eStatus = eNewStatus;
 
     /* Depending on status */
     switch(eNewStatus)
     {
-      orxSOUND_EVENT_PAYLOAD stPayload;
-
       case orxSOUND_STATUS_PLAY:
       {
         /* Inits event payload */
