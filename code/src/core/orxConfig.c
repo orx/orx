@@ -3767,7 +3767,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     else
     {
       /* Stores default base file name */
-      orxString_Copy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE);
+      orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1);
     }
 
     /* Valid encryption key? */
@@ -4085,7 +4085,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   else
   {
     /* Uses default name */
-    orxString_Copy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE);
+    orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1);
   }
 
   /* Done! */

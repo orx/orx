@@ -538,7 +538,7 @@ static orxINLINE orxU32                                   orxString_GetCharacter
   return u32Result;
 }
 
-/** Copies N characters from a string
+/** Copies up to N characters from a string
  * @param[in] _zDstString       Destination string
  * @param[in] _zSrcString       Source string
  * @param[in] _u32CharNumber    Number of characters to copy
@@ -552,21 +552,6 @@ static orxINLINE orxSTRING                                orxString_NCopy(orxSTR
 
   /* Done! */
   return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
-}
-
-/** Copies a string.
- * @param[in] _zDstString      Destination string
- * @param[in] _zSrcString      Source string
- * @return Copied string.
- */
-static orxINLINE orxSTRING                                orxString_Copy(orxSTRING _zDstString, const orxSTRING _zSrcString)
-{
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Done! */
-  return(strcpy(_zDstString, _zSrcString));
 }
 
 /** Duplicate a string.
