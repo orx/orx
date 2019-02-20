@@ -1554,7 +1554,7 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
   u32TextLength = orxString_GetLength(_zText);
 
   /* End of buffer? */
-  if(sstConsole.u32LogIndex + u32TextLength + (u32TextLength / sstConsole.u32LogLineLength) + 1 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
+  if(sstConsole.u32LogIndex + u32TextLength + (u32TextLength / sstConsole.u32LogLineLength) + 2 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
   {
     /* Stores log end index */
     sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
@@ -1564,15 +1564,12 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
   }
 
   /* For all characters */
-  for(u32LineLength = 0, pc = _zText; *pc != orxCHAR_NULL;)
+  for(u32LineLength = 0, pc = _zText; (*pc != orxCHAR_NULL) && (sstConsole.u32LogIndex < orxCONSOLE_KU32_LOG_BUFFER_SIZE - 2);)
   {
-    orxU32 u32CharacterCodePoint, u32CharacterLength;
+    orxU32 u32CharacterCodePoint;
 
     /* Gets character code point */
     u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc);
-
-    /* Gets its length */
-    u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
 
     /* EOL? */
     if(u32CharacterCodePoint == (orxU32)orxCHAR_EOL)
@@ -1585,25 +1582,35 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
     }
     else
     {
+      orxU32 u32CharacterLength;
+
       /* Appends character to log */
-      orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, u32CharacterLength, u32CharacterCodePoint);
+      u32CharacterLength = orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, orxCONSOLE_KU32_LOG_BUFFER_SIZE - sstConsole.u32LogIndex - 1, u32CharacterCodePoint);
 
-      /* Updates log index */
-      sstConsole.u32LogIndex += u32CharacterLength;
-
-      /* End of line? */
-      if(u32LineLength + 1 >= sstConsole.u32LogLineLength)
+      /* Success? */
+      if(u32CharacterLength != 0)
       {
-        /* Ends string */
-        sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
+        sstConsole.u32LogIndex += u32CharacterLength;
 
-        /* Updates line length */
-        u32LineLength = 0;
+        /* End of line? */
+        if(u32LineLength + 1 >= sstConsole.u32LogLineLength)
+        {
+          /* Ends string */
+          sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
+
+          /* Updates line length */
+          u32LineLength = 0;
+        }
+        else
+        {
+          /* Updates line length */
+          u32LineLength++;
+        }
       }
       else
       {
-        /* Updates line length */
-        u32LineLength++;
+        /* Stops */
+        break;
       }
     }
   }
@@ -1872,7 +1879,7 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
         if(sstConsole.u32LogEndIndex != orxU32_UNDEFINED)
         {
           /* Wraps around */
-          u32LogIndex = sstConsole.u32LogEndIndex;
+          u32LogIndex = sstConsole.u32LogEndIndex - 2;
 
           /* Updates wrap status */
           bWrapped = orxTRUE;
