@@ -708,6 +708,7 @@ var searchData=
   ['orxdisplay_5fkz_5fconfig_5fdecoration',['orxDISPLAY_KZ_CONFIG_DECORATION',['../group__orx_display.html#ga331cf2e2393d0d6831efb6c24952b507',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fdepth',['orxDISPLAY_KZ_CONFIG_DEPTH',['../group__orx_display.html#ga3cd69c245850b123fa561396ee82eb3a',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fdepthbuffer',['orxDISPLAY_KZ_CONFIG_DEPTHBUFFER',['../group__orx_display.html#ga84a632229162932161247c99e67605fd',1,'orxDisplay.h']]],
+  ['orxdisplay_5fkz_5fconfig_5fframebuffer_5fsize',['orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE',['../group__orx_display.html#ga6c2f7af70ae007399756c17bc54f9a8d',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5ffullscreen',['orxDISPLAY_KZ_CONFIG_FULLSCREEN',['../group__orx_display.html#gac69de78a168e653e5b92467f294328d1',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5fheight',['orxDISPLAY_KZ_CONFIG_HEIGHT',['../group__orx_display.html#gad5566d8dc330ac06b979eda31d80e3ca',1,'orxDisplay.h']]],
   ['orxdisplay_5fkz_5fconfig_5ficon_5flist',['orxDISPLAY_KZ_CONFIG_ICON_LIST',['../group__orx_display.html#ga6254ae6ddf5bdeaef7d1f8997b83be2d',1,'orxDisplay.h']]],
