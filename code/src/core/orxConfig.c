@@ -3328,13 +3328,19 @@ void orxFASTCALL orxConfig_CommandGetCurrentSection(orxU32 _u32ArgNumber, const 
 void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Clears value */
   orxConfig_ClearValue(_astArgList[1].zValue);
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Updates result */
   _pstResult->zValue = _astArgList[1].zValue;
@@ -3348,13 +3354,19 @@ void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMM
 void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Updates result */
   _pstResult->bValue = (orxConfig_HasValue(_astArgList[1].zValue));
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -3370,7 +3382,10 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   s32Index = (_u32ArgNumber > 2) ? _astArgList[2].s32Value : -1;
 
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Raw request? */
   if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
@@ -3485,7 +3500,10 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   }
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -3496,13 +3514,19 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
 void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Updates result */
   _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -3513,13 +3537,19 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
 void orxFASTCALL orxConfig_CommandAppendValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Updates result */
   _pstResult->zValue = (orxConfig_SetEntry(_astArgList[1].zValue, _astArgList[2].zValue, orxFALSE, orxTRUE) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -3532,7 +3562,10 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
   orxCONFIG_ENTRY *pstEntry;
 
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(orxString_ToCRC(_astArgList[1].zValue));
@@ -3568,7 +3601,10 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
   }
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
@@ -3579,13 +3615,19 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
 void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Pushes section */
-  orxConfig_PushSection(_astArgList[0].zValue);
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PushSection(_astArgList[0].zValue);
+  }
 
   /* Updates result */
   _pstResult->s32Value = orxConfig_GetListCount(_astArgList[1].zValue);
 
   /* Pops section */
-  orxConfig_PopSection();
+  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  {
+    orxConfig_PopSection();
+  }
 
   /* Done! */
   return;
