@@ -1807,10 +1807,10 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       orxU32          u32FrameCount, u32EventCount, i;
       orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
       const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
-      orxFLOAT       *pfRowOrigin;
+      orxFLOAT       *pfRowOrigin = &fTextureRowOrigin;
       orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
       const orxFLOAT *pfColumnDelta;
-      orxFLOAT       *pfColumnOrigin;
+      orxFLOAT       *pfColumnOrigin = &fTextureColumnOrigin;
 
       /* From config? */
       if(bFromConfig != orxFALSE)
