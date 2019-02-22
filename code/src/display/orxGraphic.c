@@ -1170,8 +1170,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Retrieves size from text */
-      orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+      /* Updates graphic */
+      orxGraphic_UpdateSize(_pstGraphic);
     }
     else
     {
