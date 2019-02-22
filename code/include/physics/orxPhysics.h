@@ -155,12 +155,11 @@ typedef struct __orxBODY_PART_DEF_t
 
     struct
     {
-      orxVECTOR v0;                                   /**< Edge v0 (ghost): 44 */
-      orxVECTOR v1;                                   /**< Edge v1 : 56 */
-      orxVECTOR v2;                                   /**< Edge v2 : 68 */
-      orxVECTOR v3;                                   /**< Edge v3 (ghost): 80 */
-      orxBOOL   bHasVertex0;                          /**< Edge Has v0 : 84 */
-      orxBOOL   bHasVertex3;                          /**< Edge Has v3 : 88 */
+      orxVECTOR avVertices[2];                        /**< Edge v2 : 56 */
+      orxVECTOR vPrevious;                            /**< Previous vertex (ghost) : 68 */
+      orxVECTOR vNext;                                /**< Next vertex (ghost) : 80 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 84 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 88 */
 
     } stEdge;
 
@@ -171,8 +170,8 @@ typedef struct __orxBODY_PART_DEF_t
       orxVECTOR*avVertices;                           /**< Chain vertices : 60 */
       orxU32    u32VertexCount;                       /**< Chain vertex count : 64 */
       orxBOOL   bIsLoop;                              /**< Loop chain : 68 */
-      orxBOOL   bHasPrevious;                         /**< Has Previous vertex : 72 */
-      orxBOOL   bHasNext;                             /**< Has Next vertex : 76 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 72 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 76 */
 
     } stChain;
 

@@ -101,10 +101,6 @@
 #define orxBODY_KZ_CONFIG_PREVIOUS_VERTEX     "PreviousVertex"
 #define orxBODY_KZ_CONFIG_NEXT_VERTEX         "NextVertex"
 #define orxBODY_KZ_CONFIG_LOOP                "Loop"
-#define orxBODY_KZ_CONFIG_VERTEX_0            "Vertex0"
-#define orxBODY_KZ_CONFIG_VERTEX_1            "Vertex1"
-#define orxBODY_KZ_CONFIG_VERTEX_2            "Vertex2"
-#define orxBODY_KZ_CONFIG_VERTEX_3            "Vertex3"
 #define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
 #define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
@@ -972,7 +968,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
         if(stBodyPartDef.stMesh.u32VertexCount > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %d. The maximum allowed is: %d. Using the first %d ones for the shape <%s>", stBodyPartDef.stMesh.u32VertexCount, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Mesh <%s>: too many vertices [%d] in the list, the maximum allowed is [%d]. Using the first [%d] vertices only.", _zConfigID, stBodyPartDef.stMesh.u32VertexCount, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER);
 
           /* Updates vertices number */
           stBodyPartDef.stMesh.u32VertexCount = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
@@ -988,7 +984,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or less than 3 vertices).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Mesh <%s>: vertex list is invalid (missing or less than 3 vertices).", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -999,31 +995,55 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     {
       /* Updates edge specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_EDGE;
-      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_1) != orxFALSE)
-      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_2) != orxFALSE))
+      if(orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST) == 2)
       {
-        /* Gets them */
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_1, &(stBodyPartDef.stEdge.v1));
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_2, &(stBodyPartDef.stEdge.v2));
+        orxU32 i;
 
-        /* Has vertex0? */
-        if((stBodyPartDef.stEdge.bHasVertex0 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_0)) != orxFALSE)
+        /* For both vertices */
+        for(i = 0; i < 2; i++)
         {
-          /* Gets it */
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_0, &(stBodyPartDef.stEdge.v0));
+          /* Gets its vector */
+          if(orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stEdge.avVertices[i])) == orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Edge <%s>: could not get vertex from VertexList[%u]: <%s>, aborting.", _zConfigID, i, orxConfig_GetListString(orxBODY_KZ_CONFIG_VERTEX_LIST, i));
+
+            /* Updates status */
+            bSuccess = orxFALSE;
+            break;
+          }
         }
 
-        /* Has vertex3? */
-        if((stBodyPartDef.stEdge.bHasVertex3 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_3)) != orxFALSE)
+        /* Success? */
+        if(bSuccess != orxFALSE)
         {
-          /* Gets it */
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_3, &(stBodyPartDef.stEdge.v3));
+          /* Has previous vertex? */
+          if(orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX) != orxFALSE)
+          {
+            /* Gets it */
+            if(orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stEdge.vPrevious)) != orxNULL)
+            {
+              /* Updates status */
+              stBodyPartDef.stEdge.bHasPrevious = orxTRUE;
+            }
+          }
+
+          /* Has next vertex? */
+          if(orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX) != orxFALSE)
+          {
+            /* Gets it */
+            if(orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stEdge.vNext)) != orxNULL)
+            {
+              /* Updates status */
+              stBodyPartDef.stEdge.bHasNext = orxTRUE;
+            }
+          }
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex1 and/or Vertex2 for creating edge body <%s> are missing.", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Edge <%s>: need exactly 2 vertices in VertexList.", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -1049,34 +1069,51 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
           for(i = 0; i < stBodyPartDef.stChain.u32VertexCount; i++)
           {
             /* Gets its vector */
-            orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i]));
+            if(orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i])) == orxNULL)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: could not get vertex from VertexList[%u]: <%s>, aborting.", _zConfigID, i, orxConfig_GetListString(orxBODY_KZ_CONFIG_VERTEX_LIST, i));
+
+              /* Updates status */
+              bSuccess = orxFALSE;
+              break;
+            }
           }
 
-          /* Gets loop status */
-          stBodyPartDef.stChain.bIsLoop = orxConfig_GetBool(orxBODY_KZ_CONFIG_LOOP);
-
-          /* Not a loop? */
-          if(stBodyPartDef.stChain.bIsLoop == orxFALSE)
+          /* Success? */
+          if(bSuccess != orxFALSE)
           {
-            /* Has previous vertex? */
-            if((stBodyPartDef.stChain.bHasPrevious = orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX)) != orxFALSE)
+            /* Not a loop? */
+            if((stBodyPartDef.stChain.bIsLoop = orxConfig_GetBool(orxBODY_KZ_CONFIG_LOOP)) == orxFALSE)
             {
-              /* Gets it */
-              orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stChain.vPrevious));
-            }
+              /* Has previous vertex? */
+              if(orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX) != orxFALSE)
+              {
+                /* Gets it */
+                if(orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stChain.vPrevious)) != orxNULL)
+                {
+                  /* Updates status */
+                  stBodyPartDef.stChain.bHasPrevious = orxTRUE;
+                }
+              }
 
-            /* Has next vertex? */
-            if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX)) != orxFALSE)
-            {
-              /* Gets it */
-              orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stChain.vNext));
+              /* Has next vertex? */
+              if(orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX) != orxFALSE)
+              {
+                /* Gets it */
+                if(orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stChain.vNext)) != orxNULL)
+                {
+                  /* Updates status */
+                  stBodyPartDef.stChain.bHasNext = orxTRUE;
+                }
+              }
             }
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Could not allocate vertex memory when creating chain body <%s>.", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: could not allocate vertex memory.", _zConfigID);
 
           /* Updates status */
           bSuccess = orxFALSE;
@@ -1085,7 +1122,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating chain body <%s> is invalid (missing or less than 2 vertices).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: vertex list is invalid (missing or less than 2 vertices).", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -1095,7 +1132,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body part.", zBodyPartType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Part <%s>: <%s> isn't a valid type for a body part.", _zConfigID, zBodyPartType);
 
       /* Updates status */
       bSuccess = orxFALSE;
@@ -1117,7 +1154,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create part (%s)", _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create part <%s>", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -1129,7 +1166,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named (%s)", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named <%s>", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;

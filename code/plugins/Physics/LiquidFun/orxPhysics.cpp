@@ -1412,42 +1412,39 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
   {
-    b2Vec2      v1, v2;
+    b2Vec2  av[2];
+    orxU32  i;
 
     /* Stores shape reference */
     stFixtureDef.shape = &stEdgeShape;
 
-    /* Sets v1 & v2 */
-    v1.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v1.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v1.fY * _pstBodyPartDef->vScale.fY);
-    v2.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v2.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v2.fY * _pstBodyPartDef->vScale.fY);
-
-    /* Has vertex0? */
-    if(_pstBodyPartDef->stEdge.bHasVertex0)
+    /* Sets vertices */
+    for(i = 0; i < 2; i++)
     {
-      b2Vec2 v0;
-
-      v0.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v0.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v0.fY * _pstBodyPartDef->vScale.fY);
-      stEdgeShape.m_hasVertex0 = true;
-      stEdgeShape.m_vertex0 = v0;
-    }
-
-    /* Has vertex3? */
-    if(_pstBodyPartDef->stEdge.bHasVertex3)
-    {
-      b2Vec2 v3;
-
-      v3.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v3.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.v3.fY * _pstBodyPartDef->vScale.fY);
-      stEdgeShape.m_hasVertex3 = true;
-      stEdgeShape.m_vertex3 = v3;
+      av[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
     }
 
     /* Updates shape */
-    stEdgeShape.Set(v1, v2);
+    stEdgeShape.Set(av[0], av[1]);
+
+    /* Has previous (ghost)? */
+    if(_pstBodyPartDef->stEdge.bHasPrevious)
+    {
+      stEdgeShape.m_vertex0.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fY * _pstBodyPartDef->vScale.fY);
+      stEdgeShape.m_hasVertex0 = true;
+    }
+
+    /* Has next (ghost)? */
+    if(_pstBodyPartDef->stEdge.bHasNext)
+    {
+      stEdgeShape.m_vertex3.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fY * _pstBodyPartDef->vScale.fY);
+      stEdgeShape.m_hasVertex3 = true;
+    }
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
   {
-    b2Vec2       *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
-    orxU32        i;
+    b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
+    orxU32  i;
 
     /* Checks */
     orxASSERT(_pstBodyPartDef->stChain.u32VertexCount > 0);
