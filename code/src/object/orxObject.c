@@ -365,6 +365,33 @@ void orxFASTCALL orxObject_CommandFindNext(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: GetCount
+ */
+void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32      u32Count;
+  orxOBJECT  *pstObject;
+
+  /* For all objects */
+  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
+      pstObject != orxNULL;
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+  {
+    /* Match? */
+    if((_u32ArgNumber == 0) || (orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0))
+    {
+      /* Updates count */
+      u32Count++;
+    }
+  }
+
+  /* Updates result */
+  _pstResult->u32Value = u32Count;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetID
  */
 void orxFASTCALL orxObject_CommandGetID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2597,6 +2624,9 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: FindNext */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <none>", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: GetCount */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: GetID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetID, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -2763,6 +2793,9 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: FindNext */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FindNext);
+
+  /* Command: GetCount */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetCount);
 
   /* Command: GetID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetID);
