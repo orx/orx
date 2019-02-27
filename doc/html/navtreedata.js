@@ -48,12 +48,12 @@ var NAVTREEINDEX =
 "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684afb0536b016d6a68246a974d4a25853a7",
 "group__orx_sound.html#ga6fbb5775777080c8bbdb4f6b3d527cdc",
 "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aafa35b7d509158f5ef6bdd363ffc3f27b",
-"group__orx_structure.html#ga1d108ddd6ce69fb1af3f83390bbfae21",
-"group__orx_text.html#ga48540a8acf5c3b2914e4139d0471f0b5",
-"group__orx_type.html#gaf3f0f3d5b7eecdfc747e04a9de35a45a",
-"orx_anim_set_8h_source.html",
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e",
-"structorx_v_e_c_t_o_r.html#a09a44afbc91b810eec4dca679ad175f3"
+"group__orx_structure.html#ga19ed685999b2338e949f1332fc27ff2f",
+"group__orx_text.html#ga29d5de5b4a21a24bd3bfbad5cf57b799",
+"group__orx_type.html#gae4b900add41fedc3497a0f7dd2926136",
+"orx_anim_pointer_8h_source.html",
+"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a66f606bf936468f2a55fabb67a601b97",
+"structorx_t_r_e_e___n_o_d_e.html#adeee9aca48dc6807b2ff0f0b964b175e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

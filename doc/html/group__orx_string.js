@@ -9,6 +9,7 @@ var group__orx_string =
     [ "STRTO_CAST", "group__orx_string.html#gac3346d324ba58207dd77076759c38dfa", null ],
     [ "orxString_Compare", "group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c", null ],
     [ "orxString_ContinueCRC", "group__orx_string.html#ga61bc85167582f9576f396aed528f0091", null ],
+    [ "orxString_Copy", "group__orx_string.html#gafde2f0e71190db970d0c6337eeceaf16", null ],
     [ "orxString_Delete", "group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28", null ],
     [ "orxString_Duplicate", "group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd", null ],
     [ "orxString_Exit", "group__orx_string.html#ga5609313df76783e84f9ab2726f3014a5", null ],
