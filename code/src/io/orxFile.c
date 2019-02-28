@@ -142,6 +142,7 @@ static orxFILE_STATIC sstFile;
 
 static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData, orxFILE_INFO *_pstFileInfo)
 {
+  orxU32 u32PathLength;
   /* Checks */
   orxASSERT(_pstData != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
@@ -151,7 +152,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   _pstFileInfo->s64TimeStamp  = (orxS64)_pstData->time_write;
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
-  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+  u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
   _pstFileInfo->u32Flags      = ((_pstData->attrib & (_A_RDONLY|_A_HIDDEN|_A_SUBDIR)) == 0)
                                 ? orxFILE_KU32_FLAG_INFO_NORMAL
                                 : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_READONLY : 0)
@@ -167,6 +170,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
 static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orxFILE_INFO *_pstFileInfo)
 {
   struct stat stStat;
+  orxU32      u32PathLength;
   orxSTRING   zName;
 
   /* Checks */
@@ -179,7 +183,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   /* Stores info */
   orxString_NCopy(_pstFileInfo->zName, zName, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
-  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+  u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
   /* Gets file info */
   stat(_pstFileInfo->zFullName, &stStat);
@@ -514,7 +520,8 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       u32Length = (orxU32)orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
       orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
       _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
-      orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+      orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+      _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
       /* Stores pattern */
       u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
@@ -566,7 +573,8 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     u32Length = orxMIN((orxU32)(zFileName - _zSearchPattern), sizeof(_pstFileInfo->zPath) - 1);
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
     _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
-    orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+    orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+    _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
     /* Stores pattern */
     u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
@@ -655,7 +663,8 @@ orxSTATUS orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Updates full name */
-  orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
   /* Reads directory */
 
