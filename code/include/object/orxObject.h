@@ -518,6 +518,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pst
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
 
+/** Sets the relative animation frequency for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
 /** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().
  * @param[in]   _pstObject      Concerned object
@@ -922,6 +929,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
 
+/** Sets smoothing for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetSmoothingRecursive(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
+
 /** Gets object smoothing.
  * @param[in]   _pstObject     Concerned object
  * @return Smoothing type (enabled, default or none)
@@ -1024,6 +1038,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetRepeat(const orxOBJECT 
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Sets blend mode of an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetBlendModeRecursive(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Object has blend mode accessor?
  * @param[in]   _pstObject      Concerned object

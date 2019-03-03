@@ -6529,6 +6529,13 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
   return eResult;
 }
 
+/** Sets the relative animation frequency for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetAnimFrequency, orxFLOAT);
+
 /** Is current animation test.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to test
@@ -8230,6 +8237,13 @@ orxSTATUS orxFASTCALL orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_S
   return eResult;
 }
 
+/** Sets smoothing for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetSmoothing, orxDISPLAY_SMOOTHING);
+
 /** Gets object smoothing.
  * @param[in]   _pstObject     Concerned object
  * @return Smoothing type (enabled, default or none)
@@ -8657,6 +8671,13 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
   /* Done! */
   return eResult;
 }
+
+/** Sets blend mode of an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetBlendMode, orxDISPLAY_BLEND_MODE);
 
 /** Object has blend mode accessor?
  * @param[in]   _pstObject      Concerned object
