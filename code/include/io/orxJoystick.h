@@ -231,6 +231,9 @@ typedef enum __orxJOYSTICK_AXIS_t
 #undef orxJOYSTICK_DECLARE_BUTTON_ENUM
 #undef orxJOYSTICK_DECLARE_AXIS_ENUM
 
+#define orxJOYSTICK_KU32_MIN_ID               1
+#define orxJOYSTICK_KU32_MAX_ID               (orxJOYSTICK_BUTTON_NUMBER / orxJOYSTICK_BUTTON_SINGLE_NUMBER)
+
 
 /***************************************************************************
  * Functions directly implemented by orx core

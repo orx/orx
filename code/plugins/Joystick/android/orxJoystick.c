@@ -709,10 +709,10 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsConnected(orxU32 _u32ID)
 
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32ID > 0) && (_u32ID <= orxANDROID_KU32_MAX_JOYSTICK_NUMBER));
+  orxASSERT((_u32ID >= orxJOYSTICK_KU32_MIN_ID) && (_u32ID <= orxJOYSTICK_KU32_MAX_ID));
 
   /* Updates result */
-  bResult = (sstJoystick.au32DeviceIds[_u32ID - 1] != 0) ? orxTRUE : orxFALSE;
+  bResult = ((_u32ID <= orxANDROID_KU32_MAX_JOYSTICK_NUMBER) && (sstJoystick.au32DeviceIds[_u32ID - 1] != 0)) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
