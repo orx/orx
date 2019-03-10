@@ -72,7 +72,7 @@
 
 #define orxINPUT_KU32_SET_FLAG_NONE                   0x00000000  /**< No flags */
 
-#define orxINPUT_KU32_SET_FLAG_ENABLED                0x00000001  /**< Enabled flag */
+#define orxINPUT_KU32_SET_FLAG_ENABLED                0x10000000  /**< Enabled flag */
 
 #define orxINPUT_KU32_SET_MASK_ALL                    0xFFFFFFFF  /**< All mask */
 
@@ -380,83 +380,87 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
   /* Checks */
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
-  /* Depending on type */
-  switch(_eType)
+  /* Is type enabled? */
+  if(orxFLAG_TEST(sstInput.pstCurrentSet->u32Flags, orxINPUT_GET_FLAG(_eType)))
   {
-    case orxINPUT_TYPE_KEYBOARD_KEY:
+    /* Depending on type */
+    switch(_eType)
     {
-      /* Updates result */
-      fResult = (orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
-
-      break;
-    }
-
-    case orxINPUT_TYPE_MOUSE_BUTTON:
-    {
-      /* Wheel? */
-      switch(_eID)
+      case orxINPUT_TYPE_KEYBOARD_KEY:
       {
-        case orxMOUSE_BUTTON_WHEEL_UP:
-        {
-          /* Updates result */
-          fResult = orxMouse_GetWheelDelta();
-          fResult = orxMAX(fResult, orxFLOAT_0);
-          break;
-        }
+        /* Updates result */
+        fResult = (orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
 
-        case orxMOUSE_BUTTON_WHEEL_DOWN:
-        {
-          /* Updates result */
-          fResult = -orxMouse_GetWheelDelta();
-          fResult = orxMAX(fResult, orxFLOAT_0);
-          break;
-        }
-
-        default:
-        {
-          /* Updates result */
-          fResult = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
-          break;
-        }
+        break;
       }
 
-      break;
-    }
+      case orxINPUT_TYPE_MOUSE_BUTTON:
+      {
+        /* Wheel? */
+        switch(_eID)
+        {
+          case orxMOUSE_BUTTON_WHEEL_UP:
+          {
+            /* Updates result */
+            fResult = orxMouse_GetWheelDelta();
+            fResult = orxMAX(fResult, orxFLOAT_0);
+            break;
+          }
 
-    case orxINPUT_TYPE_MOUSE_AXIS:
-    {
-      /* Updates result */
-      fResult = (_eID == (orxMOUSE_AXIS_X))
-              ? sstInput.vMouseMove.fX
-              : (_eID == (orxMOUSE_AXIS_Y))
-              ?  sstInput.vMouseMove.fY
-              : orxFLOAT_0;
+          case orxMOUSE_BUTTON_WHEEL_DOWN:
+          {
+            /* Updates result */
+            fResult = -orxMouse_GetWheelDelta();
+            fResult = orxMAX(fResult, orxFLOAT_0);
+            break;
+          }
 
-      break;
-    }
+          default:
+          {
+            /* Updates result */
+            fResult = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+            break;
+          }
+        }
 
-    case orxINPUT_TYPE_JOYSTICK_BUTTON:
-    {
-      /* Updates result */
-      fResult = (orxJoystick_IsButtonPressed((orxJOYSTICK_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+        break;
+      }
 
-      break;
-    }
+      case orxINPUT_TYPE_MOUSE_AXIS:
+      {
+        /* Updates result */
+        fResult = (_eID == (orxMOUSE_AXIS_X))
+                ? sstInput.vMouseMove.fX
+                : (_eID == (orxMOUSE_AXIS_Y))
+                ?  sstInput.vMouseMove.fY
+                : orxFLOAT_0;
 
-    case orxINPUT_TYPE_JOYSTICK_AXIS:
-    {
-      /* Updates result */
-      fResult = orxJoystick_GetAxisValue((orxJOYSTICK_AXIS)_eID);
+        break;
+      }
 
-      break;
-    }
+      case orxINPUT_TYPE_JOYSTICK_BUTTON:
+      {
+        /* Updates result */
+        fResult = (orxJoystick_IsButtonPressed((orxJOYSTICK_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
 
-    default:
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+        break;
+      }
 
-      break;
+      case orxINPUT_TYPE_JOYSTICK_AXIS:
+      {
+        /* Updates result */
+        fResult = orxJoystick_GetAxisValue((orxJOYSTICK_AXIS)_eID);
+
+        break;
+      }
+
+      default:
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+
+        break;
+      }
     }
   }
 
@@ -895,29 +899,17 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   /* Updates mouse move */
   orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
 
-  /* Gets set from parameter */
-  pstSet = (orxINPUT_SET *)_pContext;
-
-  /* Valid? */
-  if(pstSet != orxNULL)
+  /* For all the sets */
+  for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+      pstSet != orxNULL;
+      pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
   {
-    /* Updates it */
-    orxInput_UpdateSet(pstSet);
-  }
-  else
-  {
-    /* For all the sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-        pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+    /* Is enabled or current working set? */
+    if(orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)
+    || (pstSet == sstInput.pstCurrentSet))
     {
-      /* Is enabled or current working set? */
-      if(orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)
-      || (pstSet == sstInput.pstCurrentSet))
-      {
-        /* Updates it */
-        orxInput_UpdateSet(pstSet);
-      }
+      /* Updates it */
+      orxInput_UpdateSet(pstSet);
     }
   }
 
@@ -1030,7 +1022,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
         pstResult->stID = _stSetID;
 
         /* Clears its flags */
-        pstResult->u32Flags = orxINPUT_KU32_SET_FLAG_NONE;
+        pstResult->u32Flags = orxINPUT_KU32_SET_FLAG_NONE | orxINPUT_KU32_MASK_TYPE_ALL;
       }
       else
       {
@@ -1706,6 +1698,32 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
 
   /* Done! */
   return bResult;
+}
+
+/** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)
+ * @param[in] _u32AddTypeFlags      Type flags to add
+ * @param[in] _u32RemoveTypeFlags   Type flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32RemoveTypeFlags)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if(sstInput.pstCurrentSet != orxNULL)
+  {
+    /* Updates its ID flags */
+    orxFLAG_SET(sstInput.pstCurrentSet->u32Flags, _u32AddTypeFlags & orxINPUT_KU32_MASK_TYPE_ALL, _u32RemoveTypeFlags & orxINPUT_KU32_MASK_TYPE_ALL);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Is input active?
@@ -3059,17 +3077,12 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
 orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID, orxFLOAT *_pfValue)
 {
   orxU32    eType;
-  orxBOOL   bDebugLevelBackup;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
-
-  /* Disables joystick logs */
-  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_JOYSTICK);
-  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, orxFALSE);
 
   /* For all input types */
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
@@ -3112,9 +3125,6 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
       }
     }
   }
-
-  /* Re-enables joystick logs */
-  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, bDebugLevelBackup);
 
   /* Failed? */
   if(eResult == orxSTATUS_FAILURE)
