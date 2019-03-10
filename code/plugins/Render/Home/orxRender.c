@@ -2300,26 +2300,38 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PROFILER);
     }
 
-    /* Is console enabled? */
-    if(orxConsole_IsEnabled() != orxFALSE)
+    /* Should render console? */
+    if(orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_CONSOLE_START) != orxSTATUS_FAILURE)
     {
-      /* Updates its offset */
-      sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
-      sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
+      /* Is console enabled? */
+      if(orxConsole_IsEnabled() != orxFALSE)
+      {
+        /* Updates its offset */
+        sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
+      }
+      else
+      {
+        /* Updates its offset */
+        sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
+      }
+
+      /* Should render console? */
+      if(sstRender.fConsoleOffset != sstRender.fDefaultConsoleOffset)
+      {
+        /* Renders it */
+        orxRender_Home_RenderConsole();
+      }
     }
     else
     {
-      /* Updates its offset */
-      sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
-      sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
+      /* Resets console offset */
+      sstRender.fConsoleOffset = sstRender.fDefaultConsoleOffset;
     }
 
-    /* Should render console? */
-    if(sstRender.fConsoleOffset != sstRender.fDefaultConsoleOffset)
-    {
-      /* Renders it */
-      orxRender_Home_RenderConsole();
-    }
+    /* Sends console render stop event */
+    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_CONSOLE_STOP);
 
     /* Pops previous section */
     orxConfig_PopSection();

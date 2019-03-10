@@ -86,6 +86,8 @@ typedef enum __orxRENDER_EVENT_t
   orxRENDER_EVENT_VIEWPORT_STOP,          /**< Event sent when a viewport rendering stops */
   orxRENDER_EVENT_OBJECT_START,           /**< Event sent when an object rendering starts */
   orxRENDER_EVENT_OBJECT_STOP,            /**< Event sent when an object rendering stops */
+  orxRENDER_EVENT_CONSOLE_START,          /**< Event sent when console rendering starts */
+  orxRENDER_EVENT_CONSOLE_STOP,           /**< Event sent when console rendering stops */
 
   orxRENDER_EVENT_NUMBER,
 
