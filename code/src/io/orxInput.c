@@ -381,7 +381,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Is type enabled? */
-  if(orxFLAG_TEST(sstInput.pstCurrentSet->u32Flags, orxINPUT_GET_FLAG(_eType)))
+  if((sstInput.pstCurrentSet == orxNULL) || orxFLAG_TEST(sstInput.pstCurrentSet->u32Flags, orxINPUT_GET_FLAG(_eType)))
   {
     /* Depending on type */
     switch(_eType)
