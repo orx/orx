@@ -2259,8 +2259,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       orxRender_Home_RenderFPS();
     }
 
-    /* Should render profiler */
-    if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE)
+    /* Should render profiler? */
+    if((orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_PROFILER_START) != orxSTATUS_FAILURE)
+    && (orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_PROFILER) != orxFALSE))
     {
       /* Renders it */
       orxRender_Home_RenderProfiler();
@@ -2299,6 +2300,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       /* Updates status */
       orxFLAG_SET(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_NONE, orxRENDER_KU32_STATIC_FLAG_PROFILER);
     }
+
+    /* Sends profiler render stop event */
+    orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_PROFILER_STOP);
 
     /* Should render console? */
     if(orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_CONSOLE_START) != orxSTATUS_FAILURE)
