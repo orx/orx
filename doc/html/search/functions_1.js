@@ -573,6 +573,7 @@ var searchData=
   ['orxinput_5fsetmultiplier',['orxInput_SetMultiplier',['../group__orx_input.html#gafe06c1f8cb65877896890e7427cdc5b4',1,'orxInput.h']]],
   ['orxinput_5fsetpermanentvalue',['orxInput_SetPermanentValue',['../group__orx_input.html#ga42393f5dfe8922974e5ecf198abde788',1,'orxInput.h']]],
   ['orxinput_5fsetthreshold',['orxInput_SetThreshold',['../group__orx_input.html#ga0d5ce81503466fb9057e719bd9a4c059',1,'orxInput.h']]],
+  ['orxinput_5fsettypeflags',['orxInput_SetTypeFlags',['../group__orx_input.html#ga2dcd66b997f8010d9735d2228083f2ab',1,'orxInput.h']]],
   ['orxinput_5fsetup',['orxInput_Setup',['../group__orx_input.html#ga1095ad88059cd0d841a28ad60efc0a22',1,'orxInput.h']]],
   ['orxinput_5fsetvalue',['orxInput_SetValue',['../group__orx_input.html#gab2b159105a935ccb1547119a07822f97',1,'orxInput.h']]],
   ['orxinput_5funbind',['orxInput_Unbind',['../group__orx_input.html#gae32d1e9dfecf8947eaea02e67b2a4c71',1,'orxInput.h']]],

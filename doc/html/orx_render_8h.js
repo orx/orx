@@ -21,6 +21,10 @@ var orx_render_8h =
       [ "orxRENDER_EVENT_VIEWPORT_STOP", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a93d3c87196f358847d4d5ea86d2dde22", null ],
       [ "orxRENDER_EVENT_OBJECT_START", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684afb0536b016d6a68246a974d4a25853a7", null ],
       [ "orxRENDER_EVENT_OBJECT_STOP", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684aafbb9fce1a87994b6b3d7aa3e5eee644", null ],
+      [ "orxRENDER_EVENT_CONSOLE_START", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684abb8a426fb40ff6915fb1e29e6d39f3ca", null ],
+      [ "orxRENDER_EVENT_CONSOLE_STOP", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a5a95a416e9d7558cd9aaf06c11fc08cc", null ],
+      [ "orxRENDER_EVENT_PROFILER_START", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a1384d517864965f9b17c05e591c61524", null ],
+      [ "orxRENDER_EVENT_PROFILER_STOP", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a9a4887ed15461b7534f37b3135cfe49d", null ],
       [ "orxRENDER_EVENT_NUMBER", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a5b35556b2c49059077d86b0574947cd4", null ],
       [ "orxRENDER_EVENT_NONE", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684ae287264fd0bac7d65d9f0f3d2f14846e", null ]
     ] ],
