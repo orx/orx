@@ -456,7 +456,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     {
       const orxSTRING zCameraName;
       orxS32          s32Number;
-      orxBOOL         bFixedSize, bFixedPosition;
+      orxBOOL         bFixedSize = orxFALSE, bFixedPosition = orxFALSE;
 
       /* No debug? */
       if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_NO_DEBUG) != orxFALSE)
@@ -471,15 +471,18 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         orxVECTOR vSize;
 
         /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize);
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        {
+          /* Applies it */
+          orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
 
-        /* Applies it */
-        orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
-
-        /* Updates status */
-        bFixedSize = orxTRUE;
+          /* Updates status */
+          bFixedSize = orxTRUE;
+        }
       }
-      else
+
+      /* No fixed size? */
+      if(bFixedSize == orxFALSE)
       {
         orxFLOAT fWidth, fHeight;
 
@@ -491,9 +494,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
-
-        /* Updates status */
-        bFixedSize = orxFALSE;
       }
 
       /* Has plain position */
@@ -502,18 +502,14 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         orxVECTOR vPos;
 
         /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos);
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos) != orxNULL)
+        {
+          /* Applies it */
+          orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
 
-        /* Applies it */
-        orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
-
-        /* Updates status */
-        bFixedPosition = orxTRUE;
-      }
-      else
-      {
-        /* Updates status */
-        bFixedPosition = orxFALSE;
+          /* Updates status */
+          bFixedPosition = orxTRUE;
+        }
       }
 
       /* Auto resize */
