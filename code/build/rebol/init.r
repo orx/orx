@@ -18,6 +18,7 @@ platforms:  [
 ]
 templates: [
   name
+  date
   code-path
 ]
 
@@ -55,6 +56,7 @@ to-template: func [
 ; Inits
 change-dir root: system/options/path
 code-path: {..}
+date: to-string now/date
 switch platform: lowercase to-string system/platform/1 [
   {macintosh} [platform: {mac} code-path: to-local-file root/code]
 ]

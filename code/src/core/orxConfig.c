@@ -373,7 +373,7 @@ static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
     {
       orxCONFIG_SECTION *pstSection;
 
-      /* Finds correct entry */
+      /* For all sections */
       for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
           pstSection != orxNULL;
           pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))

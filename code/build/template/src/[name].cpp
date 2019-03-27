@@ -24,10 +24,9 @@
 
 /**
  * @file [name].cpp
- * @date 17/05/2017
- * @author sausage@zeta.org.au
+ * @date [date]
  *
- * Orx Game template
+ * Orx Game Template
  */
 
 
@@ -35,11 +34,11 @@
 
 
 /*
- * This is a basic C++ template to quickly and easily get started with a project or tutorial.
+ * This is a basic code template to quickly and easily get started with a project or tutorial.
  */
 
 
-/** Initializes your game
+/** Init function, is called when all orx's modules have been initialized
  */
 orxSTATUS orxFASTCALL Init()
 {
@@ -75,24 +74,22 @@ orxSTATUS orxFASTCALL Run()
     return eResult;
 }
 
-/** Exit function
+/** Exit function, is called before exiting from orx
  */
 void orxFASTCALL Exit()
 {
     /* Lets Orx clean all our mess automatically. :) */
 }
 
-/** Bootstrap function
+/** Bootstrap function, called before config is initialized, allowing early resource storage definition
  */
 orxSTATUS orxFASTCALL Bootstrap()
 {
-    orxSTATUS eResult = orxSTATUS_SUCCESS;
-
     /* Adds a config storage to find the initial config file */
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 
-    /* Done! */
-    return eResult;
+    /* Return orxSTATUS_FAILURE to prevent orx from loading the default config file */
+    return orxSTATUS_SUCCESS;
 }
 
 /** Main function
@@ -102,7 +99,7 @@ int main(int argc, char **argv)
     /* Sets bootstrap function to provide at least one resource storage before loading any config files */
     orxConfig_SetBootstrap(Bootstrap);
 
-    /* Executes a new instance of tutorial */
+    /* Executes our game */
     orx_Execute(argc, argv, Init, Run, Exit);
 
     /* Done! */
