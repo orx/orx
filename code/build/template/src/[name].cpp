@@ -42,18 +42,18 @@
  */
 orxSTATUS orxFASTCALL Init()
 {
-    /* Displays a small hint in console */
+    // Displays a small hint in console
     orxLOG("\n* This template creates a viewport/camera couple and an object"
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the template to see the changes.");
 
-    /* Creates the viewport */
+    // Creates the viewport
     orxViewport_CreateFromConfig("Viewport");
 
-    /* Creates the object */
+    // Creates the object
     orxObject_CreateFromConfig("Object");
 
-    /* Done! */
+    // Done!
     return orxSTATUS_SUCCESS;
 }
 
@@ -63,14 +63,14 @@ orxSTATUS orxFASTCALL Run()
 {
     orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-    /* Should quit? */
+    // Should quit?
     if(orxInput_IsActive("Quit"))
     {
-        /* Updates result */
+        // Update result
         eResult = orxSTATUS_FAILURE;
     }
 
-    /* Done! */
+    // Done!
     return eResult;
 }
 
@@ -78,17 +78,17 @@ orxSTATUS orxFASTCALL Run()
  */
 void orxFASTCALL Exit()
 {
-    /* Lets Orx clean all our mess automatically. :) */
+    // Let Orx clean all our mess automatically. :)
 }
 
-/** Bootstrap function, called before config is initialized, allowing early resource storage definition
+/** Bootstrap function, called before config is initialized, allowing for early resource storage definition
  */
 orxSTATUS orxFASTCALL Bootstrap()
 {
-    /* Adds a config storage to find the initial config file */
+    // Add a config storage to find the initial config file
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 
-    /* Return orxSTATUS_FAILURE to prevent orx from loading the default config file */
+    // Return orxSTATUS_FAILURE to prevent orx from loading the default config file
     return orxSTATUS_SUCCESS;
 }
 
@@ -96,12 +96,12 @@ orxSTATUS orxFASTCALL Bootstrap()
  */
 int main(int argc, char **argv)
 {
-    /* Sets bootstrap function to provide at least one resource storage before loading any config files */
+    // Set the bootstrap function to provide at least one resource storage before loading any config files
     orxConfig_SetBootstrap(Bootstrap);
 
-    /* Executes our game */
+    // Execute our game
     orx_Execute(argc, argv, Init, Run, Exit);
 
-    /* Done! */
+    // Done!
     return EXIT_SUCCESS;
 }

@@ -69,6 +69,7 @@
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
+#define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           4096
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
 #define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
@@ -143,6 +144,7 @@ typedef struct __orxCOMMAND_STATIC_t
   orxTREE                   stCommandTrie;                                            /**< Command trie */
   orxBANK                  *pstResultBank;                                            /**< Command result bank */
   orxCHAR                   acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE];   /**< Evaluate buffer */
+  orxCHAR                   acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE];     /**< Process buffer */
   orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
   orxCHAR                   acResultBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];       /**< Result buffer */
   orxU32                    u32Flags;                                                 /**< Control flags */
@@ -540,19 +542,19 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       *(orxCHAR *)pcCommandEnd = cBackupChar;
 
       /* For all stacked buffers */
-      for(i = s32BufferCount - 1, pcDst = sstCommand.acEvaluateBuffer; i >= 0; i--)
+      for(i = s32BufferCount - 1, pcDst = sstCommand.acProcessBuffer; i >= 0; i--)
       {
         orxBOOL bStop;
 
         /* Has room for next buffer? */
-        if((i != s32BufferCount - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2))
+        if((i != s32BufferCount - 1) && (*azBufferList[i] != orxCHAR_NULL) && (pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 2))
         {
           /* Inserts space */
           *pcDst++ = ' ';
         }
 
         /* For all characters */
-        for(pcSrc = azBufferList[i], bStop = orxFALSE; (bStop == orxFALSE) && (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 2); pcSrc++)
+        for(pcSrc = azBufferList[i], bStop = orxFALSE; (bStop == orxFALSE) && (*pcSrc != orxCHAR_NULL) && (pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 2); pcSrc++)
         {
           /* Depending on character */
           switch(*pcSrc)
@@ -563,7 +565,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               if(s32GUIDLength != 0)
               {
                 /* Replaces it with GUID */
-                orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, acGUID, orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acProcessBuffer));
 
                 /* Updates pointer */
                 pcDst += s32GUIDLength;
@@ -613,7 +615,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                         if((*pc == orxCHAR_NULL) || (orxCommand_IsWhiteSpace(*pc) != orxFALSE))
                         {
                           /* Has room? */
-                          if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                          if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1)
                           {
                             /* Adds block marker */
                             *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
@@ -643,7 +645,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 }
 
                 /* Replaces marker with stacked value */
-                orxString_NCopy(pcDst, zValue, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, zValue, orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acProcessBuffer));
 
                 /* Updates pointers */
                 pcDst += orxString_GetLength(zValue);
@@ -652,7 +654,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 if(bUseStringMarker != orxFALSE)
                 {
                   /* Has room? */
-                  if(pcDst - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1)
+                  if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1)
                   {
                     *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
                   }
@@ -667,7 +669,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
 
                 /* Replaces marker with stack error */
-                orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acEvaluateBuffer));
+                orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acProcessBuffer));
 
                 /* Updates pointers */
                 pcDst += orxString_GetLength(orxCOMMAND_KZ_ERROR_VALUE);
@@ -744,8 +746,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       zCommand = orxString_SkipWhiteSpaces(pcSrc);
 
       /* For all characters in the buffer */
-      for(pcSrc = sstCommand.acEvaluateBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
-          (u32ArgNumber < u32ParamNumber) && (pcSrc - sstCommand.acEvaluateBuffer < orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE) && (*pcSrc != orxCHAR_NULL);
+      for(pcSrc = sstCommand.acProcessBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
+          (u32ArgNumber < u32ParamNumber) && (pcSrc - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE) && (*pcSrc != orxCHAR_NULL);
           pcSrc++, u32ArgNumber++)
       {
         /* Skips all whitespaces */
@@ -2649,6 +2651,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
 
             /* Inits buffers */
             sstCommand.acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1]   = orxCHAR_NULL;
+            sstCommand.acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1]     = orxCHAR_NULL;
             sstCommand.acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
             /* Updates result */
@@ -3365,6 +3368,28 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
 */
 orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult)
 {
+  orxCOMMAND_VAR *pstResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zCommandLine != orxNULL);
+  orxASSERT(_pstResult != orxNULL);
+
+  /* Evaluates it */
+  pstResult = orxCommand_EvaluateWithGUID(_zCommandLine, orxU64_UNDEFINED, _pstResult);
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Evaluates a command with a specific GUID
+* @param[in]   _zCommandLine  Command name + arguments
+* @param[in]   _u64GUID       GUID to use in place of the GUID markers in the command
+* @param[out]  _pstResult     Variable that will contain the result
+* @return      Command result if found, orxNULL otherwise
+*/
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
+{
   orxCOMMAND_VAR *pstResult = orxNULL;
 
   /* Checks */
@@ -3375,8 +3400,11 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
   /* Valid? */
   if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
   {
+    /* Copies it */
+    orxString_NCopy(sstCommand.acEvaluateBuffer, _zCommandLine, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1);
+
     /* Processes it */
-    pstResult = orxCommand_Process(_zCommandLine, orxU64_UNDEFINED, _pstResult, orxFALSE);
+    pstResult = orxCommand_Process(sstCommand.acEvaluateBuffer, _u64GUID, _pstResult, orxFALSE);
   }
 
   /* Done! */
