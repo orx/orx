@@ -23,6 +23,7 @@ var orx_command_8h =
     ] ],
     [ "orxCommand_AddAlias", "group__orx_command.html#ga20e11431d707c5ce00edae743ef4fecf", null ],
     [ "orxCommand_Evaluate", "group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896", null ],
+    [ "orxCommand_EvaluateWithGUID", "group__orx_command.html#gaf6273ab83fe3e5384e3e533f80309c7e", null ],
     [ "orxCommand_Execute", "group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38", null ],
     [ "orxCommand_Exit", "group__orx_command.html#ga27af115986358699ec978008aeca8455", null ],
     [ "orxCommand_GetNext", "group__orx_command.html#ga40a4c53121bcdd0f5ffe2cc1745e3012", null ],
