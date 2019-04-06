@@ -68,7 +68,7 @@
 
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
 
-#define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          4096
+#define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          65536
 #define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           4096
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
@@ -147,6 +147,7 @@ typedef struct __orxCOMMAND_STATIC_t
   orxCHAR                   acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE];     /**< Process buffer */
   orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
   orxCHAR                   acResultBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];       /**< Result buffer */
+  orxS32                    s32EvaluateOffset;                                        /**< Evaluate buffer offset */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCOMMAND_STATIC;
@@ -2654,6 +2655,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
             sstCommand.acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1]     = orxCHAR_NULL;
             sstCommand.acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
+            /* Inits offset */
+            sstCommand.s32EvaluateOffset = 0;
+
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
           }
@@ -3400,11 +3404,17 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const o
   /* Valid? */
   if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
   {
-    /* Copies it */
-    orxString_NCopy(sstCommand.acEvaluateBuffer, _zCommandLine, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1);
+    orxS32 s32Offset;
+
+    /* Stores it in buffer */
+    s32Offset = orxString_NPrint(sstCommand.acEvaluateBuffer + sstCommand.s32EvaluateOffset, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - sstCommand.s32EvaluateOffset - 1, "%s", _zCommandLine) + 1;
+    sstCommand.s32EvaluateOffset += s32Offset;
 
     /* Processes it */
-    pstResult = orxCommand_Process(sstCommand.acEvaluateBuffer, _u64GUID, _pstResult, orxFALSE);
+    pstResult = orxCommand_Process(sstCommand.acEvaluateBuffer + sstCommand.s32EvaluateOffset - s32Offset, _u64GUID, _pstResult, orxFALSE);
+
+    /* Restores buffer offset */
+    sstCommand.s32EvaluateOffset -= s32Offset;
   }
 
   /* Done! */
