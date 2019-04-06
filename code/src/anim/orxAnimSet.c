@@ -1638,7 +1638,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     const orxSTRING zNewAnimParent;
     const orxSTRING zCurrentSection;
     orxU32          u32Digits;
-    orxBOOL         bContinue = orxTRUE;
+    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE;
     orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
     orxCHAR         acBuffer[128] = {};
 
@@ -1787,6 +1787,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Updates it */
           orxVector_Sub(&vTextureSize, &vTextureSize, &vTextureOrigin);
 
+          /* Updates text status */
+          bIsText = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT);
+
           /* Deletes it */
           orxGraphic_Delete(pstGraphic);
         }
@@ -1795,8 +1798,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* No texture size? */
       if(orxVector_IsNull(&vTextureSize) != orxFALSE)
       {
-        /* Stops */
-        bContinue = orxFALSE;
+        /* Not a text? */
+        if(bIsText == orxFALSE)
+        {
+          /* Stops */
+          bContinue = orxFALSE;
+        }
       }
     }
 
@@ -1990,8 +1997,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* No local size? */
           if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
           {
-            /* No frame size? */
-            if(orxVector_IsNull(&vFrameSize) != orxFALSE)
+            /* No frame size and not a text? */
+            if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acBuffer);
