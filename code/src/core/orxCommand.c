@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "anim/orxAnim.h"
 #include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "memory/orxMemory.h"
@@ -1117,30 +1118,61 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_TIMELINE);
-
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
+  /* Depends on event type */
+  switch(_pstEvent->eType)
   {
-    /* Trigger */
-    case orxTIMELINE_EVENT_TRIGGER:
+    case orxEVENT_TYPE_TIMELINE:
     {
-      orxCOMMAND_VAR              stResult;
-      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
+      /* Depending on event ID */
+      switch(_pstEvent->eID)
+      {
+        /* Timeline Trigger */
+        case orxTIMELINE_EVENT_TRIGGER:
+        {
+          orxCOMMAND_VAR              stResult;
+          orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
 
-      /* Gets payload */
-      pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+          /* Gets payload */
+          pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Processes command */
-      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+          /* Processes command */
+          orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
 
-      break;
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
     }
 
-    default:
+    case orxEVENT_TYPE_ANIM:
     {
-      break;
+      /* Depending on event ID */
+      switch(_pstEvent->eID)
+      {
+        /* Anim Custom Event */
+        case orxANIM_EVENT_CUSTOM_EVENT:
+        {
+          orxCOMMAND_VAR          stResult;
+          orxANIM_EVENT_PAYLOAD  *pstPayload;
+
+          /* Gets payload */
+          pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+          /* Processes command */
+          orxCommand_Process(pstPayload->stCustom.zName, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
     }
   }
 
@@ -2617,10 +2649,12 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     orxMemory_Zero(&sstCommand, sizeof(orxCOMMAND_STATIC));
 
     /* Registers event handler */
-    if(orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler) != orxSTATUS_FAILURE)
+    if((orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler) != orxSTATUS_FAILURE))
     {
       /* Filters relevant event IDs */
       orxEvent_SetHandlerIDFlags(orxCommand_EventHandler, orxEVENT_TYPE_TIMELINE, orxNULL, orxEVENT_GET_FLAG(orxTIMELINE_EVENT_TRIGGER), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxCommand_EventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Creates banks */
       sstCommand.pstBank        = orxBank_Create(orxCOMMAND_KU32_BANK_SIZE, sizeof(orxCOMMAND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -2668,6 +2702,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
         {
           /* Removes event handler */
           orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+          orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
           /* Deletes banks */
           orxBank_Delete(sstCommand.pstBank);
@@ -2696,6 +2731,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
 
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command banks.");
@@ -2703,6 +2739,10 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     }
     else
     {
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to register event handler.");
     }
@@ -2740,6 +2780,7 @@ void orxFASTCALL orxCommand_Exit()
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
     /* Updates flags */
     sstCommand.u32Flags &= ~orxCOMMAND_KU32_STATIC_FLAG_READY;
