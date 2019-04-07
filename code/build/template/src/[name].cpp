@@ -42,15 +42,15 @@
  */
 orxSTATUS orxFASTCALL Init()
 {
-    // Displays a small hint in console
-    orxLOG("\n* This template creates a viewport/camera couple and an object"
+    // Display a small hint in console
+    orxLOG("\n* This template project creates a viewport/camera couple and an object"
     "\n* You can play with the config parameters in ../data/config/[name].ini"
-    "\n* After changing them, relaunch the template to see the changes.");
+    "\n* After changing them, relaunch the executable to see the changes.");
 
-    // Creates the viewport
+    // Create the viewport
     orxViewport_CreateFromConfig("Viewport");
 
-    // Creates the object
+    // Create the object
     orxObject_CreateFromConfig("Object");
 
     // Done!
