@@ -1174,6 +1174,11 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
         }
       }
     }
+
+    default:
+    {
+      break;
+    }
   }
 
   /* Done! */
