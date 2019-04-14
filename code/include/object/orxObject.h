@@ -465,14 +465,15 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT 
 /** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
  *
- * This function is typically used to iterate over the children of an object. For example;
+ * This function is typically used to iterate over the children of an object. For example:
  * @code
- * for(orxOBJECT * pstChild = orxObject_GetChild(pstObject);
- *     pstChild;
- *     pstChild = orxObject_GetSibling(pstChild))
+ * for(orxOBJECT *pstChild = orxOBJECT(orxObject_GetChild(pstObject));
+ *     pstChild != orxNULL;
+ *     pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
  * {
- *     do_something(pstChild);
- * } @endcode
+ *     DoSomething(pstChild);
+ * }
+ * @endcode
  * @param[in]   _pstObject    Concerned object
  * @return      First child structure (object, spawner, camera or frame) / orxNULL
  */
