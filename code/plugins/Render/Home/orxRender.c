@@ -117,14 +117,13 @@
 typedef struct __orxRENDER_RENDER_NODE_t
 {
   orxLINKLIST_NODE      stNode;                     /**< Linklist node : 12 */
-  orxGRAPHIC           *pstGraphic;                 /**< Graphic pointer : 16 */
-  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 20 */
-  const orxSHADER      *pstShader;                  /**< Shader pointer : 24 */
-  orxOBJECT            *pstObject;                  /**< Object pointer : 28 */
-  orxFLOAT              fZ;                         /**< Z coordinate : 32 */
-  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 36 */
-  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 40 */
-  orxFLOAT              fDepthCoef;                 /**< Depth coef : 44 */
+  orxTEXTURE           *pstTexture;                 /**< Texture pointer : 16 */
+  const orxSHADER      *pstShader;                  /**< Shader pointer : 20 */
+  orxOBJECT            *pstObject;                  /**< Object pointer : 24 */
+  orxFLOAT              fZ;                         /**< Z coordinate : 28 */
+  orxDISPLAY_BLEND_MODE eBlendMode;                 /**< Blend mode : 32 */
+  orxDISPLAY_SMOOTHING  eSmoothing;                 /**< Smoothing : 36 */
+  orxFLOAT              fDepthCoef;                 /**< Depth coef : 40 */
 
 } orxRENDER_NODE;
 
@@ -1408,12 +1407,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
 {
   orxRENDER_EVENT_PAYLOAD stPayload;
   orxOBJECT              *pstObject;
-  orxGRAPHIC             *pstGraphic;
-  orxTEXTURE             *pstTexture;
-  orxTEXT                *pstText;
-  orxFONT                *pstFont;
-  orxBITMAP              *pstBitmap = orxNULL;
-  orxBOOL                 bIs2D;
   orxEVENT                stEvent;
   orxSTATUS               eResult = orxSTATUS_FAILURE;
 
@@ -1422,24 +1415,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
 
   /* Gets object */
   pstObject = _pstRenderNode->pstObject;
-
-  /* Gets object's working graphic */
-  pstGraphic = _pstRenderNode->pstGraphic;
-
-  /* Stores type */
-  bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
-
-  /* Is 2D? */
-  if(bIs2D != orxFALSE)
-  {
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("RenderObject <2D>");
-  }
-  else
-  {
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("RenderObject <Text>");
-  }
 
   /* Cleans event payload */
   orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_PAYLOAD));
@@ -1450,137 +1425,179 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
   /* Inits event */
   orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)pstObject, (orxHANDLE)pstObject, &stPayload);
 
-  /* Is 2D? */
-  if(bIs2D != orxFALSE)
+  /* Should render? */
+  if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
   {
-    orxVECTOR vClipTL, vClipBR, vSize;
+    orxGRAPHIC *pstGraphic;
+    orxTEXTURE *pstTexture;
+    orxTEXT    *pstText;
+    orxFONT    *pstFont;
+    orxBITMAP  *pstBitmap = orxNULL;
+    orxBOOL     bIs2D;
 
-    /* Gets its texture */
-    pstTexture = _pstRenderNode->pstTexture;
+    /* Gets object's working graphic */
+    pstGraphic = orxObject_GetWorkingGraphic(pstObject);
 
-    /* Gets its bitmap */
-    pstBitmap = orxTexture_GetBitmap(pstTexture);
+    /* Stores type */
+    bIs2D = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D);
 
-    /* Gets its clipping corners */
-    orxGraphic_GetOrigin(pstGraphic, &vClipTL);
-    orxGraphic_GetSize(pstGraphic, &vSize);
-    orxVector_Add(&vClipBR, &vClipTL, &vSize);
-
-    /* Updates its clipping (before event start for updated texture coordinates in shader) */
-    orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
-  }
-  else
-  {
-    /* Gets text */
-    pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
-
-    /* Valid? */
-    if(pstText != orxNULL)
+    /* Is 2D? */
+    if(bIs2D != orxFALSE)
     {
-      /* Gets its font */
-      pstFont = orxText_GetFont(pstText);
+      orxVECTOR vClipTL, vClipBR, vSize;
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("RenderObject <2D>");
+
+      /* Gets its texture */
+      pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+
+      /* Gets its bitmap */
+      pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+      /* Gets its clipping corners */
+      orxGraphic_GetOrigin(pstGraphic, &vClipTL);
+      orxGraphic_GetSize(pstGraphic, &vSize);
+      orxVector_Add(&vClipBR, &vClipTL, &vSize);
+
+      /* Updates its clipping (before event start for updated texture coordinates in shader) */
+      orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+    }
+    else
+    {
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("RenderObject <Text>");
+
+      /* Gets text */
+      pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
 
       /* Valid? */
-      if(pstFont != orxNULL)
+      if(pstText != orxNULL)
       {
-        /* Gets its texture */
-        pstTexture = orxFont_GetTexture(pstFont);
-        orxASSERT(pstTexture != orxNULL);
+        /* Gets its font */
+        pstFont = orxText_GetFont(pstText);
 
-        /* Gets its bitmap */
-        pstBitmap = orxTexture_GetBitmap(pstTexture);
+        /* Valid? */
+        if(pstFont != orxNULL)
+        {
+          /* Gets its texture */
+          pstTexture = orxFont_GetTexture(pstFont);
+          orxASSERT(pstTexture != orxNULL);
+
+          /* Gets its bitmap */
+          pstBitmap = orxTexture_GetBitmap(pstTexture);
+        }
       }
     }
-  }
 
-  /* Should render? */
-  if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE) && (pstBitmap != orxNULL))
-  {
-    /* Valid scale? */
-    if((stPayload.stObject.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.stObject.pstTransform->fScaleY != orxFLOAT_0))
+    /* Valid bitmap? */
+    if(pstBitmap != orxNULL)
     {
-      orxBOOL   bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
-      orxVECTOR vPivot;
-
-      /* Gets graphic's pivot */
-      orxGraphic_GetPivot(pstGraphic, &vPivot);
-
-      /* Gets object & graphic flipping */
-      orxObject_GetFlip(pstObject, &bObjectFlipX, &bObjectFlipY);
-      orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
-
-      /* Updates using combined flipping */
-      if(bObjectFlipX ^ bGraphicFlipX)
+      /* Valid scale? */
+      if((stPayload.stObject.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.stObject.pstTransform->fScaleY != orxFLOAT_0))
       {
-        stPayload.stObject.pstTransform->fScaleX *= -orxFLOAT_1;
-      }
-      if(bObjectFlipY ^ bGraphicFlipY)
-      {
-        stPayload.stObject.pstTransform->fScaleY *= -orxFLOAT_1;
-      }
+        orxVECTOR         vPivot;
+        orxSHADERPOINTER *pstShaderPointer;
+        orxBOOL           bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
 
-      /* Updates transform */
-      stPayload.stObject.pstTransform->fSrcX += vPivot.fX;
-      stPayload.stObject.pstTransform->fSrcY += vPivot.fY;
+        /* Gets its shader pointer */
+        pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
 
-      /* Has graphic color? */
-      if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
-      {
-        orxCOLOR stColor;
+        /* Valid? */
+        if(pstShaderPointer != orxNULL)
+        {
+          /* Starts it */
+          orxShaderPointer_Start(pstShaderPointer);
+        }
 
-        /* Updates display color */
-        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
-      }
-      /* Has object color? */
-      else if(orxObject_HasColor(pstObject) != orxFALSE)
-      {
-        orxCOLOR stColor;
+        /* Gets graphic's pivot */
+        orxGraphic_GetPivot(pstGraphic, &vPivot);
 
-        /* Updates display color */
-        orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(pstObject, &stColor)));
+        /* Gets object & graphic flipping */
+        orxObject_GetFlip(pstObject, &bObjectFlipX, &bObjectFlipY);
+        orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
+
+        /* Updates using combined flipping */
+        if(bObjectFlipX ^ bGraphicFlipX)
+        {
+          stPayload.stObject.pstTransform->fScaleX *= -orxFLOAT_1;
+        }
+        if(bObjectFlipY ^ bGraphicFlipY)
+        {
+          stPayload.stObject.pstTransform->fScaleY *= -orxFLOAT_1;
+        }
+
+        /* Updates transform */
+        stPayload.stObject.pstTransform->fSrcX += vPivot.fX;
+        stPayload.stObject.pstTransform->fSrcY += vPivot.fY;
+
+        /* Has graphic color? */
+        if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+        {
+          orxCOLOR stColor;
+
+          /* Updates display color */
+          orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
+        }
+        /* Has object color? */
+        else if(orxObject_HasColor(pstObject) != orxFALSE)
+        {
+          orxCOLOR stColor;
+
+          /* Updates display color */
+          orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(pstObject, &stColor)));
+        }
+        else
+        {
+          /* Applies white color */
+          orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
+        }
+
+        /* Is 2D? */
+        if(bIs2D != orxFALSE)
+        {
+          /* Transforms bitmap */
+          eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.stObject.pstTransform, _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
+        }
+        else
+        {
+          /* Transforms text */
+          eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
+        }
+
+        /* Has shader pointer? */
+        if(pstShaderPointer != orxNULL)
+        {
+          /* Stops it */
+          orxShaderPointer_Stop(pstShaderPointer);
+        }
       }
       else
       {
-        /* Applies white color */
-        orxDisplay_SetBitmapColor(pstBitmap, orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
-      }
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling component when rendering object [%s] should not be 0, got (%g, %g).", orxObject_GetName(_pstRenderNode->pstObject), stPayload.stObject.pstTransform->fScaleX, stPayload.stObject.pstTransform->fScaleY);
 
-      /* Is 2D? */
-      if(bIs2D != orxFALSE)
-      {
-        /* Transforms bitmap */
-        eResult = orxDisplay_TransformBitmap(pstBitmap, stPayload.stObject.pstTransform, _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
-      }
-      else
-      {
-        /* Transforms text */
-        eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling component when rendering object [%s] should not be 0, got (%g, %g).", orxObject_GetName(_pstRenderNode->pstObject), stPayload.stObject.pstTransform->fScaleX, stPayload.stObject.pstTransform->fScaleY);
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No valid bitmap found when rendering object [%s].", orxObject_GetName(_pstRenderNode->pstObject));
     }
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
   else
   {
-    /* Was valid? */
-    if(pstBitmap != orxNULL)
-    {
-      /* Updates result, aborted by user request */
-      eResult = orxSTATUS_SUCCESS;
-    }
+    /* Updates result, aborted by user request */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Sends stop event */
   orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)pstObject, (orxHANDLE)pstObject, &stPayload);
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -1993,7 +2010,6 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
 
                             /* Stores object */
                             pstRenderNode->pstObject  = pstObject;
-                            pstRenderNode->pstGraphic = pstGraphic;
                             pstRenderNode->pstTexture = pstTexture;
                             pstRenderNode->pstShader  = pstShader;
                             pstRenderNode->eSmoothing = eSmoothing;
@@ -2182,8 +2198,33 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
         }
       }
 
-      /* Sends stop event */
-      orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_STOP, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
+      /* Inits stop event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_STOP, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
+
+      /* Sends it */
+      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+      {
+        const orxSHADERPOINTER *pstShaderPointer;
+
+        /* Gets viewport's shader pointer */
+        pstShaderPointer = orxViewport_GetShaderPointer(_pstViewport);
+
+        /* Valid and enabled? */
+        if((pstShaderPointer != orxNULL) && (orxShaderPointer_IsEnabled(pstShaderPointer) != orxFALSE))
+        {
+          /* Updates blend mode */
+          orxDisplay_SetBlendMode(orxViewport_GetBlendMode(_pstViewport));
+
+          /* Starts shader */
+          orxShaderPointer_Start(pstShaderPointer);
+
+          /* Draws render target's content */
+          orxDisplay_TransformBitmap(orxNULL, orxNULL, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
+
+          /* Stops shader */
+          orxShaderPointer_Stop(pstShaderPointer);
+        }
+      }
     }
     else
     {
