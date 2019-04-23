@@ -1176,43 +1176,6 @@ const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
   return zResult;
 }
 
-/** Sets texture color
- * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _pstColor       Color to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor)
-{
-  orxBITMAP  *pstBitmap;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-  orxASSERT(_pstColor != orxNULL);
-
-  /* Gets bitmap */
-  pstBitmap = orxTexture_GetBitmap(_pstTexture);
-
-  /* Valid? */
-  if(pstBitmap != orxNULL)
-  {
-    /* Updates its color */
-    eResult = orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(_pstColor));
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid bitmap in texture.");
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */

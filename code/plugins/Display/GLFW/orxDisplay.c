@@ -3584,17 +3584,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-
-  /* Done! */
-  return eResult;
-}
-
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -6180,7 +6169,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmaps, DISPLAY,
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);

@@ -2920,17 +2920,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-
-  /* Done! */
-  return eResult;
-}
-
 orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -4988,7 +4977,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawLine, DISPLAY, DRAW_LINE);

@@ -3361,17 +3361,6 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapData(const orxBITMAP *_pstBitmap, 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Not available on this platform!");
-
-  /* Done! */
-  return eResult;
-}
-
 orxSTATUS orxFASTCALL orxDisplay_iOS_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -4987,7 +4976,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetDestinationBitmaps, DISPLAY, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBlendMode, DISPLAY, SET_BLEND_MODE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);

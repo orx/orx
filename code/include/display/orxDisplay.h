@@ -959,14 +959,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
 
-/** Sets a bitmap color key (used with non alpha transparency)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to use as transparent one
- * @param[in]   _bEnable                              Enable / disable transparence for this color
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
-
 /** Sets a bitmap data (RGBA memory format)
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @param[in]   _au8Data                              Data (4 channels, RGBA)
