@@ -159,7 +159,6 @@ var group__orx_display =
     [ "orxDisplay_DrawPolyline", "group__orx_display.html#ga3fac17f6697ddc6d6dd3059fecdb9ca3", null ],
     [ "orxDisplay_EnableVSync", "group__orx_display.html#gaf463e1f2aa57d66db163d6306bfe433a", null ],
     [ "orxDisplay_Exit", "group__orx_display.html#ga0af5c24229c1176913296242dfa2d4da", null ],
-    [ "orxDisplay_GetBitmapColor", "group__orx_display.html#gad115c2a3c5a27410cc1509bb100bf44c", null ],
     [ "orxDisplay_GetBitmapData", "group__orx_display.html#ga83e034c2d49365fec77eebed6743e844", null ],
     [ "orxDisplay_GetBitmapID", "group__orx_display.html#ga9debbe6efef28318112423a7b884822f", null ],
     [ "orxDisplay_GetBitmapSize", "group__orx_display.html#gad88758772634d94e250d0163567af051", null ],
@@ -178,8 +177,6 @@ var group__orx_display =
     [ "orxDisplay_LoadBitmap", "group__orx_display.html#ga9ab637c5b295fdd11024c270327db5e4", null ],
     [ "orxDisplay_SaveBitmap", "group__orx_display.html#gae3acb236a4a537a86ff72091dc556829", null ],
     [ "orxDisplay_SetBitmapClipping", "group__orx_display.html#ga6ed6d3266bdcd9baf06f65877c074100", null ],
-    [ "orxDisplay_SetBitmapColor", "group__orx_display.html#gac46c653446e1a50b19715ffb1a181cde", null ],
-    [ "orxDisplay_SetBitmapColorKey", "group__orx_display.html#ga18aa50eae6667cacdfc804e0643bfa47", null ],
     [ "orxDisplay_SetBitmapData", "group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239", null ],
     [ "orxDisplay_SetBlendMode", "group__orx_display.html#ga21afdb1c33f362aa5a1a0660385a64ff", null ],
     [ "orxDisplay_SetDestinationBitmaps", "group__orx_display.html#gac191bdfc80e11b88a093d0ffb2208b8e", null ],
@@ -193,7 +190,7 @@ var group__orx_display =
     [ "orxDisplay_StartShader", "group__orx_display.html#gaaca19838576b060931165457e0cd31b4", null ],
     [ "orxDisplay_StopShader", "group__orx_display.html#gadf48952815832df78cd7a8a12d0b7959", null ],
     [ "orxDisplay_Swap", "group__orx_display.html#gafaabd0c9b95224c08f531072369e80bf", null ],
-    [ "orxDisplay_TransformBitmap", "group__orx_display.html#gaf204b686964752a587a58444b1a59c45", null ],
-    [ "orxDisplay_TransformText", "group__orx_display.html#ga8769b56a32923375fb48d0a65f0cf8cd", null ],
+    [ "orxDisplay_TransformBitmap", "group__orx_display.html#gacd671fb41b64035ed579ea0d24bfd44e", null ],
+    [ "orxDisplay_TransformText", "group__orx_display.html#ga72cdc23080274b3c62d293562e719d84", null ],
     [ "orxRGBA_Set", "group__orx_display.html#ga98c4144bac171f50a69bb4e46cdd3e77", null ]
 ];
