@@ -212,7 +212,6 @@ struct __orxBITMAP_t
   orxU32                    u32RealWidth, u32RealHeight, u32Depth;
   orxFLOAT                  fRecRealWidth, fRecRealHeight;
   orxU32                    u32DataSize;
-  orxRGBA                   stColor;
   const orxSTRING           zLocation;
   orxSTRINGID               stFilenameID;
   orxU32                    u32Flags;
@@ -1981,7 +1980,7 @@ static void orxFASTCALL orxDisplay_Android_PrepareBitmap(const orxBITMAP *_pstBi
   return;
 }
 
-static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap, const orxDISPLAY_MATRIX *_pmTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap, const orxDISPLAY_MATRIX *_pmTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   GLfloat fWidth, fHeight;
 
@@ -2023,7 +2022,7 @@ static orxINLINE void orxDisplay_Android_DrawBitmap(const orxBITMAP *_pstBitmap,
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA     =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA =
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _pstBitmap->stColor;
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _stColor;
 
   /* Updates index & element number */
   sstDisplay.s32BufferIndex   += 4;
@@ -2152,7 +2151,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_GetScreenBitmap()
   return sstDisplay.pstScreen;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxDISPLAY_MATRIX mTransform;
   const orxCHAR *pc;
@@ -2251,7 +2250,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA     =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _pstFont->stColor;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _stColor;
 
           /* Updates index & element number */
           sstDisplay.s32BufferIndex   += 4;
@@ -2552,7 +2551,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_CreateBitmap(orxU32 _u32Width, orxU32 
     pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstBitmap->u32RealWidth);
     pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstBitmap->u32RealHeight);
     pstBitmap->u32DataSize    = pstBitmap->u32RealWidth * pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
-    pstBitmap->stColor        = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
     pstBitmap->zLocation      = orxSTRING_EMPTY;
     pstBitmap->stFilenameID   = orxSTRINGID_UNDEFINED;
     pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
@@ -2920,44 +2918,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
-
-  /* Not screen? */
-  if(_pstBitmap != sstDisplay.pstScreen)
-  {
-    /* Stores it */
-    _pstBitmap->stColor = _stColor;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-orxRGBA orxFASTCALL orxDisplay_Android_GetBitmapColor(const orxBITMAP *_pstBitmap)
-{
-  orxRGBA stResult = orx2RGBA(0, 0, 0, 0);
-
-  /* Checks */
-  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBitmap != orxNULL);
-
-  /* Not screen? */
-  if(_pstBitmap != sstDisplay.pstScreen)
-  {
-    /* Updates result */
-    stResult = _pstBitmap->stColor;
-  }
-
-  /* Done! */
-  return stResult;
-}
-
 orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
   orxU32    i, u32Number;
@@ -3269,7 +3229,7 @@ orxU32 orxFASTCALL orxDisplay_Android_GetBitmapID(const orxBITMAP *_pstBitmap)
   return u32Result;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -3315,7 +3275,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA  =
     sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA  =
-    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.pstScreen->stColor;
+    sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = sstDisplay.stLastColor;
 
     /* Updates index & element number */
     sstDisplay.s32BufferIndex   += 4;
@@ -3335,7 +3295,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
     {
       /* Draws it */
-      orxDisplay_Android_DrawBitmap(_pstSrc, &mTransform, _eSmoothing, _eBlendMode);
+      orxDisplay_Android_DrawBitmap(_pstSrc, &mTransform, stColor, _eSmoothing, _eBlendMode);
     }
     else
     {
@@ -3418,7 +3378,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA     =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].stRGBA =
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].stRGBA =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _pstSrc->stColor;
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA = _stColor;
 
           /* Updates index & element number */
           sstDisplay.s32BufferIndex   += 4;
@@ -4977,8 +4937,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawLine, DISPLAY, DRAW_LINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawPolyline, DISPLAY, DRAW_POLYLINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawPolygon, DISPLAY, DRAW_POLYGON);

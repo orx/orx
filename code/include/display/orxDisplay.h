@@ -975,19 +975,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
-/** Sets a bitmap color (lighting/hue)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to apply on the bitmap
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
-
-/** Gets bitmap color (lighting/hue)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @return orxRGBA
- */
-extern orxDLLAPI orxRGBA orxFASTCALL                  orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap);
-
 /** Gets a bitmap size
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @param[out]  _pfWidth                              Bitmap width
@@ -1006,22 +993,24 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetBitmapID(con
 /** Transforms (and blits onto another) a bitmap
  * @param[in]   _pstSrc                               Bitmap to transform and draw
  * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _stColor                              Color
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Transforms a text (onto a bitmap)
  * @param[in]   _zString                              String to display
  * @param[in]   _pstFont                              Font bitmap
  * @param[in]   _pstMap                               Character map
  * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _stColor                              Color
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Draws a line
