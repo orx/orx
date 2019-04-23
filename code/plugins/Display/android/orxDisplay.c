@@ -3295,7 +3295,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
     {
       /* Draws it */
-      orxDisplay_Android_DrawBitmap(_pstSrc, &mTransform, stColor, _eSmoothing, _eBlendMode);
+      orxDisplay_Android_DrawBitmap(_pstSrc, &mTransform, _stColor, _eSmoothing, _eBlendMode);
     }
     else
     {
