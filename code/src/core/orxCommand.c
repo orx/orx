@@ -1146,6 +1146,8 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
           break;
         }
       }
+
+      break;
     }
 
     case orxEVENT_TYPE_ANIM:
@@ -1173,6 +1175,8 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
           break;
         }
       }
+
+      break;
     }
 
     default:
