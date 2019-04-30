@@ -798,10 +798,15 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 orxSTATUS orxFASTCALL orxParam_DisplayHelp()
 {
   orxPARAM  stParams;
+  orxBOOL   bDebugLevelBackup;
   orxSTATUS eResult;
 
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Disables param logs */
+  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_PARAM);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxFALSE);
 
   /* Everything seems ok. Register the version function */
   stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
@@ -828,6 +833,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     /* Register */
     eResult = orxParam_Register(&stParams);
   }
+
+  /* Restores display logs */
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, bDebugLevelBackup);
 
   /* Done! */
   return eResult;
