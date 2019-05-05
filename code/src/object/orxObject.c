@@ -75,7 +75,12 @@
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
 #define orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD  0x00100000  /**< Detach joint child flag */
 #define orxOBJECT_KU32_FLAG_DEATH_ROW           0x00200000  /**< Death row flag */
+#define orxOBJECT_KU32_FLAG_FX_LIFETIME         0x00400000  /**< FX lifetime flag  */
+#define orxOBJECT_KU32_FLAG_SOUND_LIFETIME      0x00800000  /**< Sound lifetime flag  */
+#define orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME    0x00010000  /**< Spawner lifetime flag  */
+#define orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME   0x00020000  /**< Timeline lifetime flag  */
 
+#define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00C30000  /**< Structure lifetime mask */
 #define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x0000FFFF  /**< Linked structure mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
@@ -143,6 +148,10 @@
 #define orxOBJECT_KZ_LEFT_PIVOT                 "left"
 #define orxOBJECT_KZ_BOTTOM_PIVOT               "bottom"
 #define orxOBJECT_KZ_RIGHT_PIVOT                "right"
+#define orxOBJECT_KZ_FX                         "fx"
+#define orxOBJECT_KZ_SOUND                      "sound"
+#define orxOBJECT_KZ_SPAWN                      "spawn"
+#define orxOBJECT_KZ_TRACK                      "track"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -3275,6 +3284,8 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       /* Has DT? */
       if(pstClockInfo->fDT > orxFLOAT_0)
       {
+        orxU32 u32LifeTimeFlags;
+
         /* For all linked structures */
         for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
         {
@@ -3337,6 +3348,39 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
 
             /* Updates status */
             orxFLAG_SET(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD);
+          }
+        }
+
+        /* Has structure-bound lifetime? */
+        if((u32LifeTimeFlags = orxStructure_GetFlags(_pstObject, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME)) != 0)
+        {
+          /* Not checking FX or no FX left? */
+          if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_FX_LIFETIME))
+          || ((_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+           && (orxFXPointer_GetCount(orxFXPOINTER(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure)) == 0)))
+          {
+            /* Not checking sound or no sound left? */
+            if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_SOUND_LIFETIME))
+            || ((_pstObject->astStructureList[orxSTRUCTURE_ID_SOUNDPOINTER].pstStructure != orxNULL)
+             && (orxSoundPointer_GetCount(orxSOUNDPOINTER(_pstObject->astStructureList[orxSTRUCTURE_ID_SOUNDPOINTER].pstStructure)) == 0)))
+            {
+              orxSPAWNER *pstSpawner;
+
+              /* Not checking spawner or no object left to spawn? */
+              if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME))
+              || (((pstSpawner = orxSPAWNER(_pstObject->astStructureList[orxSTRUCTURE_ID_SPAWNER].pstStructure)) != orxNULL)
+               && (orxSpawner_GetTotalObjectCount(pstSpawner) == orxSpawner_GetTotalObjectLimit(pstSpawner))))
+              {
+                /* Not checking timeline or no track left? */
+                if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME))
+                || ((_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].pstStructure != orxNULL)
+                 && (orxTimeLine_GetCount(orxTIMELINE(_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].pstStructure)) == 0)))
+                {
+                  /* Schedules object's deletion */
+                  orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+                }
+              }
+            }
           }
         }
       }
@@ -4655,8 +4699,47 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has life time? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_LIFETIME) != orxFALSE)
         {
-          /* Stores it */
-          orxObject_SetLifeTime(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME));
+          orxCHAR   acBuffer[64];
+          orxSTRING zLifeTime;
+
+          /* Gets lower case value */
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zLifeTime = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxOBJECT_KZ_CONFIG_LIFETIME), sizeof(acBuffer) - 1));
+
+          /* FX? */
+          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_FX) != orxNULL)
+          {
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_FX_LIFETIME;
+          }
+
+          /* Sound? */
+          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_SOUND) != orxNULL)
+          {
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_SOUND_LIFETIME;
+          }
+
+          /* Spawn? */
+          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_SPAWN) != orxNULL)
+          {
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME;
+          }
+
+          /* Track? */
+          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_TRACK) != orxNULL)
+          {
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
+          }
+
+          /* No flags? */
+          if(!orxFLAG_TEST(u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME))
+          {
+            /* Stores lifetime's numerical value */
+            orxObject_SetLifeTime(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME));
+          }
         }
 
         /* Updates flags */

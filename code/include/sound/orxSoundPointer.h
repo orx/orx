@@ -170,6 +170,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSoundFromC
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL          orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_pstSoundPointer);
 
+/** Gets how many sounds are currently in use
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxSoundPointer_GetCount(const orxSOUNDPOINTER *_pstSoundPointer);
+
 #endif /* _orxSOUNDPOINTER_H_ */
 
 /** @} */

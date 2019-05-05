@@ -137,6 +137,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_AddTrackFromConfig(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLine, const orxSTRING _zTrackID);
 
+/** Gets how many tracks are currently in use
+ * @param[in]   _pstTimeLine          Concerned TimeLine
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxTimeLine_GetCount(const orxTIMELINE *_pstTimeLine);
+
 /** Gets a track duration using its config ID
  * @param[in]   _zTrackID             Config ID of the concerned track
  * @return      Duration if found, -orxFLOAT_1 otherwise

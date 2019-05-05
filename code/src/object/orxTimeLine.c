@@ -997,6 +997,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
+  orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTimeLine);
   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
 
@@ -1088,6 +1089,7 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
 
   /* Checks */
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTimeLine);
   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
 
   /* Gets owner */
@@ -1132,6 +1134,33 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
 
   /* Done! */
   return eResult;
+}
+
+/** Gets how many tracks are currently in use
+ * @param[in]   _pstTimeLine          Concerned TimeLine
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxTimeLine_GetCount(const orxTIMELINE *_pstTimeLine)
+{
+  orxU32 i, u32Result = 0;
+
+  /* Checks */
+  orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTimeLine);
+
+  /* For all tracks */
+  for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
+  {
+    /* Is valid? */
+    if(_pstTimeLine->astTrackList[i].pstTrack != orxNULL)
+    {
+      /* Updates result */
+      u32Result++;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Gets a track duration using its config ID
