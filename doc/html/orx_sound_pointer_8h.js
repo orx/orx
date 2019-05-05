@@ -8,6 +8,7 @@ var orx_sound_pointer_8h =
     [ "orxSoundPointer_Delete", "group__orx_sound_pointer.html#ga4b6cb366559f8f1ad6d1c7296e118b44", null ],
     [ "orxSoundPointer_Enable", "group__orx_sound_pointer.html#ga81ed35434db9d7450167eed41f42fe96", null ],
     [ "orxSoundPointer_Exit", "group__orx_sound_pointer.html#ga377eef7a5c39fbd3a5f242cd814c441f", null ],
+    [ "orxSoundPointer_GetCount", "group__orx_sound_pointer.html#ga910c7f2ce80d83ce6858483ef119cf09", null ],
     [ "orxSoundPointer_GetLastAddedSound", "group__orx_sound_pointer.html#ga76f183cd694745298153a8b0ec4d08f1", null ],
     [ "orxSoundPointer_Init", "group__orx_sound_pointer.html#ga2bb7f7c9b8818f4f08ffb487abce6f1f", null ],
     [ "orxSoundPointer_IsEnabled", "group__orx_sound_pointer.html#ga20ee0447868c695794e123d6fb8ec9b8", null ],
