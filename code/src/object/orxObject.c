@@ -79,8 +79,9 @@
 #define orxOBJECT_KU32_FLAG_SOUND_LIFETIME      0x00800000  /**< Sound lifetime flag  */
 #define orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME    0x00010000  /**< Spawner lifetime flag  */
 #define orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME   0x00020000  /**< Timeline lifetime flag  */
+#define orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME   0x00040000  /**< Children lifetime flag  */
 
-#define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00C30000  /**< Structure lifetime mask */
+#define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00C70000  /**< Structure lifetime mask */
 #define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x0000FFFF  /**< Linked structure mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
@@ -152,6 +153,7 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
+#define orxOBJECT_KZ_CHILD                      "child"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -3376,8 +3378,13 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
                 || ((_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].pstStructure != orxNULL)
                  && (orxTimeLine_GetCount(orxTIMELINE(_pstObject->astStructureList[orxSTRUCTURE_ID_TIMELINE].pstStructure)) == 0)))
                 {
-                  /* Schedules object's deletion */
-                  orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+                  /* Not checking children or no child left? */
+                  if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME))
+                  || (!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN)))
+                  {
+                    /* Schedules object's deletion */
+                    orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+                  }
                 }
               }
             }
@@ -4732,6 +4739,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates flags */
             u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
+          }
+
+          /* Child? */
+          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_CHILD) != orxNULL)
+          {
+            /* Updates flags */
+            u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
           }
 
           /* No flags? */
