@@ -2134,6 +2134,7 @@ var searchData=
   ['orxrender_5finit',['orxRender_Init',['../group__orx_render.html#gaaa3bad32f53d505fd1678aa3cc0fafd3',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fconsole_5fcolor',['orxRENDER_KZ_CONFIG_CONSOLE_COLOR',['../group__orx_render.html#ga701dd688299d04234d916a551f8e651e',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fmin_5ffrequency',['orxRENDER_KZ_CONFIG_MIN_FREQUENCY',['../group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3',1,'orxRender.h']]],
+  ['orxrender_5fkz_5fconfig_5fprofiler_5forientation',['orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION',['../group__orx_render.html#ga92da5fd46e102fad63b6c67e3ad5243c',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fsection',['orxRENDER_KZ_CONFIG_SECTION',['../group__orx_render.html#gac18069a6467cbcee0503abdaa6aaa5f6',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fshow_5ffps',['orxRENDER_KZ_CONFIG_SHOW_FPS',['../group__orx_render.html#gadd4ac9e534660a0c1798f4577950f791',1,'orxRender.h']]],
   ['orxrender_5fkz_5fconfig_5fshow_5fprofiler',['orxRENDER_KZ_CONFIG_SHOW_PROFILER',['../group__orx_render.html#ga2000d01d9338be90001a4b06cdcd718b',1,'orxRender.h']]],

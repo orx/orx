@@ -2,6 +2,7 @@ var orx_render_8h =
 [
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],
     [ "orxRENDER_KZ_CONFIG_MIN_FREQUENCY", "group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3", null ],
+    [ "orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION", "group__orx_render.html#ga92da5fd46e102fad63b6c67e3ad5243c", null ],
     [ "orxRENDER_KZ_CONFIG_SECTION", "group__orx_render.html#gac18069a6467cbcee0503abdaa6aaa5f6", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_FPS", "group__orx_render.html#gadd4ac9e534660a0c1798f4577950f791", null ],
     [ "orxRENDER_KZ_CONFIG_SHOW_PROFILER", "group__orx_render.html#ga2000d01d9338be90001a4b06cdcd718b", null ],
