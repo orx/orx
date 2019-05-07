@@ -59,6 +59,7 @@
 #define orxRENDER_KZ_CONFIG_SHOW_FPS                "ShowFPS"
 #define orxRENDER_KZ_CONFIG_SHOW_PROFILER           "ShowProfiler"
 #define orxRENDER_KZ_CONFIG_MIN_FREQUENCY           "MinFrequency"
+#define orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION    "ProfilerOrientation"
 #define orxRENDER_KZ_CONFIG_CONSOLE_COLOR           "ConsoleColor"
 
 

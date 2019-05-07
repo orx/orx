@@ -109,6 +109,8 @@
 #define orxRENDER_KC_CONSOLE_INSERT_MARKER          '_'
 #define orxRENDER_KC_CONSOLE_OVERTYPE_MARKER        '#'
 
+#define orxRENDER_KZ_PORTRAIT                       "portrait"
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -426,6 +428,32 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Updates orientation */
   bLandscape = (fScreenWidth >= fScreenHeight) ? orxTRUE: orxFALSE;
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Has orientation value? */
+  if(orxConfig_HasValue(orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION) != orxFALSE)
+  {
+    orxBOOL bPortrait = orxFALSE;
+    orxCHAR acBuffer[16];
+
+    /* Gets lower case value */
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+    orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION), sizeof(acBuffer) - 1));
+
+    /* Portrait? */
+    if((orxString_SearchString(acBuffer, orxRENDER_KZ_PORTRAIT) != orxNULL)
+    || ((orxString_ToBool(acBuffer, &bPortrait, orxNULL) != orxSTATUS_FAILURE)
+     && (bPortrait != orxFALSE)))
+    {
+      /* Updates landscape status */
+      bLandscape = !bLandscape;
+    }
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Gets border */
   fBorder = orxMath_Floor(orxRENDER_KF_PROFILER_BORDER * fScreenWidth);
