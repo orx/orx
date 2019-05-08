@@ -1035,7 +1035,7 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   if(_u32ArgNumber == 0)
   {
     /* Clears color */
-    orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_COLOR);
+    orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR);
 
     /* Updates result */
     orxVector_SetAll(&(_pstResult->vValue), -orxFLOAT_1);
@@ -1043,7 +1043,7 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   else
   {
     /* Stores color */
-    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(_astArgList[0].vValue));
+    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR, &(_astArgList[0].vValue));
 
     /* Updates result */
     orxVector_Copy(&(_pstResult->vValue), &(_astArgList[0].vValue));

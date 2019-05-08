@@ -462,7 +462,7 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
   orxASSERT(_pstColor != orxNULL);
 
   /* Clamps RGB components */
-  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
+  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_BLACK, &orxVECTOR_WHITE);
 
   /* De-normalizes vector */
   orxVector_Mulf(&vColor, &vColor, orxCOLOR_DENORMALIZER);

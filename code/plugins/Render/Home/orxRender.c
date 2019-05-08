@@ -87,7 +87,7 @@
 #define orxRENDER_KST_CONSOLE_SEPARATOR_COLOR       orx2RGBA(0x88, 0x11, 0x11, 0xFF)
 #define orxRENDER_KST_CONSOLE_LOG_COLOR             orx2RGBA(0xAA, 0xAA, 0xAA, 0xFF)
 #define orxRENDER_KST_CONSOLE_INPUT_COLOR           orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF)
-#define orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR    orx2RGBA(0x88, 0x88, 0x88, 0xFF)
+#define orxRENDER_KST_CONSOLE_COMPLETION_COLOR      orx2RGBA(0x88, 0x88, 0x88, 0xFF)
 #define orxRENDER_KF_CONSOLE_MARGIN_WIDTH           orx2F(0.02f)
 #define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT          orx2F(0.05f)
 #define orxRENDER_KF_CONSOLE_SPEED                  orx2F(3000.0f)
@@ -1178,13 +1178,14 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 static orxINLINE void orxRender_Home_RenderConsole()
 {
   orxDISPLAY_TRANSFORM    stTransform;
+  orxVECTOR               vColor;
   orxTEXTURE             *pstTexture;
   orxBITMAP              *pstBitmap, *pstFontBitmap;
   orxFLOAT                fScreenWidth, fScreenHeight, fBackupY;
   orxU32                  u32CursorIndex, i, u32Count, u32MaxLength, u32Offset;
   orxCHAR                 acBackup[2];
   orxFLOAT                fCharacterHeight, fCharacterWidth;
-  orxCOLOR                stColor;
+  orxRGBA                 stBackgroundColor, stSeparatorColor, stLogColor, stInputColor, stCompletionColor;
   const orxFONT          *pstFont;
   const orxCHARACTER_MAP *pstMap;
   const orxSTRING         zText;
@@ -1225,19 +1226,44 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Pushes config section */
   orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
-  /* Gets color */
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(stColor.vRGB)) != orxNULL)
-  {
-    /* Normalizes it */
-    orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-
-    /* Updates its alpha */
-    stColor.fAlpha = orxCOLOR_NORMALIZER * orxRGBA_A(orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+  /* Gets colors */
+#define orxRENDER_GET_COLOR(Name, NAME)                                                                                             \
+  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_COLOR, &vColor) != orxNULL)                                           \
+  {                                                                                                                                 \
+    st##Name##Color = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxRENDER_KST_CONSOLE_##NAME##_COLOR.u8A);  \
+  }                                                                                                                                 \
+  else                                                                                                                              \
+  {                                                                                                                                 \
+    st##Name##Color = orxRENDER_KST_CONSOLE_##NAME##_COLOR;                                                                         \
+  }                                                                                                                                 \
+  if(orxConfig_HasValue(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_ALPHA) != orxFALSE)                                                    \
+  {                                                                                                                                 \
+    st##Name##Color.u8A = (orxU8)(orxCOLOR_DENORMALIZER * orxConfig_GetFloat(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_ALPHA));          \
   }
-  else
+
+  /* Background color */
+  orxRENDER_GET_COLOR(Background, BACKGROUND)
+  /* separator color */
+  orxRENDER_GET_COLOR(Separator, SEPARATOR)
+  /* Log color */
+  orxRENDER_GET_COLOR(Log, LOG)
+  /* Input color */
+  orxRENDER_GET_COLOR(Input, INPUT)
+  /* Completion color */
+  orxRENDER_GET_COLOR(Completion, COMPLETION)
+
+#undef orxRENDER_GET_COLOR
+
+  /* Uses color short names as background override */
+  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &vColor) != orxNULL)
   {
-    /* Updates background color */
-    orxColor_SetRGBA(&stColor, orxRENDER_KST_CONSOLE_BACKGROUND_COLOR);
+    stBackgroundColor.u8R = (orxU8)orxF2U(vColor.fR);
+    stBackgroundColor.u8G = (orxU8)orxF2U(vColor.fG);
+    stBackgroundColor.u8B = (orxU8)orxF2U(vColor.fB);
+  }
+  if(orxConfig_HasValue(orxRENDER_KZ_CONFIG_CONSOLE_ALPHA) != orxFALSE)
+  {
+    stBackgroundColor.u8A = (orxU8)orxF2U(orxCOLOR_DENORMALIZER * orxConfig_GetFloat(orxRENDER_KZ_CONFIG_CONSOLE_ALPHA));
   }
 
   /* Pops config section */
@@ -1248,22 +1274,22 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fDstY   = sstRender.fConsoleOffset;
   stTransform.fScaleX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) + orx2F(2.0f);
   stTransform.fScaleY = orxMath_Floor(fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT)) + orxFLOAT_1;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stBackgroundColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Draws separators */
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - orx2F(1.5f) * fCharacterHeight);
   stTransform.fScaleY = orxFLOAT_1;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight) + orxFLOAT_1;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fDstY   = sstRender.fConsoleOffset;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fScaleY = orxMath_Floor(fScreenHeight * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT)) + orxFLOAT_1;
   stTransform.fScaleX = orxFLOAT_1;
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * orxRENDER_KF_CONSOLE_MARGIN_WIDTH) - orxFLOAT_1;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH));
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxRENDER_KST_CONSOLE_SEPARATOR_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
@@ -1280,7 +1306,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     if(orxConsole_IsInsertMode() != orxFALSE)
     {
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Overrides characters at cursor position */
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_INSERT_MARKER;
@@ -1291,7 +1317,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_OVERTYPE_MARKER;
 
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
 
     /* Truncates to base input + cursor */
@@ -1300,14 +1326,14 @@ static orxINLINE void orxRender_Home_RenderConsole()
   else
   {
     /* Displays full input, including auto-completion */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
     /* Truncates to base input */
     ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   }
 
   /* Displays base input (ie. validated part) */
-  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_INPUT_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   ((orxCHAR*)zText)[u32CursorIndex] = acBackup[0];
   if(u32CursorIndex < 255)
   {
@@ -1320,7 +1346,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       i++, stTransform.fDstY -= fCharacterHeight)
   {
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_LOG_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stLogColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Gets log offset */
@@ -1334,10 +1360,10 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
     /* Displays it */
     orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "+%u %s", u32Offset, (u32Offset == 1) ? "line" : "lines");
-    fBackupX = stTransform.fDstX;
+    fBackupX          = stTransform.fDstX;
     stTransform.fDstX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) - (orxString_GetLength(acBuffer) * fCharacterWidth);
     stTransform.fDstY = fBackupY;
-    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, orxRENDER_KST_CONSOLE_INPUT_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     stTransform.fDstX = fBackupX;
   }
 
@@ -1345,12 +1371,12 @@ static orxINLINE void orxRender_Home_RenderConsole()
   u32Count = orxConsole_GetCompletionCount(&u32MaxLength);
 
   /* Draws overlay */
-  stColor.fAlpha      = 0.9f;
-  stTransform.fDstY   = fBackupY - (u32Count - 1) * fCharacterHeight;
-  stTransform.fScaleX = u32MaxLength * fCharacterWidth;
-  stTransform.fScaleY = u32Count * fCharacterHeight;
-  orxDisplay_TransformBitmap(pstBitmap, &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
+  stBackgroundColor.u8A = (orxU8)orxF2U(orxCOLOR_DENORMALIZER * orx2F(0.9f));
+  stTransform.fDstY     = fBackupY - (u32Count - 1) * fCharacterHeight;
+  stTransform.fScaleX   = u32MaxLength * fCharacterWidth;
+  stTransform.fScaleY   = u32Count * fCharacterHeight;
+  orxDisplay_TransformBitmap(pstBitmap, &stTransform, stBackgroundColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  stTransform.fScaleY   = stTransform.fScaleX = orxFLOAT_1;
 
   /* For all current completions */
   for(i = 0;
@@ -1366,7 +1392,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     stTransform.fDstY = fBackupY - ((u32Count - i - 1) * fCharacterHeight);
 
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? orxRENDER_KST_CONSOLE_INPUT_COLOR : orxRENDER_KST_CONSOLE_AUTOCOMPLETE_COLOR, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Deletes pixel texture */
