@@ -1,6 +1,17 @@
 var orx_render_8h =
 [
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_ALPHA", "group__orx_render.html#ga3f12095f1f9e255e2f5689db2d160571", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_ALPHA", "group__orx_render.html#ga5c54a5675f5897f3c7aae6f2ec6dd017", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR", "group__orx_render.html#ga0bbded855b2cd0b6e5cecbfc1b49ad9a", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_ALPHA", "group__orx_render.html#gaaf2fe8d78f5595ac7269de0a8e51b988", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_COLOR", "group__orx_render.html#gad109466090d268b83a472b438ab34d86", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_INPUT_ALPHA", "group__orx_render.html#ga65251c31625a86f144141e3bcf4c2dea", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_INPUT_COLOR", "group__orx_render.html#gac095c299915938cb2a7e100a03c490b4", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_LOG_ALPHA", "group__orx_render.html#ga5e5adeb8e88df15eaae033b9a70a5e69", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_LOG_COLOR", "group__orx_render.html#ga80d19feea9e795fef73360d22d0eb712", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_SEPARATOR_ALPHA", "group__orx_render.html#gaeda8ba37b64833885c976efc8130c02f", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_SEPARATOR_COLOR", "group__orx_render.html#ga8e9f9319eb99d70696cd71ff90d803c4", null ],
     [ "orxRENDER_KZ_CONFIG_MIN_FREQUENCY", "group__orx_render.html#ga7e6aff9a8d4890a31645cb96540f62c3", null ],
     [ "orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION", "group__orx_render.html#ga92da5fd46e102fad63b6c67e3ad5243c", null ],
     [ "orxRENDER_KZ_CONFIG_SECTION", "group__orx_render.html#gac18069a6467cbcee0503abdaa6aaa5f6", null ],
