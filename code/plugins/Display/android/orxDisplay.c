@@ -1772,7 +1772,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
     if(sstDisplay.eLastBufferMode == orxDISPLAY_BUFFER_MODE_INDIRECT)
     {
       /* Sends vertex buffer */
-      glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizei)(sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_ANDROID_VERTEX)), sstDisplay.astVertexList);
+      glBufferData(GL_ARRAY_BUFFER, (GLsizei)(sstDisplay.s32BufferIndex * sizeof(orxDISPLAY_ANDROID_VERTEX)), sstDisplay.astVertexList, GL_STREAM_DRAW);
       glASSERT();
     }
 
@@ -1852,15 +1852,11 @@ static void orxFASTCALL orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE 
       /* Reverts back to default primitive */
       sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
-      /* Inits VBO */
-      glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_ANDROID_VERTEX), NULL, GL_DYNAMIC_DRAW);
-      glASSERT();
-
       /* Was using custom IBO? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO))
       {
         /* Fills IBO */
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizei)(orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort)), sstDisplay.au16IndexList, GL_STATIC_DRAW);
         glASSERT();
 
         /* Updates flags */
@@ -2066,7 +2062,7 @@ static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber
   }
 
   /* Copies vertex buffer */
-  glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizei)(_u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX)), sstDisplay.astVertexList);
+  glBufferData(GL_ARRAY_BUFFER, (GLsizei)(_u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX)), sstDisplay.astVertexList, GL_STREAM_DRAW);
   glASSERT();
 
   /* Only 2 vertices? */
@@ -2461,7 +2457,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxDISPLAY_MESH *_pstMes
   u32ElementNumber = ((_pstMesh->u32IndexNumber != 0) && (_pstMesh->au16IndexList != orxNULL)) ? _pstMesh->u32IndexNumber : _pstMesh->u32VertexNumber + (_pstMesh->u32VertexNumber >> 1);
 
   /* Fills VBO */
-  glBufferData(GL_ARRAY_BUFFER, _pstMesh->u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX), _pstMesh->astVertexList, GL_STREAM_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, (GLsizei)(_pstMesh->u32VertexNumber * sizeof(orxDISPLAY_ANDROID_VERTEX)), _pstMesh->astVertexList, GL_STREAM_DRAW);
   glASSERT();
 
   /* Has index buffer? */
@@ -2469,7 +2465,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_DrawMesh(const orxDISPLAY_MESH *_pstMes
   && (_pstMesh->u32IndexNumber > 1))
   {
     /* Fills IBO */
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _pstMesh->u32IndexNumber * sizeof(GLushort), _pstMesh->au16IndexList, GL_STREAM_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizei)(_pstMesh->u32IndexNumber * sizeof(GLushort)), _pstMesh->au16IndexList, GL_STREAM_DRAW);
     glASSERT();
 
     /* Updates flags */
@@ -4183,12 +4179,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
         glASSERT();
 
-        /* Inits VBO */
-        glBufferData(GL_ARRAY_BUFFER, orxDISPLAY_KU32_VERTEX_BUFFER_SIZE * sizeof(orxDISPLAY_ANDROID_VERTEX), NULL, GL_DYNAMIC_DRAW);
-        glASSERT();
-
         /* Fills IBO */
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort), sstDisplay.au16IndexList, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizei)(orxDISPLAY_KU32_INDEX_BUFFER_SIZE * sizeof(GLushort)), sstDisplay.au16IndexList, GL_STATIC_DRAW);
         glASSERT();
 
         /* Set up OpenGL state */
