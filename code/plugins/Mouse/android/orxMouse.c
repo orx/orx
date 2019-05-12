@@ -286,9 +286,6 @@ orxFLOAT orxFASTCALL orxMouse_Android_GetWheelDelta()
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
   return fResult;
 }
