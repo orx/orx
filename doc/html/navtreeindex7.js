@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_file.html#ga8e18076cb87b72ac7e2fbfbc0833eca0":[1,20,4],
+"group__orx_file.html#ga8e45150c5019dc189069413c4ced085b":[3,0,0,5,0,9],
 "group__orx_file.html#ga8e45150c5019dc189069413c4ced085b":[1,20,10],
 "group__orx_file.html#ga98c8abe42adee0ecf4c9a5b48f82f9b0":[3,0,0,5,0,20],
 "group__orx_file.html#ga98c8abe42adee0ecf4c9a5b48f82f9b0":[1,20,21],
@@ -72,8 +74,8 @@ var NAVTREEINDEX7 =
 "group__orx_font.html#gae5665dd0101cf568132b829c58082309":[3,0,0,4,1,18],
 "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e":[1,21,20],
 "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e":[3,0,0,4,1,20],
-"group__orx_font.html#gaf1446182084028517a65da805684338b":[3,0,0,4,1,10],
 "group__orx_font.html#gaf1446182084028517a65da805684338b":[1,21,10],
+"group__orx_font.html#gaf1446182084028517a65da805684338b":[3,0,0,4,1,10],
 "group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6":[3,0,0,4,1,8],
 "group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6":[1,21,8],
 "group__orx_font.html#gaf89821ec121bb699a74c164cc873eed8":[1,21,12],
@@ -163,8 +165,8 @@ var NAVTREEINDEX7 =
 "group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad":[3,0,0,9,0,35],
 "group__orx_frame.html#gad698671b738696f6b46b8053058fa4f6":[1,22,14],
 "group__orx_frame.html#gad698671b738696f6b46b8053058fa4f6":[3,0,0,9,0,14],
-"group__orx_frame.html#gae1cd0ffa3ce592ac6134489df030462b":[3,0,0,9,0,4],
 "group__orx_frame.html#gae1cd0ffa3ce592ac6134489df030462b":[1,22,4],
+"group__orx_frame.html#gae1cd0ffa3ce592ac6134489df030462b":[3,0,0,9,0,4],
 "group__orx_frame.html#gae4f85427057f0712456f260a0b880f74":[1,22,38],
 "group__orx_frame.html#gae4f85427057f0712456f260a0b880f74":[3,0,0,9,0,38],
 "group__orx_frame.html#gae7a27995875e0df94f502bdf2d314bf0":[1,22,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_graphic.html#gaa35eae0c694b4ebb1373c42cb465fc9f":[3,0,0,4,2,56],
 "group__orx_graphic.html#gaa35eae0c694b4ebb1373c42cb465fc9f":[1,23,56],
 "group__orx_graphic.html#gaa3963fa7de80ff1321217fc253f740ec":[3,0,0,4,2,44],
-"group__orx_graphic.html#gaa3963fa7de80ff1321217fc253f740ec":[1,23,44],
-"group__orx_graphic.html#gaa535f304af68e558cb7d578038357ece":[3,0,0,4,2,28],
-"group__orx_graphic.html#gaa535f304af68e558cb7d578038357ece":[1,23,28]
+"group__orx_graphic.html#gaa3963fa7de80ff1321217fc253f740ec":[1,23,44]
 };

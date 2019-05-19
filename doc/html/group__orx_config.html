@@ -125,6 +125,8 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:gafb7b4d512a29c9410c5a5e1f7faf9119"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gafb7b4d512a29c9410c5a5e1f7faf9119">orxCONFIG_BOOTSTRAP_FUNCTION</a>) ()</td></tr>
 <tr class="separator:gafb7b4d512a29c9410c5a5e1f7faf9119"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae1d79b4c2a48e831db1cf7d031fe5294"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294">orxCONFIG_CLEAR_FUNCTION</a>) (const orxSTRING _zSectionName, const orxSTRING _zKeyName)</td></tr>
+<tr class="separator:gae1d79b4c2a48e831db1cf7d031fe5294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff09561378d9e18269c5313bc428ff18"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaff09561378d9e18269c5313bc428ff18">orxCONFIG_SAVE_FUNCTION</a>) (const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)</td></tr>
 <tr class="separator:gaff09561378d9e18269c5313bc428ff18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -141,8 +143,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga3f470edfb16ff8e0382327fa8352df61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga3f470edfb16ff8e0382327fa8352df61">orxConfig_AppendListString</a> (const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)</td></tr>
 <tr class="separator:ga3f470edfb16ff8e0382327fa8352df61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7526b75f27415d1eff396fbaea6a3f97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga7526b75f27415d1eff396fbaea6a3f97">orxConfig_Clear</a> ()</td></tr>
-<tr class="separator:ga7526b75f27415d1eff396fbaea6a3f97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga028abfdf07da903fc1e9fe506590e3f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga028abfdf07da903fc1e9fe506590e3f0">orxConfig_Clear</a> (const <a class="el" href="group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294">orxCONFIG_CLEAR_FUNCTION</a> _pfnClearCallback)</td></tr>
+<tr class="separator:ga028abfdf07da903fc1e9fe506590e3f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0ef471810ad2d2ed9ff5e0726cacc545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545">orxConfig_ClearSection</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga0ef471810ad2d2ed9ff5e0726cacc545"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa773c70b03b90b92246985029120c1eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaa773c70b03b90b92246985029120c1eb">orxConfig_ClearValue</a> (const orxSTRING _zKey)</td></tr>
@@ -309,7 +311,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00073">73</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00077">77</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gae1d79b4c2a48e831db1cf7d031fe5294"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxBOOL(orxFASTCALL * orxCONFIG_CLEAR_FUNCTION) (const orxSTRING _zSectionName, const orxSTRING _zKeyName)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Config callback function type to use with clear function </p>
+
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00075">75</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -398,19 +415,26 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga7526b75f27415d1eff396fbaea6a3f97"></a>
+<a class="anchor" id="ga028abfdf07da903fc1e9fe506590e3f0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_Clear </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294">orxCONFIG_CLEAR_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnClearCallback</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Clears all config info </p><dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+<p>Clears all config info </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnClearCallback</td><td>Callback used to filter sections/keys to clear. If null, all sections/keys will be cleared </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>
@@ -1715,7 +1739,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>File name, if null or empty the default file name will be used </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_bUseEncryption</td><td>Use file encryption to make it human non-readable? </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnSaveCallback</td><td>Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnSaveCallback</td><td>Callback used to filter sections/keys to save. If null, all sections/keys will be saved </td></tr>
   </table>
   </dd>
 </dl>

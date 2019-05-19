@@ -2,6 +2,7 @@ var orx_config_8h =
 [
     [ "orxCONFIG_KZ_RESOURCE_GROUP", "group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733", null ],
     [ "orxCONFIG_BOOTSTRAP_FUNCTION", "group__orx_config.html#gafb7b4d512a29c9410c5a5e1f7faf9119", null ],
+    [ "orxCONFIG_CLEAR_FUNCTION", "group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294", null ],
     [ "orxCONFIG_SAVE_FUNCTION", "group__orx_config.html#gaff09561378d9e18269c5313bc428ff18", null ],
     [ "orxCONFIG_EVENT", "group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],
@@ -10,7 +11,7 @@ var orx_config_8h =
       [ "orxCONFIG_EVENT_NONE", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ad9ae2558aad3b328688ae5fd9bf16230", null ]
     ] ],
     [ "orxConfig_AppendListString", "group__orx_config.html#ga3f470edfb16ff8e0382327fa8352df61", null ],
-    [ "orxConfig_Clear", "group__orx_config.html#ga7526b75f27415d1eff396fbaea6a3f97", null ],
+    [ "orxConfig_Clear", "group__orx_config.html#ga028abfdf07da903fc1e9fe506590e3f0", null ],
     [ "orxConfig_ClearSection", "group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545", null ],
     [ "orxConfig_ClearValue", "group__orx_config.html#gaa773c70b03b90b92246985029120c1eb", null ],
     [ "orxConfig_CopyFile", "group__orx_config.html#gaf7628d0883e028674c707329490a740a", null ],
