@@ -1471,81 +1471,109 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
 
 /** Deletes a section
  * @param[in] _pstSection       Section to delete
+ * @return orxSTATUS_FAILURE / orxSTATUS_SUCCESS
  */
-static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
+static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection, const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
-  orxCONFIG_ENTRY *pstEntry;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(_pstSection != orxNULL);
 
-  /* While there is still an entry */
-  while((pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(_pstSection->stEntryList))) != orxNULL)
+  // Should delete section?
+  if((_pfnClearCallback == orxNULL)
+  || (_pfnClearCallback(_pstSection->zName, orxNULL) != orxFALSE))
   {
-    /* Deletes entry */
-    orxConfig_DeleteEntry(pstEntry);
-  }
+    orxCONFIG_ENTRY *pstNewEntry, *pstLastEntry;
 
-  /* Not protected? */
-  if(_pstSection->s32ProtectionCount == 0)
-  {
-    orxCONFIG_STACK_ENTRY *pstStackEntry, *pstNextStackEntry;
-
-    /* For all stack entries */
-    for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
-        pstStackEntry != orxNULL;
-        pstStackEntry = pstNextStackEntry)
+    /* For all entries */
+    for(pstLastEntry = orxNULL, pstNewEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(_pstSection->stEntryList));
+        pstNewEntry != orxNULL;
+        pstNewEntry = (pstLastEntry != orxNULL) ? (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstLastEntry->stNode)) : (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(_pstSection->stEntryList)))
     {
-      /* Gets next entry */
-      pstNextStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode));
-
-      /* Is deleted section? */
-      if(pstStackEntry->pstSection == _pstSection)
+      /* Should delete it? */
+      if((_pfnClearCallback == orxNULL)
+      || (_pfnClearCallback(_pstSection->zName, orxString_GetFromID(pstNewEntry->stID)) != orxFALSE))
       {
-        /* Removes it from stack list */
-        orxLinkList_Remove(&(pstStackEntry->stNode));
-
-        /* Deletes it */
-        orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
-
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", _pstSection->zName);
+        /* Deletes entry */
+        orxConfig_DeleteEntry(pstNewEntry);
+      }
+      else
+      {
+        /* Updates last entry */
+        pstLastEntry = pstNewEntry;
       }
     }
 
-    /* Is the current selected one? */
-    if(sstConfig.pstCurrentSection == _pstSection)
+    /* Empty? */
+    if(orxLinkList_GetCount(&(_pstSection->stEntryList)) == 0)
     {
-      /* Deselects it */
-      sstConfig.pstCurrentSection = orxNULL;
+      /* Not protected? */
+      if(_pstSection->s32ProtectionCount == 0)
+      {
+        orxCONFIG_STACK_ENTRY *pstStackEntry, *pstNextStackEntry;
+
+        /* For all stack entries */
+        for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
+            pstStackEntry != orxNULL;
+            pstStackEntry = pstNextStackEntry)
+        {
+          /* Gets next entry */
+          pstNextStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode));
+
+          /* Is deleted section? */
+          if(pstStackEntry->pstSection == _pstSection)
+          {
+            /* Removes it from stack list */
+            orxLinkList_Remove(&(pstStackEntry->stNode));
+
+            /* Deletes it */
+            orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", _pstSection->zName);
+          }
+        }
+
+        /* Is the current selected one? */
+        if(sstConfig.pstCurrentSection == _pstSection)
+        {
+          /* Deselects it */
+          sstConfig.pstCurrentSection = orxNULL;
+        }
+
+        /* Has parent? */
+        if((_pstSection->pstParent != orxNULL) && (_pstSection->pstParent != orxHANDLE_UNDEFINED))
+        {
+          /* Unprotects it */
+          _pstSection->pstParent->s32ProtectionCount--;
+
+          /* Checks */
+          orxASSERT(_pstSection->pstParent->s32ProtectionCount >= 0);
+        }
+
+        /* Removes it from list */
+        orxLinkList_Remove(&(_pstSection->stNode));
+
+        /* Removes it from table */
+        orxHashTable_Remove(sstConfig.pstSectionTable, orxString_ToCRC(_pstSection->zName));
+
+        /* Removes section */
+        orxBank_Free(sstConfig.pstSectionBank, _pstSection);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section [%s] can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCount);
+      }
     }
-
-    /* Has parent? */
-    if((_pstSection->pstParent != orxNULL) && (_pstSection->pstParent != orxHANDLE_UNDEFINED))
-    {
-      /* Unprotects it */
-      _pstSection->pstParent->s32ProtectionCount--;
-
-      /* Checks */
-      orxASSERT(_pstSection->pstParent->s32ProtectionCount >= 0);
-    }
-
-    /* Removes it from list */
-    orxLinkList_Remove(&(_pstSection->stNode));
-
-    /* Removes it from table */
-    orxHashTable_Remove(sstConfig.pstSectionTable, orxString_ToCRC(_pstSection->zName));
-
-    /* Removes section */
-    orxBank_Free(sstConfig.pstSectionBank, _pstSection);
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: section [%s] can't be deleted as it's protected by %d entities.", _pstSection->zName, _pstSection->s32ProtectionCount);
   }
 
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /** Reads a signed integer value from config value
@@ -3951,7 +3979,7 @@ void orxFASTCALL orxConfig_Exit()
     orxConfig_SetDefaultParent(orxNULL);
 
     /* Clears all data */
-    orxConfig_Clear();
+    orxConfig_Clear(orxNULL);
 
     /* Clears section list */
     orxLinkList_Clean(&(sstConfig.stSectionList));
@@ -4451,7 +4479,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
     /* Clears all data */
-    orxConfig_Clear();
+    orxConfig_Clear(orxNULL);
 
     /* Reloads default file */
     eResult = orxConfig_Load(sstConfig.zBaseFile);
@@ -4498,7 +4526,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
  * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
- * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
+ * @param[in] _pfnSaveCallback  Callback used to filter sections/keys to save. If null, all sections/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
@@ -5534,10 +5562,11 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
   return zResult;
 }
 
-/** Clears all config data
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Clears all config info
+ * @param[in] _pfnClearCallback Callback used to filter sections/keys to clear. If null, all sections/keys will be cleared
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_Clear()
+orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
   orxCONFIG_SECTION *pstLastSection, *pstNewSection;
 
@@ -5552,19 +5581,12 @@ orxSTATUS orxFASTCALL orxConfig_Clear()
     /* Checks */
     orxASSERT(pstNewSection->s32ProtectionCount >= 0);
 
-    /* Protected? */
-    if(pstNewSection->s32ProtectionCount > 0)
+    /* Protected or can't delete section? */
+    if((pstNewSection->s32ProtectionCount > 0)
+    || (orxConfig_DeleteSection(pstNewSection, _pfnClearCallback) == orxSTATUS_FAILURE))
     {
       /* Updates last section */
       pstLastSection = pstNewSection;
-    }
-    else
-    {
-      /* Deletes section */
-      orxConfig_DeleteSection(pstNewSection);
-
-      /* Clears last section */
-      pstLastSection = orxNULL;
     }
   }
 
@@ -5596,10 +5618,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
   if(pstSection != orxNULL)
   {
     /* Deletes it */
-    orxConfig_DeleteSection(pstSection);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    eResult = orxConfig_DeleteSection(pstSection, orxNULL);
   }
 
   /* Done! */
