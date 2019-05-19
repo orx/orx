@@ -90,7 +90,7 @@ static orxINLINE orxSTATUS LoadConfig()
   }
 
   /* Clears all config data */
-  orxConfig_Clear();
+  orxConfig_Clear(orxNULL);
 
   /* Loads main config and selects tutorial section */
   orxConfig_Load(orxConfig_GetMainFileName());
