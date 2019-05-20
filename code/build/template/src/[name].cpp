@@ -1,44 +1,15 @@
-/* Orx - Portable Game Engine
- *
- * Copyright (c) 2008-2019 Orx-Project
- *
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- *
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- *    1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would be
- *    appreciated but is not required.
- *
- *    2. Altered source versions must be plainly marked as such, and must not be
- *    misrepresented as being the original software.
- *
- *    3. This notice may not be removed or altered from any source
- *    distribution.
- */
-
 /**
  * @file [name].cpp
  * @date [date]
- *
- * Orx Game Template
  */
 
-
 #include "orx.h"
-
 
 /*
  * This is a basic code template to quickly and easily get started with a project or tutorial.
  */
 
-
-/** Init function, is called when all orx's modules have been initialized
+/** Init function, it is called when all orx's modules have been initialized
  */
 orxSTATUS orxFASTCALL Init()
 {
@@ -57,7 +28,7 @@ orxSTATUS orxFASTCALL Init()
     return orxSTATUS_SUCCESS;
 }
 
-/** Run function, is called every clock cycle
+/** Run function, it is called every clock cycle
  */
 orxSTATUS orxFASTCALL Run()
 {
@@ -74,14 +45,14 @@ orxSTATUS orxFASTCALL Run()
     return eResult;
 }
 
-/** Exit function, is called before exiting from orx
+/** Exit function, it is called before exiting from orx
  */
 void orxFASTCALL Exit()
 {
     // Let Orx clean all our mess automatically. :)
 }
 
-/** Bootstrap function, called before config is initialized, allowing for early resource storage definition
+/** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
  */
 orxSTATUS orxFASTCALL Bootstrap()
 {
