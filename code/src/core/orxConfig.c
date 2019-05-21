@@ -90,17 +90,18 @@
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
 #define orxCONFIG_KU32_STACK_BANK_SIZE            32          /**< Default stack bank size */
-#define orxCONFIG_KU32_ENTRY_BANK_SIZE            8192        /**< Default entry bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 
-#define orxCONFIG_KU32_BUFFER_SIZE                8192        /**< Buffer size */
+#define orxCONFIG_KU32_BUFFER_SIZE                16384       /**< Buffer size */
 #define orxCONFIG_KU32_LARGE_BUFFER_SIZE          524288      /**< Large buffer size */
 
-#define orxCONFIG_KU32_COMMAND_BUFFER_SIZE        128         /**< Command buffer size */
+#define orxCONFIG_KU32_COMMAND_BUFFER_SIZE        1024        /**< Command buffer size */
 
 #define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
 #define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
+#define orxCONFIG_KC_SECTION_CLEAR                '!'         /**< Section clear character */
 #define orxCONFIG_KC_ASSIGN                       '='         /**< Assign character */
 #define orxCONFIG_KC_APPEND                       '+'         /**< Append character */
 #define orxCONFIG_KC_COMMENT                      ';'         /**< Comment character */
@@ -2727,6 +2728,9 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
     /* Beginning of line? */
     else if(pc == pcLineStart)
     {
+      orxBOOL   bClear          = orxFALSE;
+      orxCHAR  *pcSectionStart;
+
       /* Skips all spaces */
       while((pc < _acBuffer + _u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
       {
@@ -2810,9 +2814,33 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           break;
         }
 
+        /* Section clear? */
+        case orxCONFIG_KC_SECTION_CLEAR:
+        {
+          /* Skips white spaces */
+          for(pc++; (pc < _acBuffer + _u32Size) && ((*pc == ' ') || (*pc == '\t')); pc++);
+
+          /* Section start? */
+          if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_SECTION_START))
+          {
+            /* Updates status */
+            bClear = orxTRUE;
+
+            /* Fall through */
+          }
+          else
+          {
+            /* Stops */
+            break;
+          }
+        }
+
         /* Section start? */
         case orxCONFIG_KC_SECTION_START:
         {
+          /* Stores section start */
+          pcSectionStart = pc + 1;
+
           /* Finds section end */
           while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
           {
@@ -2821,7 +2849,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             {
               /* Logs message */
               *pc = orxCHAR_NULL;
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete section name <%s>, closing character '%c' not found", _zName, pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete section name <%s>, closing character '%c' not found", _zName, pcSectionStart, orxCONFIG_KC_SECTION_END);
 
               /* Updates new line start */
               pcLineStart = pc + 1;
@@ -2839,8 +2867,15 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             /* Cuts string */
             *pc = orxCHAR_NULL;
 
+            /* Should clear section? */
+            if(bClear != orxFALSE)
+            {
+              /* Clears it */
+              orxConfig_ClearSection(pcSectionStart);
+            }
+
             /* Selects section */
-            orxConfig_SelectSection(pcLineStart + 1);
+            orxConfig_SelectSection(pcSectionStart);
 
             /* Skips the whole line */
             while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
