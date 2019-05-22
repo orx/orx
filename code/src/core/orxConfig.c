@@ -5636,6 +5636,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
   orxSTRINGID         stID;
+  orxS32              s32MarkerIndex;
   orxSTATUS           eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -5643,8 +5644,20 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
   orxASSERT(_zSectionName != orxNULL);
   orxASSERT(_zSectionName != orxSTRING_EMPTY);
 
-  /* Gets section name ID */
-  stID = orxString_ToCRC(_zSectionName);
+  /* Looks for inheritance index */
+  s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
+
+  /* Found? */
+  if(s32MarkerIndex >= 0)
+  {
+    /* Gets section name ID */
+    stID = orxString_NToCRC(_zSectionName, (orxU32)s32MarkerIndex);
+  }
+  else
+  {
+    /* Gets section name ID */
+    stID = orxString_ToCRC(_zSectionName);
+  }
 
   /* Gets it from table */
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
