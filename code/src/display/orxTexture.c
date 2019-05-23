@@ -395,6 +395,32 @@ void orxFASTCALL orxTexture_CommandFind(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: GetSize
+ */
+void orxFASTCALL orxTexture_CommandGetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxTEXTURE *pstTexture;
+
+  /* Gets texture */
+  pstTexture = orxTEXTURE(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    /* Gets its size */
+    orxTexture_GetSize(pstTexture, &(_pstResult->vValue.fX), &(_pstResult->vValue.fY));
+    _pstResult->vValue.fZ = orxFLOAT_0;
+  }
+  else
+  {
+    /* Clears result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetName
  */
 void orxFASTCALL orxTexture_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -498,6 +524,9 @@ static orxINLINE void orxTexture_RegisterCommands()
   /* Command: Find */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Find, "Texture", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: GetName */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
@@ -519,6 +548,9 @@ static orxINLINE void orxTexture_UnregisterCommands()
 
   /* Command: Find */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Find);
+
+  /* Command: GetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetSize);
 
   /* Command: GetName */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetName);
