@@ -1012,7 +1012,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
  * @param[out] _pReadData          Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1037,7 +1037,7 @@ orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s
  * @param[in] _pDataToWrite        Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1229,7 +1229,7 @@ orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 }
 
 /** Prints a formatted string to a file
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */

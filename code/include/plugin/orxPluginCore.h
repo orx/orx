@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Plugin core header
  * This header is used to define structures & functions for core plugins info.
  *
@@ -57,7 +57,7 @@
 /*********************************************
  Structures
  *********************************************/
- 
+
 /* Structure */
 typedef struct __orxPLUGIN_CORE_FUNCTION_t
 {
@@ -91,7 +91,7 @@ typedef orxSTATUS (*orxPLUGIN_INIT_FUNCTION)(orxU32 *_peUserFunctionNumber, orxP
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _eModuleID              Corresponding module ID
- * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
  * @return nothing.
  */
@@ -157,7 +157,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
  ******                   CORE INFO ARRAY HANDLING                    ******
  ***************************************************************************
  ***************************************************************************/
- 
+
 /* *** Core info array begin macro *** */
 #define orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                                                                            \
   static const orxPLUGIN_CORE_FUNCTION sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] =  \

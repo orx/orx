@@ -138,7 +138,7 @@ static orxPARAM_STATIC sstParam;
 
 /** Return the parameter info associated to the given value.
  * @param[in] _zParamName Name of the parameter (with short or long prefix inside)
- * @return Returns the pointer on the param info if found, else returns orxNULL
+ * @return Returns the pointer to the param info if found, else returns orxNULL
  */
 static orxINLINE orxPARAM_INFO *orxParam_Get(orxSTRINGID _stParamName)
 {

@@ -50,7 +50,7 @@
 typedef struct __orxBANK_SEGMENT_t
 {
   void                       *pSegmentData;     /**< Pointer address on the head of the segment data cells */
-  struct __orxBANK_SEGMENT_t *pstNext;          /**< Pointer on the next segment */
+  struct __orxBANK_SEGMENT_t *pstNext;          /**< Pointer to the next segment */
   orxU32                      u32NbFree;        /**< Number of free elements in the segment */
   orxU32                      au32CellAllocationMap[0]; /**< List of bits that represents free and used elements in the segment */
 
@@ -88,13 +88,13 @@ static orxBANK_STATIC sstBank;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Create a new segment of memory and returns a pointer on it
+/** Create a new segment of memory and returns a pointer to it
  * @param[in] _pstBank    Concerned bank
- * @return  returns a pointer on the memory segment (orxNULL if an error occurred)
+ * @return  returns a pointer to the memory segment (orxNULL if an error occurred)
  */
 static orxINLINE orxBANK_SEGMENT *orxBank_CreateSegment(const orxBANK *_pstBank)
 {
-  orxBANK_SEGMENT *pstSegment;  /* Pointer on the segment of memory */
+  orxBANK_SEGMENT *pstSegment;  /* Pointer to the segment of memory */
   orxU32 u32BaseSegmentSize;    /* Base size of segment allocation */
 
   /* Profiles */
@@ -230,12 +230,12 @@ void orxFASTCALL orxBank_Exit()
   return;
 }
 
-/** Create a new bank in memory and returns a pointer on it
+/** Create a new bank in memory and returns a pointer to it
  * @param[in] _u16NbElem  Number of elements per segments
  * @param[in] _u32Size    Size of an element
  * @param[in] _u32Flags   Flags set for this bank
  * @param[in] _eMemType   Memory type where the Data will be allocated
- * @return  returns a pointer on the memory bank
+ * @return  returns a pointer to the memory bank
  */
 orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
@@ -290,8 +290,8 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
   return pstBank;
 }
 
-/** Free a portion of memory allocated with orxMemory_Allocate
- * @param[in] _pstBank    Pointer on the memory bank allocated by orx
+/** Free some memory allocated with orxMemory_Allocate
+ * @param[in] _pstBank    Pointer to the memory bank allocated by orx
  */
 void orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 {
@@ -316,7 +316,7 @@ void orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 }
 
 /** Allocate a new cell from the bank
- * @param[in] _pstBank    Pointer on the memory bank to use
+ * @param[in] _pstBank    Pointer to the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
@@ -328,7 +328,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
 }
 
 /** Allocates a new cell from the bank and returns its index
- * @param[in] _pstBank        Pointer on the memory bank to use
+ * @param[in] _pstBank        Pointer to the memory bank to use
  * @param[out] _pu32ItemIndex Will be set with the allocated item index
  * @param[out] _ppPrevious    If non-null, will contain previous neighbor if found
  * @return a new cell of memory (orxNULL if no allocation possible)
@@ -404,7 +404,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
     /* Found a free element ? */
     if(bFound)
     {
-      /* Get the pointer on the cell according to index value and cells size */
+      /* Get the pointer to the cell according to index value and cells size */
       pResult = (void *)(((orxU8 *)pstCurrentSegment->pSegmentData) + _pstBank->u32ElemSize * ((u32MapPartIndex << 5) + u32BitIndex));
 
       /* Decrease the number of free elements */
@@ -465,7 +465,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
 
 /** Free an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
- * @param[in] _pCell      Pointer on the cell to free
+ * @param[in] _pCell      Pointer to the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
@@ -595,7 +595,7 @@ void orxFASTCALL orxBank_CompactAll()
 
 /** Get the next cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
- * @param[in] _pCell      Pointer on the current cell of memory
+ * @param[in] _pCell      Pointer to the current cell of memory
  * @return The next cell. If _pCell is orxNULL, the first cell will be returned. Returns orxNULL when no more cell can be returned.
  */
 void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)

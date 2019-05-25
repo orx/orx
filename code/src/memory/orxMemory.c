@@ -251,10 +251,10 @@ void orxFASTCALL orxMemory_Exit()
   return;
 }
 
-/** Allocates a portion of memory in the system and returns a pointer on it
+/** Allocates some memory in the system and returns a pointer to it
  * @param[in] _u32Size    size of the memory to allocate
  * @param[in] _eMemType   Memory zone where data will be allocated
- * @return  returns a pointer on the memory allocated, or orxNULL if an error has occurred
+ * @return  returns a pointer to the memory allocated, or orxNULL if an error has occurred
  */
 void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
@@ -298,7 +298,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   return pResult;
 }
 
-/** Reallocates a previously allocated memory block, with the given new size and returns a pointer on it
+/** Reallocates a previously allocated memory block, with the given new size and returns a pointer to it
  * If possible, it'll keep the current pointer and extend the memory block, if not it'll allocate a new block,
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
@@ -364,8 +364,8 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   return pResult;
 }
 
-/** Frees a portion of memory allocated with orxMemory_Allocateate
- * @param[in] _pMem       Pointer on the memory allocated by orx
+/** Frees some memory allocated with orxMemory_Allocate
+ * @param[in] _pMem       Pointer to the memory allocated by orx
  */
 void orxFASTCALL orxMemory_Free(void *_pMem)
 {

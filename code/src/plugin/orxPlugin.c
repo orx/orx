@@ -676,7 +676,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _eModuleID              Corresponding module ID
- * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
  * @return nothing.
  */
