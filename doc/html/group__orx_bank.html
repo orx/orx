@@ -161,7 +161,7 @@ Functions</h2></td></tr>
 <tr class="separator:gac76bf2303e6d91acd1ac7b1087bab788"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>Bank module Bank are used to allocate a portion of memory. Applications can get cell from this memory and use it. If the number of allocations requests become bigger than the bank size, a new segment of memory is automatically allocated. Memory bank can be used to try to reduce memory fragmentation. </p>
+<p>Bank module Bank are used to allocate some memory. Applications can get cell from this memory and use it. If the number of allocations requests become bigger than the bank size, a new segment of memory is automatically allocated. Memory bank can be used to try to reduce memory fragmentation. </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a class="anchor" id="ga08c51aec50777e4118b80cdac81f6148"></a>
 <div class="memitem">
@@ -224,7 +224,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Allocates a new cell from the bank </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer on the memory bank to use </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer to the memory bank to use </td></tr>
   </table>
   </dd>
 </dl>
@@ -263,7 +263,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Allocates a new cell from the bank and returns its index </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer on the memory bank to use </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer to the memory bank to use </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu32ItemIndex</td><td>Will be set with the allocated item index </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_ppPrevious</td><td>If non-null, will contain previous neighbor if found </td></tr>
   </table>
@@ -368,7 +368,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a new bank in memory and returns a pointer on it </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Creates a new bank in memory and returns a pointer to it </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_u16NbElem</td><td>Number of elements per segments </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of an element </td></tr>
@@ -377,7 +377,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on the memory bank </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to the memory bank </dd></dl>
 
 </div>
 </div>
@@ -394,9 +394,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Frees a portion of memory allocated with orxMemory_Allocate </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Frees some memory allocated with orxMemory_Allocate </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer on the memory bank allocated by orx </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Pointer to the memory bank allocated by orx </td></tr>
   </table>
   </dd>
 </dl>
@@ -445,7 +445,7 @@ Functions</h2></td></tr>
 <p>Frees an allocated cell </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Bank of memory from where _pCell has been allocated </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pCell</td><td>Pointer on the cell to free </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pCell</td><td>Pointer to the cell to free </td></tr>
   </table>
   </dd>
 </dl>
@@ -570,7 +570,7 @@ Functions</h2></td></tr>
 <p>Gets the next cell </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Bank of memory from where _pCell has been allocated </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pCell</td><td>Pointer on the current cell of memory </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pCell</td><td>Pointer to the current cell of memory </td></tr>
   </table>
   </dd>
 </dl>
