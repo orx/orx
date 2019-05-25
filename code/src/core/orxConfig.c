@@ -4315,7 +4315,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
           for(i = 0; i < sizeof(sastUnsupportedBOMList) / sizeof(struct __orxCONFIG_BOM_DEFINITION_t); i++)
           {
             /* Matches? */
-            if(orxString_NCompare(acBuffer + u32Offset, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
+            if(orxMemory_Compare(acBuffer + u32Offset, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't load config file, invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
