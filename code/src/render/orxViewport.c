@@ -33,6 +33,7 @@
 #include "render/orxViewport.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "display/orxDisplay.h"
@@ -59,6 +60,7 @@
 #define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
 #define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
 #define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000020  /**< Fixed ratio flag */
+#define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000040  /**< Referenced flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x00100000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x00200000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00400000  /**< Internal camera handling flag  */
@@ -72,6 +74,7 @@
 
 /** Misc defines
  */
+#define orxVIEWPORT_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 #define orxVIEWPORT_KU32_BANK_SIZE              16          /**< Bank size */
 
 #define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME      "Texture"
@@ -128,7 +131,8 @@ struct __orxVIEWPORT_t
  */
 typedef struct __orxVIEWPORT_STATIC_t
 {
-  orxU32 u32Flags;                                                        /**< Control flags : 4 */
+  orxU32                u32Flags;                                             /**< Control flags : 4 */
+  orxHASHTABLE         *pstReferenceTable;                                    /**< Table to avoid viewport duplication when creating through config file : 8 */
 
 } orxVIEWPORT_STATIC;
 
@@ -145,6 +149,707 @@ static orxVIEWPORT_STATIC sstViewport;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Command: Create
+ */
+void orxFASTCALL orxViewport_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Creates viewport */
+  pstViewport = orxViewport_CreateFromConfig(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->u64Value = (pstViewport != orxNULL) ? orxStructure_GetGUID(pstViewport) : orxU64_UNDEFINED;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Delete
+ */
+void orxFASTCALL orxViewport_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Deletes it */
+    orxViewport_Delete(pstViewport);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetID
+ */
+void orxFASTCALL orxViewport_CommandGetID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetPosition
+ */
+void orxFASTCALL orxViewport_CommandSetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Sets its position */
+    orxViewport_SetPosition(pstViewport, _astArgList[1].vValue.fX, _astArgList[1].vValue.fY);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetRelativePosition
+ */
+void orxFASTCALL orxViewport_CommandSetRelativePosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    orxCHAR   acBuffer[64];
+    orxSTRING zRelativePos;
+    orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+
+    /* Gets its relative position */
+    zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
+    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+
+    /* Left? */
+    if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+    }
+    /* Right? */
+    else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+    }
+
+    /* Top? */
+    if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+    }
+    /* Bottom? */
+    else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+    }
+
+    /* Applies it */
+    orxViewport_SetRelativePosition(pstViewport, u32AlignmentFlags);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetSize
+ */
+void orxFASTCALL orxViewport_CommandSetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Sets its size */
+    orxViewport_SetSize(pstViewport, _astArgList[1].vValue.fX, _astArgList[1].vValue.fY);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetRelativeSize
+ */
+void orxFASTCALL orxViewport_CommandSetRelativeSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Sets its relative size */
+    orxViewport_SetRelativeSize(pstViewport, _astArgList[1].vValue.fX, _astArgList[1].vValue.fY);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetPosition
+ */
+void orxFASTCALL orxViewport_CommandGetPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Gets its position */
+    orxViewport_GetPosition(pstViewport, &(_pstResult->vValue.fX), &(_pstResult->vValue.fY));
+    _pstResult->vValue.fZ = orxFLOAT_0;
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetSize
+ */
+void orxFASTCALL orxViewport_CommandGetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Gets its size */
+    orxViewport_GetSize(pstViewport, &(_pstResult->vValue.fX), &(_pstResult->vValue.fY));
+    _pstResult->vValue.fZ = orxFLOAT_0;
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRelativeSize
+ */
+void orxFASTCALL orxViewport_CommandGetRelativeSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Gets its relative size */
+    orxViewport_GetRelativeSize(pstViewport, &(_pstResult->vValue.fX), &(_pstResult->vValue.fY));
+    _pstResult->vValue.fZ = orxFLOAT_0;
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Get
+ */
+void orxFASTCALL orxViewport_CommandGet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxViewport_Get(_astArgList[0].zValue);
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxStructure_GetGUID(pstViewport);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetName
+ */
+void orxFASTCALL orxViewport_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = (pstViewport != orxNULL) ? orxViewport_GetName(pstViewport) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Enable
+ */
+void orxFASTCALL orxViewport_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates it */
+    orxViewport_Enable(pstViewport, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsEnabled
+ */
+void orxFASTCALL orxViewport_CommandIsEnabled(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->bValue = orxViewport_IsEnabled(pstViewport);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetCamera
+ */
+void orxFASTCALL orxViewport_CommandSetCamera(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    orxCAMERA *pstCamera = orxNULL;
+
+    /* Has camera? */
+    if(_u32ArgNumber > 1)
+    {
+      /* Gets camera */
+      pstCamera = orxCAMERA(orxStructure_Get(_astArgList[1].u64Value));
+    }
+
+    /* Updates viewport */
+    orxViewport_SetCamera(pstViewport, pstCamera);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCamera
+ */
+void orxFASTCALL orxViewport_CommandGetCamera(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    orxCAMERA *pstCamera;
+
+    /* Gets camera */
+    pstCamera = orxViewport_GetCamera(pstViewport);
+
+    /* Updates result */
+    _pstResult->u64Value = (pstCamera != orxNULL) ? orxStructure_GetGUID(pstCamera) : orxU64_UNDEFINED;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetBlendMode
+ */
+void orxFASTCALL orxViewport_CommandSetBlendMode(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Sets blend mode */
+    orxViewport_SetBlendMode(pstViewport, orxDisplay_GetBlendModeFromString(_astArgList[1].zValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: AddShader
+ */
+void orxFASTCALL orxViewport_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Adds shader */
+    orxViewport_AddShader(pstViewport, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveShader
+ */
+void orxFASTCALL orxViewport_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Removes shader */
+    orxViewport_RemoveShader(pstViewport, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: EnableShader
+ */
+void orxFASTCALL orxViewport_CommandEnableShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Enables shader */
+    orxViewport_EnableShader(pstViewport, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsShaderEnabled
+ */
+void orxFASTCALL orxViewport_CommandIsShaderEnabled(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->bValue = orxViewport_IsShaderEnabled(pstViewport);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the viewports commands
+ */
+static orxINLINE void orxViewport_RegisterCommands()
+{
+  /* Command: Create */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, Create, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Delete */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, Delete, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: GetID */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetID, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetPosition, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: SetRelativePosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetRelativePosition, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"RelativePosition", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: SetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetSize, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Size", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: SetRelativeSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetRelativeSize, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"RelativeSize", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetRelativeSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetRelativeSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: Get */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, Get, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetName */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: Enable */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, Enable, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsEnabled */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, IsEnabled, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetCamera */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetCamera, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Camera = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetCamera */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetCamera, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: SetBlendMode */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetBlendMode, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"BlendMode", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: AddShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, AddShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, RemoveShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: EnableShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, EnableShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsShaderEnabled */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, IsShaderEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+}
+
+/** Unregisters all the viewports commands
+ */
+static orxINLINE void orxViewport_UnregisterCommands()
+{
+  /* Command: Create */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, Create);
+  /* Command: Delete */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, Delete);
+
+  /* Command: GetID */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetID);
+
+  /* Command: SetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetPosition);
+  /* Command: SetRelativePosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetRelativePosition);
+  /* Command: SetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetSize);
+  /* Command: SetRelativeSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetRelativeSize);
+  /* Command: GetPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetPosition);
+  /* Command: GetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetSize);
+  /* Command: GetRelativeSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetRelativeSize);
+
+  /* Command: Get */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, Get);
+  /* Command: GetName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetName);
+
+  /* Command: Enable */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, Enable);
+  /* Command: IsEnabled */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, IsEnabled);
+
+  /* Command: SetCamera */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetCamera);
+  /* Command: GetCamera */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetCamera);
+
+  /* Command: SetBlendMode */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetBlendMode);
+
+  /* Command: AddShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, AddShader);
+  /* Command: RemoveShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, RemoveShader);
+  /* Command: EnableShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, EnableShader);
+  /* Command: IsShaderEnabled */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, IsShaderEnabled);
+}
 
 /** Event handler
  * @param[in]   _pstEvent                     Sent event
@@ -295,6 +1000,7 @@ void orxFASTCALL orxViewport_Setup()
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CAMERA);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_SHADERPOINTER);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_COMMAND);
 
   return;
 }
@@ -315,28 +1021,30 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstViewport, sizeof(orxVIEWPORT_STATIC));
 
-    /* Adds event handler */
-    eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+    /* Creates reference table */
+    sstViewport.pstReferenceTable = orxHashTable_Create(orxVIEWPORT_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Valid? */
+    if(sstViewport.pstReferenceTable != orxNULL)
     {
-      /* Filters relevant event IDs */
-      orxEvent_SetHandlerIDFlags(orxViewport_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
-
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxVIEWPORT_KU32_BANK_SIZE, orxNULL);
+      /* Adds event handler */
+      eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
 
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Inits Flags */
-        sstViewport.u32Flags = orxVIEWPORT_KU32_STATIC_FLAG_READY;
-      }
-      else
-      {
-        /* Removes event handler */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+        /* Filters relevant event IDs */
+        orxEvent_SetHandlerIDFlags(orxViewport_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
+
+        /* Registers structure type */
+        eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxVIEWPORT_KU32_BANK_SIZE, orxNULL);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Registers commands */
+          orxViewport_RegisterCommands();
+        }
       }
     }
   }
@@ -349,14 +1057,27 @@ orxSTATUS orxFASTCALL orxViewport_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Not initialized? */
-  if(eResult == orxSTATUS_FAILURE)
+  /* Initialized? */
+  if(eResult != orxSTATUS_FAILURE)
   {
+    /* Inits Flags */
+    sstViewport.u32Flags = orxVIEWPORT_KU32_STATIC_FLAG_READY;
+  }
+  else
+  {
+    /* Has reference table? */
+    if(sstViewport.pstReferenceTable != orxNULL)
+    {
+      /* Deletes it */
+      orxHashTable_Delete(sstViewport.pstReferenceTable);
+      sstViewport.pstReferenceTable = orxNULL;
+    }
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
+
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Initializing viewport module failed.");
-
-    /* Updates Flags */
-    sstViewport.u32Flags &= ~orxVIEWPORT_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
@@ -370,6 +1091,9 @@ void orxFASTCALL orxViewport_Exit()
   /* Initialized? */
   if(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters commands */
+    orxViewport_UnregisterCommands();
+
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxViewport_EventHandler);
 
@@ -378,6 +1102,10 @@ void orxFASTCALL orxViewport_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_VIEWPORT);
+
+    /* Deletes reference table */
+    orxHashTable_Delete(sstViewport.pstReferenceTable);
+    sstViewport.pstReferenceTable = orxNULL;
 
     /* Updates flags */
     sstViewport.u32Flags &= ~orxVIEWPORT_KU32_STATIC_FLAG_READY;
@@ -914,6 +1642,12 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
 
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
+
+      /* Adds it to reference table */
+      orxHashTable_Add(sstViewport.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+      /* Updates status flags */
+      orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_REFERENCED, orxVIEWPORT_KU32_FLAG_NONE);
     }
 
     /* Pops previous section */
@@ -977,6 +1711,13 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
       }
     }
 
+    /* Is referenced? */
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_REFERENCED) != orxFALSE)
+    {
+      /* Removes it from reference table */
+      orxHashTable_Remove(sstViewport.pstReferenceTable, orxString_ToCRC(_pstViewport->zReference));
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstViewport);
   }
@@ -988,23 +1729,6 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
 
   /* Done! */
   return eResult;
-}
-
-/** Sets a viewport alignment
- * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32AlignFlags  Alignment flags (must be OR'ed)
- */
-void orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
-{
-  /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN) == _u32AlignFlags)
-
-  /* Updates alignement flags */
-  orxStructure_SetFlags(_pstViewport, _u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN, orxVIEWPORT_KU32_MASK_ALIGN);
-
-  return;
 }
 
 /** Sets a viewport texture list
@@ -1896,4 +2620,23 @@ const orxSTRING orxFASTCALL orxViewport_GetName(const orxVIEWPORT *_pstViewport)
 
   /* Done! */
   return zResult;
+}
+
+/** Gets viewport given its name
+ * @param[in]   _zName          Viewport name
+ * @return      orxVIEWPORT / orxNULL
+ */
+orxVIEWPORT *orxFASTCALL orxViewport_Get(const orxSTRING _zName)
+{
+  orxVIEWPORT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxVIEWPORT *)orxHashTable_Get(sstViewport.pstReferenceTable, orxString_ToCRC(_zName));
+
+  /* Done! */
+  return pstResult;
 }
