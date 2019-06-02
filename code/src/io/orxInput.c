@@ -206,7 +206,7 @@ void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCO
 void orxFASTCALL orxInput_CommandEnableSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Enabled it */
-  orxInput_EnableSet(_astArgList[0].zValue, _astArgList[1].bValue);
+  orxInput_EnableSet(_astArgList[0].zValue, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
 
   /* Updates result */
   _pstResult->zValue = orxInput_IsSetEnabled(_astArgList[0].zValue) ? _astArgList[0].zValue : orxSTRING_EMPTY;
@@ -306,7 +306,7 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: EnableSet */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Input, EnableSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING}, {"Enable", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, EnableSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Set", orxCOMMAND_VAR_TYPE_STRING}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsSetEnabled */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsSetEnabled, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
 
