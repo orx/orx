@@ -1517,6 +1517,16 @@ void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/* Command: Return */
+void orxFASTCALL orxCommand_CommandReturn(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
 /* Command: Not */
 void orxFASTCALL orxCommand_CommandNot(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2259,6 +2269,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Repeat */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Repeat, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Iterations", orxCOMMAND_VAR_TYPE_S32}, {"Command", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: Return */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Return, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Value", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: Not */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Not, "Not", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: And */
@@ -2329,6 +2342,9 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Repeat */
   orxCommand_AddAlias("Repeat", "Command.Repeat", orxNULL);
+
+  /* Alias: Return */
+  orxCommand_AddAlias("Return", "Command.Return", orxNULL);
 
   /* Alias: Logic.If */
   orxCommand_AddAlias("Logic.If", "Command.If", orxNULL);
@@ -2448,6 +2464,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Repeat */
   orxCommand_RemoveAlias("Repeat");
 
+  /* Alias: Return */
+  orxCommand_RemoveAlias("Return");
+
   /* Alias: Logic.If */
   orxCommand_RemoveAlias("Logic.If");
   /* Alias: Logic.Not */
@@ -2565,6 +2584,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Repeat */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Repeat);
+
+  /* Command: Return */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Return);
 
   /* Command: Not */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Not);
