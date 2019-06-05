@@ -577,7 +577,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
     /* Stores pattern */
-    u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
+    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
     orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
     _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
   }
@@ -586,7 +586,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     orxU32 u32Length;
 
     /* Stores pattern */
-    u32Length = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
+    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
     orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
     _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
 
