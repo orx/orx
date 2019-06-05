@@ -1621,6 +1621,10 @@ void orxFASTCALL orxCommand_CommandAreEqual(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxCommand_CommandIsGreater(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxCOMMAND_VAR astOperandList[2];
+  orxBOOL bStrict;
+
+  /* Updates strict status */
+  bStrict = ((_u32ArgNumber <= 2) || (_astArgList[2].bValue != orxFALSE)) ? orxTRUE : orxFALSE;
 
   /* Parses numerical arguments */
   if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
@@ -1630,27 +1634,37 @@ void orxFASTCALL orxCommand_CommandIsGreater(orxU32 _u32ArgNumber, const orxCOMM
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Updates result */
-      _pstResult->bValue = (astOperandList[0].fValue > astOperandList[1].fValue);
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? (astOperandList[0].fValue > astOperandList[1].fValue)
+                           : (astOperandList[0].fValue >= astOperandList[1].fValue);
     }
     /* Both vectors? */
     else if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_VECTOR)
          && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_VECTOR))
     {
       /* Updates result */
-      _pstResult->bValue = ((astOperandList[0].vValue.fX > astOperandList[1].vValue.fX)
-                         && (astOperandList[0].vValue.fY > astOperandList[1].vValue.fY)
-                         && (astOperandList[0].vValue.fZ > astOperandList[1].vValue.fZ));
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? ((astOperandList[0].vValue.fX > astOperandList[1].vValue.fX)
+                           && (astOperandList[0].vValue.fY > astOperandList[1].vValue.fY)
+                           && (astOperandList[0].vValue.fZ > astOperandList[1].vValue.fZ))
+                           : ((astOperandList[0].vValue.fX >= astOperandList[1].vValue.fX)
+                           && (astOperandList[0].vValue.fY >= astOperandList[1].vValue.fY)
+                           && (astOperandList[0].vValue.fZ >= astOperandList[1].vValue.fZ));
     }
     else
     {
       /* Updates result */
-      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE;
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE)
+                           : ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) >= 0) ? orxTRUE : orxFALSE);
     }
   }
   else
   {
     /* Updates result */
-    _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE;
+    _pstResult->bValue = (bStrict != orxFALSE)
+                         ? ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) > 0) ? orxTRUE : orxFALSE)
+                         : ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) >= 0) ? orxTRUE : orxFALSE);
   }
 
   /* Done! */
@@ -1661,6 +1675,10 @@ void orxFASTCALL orxCommand_CommandIsGreater(orxU32 _u32ArgNumber, const orxCOMM
 void orxFASTCALL orxCommand_CommandIsLesser(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxCOMMAND_VAR astOperandList[2];
+  orxBOOL bStrict;
+
+  /* Updates strict status */
+  bStrict = ((_u32ArgNumber <= 2) || (_astArgList[2].bValue != orxFALSE)) ? orxTRUE : orxFALSE;
 
   /* Parses numerical arguments */
   if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
@@ -1670,27 +1688,37 @@ void orxFASTCALL orxCommand_CommandIsLesser(orxU32 _u32ArgNumber, const orxCOMMA
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Updates result */
-      _pstResult->bValue = (astOperandList[0].fValue < astOperandList[1].fValue);
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? (astOperandList[0].fValue < astOperandList[1].fValue)
+                           : (astOperandList[0].fValue <= astOperandList[1].fValue);
     }
     /* Both vectors? */
     else if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_VECTOR)
          && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_VECTOR))
     {
       /* Updates result */
-      _pstResult->bValue = ((astOperandList[0].vValue.fX < astOperandList[1].vValue.fX)
-                         && (astOperandList[0].vValue.fY < astOperandList[1].vValue.fY)
-                         && (astOperandList[0].vValue.fZ < astOperandList[1].vValue.fZ));
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? ((astOperandList[0].vValue.fX < astOperandList[1].vValue.fX)
+                           && (astOperandList[0].vValue.fY < astOperandList[1].vValue.fY)
+                           && (astOperandList[0].vValue.fZ < astOperandList[1].vValue.fZ))
+                           : ((astOperandList[0].vValue.fX <= astOperandList[1].vValue.fX)
+                           && (astOperandList[0].vValue.fY <= astOperandList[1].vValue.fY)
+                           && (astOperandList[0].vValue.fZ <= astOperandList[1].vValue.fZ));
     }
     else
     {
       /* Updates result */
-      _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE;
+      _pstResult->bValue = (bStrict != orxFALSE)
+                           ? ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE)
+                           : ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) <= 0) ? orxTRUE : orxFALSE);
     }
   }
   else
   {
     /* Updates result */
-    _pstResult->bValue = (orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE;
+    _pstResult->bValue = (bStrict != orxFALSE)
+                         ? ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) < 0) ? orxTRUE : orxFALSE)
+                         : ((orxString_ICompare(_astArgList[0].zValue, _astArgList[1].zValue) <= 0) ? orxTRUE : orxFALSE);
   }
 
   /* Done! */
@@ -2283,9 +2311,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: AreEqual */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, AreEqual, "Equal?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: IsGreater */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsGreater, "Greater?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsGreater, "Greater?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Strict = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsLesser */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsLesser, "Lesser?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, IsLesser, "Lesser?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Strict = true", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: Add */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Add, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
