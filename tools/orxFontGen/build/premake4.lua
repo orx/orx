@@ -231,13 +231,13 @@ solution "orxFontGen"
     configuration {"vs2013", "x32"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/32"
+            "$(ORX)/../extern/freetype/lib/vc2013/32"
         }
 
     configuration {"vs2013", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/64"
+            "$(ORX)/../extern/freetype/lib/vc2013/64"
         }
 
     configuration {"vs2015 or vs2017", "x32"}
