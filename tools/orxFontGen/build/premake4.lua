@@ -105,13 +105,22 @@ solution "orxFontGen"
     includedirs
     {
         "$(ORX)/include",
+        "../../../code/include",
+        "../../../extern/stb_image",
+        "../../../extern/freetype/include"
         "$(ORX)/../extern/stb_image",
         "$(ORX)/../extern/freetype/include"
     }
 
     configuration {"not macosx"}
         includedirs {"$(ORX)/include"}
-        libdirs {"$(ORX)/lib/dynamic"}
+        libdirs
+        {
+            "../lib",
+            "../../../code/lib/static",
+            "$(ORX)/lib/dynamic"
+            "$(ORX)/lib/static"
+        }
 
     configuration {"macosx"}
         includedirs {"../include"}
@@ -219,6 +228,17 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
+    configuration {"vs2013", "x32"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2013/32"
+        }
+
+    configuration {"vs2013", "x64"}
+        libdirs
+        {
+            "../../../extern/freetype/lib/vc2013/64"
+        }
 
     configuration {"vs2015 or vs2017", "x32"}
         libdirs
@@ -301,21 +321,9 @@ project "orxFontGen"
             "OpenGL32"
         }
 
-		
-		
--- Linux
-
-    configuration {"linux"}
-        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
 
 -- Mac OS X
 
     configuration {"macosx"}
         postbuildcommands {"cp -f ../lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-
-
--- Windows
-
-    configuration {"windows"}
-        postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
