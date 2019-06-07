@@ -108,7 +108,9 @@ solution "orxFontGen"
         "../../../code/include",
         "$(ORX)/include",
         "../../../extern/stb_image",
-        "../../../extern/freetype/include"
+        "$(ORX)/../extern/stb_image",
+        "../../../extern/freetype/include",
+        "$(ORX)/../extern/freetype/include"
     }
 
     configuration {"not macosx"}
@@ -173,12 +175,14 @@ solution "orxFontGen"
         libdirs
         {
             "../../../extern/freetype/lib/linux",
+            "$(ORX)/../extern/freetype/lib/linux"
         }
 
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/linux64"
+            "../../../extern/freetype/lib/linux64",
+            "$(ORX)/../extern/freetype/lib/linux64"
         }
 
     configuration {"linux"}
@@ -194,7 +198,8 @@ solution "orxFontGen"
     configuration {"macosx"}
         libdirs
         {
-            "../../../extern/freetype/lib/mac"
+            "../../../extern/freetype/lib/mac",
+            "$(ORX)/../extern/freetype/lib/mac"
         }
         buildoptions
         {
@@ -229,40 +234,39 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
-    configuration {"vs2012"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2012"
-        }
-
     configuration {"vs2013", "x32"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/32"
+            "../../../extern/freetype/lib/vc2013/32",
+            "$(ORX)/../extern/freetype/lib/vc2013/32"
         }
 
     configuration {"vs2013", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/64"
+            "../../../extern/freetype/lib/vc2013/64",
+            "$(ORX)/../extern/freetype/lib/vc2013/64"
         }
 
     configuration {"vs2015 or vs2017", "x32"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2015/32"
+            "../../../extern/freetype/lib/vc2015/32",
+            "$(ORX)/../extern/freetype/lib/vc2015/32"
         }
 
     configuration {"vs2015 or vs2017", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2015/64"
+            "../../../extern/freetype/lib/vc2015/64",
+            "$(ORX)/../extern/freetype/lib/vc2015/64"
         }
 
     configuration {"windows", "codeblocks or codelite or gmake"}
         libdirs
         {
-            "../../../extern/freetype/lib/mingw"
+            "../../../extern/freetype/lib/mingw",
+            "$(ORX)/../extern/freetype/lib/mingw"
         }
 
 
