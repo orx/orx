@@ -1796,7 +1796,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       }
 
       /* No texture size? */
-      if(orxVector_IsNull(&vTextureSize) != orxFALSE)
+      if((vTextureSize.fX == orxFLOAT_0) && (vTextureSize.fY == orxFLOAT_0))
       {
         /* Not a text? */
         if(bIsText == orxFALSE)

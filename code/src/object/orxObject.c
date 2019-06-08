@@ -4335,9 +4335,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> won't have a size as its parent <%s> doesn't have any size.", _zConfigID, zParentName);
             }
 
-            /* No scale on Z */
-            vSize.fZ = orxFLOAT_1;
-
             /* Gets world space values */
             orxVector_Mul(&vValue, orxVector_Div(&vValue, &vValue, &vSize), &vParentSize);
           }
@@ -5742,6 +5739,13 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   {
     /* Gets its size */
     pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
+
+    /* Invalid Z? */
+    if(pvResult->fZ <= orxFLOAT_0)
+    {
+      /* Defaults to 1 */
+      pvResult->fZ = orxFLOAT_1;
+    }
   }
   else
   {
