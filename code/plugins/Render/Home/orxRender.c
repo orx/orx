@@ -388,6 +388,9 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
 
+  /* Resets its clipping */
+  orxDisplay_SetBitmapClipping(pstBitmap, 0, 0, 1, 1);
+
   /* Gets marker count */
   s32MarkerCount = orxProfiler_GetMarkerCount();
 
