@@ -1565,7 +1565,7 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
     /* Updates result */
     s32Result = _u32CharNumber;
   }
-#endif /* __orxWINDOWS__ */
+#endif /* __orxMSVC__ */
 
   /* Clamps result */
   s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);
