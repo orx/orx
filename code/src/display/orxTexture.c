@@ -60,6 +60,7 @@
 #define orxTEXTURE_KU32_FLAG_CACHED             0x40000000
 #define orxTEXTURE_KU32_FLAG_REF_COORD          0x01000000
 #define orxTEXTURE_KU32_FLAG_SIZE               0x02000000
+#define orxTEXTURE_KU32_FLAG_LOADING            0x04000000
 
 #define orxTEXTURE_KU32_MASK_ALL                0xFFFFFFFF
 
@@ -204,6 +205,9 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
             {
               /* Updates load count */
               sstTexture.u32LoadCount++;
+
+              /* Updates status */
+              orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
             }
             else
             {
@@ -238,6 +242,9 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       {
         /* Updates load count */
         sstTexture.u32LoadCount--;
+
+        /* Updates status */
+        orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
 
         /* Success? */
         if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
@@ -889,6 +896,9 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
         {
           /* Updates load count */
           sstTexture.u32LoadCount++;
+
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
         }
         else
         {
@@ -940,6 +950,13 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   /* Is the last reference? */
   if(orxStructure_GetRefCount(_pstTexture) == 0)
   {
+    /* Was pending? */
+    if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_LOADING) != orxFALSE)
+    {
+      /* Updates load count */
+      sstTexture.u32LoadCount--;
+    }
+
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_DELETE, _pstTexture, orxNULL, orxNULL);
 
