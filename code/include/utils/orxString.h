@@ -98,7 +98,7 @@ extern orxDLLAPI orxU32 saau32CRCTable[8][256];
 
 /** Skips all white spaces
  * @param[in] _zString        Concerned string
- * @return    Sub string located after all leading white spaces
+ * @return    Sub string located after all leading white spaces, including EOL characters
  */
 static orxINLINE const orxSTRING                          orxString_SkipWhiteSpaces(const orxSTRING _zString)
 {
@@ -108,7 +108,7 @@ static orxINLINE const orxSTRING                          orxString_SkipWhiteSpa
   if(_zString != orxNULL)
   {
     /* Skips all white spaces */
-    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t') || (*zResult == orxCHAR_CR) || (*zResult == orxCHAR_LF); zResult++);
 
     /* Empty? */
     if(*zResult == orxCHAR_NULL)
@@ -692,22 +692,26 @@ static orxINLINE orxS32                                   orxString_NICompare(co
  */
 static orxINLINE orxU32                                   orxString_ExtractBase(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU32 u32Result, u32Offset;
+  const orxSTRING zString;
+  orxU32          u32Result, u32Offset;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
+
+  /* Skips white spaces */
+  zString = orxString_SkipWhiteSpaces(_zString);
 
   /* Default result and offset: decimal */
   u32Result = 10;
   u32Offset = 0;
 
   /* Depending on first character */
-  switch(_zString[0])
+  switch(zString[0])
   {
     case '0':
     {
       /* Depending on second character */
-      switch(_zString[1] | 0x20)
+      switch(zString[1] | 0x20)
       {
         case 'x':
         {
@@ -730,8 +734,8 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
         default:
         {
           /* Octal? */
-          if((_zString[1] >= '0')
-          && (_zString[1] <= '9'))
+          if((zString[1] >= '0')
+          && (zString[1] <= '9'))
           {
             /* Updates result and offset: octal */
             u32Result = 8;
@@ -764,7 +768,7 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = _zString + u32Offset;
+    *_pzRemaining = zString + u32Offset;
   }
 
   /* Done! */
