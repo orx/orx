@@ -681,6 +681,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
             }
 
             case orxCOMMAND_KC_SEPARATOR:
+            case orxCHAR_CR:
+            case orxCHAR_LF:
             {
               /* Not in block or in vector? */
               if((bInBlock == orxFALSE)
