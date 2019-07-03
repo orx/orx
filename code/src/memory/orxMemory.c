@@ -53,7 +53,7 @@
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
-#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  8
+#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
@@ -151,16 +151,16 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
-  size_t stLineSize = 0, stSizeOfLineSize;
+  size_t usLineSize = 0, usSizeOfLineSize;
 
-  /* Size of variable */
-  stSizeOfLineSize = sizeof(stLineSize);
+  /* Gets size of variable */
+  usSizeOfLineSize = sizeof(usLineSize);
 
   /* Gets cache line size */
-  sysctlbyname("hw.cachelinesize", &stLineSize, &stSizeOfLineSize, 0, 0);
+  sysctlbyname("hw.cachelinesize", &usLineSize, &usSizeOfLineSize, 0, 0);
 
   /* Done! */
-  return (orxU32)(stLineSize != 0) ? (orxU32)stLineSize : 32;
+  return (orxU32)((usLineSize != 0) ? usLineSize : orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE);
 }
 
 #elif defined(__orxLINUX__)
@@ -178,7 +178,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
-  return (orxU32)32;
+  return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
 }
 
 #else
