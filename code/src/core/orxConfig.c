@@ -2728,7 +2728,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
     /* Beginning of line? */
     else if(pc == pcLineStart)
     {
-      orxBOOL   bClear          = orxFALSE;
+      orxBOOL   bClear = orxFALSE, bFall = orxFALSE;
       orxCHAR  *pcSectionStart;
 
       /* Skips all spaces */
@@ -2788,94 +2788,6 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
 
             /* Restores current section */
             sstConfig.pstCurrentSection = pstCurrentSection;
-
-            /* Skips the whole line */
-            while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
-            {
-              pc++;
-            }
-
-            /* Valid? */
-            if(pc < _acBuffer + _u32Size)
-            {
-              /* Updates line start pointer */
-              pcLineStart = pc + 1;
-            }
-            else
-            {
-              /* Updates line start pointer */
-              pcLineStart = pc - 1;
-
-              /* Makes sure we don't mistake remaining partial comment for a new key */
-              *pcLineStart = orxCONFIG_KC_COMMENT;
-            }
-          }
-
-          break;
-        }
-
-        /* Section clear? */
-        case orxCONFIG_KC_SECTION_CLEAR:
-        {
-          /* Skips white spaces */
-          for(pc++; (pc < _acBuffer + _u32Size) && ((*pc == ' ') || (*pc == '\t')); pc++);
-
-          /* Section start? */
-          if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_SECTION_START))
-          {
-            /* Updates status */
-            bClear = orxTRUE;
-
-            /* Fall through */
-          }
-          else
-          {
-            /* Stops */
-            break;
-          }
-        }
-
-        /* Section start? */
-        case orxCONFIG_KC_SECTION_START:
-        {
-          /* Stores section start */
-          pcSectionStart = pc + 1;
-
-          /* Finds section end */
-          while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
-          {
-            /* End of line? */
-            if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
-            {
-              /* Logs message */
-              *pc = orxCHAR_NULL;
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete section name <%s>, closing character '%c' not found", _zName, pcSectionStart, orxCONFIG_KC_SECTION_END);
-
-              /* Updates new line start */
-              pcLineStart = pc + 1;
-
-              break;
-            }
-
-            /* Updates pointer */
-            pc++;
-          }
-
-          /* Valid? */
-          if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_SECTION_END))
-          {
-            /* Cuts string */
-            *pc = orxCHAR_NULL;
-
-            /* Should clear section? */
-            if(bClear != orxFALSE)
-            {
-              /* Clears it */
-              orxConfig_ClearSection(pcSectionStart);
-            }
-
-            /* Selects section */
-            orxConfig_SelectSection(pcSectionStart);
 
             /* Skips the whole line */
             while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
@@ -2973,6 +2885,101 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           }
 
           break;
+        }
+
+        /* Section clear? */
+        case orxCONFIG_KC_SECTION_CLEAR:
+        {
+          /* Skips white spaces */
+          for(pc++; (pc < _acBuffer + _u32Size) && ((*pc == ' ') || (*pc == '\t')); pc++);
+
+          /* Section start? */
+          if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_SECTION_START))
+          {
+            /* Updates status */
+            bClear = orxTRUE;
+
+          }
+          else
+          {
+            /* Resumes as regular processing */
+            bFall = orxTRUE;
+          }
+
+          /* Fall through */
+        }
+
+        /* Section start? */
+        case orxCONFIG_KC_SECTION_START:
+        {
+          /* No fall through? */
+          if(bFall == orxFALSE)
+          {
+            /* Stores section start */
+            pcSectionStart = pc + 1;
+
+            /* Finds section end */
+            while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
+            {
+              /* End of line? */
+              if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
+              {
+                /* Logs message */
+                *pc = orxCHAR_NULL;
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete section name <%s>, closing character '%c' not found", _zName, pcSectionStart, orxCONFIG_KC_SECTION_END);
+
+                /* Updates new line start */
+                pcLineStart = pc + 1;
+
+                break;
+              }
+
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Valid? */
+            if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_SECTION_END))
+            {
+              /* Cuts string */
+              *pc = orxCHAR_NULL;
+
+              /* Should clear section? */
+              if(bClear != orxFALSE)
+              {
+                /* Clears it */
+                orxConfig_ClearSection(pcSectionStart);
+              }
+
+              /* Selects section */
+              orxConfig_SelectSection(pcSectionStart);
+
+              /* Skips the whole line */
+              while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
+              {
+                pc++;
+              }
+
+              /* Valid? */
+              if(pc < _acBuffer + _u32Size)
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc + 1;
+              }
+              else
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc - 1;
+
+                /* Makes sure we don't mistake remaining partial comment for a new key */
+                *pcLineStart = orxCONFIG_KC_COMMENT;
+              }
+            }
+
+            break;
+          }
+
+          /* Fall through */
         }
 
         default:
