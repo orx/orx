@@ -23,7 +23,7 @@ templates: [
 ]
 
 ; Helpers
-delete-dir: func [
+delete-dir: function [
   {Deletes a directory including all files and subdirectories.}
   dir [file! url!]
 ] [
@@ -32,23 +32,23 @@ delete-dir: func [
     dir: dirize dir
     attempt [files: load dir]
   ] [
-    foreach file files [delete-dir dir/:file]
+    for-each file files [delete-dir dir/:file]
   ]
   attempt [delete dir]
 ]
 log: func [
-  message [string! block!]
+  message [text! block!]
   /only
   /no-break
 ] [
-  unless only [
+  if not only [
     prin [{[} now/time {] }]
   ]
-  either no-break [prin message] [print/eval message]
+  either no-break [prin message] [print reeval message]
 ]
 to-template: func [
   {Gets template literal}
-  name [word! string!]
+  name [word! text!]
 ] [
   rejoin [{[} name {]}]
 ]
@@ -56,28 +56,28 @@ to-template: func [
 ; Inits
 change-dir root: system/options/path
 code-path: {..}
-date: to-string now/date
-switch platform: lowercase to-string system/platform/1 [
-  {macintosh} [platform: {mac} code-path: to-local-file root/code]
+date: to-text now/date
+switch platform: lowercase to-text system/platform/1 [
+  {macintosh} [platform: {mac} code-path: file-to-local root/code]
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
 
 ; Usage
 usage: func [
-  /message content [block! string!]
+  /message [block! text!]
 ] [
   if message [
     prin {== }
-    print/eval content
+    print reeval message
     print {}
   ]
 
-  prin [{== Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
+  prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
 
   print rejoin [
     newline newline
-    foreach [param desc default] params [
+    for-each [param desc default] params [
       prin rejoin [{ } either default [rejoin [{[} param {]}]] [param]]
       rejoin [{  = } param {: } desc either default [rejoin [{=[} default {], optional}]] [{, required}] newline]
     ]
@@ -94,7 +94,7 @@ either system/options/args [
       if interactive?: zero? length? arg: system/options/args [
         print {== No argument, switching to interactive mode}
       ]
-      foreach [param desc default] params [
+      for-each [param desc default] params [
         case [
           not tail? arg [
             set param arg/1
@@ -126,36 +126,35 @@ either system/options/args [
 source: clean-path rejoin [first split-path system/options/script source]
 
 ; Runs setup if premake isn't found
-unless exists? source/:premake-source [
+if not exists? source/:premake-source [
   log [{New orx installation found, running setup!}]
   attempt [delete-dir source/:extern]
   in-dir source/../../.. [
-    call/shell/wait platform-info/setup
+    call/shell platform-info/setup
   ]
 ]
 
 ; Retrieves project name
-if dir? name: clean-path to-rebol-file name [clear back tail name]
+if dir? name: clean-path local-to-file name [clear back tail name]
 
 ; Inits project directory
 either exists? name [
-  log [{[} to-local-file name {] already exists, overwriting!}]
+  log [{[} file-to-local name {] already exists, overwriting!}]
 ] [
   make-dir/deep name
 ]
 change-dir name/..
 set [path name] split-path name
-log [{Initializing [} name {] in [} to-local-file path {]}]
+log [{Initializing [} name {] in [} file-to-local path {]}]
 
 ; Copies all files
 log {== Creating files:}
 build: _
-eval copy-files: func [
+reeval copy-files: function [
   from [file!]
   to [file!]
-  /local src dst
 ] [
-  foreach file read from [
+  for-each file read from [
     src: from/:file
     dst: replace to/:file to-template 'name name
     if file = %build/ [
@@ -165,9 +164,9 @@ eval copy-files: func [
       make-dir/deep dst
       copy-files src dst
     ] [
-      log/only [{  +} to-local-file dst]
+      log/only [{  +} file-to-local dst]
       buffer: read src
-      foreach template templates [
+      for-each template templates [
         replace/all buffer to-template template get template
       ]
       write dst buffer
@@ -179,13 +178,13 @@ eval copy-files: func [
 if build [
   in-dir build [
     write platform-info/premake read source/:premake-source
-    unless platform = {windows} [
-      call/shell/wait reform [{chmod +x} platform-info/premake]
+    if not platform = {windows} [
+      call/shell form reduce [{chmod +x} platform-info/premake]
     ]
     log [{Generating build files for [} platform {]:}]
-    foreach config platform-info/config [
+    for-each config platform-info/config [
       log/only [{  *} config]
-      call/shell/wait rejoin [{"} to-local-file clean-path platform-info/premake {" } config]
+      call/shell rejoin [{"} file-to-local clean-path platform-info/premake {" } config]
     ]
   ]
 ]
