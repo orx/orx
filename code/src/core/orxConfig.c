@@ -2898,7 +2898,6 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           {
             /* Updates status */
             bClear = orxTRUE;
-
           }
           else
           {
