@@ -48,9 +48,9 @@
 
 #ifdef __orxGCC__
 
-#if (__GNUC__ != 6) || (__GNUC_MINOR__ != 3)
-  #warning The customized LiquidFun library shipping with orx was compiled with MinGW 6.3.0, using any other version might result in compiling and/or linking errors! Please either upgrade to MinGW 6.3.0 or recompile extern/LiquidFun-1.1.0 and ignore this warning
-#endif /* (__GNUC__ != 6) || (__GNUC_MINOR != 3) */
+#if (__GNUC__ != 8) || (__GNUC_MINOR__ != 1)
+  #warning The customized LiquidFun library shipping with orx was compiled with MinGW-w64 8.1.0, using any other version might result in compiling and/or linking errors! Please either upgrade to MinGW-w64 8.1.0 or recompile extern/LiquidFun-1.1.0 and ignore this warning
+#endif /* (__GNUC__ != 8) || (__GNUC_MINOR != 1) */
 
 #endif /* __orxGCC__ */
 

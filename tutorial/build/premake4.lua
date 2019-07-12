@@ -16,22 +16,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -217,6 +203,16 @@ solution "Tutorial"
         {
             "/MP"
         }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
 
 
 --

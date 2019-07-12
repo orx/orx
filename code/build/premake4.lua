@@ -19,22 +19,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -276,14 +262,30 @@ solution "orx"
             "../../extern/libwebp/lib/vc2015/64"
         }
 
-    configuration {"windows", "codeblocks or codelite or gmake"}
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
         libdirs
         {
-            "../../extern/glfw-3/lib/mingw",
-            "../../extern/openal-soft/lib/mingw",
-            "../../extern/libsndfile-1.0.22/lib/mingw",
-            "../../extern/LiquidFun-1.1.0/lib/mingw",
-            "../../extern/libwebp/lib/mingw"
+            "../../extern/glfw-3/lib/mingw/32",
+            "../../extern/openal-soft/lib/mingw/32",
+            "../../extern/libsndfile-1.0.22/lib/mingw/32",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/32",
+            "../../extern/libwebp/lib/mingw/32"
+        }
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mingw/64",
+            "../../extern/openal-soft/lib/mingw/64",
+            "../../extern/libsndfile-1.0.22/lib/mingw/64",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/64",
+            "../../extern/libwebp/lib/mingw/64"
         }
 
 --

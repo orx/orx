@@ -769,7 +769,7 @@ orxSTATUS orxFASTCALL orxFile_Remove(const orxSTRING _zFileName)
   else
   {
     /* Tries to remove it as a directory */
-#ifdef __orxWINDOWS__
+#ifdef __orxMSVC__
     if(_rmdir(_zFileName) == 0)
 #else /* __orxWINDOWS__ */
     if(rmdir(_zFileName) == 0)

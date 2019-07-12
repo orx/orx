@@ -25,8 +25,10 @@ platformlist = [
     'tutovs2017-32',
     'vs2017-64',
     'tutovs2017-64',
-    'mingw',
-    'tutomingw',
+    'mingw-32',
+    'mingw-64',
+    'tutomingw-32',
+    'tutomingw-64',
     'mac',
     'tutomac',
     'linux32',
@@ -419,17 +421,33 @@ platforminfolist = {
         'folderinfolist':   tutorialfolderinfolist
     },
 
-    'mingw': {
-        'foldername':       'dev-mingw',
-        'filename':         'dev-mingw',
+    'mingw-32': {
+        'foldername':       'dev-mingw-32',
+        'filename':         'dev-mingw-32',
         'format':           'zip',
         'fileinfolist':     mingwfileinfolist,
         'folderinfolist':   devfolderinfolist
     },
 
-    'tutomingw': {
-        'foldername':       'tutorial-mingw',
-        'filename':         'tutorial-mingw',
+    'mingw-64': {
+        'foldername':       'dev-mingw-64',
+        'filename':         'dev-mingw-64',
+        'format':           'zip',
+        'fileinfolist':     mingwfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutomingw-32': {
+        'foldername':       'tutorial-mingw-32',
+        'filename':         'tutorial-mingw-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialmingwfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutomingw-64': {
+        'foldername':       'tutorial-mingw-64',
+        'filename':         'tutorial-mingw-64',
         'format':           'zip',
         'fileinfolist':     tutorialmingwfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
