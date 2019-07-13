@@ -45,7 +45,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2019")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -129,7 +129,7 @@ solution "orxFontGen"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
+    configuration {"not vs2015", "not vs2017", "not vs2019"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -220,28 +220,14 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
-    configuration {"vs2013", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2013/32",
-            "$(ORX)/../extern/freetype/lib/vc2013/32"
-        }
-
-    configuration {"vs2013", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2013/64",
-            "$(ORX)/../extern/freetype/lib/vc2013/64"
-        }
-
-    configuration {"vs2015 or vs2017", "x32"}
+    configuration {"vs2015 or vs2017 or vs2019", "x32"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/32",
             "$(ORX)/../extern/freetype/lib/vc2015/32"
         }
 
-    configuration {"vs2015 or vs2017", "x64"}
+    configuration {"vs2015 or vs2017 or vs2019", "x64"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/64",

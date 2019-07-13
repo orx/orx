@@ -45,7 +45,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2019")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -112,7 +112,7 @@ solution "[name]"
         includedirs {"[code-path]/include"}
         libdirs {"[code-path]/lib/dynamic"}
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
+    configuration {"not vs2015", "not vs2017", "not vs2019"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}

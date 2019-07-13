@@ -13,10 +13,6 @@ platformlist = [
     'tutovs2010',
     'vs2012',
     'tutovs2012',
-    'vs2013-32',
-    'tutovs2013-32',
-    'vs2013-64',
-    'tutovs2013-64',
     'vs2015-32',
     'tutovs2015-32',
     'vs2015-64',
@@ -24,6 +20,10 @@ platformlist = [
     'vs2017-32',
     'tutovs2017-32',
     'vs2017-64',
+    'vs2019-32',
+    'tutovs2019-32',
+    'vs2019-64',
+    'tutovs2019-64',
     'tutovs2017-64',
     'mingw-32',
     'mingw-64',
@@ -325,38 +325,6 @@ platforminfolist = {
         'folderinfolist':   tutorialfolderinfolist
     },
 
-    'vs2013-32': {
-        'foldername':       'dev-vs2013-32',
-        'filename':         'dev-vs2013-32',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'vs2013-64': {
-        'foldername':       'dev-vs2013-64',
-        'filename':         'dev-vs2013-64',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'tutovs2013-32': {
-        'foldername':       'tutorial-vs2013-32',
-        'filename':         'tutorial-vs2013-32',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'tutovs2013-64': {
-        'foldername':       'tutorial-vs2013-64',
-        'filename':         'tutorial-vs2013-64',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
     'vs2015-32': {
         'foldername':       'dev-vs2015-32',
         'filename':         'dev-vs2015-32',
@@ -416,6 +384,38 @@ platforminfolist = {
     'tutovs2017-64': {
         'foldername':       'tutorial-vs2017-64',
         'filename':         'tutorial-vs2017-64',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'vs2019-32': {
+        'foldername':       'dev-vs2019-32',
+        'filename':         'dev-vs2019-32',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'vs2019-64': {
+        'foldername':       'dev-vs2019-64',
+        'filename':         'dev-vs2019-64',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutovs2019-32': {
+        'foldername':       'tutorial-vs2019-32',
+        'filename':         'tutorial-vs2019-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutovs2019-64': {
+        'foldername':       'tutorial-vs2019-64',
+        'filename':         'tutorial-vs2019-64',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist

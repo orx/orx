@@ -70,8 +70,8 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86 with vs2012, x86/x86-64 with vs2013, vs2015 & vs2017 and mingw32 (6.3.0) with codelite, codeblocks and GNU makefile)
-- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+
+- Windows (x86/x86-64 with vs2015, vs2017 & vs2019, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)
+- MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
 
@@ -127,26 +127,28 @@ Here is a list with a small description for each package.
 - `orx-dev-linux32-1.10.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
 - `orx-dev-linux64-1.10.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
 - `orx-dev-mac-1.10.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-1.10.zip`            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- `orx-dev-vs2013-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- `orx-dev-vs2013-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.10.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.10.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
 - `orx-dev-vs2015-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
 - `orx-dev-vs2015-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
 - `orx-dev-vs2017-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
 - `orx-dev-vs2017-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
 - `orx-full-ios-1.10.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
 - `orx-dev-android-1.10.zip`          : static embedded binaries for Android, release/profile/debug (device).
 - `orx-dev-android-native-1.10.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
 - `orx-tutorial-linux32-1.10.tar.bz2` : tutorials for Linux (x86)
 - `orx-tutorial-linux64-1.10.tar.bz2` : tutorials for Linux (x86-64)
 - `orx-tutorial-mac-1.10.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-1.10.zip`       : tutorials for Windows (mingw)
-- `orx-tutorial-vs2013-32-1.10.zip`   : tutorials for Windows (Visual Studio 2013, x86)
-- `orx-tutorial-vs2013-64-1.10.zip`   : tutorials for Windows (Visual Studio 2013, x86-64)
+- `orx-tutorial-mingw-32-1.10.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.10.zip`    : tutorials for Windows (mingw/x86-64)
 - `orx-tutorial-vs2015-32-1.10.zip`   : tutorials for Windows (Visual Studio 2015, x86)
 - `orx-tutorial-vs2015-64-1.10.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
 - `orx-tutorial-vs2017-32-1.10.zip`   : tutorials for Windows (Visual Studio 2017, x86)
 - `orx-tutorial-vs2017-64-1.10.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.10.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.10.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
 
 All the `*-dev-*` packages above include:
 
