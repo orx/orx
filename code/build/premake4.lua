@@ -242,10 +242,7 @@ solution "orx"
             "../../extern/libwebp/lib/vc2015/64"
         }
 
-    configuration {"windows", "gmake", "x32"}
-        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/32",
@@ -255,10 +252,7 @@ solution "orx"
             "../../extern/libwebp/lib/mingw/32"
         }
 
-    configuration {"windows", "gmake", "x64"}
-        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/64",
@@ -267,6 +261,17 @@ solution "orx"
             "../../extern/LiquidFun-1.1.0/lib/mingw/64",
             "../../extern/libwebp/lib/mingw/64"
         }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
+
 
 --
 -- Project: orx

@@ -234,25 +234,29 @@ solution "orxFontGen"
             "$(ORX)/../extern/freetype/lib/vc2015/64"
         }
 
-    configuration {"windows", "gmake", "x32"}
-        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
         libdirs
         {
             "../../../extern/freetype/lib/mingw/32",
             "$(ORX)/../extern/freetype/lib/mingw/32"
         }
 
-    configuration {"windows", "gmake", "x64"}
-        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
         libdirs
         {
             "../../../extern/freetype/lib/mingw/64",
             "$(ORX)/../extern/freetype/lib/mingw/64"
         }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
+        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
+        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
 
 
 --
