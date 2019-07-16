@@ -263,14 +263,36 @@ solution "orx"
         }
 
     configuration {"windows", "gmake", "x32"}
-        prebuildcommands {"$(eval CC := i686-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := i686-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := i686-w64-mingw32-gcc-ar)"}
+        prebuildcommands
+        {
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
+        }
 
     configuration {"windows", "gmake", "x64"}
-        prebuildcommands {"$(eval CC := x86_64-w64-mingw32-gcc)"}
-        prebuildcommands {"$(eval CXX := x86_64-w64-mingw32-g++)"}
-        prebuildcommands {"$(eval AR := x86_64-w64-mingw32-gcc-ar)"}
+        prebuildcommands
+        {
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
+        }
 
 
 --
