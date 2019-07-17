@@ -1,9 +1,9 @@
 version: 1.9-dev.{build}
 
 image:
-- Visual Studio 2013
 - Visual Studio 2015
 - Visual Studio 2017
+- Visual Studio 2019
 
 configuration: Default
 
@@ -21,11 +21,9 @@ cache: ../cache
 
 build_script:
 - cmd: >-
-    if "%VS120COMNTOOLS%" NEQ "" set VSVersion=2013
-
-    if "%VS140COMNTOOLS%" NEQ "" set VSVersion=2015
-
-    if "%VS90COMNTOOLS%" == "" set VSVersion=2017
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" EQ "Visual Studio 2015" set VSVersion=2015
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" EQ "Visual Studio 2019" set VSVersion=2017
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" EQ "Visual Studio 2019" set VSVersion=2019
 
     set PackageVersion=vs%VSVersion%-%Version%
 
@@ -56,9 +54,13 @@ artifacts:
   name: package-vs2015-64
 - path: code/build/python/packages/*vs2015-32*.zip
   name: package-vs2015-32
-- path: code/build/python/packages/*vs2013-64*.zip
-  name: package-vs2013-64
-- path: code/build/python/packages/*vs2013-32*.zip
-  name: package-vs2013-32
+- path: code/build/python/packages/*vs2017-64*.zip
+  name: package-vs2017-64
+- path: code/build/python/packages/*vs2017-32*.zip
+  name: package-vs2017-32
+- path: code/build/python/packages/*vs2019-64*.zip
+  name: package-vs2019-64
+- path: code/build/python/packages/*vs2019-32*.zip
+  name: package-vs2019-32
 
 deploy: off
