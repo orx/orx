@@ -23,7 +23,7 @@ build_script:
 - cmd: >-
     if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VSVersion=2015
 
-    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2019" set VSVersion=2017
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" set VSVersion=2017
 
     if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2019" set VSVersion=2019
 
