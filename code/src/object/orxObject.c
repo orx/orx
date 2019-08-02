@@ -301,6 +301,75 @@ void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
   return;
 }
 
+/** Sets literal lifetime
+ */
+static orxINLINE orxSTATUS orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime)
+{
+  orxCHAR   acBuffer[128];
+  orxU32    u32Flags = orxOBJECT_KU32_FLAG_NONE;
+  orxSTATUS eResult;
+
+  /* Gets lower case value */
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  orxString_LowerCase(orxString_NCopy(acBuffer, _zLifeTime, sizeof(acBuffer) - 1));
+
+  /* FX? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_FX) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_FX_LIFETIME;
+  }
+
+  /* Sound? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SOUND) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_SOUND_LIFETIME;
+  }
+
+  /* Spawn? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SPAWN) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME;
+  }
+
+  /* Track? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_TRACK) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
+  }
+
+  /* Child? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_CHILD) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
+  }
+
+  /* Has flags? */
+  if(orxFLAG_TEST(u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME))
+  {
+    /* Clears previous lifetime */
+    orxObject_SetLifeTime(_pstObject, -orxFLOAT_1);
+
+    /* Applies them */
+    orxStructure_SetFlags(_pstObject, u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Command: Create
  */
 void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1033,8 +1102,23 @@ void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Updates its life time */
-    orxObject_SetLifeTime(pstObject, _astArgList[1].fValue);
+    /* Set literal lifetime? */
+    if(orxObject_SetLiteralLifeTime(pstObject, _astArgList[1].zValue) == orxSTATUS_FAILURE)
+    {
+      orxFLOAT fLifeTime;
+
+      /* Gets lifetime value */
+      if(orxString_ToFloat(_astArgList[1].zValue, &fLifeTime, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Applies it */
+        orxObject_SetLifeTime(pstObject, fLifeTime);
+      }
+      else
+      {
+        /* Clears it */
+        orxObject_SetLifeTime(pstObject, -orxFLOAT_1);
+      }
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2736,7 +2820,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetLifeTime */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetLifeTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetLifeTime, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -4761,50 +4845,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has life time? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_LIFETIME) != orxFALSE)
         {
-          orxCHAR   acBuffer[64];
-          orxSTRING zLifeTime;
-
-          /* Gets lower case value */
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-          zLifeTime = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxOBJECT_KZ_CONFIG_LIFETIME), sizeof(acBuffer) - 1));
-
-          /* FX? */
-          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_FX) != orxNULL)
-          {
-            /* Updates flags */
-            u32Flags |= orxOBJECT_KU32_FLAG_FX_LIFETIME;
-          }
-
-          /* Sound? */
-          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_SOUND) != orxNULL)
-          {
-            /* Updates flags */
-            u32Flags |= orxOBJECT_KU32_FLAG_SOUND_LIFETIME;
-          }
-
-          /* Spawn? */
-          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_SPAWN) != orxNULL)
-          {
-            /* Updates flags */
-            u32Flags |= orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME;
-          }
-
-          /* Track? */
-          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_TRACK) != orxNULL)
-          {
-            /* Updates flags */
-            u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
-          }
-
-          /* Child? */
-          if(orxString_SearchString(zLifeTime, orxOBJECT_KZ_CHILD) != orxNULL)
-          {
-            /* Updates flags */
-            u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
-          }
-
-          /* No flags? */
-          if(!orxFLAG_TEST(u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME))
+          /* Sets literal lifetime? */
+          if(orxObject_SetLiteralLifeTime(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_LIFETIME)) == orxSTATUS_FAILURE)
           {
             /* Stores lifetime's numerical value */
             orxObject_SetLifeTime(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME));
