@@ -2715,6 +2715,40 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/** Command: GetAnim
+ */
+void orxFASTCALL orxObject_CommandGetAnim(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Is asking for current anim? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Updates result */
+      _pstResult->zValue = orxObject_GetCurrentAnim(pstObject);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->zValue = orxObject_GetTargetAnim(pstObject);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetAnimFrequency
  */
 void orxFASTCALL orxObject_CommandSetAnimFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2737,6 +2771,31 @@ void orxFASTCALL orxObject_CommandSetAnimFrequency(orxU32 _u32ArgNumber, const o
   {
     /* Updates result */
     _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetAnimFrequency
+ */
+void orxFASTCALL orxObject_CommandGetAnimFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxObject_GetAnimFrequency(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = -orxFLOAT_1;
   }
 
   /* Done! */
@@ -3073,8 +3132,12 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetAnim */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnim, "Anim", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetAnimFrequency */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: GetAnimFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnimFrequency, "Frequency", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOrigin, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Origin", orxCOMMAND_VAR_TYPE_VECTOR});
@@ -3247,8 +3310,12 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: SetAnim */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnim);
+  /* Command: GetAnim */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAnim);
   /* Command: SetAnimFrequency */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnimFrequency);
+  /* Command: GetAnimFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAnimFrequency);
 
   /* Command: SetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOrigin);
@@ -6751,20 +6818,18 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
  */
 orxOBJECT_MAKE_RECURSIVE(SetAnimFrequency, orxFLOAT);
 
-/** Is current animation test.
+/** Gets an object's relative animation frequency.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _zAnimName      Animation name (config's one) to test
- * @return      orxTRUE / orxFALSE
+ * @return Animation frequency / -orxFLOAT_1
  */
-orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+orxFLOAT orxFASTCALL orxObject_GetAnimFrequency(const orxOBJECT *_pstObject)
 {
   orxANIMPOINTER *pstAnimPointer;
-  orxBOOL         bResult;
+  orxFLOAT       fResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
 
   /* Gets animation pointer */
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -6773,50 +6838,16 @@ orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const o
   if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
-    bResult = (orxString_Compare(orxAnimPointer_GetCurrentAnimName(pstAnimPointer), _zAnimName)) ? orxFALSE : orxTRUE;
+    fResult = orxAnimPointer_GetFrequency(pstAnimPointer);
   }
   else
   {
     /* Updates result */
-    bResult = orxFALSE;
+    fResult = -orxFLOAT_1;
   }
 
   /* Done! */
-  return bResult;
-}
-
-/** Is target animation test.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zAnimName      Animation name (config's one) to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
-{
-  orxANIMPOINTER *pstAnimPointer;
-  orxBOOL         bResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
-
-  /* Gets animation pointer */
-  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
-
-  /* Valid? */
-  if(pstAnimPointer != orxNULL)
-  {
-    /* Updates result */
-    bResult = (orxString_Compare(orxAnimPointer_GetTargetAnimName(pstAnimPointer), _zAnimName)) ? orxFALSE : orxTRUE;
-  }
-  else
-  {
-    /* Updates result */
-    bResult = orxFALSE;
-  }
-
-  /* Done! */
-  return bResult;
+  return fResult;
 }
 
 /** Sets current animation for object. This function switches the currently displayed animation of the object
@@ -6901,6 +6932,112 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxST
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxOBJECT_MAKE_RECURSIVE(SetTargetAnim, const orxSTRING);
+
+/** Gets current animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Current animation / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxObject_GetCurrentAnim(const orxOBJECT *_pstObject)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != orxNULL)
+  {
+    /* Gets current animation */
+    zResult = orxAnimPointer_GetCurrentAnimName(pstAnimPointer);
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets target animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Target animation / orxSTRING_EMPTY
+ */
+const orxSTRING orxFASTCALL orxObject_GetTargetAnim(const orxOBJECT *_pstObject)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != orxNULL)
+  {
+    /* Gets target animation */
+    zResult = orxAnimPointer_GetTargetAnimName(pstAnimPointer);
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Is current animation test.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
+
+  /* Updates result */
+  bResult = (orxString_Compare(orxObject_GetCurrentAnim(_pstObject), _zAnimName) == 0) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Is target animation test.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const orxSTRING _zAnimName)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
+
+  /* Updates result */
+  bResult = (orxString_Compare(orxObject_GetTargetAnim(_pstObject), _zAnimName) == 0) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
 
 /** Sets an object speed.
  * @param[in]   _pstObject      Concerned object
