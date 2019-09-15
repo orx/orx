@@ -163,7 +163,7 @@ orxSTATUS orxFASTCALL Run()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Next config requested? */
-  if(orxInput_IsActive("NextConfig") && orxInput_HasNewStatus("NextConfig"))
+  if(orxInput_HasBeenActivated("NextConfig"))
   {
     /* Updates config ID */
     ss32ConfigID = (ss32ConfigID < orxConfig_GetListCount("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
@@ -172,7 +172,7 @@ orxSTATUS orxFASTCALL Run()
     LoadConfig();
   }
   /* Previous config requested? */
-  else if(orxInput_IsActive("PreviousConfig") && orxInput_HasNewStatus("PreviousConfig"))
+  else if(orxInput_HasBeenActivated("PreviousConfig"))
   {
     /* Updates config ID */
     ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCount("ConfigList") - 1;
