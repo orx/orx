@@ -85,26 +85,30 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSOUND_EVENT_PAYLOAD *pstPayload;
 
-  /* Gets event payload */
-  pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-  /* Depending on event type */
-  switch(_pstEvent->eID)
+  /* Soldier? */
+  if(orxOBJECT(_pstEvent->hRecipient) == pstSoldier)
   {
-    case orxSOUND_EVENT_START:
+    /* Gets event payload */
+    pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Depending on event type */
+    switch(_pstEvent->eID)
     {
-      /* Logs info */
-      orxLOG("Sound [%s]@[%s] has started!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      case orxSOUND_EVENT_START:
+      {
+        /* Logs info */
+        orxLOG("Sound [%s]@[%s] has started!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
-      break;
-    }
+        break;
+      }
 
-    case orxSOUND_EVENT_STOP:
-    {
-      /* Logs info */
-      orxLOG("Sound [%s]@[%s] has stopped!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+      case orxSOUND_EVENT_STOP:
+      {
+        /* Logs info */
+        orxLOG("Sound [%s]@[%s] has stopped!", orxSound_GetName(pstPayload->pstSound), orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
-      break;
+        break;
+      }
     }
   }
 
@@ -123,7 +127,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   /* *** SOUND FX CONTROLS *** */
 
   /* Random SFX? */
-  if(orxInput_IsActive("RandomSFX") && orxInput_HasNewStatus("RandomSFX"))
+  if(orxInput_HasBeenActivated("RandomSFX"))
   {
     /* Adds a sound FX on soldier */
     orxObject_AddSound(pstSoldier, "RandomBip");
@@ -138,7 +142,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
     orxConfig_PopSection();
   }
   /* Default SFX? */
-  if(orxInput_IsActive("DefaultSFX") && orxInput_HasNewStatus("DefaultSFX"))
+  if(orxInput_HasBeenActivated("DefaultSFX"))
   {
     /* Adds a sound FX on soldier */
     orxObject_AddSound(pstSoldier, "DefaultBip");
@@ -150,25 +154,10 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   /* *** MUSIC CONTROLS *** */
 
   /* Toggle music? */
-  if(orxInput_IsActive("ToggleMusic") && orxInput_HasNewStatus("ToggleMusic"))
+  if(orxInput_HasBeenActivated("ToggleMusic"))
   {
-    /* Not playing? */
-    if(orxSound_GetStatus(pstMusic) != orxSOUND_STATUS_PLAY)
-    {
-      /* Plays music */
-      orxSound_Play(pstMusic);
-
-      /* Activates soldier */
-      orxObject_Enable(pstSoldier, orxTRUE);
-    }
-    else
-    {
-      /* Pauses music */
-      orxSound_Pause(pstMusic);
-
-      /* Deactivates soldier */
-      orxObject_Enable(pstSoldier, orxFALSE);
-    }
+    /* Enables/Disables soldier */
+    orxObject_Enable(pstSoldier, !orxObject_IsEnabled(pstSoldier));
   }
 
   /* Pitch up? */
@@ -266,8 +255,9 @@ orxSTATUS orxFASTCALL Init()
   /* Gets main clock */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
-  /* Creates background music (streamed) */
-  pstMusic = orxSound_CreateFromConfig("Music");
+  /* Adds background music (streamed) to the soldier and stores it */
+  orxObject_AddSound(pstSoldier, "Music");
+  pstMusic = orxObject_GetLastAddedSound(pstSoldier);
 
   /* Plays it */
   orxSound_Play(pstMusic);
