@@ -146,6 +146,15 @@ typedef struct __orxTHREAD_STATIC_t
 
 } orxTHREAD_STATIC;
 
+/** Static structure - callbacks
+ */
+typedef struct __orxTHREAD_STATIC_CALLBACKS_t
+{
+  orxTHREAD_FUNCTION      pfnPre;
+  orxTHREAD_FUNCTION      pfnPost;
+  void                   *pContext;
+} orxTHREAD_STATIC_CALLBACKS;
+
 
 /***************************************************************************
  * Static variables                                                        *
@@ -154,6 +163,12 @@ typedef struct __orxTHREAD_STATIC_t
 /** Static data
  */
 static orxTHREAD_STATIC sstThread;
+static orxTHREAD_STATIC_CALLBACKS sstThreadCallbacks =
+{
+  .pfnPre   = NULL,
+  .pfnPost  = NULL,
+  .pContext = NULL
+};
 
 
 /***************************************************************************
@@ -191,22 +206,41 @@ static void *orxThread_Execute(void *_pContext)
 
 #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
-  do
+  /* Run the pre-run function if it exists */
+  if (sstThreadCallbacks.pfnPre != NULL)
   {
-    /* Runs thread function */
-    eResult = pstInfo->pfnRun(pstInfo->pContext);
-
-    /* Yields */
-    orxThread_Yield();
-
-    /* Waits for its enable semaphore */
-    orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
-
-    /* Signals its enable semaphore */
-    orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+    eResult = sstThreadCallbacks.pfnPre(sstThreadCallbacks.pContext);
   }
-  /* While stop hasn't been requested */
-  while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
+  else
+  {
+    eResult = orxSTATUS_SUCCESS;
+  };
+
+  if (eResult != orxSTATUS_FAILURE)
+  {
+    do
+    {
+      /* Runs thread function */
+      eResult = pstInfo->pfnRun(pstInfo->pContext);
+
+      /* Yields */
+      orxThread_Yield();
+
+      /* Waits for its enable semaphore */
+      orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+
+      /* Signals its enable semaphore */
+      orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+    }
+    /* While stop hasn't been requested */
+    while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
+  };
+
+  /* Run the post-run function if it exists */
+  if (sstThreadCallbacks.pfnPost != NULL)
+  {
+    sstThreadCallbacks.pfnPost(sstThreadCallbacks.pContext);
+  };
 
   /* Done! */
   return 0;
@@ -276,6 +310,11 @@ static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
 
   /* Done! */
   return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxThread_DefaultPrePost(void *_pContext)
+{
+  return orxSTATUS_SUCCESS;
 }
 
 
@@ -504,12 +543,12 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
     if(pstInfo->pstEnableSemaphore != orxNULL)
     {
       /* Inits its info */
-      pstInfo->hThread      = 0;
-      pstInfo->pfnRun       = _pfnRun;
-      pstInfo->pContext     = _pContext;
-      pstInfo->zName        = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : orxSTRING_EMPTY;
-      pstInfo->u32ParentID  = orxThread_GetCurrent();
-      pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_INITIALIZED | orxTHREAD_KU32_INFO_FLAG_ENABLED;
+      pstInfo->hThread        = 0;
+      pstInfo->pfnRun         = _pfnRun;
+      pstInfo->pContext       = _pContext;
+      pstInfo->zName          = ((_zName != orxNULL) && (*_zName != orxCHAR_NULL)) ? orxString_Duplicate(_zName) : orxSTRING_EMPTY;
+      pstInfo->u32ParentID    = orxThread_GetCurrent();
+      pstInfo->u32Flags       = orxTHREAD_KU32_INFO_FLAG_INITIALIZED | orxTHREAD_KU32_INFO_FLAG_ENABLED;
       orxMEMORY_BARRIER();
 
 #ifdef __orxWINDOWS__
@@ -1114,4 +1153,14 @@ orxU32 orxFASTCALL orxThread_GetTaskCount()
 
   /* Done! */
   return u32Result;
+}
+
+/** Set the per-thread pre- and post-run functions.
+ */
+void orxFASTCALL orxThread_SetPrePost(const orxTHREAD_FUNCTION _pfnPre, const orxTHREAD_FUNCTION _pfnPost, void *_pContext)
+{
+  sstThreadCallbacks.pfnPre = _pfnPre;
+  sstThreadCallbacks.pfnPost = _pfnPost;
+  sstThreadCallbacks.pContext = _pContext;
+  return;
 }

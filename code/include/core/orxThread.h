@@ -163,6 +163,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTask(const or
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetTaskCount();
 
+/** Set a callback to run in each new thread when it is created
+ * @param[in]   _pfnPre                               Function to run whenever a new thread is started
+ * @param[in]   _pfnPost                              Function to run whenever a thread finishes
+ * @param[in]   _pContext                             Context that will be transmitted to each call to the thread init function
+ */
+extern orxDLLAPI void orxFASTCALL                     orxThread_SetPrePost(const orxTHREAD_FUNCTION _pfnPre, const orxTHREAD_FUNCTION _pfnPost, void *_pContext);
 
 #endif /* _orxTHREAD_H_ */
 
