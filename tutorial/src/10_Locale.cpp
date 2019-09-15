@@ -104,16 +104,15 @@ Logo::Logo()
   // Adds ourselves to the orxOBJECT
   orxObject_SetUserData(mpstObject, this);
 
-  // Creates and stores our legend object
-  mpstLegend = orxObject_CreateFromConfig("Legend");
+  // Stores our legend object (we don't use it in this tutorial, this is done for demonstration purposes)
+  mpstLegend = orxOBJECT(orxObject_GetChild(mpstObject));
 }
 
 // D-tor
 Logo::~Logo()
 {
-  // Deletes our orxOBJECTs
+  // Deletes our orxOBJECT
   orxObject_Delete(mpstObject);
-  orxObject_Delete(mpstLegend);
 }
 
 
