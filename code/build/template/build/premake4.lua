@@ -104,11 +104,11 @@ solution "[name]"
         "StaticRuntime"
     }
 
-    configuration {"not macosx"}
+    configuration {"not xcode*"}
         includedirs {"$(ORX)/include"}
         libdirs {"$(ORX)/lib/dynamic"}
 
-    configuration {"macosx"}
+    configuration {"xcode*"}
         includedirs {"[code-path]/include"}
         libdirs {"[code-path]/lib/dynamic"}
 
@@ -268,8 +268,11 @@ project "[name]"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "xcode*"}
         postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+
+    configuration {"macosx", "not xcode*"}
+        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
 
 -- Windows

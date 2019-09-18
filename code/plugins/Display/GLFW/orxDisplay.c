@@ -4910,6 +4910,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.u32Depth       = (orxU32)iDepth;
       sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
 
+      /* Updates default mode */
+      orxDisplay_GLFW_UpdateDefaultMode();
+
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
     }

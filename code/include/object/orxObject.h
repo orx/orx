@@ -526,6 +526,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
 
+/** Gets an object's relative animation frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimFrequency(const orxOBJECT *_pstObject);
+
 /** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().
  * @param[in]   _pstObject      Concerned object
@@ -556,6 +562,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetTargetAnimRecursive(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+
+/** Gets current animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Current animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetCurrentAnim(const orxOBJECT *_pstObject);
+
+/** Gets target animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Target animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTargetAnim(const orxOBJECT *_pstObject);
 
 /** Is current animation test.
  * @param[in]   _pstObject      Concerned object

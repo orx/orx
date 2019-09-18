@@ -762,6 +762,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         {
           orxBOOL bInBlock = orxFALSE, bUseDefault = orxFALSE;
 
+          /* Inits vector depth */
+          s32VectorDepth = ((*pcSrc == orxSTRING_KC_VECTOR_START) || (*pcSrc == orxSTRING_KC_VECTOR_START_ALT)) ? 0 : -1;
+
           /* Gets arg's beginning */
           zArg = pcSrc;
 
@@ -835,31 +838,62 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* For all argument characters */
               for(; *pcSrc != orxCHAR_NULL; pcSrc++)
               {
-                /* Is a block marker? */
-                if(*pcSrc == orxCOMMAND_KC_BLOCK_MARKER)
+                orxCHAR *pcTemp;
+
+                /* Depending on character */
+                switch(*pcSrc)
                 {
-                  orxCHAR *pcTemp;
-
-                  /* Erases it */
-                  for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxCHAR_NULL; pcTemp++)
+                  case orxSTRING_KC_VECTOR_START:
+                  case orxSTRING_KC_VECTOR_START_ALT:
                   {
-                    *pcTemp = *(pcTemp + 1);
+                    /* Should update? */
+                    if(s32VectorDepth >= 0)
+                    {
+                      /* Increments vector depth */
+                      s32VectorDepth++;
+                    }
+                    break;
                   }
 
-                  /* Not double marker? */
-                  if(*pcSrc != orxCOMMAND_KC_BLOCK_MARKER)
+                  case orxSTRING_KC_VECTOR_END:
+                  case orxSTRING_KC_VECTOR_END_ALT:
                   {
-                    /* Updates block status */
-                    bInBlock = !bInBlock;
-
-                    /* Handles current character in new mode */
-                    pcSrc--;
+                    /* Should update? */
+                    if(s32VectorDepth >= 0)
+                    {
+                      /* Decrements vector depth */
+                      s32VectorDepth--;
+                    }
+                    break;
                   }
-                  continue;
+
+                  case orxCOMMAND_KC_BLOCK_MARKER:
+                  {
+                    /* Erases it */
+                    for(pcTemp = (orxCHAR *)pcSrc; *pcTemp != orxCHAR_NULL; pcTemp++)
+                    {
+                      *pcTemp = *(pcTemp + 1);
+                    }
+
+                    /* Not double marker? */
+                    if(*pcSrc != orxCOMMAND_KC_BLOCK_MARKER)
+                    {
+                      /* Updates block status */
+                      bInBlock = !bInBlock;
+
+                      /* Handles current character in new mode */
+                      pcSrc--;
+                    }
+                    continue;
+                  }
+                  default:
+                  {
+                    break;
+                  }
                 }
 
-                /* Not in block? */
-                if(bInBlock == orxFALSE)
+                /* Not in block or in vector? */
+                if((bInBlock == orxFALSE) && (s32VectorDepth <= 0))
                 {
                   /* End of string? */
                   if(orxCommand_IsWhiteSpace(*pcSrc) != orxFALSE)

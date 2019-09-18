@@ -974,9 +974,11 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   /* Changed? */
   if(eNewStatus != pstSound->eStatus)
   {
-    orxSOUND_EVENT_PAYLOAD stPayload;
+    orxSOUND_EVENT_PAYLOAD  stPayload;
+    orxSOUND_STATUS         ePreviousStatus;
 
     /* Stores new status */
+    ePreviousStatus   = pstSound->eStatus;
     pstSound->eStatus = eNewStatus;
 
     /* Depending on status */
@@ -984,12 +986,16 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
     {
       case orxSOUND_STATUS_PLAY:
       {
-        /* Inits event payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-        stPayload.pstSound = pstSound;
+        /* Wasn't paused? */
+        if(ePreviousStatus != orxSOUND_STATUS_PAUSE)
+        {
+          /* Inits event payload */
+          orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+          stPayload.pstSound = pstSound;
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstObject, pstObject, &stPayload);
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstObject, pstObject, &stPayload);
+        }
 
         break;
       }

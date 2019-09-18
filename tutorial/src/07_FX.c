@@ -221,7 +221,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
   if(!((MyObject *)orxObject_GetUserData(pstSoldier))->bLock)
   {
     /* Apply FX? */
-    if(orxInput_IsActive("ApplyFX") && orxInput_HasNewStatus("ApplyFX"))
+    if(orxInput_HasBeenActivated("ApplyFX"))
     {
       /* Plays FX on soldier */
       orxObject_AddFX(pstSoldier, zSelectedFX);
