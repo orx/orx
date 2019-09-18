@@ -149,7 +149,7 @@ static void Android_JNI_ThreadDestroyed(void* value) {
     }
 }
 
-void orxAndroid_JNI_SetupThread(void) {
+orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext) {
     /* From http://developer.android.com/guide/practices/jni.html
      * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
      * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
@@ -161,6 +161,8 @@ void orxAndroid_JNI_SetupThread(void) {
      */
     JNIEnv *env = Android_JNI_GetEnv();
     pthread_setspecific(mThreadKey, (void*) env);
+
+    return orxSTATUS_SUCCESS;
 }
 
 // Library init
@@ -181,7 +183,7 @@ extern "C" jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
         __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
     }
     else {
-        orxAndroid_JNI_SetupThread();
+        orxAndroid_JNI_SetupThread(orxNULL);
     }
 
     return JNI_VERSION_1_4;
@@ -227,7 +229,7 @@ static void orxAndroid_Init(JNIEnv* mEnv, jobject jActivity)
 
     jclass objClass;
 
-    orxAndroid_JNI_SetupThread();
+    orxAndroid_JNI_SetupThread(orxNULL);
 
     sstAndroid.mActivity = mEnv->NewGlobalRef(jActivity);
 

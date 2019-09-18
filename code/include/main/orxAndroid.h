@@ -167,7 +167,7 @@ void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[4]);
   */
 orxSTATUS orxAndroid_RegisterAPKResource();
 
-void orxAndroid_JNI_SetupThread();
+orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext);
 void orxAndroid_PumpEvents();
 void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
