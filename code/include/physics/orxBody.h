@@ -429,18 +429,57 @@ extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(const orx
  */
 extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart);
 
-/** Is a body part solid?
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart);
-
 /** Sets a body part solid
  * @param[in]   _pstBodyPart    Concerned body part
  * @param[in]   _bSolid         Solid or sensor?
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+/** Is a body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart);
+
+/** Sets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fFriction      Friction
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartFriction(orxBODY_PART *_pstBodyPart, orxFLOAT _fFriction);
+
+/** Gets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Friction
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartFriction(const orxBODY_PART *_pstBodyPart);
+
+/** Sets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fRestitution   Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartRestitution(orxBODY_PART *_pstBodyPart, orxFLOAT _fRestitution);
+
+/** Gets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Restitution
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartRestitution(const orxBODY_PART *_pstBodyPart);
+
+/** Sets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fDensity       Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartDensity(orxBODY_PART *_pstBodyPart, orxFLOAT _fDensity);
+
+/** Gets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Density
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart);
 
 
 /** Enables a (revolute) body joint motor

@@ -2877,25 +2877,6 @@ extern "C" orxU16 orxFASTCALL orxPhysics_LiquidFun_GetPartCheckMask(const orxPHY
   return u16Result;
 }
 
-extern "C" orxBOOL orxFASTCALL orxPhysics_LiquidFun_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart)
-{
-  b2Fixture  *poFixture;
-  orxBOOL     bResult;
-
-  /* Checks */
-  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyPart != orxNULL);
-
-  /* Gets fixture */
-  poFixture = (b2Fixture *)_pstBodyPart;
-
-  /* Updates it */
-  bResult = poFixture->IsSensor() ? orxFALSE : orxTRUE;
-
-  /* Done! */
-  return bResult;
-}
-
 extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
 {
   b2Fixture  *poFixture;
@@ -2913,6 +2894,139 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSolid(orxPHYSICS_BO
 
   /* Done! */
   return eResult;
+}
+
+extern "C" orxBOOL orxFASTCALL orxPhysics_LiquidFun_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2Fixture  *poFixture;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  bResult = poFixture->IsSensor() ? orxFALSE : orxTRUE;
+
+  /* Done! */
+  return bResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction)
+{
+  b2Fixture  *poFixture;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates it */
+  poFixture->SetFriction(_fFriction);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_LiquidFun_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2Fixture  *poFixture;
+  orxFLOAT    fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  fResult = orx2F(poFixture->GetFriction());
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
+{
+  b2Fixture  *poFixture;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates it */
+  poFixture->SetRestitution(_fRestitution);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_LiquidFun_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2Fixture  *poFixture;
+  orxFLOAT    fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  fResult = orx2F(poFixture->GetRestitution());
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity)
+{
+  b2Fixture  *poFixture;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates it */
+  poFixture->SetDensity(_fDensity);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxFLOAT orxFASTCALL orxPhysics_LiquidFun_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2Fixture  *poFixture;
+  orxFLOAT    fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Updates result */
+  fResult = orx2F(poFixture->GetDensity());
+
+  /* Done! */
+  return fResult;
 }
 
 extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
@@ -3358,8 +3472,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartSelfFlags, PHYSICS,
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartCheckMask, PHYSICS, SET_PART_CHECK_MASK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartSelfFlags, PHYSICS, GET_PART_SELF_FLAGS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartCheckMask, PHYSICS, GET_PART_CHECK_MASK);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_IsPartSolid, PHYSICS, IS_PART_SOLID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartSolid, PHYSICS, SET_PART_SOLID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_IsPartSolid, PHYSICS, IS_PART_SOLID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartFriction, PHYSICS, SET_PART_FRICTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartFriction, PHYSICS, GET_PART_FRICTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartRestitution, PHYSICS, SET_PART_RESTITUTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartRestitution, PHYSICS, GET_PART_RESTITUTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartDensity, PHYSICS, SET_PART_DENSITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartDensity, PHYSICS, GET_PART_DENSITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableMotor, PHYSICS, ENABLE_MOTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);

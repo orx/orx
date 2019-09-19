@@ -2914,6 +2914,26 @@ orxU16 orxFASTCALL orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart)
   return u16Result;
 }
 
+/** Sets a body part solid
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _bSolid         Solid or sensor?
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartSolid(_pstBodyPart->pstData, _bSolid);
+
+  /* Done! */
+  return eResult;
+}
+
 /** Is a body part solid?
  * @param[in]   _pstBodyPart    Concerned body part
  * @return      orxTRUE / orxFALSE
@@ -2933,12 +2953,12 @@ orxBOOL orxFASTCALL orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart)
   return bResult;
 }
 
-/** Sets a body part solid
+/** Sets friction of a body part
  * @param[in]   _pstBodyPart    Concerned body part
- * @param[in]   _bSolid         Solid or sensor?
+ * @param[in]   _fFriction      Friction
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid)
+orxSTATUS orxFASTCALL orxBody_SetPartFriction(orxBODY_PART *_pstBodyPart, orxFLOAT _fFriction)
 {
   orxSTATUS eResult;
 
@@ -2947,10 +2967,107 @@ orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Updates result */
-  eResult = orxPhysics_SetPartSolid(_pstBodyPart->pstData, _bSolid);
+  eResult = orxPhysics_SetPartFriction(_pstBodyPart->pstData, _fFriction);
 
   /* Done! */
   return eResult;
+}
+
+/** Gets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Friction
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartFriction(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartFriction(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fRestitution   Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartRestitution(orxBODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartRestitution(_pstBodyPart->pstData, _fRestitution);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Restitution
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartRestitution(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartRestitution(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fDensity       Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartDensity(orxBODY_PART *_pstBodyPart, orxFLOAT _fDensity)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartDensity(_pstBodyPart->pstData, _fDensity);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Density
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartDensity(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
 }
 
 /** Issues a raycast to test for potential bodies in the way
