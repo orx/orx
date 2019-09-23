@@ -7,22 +7,22 @@ Orx - Portable Game Engine (Version 1.10)
 
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
-check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
+check [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
 You can also come [chat with us](https://gitter.im/orx/orx)
 if you have any questions or comments.
 
-This engine is licensed under the very permissive [zlib license](http://en.wikipedia.org/wiki/Zlib_License),
+This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
 see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for details.
 
 
 Summary
 -------
 
-[Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
+[Orx](https://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
 This is a release candidate for orx v1.10. If you find any bugs,
-please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
+please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
 Some notable features of the engine are:
@@ -54,14 +54,15 @@ Some notable features of the engine are:
 - plugin system
 - screenshot capture tool (supports bmp, png, jpg, tga and dds)
 
-See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
-The documentation for the latest release version is [available here](http://orx-project.org/orx/doc/html) at orx's homepage.
+See [orx's wiki](https://orx-project.org/wiki) for detailed information, including:
+- initial setup
+- beginner's guide
+- tools
+- samples
+- detailed tutorials (both official and community-made ones)
 
-You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
-(ie. how to use the config system) on [orx's wiki](http://wiki.orx-project.org).  
-The English version is the most complete one.  
-Chinese and Spanish translations are entirely written and maintained by community members,
-and they might be less accurate/somewhat outdated.
+See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
+The documentation for the latest release version is [available here](https://orx-project.org/orx/doc/html) at orx's homepage.
 
 
 Supported Platforms
@@ -119,7 +120,7 @@ Some tools (precompiled binaries only) are also shipped with the dev packages:
 Packages
 --------
 
-You can download all the packages from [sourceforge](http://orx.sf.net) or [github](https://github.com/orx/orx/releases).
+You can download all the packages from [sourceforge](https://orx.sf.net) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
 - `orx-doc-1.10.zip`                  : orx's API doxygen documentation
@@ -239,7 +240,7 @@ Comments
 --------
 
 If you have any questions, comments, ideas or reviews, feel free to either
-post them on [orx's forum](http://forum.orx-project.org),
+post them on [orx's forum](https://forum.orx-project.org),
 come [chat with us](https://gitter.im/orx/orx)
 or send them directly by email to iarwain [at] orx-project.org
 
