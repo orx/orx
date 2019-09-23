@@ -101,7 +101,7 @@ either system/options/args [
             arg: next arg
           ]
           interactive? [
-            loop-until [
+            until [
               any [
                 not empty? set param trim ask rejoin [{ * } desc {? }]
                 set param default
