@@ -4978,8 +4978,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   ppstObject != orxNULL;
                   ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, ppstObject))
               {
-                /* Updates it */
-                orxObject_UpdateInternal(*ppstObject, &stAgeClockInfo);
+                /* Still valid? */
+                if(orxOBJECT(*ppstObject) != orxNULL)
+                {
+                  /* Updates it */
+                  orxObject_UpdateInternal(*ppstObject, &stAgeClockInfo);
+                }
               }
             }
 
