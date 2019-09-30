@@ -123,6 +123,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR 0x00008000 /**< Swap control tear support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
@@ -1169,6 +1170,24 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
+    }
+
+    /* Swap Control Tear extension? */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
+  #ifdef __orxWINDOWS__
+    if(glfwExtensionSupported("WGL_EXT_swap_control_tear") != GLFW_FALSE)
+  #else /* __orxWINDOWS__ */
+    if(glfwExtensionSupported("GLX_EXT_swap_control_tear") != GLFW_FALSE)
+  #endif /* __orxWINDOWS__ */
+    {
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+#endif /* __orxWINDOWS__ || __orxLINUX__ */
+    {
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
     }
 
     /* Updates status flags */
@@ -4479,13 +4498,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
     /* Has VSync fix already happened? (to prevent busy loop in some graphics drivers) */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
     {
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
       /* Updates VSync status */
-      glfwSwapInterval(-1);
-#else /* __orxWINDOWS__ || __orxLINUX__ */
-      /* Updates VSync status */
-      glfwSwapInterval(1);
-#endif /* __orxWINDOWS__ || __orxLINUX__ */
+      glfwSwapInterval(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR) ? -1 : 1);
     }
     else
     {
