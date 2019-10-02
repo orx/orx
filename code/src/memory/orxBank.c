@@ -396,11 +396,6 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
       }
     }
 
-    /* If bFound is false, It means that there are no more free segments that we can allocate.
-     * It can be volunteer (orxBANK_KU32_FLAG_NOT_EXPANDABLE) or a problem in the code => assert
-     */
-    orxASSERT(bFound || ((_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE) == orxBANK_KU32_FLAG_NOT_EXPANDABLE));
-
     /* Found a free element ? */
     if(bFound)
     {
@@ -434,25 +429,6 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
           *_ppPrevious = (void *)(((orxU8 *)pResult) - _pstBank->u32ElemSize);
         }
       }
-
-#ifdef __orxMEMORY_DEBUG__
-      {
-        orxU32 r = 0, i, j;
-
-        for(i = 0; i < _pstBank->u16SizeSegmentBitField; i++)
-        {
-          for(j = 0; j < 32; j++)
-          {
-            if((1 << j) & pstCurrentSegment->pu32CellAllocationMap[i])
-            {
-              r++;
-            }
-          }
-        }
-
-        orxASSERT(r == (orxU32)(_pstBank->u16NbCellPerSegments - pstCurrentSegment->u32NbFree));
-      }
-#endif /* __orxMEMORY_DEBUG__ */
     }
   }
 

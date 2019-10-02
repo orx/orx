@@ -2107,7 +2107,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
       orxASSERT(pstOpenInfo != orxNULL);
 
       /* Inits it */
-      pstOpenInfo->pstTypeInfo  = &(pstType->stInfo);
+      pstOpenInfo->pstTypeInfo = &(pstType->stInfo);
       pstOpenInfo->u32OpCount = 0;
 
       /* Opens it */
