@@ -172,8 +172,9 @@ for-each config platform-info/config [
     ]
   ]
 ]
+print newline
 print ["== You can now build orx in [" builds/code/:platform "]"]
-
+print ["== Follow steps in https://orx-project.org/wiki/main"]
 
 ; Mercurial hook
 if exists? hg [
@@ -267,13 +268,13 @@ if find platform-info 'deps [
   print newline
   print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
   for-each lib platform-info/deps [print ["==[" lib "]"]]
-  print newline
 ]
 if all [
   new-env
   find platform-info 'env-msg
 ] [
   print [newline "== IMPORTANT - New environment detected:" platform-info/env-msg newline]
+
 ]
 end: now/time
 print ["== [" (end - begin) "] Setup successful!"]
