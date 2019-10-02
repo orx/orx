@@ -172,9 +172,9 @@ for-each config platform-info/config [
     ]
   ]
 ]
-print newline
 print ["== You can now build orx in [" builds/code/:platform "]"]
-print ["== Follow steps in https://orx-project.org/wiki/main"]
+print ["== For more details, please refer to [" https://orx-project.org/wiki/ "]"]
+
 
 ; Mercurial hook
 if exists? hg [
@@ -274,7 +274,6 @@ if all [
   find platform-info 'env-msg
 ] [
   print [newline "== IMPORTANT - New environment detected:" platform-info/env-msg newline]
-
 ]
 end: now/time
 print ["== [" (end - begin) "] Setup successful!"]
