@@ -839,6 +839,8 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
+        orxCLOCK *pstClock;
+
         /* Has a modifier? */
         if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE) != orxFALSE)
         {
@@ -890,6 +892,13 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates clock */
             orxClock_SetModifier(pstResult, eModifierType, fModifierValue);
           }
+        }
+
+        /* Has core clock? */
+        if((pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE)) != orxNULL)
+        {
+          /* Updates clock's DT */
+          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, &(pstResult->stClockInfo));
         }
 
         /* Stores its reference key */

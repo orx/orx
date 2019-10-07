@@ -4956,9 +4956,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxCLOCK             *pstClock;
             const orxCLOCK_INFO  *pstClockInfo;
 
-            /* Gets core clock */
-            pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
-            orxASSERT(pstClock != orxNULL);
+            /* Gets object clock */
+            pstClock = orxObject_GetClock(pstResult);
+
+            /* Not found? */
+            if(pstClock == orxNULL)
+            {
+              /* Gets core clock */
+              pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+              orxASSERT(pstClock != orxNULL);
+            }
 
             /* Gets its info */
             pstClockInfo = orxClock_GetInfo(pstClock);
@@ -4966,6 +4973,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Copies it */
             orxMemory_Copy(&stAgeClockInfo, pstClockInfo, sizeof(orxCLOCK_INFO));
+
+            /* Has multiply modifier? */
+            if(stAgeClockInfo.eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+            {
+              /* Updates age */
+              fAge *= stAgeClockInfo.fModValue;
+            }
 
             /* For all time slices */
             for(; fAge > orxFLOAT_0; fAge -= stAgeClockInfo.fDT)
