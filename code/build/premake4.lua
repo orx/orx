@@ -125,7 +125,8 @@ solution "orx"
         "NoEditAndContinue",
         "NoMinimalRebuild",
         "Symbols",
-        "StaticRuntime"
+        "StaticRuntime",
+        "FatalWarnings"
     }
 
     configuration {"not vs2015", "not vs2017", "not vs2019"}

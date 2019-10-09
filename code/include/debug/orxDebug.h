@@ -293,12 +293,12 @@ while(orxFALSE)
   #define orxDEBUG_SETBASEFILENAME(FILE)                      \
     do                                                        \
     {                                                         \
-      orxCHAR   zBuffer[256];                                 \
-      zBuffer[255] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 255);                            \
+      orxCHAR   zBuffer[512];                                 \
+      zBuffer[511] = orxCHAR_NULL;                            \
+      strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);\
       _orxDebug_SetDebugFile(zBuffer);                        \
-      strncpy(zBuffer, FILE, 255);                            \
+      strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
       _orxDebug_SetLogFile(zBuffer);                          \
     } while(orxFALSE)
@@ -343,9 +343,9 @@ while(orxFALSE)
   #define orxDEBUG_SETBASEFILENAME(FILE)                      \
     do                                                        \
     {                                                         \
-      orxCHAR   zBuffer[256];                                 \
-      zBuffer[255] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 255);                            \
+      orxCHAR   zBuffer[512];                                 \
+      zBuffer[511] = orxCHAR_NULL;                            \
+      strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
       _orxDebug_SetLogFile(zBuffer);                          \
     } while(orxFALSE)

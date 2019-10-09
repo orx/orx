@@ -223,6 +223,8 @@ public:
 
   RayCastCallback() : hResult(orxHANDLE_UNDEFINED), bEarlyExit(orxFALSE), u16SelfFlags(0), u16CheckMask(0)
   {
+    orxVector_Copy(&vContact, &orxVECTOR_0);
+    orxVector_Copy(&vNormal, &orxVECTOR_0);
   }
 
   float32 ReportFixture(b2Fixture *_poFixture, const b2Vec2 &_rvContact, const b2Vec2 &_rvNormal, float32 _fFraction)
