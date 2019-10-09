@@ -1517,7 +1517,7 @@ void orxFASTCALL orxSoundSystem_OpenAL_Exit()
 
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate)
 {
-  orxSOUNDSYSTEM_SAMPLE *pstResult = NULL;
+  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -1590,7 +1590,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_CreateSample(orxU32 _u3
 
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_OpenAL_LoadSample(const orxSTRING _zFilename)
 {
-  orxSOUNDSYSTEM_SAMPLE *pstResult = NULL;
+  orxSOUNDSYSTEM_SAMPLE *pstResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);

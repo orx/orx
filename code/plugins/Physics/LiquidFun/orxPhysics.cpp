@@ -945,7 +945,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_ResetSmoothedStates()
 
   /* For all physical bodies */
   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-      pstPhysicBody != NULL;
+      pstPhysicBody != orxNULL;
       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
   {
     b2Body *poBody;
@@ -983,7 +983,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
 
   /* For all physical bodies */
   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-      pstPhysicBody != NULL;
+      pstPhysicBody != orxNULL;
       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
   {
     orxOBJECT  *pstObject;
@@ -1130,7 +1130,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
 
     /* For all physical bodies */
     for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-        pstPhysicBody != NULL;
+        pstPhysicBody != orxNULL;
         pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
     {
       poBody = pstPhysicBody->poBody;
