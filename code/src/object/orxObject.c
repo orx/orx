@@ -3377,8 +3377,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
   /* Not referenced? */
   if(orxStructure_GetRefCount(_pstObject) == 0)
   {
-    orxEVENT  stEvent;
-    orxU32    i;
+    orxEVENT stEvent;
 
     /* Inits event */
     orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
@@ -3386,6 +3385,8 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
     /* Sends event */
     if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
     {
+      orxU32 i;
+
       /* Unlink all structures */
       for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
       {
@@ -3513,8 +3514,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    orxU32                i;
-    const orxCLOCK_INFO  *pstClockInfo;
+    const orxCLOCK_INFO *pstClockInfo;
 
     /* Has clock? */
     if(orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_CLOCK))
@@ -3560,7 +3560,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       /* Has DT? */
       if(pstClockInfo->fDT > orxFLOAT_0)
       {
-        orxU32 u32LifeTimeFlags;
+        orxU32 u32LifeTimeFlags, i;
 
         /* For all linked structures */
         for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)

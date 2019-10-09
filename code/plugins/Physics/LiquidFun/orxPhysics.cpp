@@ -416,7 +416,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -479,7 +479,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -545,7 +545,7 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -604,7 +604,7 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -667,7 +667,7 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -738,7 +738,7 @@ void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
       {
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
-        orxFLOAT  fZ = orxFLOAT_0;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);

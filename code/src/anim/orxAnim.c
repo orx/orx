@@ -123,7 +123,7 @@ static orxANIM_STATIC sstAnim;
  */
 static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
-  orxU32 u32Count, u32MaxIndex, u32MinIndex, u32Index;
+  orxU32 u32Count, u32Index;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -134,6 +134,8 @@ static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _
   /* Is animation not empty? */
   if(u32Count != 0)
   {
+    orxU32 u32MaxIndex, u32MinIndex;
+
     /* Dichotomic search */
     for(u32MinIndex = 0, u32MaxIndex = u32Count - 1, u32Index = u32MaxIndex >> 1;
         u32MinIndex < u32MaxIndex;
@@ -637,14 +639,14 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if(pstGraphic != orxNULL)
             {
-              const orxSTRING zEventName;
-
               /* Gets matching event ID */
               orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
 
               /* Defined? */
               if(orxConfig_HasValue(acEventID) != orxFALSE)
               {
+                const orxSTRING zEventName;
+
                 /* Gets its name */
                 zEventName = orxConfig_GetString(acEventID);
 
@@ -915,7 +917,6 @@ void orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
  */
 orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEventName, orxFLOAT _fTimeStamp, orxFLOAT _fValue)
 {
-  orxU32    u32Count, u32Size;
   orxSTATUS eResult;
 
   /* Checks */
@@ -926,6 +927,8 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
   /* Valid timestamp? */
   if((orxAnim_GetEventCount(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astEventList[orxAnim_GetEventCount(_pstAnim) - 1].fTimeStamp))
   {
+    orxU32 u32Count, u32Size;
+
      /* Gets storage size & count */
      u32Size     = orxAnim_GetEventStorageSize(_pstAnim);
      u32Count    = orxAnim_GetEventCount(_pstAnim);
@@ -1211,8 +1214,7 @@ orxU32 orxFASTCALL orxAnim_GetEventCount(const orxANIM *_pstAnim)
  */
 orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
 {
-  orxU32    u32Count;
-  orxFLOAT  fLength = orxFLOAT_0;
+  orxFLOAT fLength;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -1221,6 +1223,8 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
   /* 2D? */
   if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
   {
+    orxU32 u32Count;
+
     /* Gets key count */
     u32Count = orxAnim_GetKeyCount(_pstAnim);
 
@@ -1229,6 +1233,11 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
     {
       /* Gets length */
       fLength = _pstAnim->astKeyList[u32Count - 1].fTimeStamp;
+    }
+    else
+    {
+      /* Updates result */
+      fLength = orxFLOAT_0;
     }
   }
   else

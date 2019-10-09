@@ -583,7 +583,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  */
 static orxSTATUS orxBounce_Init()
 {
-  orxU32    i;
   orxSTATUS eResult;
 
   /* Loads config file and selects its section */
@@ -601,6 +600,7 @@ static orxSTATUS orxBounce_Init()
   {
     orxOBJECT  *pstParticleSource;
     orxCLOCK   *pstClock;
+    orxU32      i;
 
     /* Creates particle source */
     pstParticleSource = orxObject_CreateFromConfig("ParticleSource");

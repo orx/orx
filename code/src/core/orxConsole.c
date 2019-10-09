@@ -273,7 +273,6 @@ static void orxFASTCALL orxConsole_SaveHistory()
  */
 static void orxFASTCALL orxConsole_LoadHistory()
 {
-  orxU32 i, u32Count;
   orxCHAR acBuffer[256];
 
   /* Gets file name */
@@ -288,6 +287,8 @@ static void orxFASTCALL orxConsole_LoadHistory()
   /* Has saved history */
   if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
   {
+    orxU32 i, u32Count;
+
     /* For all history entries */
     for(i = 0, u32Count = orxMIN(orxConfig_GetListCount(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Count; i++)
     {
@@ -1740,7 +1741,6 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
   if(sstConsole.zCompletedCommand != orxNULL)
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
-    const orxSTRING         zCommand;
     orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
 
     /* Gets entry */
@@ -1755,6 +1755,8 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
+      const orxSTRING zCommand;
+
       /* Gets completion count */
       for(u32Result = 0, zCommand = orxCommand_GetNext(pc, orxNULL, orxNULL);
           zCommand != orxNULL;
@@ -1804,7 +1806,6 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
     orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
-    orxU32                  u32CompletionIndex;
 
     /* Gets entry */
     pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
@@ -1818,6 +1819,8 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
+      orxU32 u32CompletionIndex;
+
       /* Finds requested completion */
       for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(pc, orxNULL, orxNULL);
           (u32CompletionIndex < _u32Index) && (zResult != orxNULL);

@@ -743,22 +743,7 @@ orxSTATUS orxFASTCALL orxFX_ClearCache()
  */
 orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
 {
-  typedef struct __orxFX_VALUE_t
-  {
-    union
-    {
-      orxVECTOR vValue;
-      orxFLOAT fValue;
-    };
-  } orxFX_VALUE;
-
-  orxFX_VALUE astValueList[orxFX_TYPE_NUMBER];
-  orxU32      i;
-  orxCOLOR    stObjectColor;
-  orxBOOL     abLockList[orxFX_TYPE_NUMBER], abUpdateList[orxFX_TYPE_NUMBER], bFirstCall;
-  orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
-  orxFLOAT    fRecDuration;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
@@ -768,6 +753,22 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
   /* Has started? */
   if(_fEndTime >= orxFLOAT_0)
   {
+    typedef struct __orxFX_VALUE_t
+    {
+      union
+      {
+        orxVECTOR vValue;
+        orxFLOAT fValue;
+      };
+    } orxFX_VALUE;
+
+    orxFX_VALUE astValueList[orxFX_TYPE_NUMBER];
+    orxU32      i;
+    orxCOLOR    stObjectColor;
+    orxBOOL     abLockList[orxFX_TYPE_NUMBER], abUpdateList[orxFX_TYPE_NUMBER], bFirstCall;
+    orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
+    orxFLOAT    fRecDuration;
+
     /* Clears lock, upates and values */
     orxMemory_Zero(abLockList, orxFX_TYPE_NUMBER * sizeof(orxBOOL));
     orxMemory_Zero(abUpdateList, orxFX_TYPE_NUMBER * sizeof(orxBOOL));
@@ -797,7 +798,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       /* Is defined? */
       if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
       {
-        orxFLOAT fStartTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
+        orxFLOAT fStartTime;
 
 /* Some versions of GCC have an optimization bug on fEndTime which leads to a bogus value when reaching the end of a slot */
 #if defined(__orxGCC__)
@@ -850,6 +851,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
           /* Is FX type not blocked? */
           if(abLockList[eFXType] == orxFALSE)
           {
+            orxFLOAT fPeriod, fFrequency, fStartCoef, fEndCoef;
+
             /* Has a valid cycle period? */
             if(pstFXSlot->fCyclePeriod > orxFLOAT_0)
             {

@@ -331,7 +331,7 @@ static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginI
 static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction, orxBOOL _bEmbedded)
 {
   const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
-  orxU32                          u32PluginIndex, u32FunctionIndex;
+  orxU32                          u32PluginIndex;
   orxSTATUS                       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -349,6 +349,8 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
@@ -390,8 +392,8 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
  */
 static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
-  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32 u32PluginIndex, u32FunctionIndex;
+  const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
+  orxU32                          u32PluginIndex;
 
   /* Checks */
   orxASSERT(_pfnFunctionInfo != orxNULL);
@@ -408,6 +410,8 @@ static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 

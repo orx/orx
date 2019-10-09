@@ -176,7 +176,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
  */
 orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
 {
-  orxU32 u32Result = 0, u32Count, i;
+  orxU32 u32Result = 0, u32Count;
 
   /* Checks */
   orxASSERT(_zFlag != orxNULL);
@@ -197,6 +197,8 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
     const orxSTRING azFlagList[u32Count + 1];
 
 #endif /* __orxMSVC__ */
+
+    orxU32 i;
 
     /* For all flags */
     for(i = 0; i < u32Count; i++)

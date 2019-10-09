@@ -3603,9 +3603,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number)
 {
-  orxU32    i, u32Number;
-  orxBOOL   bUseFrameBuffer = orxFALSE;
-  GLdouble  dOrthoRight, dOrthoBottom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -3615,6 +3612,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   /* Has framebuffer support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))
   {
+    orxU32 u32Number;
+
     /* Too many destinations? */
     if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)
     {
@@ -3633,7 +3632,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     /* Has destinations? */
     if(u32Number != 0)
     {
-      orxBOOL bDraw;
+      orxU32  i;
+      orxBOOL bDraw, bUseFrameBuffer = orxFALSE;
 
       /* Updates draw status */
       bDraw = ((_apstBitmapList[0] != sstDisplay.apstDestinationBitmapList[0]) || (u32Number != sstDisplay.u32DestinationBitmapCount)) ? orxTRUE : orxFALSE;
@@ -3854,8 +3854,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    GLint   iX, iY;
-    GLsizei iWidth, iHeight;
+    GLdouble  dOrthoRight, dOrthoBottom;
+    GLint     iX, iY;
+    GLsizei   iWidth, iHeight;
 
     /* Is screen? */
     if(sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)

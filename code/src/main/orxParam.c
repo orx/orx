@@ -278,8 +278,6 @@ static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRIN
  */
 static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
 {
-  orxU32            i;
-  const orxSTRING  *azParamList = orxNULL;
   const orxSTRING   azConfigParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
   orxCHAR           acFirstParamBuffer[256];
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -295,7 +293,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
     if(((_pstParamInfo->u32Count == 0)
     || (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
     {
-      orxU32 u32ParamCount, u32RemainingNumber = 0;
+      const orxSTRING  *azParamList = orxNULL;
+      orxU32            u32RemainingNumber = 0, i;
 
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)
@@ -359,6 +358,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Found? */
       if(azParamList != orxNULL)
       {
+        orxU32 u32ParamCount;
+
         /* Increases ref count */
         _pstParamInfo->u32Count++;
 

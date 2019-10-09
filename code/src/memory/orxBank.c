@@ -576,9 +576,6 @@ void orxFASTCALL orxBank_CompactAll()
  */
 void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
 {
-  orxBANK_SEGMENT *pstSegment;
-  orxU32          u32ByteIndex, u32Mask;
-
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
@@ -588,6 +585,9 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
   /* Has elements */
   if(_pstBank->u32Count > 0)
   {
+    orxBANK_SEGMENT *pstSegment;
+    orxU32          u32ByteIndex, u32Mask;
+
     /* Look for the segment associated to this cell */
     if(_pCell == orxNULL)
     {

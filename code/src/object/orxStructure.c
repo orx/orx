@@ -332,7 +332,6 @@ void orxFASTCALL orxStructure_Setup()
  */
 orxSTATUS orxFASTCALL orxStructure_Init()
 {
-  orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -341,6 +340,8 @@ orxSTATUS orxFASTCALL orxStructure_Init()
   /* Not already Initialized? */
   if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY))
   {
+    orxU32 i;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstStructure, sizeof(orxSTRUCTURE_STATIC));
 

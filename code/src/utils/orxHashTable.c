@@ -106,7 +106,6 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 {
   orxHASHTABLE *pstHashTable;
   orxU32        u32Size;
-  orxU32        u32Flags;
 
   /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
@@ -121,6 +120,8 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
   /* Enough memory ? */
   if(pstHashTable != orxNULL)
   {
+    orxU32 u32Flags;
+
     /* Set flags */
     if(_u32Flags == orxHASHTABLE_KU32_FLAG_NOT_EXPANDABLE)
     {

@@ -460,7 +460,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     orxU32          u32PushCount;
     const orxCHAR  *pcCommandEnd;
     orxCOMMAND     *pstCommand;
-    orxCHAR         cBackupChar, acGUID[20];
+    orxCHAR         cBackupChar;
 
     /* Updates status */
     bProcessed = orxTRUE;
@@ -500,6 +500,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       const orxSTRING       zArg;
       const orxSTRING       azBufferList[orxCOMMAND_KU32_ALIAS_MAX_DEPTH];
       orxU32                u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
+      orxCHAR               acGUID[20];
 
 #ifdef __orxMSVC__
 

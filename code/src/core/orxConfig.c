@@ -4417,7 +4417,6 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
  */
 orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
 {
-  orxU32    u32Offset;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -4428,6 +4427,7 @@ orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32Bu
   if((_acBuffer != orxNULL)
   && (_u32BufferSize > 0))
   {
+    orxU32  u32Offset;
     orxBOOL bProcess = orxTRUE;
 
     /* Has encryption tag? */
@@ -5426,8 +5426,7 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
  */
 orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 {
-  orxSTRINGID stID;
-  orxBOOL     bResult = orxFALSE;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -5436,7 +5435,8 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   /* Valid? */
   if(_zSectionName != orxSTRING_EMPTY)
   {
-    orxCONFIG_SECTION *pstSection;
+    orxSTRINGID         stID;
+    orxCONFIG_SECTION  *pstSection;
 
     /* Gets section name ID */
     stID = orxString_ToCRC(_zSectionName);
@@ -6841,7 +6841,6 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
  */
 orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
 {
-  orxU32    u32Index, i;
   orxSTATUS eResult;
 
   /* Checks */
@@ -6853,6 +6852,8 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
   /* Valid? */
   if((_u32Number > 0) && (_u32Number < 0xFFFF))
   {
+    orxU32 u32Index, i;
+
     /* For all values */
     for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); i++)
     {
@@ -6918,7 +6919,6 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
  */
 orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
 {
-  orxU32    u32Index, i;
   orxSTATUS eResult;
 
   /* Checks */
@@ -6930,6 +6930,8 @@ orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const or
   /* Valid? */
   if((_u32Number > 0) && (_u32Number < 0xFFFF))
   {
+    orxU32 u32Index, i;
+
     /* For all values */
     for(i = 0, u32Index = 0; (i < _u32Number) && (u32Index < orxCONFIG_KU32_LARGE_BUFFER_SIZE - 1); i++)
     {

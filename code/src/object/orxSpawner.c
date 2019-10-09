@@ -451,7 +451,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
   /* Enabled? */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED))
   {
-    orxU32 u32SpawnNumber, i;
+    orxU32 u32SpawnNumber;
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
@@ -487,6 +487,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
     {
       orxCLOCK_INFO   stClockInfo;
       const orxSTRING zObjectName = orxNULL;
+      orxU32          i;
 
       /* Inits clock info for object simulation */
       orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
@@ -952,7 +953,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         && (pstSpawner->fWaveDelay > orxFLOAT_0))
         {
           orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
-          orxFLOAT  fInvDT, fSpawnerRotation, fRotation, fDT, fCoef, fDelta;
+          orxFLOAT  fInvDT, fSpawnerRotation, fDT, fCoef, fDelta;
 
           /* Gets current spawner frame values */
           orxSpawner_GetWorldPosition(pstSpawner, &vSpawnerPosition);
@@ -964,6 +965,8 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
               fCoef <= orxFLOAT_1;
               fCoef += fDelta, fDT -= pstSpawner->fWaveDelay)
           {
+            orxFLOAT fRotation;
+
             /* Gets interpolated frame values */
             orxVector_Lerp(&vPosition, &(pstSpawner->vLastPosition), &vSpawnerPosition, fCoef);
             orxVector_Lerp(&vScale, &(pstSpawner->vLastScale), &vSpawnerScale, fCoef);

@@ -595,9 +595,6 @@ void orxFASTCALL orxClock_Exit()
  */
 orxSTATUS orxFASTCALL orxClock_Update()
 {
-  orxDOUBLE dNewTime;
-  orxFLOAT  fDT, fDelay;
-  orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -606,6 +603,10 @@ orxSTATUS orxFASTCALL orxClock_Update()
   /* Not already locked? */
   if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
+    orxDOUBLE dNewTime;
+    orxCLOCK *pstClock;
+    orxFLOAT  fDT, fDelay;
+
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 

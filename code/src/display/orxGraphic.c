@@ -517,7 +517,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       const orxSTRING zName;
-      orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
       /* Gets texture name */
       zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
@@ -629,8 +628,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has data? */
       if(pstResult->pstData != orxNULL)
       {
-        const orxSTRING zFlipping;
         orxVECTOR       vPivot;
+        const orxSTRING zFlipping;
+        orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
         /* Gets pivot value */
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)

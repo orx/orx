@@ -276,7 +276,6 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
  */
 orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
 {
-  orxU64    u64Depend;
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -303,6 +302,8 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     /* Is not initialized? */
     if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING)))
     {
+      orxU64 u64Depend;
+
       /* For all dependencies */
       for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
           u64Depend != (orxU64)0;
@@ -442,8 +443,6 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
  */
 void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 {
-  orxU32 u32Index;
-
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
 
@@ -451,6 +450,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
   {
     orxU64 u64Depend;
+    orxU32 u32Index;
 
     /* Cleans flags */
     sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
