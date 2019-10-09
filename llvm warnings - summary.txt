@@ -1,0 +1,138 @@
+Linux clang compile took 10 hours
+
+0 error(s), 45569 warning(s) (621 minute(s), 26 second(s))
+
+with the following options:
+
+-Wextra
+-ffast-math
+-msse2
+-fno-exceptions
+-Wno-unused-function
+-Wno-unused-but-set-variable
+$(ORXFLAGS)
+
+- summary ---
+
+coding standards
+
+  Can specifying the supported compiler option set be considered?
+
+    possibly give a short explain when support is not required?
+
+- option / warning / reference summary ---
+
+[-Wpedantic]
+  warning: ISO C restricts enumerator values to range of 'int' (4294967295 is too large)
+    https://stackoverflow.com/questions/38873404/how-to-avoid-pedantic-warnings-while-using-hexadecimal-in-enum
+
+[-Wreserved-id-macro]
+   https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier
+
+[-Wstrict-prototypes]
+   https://stackoverflow.com/questions/693788/is-it-better-to-use-c-void-arguments-void-foovoid-or-not-void-foo
+
+[-Wdocumentation]
+  includes checking
+    \param commands name parameters
+       actually present in the function signature
+    \return used only on functions that actually return a value
+    etc.
+
+[-Wgnu-zero-variadic-macro-arguments]
+  solution? #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+
+[-Wsign-conversion]
+[-Wfloat-equal]
+[-Wcast-qual]
+[-Wshorten-64-to-32]
+[-Wfloat-equal]
+
+- warning detail ---
+
+includes the first warning instance encountered:
+
+[-Wreserved-id-macro]
+warning: macro name is a reserved identifier [-Wreserved-id-macro]
+../../../include/base/orxDecl.h:47:11: warning: macro name is a reserved identifier [-Wreserved-id-macro]
+  #define __orxPROFILER__
+          ^
+
+[-Wundef]
+../../../include/base/orxDecl.h:191:9: warning: 'TARGET_OS_IPHONE' is not defined, evaluates to 0 [-Wundef]
+  #elif TARGET_OS_IPHONE
+        ^
+[-Wpedantic]
+../../../include/base/orxType.h:181:3: warning: ISO C restricts enumerator values to range of 'int' (4294967295 is too large) [-Wpedantic]
+  orxSEEK_OFFSET_WHENCE_NONE = orxENUM_NONE
+  ^                            ~~~~~~~~~~~~
+
+[-Wdocumentation]
+../../../include/base/orxModule.h:116:83: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+typedef orxSTATUS                         (orxFASTCALL *orxMODULE_INIT_FUNCTION)  ();
+
+../../../include/plugin/orxPluginCore.h:96:5: warning: '@return' command used in a comment that is attached to a function returning void [-Wdocumentation]
+ * @return nothing.
+
+../../../include/memory/orxMemory.h:249:15: warning: parameter '_s32Size' not found in the function declaration [-Wdocumentation]
+ * @param[in] _s32Size                Size to track, in bytes
+
+[-Wgnu-zero-variadic-macro-arguments]
+../../../include/debug/orxDebug.h:311:153: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", ##__VA_ARGS__); \
+
+[-Wsign-conversion]
+../../../include/math/orxMath.h:227:15: warning: implicit conversion changes signedness: 'int' to 'orxU32' (aka 'unsigned int') [-Wsign-conversion]
+  u32Result = __builtin_popcount(_u32Value);
+
+[-Wfloat-equal]
+../../../include/math/orxVector.h:248:19: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  orxASSERT(_fOp2 != orxFLOAT_0);
+            ~~~~~ ^  ~~~~~~~~~~
+../../../include/debug/orxDebug.h:309:12: note: expanded from macro 'orxASSERT'
+      if(!(TEST))                                                                                                                                                         \
+           ^~~~
+
+[-Wpadded]
+../../../include/core/orxSystem.h:95:5: warning: padding size of 'struct __orxSYSTEM_EVENT_PAYLOAD_t::(anonymous at ../../../include/core/orxSystem.h:95:5)' with 4 bytes to alignment boundary [-Wpadded]
+    struct
+    ^
+../../../include/core/orxSystem.h:102:5: warning: padding size of 'struct __orxSYSTEM_EVENT_PAYLOAD_t::(anonymous at ../../../include/core/orxSystem.h:102:5)' with 4 bytes to alignment boundary [-Wpadded]
+    struct
+    ^
+
+[-Wcast-qual]
+../../../include/utils/orxString.h:355:22: warning: cast from 'const char *' to 'unsigned char *' drops const qualifier [-Wcast-qual]
+  pu8Byte = (orxU8 *)_zString;
+
+[-Wshorten-64-to-32]
+../../../include/utils/orxString.h:795:53: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+  *_ps32OutValue = (orxS32)strtol(_zString, &pcEnd, STRTO_CAST _u32Base);
+                           ~~~~~~                   ^~~~~~~~~~~~~~~~~~~
+
+[-Wdouble-promotion]
+/orx/code/src/anim/orxAnim.c:964:169: warning: implicit conversion increases floating-point precision: 'orxFLOAT' (aka 'float') to 'double' [-Wdouble-promotion]
+     orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Can't add event <%s>: its timestamp [%g] needs to be strictly greater than previous event's one (<%s> @ [%g]).", _zEventName, _fTimeStamp, _pstAnim->astEventList[orxAnim_GetEventCount(_pstAnim) - 1].zName, _pstAnim->astEventList[orxAnim_GetEventCount(_pstAnim) - 1].fTimeStamp);
+
+[-Wfloat-equal]
+../../../include/math/orxVector.h:248:19: warning: comparing floating point with == or != is unsafe [-Wfloat-equal]
+  orxASSERT(_fOp2 != orxFLOAT_0);
+            ~~~~~ ^  ~~~~~~~~~~
+
+// ** pragma disable candidate list ********************
+
+[-Wc11-extensions]
+../../../include/math/orxVector.h:67:3: warning: anonymous unions are a C11 extension [-Wc11-extensions]
+  union
+
+[-Wformat-nonliteral]
+../../../include/utils/orxString.h:1535:37: warning: format string is not a string literal [-Wformat-nonliteral]
+  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
+                                    ^~~~~~~~~~~
+    https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+        format string not string literal so
+          cannot be checked, unless the format function takes its format arguments as a va_list
+
+[-Wswitch-enum]
+../../../include/object/orxStructure.h:214:10: warning: enumeration values 'orxSTRUCTURE_ID_NUMBER' and 'orxSTRUCTURE_ID_NONE' not explicitly handled in switch [-Wswitch-enum]
+  switch(_eID)
