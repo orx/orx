@@ -58,11 +58,7 @@
 
 #endif /* __orxMSVC__ */
 
-#ifdef __orxIOS__
-  #define STRTO_CAST  (int)
-#else /* __orxIOS__ */
-  #define STRTO_CAST (size_t)
-#endif /* __orxIOS__ */
+#define STRTO_CAST (int)
 
 #include <stdio.h>
 #include <stdarg.h>

@@ -224,7 +224,7 @@ static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_popcount(_u32Value);
+  u32Result = (orxU32)__builtin_popcount(_u32Value);
 
 #endif /* __orxMSVC__ */
 

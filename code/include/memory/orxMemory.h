@@ -246,7 +246,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orx
 
 /** Tracks (external) memory allocation
  * @param[in] _eMemType               Concerned memory type
- * @param[in] _s32Size                Size to track, in bytes
+ * @param[in] _u32Size                Size to track, in bytes
  * @param[in] _bAllocate              orxTRUE if allocate, orxFALSE if free
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

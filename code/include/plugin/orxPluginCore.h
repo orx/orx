@@ -93,7 +93,6 @@ typedef orxSTATUS (*orxPLUGIN_INIT_FUNCTION)(orxU32 *_peUserFunctionNumber, orxP
  * @param[in] _eModuleID              Corresponding module ID
  * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
- * @return nothing.
  */
 extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 
@@ -103,7 +102,6 @@ extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _e
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _pfnPluginInit          Embedded plug-in init function
- * @return nothing
  */
 extern orxDLLAPI void orxFASTCALL     orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit);
 
