@@ -279,7 +279,7 @@ solution "orx"
             "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
         }
 
-    configuration {"windows", "codelite or codeblocks", "x32"}
+    configuration {"windows", "codeblocks", "x32"}
         envs
         {
             "CC=i686-w64-mingw32-gcc",
@@ -287,7 +287,7 @@ solution "orx"
             "AR=i686-w64-mingw32-gcc-ar"
         }
 
-    configuration {"windows", "codelite or codeblocks", "x64"}
+    configuration {"windows", "codeblocks", "x64"}
         envs
         {
             "CC=x86_64-w64-mingw32-gcc",
