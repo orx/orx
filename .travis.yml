@@ -28,6 +28,8 @@ matrix:
         components:
           - tools
           - platform-tools
+          - build-tools-28.0.3
+          - android-28
           - extra-google-m2repository
           - extra-android-m2repository
           - ndk-bundle
@@ -39,10 +41,14 @@ matrix:
       script:
         - cd $TRAVIS_BUILD_DIR/code/build/android-native
         - $ANDROID_NDK_HOME/ndk-build
-        - install.sh
+        - ./install.sh
+        - cd $TRAVIS_BUILD_DIR/code/demo/android-native
+        - gradlew assemble
         - cd $TRAVIS_BUILD_DIR/code/build/android
         - $ANDROID_NDK_HOME/ndk-build
-        - install.sh
+        - ./install.sh
+        - cd $TRAVIS_BUILD_DIR/code/demo/android
+        - gradlew assemble
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
