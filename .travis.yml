@@ -38,17 +38,7 @@ matrix:
         - ./setup.sh
       before_script:
         - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
-      script:
-        - cd $TRAVIS_BUILD_DIR/code/build/android-native
-        - $ANDROID_NDK_HOME/ndk-build
-        - ./install.sh
-        - cd $TRAVIS_BUILD_DIR/code/demo/android-native
-        - ./gradlew assemble
-        - cd $TRAVIS_BUILD_DIR/code/build/android
-        - $ANDROID_NDK_HOME/ndk-build
-        - ./install.sh
-        - cd $TRAVIS_BUILD_DIR/code/demo/android
-        - ./gradlew assemble
+      script: ./travis-android.sh
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
