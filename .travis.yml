@@ -26,8 +26,7 @@ matrix:
           - platform-tools
           - extra-google-m2repository
           - extra-android-m2repository
-      install:
-        - echo y | sdkmanager "ndk-bundle"
+          - ndk-bundle
       before_script:
         - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
       script:
@@ -43,3 +42,4 @@ before_install:
 
 install:
   - ./setup.sh
+  
