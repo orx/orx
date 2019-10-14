@@ -32,7 +32,6 @@ matrix:
           - android-28
           - extra-google-m2repository
           - extra-android-m2repository
-          - ndk-bundle
       install:
         - echo y | sdkmanager "ndk-bundle"
         - ./setup.sh
