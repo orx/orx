@@ -43,12 +43,12 @@ matrix:
         - $ANDROID_NDK_HOME/ndk-build
         - ./install.sh
         - cd $TRAVIS_BUILD_DIR/code/demo/android-native
-        - gradlew assemble
+        - ./gradlew assemble
         - cd $TRAVIS_BUILD_DIR/code/build/android
         - $ANDROID_NDK_HOME/ndk-build
         - ./install.sh
         - cd $TRAVIS_BUILD_DIR/code/demo/android
-        - gradlew assemble
+        - ./gradlew assemble
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
