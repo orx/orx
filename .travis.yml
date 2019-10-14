@@ -5,19 +5,19 @@ matrix:
     - os: linux
       compiler: gcc
       sudo: required
-      script: ./scripts/travis-desktop.sh
+      script: ./travis-desktop.sh
     - os: linux
       compiler: clang
       sudo: required
-      script: ./scripts/travis-desktop.sh
+      script: ./travis-desktop.sh
     - os: osx
       compiler: clang
       osx_image: xcode8.3
-      script: ./scripts/travis-desktop.sh
+      script: ./travis-desktop.sh
     - os: osx
       compiler: clang
       osx_image: xcode9.3
-      script: ./scripts/travis-desktop.sh
+      script: ./travis-desktop.sh
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
