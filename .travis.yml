@@ -5,22 +5,22 @@ matrix:
     - os: linux
       compiler: gcc
       sudo: required
-      script: ./travis-desktop.sh
+      script: ./code/build/travis/desktop.sh
 
     - os: linux
       compiler: clang
       sudo: required
-      script: ./travis-desktop.sh
+      script: ./code/build/travis/desktop.sh
 
     - os: osx
       compiler: clang
       osx_image: xcode8.3
-      script: ./travis-desktop.sh
+      script: ./code/build/travis/desktop.sh
 
     - os: osx
       compiler: clang
       osx_image: xcode9.3
-      script: ./travis-desktop.sh
+      script: ./code/build/travis/desktop.sh
 
     - language: android
       jdk: oraclejdk8
@@ -37,7 +37,7 @@ matrix:
         - ./setup.sh
       before_script:
         - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
-      script: ./travis-android.sh
+      script: ./code/build/travis/android.sh
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then

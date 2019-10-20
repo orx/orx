@@ -341,14 +341,14 @@ static orxU32 orxFASTCALL                                 orxString_PrintUTF8Cha
  */
 static orxU32 orxFASTCALL                                 orxString_GetFirstCharacterCodePoint(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU8  *pu8Byte;
-  orxU32  u32Result;
+  const orxU8  *pu8Byte;
+  orxU32        u32Result;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
   /* Gets the first byte */
-  pu8Byte = (orxU8 *)_zString;
+  pu8Byte = (const orxU8 *)_zString;
 
   /* ASCII? */
   if(*pu8Byte < 0x80)

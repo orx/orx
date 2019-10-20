@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ev
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    cd $TRAVIS_BUILD_DIR/code/build/mac/gmake ;
+  cd $TRAVIS_BUILD_DIR/code/build/mac/gmake ;
 else
   cd $TRAVIS_BUILD_DIR/code/build/linux/gmake ;
 fi
