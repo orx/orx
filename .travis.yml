@@ -19,11 +19,21 @@ matrix:
 
     - os: osx
       compiler: clang
-      osx_image: xcode9.3
+      osx_image: xcode9.4
+      script: ./code/build/travis/desktop.sh
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode10.3
+      script: ./code/build/travis/desktop.sh
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.2
       script: ./code/build/travis/desktop.sh
 
     - language: android
-      jdk: oraclejdk8
+      jdk: openjdk8
       android:
         components:
           - tools
