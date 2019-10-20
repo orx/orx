@@ -188,7 +188,7 @@
     #define __orxWINDOWS__
 
   /* iOS? */
-  #elif defined(TARGET_OS_IPHONE)
+  #elif TARGET_OS_IPHONE
 
     #define __orxIOS__
 
