@@ -16,41 +16,49 @@ matrix:
       compiler: clang
       osx_image: xcode8.3
       script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 8
 
     - os: osx
       compiler: clang
       osx_image: xcode9.4
       script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 9
 
     - os: osx
       compiler: clang
       osx_image: xcode10.3
       script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 10
 
     - os: osx
       compiler: clang
       osx_image: xcode11.2
       script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 11
 
     - os: osx
       compiler: clang
       osx_image: xcode8.3
       script: ./code/build/travis/ios.sh
+      name: iOS / XCode 8
 
     - os: osx
       compiler: clang
       osx_image: xcode9.4
       script: ./code/build/travis/ios.sh
+      name: iOS / XCode 9
 
     - os: osx
       compiler: clang
       osx_image: xcode10.3
       script: ./code/build/travis/ios.sh
+      name: iOS / XCode 10
 
     - os: osx
       compiler: clang
       osx_image: xcode11.2
       script: ./code/build/travis/ios.sh
+      name: iOS / XCode 11
 
     - language: android
       jdk: openjdk8
