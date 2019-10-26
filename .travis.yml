@@ -6,11 +6,13 @@ matrix:
       compiler: gcc
       sudo: required
       script: ./code/build/travis/desktop.sh
+      name: Linux / GCC
 
     - os: linux
       compiler: clang
       sudo: required
       script: ./code/build/travis/desktop.sh
+      name: Linux / Clang
 
     - os: osx
       compiler: clang
@@ -76,6 +78,7 @@ matrix:
       before_script:
         - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
       script: ./code/build/travis/android.sh
+      name: Android / OpenJDK 8
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
