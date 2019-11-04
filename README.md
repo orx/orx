@@ -222,11 +222,11 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxLITTLE_ENDIAN__`  | orx is being compiled for a little endian architecture
   `__orxBIG_ENDIAN__`     | orx is being compiled for a big endian architecture
   `__orxGCC__`            | orx is being compiled with gcc
-  `__orxMSVC__`           | orx is being compiled with visual studio C/C
+  `__orxMSVC__`           | orx is being compiled with visual studio C/C++
   `__orxLLVM__`           | orx is being compiled with llvm/clang
-  `__orxWINDOWS__`        | orx is being compiled for Windows (x86
-  `__orxMAC__`            | orx is being compiled for MacOS X (ppc/x86/x86-64
-  `__orxLINUX__`          | orx is being compiled for Linux (x86/x86-64
+  `__orxWINDOWS__`        | orx is being compiled for Windows
+  `__orxMAC__`            | orx is being compiled for MacOS X
+  `__orxLINUX__`          | orx is being compiled for Linux
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
   `__orxANDROID_NATIVE__` | orx is being compiled for Android Native

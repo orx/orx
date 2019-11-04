@@ -150,6 +150,7 @@ either platform = "windows" [
     ]
     attempt [write env-file env-content]
   ]
+  attempt [if %fish = second split-path get-env "SHELL" [call/shell form reduce ["set -U" env-variable env-path]]]
 ]
 
 
