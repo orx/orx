@@ -170,7 +170,7 @@ All the `*-tutorial-*` packages above include:
 Compiling
 ---------
 
-###Important - first step:
+### Important - first step:
 
 **If you just downloaded the `src` package or cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
