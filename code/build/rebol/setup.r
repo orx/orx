@@ -137,20 +137,19 @@ either platform = "windows" [
   call/shell form reduce ["setx" env-variable env-path]
 ] [
   env-home: local-to-file dirize get-env "HOME"
-  env-prefix: rejoin ["export " env-variable "="]
-  env-files: reduce [
-    env-home/.bashrc
-    env-home/.profile
-  ]
-  for-each env-file env-files [
-    env-content: either exists? env-file [to-text read env-file] [copy ""]
-    parse env-content [
-      thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+  for-each [env-file env-prefix mandatory] reduce [
+    env-home/.bashrc                      rejoin ["export " env-variable "="]   true
+    env-home/.profile                     rejoin ["export " env-variable "="]   true
+    env-home/.config/fish/fish_variables  rejoin ["SETUVAR " env-variable " "]  false
+  ] [
+    if any [mandatory exists? env-file] [
+      parse env-content: any [attempt [to-text read env-file] copy ""] [
+        thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
       | to end start: (insert start rejoin [newline env-prefix env-path newline])
+      ]
+      attempt [write env-file env-content]
     ]
-    attempt [write env-file env-content]
   ]
-  attempt [if %fish = second split-path get-env "SHELL" [call/shell form reduce ["set -U" env-variable env-path]]]
 ]
 
 
