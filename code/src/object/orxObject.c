@@ -4686,65 +4686,74 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all defined objects */
           for(i = 0, pstLastChild = orxNULL; i < s32Number; i++)
           {
-            orxOBJECT *pstChild;
+            const orxSTRING zChild;
 
-            /* Stores current group ID */
-            sstObject.stCurrentGroupID = pstResult->stGroupID;
-
-            /* Creates it */
-            pstChild = orxObject_CreateFromConfig(orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_LIST, i));
-
-            /* Clears current group ID */
-            sstObject.stCurrentGroupID = sstObject.stDefaultGroupID;
+            /* Gets its name */
+            zChild = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_LIST, i);
 
             /* Valid? */
-            if(pstChild != orxNULL)
+            if(zChild != orxSTRING_EMPTY)
             {
-              /* Stores its owner */
-              orxStructure_SetOwner(pstChild, pstResult);
+              orxOBJECT *pstChild;
 
-              /* Has last child? */
-              if(pstLastChild != orxNULL)
+              /* Stores current group ID */
+              sstObject.stCurrentGroupID = pstResult->stGroupID;
+
+              /* Creates it */
+              pstChild = orxObject_CreateFromConfig(zChild);
+
+              /* Clears current group ID */
+              sstObject.stCurrentGroupID = sstObject.stDefaultGroupID;
+
+              /* Valid? */
+              if(pstChild != orxNULL)
               {
-                /* Sets its sibling */
-                pstLastChild->pstSibling = pstChild;
-              }
-              else
-              {
-                /* Sets first child */
-                pstResult->pstChild = pstChild;
-              }
+                /* Stores its owner */
+                orxStructure_SetOwner(pstChild, pstResult);
 
-              /* Stores last child */
-              pstLastChild = pstChild;
-
-              /* Doesn't already have a parent? */
-              if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
-              {
-                orxBODY *pstChildBody;
-
-                /* Gets its body */
-                pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
-
-                /* Sets its parent */
-                orxObject_SetParent(pstChild, pstResult);
-
-                /* Valid joint can be added? */
-                if((pstBody != orxNULL)
-                && (pstChildBody != orxNULL)
-                && (i < s32JointNumber)
-                && (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) != orxNULL))
+                /* Has last child? */
+                if(pstLastChild != orxNULL)
                 {
-                  /* Marks it as a joint child */
-                  orxStructure_SetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD, orxOBJECT_KU32_FLAG_NONE);
-
-                  /* Updates flags */
-                  u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
+                  /* Sets its sibling */
+                  pstLastChild->pstSibling = pstChild;
                 }
-              }
+                else
+                {
+                  /* Sets first child */
+                  pstResult->pstChild = pstChild;
+                }
 
-              /* Updates flags */
-              u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
+                /* Stores last child */
+                pstLastChild = pstChild;
+
+                /* Doesn't already have a parent? */
+                if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
+                {
+                  orxBODY *pstChildBody;
+
+                  /* Gets its body */
+                  pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
+
+                  /* Sets its parent */
+                  orxObject_SetParent(pstChild, pstResult);
+
+                  /* Valid joint can be added? */
+                  if((pstBody != orxNULL)
+                  && (pstChildBody != orxNULL)
+                  && (i < s32JointNumber)
+                  && (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) != orxNULL))
+                  {
+                    /* Marks it as a joint child */
+                    orxStructure_SetFlags(pstChild, orxOBJECT_KU32_FLAG_IS_JOINT_CHILD | orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD, orxOBJECT_KU32_FLAG_NONE);
+
+                    /* Updates flags */
+                    u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
+                  }
+                }
+
+                /* Updates flags */
+                u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
+              }
             }
           }
         }
@@ -4785,14 +4794,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all defined FXs */
           for(i = 0; i < s32Number; i++)
           {
-            orxFLOAT fDelay;
+            const orxSTRING zFX;
+            orxFLOAT        fDelay;
 
-            /* Gets its delay */
-            fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
-            fDelay = orxMAX(fDelay, orxFLOAT_0);
+            /* Gets its name */
+            zFX = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i);
 
-            /* Adds it */
-            orxObject_AddDelayedFX(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i), fDelay);
+            /* Valid? */
+            if(zFX != orxSTRING_EMPTY)
+            {
+              /* Gets its delay */
+              fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
+              fDelay = orxMAX(fDelay, orxFLOAT_0);
+
+              /* Adds it */
+              orxObject_AddDelayedFX(pstResult, zFX, fDelay);
+            }
           }
 
           /* Success? */
@@ -4854,8 +4871,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all defined sounds */
           for(i = 0; i < s32Number; i++)
           {
-            /* Adds it */
-            orxObject_AddSound(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i));
+            const orxSTRING zSound;
+
+            /* Gets its name */
+            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
+
+            /* Valid? */
+            if(zSound != orxSTRING_EMPTY)
+            {
+              /* Adds it */
+              orxObject_AddSound(pstResult, zSound);
+            }
           }
         }
 
@@ -4869,8 +4895,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all defined shaders */
           for(i = 0; i < s32Number; i++)
           {
-            /* Adds it */
-            orxObject_AddShader(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i));
+            const orxSTRING zShader;
+
+            /* Gets its name */
+            zShader = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i);
+
+            /* Valid? */
+            if(zShader != orxSTRING_EMPTY)
+            {
+              /* Adds it */
+              orxObject_AddShader(pstResult, zShader);
+            }
           }
         }
 
@@ -4884,8 +4919,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all defined tracks */
           for(i = 0; i < s32Number; i++)
           {
-            /* Adds it */
-            orxObject_AddTimeLineTrack(pstResult, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRACK_LIST, i));
+            const orxSTRING zTrack;
+
+            /* Gets its name */
+            zTrack = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRACK_LIST, i);
+
+            /* Valid? */
+            if(zTrack != orxSTRING_EMPTY)
+            {
+              /* Adds it */
+              orxObject_AddTimeLineTrack(pstResult, zTrack);
+            }
           }
         }
 

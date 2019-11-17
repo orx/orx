@@ -846,8 +846,17 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all groups */
           for(i = 0, s32Number = orxConfig_GetListCount(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < s32Number; i++)
           {
-            /* Adds it */
-            orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
+            const orxSTRING zGroup;
+
+            /* Gets its name */
+            zGroup = orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i);
+
+            /* Valid? */
+            if(zGroup != orxSTRING_EMPTY)
+            {
+              /* Adds it */
+              orxCamera_AddGroupID(pstResult, orxString_GetID(zGroup), orxFALSE);
+            }
           }
         }
 

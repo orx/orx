@@ -77,8 +77,8 @@
 #define orxVIEWPORT_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 #define orxVIEWPORT_KU32_BANK_SIZE              16          /**< Bank size */
 
-#define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME      "Texture"
-#define orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME "TextureList"
+#define orxVIEWPORT_KZ_CONFIG_TEXTURE           "Texture"
+#define orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST      "TextureList"
 #define orxVIEWPORT_KZ_CONFIG_POSITION          "Position"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION "RelativePosition"
 #define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
@@ -1252,7 +1252,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* *** Textures *** */
 
       /* Has texture list? */
-      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME)) > 0)
+      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST)) > 0)
       {
         orxS32      i, s32TextureCount;
         orxU32      u32OwnerFlags = 0;
@@ -1264,7 +1264,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           const orxSTRING zTextureName;
 
           /* Gets its name */
-          zTextureName = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST_NAME, i);
+          zTextureName = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST, i);
 
           /* Valid? */
           if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
@@ -1391,7 +1391,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         const orxSTRING zTextureName;
 
         /* Gets old-style texture name */
-        zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME);
+        zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE);
 
         /* Valid? */
         if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
@@ -1484,8 +1484,17 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* For all defined shaders */
         for(i = 0; i < s32Number; i++)
         {
-          /* Adds it */
-          orxViewport_AddShader(pstResult, orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i));
+          const orxSTRING zShader;
+
+          /* Gets its name */
+          zShader = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i);
+
+          /* Valid? */
+          if(zShader != orxSTRING_EMPTY)
+          {
+            /* Adds it */
+            orxViewport_AddShader(pstResult, zShader);
+          }
         }
       }
 
