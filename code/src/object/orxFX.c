@@ -1472,12 +1472,18 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
           /* HSL? */
           if(eColorBlendUpdate == orxFX_TYPE_HSL)
           {
+            /* Applies circular clamp on [0, 1[ */
+            stColor.vHSL.fH -= orxS2F(orxF2S(stColor.vHSL.fH) - (orxS32)(stColor.vHSL.fH < orxFLOAT_0));
+
             /* Gets RGB color */
             orxColor_FromHSLToRGB(&stColor, &stColor);
           }
           /* HSV? */
           else if(eColorBlendUpdate == orxFX_TYPE_HSV)
           {
+            /* Applies circular clamp on [0, 1[ */
+            stColor.vHSV.fH -= orxS2F(orxF2S(stColor.vHSV.fH) - (orxS32)(stColor.vHSV.fH < orxFLOAT_0));
+
             /* Gets RGB color */
             orxColor_FromHSVToRGB(&stColor, &stColor);
           }
