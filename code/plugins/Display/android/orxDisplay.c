@@ -310,6 +310,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32ElementNumber;
   orxU32                    u32Flags;
   orxU32                    u32Depth;
+  orxU32                    u32RefreshRate;
   orxS32                    s32ActiveTextureUnit;
   stbi_io_callbacks         stSTBICallbacks;
   GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
@@ -498,9 +499,10 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
 
   if (sstDisplay.surface == EGL_NO_SURFACE)
   {
-    orxU32 u32Width, u32Height;
-    int32_t windowWidth, windowHeight;
-    orxFLOAT fScale;
+    orxVECTOR vFramebufferSize;
+    orxU32    u32Width, u32Height;
+    int32_t   windowWidth, windowHeight;
+    orxFLOAT  fScale;
 
     ANativeWindow *window = orxAndroid_GetNativeWindow();
 
@@ -561,6 +563,7 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
 
       /* Updates ScreenHeight value */
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_HEIGHT, u32Height);
+
       /* Updates ScreenWidth value */
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_WIDTH, u32Width);
 
@@ -570,8 +573,8 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Pushes config section */
       orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
-      /* Save scaling */
-      orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
+      /* Save framebuffer size */
+      orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxU2F(u32Width), orxU2F(u32Height), orxFLOAT_0));
 
       /* Pops config section */
       orxConfig_PopSection();
@@ -3820,6 +3823,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
+      sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
@@ -4109,6 +4113,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
         /* Updates config info */
         orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.u32Depth);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
 
         /* Pops config section */
         orxConfig_PopSection();
@@ -4153,8 +4158,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Stores texture unit and draw buffer numbers */
-        orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
-        orxConfig_SetU32("DrawBufferNumber", (orxU32)sstDisplay.iDrawBufferNumber);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, (orxU32)sstDisplay.iDrawBufferNumber);
 
         /* Pops config section */
         orxConfig_PopSection();

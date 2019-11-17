@@ -1198,8 +1198,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
   /* Stores texture unit and draw buffer numbers */
-  orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
-  orxConfig_SetU32("DrawBufferNumber", (orxU32)sstDisplay.iDrawBufferNumber);
+  orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
+  orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, (orxU32)sstDisplay.iDrawBufferNumber);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -5088,6 +5088,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
     orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
+    orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, sstDisplay.pstScreen->fWidth * sstDisplay.vContentScale.fY, sstDisplay.pstScreen->fHeight * sstDisplay.vContentScale.fY, orxFLOAT_0));
   }
 

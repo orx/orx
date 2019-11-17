@@ -800,21 +800,31 @@ static orxView *spoInstance;
   /* Success? */
   if(bResult != NO)
   {
+    orxVECTOR vFramebufferSize;
+    GLint     iWidth, iHeight;
+
     /* Links it to frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
     glASSERT();
 
+    /* Gets render buffer's size */
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
+    glASSERT();
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
+    glASSERT();
+
+    /* Pushes display section */
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+    /* Stores framebuffer size */
+    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
+
+    /* Pops config section */
+    orxConfig_PopSection();
+
     /* Uses depth buffer? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
     {
-      GLint iWidth, iHeight;
-
-      /* Gets render buffer's size */
-      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &iWidth);
-      glASSERT();
-      glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
-      glASSERT();
-
       /* Creates depth buffer */
       glGenRenderbuffersOES(1, &uiDepthBuffer);
       glASSERT();
@@ -4181,6 +4191,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
         orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
         orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, 32);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, 60);
 
         /* Pops config section */
         orxConfig_PopSection();
@@ -4223,8 +4234,8 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Stores texture unit and draw buffer numbers */
-        orxConfig_SetU32("TextureUnitNumber", (orxU32)sstDisplay.iTextureUnitNumber);
-        orxConfig_SetU32("DrawBufferNumber", 1);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, 1);
 
         /* Pops config section */
         orxConfig_PopSection();
