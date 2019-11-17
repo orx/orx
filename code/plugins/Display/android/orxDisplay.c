@@ -573,6 +573,9 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Pushes config section */
       orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
+      /* Save scaling */
+      orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
+
       /* Save framebuffer size */
       orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxU2F(u32Width), orxU2F(u32Height), orxFLOAT_0));
 
