@@ -210,6 +210,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     /* Updates status */
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
+
+    /* Inits random with time-based seed */
+    orxMath_InitRandom((orxU32)orxSystem_GetRealTime());
   }
 
   /* Done! */

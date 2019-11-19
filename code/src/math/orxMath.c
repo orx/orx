@@ -66,6 +66,9 @@ static orxINLINE orxU32 orxMath_Xor128()
  */
 void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 {
+  /* Checks */
+  orxASSERT(_u32Seed != 0);
+
   /* Inits random seed */
   su32X = _u32Seed;
   su32Y = su32X * _u32Seed;
