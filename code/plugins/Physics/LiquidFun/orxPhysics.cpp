@@ -840,9 +840,8 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
   /* Gets its frame space */
   eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
 
-  /* Is enabled and not static? */
-  if((poBody->GetType() != b2_staticBody)
-  && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  /* Is enabled? */
+  if(orxObject_IsEnabled(pstObject) != orxFALSE)
   {
     orxVECTOR   vSpeed, vOldPos, vNewPos;
     orxCLOCK   *pstClock;
