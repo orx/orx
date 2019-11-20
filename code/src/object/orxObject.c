@@ -6510,6 +6510,73 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
   }
   else
   {
+#ifdef __orxDEBUG__
+
+    /* Does object have a body? */
+    if(orxOBJECT_GET_STRUCTURE(_pstObject, BODY) != orxNULL)
+    {
+      orxSTRUCTURE *pstParent;
+
+      /* For all parents */
+      for(pstParent = orxSTRUCTURE(_pParent); pstParent != orxNULL;)
+      {
+        /* Is an object with a body? */
+        if((orxOBJECT(pstParent) != orxNULL)
+        && (orxOBJECT_GET_STRUCTURE(orxOBJECT(pstParent), BODY) != orxNULL))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has been set as part of the child hierarchy of object " orxANSI_KZ_COLOR_FG_YELLOW "<%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON orxANSI_KZ_COLOR_FG_RED "this will result in undefined behavior as both have physics bodies.", orxObject_GetName(_pstObject), orxObject_GetName(orxOBJECT(pstParent)));
+
+          break;
+        }
+
+        /* Depending on type */
+        switch(orxStructure_GetID(pstParent))
+        {
+          case orxSTRUCTURE_ID_CAMERA:
+          {
+            /* Gets its parent */
+            pstParent = orxCamera_GetParent(orxCAMERA(pstParent));
+
+            break;
+          }
+
+          case orxSTRUCTURE_ID_FRAME:
+          {
+            /* Gets its parent */
+            pstParent = orxSTRUCTURE(orxFrame_GetParent(orxFRAME(pstParent)));
+
+            break;
+          }
+
+          case orxSTRUCTURE_ID_OBJECT:
+          {
+            /* Gets its parent */
+            pstParent = orxObject_GetParent(orxOBJECT(pstParent));
+
+            break;
+          }
+
+          case orxSTRUCTURE_ID_SPAWNER:
+          {
+            /* Gets its parent */
+            pstParent = orxSpawner_GetParent(orxSPAWNER(pstParent));
+
+            break;
+          }
+
+          default:
+          {
+            /* No more parents */
+            pstParent = orxNULL;
+            break;
+          }
+        }
+      }
+    }
+
+#endif /* __orxDEBUG__ */
+
     /* Depending on parent ID */
     switch(orxStructure_GetID(_pParent))
     {
