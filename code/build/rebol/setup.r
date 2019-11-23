@@ -266,8 +266,8 @@ if exists? git [
 ; Done!
 if find platform-info 'deps [
   print newline
-  print ["== IMPORTANT - Make sure the following libraries are installed on your system:"]
-  for-each lib platform-info/deps [print ["==[" lib "]"]]
+  print ["==^(1b)[31m IMPORTANT - Make sure the following libraries are installed on your system^(1b)[39m:"]
+  for-each lib platform-info/deps [print ["==[^(1b)[33m" lib "^(1b)[39m]"]]
 ]
 if all [
   new-env
