@@ -251,7 +251,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Va
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctz(_u32Value);
+  u32Result = (orxU32)__builtin_ctz(_u32Value);
 
 #endif /* __orxMSVC__ */
 
@@ -287,7 +287,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctzll(_u64Value);
+  u32Result = (orxU32)__builtin_ctzll(_u64Value);
 
 #endif /* __orxMSVC__ */
 

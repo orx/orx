@@ -125,7 +125,6 @@ typedef void                              (orxFASTCALL *orxMODULE_SETUP_FUNCTION
  * @param[in]   _pfnSetup                 Module setup callback
  * @param[in]   _pfnInit                  Module init callback
  * @param[in]   _pfnExit                  Module exit callback
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI void orxFASTCALL         orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit);
 

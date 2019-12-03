@@ -1482,21 +1482,20 @@ static orxINLINE const orxSTRING                          orxString_SearchChar(c
 /** Returns the first occurrence of _cChar in _zString
  * @param[in] _zString      String to analyze
  * @param[in] _cChar        The character to find
- * @param[in] _u32Position  Search begin position
+ * @param[in] _s32Position  Search begin position
  * @return The index of the next occurrence of requested character, starting at given position / -1 if not found
  */
-static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxS32 _s32Position)
 {
-  orxS32          s32Result = -1;
-  orxS32          s32Index;
+  orxS32          s32Index, s32Result = -1;
   const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32Position <= orxString_GetLength(_zString));
+  orxASSERT(_s32Position <= (orxS32)orxString_GetLength(_zString));
 
   /* For all characters */
-  for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
+  for(s32Index = _s32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
   {
     /* Found? */
     if(*pc == _cChar)

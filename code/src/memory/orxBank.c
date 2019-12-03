@@ -442,7 +442,6 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
 /** Free an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
  * @param[in] _pCell      Pointer to the cell to free
- * @return a new cell of memory (orxNULL if no allocation possible)
  */
 void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
 {
