@@ -116,7 +116,7 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 
     /* Gets button values */
     au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
-    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1) * sizeof(unsigned char));
+    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, (orxS32)(orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1)) * sizeof(unsigned char));
 
     /* Is gamepad and can retrieve its state? */
     if((sstJoystick.astJoyInfoList[_u32ID].bIsGamepad != GLFW_FALSE)
@@ -135,7 +135,7 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 
       /* Gets axes values */
       afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, (orxS32)orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
 
       /* Mirrors low level buttons to high level ones */
       orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, (GLFW_GAMEPAD_BUTTON_LAST + 1) * sizeof(unsigned char));
