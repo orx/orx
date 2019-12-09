@@ -35,7 +35,7 @@ var group__orx_string =
     [ "orxString_PrintUTF8Character", "group__orx_string.html#ga73609453472017913e3e329ce2c12ff4", null ],
     [ "orxString_Scan", "group__orx_string.html#gaf22eda222d006b02dca2f6a5d777ac15", null ],
     [ "orxString_SearchChar", "group__orx_string.html#gadb936702b689b61973806a33ca5b4726", null ],
-    [ "orxString_SearchCharIndex", "group__orx_string.html#ga2e2cf12bf81d850b5362844bb240d28e", null ],
+    [ "orxString_SearchCharIndex", "group__orx_string.html#ga2f83ca47e2dbf22c45d798dba43e245e", null ],
     [ "orxString_SearchString", "group__orx_string.html#gae870359d87657efb5f6456dd92be1266", null ],
     [ "orxString_Setup", "group__orx_string.html#ga6329fe45c8dee73454f8f6dfa10f1437", null ],
     [ "orxString_SkipPath", "group__orx_string.html#gaece5f2c89893b93ba77d21a85149017d", null ],
