@@ -55,6 +55,8 @@
 #define orxJOYSTICK_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
 
 #define orxJOYSTICK_KZ_CONFIG_MAPPING_LIST    "MappingList"
+#define orxJOYSTICK_KZ_CONFIG_NAME            "JoyName"
+#define orxJOYSTICK_KZ_CONFIG_ID              "JoyID"
 
 
 /***************************************************************************
@@ -109,6 +111,26 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     GLFWgamepadstate  stState = {};
     orxS32            iButtonCount = 0;
     const orxU8      *au8Buttons;
+
+    /* Wasn't connected? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected == orxFALSE)
+    {
+      orxCHAR acJoystick[16] = {};
+
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+      /* Stores its name */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s_%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      orxConfig_SetString(acJoystick, glfwGetJoystickName((int)_u32ID));
+
+      /* Stores its id */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s_%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      orxConfig_SetString(acJoystick, glfwGetJoystickGUID((int)_u32ID));
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
 
     /* Updates connection status */
     sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
@@ -169,6 +191,26 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   }
   else
   {
+    /* Was connected? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected != orxFALSE)
+    {
+      orxCHAR acJoystick[16] = {};
+
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+      /* Removes its name */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s_%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      orxConfig_ClearValue(acJoystick);
+
+      /* Removes its id */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s_%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      orxConfig_ClearValue(acJoystick);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+
     /* Clears info */
     orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
   }
