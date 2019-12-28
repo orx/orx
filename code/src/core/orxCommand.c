@@ -1992,6 +1992,36 @@ void orxFASTCALL orxCommand_CommandNormalize(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/* Command: VectorX */
+void orxFASTCALL orxCommand_CommandVectorX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->fValue = _astArgList[0].vValue.fX;
+
+  /* Done! */
+  return;
+}
+
+/* Command: VectorY */
+void orxFASTCALL orxCommand_CommandVectorY(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->fValue = _astArgList[0].vValue.fY;
+
+  /* Done! */
+  return;
+}
+
+/* Command: VectorZ */
+void orxFASTCALL orxCommand_CommandVectorZ(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->fValue = _astArgList[0].vValue.fZ;
+
+  /* Done! */
+  return;
+}
+
 /* Command: Minimum */
 void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2364,6 +2394,13 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Normalize */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Normalize, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
 
+  /* Command: VectorX */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorX, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: VectorY */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorY, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: VectorZ */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorZ, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+
   /* Command: Minimum */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Minimum, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Maximum */
@@ -2468,6 +2505,13 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Normalize */
   orxCommand_AddAlias("Normalize", "Vector.Normalize", orxNULL);
+
+  /* Alias: Vector.X */
+  orxCommand_AddAlias("Vector.X", "Command.VectorX", orxNULL);
+  /* Alias: Vector.Y */
+  orxCommand_AddAlias("Vector.Y", "Command.VectorY", orxNULL);
+  /* Alias: Vector.Z */
+  orxCommand_AddAlias("Vector.Z", "Command.VectorZ", orxNULL);
 
   /* Alias: Math.Min */
   orxCommand_AddAlias("Math.Min", "Command.Minimum", orxNULL);
@@ -2590,6 +2634,13 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Normalize */
   orxCommand_RemoveAlias("Normalize");
 
+  /* Alias: Vector.X */
+  orxCommand_RemoveAlias("Vector.X");
+  /* Alias: Vector.Y */
+  orxCommand_RemoveAlias("Vector.Y");
+  /* Alias: Vector.Z */
+  orxCommand_RemoveAlias("Vector.Z");
+
   /* Alias: Math.Min */
   orxCommand_RemoveAlias("Math.Min");
   /* Alias: Math.Max */
@@ -2679,6 +2730,13 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Normalize */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Normalize);
+
+  /* Command: VectorX */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorX);
+  /* Command: VectorY */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorY);
+  /* Command: VectorZ */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorZ);
 
   /* Command: Minimum */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Minimum);
