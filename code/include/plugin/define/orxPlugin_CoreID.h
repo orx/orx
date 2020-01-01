@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Header that defines all the plugin IDs
  *
  * @{
@@ -57,7 +57,7 @@ typedef enum __orxPLUGIN_CORE_ID_t
   orxPLUGIN_CORE_ID_NUMBER,
 
   orxPLUGIN_CORE_ID_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_CORE_ID;
 
 #endif /* _orxPLUGIN_COREID_H_ */
