@@ -523,6 +523,9 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
         /* Creates object */
         pstObject = orxObject_CreateFromConfig((zObjectName != orxNULL) ? zObjectName : orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT));
 
+        /* Clears pending object */
+        _pstSpawner->pstPendingObject = orxNULL;
+
         /* Restores previous spawner */
         sstSpawner.pstCurrentSpawner = pstPreviousSpawner;
 
@@ -650,9 +653,6 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Gets current spawner and object */
             pstSpawner  = sstSpawner.pstCurrentSpawner;
             pstObject   = pstSpawner->pstPendingObject;
-
-            /* Clears pending object */
-            pstSpawner->pstPendingObject = orxNULL;
 
             /* Updates active object count */
             pstSpawner->u32ActiveObjectCount++;
