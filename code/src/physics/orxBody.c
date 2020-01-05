@@ -1588,17 +1588,11 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Stores translation axis */
       orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stSuspension.vTranslationAxis));
 
-      /* Has translation limits? */
-      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_TRANSLATION) != orxFALSE)
-      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
-      {
-        /* Updates status */
-        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+      /* Stores frequency */
+      stBodyJointDef.stSuspension.fFrequency = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
 
-        /* Stores them */
-        stBodyJointDef.stSuspension.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
-        stBodyJointDef.stSuspension.fMaxTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TRANSLATION);
-      }
+      /* Stores damping */
+      stBodyJointDef.stSuspension.fDamping = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
 
       /* Is a motor? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
@@ -1891,8 +1885,8 @@ orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoin
 }
 
 /** Gets the reaction force on the attached body at the joint anchor
- * @param[in]   _pstBodyJoint                         Concerned body joint
- * @param[out]  _pvForce                              Reaction force
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[out]  _pvForce        Reaction force
  * @return      Reaction force in Newtons
  */
 orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
@@ -1920,7 +1914,7 @@ orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBo
 }
 
 /** Gets the reaction torque on the attached body
- * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      Reaction torque
  */
 orxFLOAT orxFASTCALL orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint)
@@ -3102,4 +3096,28 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR 
 
   /* Done! */
   return pstResult;
+}
+
+/** Picks bodies in contact with the given axis aligned box.
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _apstBodyList                         List of bodies to fill, can be orxNULL for query only
+ * @param[in]   _u32Number                            Number of bodies
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT((_apstBodyList != orxNULL) || (_u32Number == 0));
+
+  /* Issues request */
+  u32Result = orxPhysics_BoxPick(_pstBox, _u16SelfFlags, _u16CheckMask, (orxHANDLE *)_apstBodyList, _u32Number);
+
+  /* Done! */
+  return u32Result;
 }

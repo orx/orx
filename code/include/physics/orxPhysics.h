@@ -240,8 +240,8 @@ typedef struct __orxBODY_JOINT_DEF_t
     struct
     {
       orxVECTOR vTranslationAxis;                     /**< Translation axis : 64 */
-      orxFLOAT  fMinTranslation;                      /**< Min translation : 68 */
-      orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 68 */
+      orxFLOAT  fDamping;                             /**< Damping : 72 */
       orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
       orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
 
@@ -703,12 +703,23 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
  * @param[in]   _pvEnd                                End of raycast
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
- * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
+ * @param[in]   _bEarlyExit                           Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Picks bodies in contact with the given axis aligned box.
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _apstBodyList                         List of user data to fill
+ * @param[in]   _u32Number                            Number of user data
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number);
 
 
 /** Enables/disables physics simulation

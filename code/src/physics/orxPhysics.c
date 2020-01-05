@@ -309,6 +309,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartRestitution, orxFLOAT, const or
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartDensity, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartDensity, orxFLOAT, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Raycast, orxHANDLE, const orxVECTOR *, const orxVECTOR *, orxU16, orxU16, orxBOOL, orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_BoxPick, orxU32, const orxAABOX *, orxU16, orxU16, orxHANDLE [], orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableSimulation, void, orxBOOL);
 
 
@@ -368,6 +369,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysic
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_FORCE, orxPhysics_GetJointReactionForce)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_TORQUE, orxPhysics_GetJointReactionTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, RAYCAST, orxPhysics_Raycast)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, BOX_PICK, orxPhysics_BoxPick)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_SIMULATION, orxPhysics_EnableSimulation)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(PHYSICS)
@@ -640,6 +642,11 @@ orxFLOAT orxFASTCALL orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOI
 orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+}
+
+orxU32 orxFASTCALL orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_BoxPick)(_pstBox, _u16SelfFlags, _u16CheckMask, _ahUserDataList, _u32Number);
 }
 
 void orxFASTCALL orxPhysics_EnableSimulation(orxBOOL _bEnable)

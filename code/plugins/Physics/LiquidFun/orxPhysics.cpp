@@ -281,6 +281,51 @@ public:
   orxU16      u16CheckMask;
 };
 
+class BoxPickCallback : public b2QueryCallback
+{
+public:
+
+  BoxPickCallback() : ahUserDataList(orxNULL), u32Size(0), u32Count(0), u16SelfFlags(0), u16CheckMask(0)
+  {
+  }
+
+  bool ReportFixture(b2Fixture* _poFixture)
+  {
+    bool bResult = true;
+
+    /* Has hit? */
+    if(_poFixture)
+    {
+      /* Gets fixture's filter info */
+      const b2Filter &rstFilter = _poFixture->GetFilterData();
+
+      /* Match? */
+      if(((rstFilter.maskBits & u16SelfFlags) != 0)
+      && ((rstFilter.categoryBits & u16CheckMask) != 0))
+      {
+        /* Has available storage? */
+        if(u32Count < u32Size)
+        {
+          /* Stores associated object's handle */
+          ahUserDataList[u32Count] = (orxHANDLE)_poFixture->GetBody()->GetUserData();
+        }
+
+        /* Updates count */
+        u32Count++;
+      }
+    }
+
+    /* Done! */
+    return bResult;
+  }
+
+  orxHANDLE  *ahUserDataList;
+  orxU32      u32Size;
+  orxU32      u32Count;
+  orxU16      u16SelfFlags;
+  orxU16      u16CheckMask;
+};
+
 static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 {
   orxBODY_PART             *pstSourceBodyPart, *pstDestinationBodyPart;
@@ -1541,7 +1586,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_LiquidFun_CreateJoint(o
   b2DistanceJointDef  stSpringJointDef;
   b2RopeJointDef      stRopeJointDef;
   b2PulleyJointDef    stPulleyJointDef;
-  b2WheelJointDef     stSuspensionJointDef;
+  b2WheelJointDef     stWheelJointDef;
   b2WeldJointDef      stWeldJointDef;
   b2FrictionJointDef  stFrictionJointDef;
   b2GearJointDef      stGearJointDef;
@@ -1686,9 +1731,7 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_LiquidFun_CreateJoint(o
 
       /* Stores lengths */
       stPulleyJointDef.lengthA    = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPulley.fSrcLength;
-// missing     stPulleyJointDef.maxLengthA = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPulley.fMaxSrcLength;
       stPulleyJointDef.lengthB    = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPulley.fDstLength;
-// missing     stPulleyJointDef.maxLengthB = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPulley.fMaxDstLength;
 
       /* Stores ratio */
       stPulleyJointDef.ratio      = _pstBodyJointDef->stPulley.fLengthRatio;
@@ -1700,35 +1743,30 @@ extern "C" orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_LiquidFun_CreateJoint(o
     case orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION:
     {
       /* Stores joint reference */
-      pstJointDef = &stSuspensionJointDef;
+      pstJointDef = &stWheelJointDef;
 
       /* Stores anchors */
-      stSuspensionJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      stSuspensionJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
+      stWheelJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
+      stWheelJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
 
       /* Stores translation axis */
-      stSuspensionJointDef.localAxisA.Set(_pstBodyJointDef->stSuspension.vTranslationAxis.fX, _pstBodyJointDef->stSuspension.vTranslationAxis.fY);
+      stWheelJointDef.localAxisA.Set(_pstBodyJointDef->stSuspension.vTranslationAxis.fX, _pstBodyJointDef->stSuspension.vTranslationAxis.fY);
 
-      /* Has translation limits? */
-      if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT))
-      {
-        /* Stores them */
-// missing       stSuspensionJointDef.lowerTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMinTranslation;
-// missing       stSuspensionJointDef.upperTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMaxTranslation;
+      /* Stores frequency */
+      stWheelJointDef.frequencyHz  = _pstBodyJointDef->stSuspension.fFrequency;
 
-        /* Updates status */
-// missing       stSuspensionJointDef.enableLimit  = true;
-      }
+      /* Stores damping ratio */
+      stWheelJointDef.dampingRatio = _pstBodyJointDef->stSuspension.fDamping;
 
       /* Is motor? */
       if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
       {
         /* Stores them */
-        stSuspensionJointDef.motorSpeed    = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMotorSpeed;
-        stSuspensionJointDef.maxMotorTorque = _pstBodyJointDef->stSuspension.fMaxMotorForce;
+        stWheelJointDef.motorSpeed     = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMotorSpeed;
+        stWheelJointDef.maxMotorTorque = _pstBodyJointDef->stSuspension.fMaxMotorForce;
 
         /* Updates status */
-        stSuspensionJointDef.enableMotor    = true;
+        stWheelJointDef.enableMotor    = true;
       }
 
       break;
@@ -3118,6 +3156,35 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
   return hResult;
 }
 
+extern "C" orxU32 orxFASTCALL orxPhysics_LiquidFun_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+{
+  b2AABB          stBox;
+  BoxPickCallback oBoxPickCallback;
+  orxHANDLE       hResult = orxHANDLE_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Gets extremities */
+  stBox.lowerBound.Set(sstPhysics.fDimensionRatio * _pstBox->vTL.fX, sstPhysics.fDimensionRatio * _pstBox->vTL.fY);
+  stBox.upperBound.Set(sstPhysics.fDimensionRatio * _pstBox->vBR.fX, sstPhysics.fDimensionRatio * _pstBox->vBR.fY);
+
+  /* Inits filter data */
+  oBoxPickCallback.u16SelfFlags = _u16SelfFlags;
+  oBoxPickCallback.u16CheckMask = _u16CheckMask;
+
+  /* Inits storage */
+  oBoxPickCallback.ahUserDataList = _ahUserDataList;
+  oBoxPickCallback.u32Size      = (_ahUserDataList != orxNULL) ? _u32Number : 0;
+
+  /* Issues query */
+  sstPhysics.poWorld->QueryAABB(&oBoxPickCallback, stBox);
+
+  /* Done! */
+  return oBoxPickCallback.u32Count;
+}
+
 extern "C" void orxFASTCALL orxPhysics_LiquidFun_EnableSimulation(orxBOOL _bEnable)
 {
   /* Checks */
@@ -3488,6 +3555,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMaxMotorTorque, PH
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_Raycast, PHYSICS, RAYCAST);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_BoxPick, PHYSICS, BOX_PICK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
