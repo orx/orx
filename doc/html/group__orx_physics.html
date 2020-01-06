@@ -307,6 +307,8 @@ Functions</h2></td></tr>
 <tr class="separator:gaef90eaf6b2c4f4724d7aa7f999e43907"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8b4f976090d0ad05062297fb950027ec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga8b4f976090d0ad05062297fb950027ec">orxPhysics_IsFixedRotation</a> (const <a class="el" href="group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
 <tr class="separator:ga8b4f976090d0ad05062297fb950027ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab803634665f384e402a0f752b30c321b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gab803634665f384e402a0f752b30c321b">orxPhysics_IsInsidePart</a> (const <a class="el" href="group__orx_physics.html#gad6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *_pstBodyPart, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
+<tr class="separator:gab803634665f384e402a0f752b30c321b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaac179ef90f225b63cbf2d4acfb3b0d62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gaac179ef90f225b63cbf2d4acfb3b0d62">orxPhysics_IsPartSolid</a> (const <a class="el" href="group__orx_physics.html#gad6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *_pstBodyPart)</td></tr>
 <tr class="separator:gaac179ef90f225b63cbf2d4acfb3b0d62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa020e4468042819f0bcc561681c766eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxHANDLE orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gaa020e4468042819f0bcc561681c766eb">orxPhysics_Raycast</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvBegin, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvContact, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvNormal)</td></tr>
@@ -1222,7 +1224,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks bodies in contact with the given axis aligned box. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks bodies in contact with the given axis aligned box </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box used for picking </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u16SelfFlags</td><td>Selfs flags used for filtering (0xFFFF for no filtering) </td></tr>
@@ -2066,6 +2068,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE if fixed rotation, orxFALSE otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab803634665f384e402a0f752b30c321b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxPhysics_IsInsidePart </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_physics.html#gad6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *&#160;</td>
+          <td class="paramname"><em>_pstBodyPart</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvPosition</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is point inside part? (Using world coordinates) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBodyPart</td><td>Concerned physical body part </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to test (world coordinates) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
 
 </div>
 </div>

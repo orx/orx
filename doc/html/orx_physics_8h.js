@@ -87,6 +87,7 @@ var orx_physics_8h =
     [ "orxPhysics_GetSpeedAtWorldPosition", "group__orx_physics.html#ga8390789b878379495072aad235857d10", null ],
     [ "orxPhysics_Init", "group__orx_physics.html#gaef90eaf6b2c4f4724d7aa7f999e43907", null ],
     [ "orxPhysics_IsFixedRotation", "group__orx_physics.html#ga8b4f976090d0ad05062297fb950027ec", null ],
+    [ "orxPhysics_IsInsidePart", "group__orx_physics.html#gab803634665f384e402a0f752b30c321b", null ],
     [ "orxPhysics_IsPartSolid", "group__orx_physics.html#gaac179ef90f225b63cbf2d4acfb3b0d62", null ],
     [ "orxPhysics_Raycast", "group__orx_physics.html#gaa020e4468042819f0bcc561681c766eb", null ],
     [ "orxPhysics_SetAllowMoving", "group__orx_physics.html#ga0393b9af0e1d48267960eafb996eed28", null ],

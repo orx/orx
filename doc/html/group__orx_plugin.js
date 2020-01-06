@@ -179,6 +179,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_RESTITUTION", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faf8792f452834356dc30b2d230cbed3b2", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_PART_DENSITY", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa68ddd638b5738432f1088fdd8d6521cb", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_PART_DENSITY", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fad49b2b00fe8251bb2e49e9d9bc5914ec", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_IS_INSIDE_PART", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa49c2ca82531623213c8cc28cb05367de", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_MOTOR", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fae085816e6955b60a3b9ed64f6e641fff", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MOTOR_SPEED", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa07f32ca9754613d30e5b404f85e6b046", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_SET_JOINT_MAX_MOTOR_TORQUE", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3b20b6b9312440f2d77e19eccd39354b", null ],
