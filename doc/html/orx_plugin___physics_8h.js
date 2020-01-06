@@ -53,6 +53,7 @@ var orx_plugin___physics_8h =
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_FORCE", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa8609de992b7c39e2a05ea7c69bd362b6", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_GET_JOINT_REACTION_TORQUE", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999facfecda94f86238300e594f4c3649aa8e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_RAYCAST", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fac752337ee36cdbf463a21f91065e9ce6", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_BOX_PICK", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa018379158912e66e52bc6c1ce7e25288", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_ENABLE_SIMULATION", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faab1dbf6ba119ff677f292f5863e013e1", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NUMBER", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fad17aa31612eb3d6a50299197f2e4757e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE", "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa7144145763d2c913da38ec1cfdc1e436", null ]

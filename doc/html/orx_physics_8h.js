@@ -55,6 +55,7 @@ var orx_physics_8h =
     [ "orxPhysics_ApplyForce", "group__orx_physics.html#ga05cf5096b1fb9d50a325d97d0d81cb97", null ],
     [ "orxPhysics_ApplyImpulse", "group__orx_physics.html#gae403619a97de0977dd9be00c174e3791", null ],
     [ "orxPhysics_ApplyTorque", "group__orx_physics.html#gaaefdadba852636307837f22798e6c80c", null ],
+    [ "orxPhysics_BoxPick", "group__orx_physics.html#gaf65f9837229f8478b3698e9e6888c41c", null ],
     [ "orxPhysics_CreateBody", "group__orx_physics.html#gaaf4dcd609fadd1cf277cca5594a45ae7", null ],
     [ "orxPhysics_CreateJoint", "group__orx_physics.html#gac447a09a8e07373535f8beb87c9c1180", null ],
     [ "orxPhysics_CreatePart", "group__orx_physics.html#gaa805a13727288158b0cf409586890a80", null ],

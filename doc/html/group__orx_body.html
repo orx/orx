@@ -139,6 +139,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga7a075916bcbb81b9390f4bc51f864157"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac9e9fc12ae83e59561e8c3962d46178c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gac9e9fc12ae83e59561e8c3962d46178c">orxBody_ApplyTorque</a> (<a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxFLOAT _fTorque)</td></tr>
 <tr class="separator:gac9e9fc12ae83e59561e8c3962d46178c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac677f55d9a83cc63fec9efcc1128fcb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gac677f55d9a83cc63fec9efcc1128fcb4">orxBody_BoxPick</a> (const <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_apstBodyList[], orxU32 _u32Number)</td></tr>
+<tr class="separator:gac677f55d9a83cc63fec9efcc1128fcb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9feaac31cf40a5c99969365cc5961b9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga9feaac31cf40a5c99969365cc5961b9a">orxBody_Create</a> (const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstOwner, const <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> *_pstBodyDef)</td></tr>
 <tr class="separator:ga9feaac31cf40a5c99969365cc5961b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6e08ae4f4f01b18826a36fa8b6c10f76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ga6e08ae4f4f01b18826a36fa8b6c10f76">orxBody_CreateFromConfig</a> (const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstOwner, const orxSTRING _zConfigID)</td></tr>
@@ -574,6 +576,61 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gac677f55d9a83cc63fec9efcc1128fcb4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxBody_BoxPick </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structorx_a_a_b_o_x.html">orxAABOX</a> *&#160;</td>
+          <td class="paramname"><em>_pstBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU16&#160;</td>
+          <td class="paramname"><em>_u16SelfFlags</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU16&#160;</td>
+          <td class="paramname"><em>_u16CheckMask</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_body.html#gab6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&#160;</td>
+          <td class="paramname"><em>_apstBodyList</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Number</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Picks bodies in contact with the given axis aligned box. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box used for picking </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u16SelfFlags</td><td>Selfs flags used for filtering (0xFFFF for no filtering) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u16CheckMask</td><td>Check mask used for filtering (0xFFFF for no filtering) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_apstBodyList</td><td>List of bodies to fill </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Number</td><td>Number of bodies </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all. </dd></dl>
 
 </div>
 </div>
