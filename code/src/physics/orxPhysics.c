@@ -308,6 +308,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartRestitution, orxSTATUS, orxPHYS
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartRestitution, orxFLOAT, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartDensity, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartDensity, orxFLOAT, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsInsidePart, orxBOOL, const orxPHYSICS_BODY_PART *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Raycast, orxHANDLE, const orxVECTOR *, const orxVECTOR *, orxU16, orxU16, orxBOOL, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_BoxPick, orxU32, const orxAABOX *, orxU16, orxU16, orxHANDLE [], orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableSimulation, void, orxBOOL);
@@ -363,6 +364,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_RESTITUTION, orxPhysics_SetP
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_RESTITUTION, orxPhysics_GetPartRestitution)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_DENSITY, orxPhysics_SetPartDensity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_DENSITY, orxPhysics_GetPartDensity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_INSIDE_PART, orxPhysics_IsInsidePart)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_MOTOR, orxPhysics_EnableMotor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MOTOR_SPEED, orxPhysics_SetJointMotorSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysics_SetJointMaxMotorTorque)
@@ -612,6 +614,11 @@ orxSTATUS orxFASTCALL orxPhysics_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPa
 orxFLOAT orxFASTCALL orxPhysics_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartDensity)(_pstBodyPart);
+}
+
+orxBOOL orxFASTCALL orxPhysics_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_IsInsidePart)(_pstBodyPart, _pvPosition);
 }
 
 void orxFASTCALL orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)

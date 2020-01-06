@@ -661,6 +661,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartDensity(
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _pvPosition                           Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition);
+
 
 /** Enables a (revolute) body joint motor
  * @param[in]   _pstBodyJoint                         Concerned body joint
@@ -711,7 +718,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
 extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
-/** Picks bodies in contact with the given axis aligned box.
+/** Picks bodies in contact with the given axis aligned box
  * @param[in]   _pstBox                               Box used for picking
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)

@@ -3069,6 +3069,29 @@ extern "C" orxFLOAT orxFASTCALL orxPhysics_LiquidFun_GetPartDensity(const orxPHY
   return fResult;
 }
 
+extern "C" orxBOOL orxFASTCALL orxPhysics_LiquidFun_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  b2Fixture  *poFixture;
+  b2Vec2      vPosition;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets fixture */
+  poFixture = (b2Fixture *)_pstBodyPart;
+
+  /* Sets position */
+  vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
+
+  /* Updates result */
+  bResult = (poFixture->TestPoint(vPosition) != false) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   b2Vec2          vBegin, vEnd;
@@ -3549,6 +3572,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartRestitution, PHYSIC
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartRestitution, PHYSICS, GET_PART_RESTITUTION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetPartDensity, PHYSICS, SET_PART_DENSITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetPartDensity, PHYSICS, GET_PART_DENSITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_IsInsidePart, PHYSICS, IS_INSIDE_PART);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableMotor, PHYSICS, ENABLE_MOTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);

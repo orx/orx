@@ -378,6 +378,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetLinearDamping(const orx
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularDamping(const orxBODY *_pstBody);
 
+/** Is point inside body? (Using world coordinates)
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsInside(const orxBODY *_pstBody, const orxVECTOR *_pvPosition);
+
 
 /** Applies a torque
  * @param[in]   _pstBody        Concerned body
@@ -480,6 +487,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartDensity(orxBODY_PAR
  * @return      Density
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart);
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsInsidePart(const orxBODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition);
 
 
 /** Enables a (revolute) body joint motor

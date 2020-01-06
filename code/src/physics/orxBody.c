@@ -2729,6 +2729,34 @@ orxFLOAT orxFASTCALL orxBody_GetAngularDamping(const orxBODY *_pstBody)
   return fResult;
 }
 
+/** Is point inside body? (Using world coordinates)
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsInside(const orxBODY *_pstBody, const orxVECTOR *_pvPosition)
+{
+  orxBODY_PART *pstPart;
+  orxBOOL       bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* For all parts */
+  for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
+      (bResult == orxFALSE) && (pstPart != orxNULL);
+      pstPart = orxBody_GetNextPart(_pstBody, pstPart))
+  {
+    /* Updates result */
+    bResult = orxBody_IsInsidePart(pstPart, _pvPosition);
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Applies a torque
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _fTorque        Torque to apply
@@ -3063,6 +3091,28 @@ orxFLOAT orxFASTCALL orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart)
   /* Done! */
   return fResult;
 }
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsInsidePart(const orxBODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Updates result */
+  bResult = orxPhysics_IsInsidePart(_pstBodyPart->pstData, _pvPosition);
+
+  /* Done! */
+  return bResult;
+}
+
 
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvBegin        Beginning of raycast
