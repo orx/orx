@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1143,7 +1143,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_
  * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
  * objects.
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _stGroupID     Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID);
@@ -1151,7 +1151,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvP
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
  * orxObject_CreateNeighborList() to get all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
- * @param[in]   _stGroupID     Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _stGroupID);

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -2078,20 +2078,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           }
         }
 
-        /* Gets event value count */
-        s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
-
-        /* Found event? */
-        if(s32EventValueCount > 0)
-        {
-          /* Gets event info */
-          zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
-          fEventValue = (s32EventValueCount > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
-
-          /* Updates event count */
-          u32EventCount++;
-        }
-
         /* Gets current parent */
         zParent = orxConfig_GetParent(acBuffer);
 
@@ -2105,6 +2091,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
         /* Sets section's parent */
         orxConfig_SetParent(acBuffer, zNewFrameParent);
+
+        /* Gets event value count */
+        s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+
+        /* Found event? */
+        if(s32EventValueCount > 0)
+        {
+          /* Gets event info */
+          zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
+          fEventValue = (s32EventValueCount > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
+
+          /* Updates event count */
+          u32EventCount++;
+        }
 
         /* Disables display logs */
         bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
