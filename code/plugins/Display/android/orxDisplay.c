@@ -1846,7 +1846,7 @@ static void orxFASTCALL orxDisplay_Android_DrawArrays()
 
 static void orxFASTCALL orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE _eBufferMode)
 {
-  /* New blend mode? */
+  /* New buffer mode? */
   if(_eBufferMode != sstDisplay.eLastBufferMode)
   {
     /* Draws remaining items */
