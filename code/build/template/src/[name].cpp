@@ -5,9 +5,17 @@
 
 #include "orx.h"
 
-/*
- * This is a basic code template to quickly and easily get started with a project or tutorial.
+/** Update function, it has been registered to be called every tick of the core clock
  */
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+    // Should quit?
+    if(orxInput_IsActive("Quit"))
+    {
+        // Send close event
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+    }
+}
 
 /** Init function, it is called when all orx's modules have been initialized
  */
@@ -21,28 +29,22 @@ orxSTATUS orxFASTCALL Init()
     // Create the viewport
     orxViewport_CreateFromConfig("Viewport");
 
-    // Create the object
-    orxObject_CreateFromConfig("Object");
+    // Create the scene
+    orxObject_CreateFromConfig("Scene");
+
+    // Register Update function to core clock
+    orxClock_Register(orxClock_FindFirst(-1.0f, orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
     // Done!
     return orxSTATUS_SUCCESS;
 }
 
-/** Run function, it is called every clock cycle
+/** Run function, it should not contain any game logic
  */
 orxSTATUS orxFASTCALL Run()
 {
-    orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-    // Should quit?
-    if(orxInput_IsActive("Quit"))
-    {
-        // Update result
-        eResult = orxSTATUS_FAILURE;
-    }
-
-    // Done!
-    return eResult;
+    // Return orxSTATUS_FAILURE to instruct orx to quit
+    return orxSTATUS_SUCCESS;
 }
 
 /** Exit function, it is called before exiting from orx
