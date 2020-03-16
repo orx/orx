@@ -635,6 +635,9 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Decreases its active objects count */
             pstSpawner->u32ActiveObjectCount--;
 
+            /* Removes self as object's owner */
+            orxObject_SetOwner(pstObject, orxNULL);
+
             break;
           }
 
