@@ -251,6 +251,9 @@ project "[name]"
         "../data/config/**.ini"
     }
 
+    includedirs {"../include"}
+    [+scroll includedirs {"../include/Scroll"}]
+
     configuration {"windows", "vs*"}
         buildoptions {"/EHsc"}
 

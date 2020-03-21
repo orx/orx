@@ -22,18 +22,18 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 orxSTATUS orxFASTCALL Init()
 {
     // Display a small hint in console
-    orxLOG("\n* This template project creates a viewport/camera couple and an object"
+    orxLOG("\n* This template project creates a viewport/camera couple and a simple scene"
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the executable to see the changes.");
 
     // Create the viewport
-    orxViewport_CreateFromConfig("Viewport");
+    orxViewport_CreateFromConfig("MainViewport");
 
     // Create the scene
     orxObject_CreateFromConfig("Scene");
 
-    // Register Update function to core clock
-    orxClock_Register(orxClock_FindFirst(-1.0f, orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+    // Register the Update function to the core clock
+    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
     // Done!
     return orxSTATUS_SUCCESS;

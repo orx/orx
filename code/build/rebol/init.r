@@ -9,7 +9,8 @@ REBOL [
 source: %../template/
 extern: %../../../extern/
 params: [
-   name       {Project name (relative or full path)}   _
+  name        {Project name (relative or full path)}      _
+  scroll      {object-oriented C++ convenience layer}     -
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2015} {vs2017} {vs2019}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
@@ -52,6 +53,18 @@ to-template: func [
 ] [
   rejoin [{[} name {]}]
 ]
+extension?: function [
+  {Is an extension?}
+  name [word! text!]
+] [
+  attempt [
+    result: false
+    switch third find params to-word name [
+      '+ '- [result: true]
+    ]
+  ]
+  result
+]
 
 ; Inits
 change-dir root: system/options/path
@@ -75,11 +88,37 @@ usage: func [
 
   prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
 
-  print rejoin [
-    newline newline
-    for-each [param desc default] params [
-      prin rejoin [{ } either default [rejoin [{[} param {]}]] [param]]
-      rejoin [{  = } param {: } desc either default [rejoin [{=[} default {], optional}]] [{, required}] newline]
+  for-each [param desc default] params [
+    prin rejoin [
+      { }
+      case [
+        extension? param [
+          rejoin [{[+/-} param {]}]
+        ]
+        default [
+          rejoin [{[} param {]}]
+        ]
+        true [
+          param
+        ]
+      ]
+    ]
+  ]
+  print [newline]
+  for-each [param desc default] params [
+    print rejoin [
+      {  - } param {: } desc
+      case [
+        extension? param [
+          rejoin [{=[} either default = '+ [{yes}] [{no}] {], optional}]
+        ]
+        default [
+          rejoin [{=[} default {], optional}]
+        ]
+        true [
+          {, required}
+        ]
+      ]
     ]
   ]
   quit
@@ -87,34 +126,56 @@ usage: func [
 
 ; Processes params
 either system/options/args [
-  either (length? system/options/args) > ((length? params) / 3) [
-    usage/message [{Too many arguments:} mold system/options/args]
-  ] [
-    use [interactive? arg] [
-      if interactive?: zero? length? arg: system/options/args [
-        print {== No argument, switching to interactive mode}
+  use [interactive? args value] [
+    either interactive?: zero? length? args: copy system/options/args [
+      print {== No argument, switching to interactive mode}
+      for-each [param desc default] params [
+        either extension? param [
+          set param either logic? value: get load trim ask rejoin [{ * [Extension] } param {: } desc {? (} either default = '+ [{yes}] [{no}] {)}] [
+            value
+          ] [
+            default = '+
+          ]
+        ] [
+          until [
+            any [
+              not empty? set param trim ask rejoin [{ * } desc {? }]
+              set param default
+            ]
+          ]
+        ]
       ]
+    ] [
       for-each [param desc default] params [
         case [
-          not tail? arg [
-            set param arg/1
-            arg: next arg
-          ]
-          interactive? [
-            until [
-              any [
-                not empty? set param trim ask rejoin [{ * } desc {? }]
-                set param default
+          extension? param [
+            use [extension] [
+              set param case [
+                extension: find args rejoin ['+ param] [
+                  remove extension
+                  true
+                ]
+                extension: find args rejoin ['- param] [
+                  remove extension
+                  false
+                ]
+                true [
+                  default = '+
+                ]
               ]
             ]
           ]
-          default [
-            set param default
+          not tail? args [
+            set param args/1
+            args: next args
           ]
           true [
             usage/message [{Not enough arguments:} mold system/options/args]
           ]
         ]
+      ]
+      if not tail? args [
+        usage/message [{Too many arguments:} mold system/options/args]
       ]
     ]
   ]
