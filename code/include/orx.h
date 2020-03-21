@@ -270,14 +270,6 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
   #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
-  #ifdef __orxWINDOWS__
-
-/* Requesting high performance dedicated GPU on hybrid laptops */
-_declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
-_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-
-  #endif /* __orxWINDOWS__ */
-
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
  * @param[in]   _azParams                     Main function parameter list (argv)
