@@ -276,7 +276,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 _declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
 _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
-  #endif // __orxWINDOWS__
+  #endif /* __orxWINDOWS__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
