@@ -54,28 +54,32 @@ extension?: function [
   ]
   result
 ]
-apply-template: function [
+apply-template: func [
   {Replaces all templates with their content}
   content [text! binary!]
 ] [
-  template: append copy [{-=dummy=-}] collect [for-each entry templates [if not extension? entry [keep reduce ['| to-text entry]]]]
-  +extension: append copy [{-=dummy=-}] collect [for-each entry templates [if all [extension? entry get entry] [keep reduce ['| to-text entry]]]]
-  -extension: append copy [{-=dummy=-}] collect [for-each entry templates [if all [extension? entry not get entry] [keep reduce ['| to-text entry]]]]
-  use [value] [
-    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
-  ]
-  extension-rule: [
-    begin-extension: {[}
-    [ [ {+} -extension | {-} +extension] (erase: yes)
-    | [ {+} +extension | {-} -extension] (erase: no)
+  use [template +extension -extension value] [
+    for-each [var condition] [
+      template    [not extension? entry]
+      +extension  [all [extension? entry get entry]]
+      -extension  [all [extension? entry not get entry]]
+    ] [
+      set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
     ]
-    skip end-extension: (remove/part begin-extension end-extension) :begin-extension
-    any
-    [ template-rule
-    | {[} thru {]}
-    | {]} end-extension: break
-    | skip
-    ] (either erase [remove/part begin-extension end-extension] [begin-extension: remove/part back end-extension 1]) :begin-extension
+    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
+    extension-rule: [
+      begin-extension: {[}
+      [ [ {+} -extension | {-} +extension] (erase: yes)
+      | [ {+} +extension | {-} -extension] (erase: no)
+      ]
+      skip end-extension: (remove/part begin-extension end-extension) :begin-extension
+      any
+      [ template-rule
+      | {[} thru {]}
+      | {]} end-extension: break
+      | skip
+      ] (either erase [remove/part begin-extension end-extension] [begin-extension: remove/part back end-extension 1]) :begin-extension
+    ]
   ]
   parse content [
     any
