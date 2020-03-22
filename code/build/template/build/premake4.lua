@@ -248,17 +248,22 @@ project "[name]"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
+        [+scroll "../include/**.inl",]
         "../data/config/**.ini"
     }
 
-    includedirs {"../include"}
-    [+scroll includedirs {"../include/Scroll"}]
+    includedirs
+    {
+        [+scroll "../include/Scroll",]
+        "../include"
+    }
 
     configuration {"windows", "vs*"}
         buildoptions {"/EHsc"}
 
     vpaths
     {
+        [+scroll ["inline"] = {"**.inl"},]
         ["config"] = {"**.ini"}
     }
 

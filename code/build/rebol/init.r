@@ -6,8 +6,6 @@ REBOL [
 ]
 
 ; Variables
-source: %../template/
-extern: %../../../extern/
 params: [
   name        {Project name (relative or full path)}      _
   scroll      {object-oriented C++ convenience layer}     -
@@ -17,11 +15,8 @@ platforms:  [
   {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
   {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
 ]
-templates: [
-  name
-  date
-  code-path
-]
+source-path: %../template/
+extern: %../../../extern/
 
 ; Helpers
 delete-dir: function [
@@ -47,12 +42,6 @@ log: func [
   ]
   either no-break [prin message] [print reeval message]
 ]
-to-template: func [
-  {Gets template literal}
-  name [word! text!]
-] [
-  rejoin [{[} name {]}]
-]
 extension?: function [
   {Is an extension?}
   name [word! text!]
@@ -65,6 +54,38 @@ extension?: function [
   ]
   result
 ]
+apply-template: function [
+  {Replaces all templates with their content}
+  content [text! binary!]
+] [
+  template: append copy [{-=dummy=-}] collect [for-each entry templates [if not extension? entry [keep reduce ['| to-text entry]]]]
+  +extension: append copy [{-=dummy=-}] collect [for-each entry templates [if all [extension? entry get entry] [keep reduce ['| to-text entry]]]]
+  -extension: append copy [{-=dummy=-}] collect [for-each entry templates [if all [extension? entry not get entry] [keep reduce ['| to-text entry]]]]
+  use [value] [
+    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
+  ]
+  extension-rule: [
+    begin-extension: {[}
+    [ [ {+} -extension | {-} +extension] (erase: yes)
+    | [ {+} +extension | {-} -extension] (erase: no)
+    ]
+    skip end-extension: (remove/part begin-extension end-extension) :begin-extension
+    any
+    [ template-rule
+    | {[} thru {]}
+    | {]} end-extension: break
+    | skip
+    ] (either erase [remove/part begin-extension end-extension] [begin-extension: remove/part back end-extension 1]) :begin-extension
+  ]
+  parse content [
+    any
+    [ extension-rule
+    | template-rule
+    | skip
+    ]
+  ]
+  content
+]
 
 ; Inits
 change-dir root: system/options/path
@@ -75,6 +96,9 @@ switch platform: lowercase to-text system/platform/1 [
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
+templates: append collect [
+  for-each [param desc default] params [keep param]
+] [date code-path]
 
 ; Usage
 usage: func [
@@ -131,7 +155,13 @@ either system/options/args [
       print {== No argument, switching to interactive mode}
       for-each [param desc default] params [
         either extension? param [
-          set param either logic? value: get load trim ask rejoin [{ * [Extension] } param {: } desc {? (} either default = '+ [{yes}] [{no}] {)}] [
+          until [
+            any [
+              empty? value: ask rejoin [{ * [Extension] } param {: } desc {? (} either default = '+ [{yes}] [{no}] {)}]
+              logic? value: get load trim value
+            ]
+          ]
+          set param either logic? value [
             value
           ] [
             default = '+
@@ -184,13 +214,13 @@ either system/options/args [
 ]
 
 ; Locates source
-source: clean-path rejoin [first split-path system/options/script source]
+source-path: clean-path rejoin [first split-path system/options/script source-path]
 
 ; Runs setup if premake isn't found
-if not exists? source/:premake-source [
+if not exists? source-path/:premake-source [
   log [{New orx installation found, running setup!}]
-  attempt [delete-dir source/:extern]
-  in-dir source/../../.. [
+  attempt [delete-dir source-path/:extern]
+  in-dir source-path/../../.. [
     call/shell platform-info/setup
   ]
 ]
@@ -217,28 +247,29 @@ reeval copy-files: function [
 ] [
   for-each file read from [
     src: from/:file
-    dst: replace to/:file to-template 'name name
-    if file = %build/ [
-      set 'build dst
-    ]
-    either dir? src [
-      make-dir/deep dst
-      copy-files src dst
+    if all [
+      not empty? dst: to-file apply-template to-text file
+      dst != %/
     ] [
-      log/only [{  +} file-to-local dst]
-      buffer: read src
-      for-each template templates [
-        replace/all buffer to-template template get template
+      dst: to/:dst
+      if file = %build/ [
+        set 'build dst
       ]
-      write dst buffer
+      either dir? src [
+        make-dir/deep dst
+        copy-files src dst
+      ] [
+        log/only [{  +} file-to-local dst]
+        write dst apply-template read src
+      ]
     ]
   ]
-] source name
+] source-path name
 
 ; Creates build projects
 if build [
   in-dir build [
-    write platform-info/premake read source/:premake-source
+    write platform-info/premake read source-path/:premake-source
     if not platform = {windows} [
       call/shell form reduce [{chmod +x} platform-info/premake]
     ]
