@@ -158,7 +158,12 @@ usage: func [
 ]
 
 ; Processes params
-either system/options/args [
+either all [
+  system/options/args
+  not find system/options/args {help}
+  not find system/options/args {-h}
+  not find system/options/args {--help}
+] [
   use [interactive? args value] [
     either interactive?: zero? length? args: copy system/options/args [
       print {== No argument, switching to interactive mode}
