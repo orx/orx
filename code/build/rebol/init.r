@@ -67,6 +67,8 @@ apply-template: func [
       set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
     ]
     template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
+    in-bracket: charset [not #"]"]
+    bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
     extension-rule: [
       begin-extension: {[}
       [ [ {+} -extension | {-} +extension] (erase: yes)
@@ -75,7 +77,7 @@ apply-template: func [
       skip end-extension: (remove/part begin-extension end-extension) :begin-extension
       any
       [ template-rule
-      | {[} thru {]}
+      | bracket-rule
       | {]} end-extension: break
       | skip
       ] (either erase [remove/part begin-extension end-extension] [begin-extension: remove/part back end-extension 1]) :begin-extension
