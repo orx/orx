@@ -257,6 +257,8 @@ project "[name]"
     {
 [+scroll
         "../include/Scroll",]
+[+imgui
+        "../include/imgui",]
         "../include"
     }
 

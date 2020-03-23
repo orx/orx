@@ -7,8 +7,9 @@ REBOL [
 
 ; Variables
 params: [
-  name        {Project name (relative or full path)}      _
-  scroll      {object-oriented C++ convenience layer}     -
+  name        {Project name (relative or full path)}                                  _
+  scroll      {C++ convenience layer with config-object binding}                      -
+  imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2015} {vs2017} {vs2019}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]

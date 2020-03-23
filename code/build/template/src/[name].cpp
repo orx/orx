@@ -9,6 +9,11 @@
 
 #include "Object.h"]
 [-scroll #include "orx.h"]
+[+imgui
+
+#define orxIMGUI_HEADER_ONLY
+#include "orxImGui.cpp"
+#undef orxIMGUI_HEADER_ONLY]
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
@@ -33,6 +38,13 @@
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the executable to see the changes.");
 
+[+imgui
+    // Display additional Dear ImGui hint in console
+    orxLOG("\n* This template also has support for Dear ImGui.");
+
+    // Initialize Dear ImGui
+    orxImGui_Init();
+]
 [+scroll
     // Create the scene
     CreateObject("Scene");]
@@ -55,6 +67,11 @@
 [+scroll orxSTATUS [name]::Run()]
 [-scroll orxSTATUS orxFASTCALL Run()]
 {
+[+imgui
+    // Show Dear ImGui's demo and stats windows
+    ImGui::ShowDemoWindow();
+    ImGui::ShowMetricsWindow();
+]
     // Return orxSTATUS_FAILURE to instruct orx to quit
     return orxSTATUS_SUCCESS;
 }
@@ -64,6 +81,10 @@
 [+scroll void [name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
+[+imgui
+    // Exits from Dear ImGui
+    orxImGui_Exit();
+]
     // Let Orx clean all our mess automatically. :)
 }
 
