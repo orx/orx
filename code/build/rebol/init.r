@@ -70,20 +70,23 @@ apply-template: func [
     in-bracket: charset [not #"]"]
     bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
     extension-rule: [
-      begin-extension: {[} (erase: no)
-      some [
-        [ [ {+} -extension | {-} +extension] (erase: yes)
-        | [ {+} +extension | {-} -extension]
+      begin-extension:
+      remove [
+        {[} (erase: no)
+        some [
+          [ [ {+} -extension | {-} +extension] (erase: yes)
+          | [ {+} +extension | {-} -extension]
+          ]
+          [{ } | {^M^/} | {^/}]
         ]
-        skip
       ]
-      end-extension: (remove/part begin-extension end-extension) :begin-extension
       any
       [ template-rule
       | bracket-rule
-      | {]} end-extension: break
+      | remove {]} end-extension: break
       | skip
-      ] (either erase [remove/part begin-extension end-extension] [begin-extension: remove/part back end-extension 1]) :begin-extension
+      ]
+      if (erase) remove opt [{^M^/} | {^/}] (remove/part begin-extension end-extension) :begin-extension
     ]
   ]
   parse content [

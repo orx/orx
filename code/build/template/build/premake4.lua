@@ -248,13 +248,15 @@ project "[name]"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
-        [+scroll "../include/**.inl",]
+[+scroll
+        "../include/**.inl",]
         "../data/config/**.ini"
     }
 
     includedirs
     {
-        [+scroll "../include/Scroll",]
+[+scroll
+        "../include/Scroll",]
         "../include"
     }
 
@@ -263,7 +265,8 @@ project "[name]"
 
     vpaths
     {
-        [+scroll ["inline"] = {"**.inl"},]
+[+scroll
+        ["inline"] = {"**.inl"},]
         ["config"] = {"**.ini"}
     }
 
