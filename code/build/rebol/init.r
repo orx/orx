@@ -70,11 +70,14 @@ apply-template: func [
     in-bracket: charset [not #"]"]
     bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
     extension-rule: [
-      begin-extension: {[}
-      [ [ {+} -extension | {-} +extension] (erase: yes)
-      | [ {+} +extension | {-} -extension] (erase: no)
+      begin-extension: {[} (erase: no)
+      some [
+        [ [ {+} -extension | {-} +extension] (erase: yes)
+        | [ {+} +extension | {-} -extension]
+        ]
+        skip
       ]
-      skip end-extension: (remove/part begin-extension end-extension) :begin-extension
+      end-extension: (remove/part begin-extension end-extension) :begin-extension
       any
       [ template-rule
       | bracket-rule
