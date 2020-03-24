@@ -167,7 +167,7 @@ orxSTATUS orxFASTCALL orxImGui_Init()
   ImGui::CreateContext();
   ImGuiIO& rstIO                    = ImGui::GetIO();
   rstIO.BackendFlags                = ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_HasGamepad;
-  rstIO.ConfigFlags                 = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_NavEnableSetMousePos;
+  rstIO.ConfigFlags                 = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_NavEnableSetMousePos | ImGuiConfigFlags_DockingEnable;
   rstIO.KeyMap[ImGuiKey_Tab]        = orxKEYBOARD_KEY_TAB;
   rstIO.KeyMap[ImGuiKey_LeftArrow]  = orxKEYBOARD_KEY_LEFT;
   rstIO.KeyMap[ImGuiKey_RightArrow] = orxKEYBOARD_KEY_RIGHT;
