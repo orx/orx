@@ -4818,6 +4818,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       orxDISPLAY_EVENT_PAYLOAD  stPayload;
       orxU32                    u32ClipWidth, u32ClipHeight;
 
+      orxLOG("MODE: (%d, %d)", iWidth, iHeight);
+
       /* Gets window size */
       glfwGetWindowSize(sstDisplay.pstWindow, (int *)&iWidth, (int *)&iHeight);
 
@@ -4939,6 +4941,19 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
+
+      orxLOG("-=GLFW=-");
+      orxVECTOR v;
+      glfwGetWindowContentScale(sstDisplay.pstWindow, &v.fX, &v.fY);
+      orxLOG("SCALE: (%g, %g)", v.fX, v.fY);
+      orxS32 x, y;
+      glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
+      orxLOG("FRAMEBUFFER: (%d, %d)", x, y);
+      glfwGetWindowSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
+      orxLOG("WINDOW: (%d, %d)", x, y);
+      orxLOG("-=ORX=-");
+      orxLOG("REAL: (%u, %u)", sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
+      orxLOG("CLIP: (%u, %u)", u32ClipWidth, u32ClipHeight);
     }
   }
 
@@ -5078,6 +5093,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
+    orxLOG("CONFIG: SCREEN (%g, %g) FB %s", orxConfig_GetFloat(orxDISPLAY_KZ_CONFIG_WIDTH), orxConfig_GetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE));
   }
 
   /* For all texture units */
