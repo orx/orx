@@ -250,6 +250,7 @@ if exists? git [
       ]
 
       either hook-file [
+        attempt [make-dir/deep first split-path hook-path]
         print ["== Installing git hook [" hook "]"]
         write/append hook-path hook-file
         if not platform = "windows" [
