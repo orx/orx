@@ -248,7 +248,18 @@ project "[name]"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
+[+scroll
+        "../include/**.inl",]
         "../data/config/**.ini"
+    }
+
+    includedirs
+    {
+[+scroll
+        "../include/Scroll",]
+[+imgui
+        "../include/imgui",]
+        "../include"
     }
 
     configuration {"windows", "vs*"}
@@ -256,6 +267,8 @@ project "[name]"
 
     vpaths
     {
+[+scroll
+        ["inline"] = {"**.inl"},]
         ["config"] = {"**.ini"}
     }
 
