@@ -138,6 +138,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMA
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, const orxBITMAP *, orxU8 *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetPartialBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32, orxU32, orxU32, orxU32);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
@@ -204,6 +205,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BLEND_MODE, orxDisplay_SetBlendMo
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_DATA, orxDisplay_SetBitmapData)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_DATA, orxDisplay_GetBitmapData)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_PARTIAL_BITMAP_DATA, orxDisplay_SetPartialBitmapData)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_SIZE, orxDisplay_GetBitmapSize)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_ID, orxDisplay_GetBitmapID)
 
@@ -336,6 +338,11 @@ orxSTATUS orxFASTCALL orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const
 orxSTATUS orxFASTCALL orxDisplay_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapData)(_pstBitmap, _au8Data, _u32ByteNumber);
+}
+
+orxSTATUS orxFASTCALL orxDisplay_SetPartialBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetPartialBitmapData)(_pstBitmap, _au8Data, _u32X, _u32Y, _u32Width, _u32Height);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)

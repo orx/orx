@@ -2773,6 +2773,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
 
 orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32ByteNumber)
 {
+  orxU32    u32Width, u32Height;
   orxSTATUS eResult;
 
   /* Checks */
@@ -2780,59 +2781,20 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetBitmapData(orxBITMAP *_pstBitmap, co
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_au8Data != orxNULL);
 
-  /* Not loading? */
-  if(!orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
+  /* Gets bitmap's size */
+  u32Width = orxF2U(_pstBitmap->fWidth);
+  u32Height = orxF2U(_pstBitmap->fHeight);
+
+  /* Valid size? */
+  if(_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA))
   {
-    orxU32 u32Width, u32Height;
-
-    /* Gets bitmap's size */
-    u32Width = orxF2U(_pstBitmap->fWidth);
-    u32Height = orxF2U(_pstBitmap->fHeight);
-
-    /* Valid? */
-    if((_pstBitmap != sstDisplay.pstScreen) && (_u32ByteNumber == u32Width * u32Height * sizeof(orxRGBA)))
-    {
-      orxU8 *pu8ImageBuffer;
-
-      pu8ImageBuffer = (orxU8 *)_au8Data;
-
-      /* Binds texture */
-      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
-      glASSERT();
-
-      /* Updates its content */
-      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
-      glASSERT();
-
-      /* Restores previous texture */
-      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
-      glASSERT();
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Screen? */
-      if(_pstBitmap == sstDisplay.pstScreen)
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: format needs to be RGBA.", _pstBitmap->zLocation);
-      }
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Set bitmap's data */
+    eResult = orxDisplay_SetPartialBitmapData(_pstBitmap, _au8Data, 0, 0, u32Width, u32Height);
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: bitmap is not done loading.", _pstBitmap->zLocation);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: format needs to be RGBA.", _pstBitmap->zLocation);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2928,6 +2890,77 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap data for [%s] as the buffer size is %u when it should be %u.", _pstBitmap->zLocation, _u32ByteNumber, u32BufferSize);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: bitmap is not done loading.", _pstBitmap->zLocation);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_Android_SetPartialBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_au8Data != orxNULL);
+
+  /* Not loading? */
+  if(!orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
+  {
+    orxU32 u32BitmapWidth, u32BitmapHeight;
+
+    /* Gets bitmap's size */
+    u32BitmapWidth = orxF2U(_pstBitmap->fWidth);
+    u32BitmapHeight = orxF2U(_pstBitmap->fHeight);
+
+    /* Valid? */
+    if((_pstBitmap != sstDisplay.pstScreen) && (_u32X + _u32Width <= u32BitmapWidth) && (_u32Y + _u32Height <= u32BitmapHeight))
+    {
+      orxU8 *pu8ImageBuffer;
+
+      pu8ImageBuffer = (orxU8 *)_au8Data;
+
+      /* Binds texture */
+      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+      glASSERT();
+
+      /* Updates its content */
+      glTexSubImage2D(GL_TEXTURE_2D, 0, _u32X, _u32Y, _u32Width, _u32Height, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+
+      /* Restores previous texture */
+      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+      glASSERT();
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Screen? */
+      if(_pstBitmap == sstDisplay.pstScreen)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: rectangle coordinates (%u, %u) - (%u, %u) are out of bound [%ux%u].", _pstBitmap->zLocation, _u32X, _u32Y, _u32X + _u32Width, _u32Y + _u32Height, u32BitmapWidth, u32BitmapHeight);
+      }
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -4963,6 +4996,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapClipping, DISPLAY, 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetPartialBitmapData, DISPLAY, SET_PARTIAL_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawLine, DISPLAY, DRAW_LINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawPolyline, DISPLAY, DRAW_POLYLINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_DrawPolygon, DISPLAY, DRAW_POLYGON);
