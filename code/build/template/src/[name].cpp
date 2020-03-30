@@ -14,6 +14,11 @@
 #define orxIMGUI_HEADER_ONLY
 #include "orxImGui.cpp"
 #undef orxIMGUI_HEADER_ONLY]
+[+archive
+
+#define orxARCHIVE_HEADER_ONLY
+#include "orxArchive.cpp"
+#undef orxARCHIVE_HEADER_ONLY]
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
@@ -44,6 +49,10 @@
 
     // Initialize Dear ImGui
     orxImGui_Init();
+]
+[+archive
+    // Initialize archive (ZIP) resource type
+    orxArchive_Init();
 ]
 [+scroll
     // Create the scene

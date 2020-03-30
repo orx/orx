@@ -8,8 +8,9 @@ REBOL [
 ; Variables
 params: [
   name        {Project name (relative or full path)}                                  _
-  scroll      {C++ convenience layer with config-object binding}                      -
+  archive     {orxArchive support (resources can be stored inside ZIP files)}         -
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -
+  scroll      {C++ convenience layer with config-object binding}                      -
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2015} {vs2017} {vs2019}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
@@ -237,7 +238,7 @@ source-path: clean-path rejoin [first split-path system/options/script source-pa
 ; Runs setup if premake isn't found
 if not exists? source-path/:premake-source [
   log [{New orx installation found, running setup!}]
-  attempt [delete-dir source-path/:extern]
+  attempt [delete-dir source-path/:extern/]
   in-dir source-path/../../.. [
     call/shell platform-info/setup
   ]
@@ -250,11 +251,25 @@ if dir? name: clean-path local-to-file name [clear back tail name]
 either exists? name [
   log [{[} file-to-local name {] already exists, overwriting!}]
 ] [
-  make-dir/deep name
+  until [
+    attempt [make-dir/deep name]
+    exists? name
+  ]
 ]
 change-dir name/..
 set [path name] split-path name
-log [{Initializing [} name {] in [} file-to-local path {]}]
+
+; Logs info
+log [
+  {Initializing [} name {] in [} file-to-local path {] with extensions [}
+  do [
+    use [extensions] [
+      remove-each template extensions: copy templates [any [not extension? template not get template]]
+      if not empty? extensions [form extensions]
+    ]
+  ]
+  {]}
+]
 
 ; Copies all files
 log {== Creating files:}
