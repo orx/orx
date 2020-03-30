@@ -374,6 +374,7 @@ var searchData=
   ['orxdisplay_5fsetblendmode',['orxDisplay_SetBlendMode',['../group__orx_display.html#ga21afdb1c33f362aa5a1a0660385a64ff',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetdestinationbitmaps',['orxDisplay_SetDestinationBitmaps',['../group__orx_display.html#gac191bdfc80e11b88a093d0ffb2208b8e',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetfullscreen',['orxDisplay_SetFullScreen',['../group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42',1,'orxDisplay.h']]],
+  ['orxdisplay_5fsetpartialbitmapdata',['orxDisplay_SetPartialBitmapData',['../group__orx_display.html#gab775b9aa91146b850292300c5b3c4fd7',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetshaderbitmap',['orxDisplay_SetShaderBitmap',['../group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetshaderfloat',['orxDisplay_SetShaderFloat',['../group__orx_display.html#ga6713394aee70a8c115ff79ac41f01b68',1,'orxDisplay.h']]],
   ['orxdisplay_5fsetshadervector',['orxDisplay_SetShaderVector',['../group__orx_display.html#ga00911c79d8a038e402e118b8cb6098c0',1,'orxDisplay.h']]],

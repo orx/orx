@@ -351,6 +351,8 @@ Functions</h2></td></tr>
 <tr class="separator:gac191bdfc80e11b88a093d0ffb2208b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga26e2f135b978a2dc39e53a8465940e42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga26e2f135b978a2dc39e53a8465940e42">orxDisplay_SetFullScreen</a> (orxBOOL _bFullScreen)</td></tr>
 <tr class="separator:ga26e2f135b978a2dc39e53a8465940e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab775b9aa91146b850292300c5b3c4fd7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab775b9aa91146b850292300c5b3c4fd7">orxDisplay_SetPartialBitmapData</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height)</td></tr>
+<tr class="separator:gab775b9aa91146b850292300c5b3c4fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae35b6b44dc14c72c07b9eac939938653"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae35b6b44dc14c72c07b9eac939938653">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, orxS32 _s32ID, const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
 <tr class="separator:gae35b6b44dc14c72c07b9eac939938653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6713394aee70a8c115ff79ac41f01b68"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga6713394aee70a8c115ff79ac41f01b68">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, orxS32 _s32ID, orxFLOAT _fValue)</td></tr>
@@ -2540,6 +2542,68 @@ Functions</h2></td></tr>
 <p>Sets full screen mode </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_bFullScreen</td><td>orxTRUE / orxFALSE </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab775b9aa91146b850292300c5b3c4fd7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxDisplay_SetPartialBitmapData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&#160;</td>
+          <td class="paramname"><em>_pstBitmap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxU8 *&#160;</td>
+          <td class="paramname"><em>_au8Data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets a partial (rectangle) bitmap data (RGBA memory format) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBitmap</td><td>Concerned bitmap </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_au8Data</td><td>Data (4 channels, RGBA) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32X</td><td>Origin's X coord of the rectangle area to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Y</td><td>Origin's Y coord of the rectangle area to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Width</td><td>Width of the rectangle area to set </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Height</td><td>Height of the rectangle area to set </td></tr>
   </table>
   </dd>
 </dl>
