@@ -355,11 +355,31 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
   /* Success? */
   if(s32Index >= 0)
   {
+    orxS32 i;
+
     /* Should add sub-path? */
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
       s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+    }
+
+    /* For all characters */
+    for(i = 0; i < s32Index; i++)
+    {
+      /* Is a windows separator? */
+      if(sstFile.acWorkDirectory[i] == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS)
+      {
+        /* Replaces it with a linux separator */
+        sstFile.acWorkDirectory[i] = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+      }
+    }
+
+    /* Has trailing separator? */
+    if(sstFile.acWorkDirectory[s32Index - 1] == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+    {
+      /* Removes it */
+      sstFile.acWorkDirectory[s32Index - 1] = orxCHAR_NULL;
     }
 
     /* Updates result */
@@ -451,11 +471,31 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
   /* Success? */
   if(s32Index >= 0)
   {
+    orxS32 i;
+
     /* Should add sub-path? */
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
       s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+    }
+
+    /* For all characters */
+    for(i = 0; i < s32Index; i++)
+    {
+      /* Is a windows separator? */
+      if(sstFile.acWorkDirectory[i] == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS)
+      {
+        /* Replaces it with a linux separator */
+        sstFile.acWorkDirectory[i] = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+      }
+    }
+
+    /* Has trailing separator? */
+    if(sstFile.acWorkDirectory[s32Index - 1] == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+    {
+      /* Removes it */
+      sstFile.acWorkDirectory[s32Index - 1] = orxCHAR_NULL;
     }
 
     /* Updates result */
