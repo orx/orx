@@ -69,6 +69,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_CLIPPING", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a5e189db2c59becb48c1a052eeaf667fb", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_DATA", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a53aad8fc397709150328e4c024531a18", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_DATA", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a03896fbd0f69d41f8c93d64297dbd41a", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_PARTIAL_BITMAP_DATA", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7acbf101c9a565fe017596862f7ca928c6", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_SIZE", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ac9e48cd4fa3e1f1a96d2b83f805ac83e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_ID", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a8b553d005bbdd0215c70ee12ed06b2eb", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_BITMAP", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7ab67834af209d612ae0a15a76b4d39c2d", null ],
