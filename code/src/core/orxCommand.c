@@ -37,6 +37,7 @@
 #include "anim/orxAnim.h"
 #include "core/orxConsole.h"
 #include "core/orxEvent.h"
+#include "io/orxFile.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "object/orxTimeLine.h"
@@ -2296,6 +2297,28 @@ void orxFASTCALL orxCommand_CommandVersion(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: GetHomeDirectory
+ */
+void orxFASTCALL orxCommand_CommandGetHomeDirectory(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxFile_GetHomeDirectory((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY);
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetApplicationSaveDirectory
+ */
+void orxFASTCALL orxCommand_CommandGetApplicationSaveDirectory(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxFile_GetApplicationSaveDirectory((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY);
+
+  /* Done! */
+  return;
+}
+
 /** Command: LogAllStructures
  */
 void orxFASTCALL orxCommand_CommandLogAllStructures(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2420,6 +2443,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Version */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Version, "String", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Type = full [minor|major|build|release|numeric|full]", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetHomeDirectory */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetHomeDirectory, "Result", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"SubPath = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetApplicationSaveDirectory */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetApplicationSaveDirectory, "Result", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"SubPath = <void>", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: LogAllStructures */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
@@ -2539,6 +2567,11 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Version */
   orxCommand_AddAlias("Version", "Command.Version", orxNULL);
+
+  /* Alias: File.GetHomeDirectory */
+  orxCommand_AddAlias("File.GetHomeDirectory", "Command.GetHomeDirectory", orxNULL);
+  /* Alias: File.GetApplicationSaveDirectory */
+  orxCommand_AddAlias("File.GetApplicationSaveDirectory", "Command.GetApplicationSaveDirectory", orxNULL);
 
   /* Alias: Structure.LogAll */
   orxCommand_AddAlias("Structure.LogAll", "Command.LogAllStructures", orxNULL);
@@ -2667,6 +2700,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Version */
   orxCommand_RemoveAlias("Version");
 
+  /* Alias: File.GetHomeDirectory */
+  orxCommand_RemoveAlias("File.GetHomeDirectory");
+  /* Alias: File.GetApplicationSaveDirectory */
+  orxCommand_RemoveAlias("File.GetApplicationSaveDirectory");
+
   /* Alias: Structure.LogAll */
   orxCommand_RemoveAlias("Structure.LogAll");
 
@@ -2757,6 +2795,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Command: Version */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Version);
 
+  /* Command: GetHomeDirectory */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetHomeDirectory);
+  /* Command: GetApplicationSaveDirectory */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetApplicationSaveDirectory);
+
   /* Command: LogAllStructures */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, LogAllStructures);
 
@@ -2782,6 +2825,7 @@ void orxFASTCALL orxCommand_Setup()
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_COMMAND, orxMODULE_ID_PROFILER);
 

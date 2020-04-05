@@ -977,6 +977,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
+/** Sets a partial (rectangle) bitmap data (RGBA memory format)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _au8Data                              Data (4 channels, RGBA)
+ * @param[in]   _u32X                                 Origin's X coord of the rectangle area to set
+ * @param[in]   _u32Y                                 Origin's Y coord of the rectangle area to set
+ * @param[in]   _u32Width                             Width of the rectangle area to set
+ * @param[in]   _u32Height                            Height of the rectangle area to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetPartialBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height);
+
 /** Gets a bitmap size
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @param[out]  _pfWidth                              Bitmap width

@@ -2065,7 +2065,7 @@ static void orxFASTCALL orxDisplay_GLFW_DrawArrays()
 
 static void orxFASTCALL orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE _eBufferMode)
 {
-  /* New blend mode? */
+  /* New buffer mode? */
   if(_eBufferMode != sstDisplay.eLastBufferMode)
   {
     /* Draws remaining items */
@@ -3617,6 +3617,78 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't get bitmap data for [%s] as it's not done loading.", _pstBitmap->zLocation);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxDisplay_GLFW_SetPartialBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_au8Data != orxNULL);
+
+  /* Not loading? */
+  if(!orxFLAG_TEST(_pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
+  {
+    orxU32 u32BitmapWidth, u32BitmapHeight;
+
+    /* Gets bitmap's size */
+    u32BitmapWidth  = orxF2U(_pstBitmap->fWidth);
+    u32BitmapHeight = orxF2U(_pstBitmap->fHeight);
+
+    /* Valid? */
+    if((_pstBitmap != sstDisplay.pstScreen) && (_u32X + _u32Width <= u32BitmapWidth) && (_u32Y + _u32Height <= u32BitmapHeight))
+    {
+      orxU8 *pu8ImageBuffer;
+
+      /* Uses sources bitmap */
+      pu8ImageBuffer = (orxU8 *)_au8Data;
+
+      /* Binds texture */
+      glBindTexture(GL_TEXTURE_2D, _pstBitmap->uiTexture);
+      glASSERT();
+
+      /* Updates its content */
+      glTexSubImage2D(GL_TEXTURE_2D, 0, _u32X, _u32Y, (GLsizei)_u32Width, (GLsizei)_u32Height, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+      glASSERT();
+
+      /* Restores previous texture */
+      glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
+      glASSERT();
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Screen? */
+      if(_pstBitmap == sstDisplay.pstScreen)
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data: can't use screen as destination bitmap.");
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: rectangle coordinates (%u, %u) - (%u, %u) are out of bound [%ux%u].", _pstBitmap->zLocation, _u32X, _u32Y, _u32X + _u32Width, _u32Y + _u32Height, u32BitmapWidth, u32BitmapHeight);
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't set bitmap data for [%s]: bitmap is not done loading.", _pstBitmap->zLocation);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6177,6 +6249,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBlendMode, DISPLAY, SET_BLEN
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetBitmapData, DISPLAY, SET_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapData, DISPLAY, GET_BITMAP_DATA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetPartialBitmapData, DISPLAY, SET_PARTIAL_BITMAP_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetBitmapID, DISPLAY, GET_BITMAP_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);

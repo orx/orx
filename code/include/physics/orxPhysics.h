@@ -722,7 +722,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const o
  * @param[in]   _pstBox                               Box used for picking
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
- * @param[in]   _apstBodyList                         List of user data to fill
+ * @param[in]   _ahUserDataList                       List of user data to fill
  * @param[in]   _u32Number                            Number of user data
  * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
  */

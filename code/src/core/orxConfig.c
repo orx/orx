@@ -5784,10 +5784,8 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   }
   else
   {
-    orxCONFIG_SECTION *pstDummy = orxNULL;
-
     /* Updates result */
-    bResult = (orxConfig_GetValueFromKey(stKeyID, sstConfig.pstCurrentSection, &pstDummy) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxConfig_GetEntryFromKey(stKeyID) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */

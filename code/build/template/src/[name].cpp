@@ -3,58 +3,113 @@
  * @date [date]
  */
 
-#include "orx.h"
+[+scroll #define __SCROLL_IMPL__
+#include "[name].h"
+#undef __SCROLL_IMPL__
 
-/*
- * This is a basic code template to quickly and easily get started with a project or tutorial.
+#include "Object.h"]
+[-scroll #include "orx.h"]
+[+imgui
+
+#define orxIMGUI_HEADER_ONLY
+#include "orxImGui.cpp"
+#undef orxIMGUI_HEADER_ONLY]
+[+archive
+
+#define orxARCHIVE_HEADER_ONLY
+#include "orxArchive.cpp"
+#undef orxARCHIVE_HEADER_ONLY]
+
+/** Update function, it has been registered to be called every tick of the core clock
  */
+[+scroll void [name]::Update(const orxCLOCK_INFO &_rstInfo)]
+[-scroll void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
+{
+    // Should quit?
+    if(orxInput_IsActive("Quit"))
+    {
+        // Send close event
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+    }
+}
 
 /** Init function, it is called when all orx's modules have been initialized
  */
-orxSTATUS orxFASTCALL Init()
+[+scroll orxSTATUS [name]::Init()]
+[-scroll orxSTATUS orxFASTCALL Init()]
 {
     // Display a small hint in console
-    orxLOG("\n* This template project creates a viewport/camera couple and an object"
+    orxLOG("\n* This template project creates a simple scene"
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the executable to see the changes.");
 
-    // Create the viewport
-    orxViewport_CreateFromConfig("Viewport");
+[+imgui
+    // Display additional Dear ImGui hint in console
+    orxLOG("\n* This template also has support for Dear ImGui.");
 
-    // Create the object
-    orxObject_CreateFromConfig("Object");
+    // Initialize Dear ImGui
+    orxImGui_Init();
+]
+[+archive
+    // Initialize archive (ZIP) resource type
+    orxArchive_Init();
+]
+[+scroll
+    // Create the scene
+    CreateObject("Scene");]
+[-scroll
+    // Create the viewport
+    orxViewport_CreateFromConfig("MainViewport");
+
+    // Create the scene
+    orxObject_CreateFromConfig("Scene");
+
+    // Register the Update function to the core clock
+    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
 
     // Done!
     return orxSTATUS_SUCCESS;
 }
 
-/** Run function, it is called every clock cycle
+/** Run function, it should not contain any game logic
  */
-orxSTATUS orxFASTCALL Run()
+[+scroll orxSTATUS [name]::Run()]
+[-scroll orxSTATUS orxFASTCALL Run()]
 {
-    orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-    // Should quit?
-    if(orxInput_IsActive("Quit"))
-    {
-        // Update result
-        eResult = orxSTATUS_FAILURE;
-    }
-
-    // Done!
-    return eResult;
+[+imgui
+    // Show Dear ImGui's demo and stats windows
+    ImGui::ShowDemoWindow();
+    ImGui::ShowMetricsWindow();
+]
+    // Return orxSTATUS_FAILURE to instruct orx to quit
+    return orxSTATUS_SUCCESS;
 }
 
 /** Exit function, it is called before exiting from orx
  */
-void orxFASTCALL Exit()
+[+scroll void [name]::Exit()]
+[-scroll void orxFASTCALL Exit()]
 {
+[+imgui
+    // Exits from Dear ImGui
+    orxImGui_Exit();
+]
     // Let Orx clean all our mess automatically. :)
 }
 
+[+scroll
+/** BindObjects function, ScrollObject-derived classes are bound to config sections here
+ */
+void [name]::BindObjects()
+{
+    // Bind the Object class to the Object config section
+    ScrollBindObject<Object>("Object");
+}
+]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
  */
-orxSTATUS orxFASTCALL Bootstrap()
+[+scroll orxSTATUS [name]::Bootstrap() const]
+[-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
     // Add a config storage to find the initial config file
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
@@ -67,11 +122,15 @@ orxSTATUS orxFASTCALL Bootstrap()
  */
 int main(int argc, char **argv)
 {
+[+scroll
+    // Execute our game
+    [name]::GetInstance().Execute(argc, argv);]
+[-scroll
     // Set the bootstrap function to provide at least one resource storage before loading any config files
     orxConfig_SetBootstrap(Bootstrap);
 
     // Execute our game
-    orx_Execute(argc, argv, Init, Run, Exit);
+    orx_Execute(argc, argv, Init, Run, Exit);]
 
     // Done!
     return EXIT_SUCCESS;
