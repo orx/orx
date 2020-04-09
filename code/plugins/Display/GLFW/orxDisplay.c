@@ -4389,10 +4389,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     if(_pstBitmap == sstDisplay.pstScreen)
     {
       /* Gets new clipping values */
-      u32ClipX      = _u32TLX;
-      u32ClipY      = orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY;
-      u32ClipWidth  = orxF2U(orxMath_Round(orxU2F(_u32BRX - _u32TLX) * sstDisplay.vContentScale.fX));
-      u32ClipHeight = orxF2U(orxMath_Round(orxU2F(_u32BRY - _u32TLY) * sstDisplay.vContentScale.fY));
+      u32ClipX      = orxF2U(orxMath_Round(sstDisplay.vContentScale.fX * orxU2F(_u32TLX)));
+      u32ClipY      = orxF2U(orxMath_Round(sstDisplay.vContentScale.fY * (sstDisplay.apstDestinationBitmapList[0]->fHeight - orxU2F(_u32BRY))));
+      u32ClipWidth  = orxF2U(orxMath_Round(sstDisplay.vContentScale.fX * orxU2F(_u32BRX - _u32TLX)));
+      u32ClipHeight = orxF2U(orxMath_Round(sstDisplay.vContentScale.fY * orxU2F(_u32BRY - _u32TLY)));
     }
     else
     {
@@ -4409,6 +4409,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     || (u32ClipWidth != sstDisplay.u32LastClipWidth)
     || (u32ClipHeight != sstDisplay.u32LastClipHeight))
     {
+      orxLOG("CLIP2: (%u, %u) - (%u, %u)", u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight);
+
       /* Sets OpenGL clipping */
       glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
       glASSERT();
