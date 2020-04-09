@@ -1746,7 +1746,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           for(i = 0; i < u32TextureCount; i++)
           {
             /* Sets its clipping */
-            orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(orxMAX(stTextureBox.vTL.fX, stViewportBox.vTL.fX)), orxF2U(orxMAX(stTextureBox.vTL.fY, stViewportBox.vTL.fY)), orxF2U(orxMIN(stTextureBox.vBR.fX, stViewportBox.vBR.fX)), orxF2U(orxMIN(stTextureBox.vBR.fY, stViewportBox.vBR.fY)));
+            orxDisplay_SetBitmapClipping(apstBitmapList[i], orxF2U(orxMAX(stTextureBox.vTL.fX, stViewportBox.vTL.fX)), orxF2U(orxMAX(stTextureBox.vTL.fY, stViewportBox.vTL.fY)), orxF2U(orxCLAMP(stTextureBox.vBR.fX, orxFLOAT_0, stViewportBox.vBR.fX)), orxF2U(orxCLAMP(stTextureBox.vBR.fY, orxFLOAT_0, stViewportBox.vBR.fY)));
           }
 
           /* Does viewport have a background color? */

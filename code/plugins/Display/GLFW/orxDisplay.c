@@ -341,8 +341,8 @@ typedef struct __orxDISPLAY_STATIC_t
   GLFWcursor               *pstCursor;
   orxBITMAP                *pstScreen;
   const orxBITMAP          *pstTempBitmap;
-  orxVECTOR                 vWindowPosition;
   orxVECTOR                 vContentScale;
+  orxVECTOR                 vWindowPosition;
   GLFWimage                 astIconList[orxDISPLAY_KU32_MAX_ICON_NUMBER];
   orxS32                    s32IconNumber, s32PendingIconCount;
   orxRGBA                   stLastColor;
@@ -765,6 +765,35 @@ static void orxDisplay_GLFW_PosCallback(GLFWwindow *_pstWindow, int _iX, int _iY
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_POSITION, &vPosition);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MONITOR, u32Monitor);
     orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxDisplay_GLFW_ContentScaleCallback(GLFWwindow *_pstWindow, float _fScaleX, float _fScaleY)
+{
+  /* Not ignoring event? */
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT))
+  {
+    orxDISPLAY_VIDEO_MODE stVideoMode;
+    int                   iWindowX = 0, iWindowY = 0;
+
+    /* Gets window position */
+    glfwGetWindowPos(_pstWindow, &iWindowX, &iWindowY);
+
+    /* Forces a position update to prevent window from going back to its previous monitor */
+    orxDisplay_GLFW_PosCallback(_pstWindow, iWindowX, iWindowY);
+
+    /* Retrieves current video mode */
+    stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+    stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+    stVideoMode.u32Depth        = sstDisplay.u32Depth;
+    stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+    stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Applies it */
+    orxDisplay_GLFW_SetVideoMode(&stVideoMode);
   }
 
   /* Done! */
@@ -3953,20 +3982,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   if(eResult != orxSTATUS_FAILURE)
   {
     GLdouble  dOrthoRight, dOrthoBottom;
-    GLint     iX, iY;
+    GLint     iX = 0, iY = 0;
     GLsizei   iWidth, iHeight;
 
     /* Is screen? */
     if(sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
     {
-      /* Gets content scale */
-      glfwGetWindowContentScale(sstDisplay.pstWindow, &(sstDisplay.vContentScale.fX), &(sstDisplay.vContentScale.fY));
-
-      /* Updates viewport info */
-      iX      = 0;
-      iY      = 0;
-      iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth * sstDisplay.vContentScale.fX);
-      iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight * sstDisplay.vContentScale.fY);
+      /* Gets framebuffer size */
+      glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&iWidth, (int *)&iHeight);
 
       /* Updates ortho info */
       dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
@@ -3975,8 +3998,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     else
     {
       /* Updates viewport info */
-      iX      = 0;
-      iY      = 0;
       iWidth  = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fWidth);
       iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
 
@@ -4396,14 +4417,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     /* Sets OpenGL clipping */
     if(_pstBitmap == sstDisplay.pstScreen)
     {
-      /* Gets content scale */
-      glfwGetWindowContentScale(sstDisplay.pstWindow, &(sstDisplay.vContentScale.fX), &(sstDisplay.vContentScale.fY));
-
       /* Gets new clipping values */
-      u32ClipX      = orxF2U(sstDisplay.vContentScale.fX * _u32TLX);
-      u32ClipY      = orxF2U(sstDisplay.vContentScale.fY * (orxF2U(sstDisplay.apstDestinationBitmapList[0]->fHeight) - _u32BRY));
-      u32ClipWidth  = orxF2U(sstDisplay.vContentScale.fX * (_u32BRX - _u32TLX));
-      u32ClipHeight = orxF2U(sstDisplay.vContentScale.fY * (_u32BRY - _u32TLY));
+      u32ClipX      = orxF2U(orxMath_Round(sstDisplay.vContentScale.fX * orxU2F(_u32TLX)));
+      u32ClipY      = orxF2U(orxMath_Round(sstDisplay.vContentScale.fY * (sstDisplay.apstDestinationBitmapList[0]->fHeight - orxU2F(_u32BRY))));
+      u32ClipWidth  = orxF2U(orxMath_Round(sstDisplay.vContentScale.fX * orxU2F(_u32BRX - _u32TLX)));
+      u32ClipHeight = orxF2U(orxMath_Round(sstDisplay.vContentScale.fY * orxU2F(_u32BRY - _u32TLY)));
     }
     else
     {
@@ -4759,6 +4777,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           /* Registers resize callback */
           glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
 
+          /* Registers content scale callback */
+          glfwSetWindowContentScaleCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ContentScaleCallback);
+
           /* Registers drop callback */
           glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
 
@@ -4901,14 +4922,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     {
       orxDISPLAY_EVENT_PAYLOAD  stPayload;
       orxU32                    u32ClipWidth, u32ClipHeight;
+      int                       iFramebufferWidth, iFramebufferHeight;
 
-      /* Gets content scale */
-      glfwGetWindowContentScale(sstDisplay.pstWindow, &(sstDisplay.vContentScale.fX), &(sstDisplay.vContentScale.fY));
+      /* Gets window size */
+      glfwGetWindowSize(sstDisplay.pstWindow, (int *)&iWidth, (int *)&iHeight);
 
-      /* Gets actual window size */
-      glfwGetFramebufferSize(sstDisplay.pstWindow, &iWidth, &iHeight);
-      iWidth  = (int)(orx2F(iWidth) / sstDisplay.vContentScale.fX);
-      iHeight = (int)(orx2F(iHeight) / sstDisplay.vContentScale.fY);
+      /* Gets framebuffer size */
+      glfwGetFramebufferSize(sstDisplay.pstWindow, &iFramebufferWidth, &iFramebufferHeight);
+
+      /* Sets content scale */
+      orxVector_Set(&(sstDisplay.vContentScale), orxS2F(iFramebufferWidth) / orxS2F(iWidth), orxS2F(iFramebufferHeight) / orxS2F(iHeight), orxFLOAT_1);
 
       /* Is fullscreen? */
       if(_pstVideoMode->bFullScreen != orxFALSE)
@@ -4999,8 +5022,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
       /* Gets corrected clip dimensions */
-      u32ClipWidth  = orxF2U(orxU2F(sstDisplay.pstScreen->u32RealWidth) * sstDisplay.vContentScale.fX);
-      u32ClipHeight = orxF2U(orxU2F(sstDisplay.pstScreen->u32RealHeight) * sstDisplay.vContentScale.fY);
+      u32ClipWidth  = orxF2U(orxMath_Round(sstDisplay.pstScreen->fWidth * sstDisplay.vContentScale.fX));
+      u32ClipHeight = orxF2U(orxMath_Round(sstDisplay.pstScreen->fHeight * sstDisplay.vContentScale.fY));
 
       /* Clears new display surface */
       glScissor(0, 0, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
@@ -5035,6 +5058,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
   if(eResult != orxSTATUS_FAILURE)
   {
     orxVECTOR vFramebufferSize;
+    int       iFramebufferWidth, iFramebufferHeight;
 
     /* Isn't fullscreen? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
@@ -5044,7 +5068,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Gets current monitor */
       pstMonitor = orxDisplay_GLFW_GetMonitor();
 
-      /* Succes? */
+      /* Success? */
       if(pstMonitor != orxNULL)
       {
         int iX, iY;
@@ -5156,12 +5180,16 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA) : &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
 
+    /* Gets framebuffer size */
+    glfwGetFramebufferSize(sstDisplay.pstWindow, &iFramebufferWidth, &iFramebufferHeight);
+    orxVector_Set(&vFramebufferSize, orx2F(iFramebufferWidth), orx2F(iFramebufferHeight), orxFLOAT_0);
+
     /* Stores config values */
     orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_WIDTH, sstDisplay.pstScreen->fWidth);
     orxConfig_SetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT, sstDisplay.pstScreen->fHeight);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
-    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, sstDisplay.pstScreen->fWidth * sstDisplay.vContentScale.fY, sstDisplay.pstScreen->fHeight * sstDisplay.vContentScale.fY, orxFLOAT_0));
+    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
   }
 
   /* For all texture units */
@@ -5220,6 +5248,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
   if(bUpdate != orxFALSE)
   {
     orxDISPLAY_VIDEO_MODE stVideoMode;
+
+    /* Inits content scale */
+    orxVector_Copy(&(sstDisplay.vContentScale), &orxVECTOR_1);
 
     /* Inits video mode */
     stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
@@ -5322,9 +5353,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         {
           orxDISPLAY_VIDEO_MODE stVideoMode;
 
-          /* Inits content scale */
-          orxVector_Copy(&(sstDisplay.vContentScale), &orxVECTOR_1);
-
           /* Updates default mode */
           orxDisplay_GLFW_UpdateDefaultMode();
 
@@ -5403,6 +5431,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
               /* Registers resize callback */
               glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
+
+              /* Registers content scale callback */
+              glfwSetWindowContentScaleCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ContentScaleCallback);
 
               /* Registers drop callback */
               glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
