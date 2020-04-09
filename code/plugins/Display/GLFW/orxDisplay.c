@@ -683,6 +683,28 @@ static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, 
   return;
 }
 
+static void orxDisplay_GLFW_ContentScaleCallback(GLFWwindow *_pstWindow, float _fScaleX, float _fScaleY)
+{
+  /* Not ignoring event? */
+  if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT))
+  {
+    orxDISPLAY_VIDEO_MODE stVideoMode;
+
+    /* Retrieves current video mode */
+    stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+    stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+    stVideoMode.u32Depth        = sstDisplay.u32Depth;
+    stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+    stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+
+    /* Applies it */
+    orxDisplay_GLFW_SetVideoMode(&stVideoMode);
+  }
+
+  /* Done! */
+  return;
+}
+
 static void orxDisplay_GLFW_DropCallback(GLFWwindow *_pstWindow, int _iNumber, const char **_azPaths)
 {
   orxSYSTEM_EVENT_PAYLOAD stPayload;
@@ -4760,6 +4782,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           /* Registers resize callback */
           glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
 
+          /* Registers content scale callback */
+          glfwSetWindowContentScaleCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ContentScaleCallback);
+
           /* Registers drop callback */
           glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
 
@@ -5427,6 +5452,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
               /* Registers resize callback */
               glfwSetWindowSizeCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ResizeCallback);
+
+              /* Registers content scale callback */
+              glfwSetWindowContentScaleCallback(sstDisplay.pstWindow, orxDisplay_GLFW_ContentScaleCallback);
 
               /* Registers drop callback */
               glfwSetDropCallback(sstDisplay.pstWindow, orxDisplay_GLFW_DropCallback);
