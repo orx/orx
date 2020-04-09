@@ -779,12 +779,10 @@ static void orxDisplay_GLFW_ContentScaleCallback(GLFWwindow *_pstWindow, float _
     orxDISPLAY_VIDEO_MODE stVideoMode;
     int                   iWindowX = 0, iWindowY = 0;
 
-    orxLOG("NEW CS: (%g, %g)", _fScaleX, _fScaleY);
-
     /* Gets window position */
     glfwGetWindowPos(_pstWindow, &iWindowX, &iWindowY);
 
-    /* Forces pos update */
+    /* Forces a position update to prevent window from going back to its previous monitor */
     orxDisplay_GLFW_PosCallback(_pstWindow, iWindowX, iWindowY);
 
     /* Retrieves current video mode */
@@ -4440,18 +4438,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     || (u32ClipWidth != sstDisplay.u32LastClipWidth)
     || (u32ClipHeight != sstDisplay.u32LastClipHeight))
     {
-      // orxLOG("-=GLFW=-");
-      // orxVECTOR v;
-      // glfwGetWindowContentScale(sstDisplay.pstWindow, &v.fX, &v.fY);
-      // orxLOG("SCALE: (%g, %g)", v.fX, v.fY);
-      // orxS32 x, y;
-      // glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
-      // orxLOG("FRAMEBUFFER: (%d, %d)", x, y);
-      // glfwGetWindowSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
-      // orxLOG("WINDOW: (%d, %d)", x, y);
-      // orxLOG("CLIP2: (%u, %u) - (%u, %u)", u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight);
-      // orxLOG("SCALE(ORX): (%g, %g)", sstDisplay.vContentScale.fX, sstDisplay.vContentScale.fY);
-
       /* Sets OpenGL clipping */
       glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
       glASSERT();
@@ -4938,8 +4924,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       orxU32                    u32ClipWidth, u32ClipHeight;
       int                       iFramebufferWidth, iFramebufferHeight;
 
-      orxLOG("MODE: (%d, %d)", iWidth, iHeight);
-
       /* Gets window size */
       glfwGetWindowSize(sstDisplay.pstWindow, (int *)&iWidth, (int *)&iHeight);
 
@@ -5067,19 +5051,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
-
-      orxLOG("-=GLFW=-");
-      orxVECTOR v;
-      glfwGetWindowContentScale(sstDisplay.pstWindow, &v.fX, &v.fY);
-      orxLOG("SCALE: (%g, %g)", v.fX, v.fY);
-      orxS32 x, y;
-      glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
-      orxLOG("FRAMEBUFFER: (%d, %d)", x, y);
-      glfwGetWindowSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
-      orxLOG("WINDOW: (%d, %d)", x, y);
-      orxLOG("-=ORX=-");
-      orxLOG("REAL: (%u, %u)", sstDisplay.pstScreen->u32RealWidth, sstDisplay.pstScreen->u32RealHeight);
-      orxLOG("CLIP: (%u, %u)", u32ClipWidth, u32ClipHeight);
     }
   }
 
@@ -5219,7 +5190,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
-    orxLOG("CONFIG: SCREEN (%g, %g) FB %s", orxConfig_GetFloat(orxDISPLAY_KZ_CONFIG_WIDTH), orxConfig_GetFloat(orxDISPLAY_KZ_CONFIG_HEIGHT), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE));
   }
 
   /* For all texture units */
