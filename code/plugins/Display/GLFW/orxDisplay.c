@@ -4409,7 +4409,17 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapClipping(orxBITMAP *_pstBitmap, o
     || (u32ClipWidth != sstDisplay.u32LastClipWidth)
     || (u32ClipHeight != sstDisplay.u32LastClipHeight))
     {
+      orxLOG("-=GLFW=-");
+      orxVECTOR v;
+      glfwGetWindowContentScale(sstDisplay.pstWindow, &v.fX, &v.fY);
+      orxLOG("SCALE: (%g, %g)", v.fX, v.fY);
+      orxS32 x, y;
+      glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
+      orxLOG("FRAMEBUFFER: (%d, %d)", x, y);
+      glfwGetWindowSize(sstDisplay.pstWindow, (int *)&x, (int *)&y);
+      orxLOG("WINDOW: (%d, %d)", x, y);
       orxLOG("CLIP2: (%u, %u) - (%u, %u)", u32ClipX, u32ClipY, u32ClipWidth, u32ClipHeight);
+      orxLOG("SCALE(ORX): (%g, %g)", sstDisplay.vContentScale.fX, sstDisplay.vContentScale.fY);
 
       /* Sets OpenGL clipping */
       glScissor((GLint)u32ClipX, (GLint)u32ClipY, (GLsizei)u32ClipWidth, (GLsizei)u32ClipHeight);
