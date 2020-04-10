@@ -58,7 +58,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
     rstIO.MouseDown[i] = orxMouse_IsButtonPressed((orxMOUSE_BUTTON)i) ? true : false;
   }
 
-  for(int i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
+  for(unsigned int i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
   {
     rstIO.KeysDown[i] = orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)i) ? true : false;
   }
@@ -97,7 +97,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
   }
   if(rstIO.WantSetMousePos)
   {
-    orxVECTOR vMousePos = {rstIO.MousePos.x, rstIO.MousePos.y};
+    orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
     orxMouse_SetPosition(&vMousePos);
   }
   if(rstIO.WantCaptureMouse)
