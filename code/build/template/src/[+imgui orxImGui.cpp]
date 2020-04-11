@@ -14,6 +14,8 @@ void        orxFASTCALL orxImGui_Exit();
 
 #ifndef orxIMGUI_HEADER_ONLY
 
+static orxBOOL sbInFrame = orxFALSE;
+
 static void *orxImGui_Allocate(size_t _sSize, void *)
 {
   return orxMemory_Allocate((orxU32)_sSize, orxMEMORY_TYPE_TEMP);
@@ -36,85 +38,90 @@ static void orxImGui_SetClipboard(void *, const char *_acText)
 
 static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
 {
-  ImGuiIO &rstIO = ImGui::GetIO();
+  if(!sbInFrame)
+  {
+    sbInFrame = orxTRUE;
 
-  rstIO.DeltaTime = orxClock_GetInfo(orxClock_FindFirst(-1.0f, orxCLOCK_TYPE_CORE))->fDT;
+    ImGuiIO &rstIO = ImGui::GetIO();
 
-  orxDisplay_GetScreenSize(&rstIO.DisplaySize.x, &rstIO.DisplaySize.y);
-  orxVECTOR vFramebufferSize;
-  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-  orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
-  orxConfig_PopSection();
-  rstIO.DisplayFramebufferScale.x = vFramebufferSize.fX / rstIO.DisplaySize.x;
-  rstIO.DisplayFramebufferScale.y = vFramebufferSize.fY / rstIO.DisplaySize.y;
+    rstIO.DeltaTime = orxClock_GetInfo(orxClock_FindFirst(-1.0f, orxCLOCK_TYPE_CORE))->fDT;
 
-  orxVECTOR vMousePos;
-  orxMouse_GetPosition(&vMousePos);
-  rstIO.MousePos.x = vMousePos.fX;
-  rstIO.MousePos.y = vMousePos.fY;
-  rstIO.MouseWheel = orxMouse_GetWheelDelta();
-  for(int i = 0; i < IM_ARRAYSIZE(rstIO.MouseDown); i++)
-  {
-    rstIO.MouseDown[i] = orxMouse_IsButtonPressed((orxMOUSE_BUTTON)i) ? true : false;
-  }
+    orxDisplay_GetScreenSize(&rstIO.DisplaySize.x, &rstIO.DisplaySize.y);
+    orxVECTOR vFramebufferSize;
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+    orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
+    orxConfig_PopSection();
+    rstIO.DisplayFramebufferScale.x = vFramebufferSize.fX / rstIO.DisplaySize.x;
+    rstIO.DisplayFramebufferScale.y = vFramebufferSize.fY / rstIO.DisplaySize.y;
 
-  for(unsigned int i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
-  {
-    rstIO.KeysDown[i] = orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)i) ? true : false;
-  }
-  rstIO.KeyCtrl   = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LCTRL) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RCTRL)) ? true : false;
-  rstIO.KeyShift  = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSHIFT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSHIFT)) ? true : false;
-  rstIO.KeyAlt    = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LALT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RALT)) ? true : false;
-  rstIO.KeySuper  = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSYSTEM) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSYSTEM)) ? true : false;
+    orxVECTOR vMousePos;
+    orxMouse_GetPosition(&vMousePos);
+    rstIO.MousePos.x = vMousePos.fX;
+    rstIO.MousePos.y = vMousePos.fY;
+    rstIO.MouseWheel = orxMouse_GetWheelDelta();
+    for(int i = 0; i < IM_ARRAYSIZE(rstIO.MouseDown); i++)
+    {
+      rstIO.MouseDown[i] = orxMouse_IsButtonPressed((orxMOUSE_BUTTON)i) ? true : false;
+    }
 
-  rstIO.NavInputs[ImGuiNavInput_Activate]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_A_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_Cancel]       = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_B_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_Input]        = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_Y_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_Menu]         = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_X_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_DpadLeft]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_LEFT_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_DpadRight]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_RIGHT_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_DpadUp]       = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_UP_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_DpadDown]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_DOWN_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_LStickLeft]   = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LX_1) <= -0.3f ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_LStickRight]  = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LX_1) >= 0.3f ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_LStickUp]     = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LY_1) <= -0.3f ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_LStickDown]   = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LY_1) >= 0.3f ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_FocusPrev]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_LBUMPER_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_FocusNext]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_RBUMPER_1) ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_TweakSlow]    = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LTRIGGER_1) >= 0.3f ? 1.0f : 0.0f;
-  rstIO.NavInputs[ImGuiNavInput_TweakFast]    = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_RTRIGGER_1) >= 0.3f ? 1.0f : 0.0f;
+    for(unsigned int i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
+    {
+      rstIO.KeysDown[i] = orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)i) ? true : false;
+    }
+    rstIO.KeyCtrl   = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LCTRL) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RCTRL)) ? true : false;
+    rstIO.KeyShift  = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSHIFT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSHIFT)) ? true : false;
+    rstIO.KeyAlt    = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LALT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RALT)) ? true : false;
+    rstIO.KeySuper  = (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSYSTEM) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSYSTEM)) ? true : false;
 
-  ImGui::NewFrame();
+    rstIO.NavInputs[ImGuiNavInput_Activate]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_A_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_Cancel]       = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_B_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_Input]        = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_Y_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_Menu]         = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_X_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_DpadLeft]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_LEFT_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_DpadRight]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_RIGHT_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_DpadUp]       = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_UP_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_DpadDown]     = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_DOWN_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_LStickLeft]   = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LX_1) <= -0.3f ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_LStickRight]  = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LX_1) >= 0.3f ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_LStickUp]     = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LY_1) <= -0.3f ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_LStickDown]   = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LY_1) >= 0.3f ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_FocusPrev]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_LBUMPER_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_FocusNext]    = orxJoystick_IsButtonPressed(orxJOYSTICK_BUTTON_RBUMPER_1) ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_TweakSlow]    = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_LTRIGGER_1) >= 0.3f ? 1.0f : 0.0f;
+    rstIO.NavInputs[ImGuiNavInput_TweakFast]    = orxJoystick_GetAxisValue(orxJOYSTICK_AXIS_RTRIGGER_1) >= 0.3f ? 1.0f : 0.0f;
 
-  if(rstIO.WantTextInput)
-  {
-    orxKeyboard_Show(orxTRUE);
-    rstIO.AddInputCharactersUTF8(orxKeyboard_ReadString());
-  }
-  else
-  {
-    orxKeyboard_Show(orxFALSE);
-  }
-  if(rstIO.WantSetMousePos)
-  {
-    orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
-    orxMouse_SetPosition(&vMousePos);
-  }
-  if(rstIO.WantCaptureMouse)
-  {
-    orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS));
-  }
-  else
-  {
-    orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS), orxINPUT_KU32_FLAG_TYPE_NONE);
-  }
-  if(rstIO.WantCaptureKeyboard)
-  {
-    orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY));
-  }
-  else
-  {
-    orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY), orxINPUT_KU32_FLAG_TYPE_NONE);
+    ImGui::NewFrame();
+
+    if(rstIO.WantTextInput)
+    {
+      orxKeyboard_Show(orxTRUE);
+      rstIO.AddInputCharactersUTF8(orxKeyboard_ReadString());
+    }
+    else
+    {
+      orxKeyboard_Show(orxFALSE);
+    }
+    if(rstIO.WantSetMousePos)
+    {
+      orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
+      orxMouse_SetPosition(&vMousePos);
+    }
+    if(rstIO.WantCaptureMouse)
+    {
+      orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS));
+    }
+    else
+    {
+      orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS), orxINPUT_KU32_FLAG_TYPE_NONE);
+    }
+    if(rstIO.WantCaptureKeyboard)
+    {
+      orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY));
+    }
+    else
+    {
+      orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY), orxINPUT_KU32_FLAG_TYPE_NONE);
+    }
   }
 
   return orxSTATUS_SUCCESS;
@@ -122,39 +129,44 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
 
 static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
 {
-  ImGui::EndFrame();
-  ImGui::Render();
-  ImDrawData *pstDrawData = ImGui::GetDrawData();
-
-  orxBITMAP *pstScreen = orxDisplay_GetScreenBitmap();
-  orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
-
-  orxDISPLAY_MESH stMesh = {};
-  stMesh.ePrimitive = orxDISPLAY_PRIMITIVE_TRIANGLES;
-
-  for(int i = 0; i < pstDrawData->CmdListsCount; i++)
+  if(sbInFrame)
   {
-    ImDrawList *pstDrawList = pstDrawData->CmdLists[i];
+    sbInFrame = orxFALSE;
 
-    stMesh.astVertexList    = (orxDISPLAY_VERTEX *)pstDrawList->VtxBuffer.Data;
-    stMesh.u32VertexNumber  = pstDrawList->VtxBuffer.size();
-    stMesh.au16IndexList    = pstDrawList->IdxBuffer.Data;
+    ImGui::EndFrame();
+    ImGui::Render();
+    ImDrawData *pstDrawData = ImGui::GetDrawData();
 
-    for(int j = 0; j < pstDrawList->CmdBuffer.Size; j++)
+    orxBITMAP *pstScreen = orxDisplay_GetScreenBitmap();
+    orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
+
+    orxDISPLAY_MESH stMesh = {};
+    stMesh.ePrimitive = orxDISPLAY_PRIMITIVE_TRIANGLES;
+
+    for(int i = 0; i < pstDrawData->CmdListsCount; i++)
     {
-      ImDrawCmd &rstCommand = pstDrawList->CmdBuffer[j];
+      ImDrawList *pstDrawList = pstDrawData->CmdLists[i];
 
-      if(rstCommand.UserCallback)
+      stMesh.astVertexList    = (orxDISPLAY_VERTEX *)pstDrawList->VtxBuffer.Data;
+      stMesh.u32VertexNumber  = pstDrawList->VtxBuffer.size();
+      stMesh.au16IndexList    = pstDrawList->IdxBuffer.Data;
+
+      for(int j = 0; j < pstDrawList->CmdBuffer.Size; j++)
       {
-        rstCommand.UserCallback(pstDrawList, &rstCommand);
+        ImDrawCmd &rstCommand = pstDrawList->CmdBuffer[j];
+
+        if(rstCommand.UserCallback)
+        {
+          rstCommand.UserCallback(pstDrawList, &rstCommand);
+        }
+        else
+        {
+          stMesh.u32IndexNumber = rstCommand.ElemCount;
+          orxDisplay_SetBitmapClipping(orxNULL, orxF2U(rstCommand.ClipRect.x - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.y - pstDrawData->DisplayPos.y), orxF2U(rstCommand.ClipRect.z - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.w - pstDrawData->DisplayPos.y));
+          orxDisplay_DrawMesh(&stMesh, (orxBITMAP *)rstCommand.TextureId, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
+        }
+        stMesh.au16IndexList += rstCommand.ElemCount;
       }
-      else
-      {
-        stMesh.u32IndexNumber = rstCommand.ElemCount;
-        orxDisplay_SetBitmapClipping(orxNULL, orxF2U(rstCommand.ClipRect.x - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.y - pstDrawData->DisplayPos.y), orxF2U(rstCommand.ClipRect.z - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.w - pstDrawData->DisplayPos.y));
-        orxDisplay_DrawMesh(&stMesh, (orxBITMAP *)rstCommand.TextureId, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
-      }
-      stMesh.au16IndexList += rstCommand.ElemCount;
     }
   }
 
