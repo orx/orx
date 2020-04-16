@@ -136,6 +136,9 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
     sstJoystick.astJoyInfoList[_u32ID].bIsGamepad   = glfwJoystickIsGamepad((int)_u32ID);
 
+    /* Clears current buttons */
+    orxMemory_Zero(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER * sizeof(unsigned char));
+
     /* Gets button values */
     au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
     orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, (orxS32)(orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1)) * sizeof(unsigned char));
@@ -154,6 +157,9 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     {
       orxS32          iAxisCount = 0;
       const orxFLOAT *afAxes;
+
+      /* Clears current axes */
+      orxMemory_Zero(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, orxJOYSTICK_AXIS_SINGLE_NUMBER * sizeof(orxFLOAT));
 
       /* Gets axes values */
       afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
@@ -415,17 +421,12 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
 
 orxBOOL orxFASTCALL orxJoystick_GLFW_IsConnected(orxU32 _u32ID)
 {
-  orxBOOL bResult;
-
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   orxASSERT((_u32ID >= orxJOYSTICK_KU32_MIN_ID) && (_u32ID <= orxJOYSTICK_KU32_MAX_ID));
 
-  /* Updates result */
-  bResult = (glfwJoystickPresent(_u32ID - 1) != GLFW_FALSE) ? orxTRUE : orxFALSE;
-
   /* Done! */
-  return bResult;
+  return sstJoystick.astJoyInfoList[_u32ID - orxJOYSTICK_KU32_MIN_ID].bIsConnected;
 }
 
 
