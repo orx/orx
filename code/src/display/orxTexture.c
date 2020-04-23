@@ -187,6 +187,25 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
               /* Deletes backup */
               orxDisplay_DeleteBitmap(pstBackupBitmap);
             }
+
+            /* Assigns given bitmap to it */
+            if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName, bInternal) != orxSTATUS_FAILURE)
+            {
+              /* Asynchronous loading? */
+              if(orxDisplay_GetTempBitmap() != orxNULL)
+              {
+                /* Updates load count */
+                sstTexture.u32LoadCount++;
+
+                /* Updates status */
+                orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
+              }
+              else
+              {
+                /* Sends event */
+                orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+              }
+            }
           }
           else
           {
@@ -194,26 +213,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't hotload texture <%s> after %u tries, reverting to former version.", zName, orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER);
 
             /* Restores backup */
-            pstBitmap = pstBackupBitmap;
-          }
-
-          /* Assigns given bitmap to it */
-          if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName, bInternal) != orxSTATUS_FAILURE)
-          {
-            /* Asynchronous loading? */
-            if(orxDisplay_GetTempBitmap() != orxNULL)
-            {
-              /* Updates load count */
-              sstTexture.u32LoadCount++;
-
-              /* Updates status */
-              orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
-            }
-            else
-            {
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
-            }
+            orxTexture_LinkBitmap(pstTexture, pstBackupBitmap, zName, bInternal);
           }
 
           /* Profiles */
@@ -240,17 +240,21 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       /* Found? */
       if(pstTexture != orxNULL)
       {
-        /* Updates load count */
-        sstTexture.u32LoadCount--;
-
-        /* Updates status */
-        orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
-
-        /* Success? */
-        if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
+        /* Was loading? */
+        if(orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING))
         {
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+          /* Updates load count */
+          sstTexture.u32LoadCount--;
+
+          /* Updates status */
+          orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
+
+          /* Success? */
+          if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
+          {
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+          }
         }
       }
     }
