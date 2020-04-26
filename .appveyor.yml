@@ -1,7 +1,6 @@
 version: 1.9-dev.{build}
 
 image:
-- Visual Studio 2015
 - Visual Studio 2017
 - Visual Studio 2019
 
@@ -21,8 +20,6 @@ cache: ../cache
 
 build_script:
 - cmd: >-
-    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VSVersion=2015
-
     if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" set VSVersion=2017
 
     if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2019" set VSVersion=2019
@@ -52,10 +49,6 @@ build_script:
     python package.py -p tuto%PackageVersion%
 
 artifacts:
-- path: code/build/python/packages/*vs2015-64*.zip
-  name: package-vs2015-64
-- path: code/build/python/packages/*vs2015-32*.zip
-  name: package-vs2015-32
 - path: code/build/python/packages/*vs2017-64*.zip
   name: package-vs2017-64
 - path: code/build/python/packages/*vs2017-32*.zip
