@@ -769,6 +769,7 @@ var searchData=
   ['orxobject_5fistargetanim',['orxObject_IsTargetAnim',['../group__orx_object.html#ga17bc2e347ba3b8f90a5d619678118986',1,'orxObject.h']]],
   ['orxobject_5fistimelineenabled',['orxObject_IsTimeLineEnabled',['../group__orx_object.html#ga99f5602ff1ae16280ff3e59b45f088a1',1,'orxObject.h']]],
   ['orxobject_5flinkstructure',['orxObject_LinkStructure',['../group__orx_object.html#ga11cb5defe143721910db791c2432bb4d',1,'orxObject.h']]],
+  ['orxobject_5flogparents',['orxObject_LogParents',['../group__orx_object.html#gae722b30dc10d183e4eb296621de0edb2',1,'orxObject.h']]],
   ['orxobject_5fpause',['orxObject_Pause',['../group__orx_object.html#ga4897a87b6d7191e34a0a5f7c0f23d3ac',1,'orxObject.h']]],
   ['orxobject_5fpauserecursive',['orxObject_PauseRecursive',['../group__orx_object.html#ga645f6c4285a135184de3478402492ae5',1,'orxObject.h']]],
   ['orxobject_5fpick',['orxObject_Pick',['../group__orx_object.html#ga6f7d889a4670927e5d9a0c314715f1a5',1,'orxObject.h']]],
