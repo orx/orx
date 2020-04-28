@@ -2111,6 +2111,34 @@ void orxFASTCALL orxObject_CommandDetach(orxU32 _u32ArgNumber, const orxCOMMAND_
   return;
 }
 
+/** Command: LogParents
+ */
+void orxFASTCALL orxObject_CommandLogParents(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Logs its parents */
+    orxObject_LogParents(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOwner
  */
 void orxFASTCALL orxObject_CommandSetOwner(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3091,6 +3119,9 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: Detach */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Detach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: LogParents */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, LogParents, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: SetOwner */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOwner, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Owner = <void>", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetOwner */
@@ -3268,6 +3299,9 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Attach);
   /* Command: Detach */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Detach);
+
+  /* Command: LogParents */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, LogParents);
 
   /* Command: SetOwner */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOwner);
@@ -6852,6 +6886,183 @@ orxSTATUS orxFASTCALL orxObject_Detach(orxOBJECT *_pstObject)
 
   /* Detaches it */
   eResult = orxObject_Attach(_pstObject, orxNULL);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Logs all parents of an object, including their frame data.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
+{
+  orxU32    u32DebugFlags;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Backups debug flags */
+  u32DebugFlags = orxDEBUG_GET_FLAGS();
+
+  /* Sets new debug flags */
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE,
+                     orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP | orxDEBUG_KU32_STATIC_FLAG_TYPE);
+
+  /* Logs header */
+  orxLOG("*** BEGIN PARENTS LOG: \"" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "\" [" orxANSI_KZ_COLOR_FG_MAGENTA "0x%016llX" orxANSI_KZ_COLOR_FG_DEFAULT "] ***\n", orxObject_GetName(_pstObject), orxStructure_GetGUID(_pstObject));
+
+  /* For all structures in parent hierarchy */
+  for(orxSTRUCTURE *pstParent = orxSTRUCTURE(_pstObject); pstParent != orxNULL;)
+  {
+    const orxSTRING zName;
+    orxU64          u64GUID;
+    orxFRAME       *pstFrame;
+    orxCAMERA      *pstCamera;
+    orxOBJECT      *pstObject;
+    orxSPAWNER     *pstSpawner;
+
+    /* Gets its GUID */
+    u64GUID = orxStructure_GetGUID(pstParent);
+
+    /* Depending on its type */
+    switch(orxStructure_GetID(pstParent))
+    {
+      case orxSTRUCTURE_ID_CAMERA:
+      {
+        /* Gets it */
+        pstCamera = orxCAMERA(pstParent);
+
+        /* Gets its name */
+        zName = orxCamera_GetName(pstCamera);
+
+        /* Gets its frame */
+        pstFrame = orxCamera_GetFrame(pstCamera);
+
+        /* Gets its parent */
+        pstParent = orxCamera_GetParent(pstCamera);
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_FRAME:
+      {
+        /* Uses default name */
+        zName = "[FRAME]";
+
+        /* Gets it */
+        pstFrame = orxFRAME(pstParent);
+
+        /* Gets its parent */
+        pstParent = orxSTRUCTURE(orxFrame_GetParent(pstFrame));
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_OBJECT:
+      {
+        /* Gets it */
+        pstObject = orxOBJECT(pstParent);
+
+        /* Gets its name */
+        zName = orxObject_GetName(pstObject);
+
+        /* Gets its frame */
+        pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+        /* Gets its parent */
+        pstParent = orxObject_GetParent(pstObject);
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_SPAWNER:
+      {
+        /* Gets it */
+        pstSpawner = orxSPAWNER(pstParent);
+
+        /* Gets its name */
+        zName = orxSpawner_GetName(pstSpawner);
+
+        /* Gets its frame */
+        pstFrame = orxSpawner_GetFrame(pstSpawner);
+
+        /* Gets its parent */
+        pstParent = orxSpawner_GetParent(pstSpawner);
+
+        break;
+      }
+
+      default:
+      {
+        /* No more parents */
+        zName     = orxNULL;
+        pstFrame  = orxNULL;
+        pstParent = orxNULL;
+        break;
+      }
+    }
+
+    /* Has frame? */
+    if(pstFrame != orxNULL)
+    {
+      orxCHAR   acBuffer[256] = {}, acTempBuffer[128] = {}, *pc = acBuffer;
+      orxVECTOR vTemp;
+      orxFLOAT  fRotation;
+
+      /* Prints name */
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "\"" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "\"", zName);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), "%-30s", acTempBuffer);
+
+      /* Prints GUID */
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "[" orxANSI_KZ_COLOR_FG_MAGENTA "0x%016llX" orxANSI_KZ_COLOR_FG_DEFAULT "]", u64GUID);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), "%-32s", acTempBuffer);
+
+      /* Prints local position */
+      orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vTemp);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%g, %g, %g)", vTemp.fX, vTemp.fY, vTemp.fZ);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+
+      /* Prints local rotation */
+      fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "%g", fRotation);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_MAGENTA "%6s", acTempBuffer);
+
+      /* Prints local scale */
+      orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, &vTemp);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%g, %g, %g)", vTemp.fX, vTemp.fY, vTemp.fZ);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_YELLOW "%16s", acTempBuffer);
+
+      /* Prints separator */
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_DEFAULT " => ");
+
+      /* Prints world position */
+      orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%g, %g, %g)", vTemp.fX, vTemp.fY, vTemp.fZ);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+
+      /* Prints world rotation */
+      fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "%g", fRotation);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_MAGENTA "%6s", acTempBuffer);
+
+      /* Prints world scale */
+      orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp);
+      orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%g, %g, %g)", vTemp.fX, vTemp.fY, vTemp.fZ);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_YELLOW "%16s", acTempBuffer);
+
+      /* Logs it */
+      orxLOG(acBuffer);
+    }
+  }
+
+  /* Logs footer */
+  orxLOG("\n*** END PARENTS LOG ***");
+
+  /* Restores debug flags */
+  orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
   /* Done! */
   return eResult;

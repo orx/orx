@@ -64,7 +64,7 @@
 #endif /* __orxVERSION_RELEASE__ */
 
 #ifndef __orxVERSION_BUILD__
-  #define __orxVERSION_BUILD__      0UL
+  #define __orxVERSION_BUILD__      0
 #endif /* __orxVERSION_BUILD__ */
 
 #define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_RELEASE__)
