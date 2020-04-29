@@ -832,7 +832,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         if((zIgnoreFromParent = orxConfig_GetString(orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
         {
           /* Updates frame */
-          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
+          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlagValues(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
         }
 
         /* Has group list? */

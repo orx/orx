@@ -42,41 +42,42 @@
 
 /** Module flags
  */
-#define orxFRAME_KU32_STATIC_FLAG_NONE      0x00000000  /**< No flags */
+#define orxFRAME_KU32_STATIC_FLAG_NONE                        0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_STATIC_FLAG_READY     0x00000001  /**< Ready flag */
-#define orxFRAME_KU32_STATIC_FLAG_DATA_2D   0x00000010  /**< 2D flag */
+#define orxFRAME_KU32_STATIC_FLAG_READY                       0x00000001  /**< Ready flag */
+#define orxFRAME_KU32_STATIC_FLAG_DATA_2D                     0x00000010  /**< 2D flag */
 
-#define orxFRAME_KU32_STATIC_MASK_DEFAULT   0x00000010  /**< Default flag */
+#define orxFRAME_KU32_STATIC_MASK_DEFAULT                     0x00000010  /**< Default flag */
 
-#define orxFRAME_KU32_STATIC_MASK_ALL       0xFFFFFFFF  /**< All mask */
+#define orxFRAME_KU32_STATIC_MASK_ALL                         0xFFFFFFFF  /**< All mask */
 
 
 /** orxFRAME flags
  */
-#define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
+#define orxFRAME_KU32_FLAG_NONE                               0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_FLAG_DATA_2D          0x10000000  /**< 2D ID flag */
+#define orxFRAME_KU32_FLAG_DATA_2D                            0x10000000  /**< 2D ID flag */
 
-#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
+#define orxFRAME_KU32_MASK_ALL                                0xFFFFFFFF  /**< All mask */
 
 
 /** Misc defines
  */
-#define orxFRAME_KU32_BANK_SIZE             2048        /**< Bank size */
+#define orxFRAME_KU32_BANK_SIZE                               2048        /**< Bank size */
+#define orxFRAME_KU32_RESULT_BUFFER_SIZE                      128
 
-#define orxFRAME_KZ_NONE                    "none"
-#define orxFRAME_KZ_ROTATION                "rotation"
-#define orxFRAME_KZ_SCALE                   "scale"
-#define orxFRAME_KZ_POSITION                "position"
-#define orxFRAME_KZ_POSITION_ROTATION       "position.rotation"
-#define orxFRAME_KZ_POSITION_SCALE          "position.scale"
-#define orxFRAME_KZ_POSITION_POSITION       "position.position"
-#define orxFRAME_KZ_ALL                     "all"
+#define orxFRAME_KZ_NONE                                      "none"
+#define orxFRAME_KZ_ROTATION                                  "rotation"
+#define orxFRAME_KZ_SCALE                                     "scale"
+#define orxFRAME_KZ_POSITION                                  "position"
+#define orxFRAME_KZ_POSITION_ROTATION                         "position.rotation"
+#define orxFRAME_KZ_POSITION_SCALE                            "position.scale"
+#define orxFRAME_KZ_POSITION_POSITION                         "position.position"
+#define orxFRAME_KZ_ALL                                       "all"
 
-#define orxFRAME_KC_SEPARATOR               '.'
-#define orxFRAME_KU32_SCALE_LENGTH          5
-#define orxFRAME_KU32_POSITION_LENGTH       8
+#define orxFRAME_KC_SEPARATOR                                 '.'
+#define orxFRAME_KU32_SCALE_LENGTH                            5
+#define orxFRAME_KU32_POSITION_LENGTH                         8
 
 
 /***************************************************************************
@@ -87,14 +88,14 @@
  */
 typedef struct __orxFRAME_DATA_2D_t
 {
-  orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 12 */
-  orxFLOAT  fGlobalRotation;                   /**< Global 2D rotation angle : 16 */
-  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 28 */
-  orxFLOAT  fLocalRotation;                    /**< Local 2D rotation angle : 32 */
-  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 36 */
-  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 40 */
-  orxFLOAT  fLocalScaleX;                   /**< Local 2D isometric X scale : 44 */
-  orxFLOAT  fLocalScaleY;                   /**< Local 2D isometric Y scale : 48 */
+  orxVECTOR vGlobalPos;                                       /**< Global 2D coordinates : 12 */
+  orxFLOAT  fGlobalRotation;                                  /**< Global 2D rotation angle : 16 */
+  orxVECTOR vLocalPos;                                        /**< Local 2D coordinates : 28 */
+  orxFLOAT  fLocalRotation;                                   /**< Local 2D rotation angle : 32 */
+  orxFLOAT  fGlobalScaleX;                                    /**< Global 2D isometric X scale : 36 */
+  orxFLOAT  fGlobalScaleY;                                    /**< Global 2D isometric Y scale : 40 */
+  orxFLOAT  fLocalScaleX;                                     /**< Local 2D isometric X scale : 44 */
+  orxFLOAT  fLocalScaleY;                                     /**< Local 2D isometric Y scale : 48 */
 
 } orxFRAME_DATA_2D;
 
@@ -103,17 +104,18 @@ typedef struct __orxFRAME_DATA_2D_t
  */
 struct __orxFRAME_t
 {
-  orxSTRUCTURE      stStructure;            /**< Public structure, first structure member : 32 */
-  orxFRAME_DATA_2D  stData;                 /**< Frame data : 64 */
+  orxSTRUCTURE      stStructure;                              /**< Public structure, first structure member : 32 */
+  orxFRAME_DATA_2D  stData;                                   /**< Frame data : 64 */
 };
 
 /** Static structure
  */
 typedef struct __orxFRAME_STATIC_t
 {
-  orxU32    u32Flags;                       /**< Control flags : 4 */
-  orxFRAME *pstRoot;                        /**< Frame root : 8 */
-  orxBANK  *pst2DDataBank;                  /**< 2D Data bank : 12 */
+  orxU32    u32Flags;                                         /**< Control flags */
+  orxFRAME *pstRoot;                                          /**< Frame root */
+  orxBANK  *pst2DDataBank;                                    /**< 2D Data bank */
+  orxCHAR   acResultBuffer[orxFRAME_KU32_RESULT_BUFFER_SIZE]; /**< Result buffer */
 
 } orxFRAME_STATIC;
 
@@ -691,11 +693,11 @@ static orxINLINE void orxFrame_DeleteAll()
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Get ignore flags
+/** Get ignore flag values
  * @param[in]   _zFlags         Literal ignore flags
  * @return Ignore flags
  */
-orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
+orxU32 orxFASTCALL orxFrame_GetIgnoreFlagValues(const orxSTRING _zFlags)
 {
   orxCHAR   acBuffer[128];
   orxSTRING zFlags;
@@ -703,6 +705,7 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFlags != orxNULL);
 
   /* Gets lower case version */
   zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
@@ -840,6 +843,148 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlags(const orxSTRING _zFlags)
 
   /* Done! */
   return u32Result;
+}
+
+/** Get ignore flag names (beware: result won't persist from one call to the other)
+ * @param[in]   _zFlags         Literal ignore flags
+ * @return Ignore flags names
+ */
+const orxSTRING orxFASTCALL orxFrame_GetIgnoreFlagNames(orxU32 _u32Flags)
+{
+  orxCHAR        *pc = sstFrame.acResultBuffer;
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+
+  /* Clears result buffer */
+  orxMemory_Zero(&(sstFrame.acResultBuffer), sizeof(sstFrame.acResultBuffer));
+
+#define orxFRAME_PRINT(STRING) pc += orxString_NPrint(pc, (orxU32)(sizeof(sstFrame.acResultBuffer) - 1 - (pc - sstFrame.acResultBuffer)), STRING)
+
+  /* Depending on flags */
+  switch(orxFLAG_GET(_u32Flags, orxFRAME_KU32_MASK_IGNORE_ALL))
+  {
+    case orxFRAME_KU32_FLAG_IGNORE_NONE:
+    {
+      /* Updates result */
+      zResult = orxFRAME_KZ_NONE;
+      break;
+    }
+
+    case orxFRAME_KU32_MASK_IGNORE_ALL:
+    {
+      /* Updates result */
+      zResult = orxFRAME_KZ_ALL;
+      break;
+    }
+
+    default:
+    {
+      /* Full position? */
+      if(orxFLAG_TEST_ALL(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION))
+      {
+        orxFRAME_PRINT(" " orxFRAME_KZ_POSITION);
+      }
+      /* Partial position? */
+      else if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION))
+      {
+        /* Position.position? */
+        if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION_POSITION))
+        {
+          orxFRAME_PRINT(" " orxFRAME_KZ_POSITION "." orxFRAME_KZ_POSITION);
+
+          /* Partial position.position? */
+          if(!orxFLAG_TEST_ALL(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION_POSITION))
+          {
+            orxFRAME_PRINT(".");
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X))
+            {
+              orxFRAME_PRINT("x");
+            }
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y))
+            {
+              orxFRAME_PRINT("y");
+            }
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Z))
+            {
+              orxFRAME_PRINT("z");
+            }
+          }
+        }
+
+        /* Position.rotation? */
+        if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_ROTATION))
+        {
+          orxFRAME_PRINT(" " orxFRAME_KZ_POSITION "." orxFRAME_KZ_ROTATION);
+        }
+
+        /* Position.scale? */
+        if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION_SCALE))
+        {
+          orxFRAME_PRINT(" " orxFRAME_KZ_POSITION "." orxFRAME_KZ_SCALE);
+
+          /* Partial position.scale? */
+          if(!orxFLAG_TEST_ALL(_u32Flags, orxFRAME_KU32_MASK_IGNORE_POSITION_SCALE))
+          {
+            orxFRAME_PRINT(".");
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE_X))
+            {
+              orxFRAME_PRINT("x");
+            }
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE_Y))
+            {
+              orxFRAME_PRINT("y");
+            }
+            if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_POSITION_SCALE_Z))
+            {
+              orxFRAME_PRINT("z");
+            }
+          }
+        }
+      }
+
+      /* Rotation? */
+      if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_ROTATION))
+      {
+        orxFRAME_PRINT(" " orxFRAME_KZ_ROTATION);
+      }
+
+      /* Scale? */
+      if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_MASK_IGNORE_SCALE))
+      {
+        orxFRAME_PRINT(" " orxFRAME_KZ_SCALE);
+
+        /* Partial scale? */
+        if(!orxFLAG_TEST_ALL(_u32Flags, orxFRAME_KU32_MASK_IGNORE_SCALE))
+        {
+          orxFRAME_PRINT(".");
+          if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_SCALE_X))
+          {
+            orxFRAME_PRINT("x");
+          }
+          if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_SCALE_Y))
+          {
+            orxFRAME_PRINT("y");
+          }
+          if(orxFLAG_TEST(_u32Flags, orxFRAME_KU32_FLAG_IGNORE_SCALE_Z))
+          {
+            orxFRAME_PRINT("z");
+          }
+        }
+      }
+
+      /* Updates result */
+      zResult = sstFrame.acResultBuffer + 1;
+
+      break;
+    }
+  }
+
+#undef orxFRAME_PRINT
+
+  /* Done! */
+  return zResult;
 }
 
 /** Animation module setup
