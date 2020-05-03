@@ -1,6 +1,62 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.11
+-----
+* IMPORTANT: Init script now support optional extensions through templates: current available extensions are Scroll, Dear ImGui and orxArchive
+* IMPORTANT: External dependencies are now compiled with MinGW-w64 8.1.0 (was MinGW 6.3.0), including new support for 64bit
+* IMPORTANT: Added support for VS2019 and retired support for VS2013
+* IMPORTANT: Min deployment OS version for MacOS is now 10.9 (due to stdlibc++ being replaced by libc++)
+* IMPORTANT: Random seed is now initialized by default based on a real time-based value (it can be overridden as soon as the bootstrap call or main init)
+* IMPORTANT: Fixed OSX/Retina and Windows high DPI display issues
+* IMPORTANT: Multiple commands in config blocks can now be separated by EOL with an optional comma
+* IMPORTANT: Added support for section clear marker (![Section])
+* IMPORTANT: One can now control which physical peripherals will be polled on a per set basis by using orxInput_SetTypeFlags()
+* IMPORTANT: Added support for text animations, which can also be optionally mixed with texture frames
+* IMPORTANT: Commands can now be executed by animation custom events (multiple commands need to be comma-separated)
+* IMPORTANT: Graphics/textures can now be modified when handling orxRENDER_EVENT_OBJECT_START
+* IMPORTANT: Removed obsolete functions orxDisplay_SetBitmapColorKey() and orxTexture_SetColor()
+* IMPORTANT: Removed obsolete fucntion orxViewport_SetAlignment()
+* IMPORTANT: Object LifeTime config property & command can now take literals (fx, sound, spawn, track and child) which will keep an object alive until the mentioned properties don't exist anymore
+* IMPORTANT: Viewports can now be uniquely indentified with config names + added viewport commands
+* IMPORTANT: Command string parameters beginning with ( or { are now assumed to be vectors and will be handled as a single block
+* IMPORTANT: orxObject_GetSize() will now use a default Z=1 value for 2D flat objects
+* IMPORTANT: Empty config properties FXList, TrackList, SoundList, ShaderList, TextureList and GroupList are now valid
+* IMPORTANT: Returning orxSTATUS_FAILURE when handling orxSHADER_EVENT_SET_PARAM will now keep the former parameter value in the shader
+* IMPORTANT: orxFile_GetHomeDirectory() & orxFile_GetApplicationSaveDirectory() will now use linux separators in all returned paths
+
+* Added orxThread_SetCallbacks() to support pre/post callbacks in orx threads, useful for interacting with other language runtimes
+* Added orxDisplay_SetPartialBitmapData()
+* Added config properties JoyName<Index> & JoyID<Index> that are kept up to date based on currently available joysticks
+* Added commands File.GetHomeDirectory & File.GetApplicationSaveDirectory
+* orxString_SkipWhiteSpaces() will now skip EOL characters as well
+* Added recursive versions of orxObject_SetAnimFrequency(), orxObject_SetBlendMode() and orxObject_SetSmoothing()
+* Object aging now take an object's clock multiply modifier into account if present
+* Added orxObject_GetCurrentAnim(), orxObject_GetTargetAnim() & orxObject_GetAnimFrequency() + Object.GetAnim & Object.GetAnimFrequency commands
+* Added an optional filter callback to orxConfig_Clear()
+* Added color argument to orxDisplay_Transform*()
+* Added command Command.VectorX|Y|Z + aliases Vector.X|Y|Z for vector component extraction
+* Viewport shaders can be skipped when handling orxRENDER_EVENT_VIEWPORT_STOP
+* Added support for 0-length animation frames if they contain custom events (frames won't be created but events will be stored)
+* Added swizzles to IgnoreFromParents scale, position.scale & position.position flags
+* Added orxFrame_GetIgnoreFlagNames() to convert flags back to literals
+* Added config property Display.FramebufferSize that can now be used along gl_FragCoord when necessary
+* Added orxObject_LogParents() function + Object.LogParents command to display an object's hierarchy including transformations and ignore flags
+* orxConfig_ClearSection() now works with name parameters containing inheritance markers
+* Added body/physics function for changing a part's friction, restitution and density
+* Added orxPhysics_BoxPick()/orxBody_BoxPick() + orxPhysics_IsInsidePart()/orxBody_IsInsidePart()/orxBody_IsInside()
+* Fixed Suspension (aka Wheel) joint parameters
+* Cleaner version of chain and edge body parts
+* Command Object.SetPivot can now accept literals
+* Added Object.GetCount command
+* Added new RENDER events for CONSOLE_START, CONSOLE_STOP, PROFILER_START and PROFILER_STOP
+* Added config property Render.ProfilerOrientation
+* Added Render config properties to control the colors of the console
+* Updated/Cleaned all tutorials
+* Deprecated and removed orxString_Copy() in favor of orxString_NCopy()
+* Removed outdated orxScroll demo
+* Misc fixes, optimizations and additions
+
 orx 1.10
 -----
 * IMPORTANT: Migrated display, mouse, joystick and keyboard plugins from GLFW 2.7 to GLFW 3.3
