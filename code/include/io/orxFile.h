@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -88,13 +88,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Init();
  */
 extern orxDLLAPI void orxFASTCALL           orxFile_Exit();
 
-/** Gets current user's home directory (without trailing separator)
+/** Gets current user's home directory using linux separators (without trailing separator)
  * @param[in] _zSubPath                     Sub-path to append to the home directory, orxNULL for none
  * @return Current user's home directory, use it immediately or copy it as will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath);
 
-/** Gets current user's application save directory (without trailing separator)
+/** Gets current user's application save directory using linux separators (without trailing separator)
  * @param[in] _zSubPath                     Sub-path to append to the application save directory, orxNULL for none
  * @return Current user's application save directory, use it immediately or copy it as it will be modified by the next call to orxFile_GetHomeDirectory() or orxFile_GetApplicationSaveDirectory()
  */
@@ -154,7 +154,7 @@ extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileN
  * @param[out] _pReadData          Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
@@ -163,7 +163,7 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS6
  * @param[in] _pDataToWrite        Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
@@ -201,7 +201,7 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstF
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetTime(const orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */

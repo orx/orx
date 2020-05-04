@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -138,7 +138,7 @@ static orxPARAM_STATIC sstParam;
 
 /** Return the parameter info associated to the given value.
  * @param[in] _zParamName Name of the parameter (with short or long prefix inside)
- * @return Returns the pointer on the param info if found, else returns orxNULL
+ * @return Returns the pointer to the param info if found, else returns orxNULL
  */
 static orxINLINE orxPARAM_INFO *orxParam_Get(orxSTRINGID _stParamName)
 {
@@ -278,8 +278,6 @@ static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRIN
  */
 static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
 {
-  orxU32            i;
-  const orxSTRING  *azParamList = orxNULL;
   const orxSTRING   azConfigParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
   orxCHAR           acFirstParamBuffer[256];
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -295,7 +293,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
     if(((_pstParamInfo->u32Count == 0)
     || (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
     {
-      orxU32 u32ParamCount, u32RemainingNumber = 0;
+      const orxSTRING  *azParamList = orxNULL;
+      orxU32            u32RemainingNumber = 0, i;
 
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)
@@ -359,6 +358,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Found? */
       if(azParamList != orxNULL)
       {
+        orxU32 u32ParamCount;
+
         /* Increases ref count */
         _pstParamInfo->u32Count++;
 
@@ -798,10 +799,15 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 orxSTATUS orxFASTCALL orxParam_DisplayHelp()
 {
   orxPARAM  stParams;
+  orxBOOL   bDebugLevelBackup;
   orxSTATUS eResult;
 
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Disables param logs */
+  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_PARAM);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxFALSE);
 
   /* Everything seems ok. Register the version function */
   stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
@@ -828,6 +834,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     /* Register */
     eResult = orxParam_Register(&stParams);
   }
+
+  /* Restores display logs */
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, bDebugLevelBackup);
 
   /* Done! */
   return eResult;

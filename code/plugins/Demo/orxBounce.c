@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -583,7 +583,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  */
 static orxSTATUS orxBounce_Init()
 {
-  orxU32    i;
   orxSTATUS eResult;
 
   /* Loads config file and selects its section */
@@ -601,6 +600,7 @@ static orxSTATUS orxBounce_Init()
   {
     orxOBJECT  *pstParticleSource;
     orxCLOCK   *pstClock;
+    orxU32      i;
 
     /* Creates particle source */
     pstParticleSource = orxObject_CreateFromConfig("ParticleSource");

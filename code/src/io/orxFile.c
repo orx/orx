@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -142,6 +142,7 @@ static orxFILE_STATIC sstFile;
 
 static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData, orxFILE_INFO *_pstFileInfo)
 {
+  orxU32 u32PathLength;
   /* Checks */
   orxASSERT(_pstData != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
@@ -151,7 +152,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   _pstFileInfo->s64TimeStamp  = (orxS64)_pstData->time_write;
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
-  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+  u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
   _pstFileInfo->u32Flags      = ((_pstData->attrib & (_A_RDONLY|_A_HIDDEN|_A_SUBDIR)) == 0)
                                 ? orxFILE_KU32_FLAG_INFO_NORMAL
                                 : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_READONLY : 0)
@@ -167,6 +170,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
 static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orxFILE_INFO *_pstFileInfo)
 {
   struct stat stStat;
+  orxU32      u32PathLength;
   orxSTRING   zName;
 
   /* Checks */
@@ -179,7 +183,9 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   /* Stores info */
   orxString_NCopy(_pstFileInfo->zName, zName, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
-  orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
+  u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
   /* Gets file info */
   stat(_pstFileInfo->zFullName, &stStat);
@@ -349,11 +355,31 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
   /* Success? */
   if(s32Index >= 0)
   {
+    orxS32 i;
+
     /* Should add sub-path? */
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
       s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+    }
+
+    /* For all characters */
+    for(i = 0; i < s32Index; i++)
+    {
+      /* Is a windows separator? */
+      if(sstFile.acWorkDirectory[i] == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS)
+      {
+        /* Replaces it with a linux separator */
+        sstFile.acWorkDirectory[i] = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+      }
+    }
+
+    /* Has trailing separator? */
+    if(sstFile.acWorkDirectory[s32Index - 1] == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+    {
+      /* Removes it */
+      sstFile.acWorkDirectory[s32Index - 1] = orxCHAR_NULL;
     }
 
     /* Updates result */
@@ -445,11 +471,31 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
   /* Success? */
   if(s32Index >= 0)
   {
+    orxS32 i;
+
     /* Should add sub-path? */
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
       s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+    }
+
+    /* For all characters */
+    for(i = 0; i < s32Index; i++)
+    {
+      /* Is a windows separator? */
+      if(sstFile.acWorkDirectory[i] == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS)
+      {
+        /* Replaces it with a linux separator */
+        sstFile.acWorkDirectory[i] = orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+      }
+    }
+
+    /* Has trailing separator? */
+    if(sstFile.acWorkDirectory[s32Index - 1] == orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+    {
+      /* Removes it */
+      sstFile.acWorkDirectory[s32Index - 1] = orxCHAR_NULL;
     }
 
     /* Updates result */
@@ -514,10 +560,11 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       u32Length = (orxU32)orxMIN(zFileName - _zSearchPattern, sizeof(_pstFileInfo->zPath) - 1);
       orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
       _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
-      orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+      orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+      _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
+      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
       orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
       _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
     }
@@ -530,7 +577,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
+      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
       orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
       _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
     }
@@ -566,10 +613,11 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     u32Length = orxMIN((orxU32)(zFileName - _zSearchPattern), sizeof(_pstFileInfo->zPath) - 1);
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, u32Length);
     _pstFileInfo->zPath[u32Length] = orxCHAR_NULL;
-    orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+    orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+    _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
     /* Stores pattern */
-    u32Length = orxMIN(orxString_GetLength(zFileName), sizeof(_pstFileInfo->zPattern) - 1);
+    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
     orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
     _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
   }
@@ -578,7 +626,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     orxU32 u32Length;
 
     /* Stores pattern */
-    u32Length = orxMIN(orxString_GetLength(_zSearchPattern), sizeof(_pstFileInfo->zPattern) - 1);
+    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
     orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
     _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
 
@@ -655,7 +703,8 @@ orxSTATUS orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Updates full name */
-  orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+  orxString_NCopy(_pstFileInfo->zFullName, _pstFileInfo->zPath, sizeof(_pstFileInfo->zFullName) - 1);
+  _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
   /* Reads directory */
 
@@ -760,7 +809,7 @@ orxSTATUS orxFASTCALL orxFile_Remove(const orxSTRING _zFileName)
   else
   {
     /* Tries to remove it as a directory */
-#ifdef __orxWINDOWS__
+#ifdef __orxMSVC__
     if(_rmdir(_zFileName) == 0)
 #else /* __orxWINDOWS__ */
     if(rmdir(_zFileName) == 0)
@@ -1003,7 +1052,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
  * @param[out] _pReadData          Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1028,7 +1077,7 @@ orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s
  * @param[in] _pDataToWrite        Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1220,7 +1269,7 @@ orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 }
 
 /** Prints a formatted string to a file
- * @param[in] _pstFile             Pointer on the file descriptor
+ * @param[in] _pstFile             Pointer to the file descriptor
  * @param[in] _zString             Formatted string
  * @return Returns the number of written characters
  */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -365,7 +365,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     if((zIgnoreFromParent = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
     {
       /* Updates frame */
-      orxStructure_SetFlags(_pstSpawner->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
+      orxStructure_SetFlags(_pstSpawner->pstFrame, orxFrame_GetIgnoreFlagValues(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
     }
 
     /* Updates result */
@@ -451,7 +451,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
   /* Enabled? */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED))
   {
-    orxU32 u32SpawnNumber, i;
+    orxU32 u32SpawnNumber;
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
@@ -487,6 +487,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
     {
       orxCLOCK_INFO   stClockInfo;
       const orxSTRING zObjectName = orxNULL;
+      orxU32          i;
 
       /* Inits clock info for object simulation */
       orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
@@ -521,6 +522,9 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
 
         /* Creates object */
         pstObject = orxObject_CreateFromConfig((zObjectName != orxNULL) ? zObjectName : orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT));
+
+        /* Clears pending object */
+        _pstSpawner->pstPendingObject = orxNULL;
 
         /* Restores previous spawner */
         sstSpawner.pstCurrentSpawner = pstPreviousSpawner;
@@ -631,6 +635,9 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Decreases its active objects count */
             pstSpawner->u32ActiveObjectCount--;
 
+            /* Removes self as object's owner */
+            orxObject_SetOwner(pstObject, orxNULL);
+
             break;
           }
 
@@ -649,9 +656,6 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Gets current spawner and object */
             pstSpawner  = sstSpawner.pstCurrentSpawner;
             pstObject   = pstSpawner->pstPendingObject;
-
-            /* Clears pending object */
-            pstSpawner->pstPendingObject = orxNULL;
 
             /* Updates active object count */
             pstSpawner->u32ActiveObjectCount++;
@@ -952,7 +956,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
         && (pstSpawner->fWaveDelay > orxFLOAT_0))
         {
           orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
-          orxFLOAT  fInvDT, fSpawnerRotation, fRotation, fDT, fCoef, fDelta;
+          orxFLOAT  fInvDT, fSpawnerRotation, fDT, fCoef, fDelta;
 
           /* Gets current spawner frame values */
           orxSpawner_GetWorldPosition(pstSpawner, &vSpawnerPosition);
@@ -964,6 +968,8 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
               fCoef <= orxFLOAT_1;
               fCoef += fDelta, fDT -= pstSpawner->fWaveDelay)
           {
+            orxFLOAT fRotation;
+
             /* Gets interpolated frame values */
             orxVector_Lerp(&vPosition, &(pstSpawner->vLastPosition), &vSpawnerPosition, fCoef);
             orxVector_Lerp(&vScale, &(pstSpawner->vLastScale), &vSpawnerScale, fCoef);

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -66,6 +66,10 @@
 #define orxINPUT_KC_MODE_PREFIX_POSITIVE  '+'
 #define orxINPUT_KC_MODE_PREFIX_NEGATIVE  '-'
 
+#define orxINPUT_GET_FLAG(TYPE)                         ((orxU32)(1U << (orxU32)(TYPE)))
+#define orxINPUT_KU32_FLAG_TYPE_NONE                    0x00000000
+#define orxINPUT_KU32_MASK_TYPE_ALL                     0x0000FFFF
+
 
 /** Input type enum
  */
@@ -116,7 +120,7 @@ typedef enum __orxINPUT_EVENT_t
  */
 typedef struct __orxINPUT_EVENT_PAYLOAD_t
 {
-const orxSTRING zSetName;                               /**< Set name : 4/8 */
+  const orxSTRING zSetName;                               /**< Set name : 4/8 */
   const orxSTRING zInputName;                             /**< Input name : 8/16 */
   orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 40/48 */
   orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 72/80 */
@@ -177,6 +181,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxST
  * @return orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
+
+
+/** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)
+ * @param[in] _u32AddTypeFlags      Type flags to add
+ * @param[in] _u32RemoveTypeFlags   Type flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32RemoveTypeFlags);
 
 
 /** Is input active?

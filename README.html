@@ -1,6 +1,6 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>@font-face {
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>@font-face {
   font-family: octicons-anchor;
-  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.woff) format('woff');
 }
 
 * {
@@ -11,6 +11,8 @@ body {
     width: 980px;
     margin-right: auto;
     margin-left: auto;
+    color:#333;
+    background:#fff;
 }
 
 body .markdown-body {
@@ -721,23 +723,30 @@ pre {
   position: relative;
   border-color: #4078c0;
 }
+
+@media print {
+  body .markdown-body {
+    padding: 0;
+    border: none;
+  }
+}
 </style><title>README</title></head><body><article class="markdown-body"><p><a href="https://gitter.im/orx/orx?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge" rel="nofollow"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/orx/orx" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 <a href="https://travis-ci.org/orx/orx" rel="nofollow"><img src="https://camo.githubusercontent.com/dea1a9fd7fae03601ad3c5bec31c2034dabfe57c/68747470733a2f2f7472617669732d63692e6f72672f6f72782f6f72782e7376673f6272616e63683d6d6173746572" alt="Travis build" data-canonical-src="https://travis-ci.org/orx/orx.svg?branch=master" style="max-width:100%;"></a>
 <a href="https://ci.appveyor.com/project/iarwain/orx" rel="nofollow"><img src="https://camo.githubusercontent.com/2ce3ea8bf2415f5a5b63fcf3e89e7831cb2602c1/68747470733a2f2f63692e6170707665796f722e636f6d2f6170692f70726f6a656374732f7374617475732f616c776d34696c377831773667316f343f7376673d74727565" alt="Build status" data-canonical-src="https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true" style="max-width:100%;"></a></p>
 <h1>
-<a id="user-content-orx---portable-game-engine-version-19" class="anchor" href="#orx---portable-game-engine-version-19" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Orx - Portable Game Engine (Version 1.10)</h1>
+<a id="user-content-orx---portable-game-engine-version-111" class="anchor" href="#orx---portable-game-engine-version-111" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Orx - Portable Game Engine (Version 1.11)</h1>
 <p>Email iarwain [at] orx-project.org to contact the author; or, better,
-check <a href="http://orx-project.org" rel="nofollow">orx's homepage</a> for the most up-to-date contact information.
+check <a href="https://orx-project.org" rel="nofollow">orx's homepage</a> for the most up-to-date contact information.
 You can also come <a href="https://gitter.im/orx/orx" rel="nofollow">chat with us</a>
 if you have any questions or comments.</p>
-<p>This engine is licensed under the very permissive <a href="http://en.wikipedia.org/wiki/Zlib_License" rel="nofollow">zlib license</a>,
+<p>This engine is licensed under the very permissive <a href="https://en.wikipedia.org/wiki/Zlib_License" rel="nofollow">zlib license</a>,
 see the <a href="https://bitbucket.org/orx/orx/src/default/LICENSE" rel="nofollow">LICENSE</a> file for details.</p>
 <h2>
 <a id="user-content-summary" class="anchor" href="#summary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Summary</h2>
-<p><a href="http://orx-project.org" rel="nofollow">Orx</a> is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
+<p><a href="https://orx-project.org" rel="nofollow">Orx</a> is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.</p>
-<p>This is a release candidate for orx v1.10. If you find any bugs,
-please report them on the <a href="http://forum.orx-project.org" rel="nofollow">forum</a>, in the "Bug report - Feature request" board,
+<p>This is a release candidate for orx v1.11. If you find any bugs,
+please report them on the <a href="https://forum.orx-project.org" rel="nofollow">forum</a>, in the "Bug report - Feature request" board,
 or via orx's <a href="https://bitbucket.org/orx/orx/issues?status=new&amp;status=open" rel="nofollow">issue page/tracker</a>.</p>
 <p>Some notable features of the engine are:</p>
 <ul>
@@ -768,20 +777,23 @@ transparency (alpha blending), different blending modes, coloring, tiling and mi
 <li>plugin system</li>
 <li>screenshot capture tool (supports bmp, png, jpg, tga and dds)</li>
 </ul>
+<p>See <a href="https://orx-project.org/wiki" rel="nofollow">orx's wiki</a> for detailed information, including:</p>
+<ul>
+<li>initial setup</li>
+<li>beginner's guide</li>
+<li>tools</li>
+<li>samples</li>
+<li>detailed tutorials (both official and community-made ones)</li>
+</ul>
 <p>See the <a href="https://bitbucket.org/orx/orx/src/default/doc/html" rel="nofollow">doc/html</a> directory for the doxygen documentation of orx's API.
-The documentation for the latest release version is <a href="http://orx-project.org/orx/doc/html" rel="nofollow">available here</a> at orx's homepage.</p>
-<p>You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
-(ie. how to use the config system) on <a href="http://wiki.orx-project.org" rel="nofollow">orx's wiki</a>.<br>
-The English version is the most complete one.<br>
-Chinese and Spanish translations are entirely written and maintained by community members,
-and they might be less accurate/somewhat outdated.</p>
+The documentation for the latest release version is <a href="https://orx-project.org/orx/doc/html" rel="nofollow">available here</a> at orx's homepage.</p>
 <h2>
 <a id="user-content-supported-platforms" class="anchor" href="#supported-platforms" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported Platforms</h2>
 <p>The engine compiles and is tested for:</p>
 <ul>
 <li>Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)</li>
-<li>Windows (x86 with vs2012, x86/x86-64 with vs2013, vs2015 &amp; vs2017 and mingw32 (6.3.0) with codelite, codeblocks and GNU makefile)</li>
-<li>MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+</li>
+<li>Windows (x86/x86-64 with vs2015, vs2017 &amp; vs2019, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)</li>
+<li>MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+</li>
 <li>iOS (iPhone/iPod Touch/iPad, simulator &amp; device with xcode)</li>
 <li>Android (NDK build files, simulator &amp; device)</li>
 </ul>
@@ -818,63 +830,67 @@ Everything compiles out-of-the-box for the hardware platforms cited above.</p>
 <li>
 <code>orxCrypt</code>  : command line tool to encrypt/decrypt/merge multiple config files</li>
 <li>
-<code>orxFontGen</code>: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture &amp; .ini config file) from TrueType fonts</li>
+<code>orxFontGen</code>: command line tool (based on FreeType2) to generate custom bitmap fonts (.png texture &amp; .ini config file) from TrueType fonts</li>
 </ul>
 <h2>
 <a id="user-content-packages" class="anchor" href="#packages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Packages</h2>
-<p>You can download all the packages from <a href="http://orx.sf.net" rel="nofollow">sourceforge</a> or <a href="https://github.com/orx/orx/releases">github</a>.
+<p>You can download all the packages from <a href="https://orx.sf.net" rel="nofollow">sourceforge</a> or <a href="https://github.com/orx/orx/releases">github</a>.
 Here is a list with a small description for each package.</p>
 <ul>
 <li>
-<code>orx-doc-1.10.zip</code>                  : orx's API doxygen documentation</li>
+<code>orx-doc-1.11.zip</code>                  : orx's API doxygen documentation</li>
 <li>
-<code>orx-src-1.10.zip</code>                  : orx's source code, ready for compile after running the setup script</li>
+<code>orx-src-1.11.zip</code>                  : orx's source code, ready for compile after running the setup script</li>
 <li>
-<code>orx-dev-linux32-1.10.tar.bz2</code>      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.</li>
+<code>orx-dev-linux32-1.11.tar.bz2</code>      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-linux64-1.10.tar.bz2</code>      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.</li>
+<code>orx-dev-linux64-1.11.tar.bz2</code>      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-mac-1.10.zip</code>              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.</li>
+<code>orx-dev-mac-1.11.zip</code>              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-mingw-1.10.zip</code>            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.</li>
+<code>orx-dev-mingw-32-1.11.zip</code>         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2013-32-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.</li>
+<code>orx-dev-mingw-64-1.11.zip</code>         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2013-64-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.</li>
+<code>orx-dev-vs2015-32-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2015-32-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.</li>
+<code>orx-dev-vs2015-64-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2015-64-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.</li>
+<code>orx-dev-vs2017-32-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2017-32-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.</li>
+<code>orx-dev-vs2017-64-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-vs2017-64-1.10.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.</li>
+<code>orx-dev-vs2019-32-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.</li>
 <li>
-<code>orx-full-ios-1.10.zip</code>             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
+<code>orx-dev-vs2019-64-1.11.zip</code>        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.</li>
 <li>
-<code>orx-dev-android-1.10.zip</code>          : static embedded binaries for Android, release/profile/debug (device).</li>
+<code>orx-full-ios-1.11.zip</code>             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.</li>
 <li>
-<code>orx-dev-android-native-1.10.zip</code>   : static embedded binaries for Android Native, release/profile/debug (device).</li>
+<code>orx-dev-android-1.11.zip</code>          : static embedded binaries for Android, release/profile/debug (device).</li>
 <li>
-<code>orx-tutorial-linux32-1.10.tar.bz2</code> : tutorials for Linux (x86)</li>
+<code>orx-dev-android-native-1.11.zip</code>   : static embedded binaries for Android Native, release/profile/debug (device).</li>
 <li>
-<code>orx-tutorial-linux64-1.10.tar.bz2</code> : tutorials for Linux (x86-64)</li>
+<code>orx-tutorial-linux32-1.11.tar.bz2</code> : tutorials for Linux (x86)</li>
 <li>
-<code>orx-tutorial-mac-1.10.zip</code>         : tutorials for MacOS X (x86/x86-64)</li>
+<code>orx-tutorial-linux64-1.11.tar.bz2</code> : tutorials for Linux (x86-64)</li>
 <li>
-<code>orx-tutorial-mingw-1.10.zip</code>       : tutorials for Windows (mingw)</li>
+<code>orx-tutorial-mac-1.11.zip</code>         : tutorials for MacOS X (x86/x86-64)</li>
 <li>
-<code>orx-tutorial-vs2013-32-1.10.zip</code>   : tutorials for Windows (Visual Studio 2013, x86)</li>
+<code>orx-tutorial-mingw-32-1.11.zip</code>    : tutorials for Windows (mingw/x86)</li>
 <li>
-<code>orx-tutorial-vs2013-64-1.10.zip</code>   : tutorials for Windows (Visual Studio 2013, x86-64)</li>
+<code>orx-tutorial-mingw-64-1.11.zip</code>    : tutorials for Windows (mingw/x86-64)</li>
 <li>
-<code>orx-tutorial-vs2015-32-1.10.zip</code>   : tutorials for Windows (Visual Studio 2015, x86)</li>
+<code>orx-tutorial-vs2015-32-1.11.zip</code>   : tutorials for Windows (Visual Studio 2015, x86)</li>
 <li>
-<code>orx-tutorial-vs2015-64-1.10.zip</code>   : tutorials for Windows (Visual Studio 2015, x86-64)</li>
+<code>orx-tutorial-vs2015-64-1.11.zip</code>   : tutorials for Windows (Visual Studio 2015, x86-64)</li>
 <li>
-<code>orx-tutorial-vs2017-32-1.10.zip</code>   : tutorials for Windows (Visual Studio 2017, x86)</li>
+<code>orx-tutorial-vs2017-32-1.11.zip</code>   : tutorials for Windows (Visual Studio 2017, x86)</li>
 <li>
-<code>orx-tutorial-vs2017-64-1.10.zip</code>   : tutorials for Windows (Visual Studio 2017, x86-64)</li>
+<code>orx-tutorial-vs2017-64-1.11.zip</code>   : tutorials for Windows (Visual Studio 2017, x86-64)</li>
+<li>
+<code>orx-tutorial-vs2019-32-1.11.zip</code>   : tutorials for Windows (Visual Studio 2019, x86)</li>
+<li>
+<code>orx-tutorial-vs2019-64-1.11.zip</code>   : tutorials for Windows (Visual Studio 2019, x86-64)</li>
 </ul>
 <p>All the <code>*-dev-*</code> packages above include:</p>
 <ul>
@@ -893,7 +909,8 @@ Here is a list with a small description for each package.</p>
 </ul>
 <h2>
 <a id="user-content-compiling" class="anchor" href="#compiling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compiling</h2>
-<p>###Important - first step:</p>
+<h3>
+<a id="user-content-important---first-step" class="anchor" href="#important---first-step" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Important - first step:</h3>
 <p><strong>If you just downloaded the <code>src</code> package or cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
 This script will download all the needed dependencies and generate all the project files for your platform.
@@ -976,7 +993,7 @@ for which you're compiling. Here's a quick list of these flags:</p>
 </tr>
 <tr>
 <td align="center"><code>__orxMSVC__</code></td>
-<td>orx is being compiled with visual studio C/C</td>
+<td>orx is being compiled with visual studio C/C++</td>
 </tr>
 <tr>
 <td align="center"><code>__orxLLVM__</code></td>
@@ -984,15 +1001,15 @@ for which you're compiling. Here's a quick list of these flags:</p>
 </tr>
 <tr>
 <td align="center"><code>__orxWINDOWS__</code></td>
-<td>orx is being compiled for Windows (x86</td>
+<td>orx is being compiled for Windows</td>
 </tr>
 <tr>
 <td align="center"><code>__orxMAC__</code></td>
-<td>orx is being compiled for MacOS X (ppc/x86/x86-64</td>
+<td>orx is being compiled for MacOS X</td>
 </tr>
 <tr>
 <td align="center"><code>__orxLINUX__</code></td>
-<td>orx is being compiled for Linux (x86/x86-64</td>
+<td>orx is being compiled for Linux</td>
 </tr>
 <tr>
 <td align="center"><code>__orxIOS__</code></td>
@@ -1027,7 +1044,7 @@ for which you're compiling. Here's a quick list of these flags:</p>
 <h2>
 <a id="user-content-comments" class="anchor" href="#comments" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Comments</h2>
 <p>If you have any questions, comments, ideas or reviews, feel free to either
-post them on <a href="http://forum.orx-project.org" rel="nofollow">orx's forum</a>,
+post them on <a href="https://forum.orx-project.org" rel="nofollow">orx's forum</a>,
 come <a href="https://gitter.im/orx/orx" rel="nofollow">chat with us</a>
 or send them directly by email to iarwain [at] orx-project.org</p>
 <p>Enjoy!</p>

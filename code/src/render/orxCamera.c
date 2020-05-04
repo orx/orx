@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -832,7 +832,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         if((zIgnoreFromParent = orxConfig_GetString(orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
         {
           /* Updates frame */
-          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
+          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlagValues(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
         }
 
         /* Has group list? */
@@ -846,8 +846,17 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
           /* For all groups */
           for(i = 0, s32Number = orxConfig_GetListCount(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < s32Number; i++)
           {
-            /* Adds it */
-            orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
+            const orxSTRING zGroup;
+
+            /* Gets its name */
+            zGroup = orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i);
+
+            /* Valid? */
+            if(zGroup != orxSTRING_EMPTY)
+            {
+              /* Adds it */
+              orxCamera_AddGroupID(pstResult, orxString_GetID(zGroup), orxFALSE);
+            }
           }
         }
 

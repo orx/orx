@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -55,6 +55,8 @@
 #define orxJOYSTICK_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
 
 #define orxJOYSTICK_KZ_CONFIG_MAPPING_LIST    "MappingList"
+#define orxJOYSTICK_KZ_CONFIG_NAME            "JoyName"
+#define orxJOYSTICK_KZ_CONFIG_ID              "JoyID"
 
 
 /***************************************************************************
@@ -110,13 +112,36 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     orxS32            iButtonCount = 0;
     const orxU8      *au8Buttons;
 
+    /* Wasn't connected? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected == orxFALSE)
+    {
+      orxCHAR acJoystick[16] = {};
+
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+      /* Stores its name */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      orxConfig_SetString(acJoystick, glfwGetJoystickName((int)_u32ID));
+
+      /* Stores its id */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      orxConfig_SetString(acJoystick, glfwGetJoystickGUID((int)_u32ID));
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+
     /* Updates connection status */
     sstJoystick.astJoyInfoList[_u32ID].bIsConnected = orxTRUE;
     sstJoystick.astJoyInfoList[_u32ID].bIsGamepad   = glfwJoystickIsGamepad((int)_u32ID);
 
+    /* Clears current buttons */
+    orxMemory_Zero(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER * sizeof(unsigned char));
+
     /* Gets button values */
     au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
-    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1) * sizeof(unsigned char));
+    orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, (orxS32)(orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1)) * sizeof(unsigned char));
 
     /* Is gamepad and can retrieve its state? */
     if((sstJoystick.astJoyInfoList[_u32ID].bIsGamepad != GLFW_FALSE)
@@ -133,9 +158,12 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
       orxS32          iAxisCount = 0;
       const orxFLOAT *afAxes;
 
+      /* Clears current axes */
+      orxMemory_Zero(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, orxJOYSTICK_AXIS_SINGLE_NUMBER * sizeof(orxFLOAT));
+
       /* Gets axes values */
       afAxes = glfwGetJoystickAxes((int)_u32ID, (int *)&iAxisCount);
-      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
+      orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].afAxisInfoList, afAxes, orxMIN(iAxisCount, (orxS32)orxJOYSTICK_AXIS_SINGLE_NUMBER) * sizeof(orxFLOAT));
 
       /* Mirrors low level buttons to high level ones */
       orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, (GLFW_GAMEPAD_BUTTON_LAST + 1) * sizeof(unsigned char));
@@ -169,6 +197,26 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   }
   else
   {
+    /* Was connected? */
+    if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected != orxFALSE)
+    {
+      orxCHAR acJoystick[16] = {};
+
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+      /* Removes its name */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      orxConfig_ClearValue(acJoystick);
+
+      /* Removes its id */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      orxConfig_ClearValue(acJoystick);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+
     /* Clears info */
     orxMemory_Zero(&sstJoystick.astJoyInfoList[_u32ID], sizeof(orxJOYSTICK_INFO));
   }
@@ -373,17 +421,12 @@ orxBOOL orxFASTCALL orxJoystick_GLFW_IsButtonPressed(orxJOYSTICK_BUTTON _eButton
 
 orxBOOL orxFASTCALL orxJoystick_GLFW_IsConnected(orxU32 _u32ID)
 {
-  orxBOOL bResult;
-
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32ID > 0) && (_u32ID <= (orxJOYSTICK_BUTTON_NUMBER / orxJOYSTICK_BUTTON_SINGLE_NUMBER)));
-
-  /* Updates result */
-  bResult = (glfwJoystickPresent(_u32ID - 1) != GLFW_FALSE) ? orxTRUE : orxFALSE;
+  orxASSERT((_u32ID >= orxJOYSTICK_KU32_MIN_ID) && (_u32ID <= orxJOYSTICK_KU32_MAX_ID));
 
   /* Done! */
-  return bResult;
+  return sstJoystick.astJoyInfoList[_u32ID - orxJOYSTICK_KU32_MIN_ID].bIsConnected;
 }
 
 

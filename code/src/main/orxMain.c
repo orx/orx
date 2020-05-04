@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -119,8 +119,6 @@ orxSTATUS orxFASTCALL orxMain_Init()
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
-    const orxSTRING zGameFileName;
-
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
@@ -137,6 +135,8 @@ orxSTATUS orxFASTCALL orxMain_Init()
       /* Has game file? */
       if(orxConfig_HasValue(orxMAIN_KZ_CONFIG_GAME_FILE) != orxFALSE)
       {
+        const orxSTRING zGameFileName;
+
         /* Gets the game file name */
         zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
 

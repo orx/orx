@@ -1,0 +1,34 @@
+/**
+ * @file [name].h
+ * @date [date]
+ */
+
+#ifndef __[NAME]_H__
+#define __[NAME]_H__
+
+#define __NO_SCROLLED__
+#include "Scroll.h"
+
+/** Game Class
+ */
+class [name] : public Scroll<[name]>
+{
+public:
+
+
+private:
+
+                orxSTATUS       Bootstrap() const;
+
+                void            Update(const orxCLOCK_INFO &Info);
+
+                orxSTATUS       Init();
+                orxSTATUS       Run();
+                void            Exit();
+                void            BindObjects();
+
+
+private:
+};
+
+#endif // __[NAME]_H__

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -224,7 +224,7 @@ static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_popcount(_u32Value);
+  u32Result = (orxU32)__builtin_popcount(_u32Value);
 
 #endif /* __orxMSVC__ */
 
@@ -251,7 +251,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Va
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctz(_u32Value);
+  u32Result = (orxU32)__builtin_ctz(_u32Value);
 
 #endif /* __orxMSVC__ */
 
@@ -287,7 +287,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctzll(_u64Value);
+  u32Result = (orxU32)__builtin_ctzll(_u64Value);
 
 #endif /* __orxMSVC__ */
 

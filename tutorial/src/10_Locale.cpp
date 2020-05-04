@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,16 +104,15 @@ Logo::Logo()
   // Adds ourselves to the orxOBJECT
   orxObject_SetUserData(mpstObject, this);
 
-  // Creates and stores our legend object
-  mpstLegend = orxObject_CreateFromConfig("Legend");
+  // Stores our legend object (we don't use it in this tutorial, this is done for demonstration purposes)
+  mpstLegend = orxOBJECT(orxObject_GetChild(mpstObject));
 }
 
 // D-tor
 Logo::~Logo()
 {
-  // Deletes our orxOBJECTs
+  // Deletes our orxOBJECT
   orxObject_Delete(mpstObject);
-  orxObject_Delete(mpstLegend);
 }
 
 

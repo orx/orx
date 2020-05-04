@@ -15,3 +15,7 @@ tools/**/lib
 tutorial/bin
 tutorial/build
 tutorial/lib
+android*/**/.gradle
+android*/**/.idea
+android*/**/.external*
+android*/**/*.iml

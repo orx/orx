@@ -172,6 +172,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga20e11431d707c5ce00edae743ef4fecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4a93da7541fa0b08c97b165375a76896"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga4a93da7541fa0b08c97b165375a76896">orxCommand_Evaluate</a> (const orxSTRING _zCommandLine, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult)</td></tr>
 <tr class="separator:ga4a93da7541fa0b08c97b165375a76896"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf6273ab83fe3e5384e3e533f80309c7e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#gaf6273ab83fe3e5384e3e533f80309c7e">orxCommand_EvaluateWithGUID</a> (const orxSTRING _zCommandLine, orxU64 _u64GUID, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult)</td></tr>
+<tr class="separator:gaf6273ab83fe3e5384e3e533f80309c7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga317d7bfeacbcb33333bd37f8a0b70a38"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga317d7bfeacbcb33333bd37f8a0b70a38">orxCommand_Execute</a> (const orxSTRING _zCommand, orxU32 _u32ArgNumber, const <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_astArgList, <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *_pstResult)</td></tr>
 <tr class="separator:ga317d7bfeacbcb33333bd37f8a0b70a38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga27af115986358699ec978008aeca8455"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_command.html#ga27af115986358699ec978008aeca8455">orxCommand_Exit</a> ()</td></tr>
@@ -495,6 +497,47 @@ Functions</h2></td></tr>
 <p>Evaluates a command </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zCommandLine</td><td>Command name + arguments </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pstResult</td><td>Variable that will contain the result </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Command result if found, orxNULL otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaf6273ab83fe3e5384e3e533f80309c7e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a>* orxFASTCALL orxCommand_EvaluateWithGUID </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zCommandLine</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU64&#160;</td>
+          <td class="paramname"><em>_u64GUID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_c_o_m_m_a_n_d___v_a_r.html">orxCOMMAND_VAR</a> *&#160;</td>
+          <td class="paramname"><em>_pstResult</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Evaluates a command with a specific GUID </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zCommandLine</td><td>Command name + arguments </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u64GUID</td><td>GUID to use in place of the GUID markers in the command </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pstResult</td><td>Variable that will contain the result </td></tr>
   </table>
   </dd>

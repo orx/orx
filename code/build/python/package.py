@@ -13,10 +13,6 @@ platformlist = [
     'tutovs2010',
     'vs2012',
     'tutovs2012',
-    'vs2013-32',
-    'tutovs2013-32',
-    'vs2013-64',
-    'tutovs2013-64',
     'vs2015-32',
     'tutovs2015-32',
     'vs2015-64',
@@ -24,9 +20,15 @@ platformlist = [
     'vs2017-32',
     'tutovs2017-32',
     'vs2017-64',
+    'vs2019-32',
+    'tutovs2019-32',
+    'vs2019-64',
+    'tutovs2019-64',
     'tutovs2017-64',
-    'mingw',
-    'tutomingw',
+    'mingw-32',
+    'mingw-64',
+    'tutomingw-32',
+    'tutomingw-64',
     'mac',
     'tutomac',
     'linux32',
@@ -323,38 +325,6 @@ platforminfolist = {
         'folderinfolist':   tutorialfolderinfolist
     },
 
-    'vs2013-32': {
-        'foldername':       'dev-vs2013-32',
-        'filename':         'dev-vs2013-32',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'vs2013-64': {
-        'foldername':       'dev-vs2013-64',
-        'filename':         'dev-vs2013-64',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'tutovs2013-32': {
-        'foldername':       'tutorial-vs2013-32',
-        'filename':         'tutorial-vs2013-32',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'tutovs2013-64': {
-        'foldername':       'tutorial-vs2013-64',
-        'filename':         'tutorial-vs2013-64',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
     'vs2015-32': {
         'foldername':       'dev-vs2015-32',
         'filename':         'dev-vs2015-32',
@@ -419,17 +389,65 @@ platforminfolist = {
         'folderinfolist':   tutorialfolderinfolist
     },
 
-    'mingw': {
-        'foldername':       'dev-mingw',
-        'filename':         'dev-mingw',
+    'vs2019-32': {
+        'foldername':       'dev-vs2019-32',
+        'filename':         'dev-vs2019-32',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'vs2019-64': {
+        'foldername':       'dev-vs2019-64',
+        'filename':         'dev-vs2019-64',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutovs2019-32': {
+        'foldername':       'tutorial-vs2019-32',
+        'filename':         'tutorial-vs2019-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutovs2019-64': {
+        'foldername':       'tutorial-vs2019-64',
+        'filename':         'tutorial-vs2019-64',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'mingw-32': {
+        'foldername':       'dev-mingw-32',
+        'filename':         'dev-mingw-32',
         'format':           'zip',
         'fileinfolist':     mingwfileinfolist,
         'folderinfolist':   devfolderinfolist
     },
 
-    'tutomingw': {
-        'foldername':       'tutorial-mingw',
-        'filename':         'tutorial-mingw',
+    'mingw-64': {
+        'foldername':       'dev-mingw-64',
+        'filename':         'dev-mingw-64',
+        'format':           'zip',
+        'fileinfolist':     mingwfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutomingw-32': {
+        'foldername':       'tutorial-mingw-32',
+        'filename':         'tutorial-mingw-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialmingwfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutomingw-64': {
+        'foldername':       'tutorial-mingw-64',
+        'filename':         'tutorial-mingw-64',
         'format':           'zip',
         'fileinfolist':     tutorialmingwfileinfolist,
         'folderinfolist':   tutorialfolderinfolist

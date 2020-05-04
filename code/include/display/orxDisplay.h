@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -197,49 +197,52 @@ typedef struct __orxCOLOR_t
 {
   union
   {
-    orxVECTOR vRGB;                     /**< RGB components: 12 */
-    orxVECTOR vHSL;                     /**< HSL components: 12 */
-    orxVECTOR vHSV;                     /**< HSV components: 12 */
+    orxVECTOR vRGB;                                         /**< RGB components: 12 */
+    orxVECTOR vHSL;                                         /**< HSL components: 12 */
+    orxVECTOR vHSV;                                         /**< HSV components: 12 */
   };
-  orxFLOAT  fAlpha;                     /**< Alpha component: 16 */
+  orxFLOAT  fAlpha;                                         /**< Alpha component: 16 */
 
 } orxCOLOR;
 
 
 /** Config parameters
  */
-#define orxDISPLAY_KZ_CONFIG_SECTION        "Display"
-#define orxDISPLAY_KZ_CONFIG_WIDTH          "ScreenWidth"
-#define orxDISPLAY_KZ_CONFIG_HEIGHT         "ScreenHeight"
-#define orxDISPLAY_KZ_CONFIG_DEPTH          "ScreenDepth"
-#define orxDISPLAY_KZ_CONFIG_POSITION       "ScreenPosition"
-#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE   "RefreshRate"
-#define orxDISPLAY_KZ_CONFIG_FULLSCREEN     "FullScreen"
-#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE   "AllowResize"
-#define orxDISPLAY_KZ_CONFIG_DECORATION     "Decoration"
-#define orxDISPLAY_KZ_CONFIG_TITLE          "Title"
-#define orxDISPLAY_KZ_CONFIG_SMOOTH         "Smoothing"
-#define orxDISPLAY_KZ_CONFIG_VSYNC          "VSync"
-#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER    "DepthBuffer"
-#define orxDISPLAY_KZ_CONFIG_SHADER_VERSION "ShaderVersion"
-#define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST "ShaderExtensionList"
-#define orxDISPLAY_KZ_CONFIG_MONITOR        "Monitor"
-#define orxDISPLAY_KZ_CONFIG_CURSOR         "Cursor"
-#define orxDISPLAY_KZ_CONFIG_ICON_LIST      "IconList"
+#define orxDISPLAY_KZ_CONFIG_SECTION                        "Display"
+#define orxDISPLAY_KZ_CONFIG_WIDTH                          "ScreenWidth"
+#define orxDISPLAY_KZ_CONFIG_HEIGHT                         "ScreenHeight"
+#define orxDISPLAY_KZ_CONFIG_DEPTH                          "ScreenDepth"
+#define orxDISPLAY_KZ_CONFIG_POSITION                       "ScreenPosition"
+#define orxDISPLAY_KZ_CONFIG_REFRESH_RATE                   "RefreshRate"
+#define orxDISPLAY_KZ_CONFIG_FULLSCREEN                     "FullScreen"
+#define orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE                   "AllowResize"
+#define orxDISPLAY_KZ_CONFIG_DECORATION                     "Decoration"
+#define orxDISPLAY_KZ_CONFIG_TITLE                          "Title"
+#define orxDISPLAY_KZ_CONFIG_SMOOTH                         "Smoothing"
+#define orxDISPLAY_KZ_CONFIG_VSYNC                          "VSync"
+#define orxDISPLAY_KZ_CONFIG_DEPTHBUFFER                    "DepthBuffer"
+#define orxDISPLAY_KZ_CONFIG_SHADER_VERSION                 "ShaderVersion"
+#define orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST          "ShaderExtensionList"
+#define orxDISPLAY_KZ_CONFIG_MONITOR                        "Monitor"
+#define orxDISPLAY_KZ_CONFIG_CURSOR                         "Cursor"
+#define orxDISPLAY_KZ_CONFIG_ICON_LIST                      "IconList"
+#define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
+#define orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER            "TextureUnitNumber"
+#define orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER             "DrawBufferNumber"
 
 
 /** Shader texture suffixes
  */
-#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP     "_top"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT    "_left"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM  "_bottom"
-#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT   "_right"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_TOP                     "_top"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT                    "_left"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM                  "_bottom"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT                   "_right"
 
 
 /** Shader extension actions
  */
-#define orxDISPLAY_KC_SHADER_EXTENSION_ADD  '+'
-#define orxDISPLAY_KC_SHADER_EXTENSION_REMOVE '-'
+#define orxDISPLAY_KC_SHADER_EXTENSION_ADD                  '+'
+#define orxDISPLAY_KC_SHADER_EXTENSION_REMOVE               '-'
 
 
 /** Event enum
@@ -461,7 +464,7 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
   orxASSERT(_pstColor != orxNULL);
 
   /* Clamps RGB components */
-  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
+  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_BLACK, &orxVECTOR_WHITE);
 
   /* De-normalizes vector */
   orxVector_Mulf(&vColor, &vColor, orxCOLOR_DENORMALIZER);
@@ -958,14 +961,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBlendMode(or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
 
-/** Sets a bitmap color key (used with non alpha transparency)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to use as transparent one
- * @param[in]   _bEnable                              Enable / disable transparence for this color
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
-
 /** Sets a bitmap data (RGBA memory format)
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @param[in]   _au8Data                              Data (4 channels, RGBA)
@@ -982,18 +977,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapData(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapData(const orxBITMAP *_pstBitmap, orxU8 *_au8Data, orxU32 _u32ByteNumber);
 
-/** Sets a bitmap color (lighting/hue)
+/** Sets a partial (rectangle) bitmap data (RGBA memory format)
  * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _stColor                              Color to apply on the bitmap
+ * @param[in]   _au8Data                              Data (4 channels, RGBA)
+ * @param[in]   _u32X                                 Origin's X coord of the rectangle area to set
+ * @param[in]   _u32Y                                 Origin's Y coord of the rectangle area to set
+ * @param[in]   _u32Width                             Width of the rectangle area to set
+ * @param[in]   _u32Height                            Height of the rectangle area to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
-
-/** Gets bitmap color (lighting/hue)
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @return orxRGBA
- */
-extern orxDLLAPI orxRGBA orxFASTCALL                  orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetPartialBitmapData(orxBITMAP *_pstBitmap, const orxU8 *_au8Data, orxU32 _u32X, orxU32 _u32Y, orxU32 _u32Width, orxU32 _u32Height);
 
 /** Gets a bitmap size
  * @param[in]   _pstBitmap                            Concerned bitmap
@@ -1013,22 +1006,24 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetBitmapID(con
 /** Transforms (and blits onto another) a bitmap
  * @param[in]   _pstSrc                               Bitmap to transform and draw
  * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _stColor                              Color
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformBitmap(const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Transforms a text (onto a bitmap)
  * @param[in]   _zString                              String to display
  * @param[in]   _pstFont                              Font bitmap
  * @param[in]   _pstMap                               Character map
  * @param[in]   _pstTransform                         Transformation info (position, scale, rotation, ...)
+ * @param[in]   _stColor                              Color
  * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_TransformText(const orxSTRING _zString, const orxBITMAP *_pstFont, const orxCHARACTER_MAP *_pstMap, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Draws a line

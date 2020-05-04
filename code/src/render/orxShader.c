@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1026,7 +1026,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             pstParamValue != orxNULL;
             pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
         {
+          orxEVENT                stEvent;
           orxSHADER_EVENT_PAYLOAD stPayload;
+
+          /* Inits event */
+          orxEVENT_INIT(stEvent, orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
           /* Inits payload */
           stPayload.pstShader     = _pstShader;
@@ -1044,10 +1048,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               stPayload.fValue = pstParamValue->fValue;
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-              /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
+              if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+              {
+                /* Sets it */
+                orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
+              }
 
               break;
             }
@@ -1058,10 +1063,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               stPayload.pstValue = (pstParamValue->pstValue != orxNULL) ? pstParamValue->pstValue : pstOwnerTexture;
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-              /* Sets it */
-              orxDisplay_SetShaderBitmap(_pstShader->hData, pstParamValue->s32ID, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
+              if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+              {
+                /* Sets it */
+                orxDisplay_SetShaderBitmap(_pstShader->hData, pstParamValue->s32ID, (stPayload.pstValue != orxNULL) ? orxTexture_GetBitmap(stPayload.pstValue) : orxNULL);
+              }
 
               break;
             }
@@ -1072,10 +1078,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               orxVector_Copy(&(stPayload.vValue), &(pstParamValue->vValue));
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-              /* Sets it */
-              orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->s32ID, &(stPayload.vValue));
+              if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+              {
+                /* Sets it */
+                orxDisplay_SetShaderVector(_pstShader->hData, pstParamValue->s32ID, &(stPayload.vValue));
+              }
 
               break;
             }
@@ -1086,10 +1093,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
               stPayload.fValue = fTime;
 
               /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
-
-              /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
+              if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+              {
+                /* Sets it */
+                orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, stPayload.fValue);
+              }
 
               break;
             }

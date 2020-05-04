@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -210,6 +210,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     /* Updates status */
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
+
+    /* Inits random with time-based seed */
+    orxMath_InitRandom((orxU32)orxSystem_GetRealTime());
   }
 
   /* Done! */

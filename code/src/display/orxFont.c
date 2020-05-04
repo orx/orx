@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -394,7 +394,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         if(orxFont_SetTexture(_pstFont, pstTexture) != orxSTATUS_FAILURE)
         {
           orxVECTOR       vCharacterSize, vCharacterSpacing;
-          orxFLOAT       *afCharacterWidthList = orxNULL, fCharacterHeight;
           const orxSTRING zCharacterList;
 
           /* Sets its owner */
@@ -409,7 +408,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           /* Sets it */
           if(orxFont_SetCharacterList(_pstFont, zCharacterList) != orxSTATUS_FAILURE)
           {
-            orxU32 u32CharacterCount;
+            orxFLOAT *afCharacterWidthList = orxNULL, fCharacterHeight;
+            orxU32    u32CharacterCount;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;

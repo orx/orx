@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,14 +57,14 @@
  */
 
 #define __orxVERSION_MAJOR__        1
-#define __orxVERSION_MINOR__        10
+#define __orxVERSION_MINOR__        11
 
 #ifndef __orxVERSION_RELEASE__
   #define __orxVERSION_RELEASE__    dev
 #endif /* __orxVERSION_RELEASE__ */
 
 #ifndef __orxVERSION_BUILD__
-  #define __orxVERSION_BUILD__      0UL
+  #define __orxVERSION_BUILD__      0
 #endif /* __orxVERSION_BUILD__ */
 
 #define __orxVERSION_STRING__       orxSTRINGIFY(__orxVERSION_MAJOR__) "." orxSTRINGIFY(__orxVERSION_MINOR__) "-" orxSTRINGIFY(__orxVERSION_RELEASE__)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -217,7 +217,6 @@ static orxINLINE void orxModule_SetupAll()
  * @param[in]   _pfnSetup                 Module setup callback
  * @param[in]   _pfnInit                  Module init callback
  * @param[in]   _pfnExit                  Module exit callback
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
@@ -276,7 +275,6 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
  */
 orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
 {
-  orxU64    u64Depend;
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -303,6 +301,8 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     /* Is not initialized? */
     if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING)))
     {
+      orxU64 u64Depend;
+
       /* For all dependencies */
       for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
           u64Depend != (orxU64)0;
@@ -442,8 +442,6 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
  */
 void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 {
-  orxU32 u32Index;
-
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
 
@@ -451,6 +449,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
   {
     orxU64 u64Depend;
+    orxU32 u32Index;
 
     /* Cleans flags */
     sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);

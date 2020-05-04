@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -155,12 +155,11 @@ typedef struct __orxBODY_PART_DEF_t
 
     struct
     {
-      orxVECTOR v0;                                   /**< Edge v0 (ghost): 44 */
-      orxVECTOR v1;                                   /**< Edge v1 : 56 */
-      orxVECTOR v2;                                   /**< Edge v2 : 68 */
-      orxVECTOR v3;                                   /**< Edge v3 (ghost): 80 */
-      orxBOOL   bHasVertex0;                          /**< Edge Has v0 : 84 */
-      orxBOOL   bHasVertex3;                          /**< Edge Has v3 : 88 */
+      orxVECTOR avVertices[2];                        /**< Edge v2 : 56 */
+      orxVECTOR vPrevious;                            /**< Previous vertex (ghost) : 68 */
+      orxVECTOR vNext;                                /**< Next vertex (ghost) : 80 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 84 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 88 */
 
     } stEdge;
 
@@ -171,8 +170,8 @@ typedef struct __orxBODY_PART_DEF_t
       orxVECTOR*avVertices;                           /**< Chain vertices : 60 */
       orxU32    u32VertexCount;                       /**< Chain vertex count : 64 */
       orxBOOL   bIsLoop;                              /**< Loop chain : 68 */
-      orxBOOL   bHasPrevious;                         /**< Has Previous vertex : 72 */
-      orxBOOL   bHasNext;                             /**< Has Next vertex : 76 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 72 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 76 */
 
     } stChain;
 
@@ -241,8 +240,8 @@ typedef struct __orxBODY_JOINT_DEF_t
     struct
     {
       orxVECTOR vTranslationAxis;                     /**< Translation axis : 64 */
-      orxFLOAT  fMinTranslation;                      /**< Min translation : 68 */
-      orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 68 */
+      orxFLOAT  fDamping;                             /**< Damping : 72 */
       orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
       orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
 
@@ -610,18 +609,64 @@ extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartSelfFlag
  */
 extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
-/** Is a physical body part solid?
- * @param[in]   _pstBodyPart                          Concerned physical body part
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
-
 /** Sets a physical body part solid
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @param[in]   _bSolid                               Solid or sensor?
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+/** Is a physical body part solid?
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets friction of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fFriction                            Friction
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction);
+
+/** Gets friction of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Friction
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets restitution of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fRestitution                         Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution);
+
+/** Gets restitution of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Restitution
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets density of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fDensity                             Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity);
+
+/** Gets density of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Density
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _pvPosition                           Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition);
 
 
 /** Enables a (revolute) body joint motor
@@ -665,12 +710,23 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
  * @param[in]   _pvEnd                                End of raycast
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
- * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
+ * @param[in]   _bEarlyExit                           Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Picks bodies in contact with the given axis aligned box
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _ahUserDataList                       List of user data to fill
+ * @param[in]   _u32Number                            Number of user data
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number);
 
 
 /** Enables/disables physics simulation

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -465,14 +465,15 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT 
 /** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
  *
- * This function is typically used to iterate over the children of an object. For example;
+ * This function is typically used to iterate over the children of an object. For example:
  * @code
- * for(orxOBJECT * pstChild = orxObject_GetChild(pstObject);
- *     pstChild;
- *     pstChild = orxObject_GetSibling(pstChild))
+ * for(orxOBJECT *pstChild = orxOBJECT(orxObject_GetChild(pstObject));
+ *     pstChild != orxNULL;
+ *     pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
  * {
- *     do_something(pstChild);
- * } @endcode
+ *     DoSomething(pstChild);
+ * }
+ * @endcode
  * @param[in]   _pstObject    Concerned object
  * @return      First child structure (object, spawner, camera or frame) / orxNULL
  */
@@ -498,6 +499,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Attach(orxOBJECT *_pstObje
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Detach(orxOBJECT *_pstObject);
+
+/** Logs all parents of an object, including their frame data.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LogParents(const orxOBJECT *_pstObject);
 /** @} */
 
 
@@ -517,6 +524,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pst
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Sets the relative animation frequency for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Gets an object's relative animation frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimFrequency(const orxOBJECT *_pstObject);
 
 /** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().
@@ -548,6 +568,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetTargetAnimRecursive(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+
+/** Gets current animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Current animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetCurrentAnim(const orxOBJECT *_pstObject);
+
+/** Gets target animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Target animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTargetAnim(const orxOBJECT *_pstObject);
 
 /** Is current animation test.
  * @param[in]   _pstObject      Concerned object
@@ -922,6 +954,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
 
+/** Sets smoothing for an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetSmoothingRecursive(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
+
 /** Gets object smoothing.
  * @param[in]   _pstObject     Concerned object
  * @return Smoothing type (enabled, default or none)
@@ -1025,6 +1064,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetRepeat(const orxOBJECT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+/** Sets blend mode of an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetBlendModeRecursive(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
+
 /** Object has blend mode accessor?
  * @param[in]   _pstObject      Concerned object
  * @return      orxTRUE / orxFALSE
@@ -1103,7 +1149,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_
  * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
  * objects.
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _stGroupID     Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID);
@@ -1111,7 +1157,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvP
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
  * orxObject_CreateNeighborList() to get all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
- * @param[in]   _stGroupID     Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _stGroupID);

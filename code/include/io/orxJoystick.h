@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -230,6 +230,9 @@ typedef enum __orxJOYSTICK_AXIS_t
 
 #undef orxJOYSTICK_DECLARE_BUTTON_ENUM
 #undef orxJOYSTICK_DECLARE_AXIS_ENUM
+
+#define orxJOYSTICK_KU32_MIN_ID               1
+#define orxJOYSTICK_KU32_MAX_ID               (orxJOYSTICK_BUTTON_NUMBER / orxJOYSTICK_BUTTON_SINGLE_NUMBER)
 
 
 /***************************************************************************

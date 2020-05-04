@@ -6,6 +6,8 @@ var orx_joystick_8h =
     [ "orxJOYSTICK_GET_BUTTON", "group__orx_joystick.html#ga3775b7637ef336c1b912e700b7e74529", null ],
     [ "orxJOYSTICK_GET_ID_FROM_AXIS", "group__orx_joystick.html#ga0d8bce4e8cc6613c25eea5fadb5f1e28", null ],
     [ "orxJOYSTICK_GET_ID_FROM_BUTTON", "group__orx_joystick.html#gae68737bb1b4e6da340c7606ac4927790", null ],
+    [ "orxJOYSTICK_KU32_MAX_ID", "group__orx_joystick.html#ga2db095870cde5bdfff649fec696bb510", null ],
+    [ "orxJOYSTICK_KU32_MIN_ID", "group__orx_joystick.html#ga97b46e1f395d1259f6a43fa0bd07041d", null ],
     [ "orxJOYSTICK_AXIS", "group__orx_joystick.html#gaac676f97aec33fc1dad588ae845d5642", [
       [ "orxJOYSTICK_AXIS_LX_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a2f26ddc384bc754035f3a31984429c1e", null ],
       [ "orxJOYSTICK_AXIS_LY_1", "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642aeb3ab14ea92153fa0868e1406f87cd84", null ],

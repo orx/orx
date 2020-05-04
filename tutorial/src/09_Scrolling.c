@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -145,7 +145,6 @@ orxSTATUS orxFASTCALL Init()
 {
   orxVIEWPORT    *pstViewport;
   orxCLOCK       *pstClock;
-  orxU32          i;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
   orxINPUT_MODE   eMode;
@@ -195,21 +194,8 @@ orxSTATUS orxFASTCALL Init()
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
-  /* Creates sky */
-  orxObject_CreateFromConfig("Sky");
-
-  /* Pushes tutorial config section */
-  orxConfig_PushSection("Tutorial");
-
-  /* For all requested clouds */
-  for(i = 0; i < orxConfig_GetU32("CloudNumber"); i++)
-  {
-    /* Creates it */
-    orxObject_CreateFromConfig("Cloud");
-  }
-
-  /* Pops config section */
-  orxConfig_PopSection();
+  /* Creates scene */
+  orxObject_CreateFromConfig("Scene");
 
   /* Done! */
   return orxSTATUS_SUCCESS;

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -169,6 +169,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSoundFromC
  * @return      orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL          orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Gets how many sounds are currently in use
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxSoundPointer_GetCount(const orxSOUNDPOINTER *_pstSoundPointer);
 
 #endif /* _orxSOUNDPOINTER_H_ */
 

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -981,6 +981,33 @@ orxFLOAT orxFASTCALL orxFXPointer_GetTime(const orxFXPOINTER *_pstFXPointer)
 
   /* Done! */
   return fResult;
+}
+
+/** Gets how many FXs are currently in use
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxFXPointer_GetCount(const orxFXPOINTER *_pstFXPointer)
+{
+  orxU32 i, u32Result = 0;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* For all FXs */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    /* Is valid? */
+    if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
+    {
+      /* Updates result */
+      u32Result++;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }
 
 /** FXPointer time set accessor

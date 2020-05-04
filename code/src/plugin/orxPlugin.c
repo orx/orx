@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -331,7 +331,7 @@ static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginI
 static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction, orxBOOL _bEmbedded)
 {
   const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
-  orxU32                          u32PluginIndex, u32FunctionIndex;
+  orxU32                          u32PluginIndex;
   orxSTATUS                       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -349,6 +349,8 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
@@ -390,8 +392,8 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
  */
 static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
-  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32 u32PluginIndex, u32FunctionIndex;
+  const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
+  orxU32                          u32PluginIndex;
 
   /* Checks */
   orxASSERT(_pfnFunctionInfo != orxNULL);
@@ -408,6 +410,8 @@ static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
@@ -676,9 +680,8 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _eModuleID              Corresponding module ID
- * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
- * @return nothing.
  */
 void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
@@ -704,7 +707,6 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _pfnPluginInit          Embedded plug-in init function
- * @return nothing
  */
 void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit)
 {

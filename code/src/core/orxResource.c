@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1619,10 +1619,8 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   /* For all keys */
   for(i = 0, u32SectionCount = orxConfig_GetKeyCount(); i < u32SectionCount; i++)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
-    const orxSTRING     zGroup;
-    orxSTRINGID         stGroupID;
-    orxS32              j, jCount;
+    const orxSTRING zGroup;
+    orxSTRINGID     stGroupID;
 
     /* Gets group */
     zGroup = orxConfig_GetKey(i);
@@ -1633,6 +1631,9 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     /* Is not watch list? */
     if(stGroupID != orxString_ToCRC(orxRESOURCE_KZ_CONFIG_WATCH_LIST))
     {
+      orxRESOURCE_GROUP  *pstGroup = orxNULL;
+      orxS32              j, jCount;
+
       /* Finds it */
       for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
           (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
@@ -2107,7 +2108,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
       orxASSERT(pstOpenInfo != orxNULL);
 
       /* Inits it */
-      pstOpenInfo->pstTypeInfo  = &(pstType->stInfo);
+      pstOpenInfo->pstTypeInfo = &(pstType->stInfo);
       pstOpenInfo->u32OpCount = 0;
 
       /* Opens it */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -54,7 +54,7 @@
 #define orxCONFIG_KZ_RESOURCE_GROUP           "Config"  /**< Config resource group */
 
 
- /** Event enum
+/** Event enum
  */
 typedef enum __orxCONFIG_EVENT_t
 {
@@ -70,6 +70,10 @@ typedef enum __orxCONFIG_EVENT_t
 
 /** Config callback function type to use with save function */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
+
+/** Config callback function type to use with clear function */
+typedef orxBOOL (orxFASTCALL *orxCONFIG_CLEAR_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName);
+
 typedef orxSTATUS (orxFASTCALL *orxCONFIG_BOOTSTRAP_FUNCTION)();
 
 
@@ -139,7 +143,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ReloadHistory();
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
  * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
- * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
+ * @param[in] _pfnSaveCallback  Callback used to filter sections/keys to save. If null, all sections/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
@@ -247,9 +251,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxU32 _u32Se
 
 
 /** Clears all config info
-* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _pfnClearCallback Callback used to filter sections/keys to clear. If null, all sections/keys will be cleared
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Clear();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback);
 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear

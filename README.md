@@ -2,27 +2,27 @@
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
-Orx - Portable Game Engine (Version 1.10)
+Orx - Portable Game Engine (Version 1.11)
 ========================================
 
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
-check [orx's homepage](http://orx-project.org) for the most up-to-date contact information.
+check [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
 You can also come [chat with us](https://gitter.im/orx/orx)
 if you have any questions or comments.
 
-This engine is licensed under the very permissive [zlib license](http://en.wikipedia.org/wiki/Zlib_License),
+This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
 see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for details.
 
 
 Summary
 -------
 
-[Orx](http://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
+[Orx](https://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.10. If you find any bugs,
-please report them on the [forum](http://forum.orx-project.org), in the "Bug report - Feature request" board,
+This is a release candidate for orx v1.11. If you find any bugs,
+please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
 Some notable features of the engine are:
@@ -54,14 +54,15 @@ Some notable features of the engine are:
 - plugin system
 - screenshot capture tool (supports bmp, png, jpg, tga and dds)
 
-See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
-The documentation for the latest release version is [available here](http://orx-project.org/orx/doc/html) at orx's homepage.
+See [orx's wiki](https://orx-project.org/wiki) for detailed information, including:
+- initial setup
+- beginner's guide
+- tools
+- samples
+- detailed tutorials (both official and community-made ones)
 
-You can find details about the tutorials (as well as community-made ones), the tools and the data-driven side of orx
-(ie. how to use the config system) on [orx's wiki](http://wiki.orx-project.org).  
-The English version is the most complete one.  
-Chinese and Spanish translations are entirely written and maintained by community members,
-and they might be less accurate/somewhat outdated.
+See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
+The documentation for the latest release version is [available here](https://orx-project.org/orx/doc/html) at orx's homepage.
 
 
 Supported Platforms
@@ -70,8 +71,8 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86 with vs2012, x86/x86-64 with vs2013, vs2015 & vs2017 and mingw32 (6.3.0) with codelite, codeblocks and GNU makefile)
-- MacOS X (x86/x86-64/ppc/ppc64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.5+
+- Windows (x86/x86-64 with vs2015, vs2017 & vs2019, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)
+- MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
 
@@ -113,40 +114,42 @@ All the 11 basic and advanced official tutorials are shipped with the dev packag
 Some tools (precompiled binaries only) are also shipped with the dev packages:
 
 - `orxCrypt`  : command line tool to encrypt/decrypt/merge multiple config files
-- `orxFontGen`: command line tool (based on FreeType2) to generate custom bitmap fonts (.tga texture & .ini config file) from TrueType fonts
+- `orxFontGen`: command line tool (based on FreeType2) to generate custom bitmap fonts (.png texture & .ini config file) from TrueType fonts
 
 
 Packages
 --------
 
-You can download all the packages from [sourceforge](http://orx.sf.net) or [github](https://github.com/orx/orx/releases).
+You can download all the packages from [sourceforge](https://orx.sf.net) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.10.zip`                  : orx's API doxygen documentation
-- `orx-src-1.10.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.10.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.10.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.10.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-1.10.zip`            : dynamic embedded binaries for Windows (mingw), release/profile/debug + tools.
-- `orx-dev-vs2013-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2013, x86), release/profile/debug + tools.
-- `orx-dev-vs2013-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2013, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2015-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
-- `orx-dev-vs2015-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.10.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.10.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.10.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.10.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.10.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.10.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.10.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-1.10.zip`       : tutorials for Windows (mingw)
-- `orx-tutorial-vs2013-32-1.10.zip`   : tutorials for Windows (Visual Studio 2013, x86)
-- `orx-tutorial-vs2013-64-1.10.zip`   : tutorials for Windows (Visual Studio 2013, x86-64)
-- `orx-tutorial-vs2015-32-1.10.zip`   : tutorials for Windows (Visual Studio 2015, x86)
-- `orx-tutorial-vs2015-64-1.10.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
-- `orx-tutorial-vs2017-32-1.10.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.10.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-doc-1.11.zip`                  : orx's API doxygen documentation
+- `orx-src-1.11.zip`                  : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.11.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.11.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.11.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.11.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.11.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
+- `orx-dev-vs2015-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
+- `orx-dev-vs2015-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.11.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.11.zip`          : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.11.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.11.tar.bz2` : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.11.tar.bz2` : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.11.zip`         : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-32-1.11.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.11.zip`    : tutorials for Windows (mingw/x86-64)
+- `orx-tutorial-vs2015-32-1.11.zip`   : tutorials for Windows (Visual Studio 2015, x86)
+- `orx-tutorial-vs2015-64-1.11.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
+- `orx-tutorial-vs2017-32-1.11.zip`   : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.11.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.11.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.11.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
 
 All the `*-dev-*` packages above include:
 
@@ -167,7 +170,7 @@ All the `*-tutorial-*` packages above include:
 Compiling
 ---------
 
-###Important - first step:
+### Important - first step:
 
 **If you just downloaded the `src` package or cloned orx with mercurial or git, you will need to run the setup.bat / setup.sh script
 that's located at its root before being able to compile the engine.
@@ -219,11 +222,11 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxLITTLE_ENDIAN__`  | orx is being compiled for a little endian architecture
   `__orxBIG_ENDIAN__`     | orx is being compiled for a big endian architecture
   `__orxGCC__`            | orx is being compiled with gcc
-  `__orxMSVC__`           | orx is being compiled with visual studio C/C
+  `__orxMSVC__`           | orx is being compiled with visual studio C/C++
   `__orxLLVM__`           | orx is being compiled with llvm/clang
-  `__orxWINDOWS__`        | orx is being compiled for Windows (x86
-  `__orxMAC__`            | orx is being compiled for MacOS X (ppc/x86/x86-64
-  `__orxLINUX__`          | orx is being compiled for Linux (x86/x86-64
+  `__orxWINDOWS__`        | orx is being compiled for Windows
+  `__orxMAC__`            | orx is being compiled for MacOS X
+  `__orxLINUX__`          | orx is being compiled for Linux
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
   `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
@@ -237,7 +240,7 @@ Comments
 --------
 
 If you have any questions, comments, ideas or reviews, feel free to either
-post them on [orx's forum](http://forum.orx-project.org),
+post them on [orx's forum](https://forum.orx-project.org),
 come [chat with us](https://gitter.im/orx/orx)
 or send them directly by email to iarwain [at] orx-project.org
 

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -176,7 +176,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
  */
 orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
 {
-  orxU32 u32Result = 0, u32Count, i;
+  orxU32 u32Result = 0, u32Count;
 
   /* Checks */
   orxASSERT(_zFlag != orxNULL);
@@ -197,6 +197,8 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
     const orxSTRING azFlagList[u32Count + 1];
 
 #endif /* __orxMSVC__ */
+
+    orxU32 i;
 
     /* For all flags */
     for(i = 0; i < u32Count; i++)
@@ -298,9 +300,17 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartSelfFlags, orxSTATUS, orxPHYSIC
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartCheckMask, orxSTATUS, orxPHYSICS_BODY_PART *, orxU16);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartSelfFlags, orxU16, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartCheckMask, orxU16, const orxPHYSICS_BODY_PART *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsPartSolid, orxBOOL, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartSolid, orxSTATUS, orxPHYSICS_BODY_PART *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsPartSolid, orxBOOL, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartFriction, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartFriction, orxFLOAT, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartRestitution, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartRestitution, orxFLOAT, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartDensity, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartDensity, orxFLOAT, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsInsidePart, orxBOOL, const orxPHYSICS_BODY_PART *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Raycast, orxHANDLE, const orxVECTOR *, const orxVECTOR *, orxU16, orxU16, orxBOOL, orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_BoxPick, orxU32, const orxAABOX *, orxU16, orxU16, orxHANDLE [], orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableSimulation, void, orxBOOL);
 
 
@@ -346,14 +356,22 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_SELF_FLAGS, orxPhysics_SetPa
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_CHECK_MASK, orxPhysics_SetPartCheckMask)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_SELF_FLAGS, orxPhysics_GetPartSelfFlags)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_CHECK_MASK, orxPhysics_GetPartCheckMask)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_PART_SOLID, orxPhysics_IsPartSolid)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_SOLID, orxPhysics_SetPartSolid)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_PART_SOLID, orxPhysics_IsPartSolid)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_FRICTION, orxPhysics_SetPartFriction)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_FRICTION, orxPhysics_GetPartFriction)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_RESTITUTION, orxPhysics_SetPartRestitution)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_RESTITUTION, orxPhysics_GetPartRestitution)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_PART_DENSITY, orxPhysics_SetPartDensity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_PART_DENSITY, orxPhysics_GetPartDensity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_INSIDE_PART, orxPhysics_IsInsidePart)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_MOTOR, orxPhysics_EnableMotor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MOTOR_SPEED, orxPhysics_SetJointMotorSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysics_SetJointMaxMotorTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_FORCE, orxPhysics_GetJointReactionForce)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_TORQUE, orxPhysics_GetJointReactionTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, RAYCAST, orxPhysics_Raycast)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, BOX_PICK, orxPhysics_BoxPick)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_SIMULATION, orxPhysics_EnableSimulation)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(PHYSICS)
@@ -558,14 +576,49 @@ orxU16 orxFASTCALL orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstB
    return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartCheckMask)(_pstBodyPart);
 }
 
+orxSTATUS orxFASTCALL orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartSolid)(_pstBodyPart, _bSolid);
+}
+
 orxBOOL orxFASTCALL orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_IsPartSolid)(_pstBodyPart);
 }
 
-orxSTATUS orxFASTCALL orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
+orxSTATUS orxFASTCALL orxPhysics_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartSolid)(_pstBodyPart, _bSolid);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartFriction)(_pstBodyPart, _fFriction);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartFriction)(_pstBodyPart);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartRestitution)(_pstBodyPart, _fRestitution);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartRestitution)(_pstBodyPart);
+}
+
+orxSTATUS orxFASTCALL orxPhysics_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartDensity)(_pstBodyPart, _fDensity);
+}
+
+orxFLOAT orxFASTCALL orxPhysics_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartDensity)(_pstBodyPart);
+}
+
+orxBOOL orxFASTCALL orxPhysics_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_IsInsidePart)(_pstBodyPart, _pvPosition);
 }
 
 void orxFASTCALL orxPhysics_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
@@ -596,6 +649,11 @@ orxFLOAT orxFASTCALL orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOI
 orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+}
+
+orxU32 orxFASTCALL orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_BoxPick)(_pstBox, _u16SelfFlags, _u16CheckMask, _ahUserDataList, _u32Number);
 }
 
 void orxFASTCALL orxPhysics_EnableSimulation(orxBOOL _bEnable)

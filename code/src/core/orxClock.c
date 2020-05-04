@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -595,9 +595,6 @@ void orxFASTCALL orxClock_Exit()
  */
 orxSTATUS orxFASTCALL orxClock_Update()
 {
-  orxDOUBLE dNewTime;
-  orxFLOAT  fDT, fDelay;
-  orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -606,6 +603,10 @@ orxSTATUS orxFASTCALL orxClock_Update()
   /* Not already locked? */
   if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
+    orxDOUBLE dNewTime;
+    orxCLOCK *pstClock;
+    orxFLOAT  fDT, fDelay;
+
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
@@ -839,6 +840,8 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
+        orxCLOCK *pstClock;
+
         /* Has a modifier? */
         if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE) != orxFALSE)
         {
@@ -890,6 +893,13 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates clock */
             orxClock_SetModifier(pstResult, eModifierType, fModifierValue);
           }
+        }
+
+        /* Has core clock? */
+        if((pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE)) != orxNULL)
+        {
+          /* Updates clock's DT */
+          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, &(pstResult->stClockInfo));
         }
 
         /* Stores its reference key */

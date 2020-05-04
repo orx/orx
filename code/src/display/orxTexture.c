@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -60,6 +60,7 @@
 #define orxTEXTURE_KU32_FLAG_CACHED             0x40000000
 #define orxTEXTURE_KU32_FLAG_REF_COORD          0x01000000
 #define orxTEXTURE_KU32_FLAG_SIZE               0x02000000
+#define orxTEXTURE_KU32_FLAG_LOADING            0x04000000
 
 #define orxTEXTURE_KU32_MASK_ALL                0xFFFFFFFF
 
@@ -186,6 +187,25 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
               /* Deletes backup */
               orxDisplay_DeleteBitmap(pstBackupBitmap);
             }
+
+            /* Assigns given bitmap to it */
+            if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName, bInternal) != orxSTATUS_FAILURE)
+            {
+              /* Asynchronous loading? */
+              if(orxDisplay_GetTempBitmap() != orxNULL)
+              {
+                /* Updates load count */
+                sstTexture.u32LoadCount++;
+
+                /* Updates status */
+                orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
+              }
+              else
+              {
+                /* Sends event */
+                orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+              }
+            }
           }
           else
           {
@@ -193,23 +213,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't hotload texture <%s> after %u tries, reverting to former version.", zName, orxTEXTURE_KU32_HOTLOAD_TRY_NUMBER);
 
             /* Restores backup */
-            pstBitmap = pstBackupBitmap;
-          }
-
-          /* Assigns given bitmap to it */
-          if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zName, bInternal) != orxSTATUS_FAILURE)
-          {
-            /* Asynchronous loading? */
-            if(orxDisplay_GetTempBitmap() != orxNULL)
-            {
-              /* Updates load count */
-              sstTexture.u32LoadCount++;
-            }
-            else
-            {
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
-            }
+            orxTexture_LinkBitmap(pstTexture, pstBackupBitmap, zName, bInternal);
           }
 
           /* Profiles */
@@ -236,14 +240,21 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
       /* Found? */
       if(pstTexture != orxNULL)
       {
-        /* Updates load count */
-        sstTexture.u32LoadCount--;
-
-        /* Success? */
-        if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
+        /* Was loading? */
+        if(orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_LOADING))
         {
-          /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+          /* Updates load count */
+          sstTexture.u32LoadCount--;
+
+          /* Updates status */
+          orxStructure_SetFlags(pstTexture, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
+
+          /* Success? */
+          if(pstPayload->stBitmap.u32ID != orxU32_UNDEFINED)
+          {
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstTexture, orxNULL, orxNULL);
+          }
         }
       }
     }
@@ -395,6 +406,32 @@ void orxFASTCALL orxTexture_CommandFind(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/** Command: GetSize
+ */
+void orxFASTCALL orxTexture_CommandGetSize(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxTEXTURE *pstTexture;
+
+  /* Gets texture */
+  pstTexture = orxTEXTURE(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    /* Gets its size */
+    orxTexture_GetSize(pstTexture, &(_pstResult->vValue.fX), &(_pstResult->vValue.fY));
+    _pstResult->vValue.fZ = orxFLOAT_0;
+  }
+  else
+  {
+    /* Clears result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetName
  */
 void orxFASTCALL orxTexture_CommandGetName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -498,6 +535,9 @@ static orxINLINE void orxTexture_RegisterCommands()
   /* Command: Find */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Find, "Texture", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetSize */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: GetName */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetName, "Name", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
@@ -519,6 +559,9 @@ static orxINLINE void orxTexture_UnregisterCommands()
 
   /* Command: Find */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Find);
+
+  /* Command: GetSize */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetSize);
 
   /* Command: GetName */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetName);
@@ -857,6 +900,9 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
         {
           /* Updates load count */
           sstTexture.u32LoadCount++;
+
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
         }
         else
         {
@@ -908,6 +954,13 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   /* Is the last reference? */
   if(orxStructure_GetRefCount(_pstTexture) == 0)
   {
+    /* Was pending? */
+    if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_LOADING) != orxFALSE)
+    {
+      /* Updates load count */
+      sstTexture.u32LoadCount--;
+    }
+
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_DELETE, _pstTexture, orxNULL, orxNULL);
 
@@ -1128,7 +1181,7 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
   if(_pstTexture == sstTexture.pstScreen)
   {
     /* Updates its size (screen might have changed) */
-    orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &(((orxTEXTURE *)_pstTexture)->fWidth), &(((orxTEXTURE *)_pstTexture)->fHeight));
+    orxDisplay_GetScreenSize(&(((orxTEXTURE *)_pstTexture)->fWidth), &(((orxTEXTURE *)_pstTexture)->fHeight));
   }
 
   /* Has size? */
@@ -1174,43 +1227,6 @@ const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
 
   /* Done! */
   return zResult;
-}
-
-/** Sets texture color
- * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _pstColor       Color to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor)
-{
-  orxBITMAP  *pstBitmap;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-  orxASSERT(_pstColor != orxNULL);
-
-  /* Gets bitmap */
-  pstBitmap = orxTexture_GetBitmap(_pstTexture);
-
-  /* Valid? */
-  if(pstBitmap != orxNULL)
-  {
-    /* Updates its color */
-    eResult = orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(_pstColor));
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid bitmap in texture.");
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
 }
 
 /** Gets screen texture

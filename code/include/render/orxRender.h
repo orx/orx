@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -55,25 +55,38 @@
 
 /** Misc defines
  */
-#define orxRENDER_KZ_CONFIG_SECTION                 "Render"
-#define orxRENDER_KZ_CONFIG_SHOW_FPS                "ShowFPS"
-#define orxRENDER_KZ_CONFIG_SHOW_PROFILER           "ShowProfiler"
-#define orxRENDER_KZ_CONFIG_MIN_FREQUENCY           "MinFrequency"
-#define orxRENDER_KZ_CONFIG_CONSOLE_COLOR           "ConsoleColor"
+#define orxRENDER_KZ_CONFIG_SECTION                   "Render"
+#define orxRENDER_KZ_CONFIG_SHOW_FPS                  "ShowFPS"
+#define orxRENDER_KZ_CONFIG_SHOW_PROFILER             "ShowProfiler"
+#define orxRENDER_KZ_CONFIG_MIN_FREQUENCY             "MinFrequency"
+#define orxRENDER_KZ_CONFIG_PROFILER_ORIENTATION      "ProfilerOrientation"
+#define orxRENDER_KZ_CONFIG_CONSOLE_COLOR             "ConsoleColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_ALPHA             "ConsoleAlpha"
+
+#define orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR  "ConsoleBackgroundColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_ALPHA  "ConsoleBackgroundAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_SEPARATOR_COLOR   "ConsoleSeparatorColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_SEPARATOR_ALPHA   "ConsoleSeparatorAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_INPUT_COLOR       "ConsoleInputColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_INPUT_ALPHA       "ConsoleInputAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_COLOR  "ConsoleCompletionColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_ALPHA  "ConsoleCompletionAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_LOG_COLOR         "ConsoleLogColor"
+#define orxRENDER_KZ_CONFIG_CONSOLE_LOG_ALPHA         "ConsoleLogAlpha"
 
 
 /** Inputs
  */
-#define orxRENDER_KZ_INPUT_SET                      "-=RenderSet=-"
+#define orxRENDER_KZ_INPUT_SET                        "-=RenderSet=-"
 
-#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY  "ProfilerToggleHistory"
-#define orxRENDER_KZ_INPUT_PROFILER_PAUSE           "ProfilerPause"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME  "ProfilerPreviousFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME      "ProfilerNextFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH  "ProfilerPreviousDepth"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH      "ProfilerNextDepth"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD "ProfilerPreviousThread"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD     "ProfilerNextThread"
+#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY    "ProfilerToggleHistory"
+#define orxRENDER_KZ_INPUT_PROFILER_PAUSE             "ProfilerPause"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME    "ProfilerPreviousFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME        "ProfilerNextFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH    "ProfilerPreviousDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH        "ProfilerNextDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD   "ProfilerPreviousThread"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD       "ProfilerNextThread"
 
 
 /** Event enum
@@ -86,6 +99,10 @@ typedef enum __orxRENDER_EVENT_t
   orxRENDER_EVENT_VIEWPORT_STOP,          /**< Event sent when a viewport rendering stops */
   orxRENDER_EVENT_OBJECT_START,           /**< Event sent when an object rendering starts */
   orxRENDER_EVENT_OBJECT_STOP,            /**< Event sent when an object rendering stops */
+  orxRENDER_EVENT_CONSOLE_START,          /**< Event sent when console rendering starts */
+  orxRENDER_EVENT_CONSOLE_STOP,           /**< Event sent when console rendering stops */
+  orxRENDER_EVENT_PROFILER_START,         /**< Event sent when profiler rendering starts */
+  orxRENDER_EVENT_PROFILER_STOP,          /**< Event sent when profiler rendering stops */
 
   orxRENDER_EVENT_NUMBER,
 

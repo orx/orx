@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -295,12 +295,6 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Pops config section */
         orxConfig_PopSection();
       }
-      /* Graphic size? */
-      else if(!orxString_Compare(pstPayload->zParamName, "vSize"))
-      {
-        /* Updates size */
-        orxObject_GetSize(orxOBJECT(_pstEvent->hSender), &(pstPayload->vValue));
-      }
       /* Light color? */
       else if(!orxString_Compare(pstPayload->zParamName, "avLightColor"))
       {
@@ -412,13 +406,13 @@ orxSTATUS orxFASTCALL Run()
   orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
 
   /* Creates a new light? */
-  if(orxInput_IsActive("CreateLight") && orxInput_HasNewStatus("CreateLight"))
+  if(orxInput_HasBeenActivated("CreateLight"))
   {
     /* Updates light index */
     s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
   }
   /* Clears all lights? */
-  else if(orxInput_IsActive("ClearLights") && orxInput_HasNewStatus("ClearLights"))
+  else if(orxInput_HasBeenActivated("ClearLights"))
   {
     /* Clears all lights */
     ClearLights();
@@ -427,17 +421,17 @@ orxSTATUS orxFASTCALL Run()
     s32LightIndex = 0;
   }
   /* Increases radius? */
-  else if(orxInput_IsActive("IncreaseRadius") && orxInput_HasNewStatus("IncreaseRadius"))
+  else if(orxInput_HasBeenActivated("IncreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
   }
   /* Decreases radius? */
-  else if(orxInput_IsActive("DecreaseRadius") && orxInput_HasNewStatus("DecreaseRadius"))
+  else if(orxInput_HasBeenActivated("DecreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
   }
   /* Toggle alpha? */
-  else if(orxInput_IsActive("ToggleAlpha") && orxInput_HasNewStatus("ToggleAlpha"))
+  else if(orxInput_HasBeenActivated("ToggleAlpha"))
   {
     astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
   }

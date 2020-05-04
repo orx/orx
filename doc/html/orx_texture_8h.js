@@ -23,7 +23,6 @@ var orx_texture_8h =
     [ "orxTexture_GetSize", "group__orx_texture.html#ga870a6e1969393ad770be7f6e6342bb6b", null ],
     [ "orxTexture_Init", "group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299", null ],
     [ "orxTexture_LinkBitmap", "group__orx_texture.html#ga501b4c7fa170a0483a9b81bb775d867c", null ],
-    [ "orxTexture_SetColor", "group__orx_texture.html#gab25a63846495c29c1f3413118f90f93b", null ],
     [ "orxTexture_Setup", "group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941", null ],
     [ "orxTexture_UnlinkBitmap", "group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a", null ]
 ];

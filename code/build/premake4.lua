@@ -19,22 +19,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -62,7 +48,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2019")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -139,10 +125,11 @@ solution "orx"
         "NoEditAndContinue",
         "NoMinimalRebuild",
         "Symbols",
-        "StaticRuntime"
+        "StaticRuntime",
+        "FatalWarnings"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
+    configuration {"not vs2015", "not vs2017", "not vs2019"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -210,10 +197,14 @@ solution "orx"
             "-x c++",
             "-gdwarf-2",
             "-Wno-write-strings",
-            "-fvisibility-inlines-hidden"
+            "-fvisibility-inlines-hidden",
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++"
         }
         linkoptions
         {
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++",
             "-dead_strip"
         }
 
@@ -232,27 +223,7 @@ solution "orx"
             "/MP"
         }
 
-    configuration {"vs2013", "x32"}
-        libdirs
-        {
-            "../../extern/glfw-3/lib/vc2013/32",
-            "../../extern/openal-soft/lib/vc2013/32",
-            "../../extern/libsndfile-1.0.22/lib/vc2013/32",
-            "../../extern/LiquidFun-1.1.0/lib/vc2013/32",
-            "../../extern/libwebp/lib/vc2013/32"
-        }
-
-    configuration {"vs2013", "x64"}
-        libdirs
-        {
-            "../../extern/glfw-3/lib/vc2013/64",
-            "../../extern/openal-soft/lib/vc2013/64",
-            "../../extern/libsndfile-1.0.22/lib/vc2013/64",
-            "../../extern/LiquidFun-1.1.0/lib/vc2013/64",
-            "../../extern/libwebp/lib/vc2013/64"
-        }
-
-    configuration {"vs2015 or vs2017", "x32"}
+    configuration {"vs2015 or vs2017 or vs2019", "x32"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/32",
@@ -262,7 +233,7 @@ solution "orx"
             "../../extern/libwebp/lib/vc2015/32"
         }
 
-    configuration {"vs2015 or vs2017", "x64"}
+    configuration {"vs2015 or vs2017 or vs2019", "x64"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/64",
@@ -272,15 +243,58 @@ solution "orx"
             "../../extern/libwebp/lib/vc2015/64"
         }
 
-    configuration {"windows", "codeblocks or codelite or gmake"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
         libdirs
         {
-            "../../extern/glfw-3/lib/mingw",
-            "../../extern/openal-soft/lib/mingw",
-            "../../extern/libsndfile-1.0.22/lib/mingw",
-            "../../extern/LiquidFun-1.1.0/lib/mingw",
-            "../../extern/libwebp/lib/mingw"
+            "../../extern/glfw-3/lib/mingw/32",
+            "../../extern/openal-soft/lib/mingw/32",
+            "../../extern/libsndfile-1.0.22/lib/mingw/32",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/32",
+            "../../extern/libwebp/lib/mingw/32"
         }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mingw/64",
+            "../../extern/openal-soft/lib/mingw/64",
+            "../../extern/libsndfile-1.0.22/lib/mingw/64",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/64",
+            "../../extern/libwebp/lib/mingw/64"
+        }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands
+        {
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands
+        {
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
+        }
+
 
 --
 -- Project: orx

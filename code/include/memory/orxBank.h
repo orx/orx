@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,7 @@
  * @addtogroup orxBank
  *
  * Bank module
- * Bank are used to allocate a portion of memory.
+ * Bank are used to allocate some memory.
  * Applications can get cell from this memory and use it. If the number of
  * allocations requests become bigger than the bank size, a new segment of memory
  * is automatically allocated.
@@ -72,28 +72,28 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxBank_Init();
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Exit();
 
-/** Creates a new bank in memory and returns a pointer on it
+/** Creates a new bank in memory and returns a pointer to it
  * @param[in] _u16NbElem  Number of elements per segments
  * @param[in] _u32Size    Size of an element
  * @param[in] _u32Flags   Flags set for this bank
  * @param[in] _eMemType   Memory type where the data will be allocated
- * @return  returns a pointer on the memory bank
+ * @return  returns a pointer to the memory bank
  */
 extern orxDLLAPI orxBANK *orxFASTCALL       orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
-/** Frees a portion of memory allocated with orxMemory_Allocate
- * @param[in] _pstBank    Pointer on the memory bank allocated by orx
+/** Frees some memory allocated with orxMemory_Allocate
+ * @param[in] _pstBank    Pointer to the memory bank allocated by orx
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Delete(orxBANK *_pstBank);
 
 /** Allocates a new cell from the bank
- * @param[in] _pstBank    Pointer on the memory bank to use
+ * @param[in] _pstBank    Pointer to the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 extern orxDLLAPI void *orxFASTCALL          orxBank_Allocate(orxBANK *_pstBank);
 
 /** Allocates a new cell from the bank and returns its index
- * @param[in] _pstBank        Pointer on the memory bank to use
+ * @param[in] _pstBank        Pointer to the memory bank to use
  * @param[out] _pu32ItemIndex Will be set with the allocated item index
  * @param[out] _ppPrevious    If non-null, will contain previous neighbor if found
  * @return a new cell of memory (orxNULL if no allocation possible)
@@ -102,8 +102,7 @@ extern orxDLLAPI void *orxFASTCALL          orxBank_AllocateIndexed(orxBANK *_ps
 
 /** Frees an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
- * @param[in] _pCell      Pointer on the cell to free
- * @return a new cell of memory (orxNULL if no allocation possible)
+ * @param[in] _pCell      Pointer to the cell to free
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Free(orxBANK *_pstBank, void *_pCell);
 
@@ -123,7 +122,7 @@ extern orxDLLAPI void orxFASTCALL           orxBank_CompactAll();
 
 /** Gets the next cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
- * @param[in] _pCell      Pointer on the current cell of memory
+ * @param[in] _pCell      Pointer to the current cell of memory
  * @return The next cell. If _pCell is orxNULL, the first cell will be returned. Returns orxNULL when no more cell can be returned.
  */
 extern orxDLLAPI void *orxFASTCALL          orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell);

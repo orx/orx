@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1230,4 +1230,31 @@ orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_
 
   /* Done! */
   return pstResult;
+}
+
+/** Gets how many sounds are currently in use
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxSoundPointer_GetCount(const orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32 i, u32Result = 0;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all Sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    /* Valid? */
+    if(_pstSoundPointer->astSoundList[i].pstSound != orxNULL)
+    {
+      /* Updates result */
+      u32Result++;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }

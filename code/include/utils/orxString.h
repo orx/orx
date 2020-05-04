@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -58,11 +58,7 @@
 
 #endif /* __orxMSVC__ */
 
-#ifdef __orxIOS__
-  #define STRTO_CAST  (int)
-#else /* __orxIOS__ */
-  #define STRTO_CAST (size_t)
-#endif /* __orxIOS__ */
+#define STRTO_CAST (int)
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -98,7 +94,7 @@ extern orxDLLAPI orxU32 saau32CRCTable[8][256];
 
 /** Skips all white spaces
  * @param[in] _zString        Concerned string
- * @return    Sub string located after all leading white spaces
+ * @return    Sub string located after all leading white spaces, including EOL characters
  */
 static orxINLINE const orxSTRING                          orxString_SkipWhiteSpaces(const orxSTRING _zString)
 {
@@ -108,7 +104,7 @@ static orxINLINE const orxSTRING                          orxString_SkipWhiteSpa
   if(_zString != orxNULL)
   {
     /* Skips all white spaces */
-    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t') || (*zResult == orxCHAR_CR) || (*zResult == orxCHAR_LF); zResult++);
 
     /* Empty? */
     if(*zResult == orxCHAR_NULL)
@@ -345,14 +341,14 @@ static orxU32 orxFASTCALL                                 orxString_PrintUTF8Cha
  */
 static orxU32 orxFASTCALL                                 orxString_GetFirstCharacterCodePoint(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU8  *pu8Byte;
-  orxU32  u32Result;
+  const orxU8  *pu8Byte;
+  orxU32        u32Result;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
   /* Gets the first byte */
-  pu8Byte = (orxU8 *)_zString;
+  pu8Byte = (const orxU8 *)_zString;
 
   /* ASCII? */
   if(*pu8Byte < 0x80)
@@ -538,7 +534,7 @@ static orxINLINE orxU32                                   orxString_GetCharacter
   return u32Result;
 }
 
-/** Copies N characters from a string
+/** Copies up to N characters from a string
  * @param[in] _zDstString       Destination string
  * @param[in] _zSrcString       Source string
  * @param[in] _u32CharNumber    Number of characters to copy
@@ -552,21 +548,6 @@ static orxINLINE orxSTRING                                orxString_NCopy(orxSTR
 
   /* Done! */
   return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
-}
-
-/** Copies a string.
- * @param[in] _zDstString      Destination string
- * @param[in] _zSrcString      Source string
- * @return Copied string.
- */
-static orxINLINE orxSTRING                                orxString_Copy(orxSTRING _zDstString, const orxSTRING _zSrcString)
-{
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Done! */
-  return(strcpy(_zDstString, _zSrcString));
 }
 
 /** Duplicate a string.
@@ -707,22 +688,26 @@ static orxINLINE orxS32                                   orxString_NICompare(co
  */
 static orxINLINE orxU32                                   orxString_ExtractBase(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU32 u32Result, u32Offset;
+  const orxSTRING zString;
+  orxU32          u32Result, u32Offset;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
+
+  /* Skips white spaces */
+  zString = orxString_SkipWhiteSpaces(_zString);
 
   /* Default result and offset: decimal */
   u32Result = 10;
   u32Offset = 0;
 
   /* Depending on first character */
-  switch(_zString[0])
+  switch(zString[0])
   {
     case '0':
     {
       /* Depending on second character */
-      switch(_zString[1] | 0x20)
+      switch(zString[1] | 0x20)
       {
         case 'x':
         {
@@ -745,8 +730,8 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
         default:
         {
           /* Octal? */
-          if((_zString[1] >= '0')
-          && (_zString[1] <= '9'))
+          if((zString[1] >= '0')
+          && (zString[1] <= '9'))
           {
             /* Updates result and offset: octal */
             u32Result = 8;
@@ -779,7 +764,7 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = _zString + u32Offset;
+    *_pzRemaining = zString + u32Offset;
   }
 
   /* Done! */
@@ -1497,21 +1482,20 @@ static orxINLINE const orxSTRING                          orxString_SearchChar(c
 /** Returns the first occurrence of _cChar in _zString
  * @param[in] _zString      String to analyze
  * @param[in] _cChar        The character to find
- * @param[in] _u32Position  Search begin position
+ * @param[in] _s32Position  Search begin position
  * @return The index of the next occurrence of requested character, starting at given position / -1 if not found
  */
-static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxS32 _s32Position)
 {
-  orxS32          s32Result = -1;
-  orxS32          s32Index;
+  orxS32          s32Index, s32Result = -1;
   const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32Position <= orxString_GetLength(_zString));
+  orxASSERT(_s32Position <= (orxS32)orxString_GetLength(_zString));
 
   /* For all characters */
-  for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
+  for(s32Index = _s32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
   {
     /* Found? */
     if(*pc == _cChar)
@@ -1580,7 +1564,7 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
     /* Updates result */
     s32Result = _u32CharNumber;
   }
-#endif /* __orxWINDOWS__ */
+#endif /* __orxMSVC__ */
 
   /* Clamps result */
   s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);

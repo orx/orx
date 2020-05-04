@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,7 +104,7 @@ static void Android_JNI_ThreadDestroyed(void* value) {
     }
 }
 
-void orxAndroid_JNI_SetupThread(void) {
+orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext) {
     /* From http://developer.android.com/guide/practices/jni.html
      * Threads attached through JNI must call DetachCurrentThread before they exit. If coding this directly is awkward,
      * in Android 2.0 (Eclair) and higher you can use pthread_key_create to define a destructor function that will be
@@ -116,6 +116,8 @@ void orxAndroid_JNI_SetupThread(void) {
      */
     JNIEnv *env = Android_JNI_GetEnv();
     pthread_setspecific(sThreadKey, (void*) env);
+
+    return orxSTATUS_SUCCESS;
 }
 
 extern "C" ANativeWindow* orxAndroid_GetNativeWindow()
@@ -464,7 +466,7 @@ void android_main( android_app* state )
         __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
     }
     else {
-        orxAndroid_JNI_SetupThread();
+        orxAndroid_JNI_SetupThread(orxNULL);
     }
 
     /* Run the application code! */

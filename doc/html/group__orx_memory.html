@@ -302,14 +302,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Allocates a portion of memory in the system and returns a pointer on it </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Allocates some memory in the system and returns a pointer to it </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the memory to allocate </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_eMemType</td><td>Memory zone where data will be allocated </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on the memory allocated, or orxNULL if an error has occurred </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to the memory allocated, or orxNULL if an error has occurred </dd></dl>
 
 </div>
 </div>
@@ -350,15 +350,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Compares two portions of memory </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Compares two parts of memory </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem1</td><td>First potion to test </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem2</td><td>Second portion to test </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem1</td><td>First part to test </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem2</td><td>Second part to test </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of data to test </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a value less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2 </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a value less than, equal to or greater than 0 if the content of _pMem1 is respectively smaller, equal or greater than _pMem2's </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00180">180</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
@@ -401,7 +401,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Copies a portion of memory into another one </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Copies a part of memory into another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">_pDest</td><td>Destination pointer </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pSrc</td><td>Pointer of memory from where data are read </td></tr>
@@ -409,7 +409,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on _pDest </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>if _pSrc and _pDest overlap, use orxMemory_Move instead </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00148">148</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
@@ -445,9 +445,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Frees a portion of memory allocated with orxMemory_Allocate </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Frees some memory allocated with orxMemory_Allocate </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem</td><td>Pointer on the memory allocated by orx </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pMem</td><td>Pointer to the memory allocated by orx </td></tr>
   </table>
   </dd>
 </dl>
@@ -546,7 +546,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Moves a portion of memory into another one </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Moves a part of memory into another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">_pDest</td><td>Destination pointer </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pSrc</td><td>Pointer of memory from where data are read </td></tr>
@@ -554,7 +554,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on _pDest </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00164">164</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
@@ -583,7 +583,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reallocates a previously allocated memory block, with the given new size and returns a pointer on it If possible, it'll keep the current pointer and extend the memory block, if not it'll allocate a new block, copy the data over and deallocates the original block </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Reallocates a previously allocated memory block, with the given new size and returns a pointer to it If possible, it'll keep the current pointer and extend the memory block, if not it'll allocate a new block, copy the data over and deallocates the original block </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pMem</td><td>Memory block to reallocate </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the memory to allocate </td></tr>
@@ -631,7 +631,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Fills a portion of memory with _u32Data </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Fills a part of memory with _u32Data </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">_pDest</td><td>Destination pointer </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u8Data</td><td>Values of the data that will fill the memory </td></tr>
@@ -639,7 +639,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on _pDest </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00196">196</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
@@ -692,14 +692,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Fills a portion of memory with zeroes </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Fills a part of memory with zeroes </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">_pDest</td><td>Destination pointer </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of data </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>returns a pointer on _pDest </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00210">210</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 

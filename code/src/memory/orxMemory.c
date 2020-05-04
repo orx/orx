@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,7 +53,7 @@
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
-#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  8
+#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
@@ -151,16 +151,16 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
-  size_t stLineSize = 0, stSizeOfLineSize;
+  size_t usLineSize = 0, usSizeOfLineSize;
 
-  /* Size of variable */
-  stSizeOfLineSize = sizeof(stLineSize);
+  /* Gets size of variable */
+  usSizeOfLineSize = sizeof(usLineSize);
 
   /* Gets cache line size */
-  sysctlbyname("hw.cachelinesize", &stLineSize, &stSizeOfLineSize, 0, 0);
+  sysctlbyname("hw.cachelinesize", &usLineSize, &usSizeOfLineSize, 0, 0);
 
   /* Done! */
-  return (orxU32)(stLineSize != 0) ? (orxU32)stLineSize : 32;
+  return (orxU32)((usLineSize != 0) ? usLineSize : orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE);
 }
 
 #elif defined(__orxLINUX__)
@@ -178,7 +178,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
-  return (orxU32)32;
+  return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
 }
 
 #else
@@ -251,10 +251,10 @@ void orxFASTCALL orxMemory_Exit()
   return;
 }
 
-/** Allocates a portion of memory in the system and returns a pointer on it
+/** Allocates some memory in the system and returns a pointer to it
  * @param[in] _u32Size    size of the memory to allocate
  * @param[in] _eMemType   Memory zone where data will be allocated
- * @return  returns a pointer on the memory allocated, or orxNULL if an error has occurred
+ * @return  returns a pointer to the memory allocated, or orxNULL if an error has occurred
  */
 void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
@@ -298,7 +298,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   return pResult;
 }
 
-/** Reallocates a previously allocated memory block, with the given new size and returns a pointer on it
+/** Reallocates a previously allocated memory block, with the given new size and returns a pointer to it
  * If possible, it'll keep the current pointer and extend the memory block, if not it'll allocate a new block,
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
@@ -364,8 +364,8 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   return pResult;
 }
 
-/** Frees a portion of memory allocated with orxMemory_Allocateate
- * @param[in] _pMem       Pointer on the memory allocated by orx
+/** Frees some memory allocated with orxMemory_Allocate
+ * @param[in] _pMem       Pointer to the memory allocated by orx
  */
 void orxFASTCALL orxMemory_Free(void *_pMem)
 {
@@ -526,7 +526,7 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
 
 /** Tracks (external) memory allocation
  * @param[in] _eMemType               Concerned memory type
- * @param[in] _s32Size                Size to track, in bytes
+ * @param[in] _u32Size                Size to track, in bytes
  * @param[in] _bAllocate              orxTRUE if allocate, orxFALSE if free
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

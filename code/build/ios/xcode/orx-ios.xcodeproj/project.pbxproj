@@ -1124,6 +1124,7 @@
 				OTHER_CFLAGS = (
 					"-Wno-write-strings",
 					"-ffast-math",
+					"-stdlib=libc++",
 				);
 				OTHER_LDFLAGS = "-lorxd";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
@@ -1177,6 +1178,7 @@
 				OTHER_CFLAGS = (
 					"-Wno-write-strings",
 					"-ffast-math",
+					"-stdlib=libc++",
 				);
 				OTHER_LDFLAGS = "-lorx";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
@@ -1206,7 +1208,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1224,7 +1229,10 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -1266,7 +1274,10 @@
 					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = orxd;
@@ -1317,7 +1328,10 @@
 					../../../../extern/libwebp/lib/ios,
 					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = orx;
@@ -1349,7 +1363,10 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				SDKROOT = iphoneos;
 			};
 			name = Profile;
@@ -1392,6 +1409,7 @@
 				OTHER_CFLAGS = (
 					"-Wno-write-strings",
 					"-ffast-math",
+					"-stdlib=libc++",
 				);
 				OTHER_LDFLAGS = "-lorxp";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
@@ -1443,7 +1461,10 @@
 					../../../../extern/libwebp/lib/ios,
 					"../../../../extern/LiquidFun-1.1.0/lib/ios",
 				);
-				OTHER_CFLAGS = "-ffast-math";
+				OTHER_CFLAGS = (
+					"-ffast-math",
+					"-stdlib=libc++",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = orxp;

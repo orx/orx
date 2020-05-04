@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1019,19 +1019,19 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       fCurrentAnimTime  = _pstAnimPointer->fCurrentAnimTime;
 
       /* Stores ID */
-      _pstAnimPointer->u32CurrentAnim = _u32AnimID;
+      _pstAnimPointer->u32CurrentAnim   = _u32AnimID;
 
       /* Clears target anim */
-      _pstAnimPointer->u32TargetAnim  = orxU32_UNDEFINED;
+      _pstAnimPointer->u32TargetAnim    = orxU32_UNDEFINED;
 
       /* Clears anim time */
       _pstAnimPointer->fCurrentAnimTime = orxFLOAT_0;
 
       /* Clears current key */
-      _pstAnimPointer->u32CurrentKey  = 0;
+      _pstAnimPointer->u32CurrentKey    = 0;
 
       /* Clears loop count */
-      _pstAnimPointer->u32LoopCount   = 0;
+      _pstAnimPointer->u32LoopCount     = 0;
 
       /* Has current anim? */
       if(u32CurrentAnim != orxU32_UNDEFINED)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -217,6 +217,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
+    /* Sets thread callbacks */
+    orxThread_SetCallbacks(orxAndroid_JNI_SetupThread, orxNULL, orxNULL);
+
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
@@ -340,7 +343,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #endif /* __orxIOS__ */
 
-#endif /* __orxPLUGIN__ */
+#endif /* !__orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 

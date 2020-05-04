@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -273,7 +273,6 @@ static void orxFASTCALL orxConsole_SaveHistory()
  */
 static void orxFASTCALL orxConsole_LoadHistory()
 {
-  orxU32 i, u32Count;
   orxCHAR acBuffer[256];
 
   /* Gets file name */
@@ -288,6 +287,8 @@ static void orxFASTCALL orxConsole_LoadHistory()
   /* Has saved history */
   if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != orxFALSE)
   {
+    orxU32 i, u32Count;
+
     /* For all history entries */
     for(i = 0, u32Count = orxMIN(orxConfig_GetListCount(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST), orxCONSOLE_KU32_INPUT_ENTRY_NUMBER); i < u32Count; i++)
     {
@@ -1035,7 +1036,7 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   if(_u32ArgNumber == 0)
   {
     /* Clears color */
-    orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_COLOR);
+    orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR);
 
     /* Updates result */
     orxVector_SetAll(&(_pstResult->vValue), -orxFLOAT_1);
@@ -1043,7 +1044,7 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   else
   {
     /* Stores color */
-    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &(_astArgList[0].vValue));
+    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR, &(_astArgList[0].vValue));
 
     /* Updates result */
     orxVector_Copy(&(_pstResult->vValue), &(_astArgList[0].vValue));
@@ -1554,7 +1555,7 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
   u32TextLength = orxString_GetLength(_zText);
 
   /* End of buffer? */
-  if(sstConsole.u32LogIndex + u32TextLength + (u32TextLength / sstConsole.u32LogLineLength) + 1 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
+  if(sstConsole.u32LogIndex + u32TextLength + (u32TextLength / sstConsole.u32LogLineLength) + 2 > orxCONSOLE_KU32_LOG_BUFFER_SIZE)
   {
     /* Stores log end index */
     sstConsole.u32LogEndIndex = sstConsole.u32LogIndex;
@@ -1564,15 +1565,12 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
   }
 
   /* For all characters */
-  for(u32LineLength = 0, pc = _zText; *pc != orxCHAR_NULL;)
+  for(u32LineLength = 0, pc = _zText; (*pc != orxCHAR_NULL) && (sstConsole.u32LogIndex < orxCONSOLE_KU32_LOG_BUFFER_SIZE - 2);)
   {
-    orxU32 u32CharacterCodePoint, u32CharacterLength;
+    orxU32 u32CharacterCodePoint;
 
     /* Gets character code point */
     u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc);
-
-    /* Gets its length */
-    u32CharacterLength = orxString_GetUTF8CharacterLength(u32CharacterCodePoint);
 
     /* EOL? */
     if(u32CharacterCodePoint == (orxU32)orxCHAR_EOL)
@@ -1585,25 +1583,35 @@ orxSTATUS orxFASTCALL orxConsole_Log(const orxSTRING _zText)
     }
     else
     {
+      orxU32 u32CharacterLength;
+
       /* Appends character to log */
-      orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, u32CharacterLength, u32CharacterCodePoint);
+      u32CharacterLength = orxString_PrintUTF8Character(sstConsole.acLogBuffer + sstConsole.u32LogIndex, orxCONSOLE_KU32_LOG_BUFFER_SIZE - sstConsole.u32LogIndex - 1, u32CharacterCodePoint);
 
-      /* Updates log index */
-      sstConsole.u32LogIndex += u32CharacterLength;
-
-      /* End of line? */
-      if(u32LineLength + 1 >= sstConsole.u32LogLineLength)
+      /* Success? */
+      if(u32CharacterLength != 0)
       {
-        /* Ends string */
-        sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
+        sstConsole.u32LogIndex += u32CharacterLength;
 
-        /* Updates line length */
-        u32LineLength = 0;
+        /* End of line? */
+        if(u32LineLength + 1 >= sstConsole.u32LogLineLength)
+        {
+          /* Ends string */
+          sstConsole.acLogBuffer[sstConsole.u32LogIndex++] = orxCHAR_NULL;
+
+          /* Updates line length */
+          u32LineLength = 0;
+        }
+        else
+        {
+          /* Updates line length */
+          u32LineLength++;
+        }
       }
       else
       {
-        /* Updates line length */
-        u32LineLength++;
+        /* Stops */
+        break;
       }
     }
   }
@@ -1733,7 +1741,6 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
   if(sstConsole.zCompletedCommand != orxNULL)
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
-    const orxSTRING         zCommand;
     orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
 
     /* Gets entry */
@@ -1748,6 +1755,8 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
+      const orxSTRING zCommand;
+
       /* Gets completion count */
       for(u32Result = 0, zCommand = orxCommand_GetNext(pc, orxNULL, orxNULL);
           zCommand != orxNULL;
@@ -1797,7 +1806,6 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
   {
     orxCONSOLE_INPUT_ENTRY *pstEntry;
     orxCHAR                 acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE], *pc;
-    orxU32                  u32CompletionIndex;
 
     /* Gets entry */
     pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
@@ -1811,6 +1819,8 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
     /* Not empty? */
     if(*pc != orxCHAR_NULL)
     {
+      orxU32 u32CompletionIndex;
+
       /* Finds requested completion */
       for(u32CompletionIndex = 0, zResult = orxCommand_GetNext(pc, orxNULL, orxNULL);
           (u32CompletionIndex < _u32Index) && (zResult != orxNULL);
@@ -1872,7 +1882,7 @@ const orxSTRING orxFASTCALL orxConsole_GetTrailLogLine(orxU32 _u32TrailLineIndex
         if(sstConsole.u32LogEndIndex != orxU32_UNDEFINED)
         {
           /* Wraps around */
-          u32LogIndex = sstConsole.u32LogEndIndex;
+          u32LogIndex = sstConsole.u32LogEndIndex - 2;
 
           /* Updates wrap status */
           bWrapped = orxTRUE;

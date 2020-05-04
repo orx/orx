@@ -12,6 +12,7 @@ var group__orx_f_x_pointer =
     [ "orxFXPointer_Delete", "group__orx_f_x_pointer.html#ga091b7f73cfcb25a3acad4d91a5ee6ea9", null ],
     [ "orxFXPointer_Enable", "group__orx_f_x_pointer.html#gac9327397471848fa184877b11a151052", null ],
     [ "orxFXPointer_Exit", "group__orx_f_x_pointer.html#gafff8f6dd49decc5b718602f40df942b4", null ],
+    [ "orxFXPointer_GetCount", "group__orx_f_x_pointer.html#ga3eb4916b1aadf1f62a00508629c0025f", null ],
     [ "orxFXPointer_GetTime", "group__orx_f_x_pointer.html#gaf347fd366c75f28435f58ae22947d6a8", null ],
     [ "orxFXPointer_Init", "group__orx_f_x_pointer.html#gaf96c3cd43eccce39b7a26b054f824f89", null ],
     [ "orxFXPointer_IsEnabled", "group__orx_f_x_pointer.html#ga4de3e20515f68f4f652aa2d7ebe44ab2", null ],

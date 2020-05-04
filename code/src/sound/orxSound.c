@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -974,22 +974,28 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
   /* Changed? */
   if(eNewStatus != pstSound->eStatus)
   {
+    orxSOUND_EVENT_PAYLOAD  stPayload;
+    orxSOUND_STATUS         ePreviousStatus;
+
     /* Stores new status */
+    ePreviousStatus   = pstSound->eStatus;
     pstSound->eStatus = eNewStatus;
 
     /* Depending on status */
     switch(eNewStatus)
     {
-      orxSOUND_EVENT_PAYLOAD stPayload;
-
       case orxSOUND_STATUS_PLAY:
       {
-        /* Inits event payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-        stPayload.pstSound = pstSound;
+        /* Wasn't paused? */
+        if(ePreviousStatus != orxSOUND_STATUS_PAUSE)
+        {
+          /* Inits event payload */
+          orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+          stPayload.pstSound = pstSound;
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstObject, pstObject, &stPayload);
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, pstObject, pstObject, &stPayload);
+        }
 
         break;
       }

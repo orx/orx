@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,12 +56,6 @@
     #include <sched.h>
 
   #endif /* __orxLINUX__ */
-
-  #if defined (__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-    #include "main/orxAndroid.h"
-
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #endif /* __orxWINDOWS__ */
 
@@ -135,6 +129,9 @@ typedef struct __orxTHREAD_STATIC_t
   orxTHREAD_SEMAPHORE    *pstThreadSemaphore;
   orxTHREAD_SEMAPHORE    *pstTaskSemaphore;
   orxTHREAD_SEMAPHORE    *pstWorkerSemaphore;
+  void                   *pThreadContext;
+  orxTHREAD_FUNCTION      pfnThreadStart;
+  orxTHREAD_FUNCTION      pfnThreadStop;
   orxU32                  u32WorkerID;
   volatile orxU32         u32TaskInIndex;
   volatile orxU32         u32TaskProcessIndex;
@@ -166,8 +163,7 @@ static unsigned int WINAPI orxThread_Execute(void *_pContext)
 static void *orxThread_Execute(void *_pContext)
 #endif /* __orxWINDOWS__ */
 {
-  volatile orxTHREAD_INFO  *pstInfo;
-  orxSTATUS                 eResult;
+  volatile orxTHREAD_INFO *pstInfo;
 
   /* Gets thread's info */
   pstInfo = (orxTHREAD_INFO *)_pContext;
@@ -184,29 +180,36 @@ static void *orxThread_Execute(void *_pContext)
   while(pstInfo->hThread == 0)
     ;
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-  /* Notifies the Java framework */
-  orxAndroid_JNI_SetupThread();
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-  do
+  /* Should run? */
+  if((sstThread.pfnThreadStart == orxNULL)
+  || (sstThread.pfnThreadStart(sstThread.pThreadContext) != orxSTATUS_FAILURE))
   {
-    /* Runs thread function */
-    eResult = pstInfo->pfnRun(pstInfo->pContext);
+    orxSTATUS eResult;
 
-    /* Yields */
-    orxThread_Yield();
+    do
+    {
+      /* Runs thread function */
+      eResult = pstInfo->pfnRun(pstInfo->pContext);
 
-    /* Waits for its enable semaphore */
-    orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+      /* Yields */
+      orxThread_Yield();
 
-    /* Signals its enable semaphore */
-    orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+      /* Waits for its enable semaphore */
+      orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+
+      /* Signals its enable semaphore */
+      orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+    }
+    /* While stop hasn't been requested */
+    while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
   }
-  /* While stop hasn't been requested */
-  while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
+
+  /* Has stop callback? */
+  if(sstThread.pfnThreadStop != orxNULL)
+  {
+    /* Runs it */
+    sstThread.pfnThreadStop(sstThread.pThreadContext);
+  }
 
   /* Done! */
   return 0;
@@ -308,8 +311,21 @@ orxSTATUS orxFASTCALL orxThread_Init()
   /* Was not already initialized? */
   if(!(sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY))
   {
+    orxTHREAD_FUNCTION  pfnBackupStart, pfnBackupStop;
+    void               *pBackupContext;
+
+    /* Backups thread callbacks & context */
+    pfnBackupStart  = sstThread.pfnThreadStart;
+    pfnBackupStop   = sstThread.pfnThreadStop;
+    pBackupContext  = sstThread.pThreadContext;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
+
+    /* Restores thread callbacks & context */
+    sstThread.pfnThreadStart  = pfnBackupStart;
+    sstThread.pfnThreadStop   = pfnBackupStop;
+    sstThread.pThreadContext  = pBackupContext;
 
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -1114,4 +1130,22 @@ orxU32 orxFASTCALL orxThread_GetTaskCount()
 
   /* Done! */
   return u32Result;
+}
+
+/** Sets callbacks to run when starting and stopping new threads
+ * @param[in]   _pfnStart                             Function to run whenever a new thread is started
+ * @param[in]   _pfnStop                              Function to run whenever a thread is stopped
+ * @param[in]   _pContext                             Context that will be transmitted to each callback
+ */
+orxSTATUS orxFASTCALL orxThread_SetCallbacks(const orxTHREAD_FUNCTION _pfnStart, const orxTHREAD_FUNCTION _pfnStop, void *_pContext)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Stores callbacks & context */
+  sstThread.pfnThreadStart  = _pfnStart;
+  sstThread.pfnThreadStop   = _pfnStop;
+  sstThread.pThreadContext  = _pContext;
+
+  /* Done! */
+  return eResult;
 }

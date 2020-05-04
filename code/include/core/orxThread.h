@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -163,6 +163,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTask(const or
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetTaskCount();
 
+/** Sets callbacks to run when starting and stopping new threads
+ * @param[in]   _pfnStart                             Function to run whenever a new thread is started
+ * @param[in]   _pfnStop                              Function to run whenever a thread is stopped
+ * @param[in]   _pContext                             Context that will be transmitted to each callback
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SetCallbacks(const orxTHREAD_FUNCTION _pfnStart, const orxTHREAD_FUNCTION _pfnStop, void *_pContext);
 
 #endif /* _orxTHREAD_H_ */
 

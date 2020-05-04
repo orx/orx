@@ -5,15 +5,80 @@ matrix:
     - os: linux
       compiler: gcc
       sudo: required
+      script: ./code/build/travis/desktop.sh
+      name: Linux / GCC
+
     - os: linux
       compiler: clang
       sudo: required
+      script: ./code/build/travis/desktop.sh
+      name: Linux / Clang
+
     - os: osx
       compiler: clang
       osx_image: xcode8.3
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 8
+
     - os: osx
       compiler: clang
-      osx_image: xcode9.3
+      osx_image: xcode9.4
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 9
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode10.3
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 10
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.2
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 11
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode8.3
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 8
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode9.4
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 9
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode10.3
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 10
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.2
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 11
+
+    - language: android
+      jdk: openjdk8
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - android-28
+          - extra-google-m2repository
+          - extra-android-m2repository
+      install:
+        - echo y | sdkmanager "ndk-bundle"
+        - ./setup.sh
+      before_script:
+        - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
+      script: ./code/build/travis/android.sh
+      name: Android / OpenJDK 8
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -24,45 +89,3 @@ before_install:
 
 install:
   - ./setup.sh
-
-script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/code/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/code/build/linux/gmake ;
-    fi
-  - make config=debug64
-  - make config=profile64
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tutorial/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tutorial/build/linux/gmake ;
-    fi
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/code/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/code/build/linux/gmake ;
-    fi
-  - make config=core_release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tools/orxCrypt/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tools/orxCrypt/build/linux/gmake ;
-    fi
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tools/orxFontGen/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tools/orxFontGen/build/linux/gmake ;
-    fi
-  - make config=release64
-  - cd ~/build/orx/orx/code/build/python
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      python package.py -p mac &&
-      python package.py -p tutomac;
-    else
-      python package.py -p linux64 &&
-      python package.py -p tutolinux64;
-    fi

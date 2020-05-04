@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxFPS
- * 
+ *
  * FPS Module
  * Allows to compute & display FPS
  *
@@ -49,7 +49,7 @@
 /** Setups FPS module */
 extern orxDLLAPI void orxFASTCALL                 orxFPS_Setup();
 
-/** Inits the FPS module 
+/** Inits the FPS module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxFPS_Init();

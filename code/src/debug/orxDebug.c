@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -436,35 +436,20 @@ void orxFASTCALL _orxDebug_Break()
 
   /* Compiler specific */
 
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
-
-    #if defined(__orxIOS__)
-
-      __builtin_trap();
-
-    #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-      __builtin_trap();
-
-    #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-      #ifdef __orxPPC__
-
-        asm("li r0, 20\nsc\nnop\nli r0, 37\nli r4, 2\nsc\nnop\n" : : : "memory", "r0", "r3", "r4");
-
-      #else /* __orxPPC__ */
-
-        asm("int $3");
-
-      #endif /* __orxPPC__ */
-
-    #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-  #endif /* __orxGCC__ || __orxLLVM__ */
-
   #ifdef __orxMSVC__
 
     __debugbreak();
+
+  #else /* __orxMSVC__ */
+
+    #ifdef __GNUC__
+
+      /* Requires GCC >= 4.2.4 */
+      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
+
+    #endif /* __GNUC__ */
+
+    __builtin_trap();
 
   #endif /* __orxMSVC__ */
 

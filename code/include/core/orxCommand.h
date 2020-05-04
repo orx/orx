@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2019 Orx-Project
+ * Copyright (c) 2008-2020 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -208,6 +208,14 @@ extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const o
 * @return      Command result if found, orxNULL otherwise
 */
 extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);
+
+/** Evaluates a command with a specific GUID
+* @param[in]   _zCommandLine  Command name + arguments
+* @param[in]   _u64GUID       GUID to use in place of the GUID markers in the command
+* @param[out]  _pstResult     Variable that will contain the result
+* @return      Command result if found, orxNULL otherwise
+*/
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult);
 
 /** Executes a command
 * @param[in]   _zCommand      Command name

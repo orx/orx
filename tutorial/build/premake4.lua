@@ -16,22 +16,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -59,7 +45,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2019")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -132,7 +118,7 @@ solution "Tutorial"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
+    configuration {"not vs2015", "not vs2017", "not vs2019"}
         flags {"EnableSSE2"}
 
     configuration {"not x64"}
@@ -177,13 +163,15 @@ solution "Tutorial"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.7",
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.7",
+            "-mmacosx-version-min=10.9",
+            "-stdlib=libc++",
             "-dead_strip"
         }
 
@@ -214,6 +202,38 @@ solution "Tutorial"
         buildoptions
         {
             "/MP"
+        }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands
+        {
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands
+        {
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
         }
 
 
