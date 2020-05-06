@@ -275,7 +275,7 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
 
     /* Registers event update function */
-    eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
+    eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxJoystick_GLFW_Update, orxNULL, orxMODULE_ID_JOYSTICK, orxCLOCK_PRIORITY_HIGHER);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
@@ -320,7 +320,7 @@ void orxFASTCALL orxJoystick_GLFW_Exit()
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxJoystick_GLFW_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxJoystick_GLFW_Update);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));

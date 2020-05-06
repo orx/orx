@@ -4133,7 +4133,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
     sstDisplay.stSTBICallbacks.eof  = orxDisplay_iOS_EOFSTBICallback;
 
     /* Registers update function */
-    eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+    eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
@@ -4306,7 +4306,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         }
 
         /* Unregisters update function */
-        orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -4332,7 +4332,7 @@ void orxFASTCALL orxDisplay_iOS_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
 
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
 
     /* Deletes default shaders */
     orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);

@@ -287,7 +287,7 @@ orxSTATUS ScrollEd::Init()
           orxCamera_AddGroupID(roGame.GetMainCamera(), orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP), orxFALSE);
 
           // Registers update
-          eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+          eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
           // Registers event handler
           eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, StaticEventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;

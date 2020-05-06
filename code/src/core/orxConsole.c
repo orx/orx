@@ -1264,7 +1264,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxInput_SelectSet(zPreviousSet);
 
         /* Registers update callback */
-        eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
+        eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
 
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
@@ -1397,7 +1397,7 @@ void orxFASTCALL orxConsole_Exit()
     orxConsole_SetFont(orxNULL);
 
     /* Unregisters update callback */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxConsole_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update);
 
     /* Remove event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);

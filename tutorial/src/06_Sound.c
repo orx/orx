@@ -253,7 +253,7 @@ orxSTATUS orxFASTCALL Init()
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
   /* Gets main clock */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Adds background music (streamed) to the soldier and stores it */
   orxObject_AddSound(pstSoldier, "Music");

@@ -65,7 +65,7 @@
     orxObject_CreateFromConfig("Scene");
 
     // Register the Update function to the core clock
-    orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
+    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
 
     // Done!
     return orxSTATUS_SUCCESS;

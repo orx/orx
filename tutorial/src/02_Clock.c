@@ -191,7 +191,7 @@ orxSTATUS orxFASTCALL Init()
   orxClock_Register(pstClock2, Update, pstObject2, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
   /* Gets main clock */
-  pstMainClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstMainClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Registers our input update callback to it
    * !!IMPORTANT!! *DO NOT* handle inputs in clock callbacks that are *NOT* registered to the main clock

@@ -868,7 +868,7 @@ static void orxResource_UpdatePostInit()
       orxSTATUS eResult;
 
       /* Registers request notification callback */
-      eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+      eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
 
       /* Checks */
       orxASSERT(eResult != orxSTATUS_FAILURE);
@@ -901,7 +901,7 @@ static void orxResource_UpdatePostInit()
         if(orxConfig_HasValue(orxRESOURCE_KZ_CONFIG_WATCH_LIST) != orxFALSE)
         {
           /* Registers watch callbacks */
-          orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+          orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
         }
 
         /* Pops config section */

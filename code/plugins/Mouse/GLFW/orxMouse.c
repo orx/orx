@@ -306,7 +306,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
       orxCLOCK *pstClock;
 
       /* Gets core clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Valid? */
       if(pstClock != orxNULL)
@@ -371,7 +371,7 @@ void orxFASTCALL orxMouse_GLFW_Exit()
     orxCLOCK *pstClock;
 
     /* Gets core clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Unregisters update function */
     orxClock_Unregister(pstClock, orxMouse_GLFW_Update);

@@ -2931,7 +2931,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
       orxFLOAT fMinFrequency = orxFLOAT_0;
 
       /* Gets core clock */
-      sstRender.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      sstRender.pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Pushes render config section clock */
       orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);

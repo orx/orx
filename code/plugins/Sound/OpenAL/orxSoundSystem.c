@@ -2091,7 +2091,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
   if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
     /* Registers recording callback */
-    if(orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), &orxSoundSystem_OpenAL_UpdateRecording, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
+    if(orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), &orxSoundSystem_OpenAL_UpdateRecording, orxNULL, orxMODULE_ID_SOUNDSYSTEM, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)
     {
       ALCenum eALFormat;
 
@@ -2150,7 +2150,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
           sstSoundSystem.poCaptureDevice = orxNULL;
 
           /* Unregisters recording callback */
-          orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateRecording);
+          orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_OpenAL_UpdateRecording);
         }
       }
       else
@@ -2159,7 +2159,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StartRecording(const orxSTRING _zNam
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording of <%s>: failed to open sound capture device.", _zName);
 
         /* Unregisters recording callback */
-        orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateRecording);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_OpenAL_UpdateRecording);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -2198,7 +2198,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_StopRecording()
   if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
     /* Unregisters recording callback */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxSoundSystem_OpenAL_UpdateRecording);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_OpenAL_UpdateRecording);
 
     /* Has a recording file? */
     if(sstSoundSystem.pstRecordingFile != orxNULL)

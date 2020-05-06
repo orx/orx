@@ -1232,7 +1232,7 @@ orxSTATUS ScrollBase::BaseInit()
   orxConfig_SelectSection(szConfigSectionMap);
 
   // Gets core clock
-  pstCoreClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstCoreClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   // Registers update function
   eResult = ((orxClock_Register(pstCoreClock, StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL) != orxSTATUS_FAILURE)

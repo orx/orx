@@ -196,7 +196,7 @@ orxSTATUS orxFASTCALL Init()
   pstSoldier = orxObject_CreateFromConfig("Soldier");
 
   /* Gets main clock */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

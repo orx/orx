@@ -820,7 +820,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
           orxCLOCK *pstClock;
 
           /* Gets core clock */
-          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+          pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
           /* Valid? */
           if(pstClock != orxNULL)
@@ -862,7 +862,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
             orxCLOCK *pstClock;
 
             /* Gets core clock */
-            pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+            pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
             /* Valid? */
             if(pstClock != orxNULL)
@@ -5421,7 +5421,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             sstDisplay.ePrimitive         = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
             /* Gets clock */
-            pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+            pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
             /* Registers update function */
             if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
@@ -5564,7 +5564,7 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_GLFW_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_GLFW_Update);
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);

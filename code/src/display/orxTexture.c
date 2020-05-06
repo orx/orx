@@ -663,7 +663,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
           orxStructure_SetOwner(sstTexture.pstPixel, sstTexture.pstPixel);
 
           /* Links screen bitmap */
-          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME, orxFALSE);
+          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN, orxFALSE);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)

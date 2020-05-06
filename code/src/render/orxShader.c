@@ -535,7 +535,7 @@ orxSTATUS orxFASTCALL orxShader_Init()
         orxCLOCK *pstClock;
 
         /* Gets core clock */
-        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+        pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
         /* Valid? */
         if(pstClock != orxNULL)

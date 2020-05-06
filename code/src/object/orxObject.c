@@ -3800,7 +3800,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Creates objects clock */
-      sstObject.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      sstObject.pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Valid? */
       if(sstObject.pstClock != orxNULL)
@@ -5041,7 +5041,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             if(pstClock == orxNULL)
             {
               /* Gets core clock */
-              pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+              pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
               orxASSERT(pstClock != orxNULL);
             }
 

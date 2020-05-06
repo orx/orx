@@ -44,7 +44,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
 
     ImGuiIO &rstIO = ImGui::GetIO();
 
-    rstIO.DeltaTime = orxClock_GetInfo(orxClock_FindFirst(-1.0f, orxCLOCK_TYPE_CORE))->fDT;
+    rstIO.DeltaTime = orxClock_GetInfo(orxClock_Get(orxCLOCK_KZ_CORE))->fDT;
 
     orxDisplay_GetScreenSize(&rstIO.DisplaySize.x, &rstIO.DisplaySize.y);
     orxVECTOR vFramebufferSize;

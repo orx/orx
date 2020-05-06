@@ -1038,7 +1038,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
     /* Are we on main thread, is clock module initialized and did we register callback? */
     if((orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     && (orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-    && (orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
+    && (orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
     {
       /* Updates status */
       orxFLAG_SET(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED, orxTHREAD_KU32_STATIC_FLAG_NONE);
