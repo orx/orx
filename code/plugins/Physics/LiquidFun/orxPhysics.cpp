@@ -3183,7 +3183,6 @@ extern "C" orxU32 orxFASTCALL orxPhysics_LiquidFun_BoxPick(const orxAABOX *_pstB
 {
   b2AABB          stBox;
   BoxPickCallback oBoxPickCallback;
-  orxHANDLE       hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
