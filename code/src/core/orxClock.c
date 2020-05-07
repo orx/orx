@@ -471,7 +471,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
           orxCLOCK *pstClock;
 
           /* Gets init time */
-          sstClock.dTime  = orxSystem_GetTime();
+          sstClock.dTime = orxSystem_GetTime();
 
           /* Inits Flags */
           sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;

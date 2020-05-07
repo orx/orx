@@ -83,6 +83,7 @@ namespace orxPhysics
 {
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+  static const orxFLOAT sfMinStepDuration       = orx2F(0.001f);
   static const orxU32   su32MessageBankSize     = 512;
   static const orxU32   su32BodyBankSize        = 512;
   static const orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
@@ -1138,7 +1139,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
     sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
 
     /* Computes the number of steps */
-    u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxMATH_KF_EPSILON) / sstPhysics.fFixedDT);
+    u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxPhysics::sfMinStepDuration) / sstPhysics.fFixedDT);
 
     /* Updates accumulator */
     sstPhysics.fDTAccumulator = orxMAX(orxFLOAT_0, sstPhysics.fDTAccumulator - (orxU2F(u32Steps) * sstPhysics.fFixedDT));
@@ -1161,11 +1162,15 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
     /* Not absolute fixed DT? */
     if(!orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT))
     {
-      /* Updates last step of world simulation */
-      sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1, sstPhysics.u32ParticleIterations);
+      /* Should run a last simulation step? */
+      if(sstPhysics.fDTAccumulator >= orxPhysics::sfMinStepDuration)
+      {
+        /* Updates last step of world simulation */
+        sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1, sstPhysics.u32ParticleIterations);
 
-      /* Clears accumulator */
-      sstPhysics.fDTAccumulator = orxFLOAT_0;
+        /* Clears accumulator */
+        sstPhysics.fDTAccumulator = orxFLOAT_0;
+      }
     }
 
     /* Clears forces */
@@ -3295,7 +3300,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
     fStepFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY);
 
     /* Deactivated? */
-    if(fStepFrequency < orxFLOAT_0)
+    if(fStepFrequency <= orxFLOAT_0)
     {
       /* Uses default frequency */
       sstPhysics.fFixedDT = orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
@@ -3303,13 +3308,13 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
     else
     {
       /* Stores fixed DT */
-      sstPhysics.fFixedDT = (fStepFrequency != orxFLOAT_0) ? orxFLOAT_1 / fStepFrequency : orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
+      sstPhysics.fFixedDT = orxFLOAT_1 / fStepFrequency;
 
       /* Updates status */
       orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT, orxPHYSICS_KU32_STATIC_FLAG_NONE);
 
       /* Should interpolate? */
-      if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE)
+      if((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE))
       {
         /* Updates status */
         orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE, orxPHYSICS_KU32_STATIC_FLAG_NONE);
