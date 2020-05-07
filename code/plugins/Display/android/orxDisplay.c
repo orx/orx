@@ -900,12 +900,12 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       /* Updates payload */
       stPayload.stBitmap.u32ID = (orxU32)pstBitmap->uiTexture;
 
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
-
       /* Clears loading flag */
       orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
       orxMEMORY_BARRIER();
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
     }
     else
     {
@@ -934,11 +934,11 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
 
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
-
       /* Clears loading flag */
       orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
     }
 
     if(previousUnpackAlignment != KTX_GL_UNPACK_ALIGNMENT)
@@ -973,11 +973,11 @@ static void orxFASTCALL orxDisplay_Android_ReadKTXResourceCallback(orxHANDLE _hR
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process data for bitmap <%s>: temp texture will remain in use.", pstBitmap->zLocation);
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
-
     /* Clears loading flag */
     orxFLAG_SET(pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstBitmap, orxNULL, &stPayload);
   }
 
   /* Asked for deletion? */
@@ -1071,9 +1071,6 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
     stPayload.stBitmap.stFilenameID   = pstInfo->pstBitmap->stFilenameID;
     stPayload.stBitmap.u32ID          = (pstInfo->pu8ImageBuffer != orxNULL) ? (orxU32)pstInfo->pstBitmap->uiTexture : orxU32_UNDEFINED;
 
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
-
     /* Frees image buffer */
     if(pstInfo->pu8ImageBuffer != pstInfo->pu8ImageSource)
     {
@@ -1091,6 +1088,9 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmapCallback(void *_
     /* Clears loading flag */
     orxFLAG_SET(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_NONE, orxDISPLAY_KU32_BITMAP_FLAG_LOADING);
     orxMEMORY_BARRIER();
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_LOAD_BITMAP, pstInfo->pstBitmap, orxNULL, &stPayload);
 
     /* Asked for deletion? */
     if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_DELETE))
