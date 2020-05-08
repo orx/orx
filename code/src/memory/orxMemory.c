@@ -54,6 +54,7 @@
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
 #define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
+#define orxMEMORY_KU32_TAG_SIZE                 8
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
@@ -267,7 +268,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 #ifdef __orxPROFILER__
 
   /* Allocates memory */
-  pResult = dlmalloc((size_t)(_u32Size + sizeof(orxMEMORY_TYPE)));
+  pResult = dlmalloc((size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
   /* Success? */
   if(pResult != NULL)
@@ -281,10 +282,10 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
     uMemoryChunkSize = dlmalloc_usable_size(pResult);
 
     /* Updates memory tracker */
-    orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxTRUE);
+    orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
     /* Updates result */
-    pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
+    pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
   }
 
 #else /* __orxPROFILER__ */
@@ -327,7 +328,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     size_t         uMemoryChunkSize;
 
     /* Updates pointer */
-    _pMem = (orxU8 *)_pMem - sizeof(orxMEMORY_TYPE);
+    _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
     /* Gets memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
@@ -336,7 +337,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     uMemoryChunkSize = dlmalloc_usable_size(_pMem);
 
     /* Reallocates memory */
-    pResult = dlrealloc(_pMem, (size_t)(_u32Size + sizeof(orxMEMORY_TYPE)));
+    pResult = dlrealloc(_pMem, (size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
     /* Success? */
     if(pResult != NULL)
@@ -345,11 +346,11 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
       *(orxMEMORY_TYPE *)pResult = eMemType;
 
       /* Updates memory tracker */
-      orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxFALSE);
-      orxMemory_Track(eMemType, (orxU32)(dlmalloc_usable_size(pResult) - sizeof(orxMEMORY_TYPE)), orxTRUE);
+      orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
+      orxMemory_Track(eMemType, (orxU32)(dlmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
       /* Updates result */
-      pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
+      pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
     }
 
 #else /* __orxPROFILER__ */
@@ -381,7 +382,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     size_t         uMemoryChunkSize;
 
     /* Updates pointer */
-    _pMem = (orxU8 *)_pMem - sizeof(orxMEMORY_TYPE);
+    _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
     /* Gets memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
@@ -390,7 +391,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     uMemoryChunkSize = dlmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
-    orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxFALSE);
+    orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
   }
 
 #endif /* __orxPROFILER__ */
