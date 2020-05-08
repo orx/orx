@@ -175,6 +175,7 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
 
 orxSTATUS orxFASTCALL orxImGui_Init()
 {
+  sbInFrame = orxFALSE;
   ImGui::SetAllocatorFunctions(&orxImGui_Allocate, &orxImGui_Free);
   ImGui::CreateContext();
   ImGuiIO& rstIO                    = ImGui::GetIO();
@@ -231,4 +232,4 @@ void orxFASTCALL orxImGui_Exit()
   ImGui::DestroyContext();
 }
 
-#endif // orxIMGUI_HEADER_ONLY
+#endif // !orxIMGUI_HEADER_ONLY

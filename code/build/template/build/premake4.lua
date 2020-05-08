@@ -259,6 +259,8 @@ project "[name]"
         "../include/Scroll",]
 [+imgui
         "../include/imgui",]
+[+nuklear
+        "../include/nuklear",]
         "../include"
     }
 

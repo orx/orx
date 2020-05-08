@@ -10,6 +10,7 @@ params: [
   name        {Project name (relative or full path)}                                  _
   archive     {orxArchive support (resources can be stored inside ZIP files)}         -
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -
+  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -
   scroll      {C++ convenience layer with config-object binding}                      -
 ]
 platforms:  [
