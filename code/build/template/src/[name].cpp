@@ -22,9 +22,9 @@
 #undef orxIMGUI_IMPL]
 [+archive
 
-#define orxARCHIVE_HEADER_ONLY
-#include "orxArchive.cpp"
-#undef orxARCHIVE_HEADER_ONLY]
+#define orxARCHIVE_IMPL
+#include "orxArchive.h"
+#undef orxARCHIVE_IMPL]
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
