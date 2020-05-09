@@ -20,13 +20,13 @@
 #define orxNUKLEAR_KU32_DEFAULT_GLOBAL_ALPHA  1.0f
 #define orxNUKLEAR_KU32_DEFAULT_SEGMENT_COUNT 22
 
-#define orxNUKLEAR_KZ_RESOURCE_GROUP        "Nuklear"
+#define orxNUKLEAR_KZ_RESOURCE_GROUP          "Nuklear"
 
-#define orxNUKLEAR_KZ_CONFIG_SECTION        "Nuklear"
-#define orxNUKLEAR_KZ_CONFIG_FONT_LIST      "FontList"
-#define orxNUKLEAR_KZ_CONFIG_FONT_SIZE      "FontSize"
-#define orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA   "GlobalAlpha"
-#define orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT  "SegmentCount"
+#define orxNUKLEAR_KZ_CONFIG_SECTION          "Nuklear"
+#define orxNUKLEAR_KZ_CONFIG_FONT_LIST        "FontList"
+#define orxNUKLEAR_KZ_CONFIG_FONT_SIZE        "FontSize"
+#define orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA     "GlobalAlpha"
+#define orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT    "SegmentCount"
 
 
 //! Prototypes / Declarations

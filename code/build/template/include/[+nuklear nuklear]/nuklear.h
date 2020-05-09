@@ -9457,8 +9457,8 @@ nk_draw_list_alloc_vertices(struct nk_draw_list *list, nk_size count)
      * backend (OpenGL, DirectX, ...). For example in OpenGL for `glDrawElements`
      * instead of specifing `GL_UNSIGNED_SHORT` you have to define `GL_UNSIGNED_INT`.
      * Sorry for the inconvenience. */
-    if(sizeof(nk_draw_index)==2) NK_ASSERT((list->vertex_count < NK_USHORT_MAX &&
-        "To many verticies for 16-bit vertex indicies. Please read comment above on how to solve this problem"));
+    NK_ASSERT((sizeof(nk_draw_index) != 2) || ((list->vertex_count < NK_USHORT_MAX &&
+        "To many verticies for 16-bit vertex indicies. Please read comment above on how to solve this problem")));
     return vtx;
 }
 NK_INTERN nk_draw_index*
@@ -15679,32 +15679,32 @@ static float stbtt__cuberoot( float x )
 /*  x^3 + c*x^2 + b*x + a = 0 */
 static int stbtt__solve_cubic(float a, float b, float c, float* r)
 {
-	float s = -a / 3;
-	float p = b - a*a / 3;
-	float q = a * (2*a*a - 9*b) / 27 + c;
+    float s = -a / 3;
+    float p = b - a*a / 3;
+    float q = a * (2*a*a - 9*b) / 27 + c;
    float p3 = p*p*p;
-	float d = q*q + 4*p3 / 27;
-	if (d >= 0) {
-		float z = (float) STBTT_sqrt(d);
-		float u = (-q + z) / 2;
-		float v = (-q - z) / 2;
-		u = stbtt__cuberoot(u);
-		v = stbtt__cuberoot(v);
-		r[0] = s + u + v;
-		return 1;
-	} else {
-	   float u = (float) STBTT_sqrt(-p/3);
-	   float v = (float) STBTT_acos(-STBTT_sqrt(-27/p3) * q / 2) / 3; /*  p3 must be negative, since d is negative */
-	   float m = (float) STBTT_cos(v);
+    float d = q*q + 4*p3 / 27;
+    if (d >= 0) {
+        float z = (float) STBTT_sqrt(d);
+        float u = (-q + z) / 2;
+        float v = (-q - z) / 2;
+        u = stbtt__cuberoot(u);
+        v = stbtt__cuberoot(v);
+        r[0] = s + u + v;
+        return 1;
+    } else {
+       float u = (float) STBTT_sqrt(-p/3);
+       float v = (float) STBTT_acos(-STBTT_sqrt(-27/p3) * q / 2) / 3; /*  p3 must be negative, since d is negative */
+       float m = (float) STBTT_cos(v);
       float n = (float) STBTT_cos(v-3.141592/2)*1.732050808f;
-	   r[0] = s + u * 2 * m;
-	   r[1] = s - u * (m + n);
-	   r[2] = s - u * (m - n);
+       r[0] = s + u * 2 * m;
+       r[1] = s - u * (m + n);
+       r[2] = s - u * (m - n);
 
       /* STBTT_assert( STBTT_fabs(((r[0]+a)*r[0]+b)*r[0]+c) < 0.05f);  // these asserts may not be safe at all scales, though they're in bezier t parameter units so maybe? */
       /* STBTT_assert( STBTT_fabs(((r[1]+a)*r[1]+b)*r[1]+c) < 0.05f); */
       /* STBTT_assert( STBTT_fabs(((r[2]+a)*r[2]+b)*r[2]+c) < 0.05f); */
-   	return 3;
+    return 3;
    }
 }
 
