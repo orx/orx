@@ -1,5 +1,8 @@
 //! Includes
 
+#ifndef _orxIMGUI_H_
+#define _orxIMGUI_H_
+
 #include "orx.h"
 #include "imgui.h"
 
@@ -12,7 +15,7 @@ void        orxFASTCALL orxImGui_Exit();
 
 //! Code
 
-#ifndef orxIMGUI_HEADER_ONLY
+#ifdef orxIMGUI_IMPL
 
 static orxBOOL sbInFrame = orxFALSE;
 
@@ -232,4 +235,6 @@ void orxFASTCALL orxImGui_Exit()
   ImGui::DestroyContext();
 }
 
-#endif // !orxIMGUI_HEADER_ONLY
+#endif // orxIMGUI_IMPL
+
+#endif // _orxIMGUI_H_

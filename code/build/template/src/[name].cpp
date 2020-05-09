@@ -17,9 +17,9 @@
 ]
 [+imgui
 
-#define orxIMGUI_HEADER_ONLY
-#include "orxImGui.cpp"
-#undef orxIMGUI_HEADER_ONLY]
+#define orxIMGUI_IMPL
+#include "orxImGui.h"
+#undef orxIMGUI_IMPL]
 [+archive
 
 #define orxARCHIVE_HEADER_ONLY
