@@ -7,7 +7,24 @@
 #include "imgui.h"
 
 
-//! Prototypes
+//! Prototypes / Declarations
+
+#define orxIMGUI_KZ_RESOURCE_GROUP          "ImGui"
+
+#define orxIMGUI_KZ_CONFIG_SECTION          "ImGui"
+#define orxIMGUI_KZ_CONFIG_FONT_LIST        "FontList"
+
+#define orxIMGUI_KU32_DEFAULT_FONT_SIZE     13.0f
+
+typedef struct __orxIMGUI_t
+{
+  ImFont               *pstDefaultFont;
+  ImFont              **apstFonts;
+  orxS32                s32FontCount;
+
+} orxIMGUI;
+
+extern      orxIMGUI    sstImGui;
 
 orxSTATUS   orxFASTCALL orxImGui_Init();
 void        orxFASTCALL orxImGui_Exit();
@@ -17,7 +34,9 @@ void        orxFASTCALL orxImGui_Exit();
 
 #ifdef orxIMGUI_IMPL
 
-static orxBOOL sbInFrame = orxFALSE;
+static orxBOOL  sbInFrame = orxFALSE;
+
+static orxIMGUI sstImGui  = {};
 
 static void *orxImGui_Allocate(size_t _sSize, void *)
 {
@@ -179,8 +198,12 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
 orxSTATUS orxFASTCALL orxImGui_Init()
 {
   sbInFrame = orxFALSE;
+
+  orxMemory_Zero(&sstImGui, sizeof(orxIMGUI));
+
   ImGui::SetAllocatorFunctions(&orxImGui_Allocate, &orxImGui_Free);
   ImGui::CreateContext();
+
   ImGuiIO& rstIO                    = ImGui::GetIO();
   rstIO.BackendFlags                = ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_HasGamepad;
   rstIO.ConfigFlags                 = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_NavEnableSetMousePos | ImGuiConfigFlags_DockingEnable;
@@ -206,12 +229,61 @@ orxSTATUS orxFASTCALL orxImGui_Init()
   rstIO.KeyMap[ImGuiKey_Y]          = orxKEYBOARD_KEY_Y;
   rstIO.KeyMap[ImGuiKey_Z]          = orxKEYBOARD_KEY_Z;
 
+  orxConfig_PushSection(orxIMGUI_KZ_CONFIG_SECTION);
+
+  sstImGui.pstDefaultFont = rstIO.Fonts->AddFontDefault();
+
+  orxS32 s32FontCount = orxConfig_GetListCount(orxIMGUI_KZ_CONFIG_FONT_LIST);
+
+  if(s32FontCount)
+  {
+    sstImGui.apstFonts = (ImFont **)orxMemory_Allocate(s32FontCount * sizeof(ImFont *), orxMEMORY_TYPE_TEMP);
+    orxMemory_Zero(sstImGui.apstFonts, s32FontCount * sizeof(ImFont *));
+
+    for(sstImGui.s32FontCount = 0; sstImGui.s32FontCount < s32FontCount; sstImGui.s32FontCount++)
+    {
+      const orxSTRING zFont = orxConfig_GetListString(orxIMGUI_KZ_CONFIG_FONT_LIST, sstImGui.s32FontCount);
+      const orxSTRING zLocation = orxResource_Locate(orxIMGUI_KZ_RESOURCE_GROUP, orxConfig_GetListString(zFont, 0));
+
+      if(zLocation)
+      {
+        orxHANDLE hFont = orxResource_Open(zLocation, orxFALSE);
+
+        if(hFont != orxHANDLE_UNDEFINED)
+        {
+          orxS32 s32Size = (orxS32)orxResource_GetSize(hFont);
+
+          void *pBuffer = orxMemory_Allocate(s32Size, orxMEMORY_TYPE_TEMP);
+
+          if(pBuffer)
+          {
+            if(orxResource_Read(hFont, s32Size, pBuffer, orxNULL, orxNULL) == s32Size)
+            {
+              orxFLOAT fFontSize = orxMAX(orxFLOAT_1, (orxConfig_GetListCount(zFont) > 1) ? orxConfig_GetListFloat(zFont, 1) : orxIMGUI_KU32_DEFAULT_FONT_SIZE);
+
+              sstImGui.apstFonts[sstImGui.s32FontCount] = rstIO.Fonts->AddFontFromMemoryTTF(pBuffer, s32Size, fFontSize, NULL, NULL);
+            }
+            else
+            {
+              orxMemory_Free(pBuffer);
+            }
+          }
+
+          orxResource_Close(hFont);
+        }
+      }
+    }
+  }
+
   int iWidth, iHeight;
   unsigned char *pcPixels;
   rstIO.Fonts->GetTexDataAsRGBA32(&pcPixels, &iWidth, &iHeight);
   orxBITMAP *pstBitmap = orxDisplay_CreateBitmap(iWidth, iHeight);
   orxDisplay_SetBitmapData(pstBitmap, pcPixels, iWidth * iHeight * 4);
-  rstIO.Fonts->TexID = (void *)pstBitmap;
+  rstIO.Fonts->SetTexID((ImTextureID)pstBitmap);
+  rstIO.Fonts->ClearTexData();
+
+  orxConfig_PopSection();
 
   rstIO.MouseDrawCursor = true;
   orxMouse_ShowCursor(orxFALSE);

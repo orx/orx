@@ -16,6 +16,9 @@
 
 #include "nuklear.h"
 
+
+//! Prototypes / Declarations
+
 #define orxNUKLEAR_KU32_DEFAULT_FONT_SIZE     13.0f
 #define orxNUKLEAR_KU32_DEFAULT_GLOBAL_ALPHA  1.0f
 #define orxNUKLEAR_KU32_DEFAULT_SEGMENT_COUNT 22
@@ -27,9 +30,6 @@
 #define orxNUKLEAR_KZ_CONFIG_FONT_SIZE        "FontSize"
 #define orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA     "GlobalAlpha"
 #define orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT    "SegmentCount"
-
-
-//! Prototypes / Declarations
 
 typedef struct __orxNUKLEAR_t
 {
@@ -254,7 +254,7 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  orxMemory_Zero(&sstNuklear, sizeof(sstNuklear));
+  orxMemory_Zero(&sstNuklear, sizeof(orxNUKLEAR));
 
   orxConfig_PushSection(orxNUKLEAR_KZ_CONFIG_SECTION);
 
