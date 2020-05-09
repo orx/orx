@@ -16,6 +16,18 @@
 
 #include "nuklear.h"
 
+#define orxNUKLEAR_KU32_DEFAULT_FONT_SIZE     13.0f
+#define orxNUKLEAR_KU32_DEFAULT_GLOBAL_ALPHA  1.0f
+#define orxNUKLEAR_KU32_DEFAULT_SEGMENT_COUNT 22
+
+#define orxNUKLEAR_KZ_RESOURCE_GROUP        "Nuklear"
+
+#define orxNUKLEAR_KZ_CONFIG_SECTION        "Nuklear"
+#define orxNUKLEAR_KZ_CONFIG_FONT_LIST      "FontList"
+#define orxNUKLEAR_KZ_CONFIG_FONT_SIZE      "FontSize"
+#define orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA   "GlobalAlpha"
+#define orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT  "SegmentCount"
+
 
 //! Prototypes / Declarations
 
@@ -23,7 +35,9 @@ typedef struct __orxNUKLEAR_t
 {
   struct nk_context     stContext;
   struct nk_font_atlas  stAtlas;
-  struct nk_font       *pstFont;
+  struct nk_font       *pstDefaultFont;
+  struct nk_font      **apstFonts;
+  orxS32                s32FontCount;
 
 } orxNUKLEAR;
 
@@ -55,6 +69,8 @@ static orxBOOL              sbInFrame         = orxFALSE;
 static orxBITMAP           *spstFontBitmap    = orxNULL;
 struct nk_draw_null_texture sstNull           = {};
 struct nk_buffer            sstCommandBuffer  = {};
+struct nk_buffer            sstVertexBuffer   = {};
+struct nk_buffer            sstElementBuffer  = {};
 struct nk_allocator         sstAllocator      =
 {
   nk_handle_ptr(0),
@@ -116,6 +132,15 @@ static orxSTATUS orxFASTCALL orxNuklear_BeginFrame(const orxEVENT *_pstEvent)
       nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_C) ? 1 : 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_V) ? 1 : 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_X) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Z) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Y) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_A) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT) ? 1 : 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 1);
     }
     else
@@ -123,13 +148,30 @@ static orxSTATUS orxFASTCALL orxNuklear_BeginFrame(const orxEVENT *_pstEvent)
       nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, 0);
+      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, 0);
       nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 0);
     }
     nk_input_key(&sstNuklear.stContext, NK_KEY_SHIFT, (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSHIFT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSHIFT)) ? 1 : 0);
 
-    for(const orxCHAR *pc = orxKeyboard_ReadString(); *pc != orxCHAR_NULL;)
+    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_DOWN, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_DOWN) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_UP, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_UP) ? 1 : 0);
+
+    if(sstNuklear.stContext.text_edit.active)
     {
-      nk_input_unicode(&sstNuklear.stContext, orxString_GetFirstCharacterCodePoint(pc, &pc));
+      for(const orxCHAR *pc = orxKeyboard_ReadString(); *pc != orxCHAR_NULL;)
+      {
+        nk_input_unicode(&sstNuklear.stContext, orxString_GetFirstCharacterCodePoint(pc, &pc));
+      }
     }
 
     nk_input_end(&sstNuklear.stContext);
@@ -152,30 +194,41 @@ static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
       {NK_VERTEX_LAYOUT_END}
     };
     struct nk_convert_config stConfig = {};
+
+    orxConfig_PushSection(orxNUKLEAR_KZ_CONFIG_SECTION);
+
+    orxS32 s32SegmentCount = orxConfig_HasValue(orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT) ? orxConfig_GetS32(orxNUKLEAR_KZ_CONFIG_SEGMENT_COUNT) : orxNUKLEAR_KU32_DEFAULT_SEGMENT_COUNT;
+
     stConfig.vertex_layout        = stVertexLayout;
     stConfig.vertex_size          = sizeof(orxDISPLAY_VERTEX);
     stConfig.vertex_alignment     = NK_ALIGNOF(orxDISPLAY_VERTEX);
     stConfig.null                 = sstNull;
-    stConfig.circle_segment_count = 22;
-    stConfig.curve_segment_count  = 22;
-    stConfig.arc_segment_count    = 22;
-    stConfig.global_alpha         = 1.0f;
+    stConfig.circle_segment_count = s32SegmentCount;
+    stConfig.curve_segment_count  = s32SegmentCount;
+    stConfig.arc_segment_count    = s32SegmentCount;
+    stConfig.global_alpha         = orxConfig_HasValue(orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA) ? orxConfig_GetFloat(orxNUKLEAR_KZ_CONFIG_GLOBAL_ALPHA) : orxNUKLEAR_KU32_DEFAULT_GLOBAL_ALPHA;
     stConfig.shape_AA             = NK_ANTI_ALIASING_ON;
     stConfig.line_AA              = NK_ANTI_ALIASING_ON;
 
-    struct nk_buffer stVertexBuffer, stElementBuffer;
-    nk_buffer_init(&stVertexBuffer, &sstAllocator, NK_BUFFER_DEFAULT_INITIAL_SIZE);
-    nk_buffer_init(&stElementBuffer, &sstAllocator, NK_BUFFER_DEFAULT_INITIAL_SIZE);
-    nk_convert(&sstNuklear.stContext, &sstCommandBuffer, &stVertexBuffer, &stElementBuffer, &stConfig);
+    orxConfig_PopSection();
+
+    nk_convert(&sstNuklear.stContext, &sstCommandBuffer, &sstVertexBuffer, &sstElementBuffer, &stConfig);
+
+    orxVECTOR vScreenSize = {}, vFramebufferSize = {}, vScale = {};
+    orxDisplay_GetScreenSize(&vScreenSize.fX, &vScreenSize.fY);
+    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+    orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
+    orxConfig_PopSection();
+    orxVector_Div(&vScale, &vFramebufferSize, &vScreenSize);
 
     orxBITMAP *pstScreen = orxDisplay_GetScreenBitmap();
     orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
 
     orxDISPLAY_MESH stMesh  = {};
     stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLES;
-    stMesh.astVertexList    = (orxDISPLAY_VERTEX *)nk_buffer_memory_const(&stVertexBuffer);
-    stMesh.u32VertexNumber  = (orxU32)(stVertexBuffer.needed / sizeof(orxDISPLAY_VERTEX));
-    stMesh.au16IndexList    = (orxU16 *)nk_buffer_memory_const(&stElementBuffer);
+    stMesh.astVertexList    = (orxDISPLAY_VERTEX *)nk_buffer_memory_const(&sstVertexBuffer);
+    stMesh.u32VertexNumber  = (orxU32)(sstVertexBuffer.needed / sizeof(orxDISPLAY_VERTEX));
+    stMesh.au16IndexList    = (orxU16 *)nk_buffer_memory_const(&sstElementBuffer);
 
     const struct nk_draw_command *pstCommand;
     nk_draw_foreach(pstCommand, &sstNuklear.stContext, &sstCommandBuffer)
@@ -183,15 +236,15 @@ static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
       if(pstCommand->elem_count)
       {
         stMesh.u32IndexNumber = pstCommand->elem_count;
-        orxDisplay_SetBitmapClipping(orxNULL, orxF2U(pstCommand->clip_rect.x), orxF2U(pstCommand->clip_rect.y), orxF2U(pstCommand->clip_rect.x + pstCommand->clip_rect.w), orxF2U(pstCommand->clip_rect.y + pstCommand->clip_rect.h));
+        orxDisplay_SetBitmapClipping(orxNULL, orxF2U(pstCommand->clip_rect.x * vScale.fX), orxF2U(pstCommand->clip_rect.y * vScale.fY), orxF2U((pstCommand->clip_rect.x + pstCommand->clip_rect.w) * vScale.fX), orxF2U((pstCommand->clip_rect.y + pstCommand->clip_rect.h) * vScale.fY));
         orxDisplay_DrawMesh(&stMesh, (orxBITMAP *)pstCommand->texture.ptr, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
         stMesh.au16IndexList += pstCommand->elem_count;
       }
     }
     nk_clear(&sstNuklear.stContext);
     nk_buffer_clear(&sstCommandBuffer);
-    nk_buffer_free(&stVertexBuffer);
-    nk_buffer_free(&stElementBuffer);
+    nk_buffer_clear(&sstVertexBuffer);
+    nk_buffer_clear(&sstElementBuffer);
   }
 
   return orxSTATUS_SUCCESS;
@@ -203,16 +256,61 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
 
   orxMemory_Zero(&sstNuklear, sizeof(sstNuklear));
 
+  orxConfig_PushSection(orxNUKLEAR_KZ_CONFIG_SECTION);
+
   nk_font_atlas_init(&sstNuklear.stAtlas, &sstAllocator);
   nk_font_atlas_begin(&sstNuklear.stAtlas);
-  sstNuklear.pstFont = nk_font_atlas_add_default(&sstNuklear.stAtlas, 13.0f, NULL);
+  sstNuklear.pstDefaultFont = nk_font_atlas_add_default(&sstNuklear.stAtlas, orxConfig_HasValue(orxNUKLEAR_KZ_CONFIG_FONT_SIZE) ? orxConfig_GetFloat(orxNUKLEAR_KZ_CONFIG_FONT_SIZE) : orxNUKLEAR_KU32_DEFAULT_FONT_SIZE, NULL);
+
+  orxS32 s32FontCount = orxConfig_GetListCount(orxNUKLEAR_KZ_CONFIG_FONT_LIST);
+
+  if(s32FontCount)
+  {
+    sstNuklear.apstFonts = (struct nk_font **)orxMemory_Allocate(s32FontCount * sizeof(struct nk_font *), orxMEMORY_TYPE_TEMP);
+    orxMemory_Zero(sstNuklear.apstFonts, s32FontCount * sizeof(struct nk_font*));
+
+    for(sstNuklear.s32FontCount = 0; sstNuklear.s32FontCount < s32FontCount; sstNuklear.s32FontCount++)
+    {
+      const orxSTRING zFont = orxConfig_GetListString(orxNUKLEAR_KZ_CONFIG_FONT_LIST, sstNuklear.s32FontCount);
+      const orxSTRING zLocation = orxResource_Locate(orxNUKLEAR_KZ_RESOURCE_GROUP, orxConfig_GetListString(zFont, 0));
+
+      if(zLocation)
+      {
+        orxHANDLE hFont = orxResource_Open(zLocation, orxFALSE);
+
+        if(hFont != orxHANDLE_UNDEFINED)
+        {
+          orxS32 s32Size = (orxS32)orxResource_GetSize(hFont);
+
+          void *pBuffer = orxMemory_Allocate(s32Size, orxMEMORY_TYPE_TEMP);
+
+          if(pBuffer)
+          {
+            if(orxResource_Read(hFont, s32Size, pBuffer, orxNULL, orxNULL) == s32Size)
+            {
+              orxFLOAT fFontSize = orxMAX(orxFLOAT_1, (orxConfig_GetListCount(zFont) > 1) ? orxConfig_GetListFloat(zFont, 1) : orxNUKLEAR_KU32_DEFAULT_FONT_SIZE);
+
+              sstNuklear.apstFonts[sstNuklear.s32FontCount] = nk_font_atlas_add_from_memory(&sstNuklear.stAtlas, pBuffer, s32Size, fFontSize, NULL);
+            }
+
+            orxMemory_Free(pBuffer);
+          }
+
+          orxResource_Close(hFont);
+        }
+      }
+    }
+  }
+
   int iWidth, iHeight;
   const void * pcPixels = nk_font_atlas_bake(&sstNuklear.stAtlas, &iWidth, &iHeight, NK_FONT_ATLAS_RGBA32);
   spstFontBitmap = orxDisplay_CreateBitmap(iWidth, iHeight);
   orxDisplay_SetBitmapData(spstFontBitmap, (orxU8 *)pcPixels, iWidth * iHeight * 4);
   nk_font_atlas_end(&sstNuklear.stAtlas, nk_handle_ptr(spstFontBitmap), &sstNull);
 
-  if(nk_init(&sstNuklear.stContext, &sstAllocator, &sstNuklear.pstFont->handle))
+  orxConfig_PopSection();
+
+  if(nk_init(&sstNuklear.stContext, &sstAllocator, &sstNuklear.pstDefaultFont->handle))
   {
     sbInFrame = orxFALSE;
 
@@ -224,6 +322,8 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
     orxMouse_ShowCursor(orxFALSE);
 
     nk_buffer_init(&sstCommandBuffer, &sstAllocator, NK_BUFFER_DEFAULT_INITIAL_SIZE);
+    nk_buffer_init(&sstVertexBuffer, &sstAllocator, NK_BUFFER_DEFAULT_INITIAL_SIZE);
+    nk_buffer_init(&sstElementBuffer, &sstAllocator, NK_BUFFER_DEFAULT_INITIAL_SIZE);
 
     orxEvent_AddHandler(orxEVENT_TYPE_RENDER, &orxNuklear_BeginFrame);
     orxEvent_SetHandlerIDFlags(&orxNuklear_BeginFrame, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
@@ -246,9 +346,12 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
 
 void orxFASTCALL orxNuklear_Exit()
 {
+  orxMemory_Free(sstNuklear.apstFonts);
   nk_free(&sstNuklear.stContext);
   nk_font_atlas_clear(&sstNuklear.stAtlas);
   nk_buffer_free(&sstCommandBuffer);
+  nk_buffer_free(&sstVertexBuffer);
+  nk_buffer_free(&sstElementBuffer);
   orxDisplay_DeleteBitmap(spstFontBitmap);
 }
 
