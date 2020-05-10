@@ -67,21 +67,22 @@
 
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_PAUSED              0x20000000  /**< Paused flag */
-#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x80000000  /**< Smoothing on flag  */
-#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x01000000  /**< Smoothing off flag  */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x40000000  /**< Has lifetime flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x80000000  /**< Smoothing on flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x01000000  /**< Smoothing off flag */
 #define orxOBJECT_KU32_FLAG_HAS_CHILDREN        0x02000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN  0x04000000  /**< Has children flag */
 #define orxOBJECT_KU32_FLAG_IS_JOINT_CHILD      0x08000000  /**< Is joint child flag */
 #define orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD  0x00100000  /**< Detach joint child flag */
 #define orxOBJECT_KU32_FLAG_DEATH_ROW           0x00200000  /**< Death row flag */
-#define orxOBJECT_KU32_FLAG_FX_LIFETIME         0x00400000  /**< FX lifetime flag  */
-#define orxOBJECT_KU32_FLAG_SOUND_LIFETIME      0x00800000  /**< Sound lifetime flag  */
-#define orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME    0x00010000  /**< Spawner lifetime flag  */
-#define orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME   0x00020000  /**< Timeline lifetime flag  */
-#define orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME   0x00040000  /**< Children lifetime flag  */
+#define orxOBJECT_KU32_FLAG_FX_LIFETIME         0x00400000  /**< FX lifetime flag */
+#define orxOBJECT_KU32_FLAG_SOUND_LIFETIME      0x00800000  /**< Sound lifetime flag */
+#define orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME    0x00010000  /**< Spawner lifetime flag */
+#define orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME   0x00020000  /**< Timeline lifetime flag */
+#define orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME   0x00040000  /**< Children lifetime flag */
+#define orxOBJECT_KU32_FLAG_ANIM_LIFETIME       0x00080000  /**< Anim lifetime flag */
 
-#define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00C70000  /**< Structure lifetime mask */
+#define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00CF0000  /**< Structure lifetime mask */
 #define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x0000FFFF  /**< Linked structure mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
@@ -154,6 +155,7 @@
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
 #define orxOBJECT_KZ_CHILD                      "child"
+#define orxOBJECT_KZ_ANIM                       "anim"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -491,6 +493,13 @@ static orxINLINE orxSTATUS orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, c
   {
     /* Updates flags */
     u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
+  }
+
+  /* Anim? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_ANIM) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_ANIM_LIFETIME;
   }
 
   /* Has flags? */
@@ -1476,7 +1485,7 @@ void orxFASTCALL orxObject_CommandSetHSL(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Inits color with HSL values */
     orxColor_Set(&stColor, &(_astArgList[1].vValue), orxFLOAT_1);
 
-    /* Converts color to RGB  */
+    /* Converts color to RGB */
     orxColor_FromHSLToRGB(&stColor, &stColor);
 
     /* Recursive? */
@@ -1557,7 +1566,7 @@ void orxFASTCALL orxObject_CommandSetHSV(orxU32 _u32ArgNumber, const orxCOMMAND_
     /* Inits color with HSV values */
     orxColor_Set(&stColor, &(_astArgList[1].vValue), orxFLOAT_1);
 
-    /* Converts color to RGB  */
+    /* Converts color to RGB */
     orxColor_FromHSVToRGB(&stColor, &stColor);
 
     /* Recursive? */
@@ -3690,8 +3699,14 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
                   if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME))
                   || (!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN)))
                   {
-                    /* Schedules object's deletion */
-                    orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+                    /* Not checking anim or no current anim? */
+                    if((!orxFLAG_TEST(u32LifeTimeFlags, orxOBJECT_KU32_FLAG_ANIM_LIFETIME))
+                    || ((_pstObject->astStructureList[orxSTRUCTURE_ID_ANIMPOINTER].pstStructure != orxNULL)
+                     && (orxAnimPointer_GetCurrentAnim(orxANIMPOINTER(_pstObject->astStructureList[orxSTRUCTURE_ID_ANIMPOINTER].pstStructure)) == orxU32_UNDEFINED)))
+                    {
+                      /* Schedules object's deletion */
+                      orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+                    }
                   }
                 }
               }
