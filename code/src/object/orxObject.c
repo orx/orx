@@ -3706,6 +3706,9 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
                     {
                       /* Schedules object's deletion */
                       orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
+
+                      /* Disables it */
+                      orxObject_Enable(_pstObject, orxFALSE);
                     }
                   }
                 }

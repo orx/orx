@@ -3422,7 +3422,7 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orx
  * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counts for example)
  * @param[out] _pbCut                               Animation has been cut
  * @param[out] _pbClearTarget                       Animation has requested a target clearing
- * @return Current Anim ID. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
+ * @return Current Anim ID, orxU32_UNDEFINED for none. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
 orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget)
 {
@@ -3539,8 +3539,12 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Couldn't compute next animation when trying " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " -> " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", orxAnimSet_GetName(_pstAnimSet), orxAnim_GetName(_pstAnimSet->pastAnim[u32Anim]), (_u32DstAnim != orxU32_UNDEFINED) ? orxAnim_GetName(_pstAnimSet->pastAnim[_u32DstAnim]) : "NO TARGET");
+          /* Has target anim? */
+          if(_u32DstAnim != orxU32_UNDEFINED)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Couldn't compute next animation when trying " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " -> " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ".", orxAnimSet_GetName(_pstAnimSet), orxAnim_GetName(_pstAnimSet->pastAnim[u32Anim]), orxAnim_GetName(_pstAnimSet->pastAnim[_u32DstAnim]));
+          }
 
           /* Not found */
           u32Result = orxU32_UNDEFINED;
