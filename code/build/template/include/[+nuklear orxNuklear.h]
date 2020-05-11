@@ -41,7 +41,9 @@ typedef struct __orxNUKLEAR_t
 
 } orxNUKLEAR;
 
+#ifndef orxNUKLEAR_IMPL
 extern      orxNUKLEAR  sstNuklear;
+#endif // !orxNUKLEAR_IMPL
 
 orxSTATUS   orxFASTCALL orxNuklear_Init();
 void        orxFASTCALL orxNuklear_Exit();
