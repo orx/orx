@@ -9,6 +9,7 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #define NK_KEYSTATE_BASED_INPUT
+#define NK_INCLUDE_FIXED_TYPES
 #define NK_ASSERT(EXPR) orxASSERT(EXPR)
 
 #define STBTT_malloc(SIZE, USER)  orxMemory_Allocate((orxU32)(SIZE), orxMEMORY_TYPE_TEMP)
@@ -363,6 +364,7 @@ void orxFASTCALL orxNuklear_Exit()
 #undef STBTT_free
 
 #undef NK_ASSERT
+#undef NK_INCLUDE_FIXED_TYPES
 #undef NK_KEYSTATE_BASED_INPUT
 #undef NK_INCLUDE_DEFAULT_FONT
 #undef NK_INCLUDE_FONT_BAKING
