@@ -5683,6 +5683,7 @@ template<typename T> struct nk_alignof{struct Big {T x; char c;}; enum {
 #define NK_ALIGNOF(t) ((char*)(&((struct {char c; t _h;}*)0)->_h) - (char*)0)
 #endif
 
+//! ORX-BEGIN: Fix STB-related macro handling
 #endif /* NK_NUKLEAR_H_ */
 
 #ifdef NK_IMPLEMENTATION
@@ -5696,7 +5697,7 @@ static nk_handle fictional_handle = {0};
 #define STBTT_malloc(x,u)  nk_malloc( fictional_handle, 0, x )
 #define STBTT_free(x,u)    nk_mfree( fictional_handle , x)
 #endif
-
+//! ORX-END
 #ifndef NK_INTERNAL_H
 #define NK_INTERNAL_H
 
@@ -9457,8 +9458,8 @@ nk_draw_list_alloc_vertices(struct nk_draw_list *list, nk_size count)
      * backend (OpenGL, DirectX, ...). For example in OpenGL for `glDrawElements`
      * instead of specifing `GL_UNSIGNED_SHORT` you have to define `GL_UNSIGNED_INT`.
      * Sorry for the inconvenience. */
-    NK_ASSERT((sizeof(nk_draw_index) != 2) || ((list->vertex_count < NK_USHORT_MAX &&
-        "To many verticies for 16-bit vertex indicies. Please read comment above on how to solve this problem")));
+    if(sizeof(nk_draw_index)==2) NK_ASSERT((list->vertex_count < NK_USHORT_MAX &&
+        "To many verticies for 16-bit vertex indicies. Please read comment above on how to solve this problem"));
     return vtx;
 }
 NK_INTERN nk_draw_index*
@@ -19949,6 +19950,11 @@ nk_begin_titled(struct nk_context *ctx, const char *name, const char *title,
         if (!ctx->active)
             ctx->active = win;
     } else {
+        //! ORX-BEGIN: Fixes assert when the application is minimized
+        if (win->seq == ctx->seq) {
+            nk_clear(ctx);
+        }
+        //! ORX-END
         /* update window */
         win->flags &= ~(nk_flags)(NK_WINDOW_PRIVATE-1);
         win->flags |= flags;
