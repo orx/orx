@@ -306,7 +306,7 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
   }
 
   int iWidth, iHeight;
-  const void * pcPixels = nk_font_atlas_bake(&sstNuklear.stAtlas, &iWidth, &iHeight, NK_FONT_ATLAS_RGBA32);
+  const void *pcPixels = nk_font_atlas_bake(&sstNuklear.stAtlas, &iWidth, &iHeight, NK_FONT_ATLAS_RGBA32);
   spstFontBitmap = orxDisplay_CreateBitmap(iWidth, iHeight);
   orxDisplay_SetBitmapData(spstFontBitmap, (orxU8 *)pcPixels, iWidth * iHeight * 4);
   nk_font_atlas_end(&sstNuklear.stAtlas, nk_handle_ptr(spstFontBitmap), &sstNull);
