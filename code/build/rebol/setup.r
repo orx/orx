@@ -8,7 +8,7 @@ REBOL [
 
 ; Default settings
 tag:            <version>
-host:           ["https://bitbucket.org/orx/orx-extern/get/" tag ".zip"]
+host:           ["https://codeload.github.com/orx/orx-extern/zip/" tag]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
