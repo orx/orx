@@ -1,4 +1,4 @@
-[![Join the chat at https://gitter.im/orx/orx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orx/orx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat on https://orx-project.org/discord](https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield)](https://orx-project.org/discord)
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
@@ -8,7 +8,7 @@ Orx - Portable Game Engine (Version 1.11)
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
 check [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
-You can also come [chat with us](https://gitter.im/orx/orx)
+You can also come [chat with us](https://orx-project.org/discord)
 if you have any questions or comments.
 
 This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
@@ -241,7 +241,7 @@ Comments
 
 If you have any questions, comments, ideas or reviews, feel free to either
 post them on [orx's forum](https://forum.orx-project.org),
-come [chat with us](https://gitter.im/orx/orx)
+come [chat with us](https://orx-project.org/discord)
 or send them directly by email to iarwain [at] orx-project.org
 
 Enjoy!

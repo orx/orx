@@ -3,7 +3,7 @@ Orx - Portable Game Engine  (Version iOS 1.11)
 
 Email iarwain [at] orx-project -dot- org to contact the author; or better, check
 [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
-You can also come [chat with us](https://gitter.im/orx/orx)
+You can also come [chat with us](https://orx-project.org/discord)
 if you have any questions or comments.
 
 This engine is licensed under the zlib license, see the `LICENSE` file for details.
@@ -76,7 +76,7 @@ Comments
 
 If you have any questions, comments, ideas or reviews, feel free to either
 post them on [orx's forum](https://forum.orx-project.org),
-come [chat with us](https://gitter.im/orx/orx)
+come [chat with us](https://orx-project.org/discord)
 or send them directly by email to iarwain [at] orx-project.org
 
 
