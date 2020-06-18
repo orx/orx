@@ -140,6 +140,7 @@ either platform = "windows" [
   for-each [env-file env-prefix mandatory] reduce [
     env-home/.bashrc                      rejoin ["export " env-variable "="]   true
     env-home/.profile                     rejoin ["export " env-variable "="]   true
+    env-home/.zshrc                       rejoin ["export " env-variable "="]   false
     env-home/.config/fish/fish_variables  rejoin ["SETUVAR " env-variable ":"]  false
   ] [
     if any [mandatory exists? env-file] [
