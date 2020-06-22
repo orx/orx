@@ -72,7 +72,7 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 solution "[name]"
 
-    language ("C++")
+    language ("C[+c++ ++]")
 
     location (destination)
 
@@ -245,7 +245,8 @@ project "[name]"
 
     files
     {
-        "../src/**.cpp",
+[+c++
+        "../src/**.cpp",]
         "../src/**.c",
         "../include/**.h",
 [+scroll
