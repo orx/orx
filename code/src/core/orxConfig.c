@@ -111,6 +111,7 @@
 #define orxCONFIG_KC_SECTION_SEPARATOR            '.'         /**< Section separator */
 #define orxCONFIG_KC_INHERITANCE_MARKER           '@'         /**< Inheritance marker character */
 #define orxCONFIG_KC_BLOCK                        '"'         /**< Block delimiter character */
+#define orxCONFIG_KZ_BLOCK                        "\""        /**< Block delimiter string */
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
@@ -4678,7 +4679,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
               {
                 /* Writes it */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %*c%s", zKey, orxCONFIG_KC_ASSIGN, *(pstEntry->stValue.zValue) == orxCONFIG_KC_BLOCK ? 1 : 0, orxCONFIG_KC_BLOCK, pstEntry->stValue.zValue);
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %s%s", zKey, orxCONFIG_KC_ASSIGN, *(pstEntry->stValue.zValue) == orxCONFIG_KC_BLOCK ? orxCONFIG_KZ_BLOCK : orxSTRING_EMPTY, pstEntry->stValue.zValue);
 
                 /* Is a list? */
                 if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
