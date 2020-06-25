@@ -20,6 +20,7 @@ var group__orx_object =
     [ "orxObject_AddShader", "group__orx_object.html#ga33a1f3c52ad336cb7f0a1fc01db1d344", null ],
     [ "orxObject_AddSound", "group__orx_object.html#gaf787464dae9b7b4ce4dda64ac8b60661", null ],
     [ "orxObject_AddTimeLineTrack", "group__orx_object.html#ga8ae9653187ddb4763e8fd727bddae643", null ],
+    [ "orxObject_AddTimeLineTrackRecursive", "group__orx_object.html#ga0bdd0d492d633ebedd218b7267b8e817", null ],
     [ "orxObject_AddUniqueDelayedFX", "group__orx_object.html#gaa15184b90128aa973c7328a2839c2b0f", null ],
     [ "orxObject_AddUniqueFX", "group__orx_object.html#gadeeecee1ac395151f2026da169932faf", null ],
     [ "orxObject_ApplyForce", "group__orx_object.html#ga18cda5b99a03836e4d9b8452434630b9", null ],

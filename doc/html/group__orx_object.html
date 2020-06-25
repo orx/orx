@@ -424,6 +424,8 @@ Shader</h2></td></tr>
 TimeLine</h2></td></tr>
 <tr class="memitem:ga8ae9653187ddb4763e8fd727bddae643"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga8ae9653187ddb4763e8fd727bddae643">orxObject_AddTimeLineTrack</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zTrackConfigID)</td></tr>
 <tr class="separator:ga8ae9653187ddb4763e8fd727bddae643"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0bdd0d492d633ebedd218b7267b8e817"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga0bdd0d492d633ebedd218b7267b8e817">orxObject_AddTimeLineTrackRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zTrackConfigID)</td></tr>
+<tr class="separator:ga0bdd0d492d633ebedd218b7267b8e817"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6eeac2bcb4f1ea8ad9b960e7ff58201f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga6eeac2bcb4f1ea8ad9b960e7ff58201f">orxObject_RemoveTimeLineTrack</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zTrackConfigID)</td></tr>
 <tr class="separator:ga6eeac2bcb4f1ea8ad9b960e7ff58201f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga73c16ff1443e59fb552022b7d15e0dd4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga73c16ff1443e59fb552022b7d15e0dd4">orxObject_EnableTimeLine</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bEnable)</td></tr>
@@ -793,6 +795,39 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga0bdd0d492d633ebedd218b7267b8e817"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_AddTimeLineTrackRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zTrackConfigID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Adds a timeline track to an object and its children. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zTrackConfigID</td><td>Config ID of the timeline track to add </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
