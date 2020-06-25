@@ -876,6 +876,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
+/** Adds a timeline track to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
 /** Removes a timeline track using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zTrackConfigID Config ID of the timeline track to remove

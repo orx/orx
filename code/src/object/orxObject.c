@@ -8696,6 +8696,12 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
   return eResult;
 }
 
+/** Adds a timeline track to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ */
+orxOBJECT_MAKE_RECURSIVE(AddTimeLineTrack, const orxSTRING);
+
 /** Removes a timeline track using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
