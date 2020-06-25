@@ -8120,6 +8120,35 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
   return eResult;
 }
 
+/** Adds a delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ */
+void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
+  orxOBJECT *pstChild;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates object */
+  orxObject_AddDelayedFX(_pstObject, _zFXConfigID, _fDelay);
+
+  /* For all its children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Updates it */
+    orxObject_AddDelayedFXRecursive(pstChild, _zFXConfigID, _fDelay);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
  * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
  * note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
@@ -8187,6 +8216,35 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
 
   /* Done! */
   return eResult;
+}
+
+/** Adds a unique delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ */
+void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
+  orxOBJECT *pstChild;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates object */
+  orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, _fDelay);
+
+  /* For all its children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Updates it */
+    orxObject_AddUniqueDelayedFXRecursive(pstChild, _zFXConfigID, _fDelay);
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Removes an FX using its config ID.

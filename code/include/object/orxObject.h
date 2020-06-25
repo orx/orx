@@ -771,6 +771,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueFXRecursive(orxOB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
+/** Adds a delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+
 /** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
  * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
  * note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
@@ -781,6 +788,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_p
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+
+/** Adds a unique delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using its config ID.
  * @param[in]   _pstObject      Concerned object
