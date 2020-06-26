@@ -4762,6 +4762,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Success? */
         if(pstNewWindow != orxNULL)
         {
+          int iWindowX = 0, iWindowY = 0;
+
           /* Deletes previous window */
           glfwDestroyWindow(sstDisplay.pstWindow);
 
@@ -4788,6 +4790,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
           /* Reactivates resize event */
           sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
+
+          /* Gets window position */
+          glfwGetWindowPos(sstDisplay.pstWindow, &iWindowX, &iWindowY);
+
+          /* Forces a position update */
+          orxDisplay_GLFW_PosCallback(sstDisplay.pstWindow, iWindowX, iWindowY);
         }
         else
         {
@@ -5426,6 +5434,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             /* Registers update function */
             if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
             {
+              int iWindowX = 0, iWindowY = 0;
+
               /* Ignores resize event for now */
               sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
 
@@ -5443,6 +5453,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
 
               /* Reactivates resize event */
               sstDisplay.u32Flags &= ~orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
+
+              /* Gets window position */
+              glfwGetWindowPos(sstDisplay.pstWindow, &iWindowX, &iWindowY);
+
+              /* Forces a position update */
+              orxDisplay_GLFW_PosCallback(sstDisplay.pstWindow, iWindowX, iWindowY);
             }
             else
             {
