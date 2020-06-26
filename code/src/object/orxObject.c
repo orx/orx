@@ -8124,25 +8124,37 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
+ * @param[in]   _bPropagate    Should the delay be incremented with each child application?
  */
-void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate)
 {
-  orxOBJECT *pstChild;
+  orxFLOAT    fDelay;
+  orxOBJECT  *pstChild;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
+  /* Sets initial delay */
+  fDelay = _fDelay;
+
   /* Updates object */
-  orxObject_AddDelayedFX(_pstObject, _zFXConfigID, _fDelay);
+  orxObject_AddDelayedFX(_pstObject, _zFXConfigID, fDelay);
 
   /* For all its children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
       pstChild != orxNULL;
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
+    /* Should propagate? */
+    if(_bPropagate != orxFALSE)
+    {
+      /* Updates delay */
+      fDelay += _fDelay;
+    }
+
     /* Updates it */
-    orxObject_AddDelayedFXRecursive(pstChild, _zFXConfigID, _fDelay);
+    orxObject_AddDelayedFXRecursive(pstChild, _zFXConfigID, fDelay, _bPropagate);
   }
 
   /* Done! */
@@ -8222,25 +8234,37 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
+ * @param[in]   _bPropagate    Should the delay be incremented with each child application?
  */
-void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate)
 {
-  orxOBJECT *pstChild;
+  orxFLOAT    fDelay;
+  orxOBJECT  *pstChild;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
+  /* Sets initial delay */
+  fDelay = _fDelay;
+
   /* Updates object */
-  orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, _fDelay);
+  orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, fDelay);
 
   /* For all its children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
       pstChild != orxNULL;
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
+    /* Should propagate? */
+    if(_bPropagate != orxFALSE)
+    {
+      /* Updates delay */
+      fDelay += _fDelay;
+    }
+
     /* Updates it */
-    orxObject_AddUniqueDelayedFXRecursive(pstChild, _zFXConfigID, _fDelay);
+    orxObject_AddUniqueDelayedFXRecursive(pstChild, _zFXConfigID, fDelay, _bPropagate);
   }
 
   /* Done! */
