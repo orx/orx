@@ -53,20 +53,24 @@
 
 /** Spawner flags
  */
-#define orxSPAWNER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
+#define orxSPAWNER_KU32_FLAG_NONE                       0x00000000  /**< No flags */
 
-#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x00000001  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x00000002  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x00000004  /**< Use alpha flag */
-#define orxSPAWNER_KU32_FLAG_USE_COLOR            0x00000008  /**< Use color flag */
-#define orxSPAWNER_KU32_FLAG_USE_ROTATION         0x00000010  /**< Use rotation flag */
-#define orxSPAWNER_KU32_FLAG_USE_SCALE            0x00000020  /**< Use scale flag */
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000040  /**< Use relative speed flag */
-#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000080  /**< Use self as parent flag */
-#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE      0x00000100  /**< Clean on delete flag */
-#define orxSPAWNER_KU32_FLAG_INTERPOLATE          0x00000200  /**< Interpolate flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_DELETE                0x00000001  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET                 0x00000002  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_USE_ALPHA                  0x00000004  /**< Use alpha flag */
+#define orxSPAWNER_KU32_FLAG_USE_COLOR                  0x00000008  /**< Use color flag */
+#define orxSPAWNER_KU32_FLAG_USE_ROTATION               0x00000010  /**< Use rotation flag */
+#define orxSPAWNER_KU32_FLAG_USE_SCALE                  0x00000020  /**< Use scale flag */
 
-#define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT  0x00000040  /**< Use relative speed (object) flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER 0x00000080  /**< Use relative speed (spawner) flag */
+#define orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED         0x000000C0  /**< Use relative speed mask */
+
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT         0x00000100  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE            0x00000200  /**< Clean on delete flag */
+#define orxSPAWNER_KU32_FLAG_INTERPOLATE                0x00000400  /**< Interpolate flag */
+
+#define orxSPAWNER_KU32_MASK_USER_ALL                   0x000004FF  /**< All mask */
 
 
 /** Event enum

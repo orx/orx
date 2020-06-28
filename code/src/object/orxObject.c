@@ -4368,7 +4368,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             }
             else
             {
-              /* Updates status */
+              /* Gets boolean value */
               if(orxString_ToBool(zUseParentSpace, &bUseParentSpace, orxNULL) != orxSTATUS_FAILURE)
               {
                 /* Updates status */
