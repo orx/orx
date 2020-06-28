@@ -7,10 +7,12 @@ var orx_spawner_8h =
     [ "orxSPAWNER_KU32_FLAG_NONE", "group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_ALPHA", "group__orx_spawner.html#gaacc4ba128377d1617c203696cf724332", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_COLOR", "group__orx_spawner.html#ga1a4e8d2ca6a5107c1f0b0aed92d790fc", null ],
-    [ "orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED", "group__orx_spawner.html#ga4e4f5989c0174b711f89f1b154aff283", null ],
+    [ "orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT", "group__orx_spawner.html#gafb60edb0b57640d66c3d608c1b3eaf03", null ],
+    [ "orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER", "group__orx_spawner.html#ga901e941a298ad5dfdcd44dc8766af6d4", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_ROTATION", "group__orx_spawner.html#ga7bb5fe4f7f77736d728ae4aa94d44355", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_SCALE", "group__orx_spawner.html#gacc4c15ae87339a10834da009dc85bb1a", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT", "group__orx_spawner.html#ga9dac3f048e3fd9117d296f24f281b88b", null ],
+    [ "orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED", "group__orx_spawner.html#ga28c2d3014307a6cb37a1080691ab1224", null ],
     [ "orxSPAWNER_KU32_MASK_USER_ALL", "group__orx_spawner.html#ga26db6b62deb1e9d00aa7033ce157c4aa", null ],
     [ "orxSPAWNER", "group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31", null ],
     [ "orxSPAWNER_EVENT", "group__orx_spawner.html#ga757d724e3601950fccbb85d625991400", [
