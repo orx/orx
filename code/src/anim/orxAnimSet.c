@@ -1546,7 +1546,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
   orxS32          s32ValueCount, s32MaxFrames = -1;
-  orxBOOL         bFromConfig = orxTRUE;
+  orxBOOL         bFromConfig = orxTRUE, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
   orxANIM        *pstResult = orxNULL;
 
   /* Gets current anim set */
@@ -2019,6 +2019,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             /* Copies to local */
             orxVector_Copy(&vCurrentSize, &vFrameSize);
+
+            /* Updates status */
+            bTempSize = orxTRUE;
           }
 
           /* Should go to next row? */
@@ -2054,6 +2057,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             {
               /* Stores computed one */
               orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
+
+              /* Updates staus */
+              bTempOrigin = orxTRUE;
             }
             else
             {
@@ -2075,6 +2081,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Sets it */
             orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acFrameBuffer);
+
+            /* Updates status */
+            bTempName = orxTRUE;
           }
         }
 
@@ -2149,6 +2158,27 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
           /* Stops */
           break;
+        }
+
+        /* Use temp size? */
+        if(bTempSize != orxFALSE)
+        {
+          /* Clears it */
+          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+        }
+
+        /* Use temp origin? */
+        if(bTempOrigin != orxFALSE)
+        {
+          /* Clears it */
+          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
+        }
+
+        /* Use temp name? */
+        if(bTempName != orxFALSE)
+        {
+          /* Clears it */
+          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
         }
 
         /* Clears frame's section parent */
