@@ -4523,12 +4523,6 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     /* Clears all data */
     orxConfig_Clear(orxNULL);
 
-    /* Reloads default file */
-    eResult = orxConfig_Load(sstConfig.zBaseFile);
-
-    /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Config file has been reloaded", sstConfig.zBaseFile);
-
     /* For all entries in history */
     for(pu32HistoryEntry = (orxU32 *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
         (pu32HistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
