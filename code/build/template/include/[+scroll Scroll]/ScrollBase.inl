@@ -2037,7 +2037,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
     // Creates scroll object
     poResult = ConstructObject(mpstBank);
 
-    // Saveable or runtime object?
+    // Savable or runtime object?
     if(_xFlags & (ScrollObject::FlagSave | ScrollObject::FlagRunTime))
     {
       // First one?
@@ -2103,7 +2103,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
     // Not runtime?
     if(!(_xFlags & ScrollObject::FlagRunTime))
     {
-      // Creates and protects its intance section
+      // Creates and protects its instance section
       orxConfig_PushSection(_zInstanceName);
       orxConfig_ProtectSection(_zInstanceName, orxTRUE);
       orxConfig_PopSection();
@@ -2215,7 +2215,7 @@ void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject, const orxSTRI
     orxASSERT(!orxConfig_HasSection(zName));
   }
 
-  // Saveable or runtime?
+  // Savable or runtime?
   if(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
   {
     // First object?
