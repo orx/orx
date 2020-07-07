@@ -1465,6 +1465,16 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
 
     /* Clears its protection count */
     pstSection->s32ProtectionCount = 0;
+
+    /* Has parent? */
+    if((_pstParent != orxNULL) && (_pstParent != orxHANDLE_UNDEFINED))
+    {
+      /* Protects it */
+      _pstParent->s32ProtectionCount++;
+
+      /* Checks */
+      orxASSERT(_pstParent->s32ProtectionCount >= 0);
+    }
   }
 
   /* Done! */
@@ -3098,7 +3108,6 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
     const orxSTRING     zSectionName;
     orxCONFIG_SECTION  *pstSection, *pstParent = orxNULL;
     orxCHAR            *pcNameEnd;
-    orxBOOL             bNewParent = orxFALSE;
     orxS32              s32MarkerIndex;
 
     /* Looks for inheritance index */
@@ -3129,9 +3138,6 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
       {
         /* Forces 'no default' parent ID */
         pstParent = (orxCONFIG_SECTION *)orxHANDLE_UNDEFINED;
-
-        /* Asks for new parent to be set */
-        bNewParent = orxTRUE;
       }
       else
       {
@@ -3147,17 +3153,8 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
         /* Selects it */
         if(orxConfig_SelectSectionInternal(zParent) != orxSTATUS_FAILURE)
         {
-          /* Protects it */
-          sstConfig.pstCurrentSection->s32ProtectionCount++;
-
-          /* Checks */
-          orxASSERT(sstConfig.pstCurrentSection->s32ProtectionCount >= 0);
-
           /* Stores it */
           pstParent = sstConfig.pstCurrentSection;
-
-          /* Asks for new parent to be set */
-          bNewParent = orxTRUE;
         }
 
         /* Restores previous section */
@@ -3219,9 +3216,29 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
       /* Loading? */
       if(sstConfig.u32LoadCount != 0)
       {
-        /* Has new parent ID? */
-        if(bNewParent != orxFALSE)
+        /* Should update parent? */
+        if((pstParent != orxNULL) && (pstParent != pstSection->pstParent))
         {
+          /* Had previous parent? */
+          if((pstSection->pstParent != orxNULL) && (pstSection->pstParent != orxHANDLE_UNDEFINED))
+          {
+            /* Unprotects it */
+            pstSection->pstParent->s32ProtectionCount--;
+
+            /* Checks */
+            orxASSERT(pstSection->pstParent->s32ProtectionCount >= 0);
+          }
+
+          /* Has new parent? */
+          if(pstParent != orxHANDLE_UNDEFINED)
+          {
+            /* Protects it */
+            pstParent->s32ProtectionCount++;
+
+            /* Checks */
+            orxASSERT(pstParent->s32ProtectionCount >= 0);
+          }
+
           /* Updates parent ID */
           pstSection->pstParent = pstParent;
         }
