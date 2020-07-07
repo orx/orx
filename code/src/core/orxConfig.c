@@ -5621,27 +5621,38 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
  */
 orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
-  orxCONFIG_SECTION *pstLastSection, *pstNewSection;
+  orxCONFIG_SECTION  *pstLastSection, *pstNewSection;
+  orxBOOL             bStop;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* For all sections */
-  for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
-      pstNewSection != orxNULL;
-      pstNewSection = (pstLastSection != orxNULL) ? (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstLastSection->stNode)) : (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList)))
+  /* Until there's no more pending deletions */
+  do
   {
-    /* Checks */
-    orxASSERT(pstNewSection->s32ProtectionCount >= 0);
+    /* Inits status */
+    bStop = orxTRUE;
 
-    /* Protected or can't delete section? */
-    if((pstNewSection->s32ProtectionCount > 0)
-    || (orxConfig_DeleteSection(pstNewSection, _pfnClearCallback) == orxSTATUS_FAILURE))
+    /* For all sections */
+    for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+        pstNewSection != orxNULL;
+        pstNewSection = (pstLastSection != orxNULL) ? (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstLastSection->stNode)) : (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList)))
     {
-      /* Updates last section */
-      pstLastSection = pstNewSection;
+      /* Checks */
+      orxASSERT(pstNewSection->s32ProtectionCount >= 0);
+
+      /* Protected or can't delete section? */
+      if((pstNewSection->s32ProtectionCount > 0)
+      || (orxConfig_DeleteSection(pstNewSection, _pfnClearCallback) == orxSTATUS_FAILURE))
+      {
+        /* Updates last section */
+        pstLastSection = pstNewSection;
+
+        /* Updates status */
+        bStop = orxFALSE;
+      }
     }
-  }
+  } while(bStop == orxFALSE);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
