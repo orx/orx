@@ -35,16 +35,31 @@
 #include "orxPluginAPI.h"
 
 #ifdef __orxMAC__
-
   #define GL_GLEXT_PROTOTYPES
-
 #endif /* __orxMAC__ */
 
-#define GLFW_INCLUDE_GLEXT
+/* No OpenGL/ES defines? */
+#if !defined(__orxDISPLAY_OPENGL__) && !defined(__orxDISPLAY_OPENGL_ES__)
+  /* Linux ARM/ARM64 platforms default to OpenGL ES */
+  #if defined(__orxLINUX__) && (defined(__orxARM__) || defined(__orxARM64__))
+    #define __orxDISPLAY_OPENGL_ES__
+  /* All other platforms default to OpenGL */
+  #else /* __orxLINUX__ && (__orxARM__ || __orxARM64__) */
+    #define __orxDISPLAY_OPENGL__
+  #endif /* __orxLINUX__ && (__orxARM__ || __orxARM64__) */
+#endif /* !__orxDISPLAY_OPENGL__ && !__orxDISPLAY_OPENGL_ES__ */
+
+#ifdef __orxDISPLAY_OPENGL_ES__
+  #define GLFW_INCLUDE_ES3
+#else /* __orxDISPLAY_OPENGL_ES__ */
+  #define GLFW_INCLUDE_GLEXT
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 #include "GLFW/glfw3.h"
+#undef GLFW_INCLUDE_ES2
+#undef GLFW_INCLUDE_GLEXT
 
 #if !defined(__orxMSVC__) || (_MSC_VER > 1600)
-#include "webp/decode.h"
+  #include "webp/decode.h"
 #endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
 #ifdef __orxGCC__
@@ -160,40 +175,44 @@
 /**  Misc defines
  */
 #if defined(__orxGCC__) || defined(__orxLLVM__)
-#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+  #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
 #else /* __orxGCC__ || __orxLLVM__ */
-#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
+  #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
 #endif /* __orxGCC__ || __orxLLVM__ */
 
 #ifdef __orxDEBUG__
 
-#define glASSERT()                                                        \
-do                                                                        \
-{                                                                         \
-  if(sstDisplay.pstWindow != orxNULL)                                     \
-  {                                                                       \
-    GLenum eError = glGetError();                                         \
-    orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
-  }                                                                       \
-} while(orxFALSE)
+  #define glASSERT()                                                        \
+  do                                                                        \
+  {                                                                         \
+    if(sstDisplay.pstWindow != orxNULL)                                     \
+    {                                                                       \
+      GLenum eError = glGetError();                                         \
+      orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
+    }                                                                       \
+  } while(orxFALSE)
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
-#else /* __orxGCC__ || __orxLLVM__ */
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
-#endif /* __orxGCC__ || __orxLLVM__ */
+  #if defined(__orxGCC__) || defined(__orxLLVM__)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+  #else /* __orxGCC__ || __orxLLVM__ */
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+  #endif /* __orxGCC__ || __orxLLVM__ */
 
 #else /* __orxDEBUG__ */
 
-#define glASSERT()
+  #define glASSERT()
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
-#else /* __orxGCC__ || __orxLLVM__ */
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
-#endif /* __orxGCC__ || __orxLLVM__ */
+  #if defined(__orxGCC__) || defined(__orxLLVM__)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+  #else /* __orxGCC__ || __orxLLVM__ */
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+  #endif /* __orxGCC__ || __orxLLVM__ */
 
 #endif /* __orxDEBUG__ */
+
+#ifdef __orxDISPLAY_OPENGL_ES__
+  #define GLhandleARB     GLuint
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
 
 /***************************************************************************
@@ -394,10 +413,53 @@ typedef struct __orxDISPLAY_STATIC_t
  */
 static orxDISPLAY_STATIC sstDisplay;
 
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+#define glCreateProgramObjectARB    glCreateProgram
+#define glCreateShaderObjectARB     glCreateShader
+#define glDeleteObjectARB           glDeleteShader
+#define glShaderSourceARB           glShaderSource
+#define glCompileShaderARB          glCompileShader
+#define glAttachObjectARB           glAttachShader
+#define glLinkProgramARB            glLinkProgram
+#define glGetObjectParameterivARB   glGetProgramiv
+#define glGetInfoLogARB             glGetProgramInfoLog
+#define glUseProgramObjectARB       glUseProgram
+#define glGetUniformLocationARB     glGetUniformLocation
+#define glUniform1fARB              glUniform1f
+#define glUniform3fARB              glUniform3f
+#define glUniform1iARB              glUniform1i
+
+#define glGenBuffersARB             glGenBuffers
+#define glDeleteBuffersARB          glDeleteBuffers
+#define glBindBufferARB             glBindBuffer
+#define glBufferDataARB             glBufferData
+#define glBufferSubDataARB
+
+#define glGenFramebuffersEXT        glGenFramebuffers
+#define glDeleteFramebuffersEXT     glDeleteFramebuffers
+#define glBindFramebufferEXT        glBindFramebuffer
+#define glCheckFramebufferStatusEXT glCheckFramebufferStatus
+#define glFramebufferTexture2DEXT   glFramebufferTexture2D
+#define glDrawBuffersARB            glDrawBuffers
+#define glActiveTextureARB          glActiveTexture
+
+#define GL_TEXTURE0_ARB             GL_TEXTURE0
+#define GL_OBJECT_COMPILE_STATUS_ARB GL_COMPILE_STATUS
+#define GL_OBJECT_LINK_STATUS_ARB   GL_LINK_STATUS
+#define GL_ARRAY_BUFFER_ARB         GL_ARRAY_BUFFER
+#define GL_ELEMENT_ARRAY_BUFFER_ARB GL_ELEMENT_ARRAY_BUFFER
+#define GL_DYNAMIC_DRAW_ARB         GL_DYNAMIC_DRAW
+#define GL_STATIC_DRAW_ARB          GL_STATIC_DRAW
+#define GL_STREAM_DRAW_ARB          GL_STREAM_DRAW
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
+
+#define glDeleteProgram             glDeleteObjectARB
 
 /** Shader-related OpenGL extension functions
  */
-#ifndef __orxMAC__
+  #ifndef __orxMAC__
 
 PFNGLCREATEPROGRAMOBJECTARBPROC     glCreateProgramObjectARB    = NULL;
 PFNGLCREATESHADEROBJECTARBPROC      glCreateShaderObjectARB     = NULL;
@@ -427,14 +489,15 @@ PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  glCheckFramebufferStatusEXT = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    glFramebufferTexture2DEXT   = NULL;
 PFNGLDRAWBUFFERSARBPROC             glDrawBuffersARB            = NULL;
 
-  #ifndef __orxLINUX__
+    #ifndef __orxLINUX__
 
 PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
 
-  #endif /* __orxLINUX__ */
+    #endif /* !__orxLINUX__ */
 
-#endif /* __orxMAC__ */
+  #endif /* !__orxMAC__ */
 
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
 /***************************************************************************
  * Private functions                                                       *
@@ -1045,10 +1108,13 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   {
       orxU32 i;
 
+#ifdef __orxDISPLAY_OPENGL_ES__
+      //! TODO
+#else /* __orxDISPLAY_OPENGL_ES__ */
     /* Supports frame buffer? */
     if(glfwExtensionSupported("GL_EXT_framebuffer_object") != GLFW_FALSE)
     {
-#ifndef __orxMAC__
+  #ifndef __orxMAC__
 
       /* Loads frame buffer extension functions */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGENFRAMEBUFFERSEXTPROC, glGenFramebuffersEXT);
@@ -1057,7 +1123,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC, glCheckFramebufferStatusEXT);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLFRAMEBUFFERTEXTURE2DEXTPROC, glFramebufferTexture2DEXT);
 
-#endif /* __orxMAC__ */
+  #endif /* !__orxMAC__ */
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -1067,16 +1133,20 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER);
     }
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
+#ifdef __orxDISPLAY_OPENGL_ES__
+      //! TODO
+#else /* __orxDISPLAY_OPENGL_ES__ */
     /* Supports draw buffer? */
     if(glfwExtensionSupported("GL_ARB_draw_buffers") != GLFW_FALSE)
     {
-#ifndef __orxMAC__
+  #ifndef __orxMAC__
 
       /* Loads draw buffers extension functions */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDRAWBUFFERSARBPROC, glDrawBuffersARB);
 
-#endif /* __orxMAC__ */
+  #endif /* !__orxMAC__ */
 
       /* Gets number of available draw buffers */
       glGetIntegerv(GL_MAX_DRAW_BUFFERS, &sstDisplay.iDrawBufferNumber);
@@ -1106,11 +1176,15 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
     }
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
+#ifdef __orxDISPLAY_OPENGL_ES__
+    //! TODO
+#else /* __orxDISPLAY_OPENGL_ES__ */
     /* Can support vertex buffer objects? */
     if(glfwExtensionSupported("GL_ARB_vertex_buffer_object") != GLFW_FALSE)
     {
-#ifndef __orxMAC__
+  #ifndef __orxMAC__
 
       /* Loads frame buffer extension functions */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGENBUFFERSARBPROC, glGenBuffersARB);
@@ -1119,7 +1193,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERDATAARBPROC, glBufferDataARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBUFFERSUBDATAARBPROC, glBufferSubDataARB);
 
-#endif /* __orxMAC__ */
+  #endif /* !__orxMAC__ */
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
@@ -1129,7 +1203,11 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VBO);
     }
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
+#ifdef __orxDISPLAY_OPENGL_ES__
+    //! TODO
+#else /* __orxDISPLAY_OPENGL_ES__ */
     /* Can support shader? */
     if((glfwExtensionSupported("GL_ARB_shader_objects") != GLFW_FALSE)
     && (glfwExtensionSupported("GL_ARB_shading_language_100") != GLFW_FALSE)
@@ -1138,7 +1216,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     {
       orxFLOAT fShaderVersion;
 
-#ifndef __orxMAC__
+  #ifndef __orxMAC__
 
       /* Loads related OpenGL extension functions */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCREATEPROGRAMOBJECTARBPROC, glCreateProgramObjectARB);
@@ -1156,13 +1234,13 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM3FARBPROC, glUniform3fARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM1IARBPROC, glUniform1iARB);
 
-  #ifndef __orxLINUX__
+    #ifndef __orxLINUX__
 
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLACTIVETEXTUREARBPROC, glActiveTextureARB);
 
-  #endif /* __orxLINUX__ */
+    #endif /* !__orxLINUX__ */
 
-#endif /* __orxMAC__ */
+  #endif /* !__orxMAC__ */
 
       /* Gets supported GLSL version */
       if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (fShaderVersion + orxMATH_KF_EPSILON >= orx2F(1.1f)))
@@ -1200,20 +1278,23 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
     }
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
     /* Swap Control Tear extension? */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
-  #ifdef __orxWINDOWS__
+#if !defined(__orxDISPLAY_OPENGL_ES__)
+  #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
+    #ifdef __orxWINDOWS__
     if(glfwExtensionSupported("WGL_EXT_swap_control_tear") != GLFW_FALSE)
-  #else /* __orxWINDOWS__ */
+    #else /* __orxWINDOWS__ */
     if(glfwExtensionSupported("GLX_EXT_swap_control_tear") != GLFW_FALSE)
-  #endif /* __orxWINDOWS__ */
+    #endif /* __orxWINDOWS__ */
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
     else
-#endif /* __orxWINDOWS__ || __orxLINUX__ */
+  #endif /* __orxWINDOWS__ || __orxLINUX__ */
+#endif /* __orxDISPLAY_OPENGL_ES__ */
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
@@ -1921,7 +2002,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link shader program:%s%s%s", orxSTRING_EOL, acBuffer, orxSTRING_EOL);
 
         /* Deletes program */
-        glDeleteObjectARB(hProgram);
+        glDeleteProgram(hProgram);
         glASSERT();
       }
     }
@@ -1942,7 +2023,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glASSERT();
       glDeleteObjectARB(hFragmentShader);
       glASSERT();
-      glDeleteObjectARB(hProgram);
+      glDeleteProgram(hProgram);
       glASSERT();
     }
   }
@@ -1963,7 +2044,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     glASSERT();
     glDeleteObjectARB(hFragmentShader);
     glASSERT();
-    glDeleteObjectARB(hProgram);
+    glDeleteProgram(hProgram);
     glASSERT();
   }
 
@@ -5836,7 +5917,7 @@ void orxFASTCALL orxDisplay_GLFW_DeleteShader(orxHANDLE _hShader)
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Deletes its program */
-  glDeleteObjectARB(pstShader->hProgram);
+  glDeleteProgram(pstShader->hProgram);
   glASSERT();
 
   /* Deletes its code */

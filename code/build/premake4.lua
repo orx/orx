@@ -65,6 +65,12 @@ newoption
     description = "Split target folders based on platforms"
 }
 
+newoption
+{
+    trigger = "gles",
+    description = "Use OpenGL ES instead of OpenGL (Linux only)"
+}
+
 if os.is ("macosx") then
     osname = "mac"
 else
@@ -446,7 +452,6 @@ project "orxLIB"
             "glfw3",
             "openal",
             "sndfile",
-            "GL",
             "X11",
             "Xrandr",
             "dl",
@@ -455,6 +460,12 @@ project "orxLIB"
             "pthread",
             "gcc"
         }
+        if _OPTIONS["gles"] then
+            defines {"__orxDISPLAY_OPENGL_ES__"}
+            links {"GLESv3"}
+        else
+            links {"GL"}
+        end
 
     configuration {"linux", "*Core*"}
         buildoptions {"-fPIC"}
