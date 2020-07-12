@@ -570,7 +570,7 @@ static orxView *spoInstance;
       /* Shader support? */
       if(bShaderSupport != NO)
       {
-        /* Enables vextex attribute arrays */
+        /* Enables vertex attribute arrays */
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
@@ -578,7 +578,7 @@ static orxView *spoInstance;
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
 
-        /* Sets vextex attribute arrays */
+        /* Sets vertex attribute arrays */
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -683,7 +683,7 @@ static orxView *spoInstance;
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
 
-        /* Sets vextex attribute arrays */
+        /* Sets vertex attribute arrays */
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -4028,7 +4028,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   /* Shader support? */
   if([sstDisplay.poView bShaderSupport] != NO)
   {
-    /* Enables vextex attribute arrays */
+    /* Enables vertex attribute arrays */
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
     glASSERT();
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
@@ -4036,7 +4036,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
     glASSERT();
 
-    /* Sets vextex attribute arrays */
+    /* Sets vertex attribute arrays */
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
     glASSERT();
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -4080,15 +4080,15 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
   : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
+  /* Passes it to shader */
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+
   /* Clears cache */
   sstDisplay.stLastColor          = orx2RGBA(0x00, 0x00, 0x00, 0x00);
   sstDisplay.iLastViewportX       = 0;
   sstDisplay.iLastViewportY       = 0;
   sstDisplay.iLastViewportWidth   = 0;
   sstDisplay.iLastViewportHeight  = 0;
-
-  /* Passes it to shader */
-  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
@@ -4695,6 +4695,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
     {
       /* Don't reset shader */
       bResetShader = orxFALSE;
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
