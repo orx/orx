@@ -175,43 +175,61 @@
 /**  Misc defines
  */
 #if defined(__orxGCC__) || defined(__orxLLVM__)
-  #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+
 #else /* __orxGCC__ || __orxLLVM__ */
-  #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
+
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
+
 #endif /* __orxGCC__ || __orxLLVM__ */
+
 
 #ifdef __orxDEBUG__
 
-  #define glASSERT()                                                        \
-  do                                                                        \
-  {                                                                         \
-    if(sstDisplay.pstWindow != orxNULL)                                     \
-    {                                                                       \
-      GLenum eError = glGetError();                                         \
-      orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
-    }                                                                       \
-  } while(orxFALSE)
+#define glASSERT()                                                        \
+do                                                                        \
+{                                                                         \
+  if(sstDisplay.pstWindow != orxNULL)                                     \
+  {                                                                       \
+    GLenum eError = glGetError();                                         \
+    orxASSERT(eError == GL_NO_ERROR && "OpenGL error code: 0x%X", eError);\
+  }                                                                       \
+} while(orxFALSE)
 
   #if defined(__orxGCC__) || defined(__orxLLVM__)
-    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+
   #else /* __orxGCC__ || __orxLLVM__ */
-    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+
   #endif /* __orxGCC__ || __orxLLVM__ */
 
 #else /* __orxDEBUG__ */
 
-  #define glASSERT()
+#define glASSERT()
 
   #if defined(__orxGCC__) || defined(__orxLLVM__)
-    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+
   #else /* __orxGCC__ || __orxLLVM__ */
-    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+
+#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+
   #endif /* __orxGCC__ || __orxLLVM__ */
 
 #endif /* __orxDEBUG__ */
 
+
 #ifdef __orxDISPLAY_OPENGL_ES__
-  #define GLhandleARB     GLuint
+
+#define GLhandleARB                             GLuint
+#define GLcharARB                               GLchar
+#define GLdouble                                GLfloat
+
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
 
@@ -443,6 +461,8 @@ static orxDISPLAY_STATIC sstDisplay;
 #define glBindFramebufferEXT        glBindFramebuffer
 #define glCheckFramebufferStatusEXT glCheckFramebufferStatus
 #define glFramebufferTexture2DEXT   glFramebufferTexture2D
+
+#define glClearDepth                glClearDepthf
 
 #define GL_TEXTURE0_ARB             GL_TEXTURE0
 #define GL_OBJECT_COMPILE_STATUS_ARB GL_COMPILE_STATUS
@@ -1237,30 +1257,34 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 
 #ifdef __orxDISPLAY_OPENGL_ES__
 
-    /* Gets supported GLSL version */
-    if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (fShaderVersion + orxMATH_KF_EPSILON >= orx2F(1.1f)))
     {
-      /* Pushes config section */
-      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      orxFLOAT fShaderVersion;
 
-      /* Doesn't have a shader version? */
-      if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION) == orxFALSE)
+      /* Gets supported GLSL version */
+      if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (fShaderVersion + orxMATH_KF_EPSILON >= orx2F(1.1f)))
       {
-        /* Stores it */
-        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
+        /* Pushes config section */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+        /* Doesn't have a shader version? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION) == orxFALSE)
+        {
+          /* Stores it */
+          orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
+        }
+
+        /* Pops config section */
+        orxConfig_PopSection();
       }
 
-      /* Pops config section */
-      orxConfig_PopSection();
+      /* Gets max texture unit number */
+      glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
+      sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+      glASSERT();
+
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
-
-    /* Gets max texture unit number */
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
-    sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
-    glASSERT();
-
-    /* Updates status flags */
-    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
 
 #else /* __orxDISPLAY_OPENGL_ES__ */
 
@@ -5138,16 +5162,21 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
       glDisable(GL_DITHER);
       glASSERT();
-      glDisable(GL_LIGHTING);
-      glASSERT();
-      glDisable(GL_FOG);
-      glASSERT();
       glDisable(GL_CULL_FACE);
       glASSERT();
       glDisable(GL_STENCIL_TEST);
       glASSERT();
+
+#ifndef __orxDISPLAY_OPENGL_ES__
+
       glDisable(GL_ALPHA_TEST);
       glASSERT();
+      glDisable(GL_LIGHTING);
+      glASSERT();
+      glDisable(GL_FOG);
+      glASSERT();
+
+#endif /* !__orxDISPLAY_OPENGL_ES__ */
 
       /* Has depth buffer? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
