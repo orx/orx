@@ -342,7 +342,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
         /* Updates title string */
         orxConfig_PushSection("Bounce");
-        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->stVideoMode.u32Width, pstPayload->stVideoMode.u32Height);
+        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s (%ux%u)@%uHz", orxConfig_GetString("Title"), pstPayload->stVideoMode.u32Width, pstPayload->stVideoMode.u32Height, pstPayload->stVideoMode.u32RefreshRate);
         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         orxConfig_PopSection();
 
