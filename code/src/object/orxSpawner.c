@@ -730,6 +730,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             else
             {
               /* Gets rotation */
+              fRotation         = orxFLOAT_0;
               fCombinedRotation = pstSpawner->fPendingRotation;
             }
 
