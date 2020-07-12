@@ -148,6 +148,8 @@ do                                                                      \
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Attribute location
+ */
 typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t
 {
   orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX = 0,
@@ -246,8 +248,8 @@ typedef struct __orxDISPLAY_LOAD_INFO_t
  */
 typedef struct __orxDISPLAY_TEXTURE_INFO_t
 {
-  GLint iLocation;
-  const orxBITMAP *pstBitmap;
+  GLint                     iLocation;
+  const orxBITMAP          *pstBitmap;
 
 } orxDISPLAY_TEXTURE_INFO;
 
@@ -3867,7 +3869,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sstDisplay.uiIndexBuffer);
   glASSERT();
 
-  /* Enables vextex attribute arrays */
+  /* Enables vertex attribute arrays */
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
   glASSERT();
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
@@ -3875,7 +3877,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
   glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
   glASSERT();
 
-  /* Sets vextex attribute arrays */
+  /* Sets vertex attribute arrays */
   glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, fX));
   glASSERT();
   glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_ANDROID_VERTEX, fU));
@@ -3938,6 +3940,13 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
   /* Passes it to shader */
   glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+
+  /* Clears cache */
+  sstDisplay.stLastColor          = orx2RGBA(0x00, 0x00, 0x00, 0x00);
+  sstDisplay.iLastViewportX       = 0;
+  sstDisplay.iLastViewportY       = 0;
+  sstDisplay.iLastViewportWidth   = 0;
+  sstDisplay.iLastViewportHeight  = 0;
 
   /* For all texture units */
   for(i = 0; i < (orxU32)sstDisplay.iTextureUnitNumber; i++)
@@ -4681,6 +4690,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
     {
       /* Don't reset shader */
       bResetShader = orxFALSE;
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -4701,7 +4713,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
   /* Done! */
   return eResult;
 }
-
 
 orxS32 orxFASTCALL orxDisplay_Android_GetParameterID(const orxHANDLE _hShader, const orxSTRING _zParam, orxS32 _s32Index, orxBOOL _bIsTexture)
 {
