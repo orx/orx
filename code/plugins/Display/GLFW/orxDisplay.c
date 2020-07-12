@@ -434,15 +434,15 @@ static orxDISPLAY_STATIC sstDisplay;
 #define glDeleteBuffersARB          glDeleteBuffers
 #define glBindBufferARB             glBindBuffer
 #define glBufferDataARB             glBufferData
-#define glBufferSubDataARB
+#define glBufferSubDataARB          glBufferSubData
+#define glDrawBuffersARB            glDrawBuffers
+#define glActiveTextureARB          glActiveTexture
 
 #define glGenFramebuffersEXT        glGenFramebuffers
 #define glDeleteFramebuffersEXT     glDeleteFramebuffers
 #define glBindFramebufferEXT        glBindFramebuffer
 #define glCheckFramebufferStatusEXT glCheckFramebufferStatus
 #define glFramebufferTexture2DEXT   glFramebufferTexture2D
-#define glDrawBuffersARB            glDrawBuffers
-#define glActiveTextureARB          glActiveTexture
 
 #define GL_TEXTURE0_ARB             GL_TEXTURE0
 #define GL_OBJECT_COMPILE_STATUS_ARB GL_COMPILE_STATUS
@@ -452,6 +452,10 @@ static orxDISPLAY_STATIC sstDisplay;
 #define GL_DYNAMIC_DRAW_ARB         GL_DYNAMIC_DRAW
 #define GL_STATIC_DRAW_ARB          GL_STATIC_DRAW
 #define GL_STREAM_DRAW_ARB          GL_STREAM_DRAW
+
+#define GL_FRAMEBUFFER_EXT          GL_FRAMEBUFFER
+#define GL_COLOR_ATTACHMENT0_EXT    GL_COLOR_ATTACHMENT0
+#define GL_FRAMEBUFFER_COMPLETE_EXT GL_FRAMEBUFFER_COMPLETE
 
 #else /* __orxDISPLAY_OPENGL_ES__ */
 
@@ -481,13 +485,13 @@ PFNGLDELETEBUFFERSARBPROC           glDeleteBuffersARB          = NULL;
 PFNGLBINDBUFFERARBPROC              glBindBufferARB             = NULL;
 PFNGLBUFFERDATAARBPROC              glBufferDataARB             = NULL;
 PFNGLBUFFERSUBDATAARBPROC           glBufferSubDataARB          = NULL;
+PFNGLDRAWBUFFERSARBPROC             glDrawBuffersARB            = NULL;
 
 PFNGLGENFRAMEBUFFERSEXTPROC         glGenFramebuffersEXT        = NULL;
 PFNGLDELETEFRAMEBUFFERSEXTPROC      glDeleteFramebuffersEXT     = NULL;
 PFNGLBINDFRAMEBUFFEREXTPROC         glBindFramebufferEXT        = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  glCheckFramebufferStatusEXT = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    glFramebufferTexture2DEXT   = NULL;
-PFNGLDRAWBUFFERSARBPROC             glDrawBuffersARB            = NULL;
 
     #ifndef __orxLINUX__
 
@@ -1106,11 +1110,15 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_EXT_READY))
   {
-      orxU32 i;
+    orxU32 i;
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-      //! TODO
+
+    /* Updates status flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
 #else /* __orxDISPLAY_OPENGL_ES__ */
+
     /* Supports frame buffer? */
     if(glfwExtensionSupported("GL_EXT_framebuffer_object") != GLFW_FALSE)
     {
@@ -1133,11 +1141,27 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER);
     }
+
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-      //! TODO
+
+    /* Gets number of available draw buffers */
+    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &sstDisplay.iDrawBufferNumber);
+    glASSERT();
+    sstDisplay.iDrawBufferNumber = orxMIN(sstDisplay.iDrawBufferNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+
+    /* Fills the list of draw buffer symbols */
+    for(i = 0; i < (orxU32)sstDisplay.iDrawBufferNumber; i++)
+    {
+      sstDisplay.aeDrawBufferList[i] = GL_COLOR_ATTACHMENT0 + i;
+    }
+
+    /* Updates status flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
 #else /* __orxDISPLAY_OPENGL_ES__ */
+
     /* Supports draw buffer? */
     if(glfwExtensionSupported("GL_ARB_draw_buffers") != GLFW_FALSE)
     {
@@ -1176,11 +1200,16 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NPOT);
     }
+
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-    //! TODO
+
+    /* Updates status flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
 #else /* __orxDISPLAY_OPENGL_ES__ */
+
     /* Can support vertex buffer objects? */
     if(glfwExtensionSupported("GL_ARB_vertex_buffer_object") != GLFW_FALSE)
     {
@@ -1203,11 +1232,38 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VBO);
     }
+
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-    //! TODO
+
+    /* Gets supported GLSL version */
+    if((orxString_ToFloat((const orxSTRING)glGetString(GL_SHADING_LANGUAGE_VERSION), &fShaderVersion, orxNULL) != orxSTATUS_FAILURE) && (fShaderVersion + orxMATH_KF_EPSILON >= orx2F(1.1f)))
+    {
+      /* Pushes config section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+      /* Doesn't have a shader version? */
+      if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION) == orxFALSE)
+      {
+        /* Stores it */
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+
+    /* Gets max texture unit number */
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
+    sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
+    glASSERT();
+
+    /* Updates status flags */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+
 #else /* __orxDISPLAY_OPENGL_ES__ */
+
     /* Can support shader? */
     if((glfwExtensionSupported("GL_ARB_shader_objects") != GLFW_FALSE)
     && (glfwExtensionSupported("GL_ARB_shading_language_100") != GLFW_FALSE)
@@ -1278,23 +1334,31 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
     }
+
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
     /* Swap Control Tear extension? */
 #if !defined(__orxDISPLAY_OPENGL_ES__)
   #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
     #ifdef __orxWINDOWS__
+
     if(glfwExtensionSupported("WGL_EXT_swap_control_tear") != GLFW_FALSE)
+
     #else /* __orxWINDOWS__ */
+
     if(glfwExtensionSupported("GLX_EXT_swap_control_tear") != GLFW_FALSE)
+
     #endif /* __orxWINDOWS__ */
+
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
     else
+
   #endif /* __orxWINDOWS__ || __orxLINUX__ */
 #endif /* __orxDISPLAY_OPENGL_ES__ */
+
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
@@ -1909,6 +1973,7 @@ static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
+  //! TODO: GL ES shader
   static const orxSTRING szVertexShaderSource =
     "void main()"
     "{"
@@ -1967,6 +2032,8 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glDeleteObjectARB(hFragmentShader);
       glASSERT();
 
+      //! TODO: GL ES location bind
+
       /* Links program */
       glLinkProgramARB(hProgram);
       glASSERT();
@@ -1991,7 +2058,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       }
       else
       {
-        orxCHAR acBuffer[1024];
+        orxCHAR acBuffer[4096];
 
         /* Gets log */
         glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
@@ -2008,7 +2075,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     }
     else
     {
-      orxCHAR acBuffer[1024];
+      orxCHAR acBuffer[4096];
 
       /* Gets log */
       glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
@@ -2029,7 +2096,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
   }
   else
   {
-    orxCHAR acBuffer[1024];
+    orxCHAR acBuffer[4096];
 
     /* Gets log */
     glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
@@ -2369,7 +2436,7 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _stColor;
 
   /* Updates index & element number */
-  sstDisplay.s32BufferIndex += 4;
+  sstDisplay.s32BufferIndex   += 4;
   sstDisplay.s32ElementNumber += 6;
 
   /* Done! */
@@ -2908,7 +2975,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].stRGBA  = _stColor;
 
           /* Updates index & element number */
-          sstDisplay.s32BufferIndex += 4;
+          sstDisplay.s32BufferIndex   += 4;
           sstDisplay.s32ElementNumber += 6;
         }
         else
@@ -3599,6 +3666,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
       /* Draws remaining items */
       orxDisplay_GLFW_DrawArrays();
 
+      //! TODO: OpenGL ES: glReadPixels
+
       /* Allocates buffer */
       pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
@@ -4108,6 +4177,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     if((dOrthoRight != sstDisplay.dLastOrthoRight)
     || (dOrthoBottom != sstDisplay.dLastOrthoBottom))
     {
+      //! TODO OpenGL ES: manual matrix setup
       /* Inits matrices */
       glMatrixMode(GL_PROJECTION);
       glASSERT();
@@ -4225,8 +4295,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
       fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
 
       /* Inits texture coords */
-      fLeft   = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-      fTop    = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+      fLeft = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
+      fTop  = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
 
       /* For all lines */
       for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -4927,6 +4997,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         {
           orxU32 u32ShaderVersion = orxU32_UNDEFINED;
 
+          //! TODO: OpenGL ES variables
+
           static const orxSTRING szFragmentShaderSource =
           "uniform sampler2D orxTexture;"
           "void main()"
@@ -5071,8 +5143,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glDisable(GL_FOG);
       glASSERT();
       glDisable(GL_CULL_FACE);
-      glASSERT();
-      glDisable(GL_DEPTH_TEST);
       glASSERT();
       glDisable(GL_STENCIL_TEST);
       glASSERT();
@@ -5252,6 +5322,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sstDisplay.uiIndexBuffer);
       glASSERT();
     }
+
+    //! TODO: OpenGL ES (Attrib + Matrix)
 
     /* Resets client states */
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -5727,12 +5799,24 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           /* Valid? */
           if(u32ShaderVersion != 0)
           {
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+            /* Prints shader version */
+            s32Offset = orxString_NPrint(pc, s32Free, "#version %u es\n", u32ShaderVersion);
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
+
             /* Prints shader version */
             s32Offset = orxString_NPrint(pc, s32Free, "#version %u\n", u32ShaderVersion);
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
+
             pc       += s32Offset;
             s32Free  -= s32Offset;
           }
         }
+
+        //! TODO: OpenGL ES: add wrapper, remove default extension
 
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
@@ -5864,6 +5948,8 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           s32Free  -= s32Offset;
         }
 
+        //! TODO: Replace variables GLSL -> GLSL ES
+
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
         pstShader->hProgram               = (GLhandleARB)orxU32_UNDEFINED;
@@ -5968,6 +6054,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StartShader(orxHANDLE _hShader)
   /* Uses its program */
   glUseProgramObjectARB(pstShader->hProgram);
   glASSERT();
+
+  //! TODO: update matrix uniform
 
   /* Done! */
   return eResult;
@@ -6085,6 +6173,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
 
     /* Updates its texture unit */
     glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
+
+    //! TODO: Update matrix uniform
   }
 
   /* Done! */
