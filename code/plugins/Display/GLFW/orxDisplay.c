@@ -2150,7 +2150,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
 #ifdef __orxDISPLAY_OPENGL_ES__
 
       /* Gets projection matrix location */
-      _pstShader->iProjectionMatrixLocation = glGetUniformLocationARB(uiProgram, "_mProjection_");
+      _pstShader->iProjectionMatrixLocation = glGetUniformLocationARB(hProgram, "_mProjection_");
       glASSERT();
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
@@ -3323,6 +3323,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     /* Draws mesh */
     orxDisplay_GLFW_DrawArrays();
   }
+
+#ifndef __orxDISPLAY_OPENGL_ES__
+
   else
   {
     /* Selects local arrays */
@@ -3345,6 +3348,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].stRGBA));
     glASSERT();
   }
+
+#endif /* !__orxDISPLAY_OPENGL_ES__ */
 
   /* Done! */
   return eResult;
