@@ -2827,7 +2827,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
       /* Sets new destination bitmap */
       if((eResult = orxDisplay_Android_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
       {
-        orxU8  *pu8ImageBuffer;
+        orxU8 *pu8ImageBuffer;
 
         /* Allocates buffer */
         pu8ImageBuffer = (_pstBitmap != sstDisplay.pstScreen) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);

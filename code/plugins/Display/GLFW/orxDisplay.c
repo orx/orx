@@ -1691,7 +1691,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
         pstInfo->uiRealHeight = (GLuint)orxMath_GetNextPowerOfTwo(pstInfo->uiHeight);
 
         /* Allocates buffer */
-        pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+        pstInfo->pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(pstInfo->uiRealWidth * pstInfo->uiRealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_TEMP);
 
         /* Checks */
         orxASSERT(pstInfo->pu8ImageBuffer != orxNULL);
@@ -1870,7 +1870,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
     orxASSERT((s64Size > 0) && (s64Size < 0xFFFFFFFF));
 
     /* Allocates buffer */
-    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_MAIN);
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_TEMP);
 
     /* Success? */
     if(pu8Buffer != orxNULL)
@@ -3423,7 +3423,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA
       orxRGBA *astBuffer, *pstPixel;
 
       /* Allocates buffer */
-      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_MAIN);
+      astBuffer = (orxRGBA *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * sizeof(orxRGBA), orxMEMORY_TYPE_TEMP);
 
       /* Checks */
       orxASSERT(astBuffer != orxNULL);
@@ -3589,7 +3589,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBitmapData(orxBITMAP *_pstBitmap, const
         orxU32 i, u32LineSize, u32RealLineSize, u32SrcOffset, u32DstOffset;
 
         /* Allocates buffer */
-        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+        pu8ImageBuffer = (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_TEMP);
 
         /* Gets line sizes */
         u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
@@ -3690,10 +3690,40 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
       /* Draws remaining items */
       orxDisplay_GLFW_DrawArrays();
 
-      //! TODO: OpenGL ES: glReadPixels
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+      {
+        orxBITMAP  *apstBackupBitmap[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
+        orxU32      u32BackupBitmapCount;
+
+        /* Backups current destinations */
+        orxMemory_Copy(apstBackupBitmap, sstDisplay.apstDestinationBitmapList, sstDisplay.u32DestinationBitmapCount * sizeof(orxBITMAP *));
+        u32BackupBitmapCount = sstDisplay.u32DestinationBitmapCount;
+
+        /* Sets new destination bitmap */
+        eResult = orxDisplay_GLFW_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1);
+
+        /* Checks */
+        orxASSERT(eResult != orxSTATUS_FAILURE);
+
+        /* Allocates buffer */
+        pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_TEMP);
+
+        /* Checks */
+        orxASSERT(pu8ImageBuffer != orxNULL);
+
+        /* Reads OpenGL data */
+        glReadPixels(0, 0, _pstBitmap->u32RealWidth, _pstBitmap->u32RealHeight, GL_RGBA, GL_UNSIGNED_BYTE, pu8ImageBuffer);
+        glASSERT();
+
+        /* Restores previous destinations */
+        orxDisplay_Android_SetDestinationBitmaps(apstBackupBitmap, u32BackupBitmapCount);
+      }
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
 
       /* Allocates buffer */
-      pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+      pu8ImageBuffer = ((_pstBitmap != sstDisplay.pstScreen) && (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_TEMP);
 
       /* Checks */
       orxASSERT(pu8ImageBuffer != orxNULL);
@@ -3750,6 +3780,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapData(const orxBITMAP *_pstBitmap,
       /* Restores previous texture */
       glBindTexture(GL_TEXTURE_2D, (sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] != orxNULL) ? sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit]->uiTexture : 0);
       glASSERT();
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
       /* Gets line sizes */
       u32LineSize     = orxF2U(_pstBitmap->fWidth) * 4 * sizeof(orxU8);
@@ -4417,7 +4449,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SaveBitmap(const orxBITMAP *_pstBitmap, co
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
 
   /* Allocates buffer */
-  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_MAIN);
+  pu8ImageData = (orxU8 *)orxMemory_Allocate(u32BufferSize, orxMEMORY_TYPE_TEMP);
 
   /* Valid? */
   if(pu8ImageData != orxNULL)
