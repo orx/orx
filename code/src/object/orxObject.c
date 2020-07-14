@@ -4786,9 +4786,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Gets its body */
                   pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
 
-                  /* Sets its parent */
-                  orxObject_SetParent(pstChild, pstResult);
-
                   /* Valid joint can be added? */
                   if((pstBody != orxNULL)
                   && (pstChildBody != orxNULL)
@@ -4801,6 +4798,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                     /* Updates flags */
                     u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
                   }
+
+                  /* Sets its parent */
+                  orxObject_SetParent(pstChild, pstResult);
                 }
 
                 /* Updates flags */
@@ -6564,8 +6564,9 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
   {
 #ifdef __orxDEBUG__
 
-    /* Does object have a body? */
-    if(orxOBJECT_GET_STRUCTURE(_pstObject, BODY) != orxNULL)
+    /* Does object have a body and isn't a jointed child? */
+    if((orxOBJECT_GET_STRUCTURE(_pstObject, BODY) != orxNULL)
+    && (!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DETACH_JOINT_CHILD)))
     {
       orxSTRUCTURE *pstParent;
 
