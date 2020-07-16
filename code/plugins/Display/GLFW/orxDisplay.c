@@ -2068,14 +2068,34 @@ static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
 
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
-  //! TODO: GL ES shader
   static const orxSTRING szVertexShaderSource =
-    "void main()"
-    "{"
-    "  gl_TexCoord[0] = gl_MultiTexCoord0;"
-    "  gl_Position    = gl_ProjectionMatrix * gl_Vertex;"
-    "  gl_FrontColor  = gl_Color;"
-    "}";
+
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+  "attribute vec2 _vPosition_;"
+  "uniform mat4 _mProjection_;"
+  "attribute mediump vec2 _vTexCoord_;"
+  "varying mediump vec2 _gl_TexCoord0_;"
+  "attribute mediump vec4 _vColor_;"
+  "varying mediump vec4 _Color0_;"
+  "void main()"
+  "{"
+  "  mediump float fCoef = 1.0 / 255.0;"
+  "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
+  "  _gl_TexCoord0_   = _vTexCoord_;"
+  "  _Color0_         = fCoef * _vColor_;"
+  "}";
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
+
+  "void main()"
+  "{"
+  "  gl_TexCoord[0] = gl_MultiTexCoord0;"
+  "  gl_Position    = gl_ProjectionMatrix * gl_Vertex;"
+  "  gl_FrontColor  = gl_Color;"
+  "}";
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
   GLhandleARB hProgram, hVertexShader, hFragmentShader;
   GLint       iSuccess;
@@ -5163,7 +5183,28 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         {
           orxU32 u32ShaderVersion = orxU32_UNDEFINED;
 
-          //! TODO: OpenGL ES variables
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+          static const orxSTRING szFragmentShaderSource =
+          "precision mediump float;"
+          "varying vec2 _gl_TexCoord0_;"
+          "varying vec4 _Color0_;"
+          "uniform sampler2D _Texture_;"
+          "void main()"
+          "{"
+          "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
+          "}";
+          static const orxSTRING szNoTextureFragmentShaderSource =
+          "precision mediump float;"
+          "varying vec2 _gl_TexCoord0_;"
+          "varying vec4 _Color0_;"
+          "uniform sampler2D _Texture_;"
+          "void main()"
+          "{"
+          "  gl_FragColor = _Color0_;"
+          "}";
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
 
           static const orxSTRING szFragmentShaderSource =
           "uniform sampler2D orxTexture;"
@@ -5176,6 +5217,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "{"
           "  gl_FragColor = gl_Color;"
           "}";
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
           /* Has shader version value? */
           if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION))
@@ -5977,7 +6020,16 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
       /* Successful? */
       if(pstShader != orxNULL)
       {
+#ifdef ____orxDISPLAY_OPENGL_ES__
+
+        orxCHAR  *pc, *pcReplace;
+
+#else /* __orxDISPLAY_OPENGL_ES__ */
+
         orxCHAR  *pc;
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
+
         orxS32    s32Offset, s32Free;
         orxU32    i;
 
@@ -6016,8 +6068,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
             s32Free  -= s32Offset;
           }
         }
-
-        //! TODO: OpenGL ES: add wrapper, remove default extension
 
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
@@ -6073,6 +6123,9 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
             s32Free  -= s32Offset;
           }
         }
+
+#ifndef __orxDISPLAY_OPENGL_ES__
+
         else
         {
           /* Uses GPU shader 4 extension by default */
@@ -6081,6 +6134,8 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           s32Free   -= s32Offset;
         }
 
+#endif /* !__orxDISPLAY_OPENGL_ES__ */
+
         /* Pops config section */
         orxConfig_PopSection();
 
@@ -6088,6 +6143,15 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
         if(_pstParamList != orxNULL)
         {
           orxSHADER_PARAM *pstParam;
+
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+          /* Adds wrapping code */
+          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+          pc       += s32Offset;
+          s32Free  -= s32Offset;
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
           /* For all parameters */
           for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
@@ -6149,7 +6213,27 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           s32Free  -= s32Offset;
         }
 
-        //! TODO: Replace variables GLSL -> GLSL ES
+#ifdef __orxDISPLAY_OPENGL_ES__
+
+        /* For all gl_TexCoord[0] */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 14 * sizeof(orxCHAR), "gl_TexCoord[0]"))
+        {
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "_gl_TexCoord0_", 14 * sizeof(orxCHAR));
+        }
+
+        /* For all gl_Color */
+        for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_Color");
+            pcReplace != orxNULL;
+            pcReplace = (orxCHAR *)orxString_SearchString(pcReplace + 8 * sizeof(orxCHAR), "gl_Color"))
+        {
+          /* Replaces it */
+          orxMemory_Copy(pcReplace, "_Color0_", 8 * sizeof(orxCHAR));
+        }
+
+#endif /* __orxDISPLAY_OPENGL_ES__ */
 
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
