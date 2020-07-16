@@ -226,9 +226,7 @@ do                                                                        \
 
 #ifdef __orxDISPLAY_OPENGL_ES__
 
-#define GLhandleARB                             GLuint
-#define GLcharARB                               GLchar
-#define GLdouble                                GLfloat
+#define GLhandleARB GLuint
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
@@ -378,9 +376,7 @@ typedef struct __orxDISPLAY_SHADER_t
   orxLINKLIST_NODE          stNode;
   GLhandleARB               hProgram;
   GLint                     iTextureLocation;
-#ifdef __orxDISPLAY_OPENGL_ES__
   GLint                     iProjectionMatrixLocation;
-#endif /* __orxDISPLAY_OPENGL_ES__ */
   GLint                     iTextureCount;
   orxS32                    s32ParamCount;
   orxBOOL                   bPending;
@@ -415,7 +411,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32PendingShaderCount;
   GLint                     iLastViewportX, iLastViewportY;
   GLsizei                   iLastViewportWidth, iLastViewportHeight;
-  GLdouble                  dLastOrthoRight, dLastOrthoBottom;
+  GLfloat                   fLastOrthoRight, fLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
   orxFLOAT                  fClockTickSize;
@@ -441,9 +437,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxBITMAP                *apstDestinationBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxDOUBLE                 adMRUBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
-#ifdef __orxDISPLAY_OPENGL_ES__
   orxDISPLAY_PROJ_MATRIX    mProjectionMatrix;
-#endif /* __orxDISPLAY_OPENGL_ES__ */
   orxDISPLAY_GLFW_VERTEX    astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
@@ -472,9 +466,13 @@ static orxDISPLAY_STATIC sstDisplay;
 #define glGetInfoLogARB             glGetProgramInfoLog
 #define glUseProgramObjectARB       glUseProgram
 #define glGetUniformLocationARB     glGetUniformLocation
+#define glBindAttribLocationARB     glBindAttribLocation;
+#define glEnableVertexAttribArrayARB glEnableVertexAttribArray;
+#define glVertexAttribPointerARB    glVertexAttribPointer;
 #define glUniform1fARB              glUniform1f
 #define glUniform3fARB              glUniform3f
 #define glUniform1iARB              glUniform1i
+#define glUniformMatrix4fvARB       glUniformMatrix4fv;
 
 #define glGenBuffersARB             glGenBuffers
 #define glDeleteBuffersARB          glDeleteBuffers
@@ -524,9 +522,13 @@ PFNGLGETOBJECTPARAMETERIVARBPROC    glGetObjectParameterivARB   = NULL;
 PFNGLGETINFOLOGARBPROC              glGetInfoLogARB             = NULL;
 PFNGLUSEPROGRAMOBJECTARBPROC        glUseProgramObjectARB       = NULL;
 PFNGLGETUNIFORMLOCATIONARBPROC      glGetUniformLocationARB     = NULL;
+PFNGLBINDATTRIBLOCATIONARBPROC      glBindAttribLocationARB     = NULL;
+PFNGLENABLEVERTEXATTRIBARRAYARBPROC glEnableVertexAttribArrayARB= NULL;
+PFNGLVERTEXATTRIBPOINTERARBPROC     glVertexAttribPointerARB    = NULL;
 PFNGLUNIFORM1FARBPROC               glUniform1fARB              = NULL;
 PFNGLUNIFORM3FARBPROC               glUniform3fARB              = NULL;
 PFNGLUNIFORM1IARBPROC               glUniform1iARB              = NULL;
+PFNGLUNIFORMMATRIX4FVARBPROC        glUniformMatrix4fvARB       = NULL;
 
 PFNGLGENBUFFERSARBPROC              glGenBuffersARB             = NULL;
 PFNGLDELETEBUFFERSARBPROC           glDeleteBuffersARB          = NULL;
@@ -1042,8 +1044,6 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
   return;
 }
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
 static orxDISPLAY_PROJ_MATRIX *orxDisplay_GLFW_OrthoProjMatrix(orxDISPLAY_PROJ_MATRIX *_pmResult, orxFLOAT _fLeft, orxFLOAT _fRight, orxFLOAT _fBottom, orxFLOAT _fTop, orxFLOAT _fNear, orxFLOAT _fFar)
 {
   orxFLOAT                fDeltaX, fDeltaY, fDeltaZ;
@@ -1082,8 +1082,6 @@ static orxDISPLAY_PROJ_MATRIX *orxDisplay_GLFW_OrthoProjMatrix(orxDISPLAY_PROJ_M
   /* Done! */
   return pmResult;
 }
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
 static orxINLINE void orxDisplay_GLFW_BindBitmap(const orxBITMAP *_pstBitmap)
 {
@@ -1360,7 +1358,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 #else /* __orxDISPLAY_OPENGL_ES__ */
 
     /* Can support shader? */
-    if((glfwExtensionSupported("GL_ARB_shader_objects") != GLFW_FALSE)
+    if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO)
+    && (glfwExtensionSupported("GL_ARB_shader_objects") != GLFW_FALSE)
     && (glfwExtensionSupported("GL_ARB_shading_language_100") != GLFW_FALSE)
     && (glfwExtensionSupported("GL_ARB_vertex_shader") != GLFW_FALSE)
     && (glfwExtensionSupported("GL_ARB_fragment_shader") != GLFW_FALSE))
@@ -1381,9 +1380,13 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGETINFOLOGARBPROC, glGetInfoLogARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUSEPROGRAMOBJECTARBPROC, glUseProgramObjectARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLGETUNIFORMLOCATIONARBPROC, glGetUniformLocationARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLBINDATTRIBLOCATIONARBPROC, glBindAttribLocationARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLENABLEVERTEXATTRIBARRAYARBPROC, glEnableVertexAttribArrayARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLVERTEXATTRIBPOINTERARBPROC, glVertexAttribPointerARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM1FARBPROC, glUniform1fARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM3FARBPROC, glUniform3fARB);
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORM1IARBPROC, glUniform1iARB);
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLUNIFORMMATRIX4FVARBPROC, glUniformMatrix4fvARB);
 
     #ifndef __orxLINUX__
 
@@ -1404,9 +1407,6 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
         {
           /* Stores it */
           orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, orxF2U(orxMath_Round(orx2F(100.0f) * fShaderVersion)));
-
-          //! TODO: Support "modern" OpenGL in this plugin, for now overriding default value with 120 for "classic" OpenGL
-          orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, 120);
         }
 
         /* Pops config section */
@@ -2069,33 +2069,22 @@ static void orxFASTCALL orxDisplay_GLFW_DeleteBitmapData(orxBITMAP *_pstBitmap)
 static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_pstShader)
 {
   static const orxSTRING szVertexShaderSource =
-
 #ifdef __orxDISPLAY_OPENGL_ES__
-
+  "precision mediump float;"
+#endif /* __orxDISPLAY_OPENGL_ES__ */
   "attribute vec2 _vPosition_;"
   "uniform mat4 _mProjection_;"
-  "attribute mediump vec2 _vTexCoord_;"
-  "varying mediump vec2 _gl_TexCoord0_;"
-  "attribute mediump vec4 _vColor_;"
-  "varying mediump vec4 _Color0_;"
+  "attribute vec2 _vTexCoord_;"
+  "varying vec2 _gl_TexCoord0_;"
+  "attribute vec4 _vColor_;"
+  "varying vec4 _Color0_;"
   "void main()"
   "{"
-  "  mediump float fCoef = 1.0 / 255.0;"
+  "  float fCoef      = 1.0 / 255.0;"
   "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
   "  _gl_TexCoord0_   = _vTexCoord_;"
   "  _Color0_         = fCoef * _vColor_;"
   "}";
-
-#else /* __orxDISPLAY_OPENGL_ES__ */
-
-  "void main()"
-  "{"
-  "  gl_TexCoord[0] = gl_MultiTexCoord0;"
-  "  gl_Position    = gl_ProjectionMatrix * gl_Vertex;"
-  "  gl_FrontColor  = gl_Color;"
-  "}";
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
   GLhandleARB hProgram, hVertexShader, hFragmentShader;
   GLint       iSuccess;
@@ -2112,9 +2101,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
   glASSERT();
 
   /* Compiles shader objects */
-  glShaderSourceARB(hVertexShader, 1, (const GLcharARB **)&szVertexShaderSource, NULL);
+  glShaderSourceARB(hVertexShader, 1, (const GLchar **)&szVertexShaderSource, NULL);
   glASSERT();
-  glShaderSourceARB(hFragmentShader, 1, (const GLcharARB **)&(_pstShader->zCode), NULL);
+  glShaderSourceARB(hFragmentShader, 1, (const GLchar **)&(_pstShader->zCode), NULL);
   glASSERT();
   glCompileShaderARB(hVertexShader);
   glASSERT();
@@ -2147,17 +2136,13 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glDeleteObjectARB(hFragmentShader);
       glASSERT();
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
       /* Binds attributes */
-      glBindAttribLocation(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
+      glBindAttribLocationARB(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, "_vPosition_");
       glASSERT();
-      glBindAttribLocation(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
+      glBindAttribLocationARB(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, "_vTexCoord_");
       glASSERT();
-      glBindAttribLocation(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
+      glBindAttribLocationARB(hProgram, orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, "_vColor_");
       glASSERT();
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
       /* Links program */
       glLinkProgramARB(hProgram);
@@ -2167,13 +2152,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       _pstShader->iTextureLocation = glGetUniformLocationARB(hProgram, "orxTexture");
       glASSERT();
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
       /* Gets projection matrix location */
       _pstShader->iProjectionMatrixLocation = glGetUniformLocationARB(hProgram, "_mProjection_");
       glASSERT();
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
       /* Gets linking status */
       glGetObjectParameterivARB(hProgram, GL_OBJECT_LINK_STATUS_ARB, &iSuccess);
@@ -2194,7 +2175,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[4096];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
+        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
         glASSERT();
         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2211,7 +2192,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[4096];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
+      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
       glASSERT();
       acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2232,7 +2213,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[4096];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLcharARB *)acBuffer);
+    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
     glASSERT();
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -3343,7 +3324,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_DrawMesh(const orxDISPLAY_MESH *_pstMesh, 
     /* Draws mesh */
     orxDisplay_GLFW_DrawArrays();
   }
-
 #ifndef __orxDISPLAY_OPENGL_ES__
 
   else
@@ -4301,7 +4281,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
   /* Success? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    GLdouble  dOrthoRight, dOrthoBottom;
+    GLfloat  fOrthoRight, fOrthoBottom;
     GLint     iX = 0, iY = 0;
     GLsizei   iWidth, iHeight;
 
@@ -4312,8 +4292,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       glfwGetFramebufferSize(sstDisplay.pstWindow, (int *)&iWidth, (int *)&iHeight);
 
       /* Updates ortho info */
-      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
-      dOrthoBottom  = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fHeight;
+      fOrthoRight   = (GLfloat)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      fOrthoBottom  = (GLfloat)sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
     else
     {
@@ -4322,8 +4302,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
       iHeight = (GLsizei)orxF2S(sstDisplay.apstDestinationBitmapList[0]->fHeight);
 
       /* Updates ortho info */
-      dOrthoRight   = (GLdouble)sstDisplay.apstDestinationBitmapList[0]->fWidth;
-      dOrthoBottom  = (GLdouble)-sstDisplay.apstDestinationBitmapList[0]->fHeight;
+      fOrthoRight   = (GLfloat)sstDisplay.apstDestinationBitmapList[0]->fWidth;
+      fOrthoBottom  = (GLfloat)-sstDisplay.apstDestinationBitmapList[0]->fHeight;
     }
 
     /* Should update viewport? */
@@ -4344,41 +4324,24 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
     }
 
     /* Should update the orthogonal projection? */
-    if((dOrthoRight != sstDisplay.dLastOrthoRight)
-    || (dOrthoBottom != sstDisplay.dLastOrthoBottom))
+    if((fOrthoRight != sstDisplay.fLastOrthoRight)
+    || (fOrthoBottom != sstDisplay.fLastOrthoBottom))
     {
       /* Stores data */
-      sstDisplay.dLastOrthoRight  = dOrthoRight;
-      sstDisplay.dLastOrthoBottom = dOrthoBottom;
-
-#ifdef __orxDISPLAY_OPENGL_ES__
+      sstDisplay.fLastOrthoRight  = fOrthoRight;
+      sstDisplay.fLastOrthoBottom = fOrthoBottom;
 
       /* Inits projection matrix */
-      (sstDisplay.dLastOrthoBottom >= 0.0)
-      ? orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, dOrthoRight, dOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
-      : orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, dOrthoRight, orxFLOAT_0, -dOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+      (sstDisplay.fLastOrthoBottom >= 0.0)
+      ? orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, fOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+      : orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, fOrthoRight, orxFLOAT_0, -fOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
-      /* Passes it to shader */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-#else /* __orxDISPLAY_OPENGL_ES__ */
-
-      /* Inits matrices */
-      glMatrixMode(GL_PROJECTION);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-      (dOrthoBottom >= 0.0)
-      ? glOrtho(0.0f, dOrthoRight, dOrthoBottom, 0.0f, -1.0f, 1.0f)
-      : glOrtho(0.0f, dOrthoRight, 0.0f, -dOrthoBottom, -1.0f, 1.0f);
-      glASSERT();
-      glMatrixMode(GL_MODELVIEW);
-      glASSERT();
-      glLoadIdentity();
-      glASSERT();
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
+      /* Has shader support? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+      {
+        /* Passes it to shader */
+        glUNIFORM(Matrix4fvARB, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      }
     }
   }
 
@@ -5181,44 +5144,28 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         /* Has shader support? */
         if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
         {
-          orxU32 u32ShaderVersion = orxU32_UNDEFINED;
-
+          orxU32                  u32ShaderVersion = orxU32_UNDEFINED;
+          static const orxSTRING  szFragmentShaderSource =
 #ifdef __orxDISPLAY_OPENGL_ES__
-
-          static const orxSTRING szFragmentShaderSource =
           "precision mediump float;"
+#endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
-          "uniform sampler2D _Texture_;"
+          "uniform sampler2D orxTexture;"
           "void main()"
           "{"
-          "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
+          "  gl_FragColor = _Color0_.rgba * texture2D(orxTexture, _gl_TexCoord0_).rgba;"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
+#ifdef __orxDISPLAY_OPENGL_ES__
           "precision mediump float;"
+#endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
-          "uniform sampler2D _Texture_;"
           "void main()"
           "{"
           "  gl_FragColor = _Color0_;"
           "}";
-
-#else /* __orxDISPLAY_OPENGL_ES__ */
-
-          static const orxSTRING szFragmentShaderSource =
-          "uniform sampler2D orxTexture;"
-          "void main()"
-          "{"
-          "  gl_FragColor = gl_Color.rgba * texture2D(orxTexture, gl_TexCoord[0].st).rgba;"
-          "}";
-          static const orxSTRING szNoTextureFragmentShaderSource =
-          "void main()"
-          "{"
-          "  gl_FragColor = gl_Color;"
-          "}";
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
           /* Has shader version value? */
           if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_VERSION))
@@ -5518,72 +5465,76 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     }
 
     /* Inits orthogonal projection values */
-    sstDisplay.dLastOrthoRight  = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
-    sstDisplay.dLastOrthoBottom = (GLdouble)(sstDisplay.apstDestinationBitmapList[0] != orxNULL)
+    sstDisplay.fLastOrthoRight  = (GLfloat)(sstDisplay.apstDestinationBitmapList[0] != orxNULL) ? sstDisplay.apstDestinationBitmapList[0]->fWidth : sstDisplay.pstScreen->fWidth;
+    sstDisplay.fLastOrthoBottom = (GLfloat)(sstDisplay.apstDestinationBitmapList[0] != orxNULL)
                                   ? (sstDisplay.apstDestinationBitmapList[0] == sstDisplay.pstScreen)
                                     ? sstDisplay.apstDestinationBitmapList[0]->fHeight
                                     : -sstDisplay.apstDestinationBitmapList[0]->fHeight
                                   : sstDisplay.pstScreen->fHeight;
 
-#ifdef __orxDISPLAY_OPENGL_ES__
+    /* Has VBO support? */
+    if(orxFLAG_TEST_ALL(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO | orxDISPLAY_KU32_STATIC_FLAG_SHADER))
+    {
+      /* Inits projection matrix */
+      (sstDisplay.fLastOrthoBottom >= 0.0)
+      ? orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
+      : orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
-    /* Inits projection matrix */
-    (sstDisplay.dLastOrthoBottom >= 0.0)
-    ? orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
-    : orxDisplay_GLFW_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.dLastOrthoRight, orxFLOAT_0, -sstDisplay.dLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
+      /* Passes it to shader */
+      glUNIFORM(Matrix4fvARB, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
-    /* Passes it to shader */
-    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+      /* Enables vertex attribute arrays */
+      glEnableVertexAttribArrayARB(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
+      glASSERT();
+      glEnableVertexAttribArrayARB(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
+      glASSERT();
+      glEnableVertexAttribArrayARB(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
+      glASSERT();
 
-    /* Enables vertex attribute arrays */
-    glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
-    glASSERT();
-    glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
-    glASSERT();
-    glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
-    glASSERT();
+      /* Sets vertex attribute arrays */
+      glVertexAttribPointerARB(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX));
+      glASSERT();
+      glVertexAttribPointerARB(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU));
+      glASSERT();
+      glVertexAttribPointerARB(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA));
+      glASSERT();
+    }
+#ifndef __orxDISPLAY_OPENGL_ES__
 
-    /* Sets vertex attribute arrays */
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX));
-    glASSERT();
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU));
-    glASSERT();
-    glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(orxDISPLAY_VERTEX), (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA));
-    glASSERT();
+    else
+    {
+      /* Inits matrices */
+      glMatrixMode(GL_PROJECTION);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
+      (sstDisplay.fLastOrthoBottom >= 0.0)
+      ? glOrtho(0.0f, (GLdouble)sstDisplay.fLastOrthoRight, (GLdouble)sstDisplay.fLastOrthoBottom, 0.0f, -1.0f, 1.0f)
+      : glOrtho(0.0f, (GLdouble)sstDisplay.fLastOrthoRight, 0.0f, -(GLdouble)sstDisplay.fLastOrthoBottom, -1.0f, 1.0f);
+      glASSERT();
+      glMatrixMode(GL_MODELVIEW);
+      glASSERT();
+      glLoadIdentity();
+      glASSERT();
 
-#else /* __orxDISPLAY_OPENGL_ES__ */
+      /* Resets client states */
+      glEnableClientState(GL_VERTEX_ARRAY);
+      glASSERT();
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      glASSERT();
+      glEnableClientState(GL_COLOR_ARRAY);
+      glASSERT();
 
-    /* Inits matrices */
-    glMatrixMode(GL_PROJECTION);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
-    (sstDisplay.dLastOrthoBottom >= 0.0)
-    ? glOrtho(0.0f, sstDisplay.dLastOrthoRight, sstDisplay.dLastOrthoBottom, 0.0f, -1.0f, 1.0f)
-    : glOrtho(0.0f, sstDisplay.dLastOrthoRight, 0.0f, -sstDisplay.dLastOrthoBottom, -1.0f, 1.0f);
-    glASSERT();
-    glMatrixMode(GL_MODELVIEW);
-    glASSERT();
-    glLoadIdentity();
-    glASSERT();
+      /* Selects arrays */
+      glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX) : &(sstDisplay.astVertexList[0].fX));
+      glASSERT();
+      glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU) : &(sstDisplay.astVertexList[0].fU));
+      glASSERT();
+      glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA) : &(sstDisplay.astVertexList[0].stRGBA));
+      glASSERT();
+    }
 
-    /* Resets client states */
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glASSERT();
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glASSERT();
-    glEnableClientState(GL_COLOR_ARRAY);
-    glASSERT();
-
-    /* Selects arrays */
-    glVertexPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fX) : &(sstDisplay.astVertexList[0].fX));
-    glASSERT();
-    glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU) : &(sstDisplay.astVertexList[0].fU));
-    glASSERT();
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA) : &(sstDisplay.astVertexList[0].stRGBA));
-    glASSERT();
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
+#endif /* !__orxDISPLAY_OPENGL_ES__ */
 
     /* Gets framebuffer size */
     glfwGetFramebufferSize(sstDisplay.pstWindow, &iFramebufferWidth, &iFramebufferHeight);
@@ -6020,16 +5971,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
       /* Successful? */
       if(pstShader != orxNULL)
       {
-#ifdef ____orxDISPLAY_OPENGL_ES__
-
         orxCHAR  *pc, *pcReplace;
-
-#else /* __orxDISPLAY_OPENGL_ES__ */
-
-        orxCHAR  *pc;
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
         orxS32    s32Offset, s32Free;
         orxU32    i;
 
@@ -6144,14 +6086,14 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
         {
           orxSHADER_PARAM *pstParam;
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
           /* Adds wrapping code */
+#ifdef __orxDISPLAY_OPENGL_ES__
           s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+#else /* __orxDISPLAY_OPENGL_ES__ */
+          s32Offset = orxString_NPrint(pc, s32Free, "varying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+#endif /* __orxDISPLAY_OPENGL_ES__ */
           pc       += s32Offset;
           s32Free  -= s32Offset;
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
           /* For all parameters */
           for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
@@ -6213,8 +6155,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           s32Free  -= s32Offset;
         }
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
         /* For all gl_TexCoord[0] */
         for(pcReplace = (orxCHAR *)orxString_SearchString(sstDisplay.acShaderCodeBuffer, "gl_TexCoord[0]");
             pcReplace != orxNULL;
@@ -6232,8 +6172,6 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           /* Replaces it */
           orxMemory_Copy(pcReplace, "_Color0_", 8 * sizeof(orxCHAR));
         }
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
 
         /* Inits shader */
         orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
@@ -6340,12 +6278,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StartShader(orxHANDLE _hShader)
   glUseProgramObjectARB(pstShader->hProgram);
   glASSERT();
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
   /* Updates projection matrix */
-  glUNIFORM(Matrix4fv, pstShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
+  glUNIFORM(Matrix4fvARB, pstShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Done! */
   return eResult;
@@ -6444,13 +6378,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
         sstDisplay.s32PendingShaderCount++;
       }
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
       /* Updates projection matrix */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
+      glUNIFORM(Matrix4fvARB, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
     }
     else
     {
@@ -6472,13 +6401,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_StopShader(orxHANDLE _hShader)
     /* Updates its texture unit */
     glUNIFORM(1iARB, sstDisplay.pstDefaultShader->iTextureLocation, sstDisplay.s32ActiveTextureUnit);
 
-#ifdef __orxDISPLAY_OPENGL_ES__
-
     /* Updates projection matrix */
-    glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
-
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
+    glUNIFORM(Matrix4fvARB, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
   }
 
   /* Done! */
@@ -6528,48 +6452,48 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
 
       /* Gets top parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP "[%d]", _zParam, _s32Index);
-      pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT "[%d]", _zParam, _s32Index);
-      pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM "[%d]", _zParam, _s32Index);
-      pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT "[%d]", _zParam, _s32Index);
-      pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
     else
     {
       /* Gets parameter location */
-      pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
+      pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)_zParam);
       glASSERT();
 
       /* Gets top parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
-      pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
-      pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
-      pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
-      pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)acBuffer);
+      pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
   }
@@ -6591,7 +6515,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     else
     {
       /* Gets parameter location */
-      s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, (const GLcharARB *)_zParam);
+      s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)_zParam);
       glASSERT();
     }
   }
