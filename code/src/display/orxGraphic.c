@@ -542,41 +542,30 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstTexture, orxTRUE) != orxSTATUS_FAILURE)
           {
-            orxVECTOR vTextureSize;
+            orxVECTOR vValue;
+
+            /* Updates size */
+            orxGraphic_UpdateSize(pstResult);
+
+            /* Has origin / corner? */
+            if((orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vValue) != orxNULL)
+            || (orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vValue) != orxNULL))
+            {
+              /* Applies it */
+              pstResult->fLeft    = vValue.fX;
+              pstResult->fTop     = vValue.fY;
+
+              /* Updates size */
+              pstResult->fWidth   = orxMAX(orxFLOAT_0, pstResult->fWidth - vValue.fX);
+              pstResult->fHeight  = orxMAX(orxFLOAT_0, pstResult->fHeight - vValue.fY);
+            }
 
             /* Has size? */
-            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) != orxNULL)
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vValue) != orxNULL)
             {
-              orxVECTOR vTextureOrigin;
-
-              /* Has origin? */
-              if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin) != orxNULL)
-              {
-                /* Stores them */
-                pstResult->fLeft    = vTextureOrigin.fX;
-                pstResult->fTop     = vTextureOrigin.fY;
-                pstResult->fWidth   = vTextureSize.fX;
-                pstResult->fHeight  = vTextureSize.fY;
-              }
-              /* Has corner? */
-              else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vTextureOrigin) != orxNULL)
-              {
-                /* Stores them */
-                pstResult->fLeft    = vTextureOrigin.fX;
-                pstResult->fTop     = vTextureOrigin.fY;
-                pstResult->fWidth   = vTextureSize.fX;
-                pstResult->fHeight  = vTextureSize.fY;
-              }
-              else
-              {
-                /* Updates size */
-                orxGraphic_UpdateSize(pstResult);
-              }
-            }
-            else
-            {
-              /* Updates size */
-              orxGraphic_UpdateSize(pstResult);
+              /* Applies it */
+              pstResult->fWidth   = vValue.fX;
+              pstResult->fHeight  = vValue.fY;
             }
           }
           else

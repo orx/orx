@@ -408,8 +408,10 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           /* Sets it */
           if(orxFont_SetCharacterList(_pstFont, zCharacterList) != orxSTATUS_FAILURE)
           {
+            orxVECTOR vValue;
             orxFLOAT *afCharacterWidthList = orxNULL, fCharacterHeight;
             orxU32    u32CharacterCount;
+            orxBOOL   bUpdateSize = orxFALSE;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
@@ -417,33 +419,24 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             /* Gets character count */
             u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
-            /* Has origin/size? */
-            if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
-            && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+            /* Has origin / corner? */
+            if((orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN, &vValue) != orxNULL)
+            || (orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_CORNER, &vValue) != orxNULL))
             {
-              orxVECTOR vTextureOrigin, vTextureSize;
+              /* Applies it */
+              orxFont_SetOrigin(_pstFont, &vValue);
 
-              /* Gets both values */
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Updates them */
-              orxFont_SetOrigin(_pstFont, &vTextureOrigin);
-              orxFont_SetSize(_pstFont, &vTextureSize);
+              /* Updates size */
+              vValue.fX = orxMAX(orxFLOAT_0, _pstFont->fWidth - vValue.fX);
+              vValue.fY = orxMAX(orxFLOAT_0, _pstFont->fHeight - vValue.fY);
+              orxFont_SetSize(_pstFont, &vValue);
             }
-            /* Has corner/size? */
-            else if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
-                 && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+
+            /* Has size? */
+            if(orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vValue) != orxNULL)
             {
-              orxVECTOR vTextureCorner, vTextureSize;
-
-              /* Gets both values */
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_CORNER, &vTextureCorner);
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Updates them */
-              orxFont_SetOrigin(_pstFont, &vTextureCorner);
-              orxFont_SetSize(_pstFont, &vTextureSize);
+              /* Applies it */
+              orxFont_SetSize(_pstFont, &vValue);
             }
 
             /* Gets character spacing */
