@@ -41,7 +41,7 @@
  * can of course be updated with only one clock, and the given clock context is also used here
  * for demonstration only.
  * The first clock runs at 100 Hz and the second one at 5 Hz.
- * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
+ * You can alter the time of the first clock by activating the "Fast", "Normal" and "Slow" inputs.
  * It'll still be updated at the same rate, but the time information that the clock will pass
  * to the callback will be stretched.
  * This provides an easy way of adding time distortion and having parts
