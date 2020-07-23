@@ -34,9 +34,9 @@ void        orxFASTCALL orxImGui_Exit();
 
 #ifdef orxIMGUI_IMPL
 
-static orxBOOL  sbInFrame = orxFALSE;
+static orxBOOL sbInFrame  = orxFALSE;
 
-static orxIMGUI sstImGui  = {};
+orxIMGUI sstImGui         = {};
 
 static void *orxImGui_Allocate(size_t _sSize, void *)
 {
