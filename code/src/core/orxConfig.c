@@ -5447,21 +5447,8 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   /* Valid? */
   if(_zSectionName != orxSTRING_EMPTY)
   {
-    orxSTRINGID         stID;
-    orxCONFIG_SECTION  *pstSection;
-
-    /* Gets section name ID */
-    stID = orxString_ToCRC(_zSectionName);
-
-    /* Gets it from table */
-    pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
-
-    /* Valid? */
-    if(pstSection != orxNULL)
-    {
-      /* Updates result */
-      bResult = orxTRUE;
-    }
+    /* Updates result */
+    bResult = (orxHashTable_Get(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName)) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -5914,15 +5901,18 @@ orxBOOL orxFASTCALL orxConfig_IsCommandValue(const orxSTRING _zKey)
  */
 orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 {
-  orxBOOL bResult;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Updates result */
-  bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
+  /* Valid? */
+  if(_zKey != orxSTRING_EMPTY)
+  {
+    /* Updates result */
+    bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
+  }
 
   /* Done! */
   return bResult;
