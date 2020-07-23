@@ -411,7 +411,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             orxVECTOR vValue;
             orxFLOAT *afCharacterWidthList = orxNULL, fCharacterHeight;
             orxU32    u32CharacterCount;
-            orxBOOL   bUpdateSize = orxFALSE;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
