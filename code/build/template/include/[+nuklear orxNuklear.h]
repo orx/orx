@@ -63,12 +63,12 @@ void        orxFASTCALL orxNuklear_Exit();
 
 #ifdef orxNUKLEAR_IMPL
 
-static void *orxNuklear_Malloc(nk_handle, void *, nk_size _sSize)
+static void *orxNuklear_Malloc(nk_handle _hHandle, void *_pPtr, nk_size _sSize)
 {
   return orxMemory_Allocate((orxU32)_sSize, orxMEMORY_TYPE_TEMP);
 }
 
-static void orxNuklear_Free(nk_handle, void *_pPtr)
+static void orxNuklear_Free(nk_handle _hHandle, void *_pPtr)
 {
   orxMemory_Free(_pPtr);
 }
@@ -79,26 +79,21 @@ static void orxNuklear_Free(nk_handle, void *_pPtr)
 
 static orxBOOL              sbInFrame         = orxFALSE;
 static orxBITMAP           *spstFontBitmap    = orxNULL;
-struct nk_draw_null_texture sstNull           = {};
-struct nk_buffer            sstCommandBuffer  = {};
-struct nk_buffer            sstVertexBuffer   = {};
-struct nk_buffer            sstElementBuffer  = {};
-struct nk_allocator         sstAllocator      =
-{
-  nk_handle_ptr(0),
-  orxNuklear_Malloc,
-  orxNuklear_Free
-};
+struct nk_draw_null_texture sstNull;
+struct nk_buffer            sstCommandBuffer;
+struct nk_buffer            sstVertexBuffer;
+struct nk_buffer            sstElementBuffer;
+struct nk_allocator         sstAllocator;
 
-static orxNUKLEAR           sstNuklear        = {};
+orxNUKLEAR                  sstNuklear;
 
-static void orxNuklear_Paste(nk_handle, struct nk_text_edit *_pstTextEdit)
+static void orxNuklear_Paste(nk_handle _hHandle, struct nk_text_edit *_pstTextEdit)
 {
   const orxSTRING zClipboard = orxSystem_GetClipboard();
   nk_textedit_paste(_pstTextEdit, zClipboard, orxString_GetLength(zClipboard));
 }
 
-static void orxNuklear_Copy(nk_handle, const char *_acText, int len)
+static void orxNuklear_Copy(nk_handle _hHandle, const char *_acText, int len)
 {
 #ifndef alloca
   #define alloca(x) __builtin_alloca((x))
@@ -209,7 +204,7 @@ static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
       {NK_VERTEX_COLOR,     NK_FORMAT_R8G8B8A8, NK_OFFSETOF(orxDISPLAY_VERTEX, stRGBA)},
       {NK_VERTEX_LAYOUT_END}
     };
-    struct nk_convert_config stConfig = {};
+    struct nk_convert_config stConfig;
 
     // Config
     orxConfig_PushSection(orxNUKLEAR_KZ_CONFIG_SECTION);
@@ -232,8 +227,9 @@ static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
     // Convert commands to buffers
     nk_convert(&sstNuklear.stContext, &sstCommandBuffer, &sstVertexBuffer, &sstElementBuffer, &stConfig);
 
-    orxVECTOR vScreenSize = {}, vFramebufferSize = {}, vScale = {};
+    orxVECTOR vScreenSize, vFramebufferSize, vScale;
     orxDisplay_GetScreenSize(&vScreenSize.fX, &vScreenSize.fY);
+    vScreenSize.fZ = orxFLOAT_0;
     orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
     orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
     orxConfig_PopSection();
@@ -243,7 +239,7 @@ static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
     orxBITMAP *pstScreen = orxDisplay_GetScreenBitmap();
     orxDisplay_SetDestinationBitmaps(&pstScreen, 1);
 
-    orxDISPLAY_MESH stMesh  = {};
+    orxDISPLAY_MESH stMesh;
     stMesh.ePrimitive       = orxDISPLAY_PRIMITIVE_TRIANGLES;
     stMesh.astVertexList    = (orxDISPLAY_VERTEX *)nk_buffer_memory_const(&sstVertexBuffer);
     stMesh.u32VertexNumber  = (orxU32)(sstVertexBuffer.needed / sizeof(orxDISPLAY_VERTEX));
@@ -276,6 +272,9 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   orxMemory_Zero(&sstNuklear, sizeof(orxNUKLEAR));
+  sstAllocator.userdata = nk_handle_ptr(0);
+  sstAllocator.alloc    = orxNuklear_Malloc;
+  sstAllocator.free     = orxNuklear_Free;
 
   orxConfig_PushSection(orxNUKLEAR_KZ_CONFIG_SECTION);
 
