@@ -169,10 +169,6 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
     {
       ImDrawList *pstDrawList = pstDrawData->CmdLists[i];
 
-      stMesh.astVertexList    = (orxDISPLAY_VERTEX *)pstDrawList->VtxBuffer.Data;
-      stMesh.u32VertexNumber  = pstDrawList->VtxBuffer.size();
-      stMesh.au16IndexList    = pstDrawList->IdxBuffer.Data;
-
       for(int j = 0; j < pstDrawList->CmdBuffer.Size; j++)
       {
         ImDrawCmd &rstCommand = pstDrawList->CmdBuffer[j];
@@ -183,7 +179,10 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
         }
         else
         {
-          stMesh.u32IndexNumber = rstCommand.ElemCount;
+          stMesh.astVertexList    = (orxDISPLAY_VERTEX *)(pstDrawList->VtxBuffer.Data + rstCommand.VtxOffset);
+          stMesh.u32VertexNumber  = pstDrawList->VtxBuffer.Size - rstCommand.VtxOffset;
+          stMesh.au16IndexList    = pstDrawList->IdxBuffer.Data + rstCommand.IdxOffset;
+          stMesh.u32IndexNumber   = rstCommand.ElemCount;
           orxDisplay_SetBitmapClipping(orxNULL, orxF2U(rstCommand.ClipRect.x - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.y - pstDrawData->DisplayPos.y), orxF2U(rstCommand.ClipRect.z - pstDrawData->DisplayPos.x), orxF2U(rstCommand.ClipRect.w - pstDrawData->DisplayPos.y));
           orxDisplay_DrawMesh(&stMesh, (orxBITMAP *)rstCommand.TextureId, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
         }
@@ -205,7 +204,7 @@ orxSTATUS orxFASTCALL orxImGui_Init()
   ImGui::CreateContext();
 
   ImGuiIO& rstIO                    = ImGui::GetIO();
-  rstIO.BackendFlags                = ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_HasGamepad;
+  rstIO.BackendFlags                = ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_HasGamepad | ImGuiBackendFlags_RendererHasVtxOffset;
   rstIO.ConfigFlags                 = ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_NavEnableSetMousePos | ImGuiConfigFlags_DockingEnable;
   rstIO.KeyMap[ImGuiKey_Tab]        = orxKEYBOARD_KEY_TAB;
   rstIO.KeyMap[ImGuiKey_LeftArrow]  = orxKEYBOARD_KEY_LEFT;
