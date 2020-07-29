@@ -77,7 +77,7 @@ static void orxNuklear_Free(nk_handle _hHandle, void *_pPtr)
 #include "nuklear.h"
 #undef NK_IMPLEMENTATION
 
-static orxBOOL              sbInFrame         = orxFALSE;
+static orxBOOL              sbNuklearInFrame  = orxFALSE;
 static orxBITMAP           *spstFontBitmap    = orxNULL;
 struct nk_draw_null_texture sstNull;
 struct nk_buffer            sstCommandBuffer;
@@ -106,96 +106,102 @@ static void orxNuklear_Copy(nk_handle _hHandle, const char *_acText, int len)
 
 static orxSTATUS orxFASTCALL orxNuklear_BeginFrame(const orxEVENT *_pstEvent)
 {
-  if(!sbInFrame)
+  orxVECTOR       vMousePos;
+  struct nk_vec2  vWheel = {0.0f, orxMouse_GetWheelDelta()};
+
+  if(sbNuklearInFrame)
   {
-    orxVECTOR       vMousePos;
-    struct nk_vec2  vWheel = {0.0f, orxMouse_GetWheelDelta()};
-
-    sbInFrame = orxTRUE;
-
-    // Inputs
-    nk_input_begin(&sstNuklear.stContext);
-
-    // Mouse
-    orxMouse_GetPosition(&vMousePos);
-    nk_input_motion(&sstNuklear.stContext, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY));
-
-    nk_input_button(&sstNuklear.stContext, NK_BUTTON_LEFT, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT) ? 1 : 0);
-    nk_input_button(&sstNuklear.stContext, NK_BUTTON_RIGHT, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT) ? 1 : 0);
-    nk_input_button(&sstNuklear.stContext, NK_BUTTON_MIDDLE, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_MIDDLE) ? 1 : 0);
-
-    nk_input_scroll(&sstNuklear.stContext, vWheel);
-
-    // Keys
-    nk_input_key(&sstNuklear.stContext, NK_KEY_DEL, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DELETE) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_ENTER, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ENTER) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_TAB, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_TAB) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_BACKSPACE, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_LEFT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_RIGHT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_UP, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_DOWN, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN) ? 1 : 0);
-
-    if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LCTRL)
-    || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RCTRL))
-    {
-      nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_C) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_V) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_X) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Z) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Y) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_A) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 1);
-    }
-    else
-    {
-      nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, 0);
-      nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 0);
-    }
-    nk_input_key(&sstNuklear.stContext, NK_KEY_SHIFT, (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSHIFT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSHIFT)) ? 1 : 0);
-
-    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_DOWN, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_DOWN) ? 1 : 0);
-    nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_UP, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_UP) ? 1 : 0);
-
-    // Text
-    if(sstNuklear.stContext.text_edit.active)
-    {
-      for(const orxCHAR *pc = orxKeyboard_ReadString(); *pc != orxCHAR_NULL;)
-      {
-        nk_input_unicode(&sstNuklear.stContext, orxString_GetFirstCharacterCodePoint(pc, &pc));
-      }
-    }
-
-    nk_input_end(&sstNuklear.stContext);
+    // Clear buffers
+    nk_clear(&sstNuklear.stContext);
+    nk_buffer_clear(&sstCommandBuffer);
+    nk_buffer_clear(&sstVertexBuffer);
+    nk_buffer_clear(&sstElementBuffer);
   }
+
+  sbNuklearInFrame = orxTRUE;
+
+  // Inputs
+  nk_input_begin(&sstNuklear.stContext);
+
+  // Mouse
+  orxMouse_GetPosition(&vMousePos);
+  nk_input_motion(&sstNuklear.stContext, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY));
+
+  nk_input_button(&sstNuklear.stContext, NK_BUTTON_LEFT, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT) ? 1 : 0);
+  nk_input_button(&sstNuklear.stContext, NK_BUTTON_RIGHT, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT) ? 1 : 0);
+  nk_input_button(&sstNuklear.stContext, NK_BUTTON_MIDDLE, orxF2S(vMousePos.fX), orxF2S(vMousePos.fY), orxMouse_IsButtonPressed(orxMOUSE_BUTTON_MIDDLE) ? 1 : 0);
+
+  nk_input_scroll(&sstNuklear.stContext, vWheel);
+
+  // Keys
+  nk_input_key(&sstNuklear.stContext, NK_KEY_DEL, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DELETE) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_ENTER, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ENTER) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_TAB, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_TAB) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_BACKSPACE, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_LEFT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_RIGHT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_UP, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_DOWN, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN) ? 1 : 0);
+
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LCTRL)
+  || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RCTRL))
+  {
+    nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_C) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_V) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_X) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Z) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Y) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_A) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 1);
+  }
+  else
+  {
+    nk_input_key(&sstNuklear.stContext, NK_KEY_COPY, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_PASTE, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_CUT, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_LINE_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_START, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_END, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_UNDO, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_REDO, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_SELECT_ALL, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_LEFT, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_TEXT_WORD_RIGHT, 0);
+    nk_input_key(&sstNuklear.stContext, NK_KEY_CTRL, 0);
+  }
+  nk_input_key(&sstNuklear.stContext, NK_KEY_SHIFT, (orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LSHIFT) || orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RSHIFT)) ? 1 : 0);
+
+  nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_START, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_HOME) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_END, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_END) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_DOWN, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_DOWN) ? 1 : 0);
+  nk_input_key(&sstNuklear.stContext, NK_KEY_SCROLL_UP, orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_PAGE_UP) ? 1 : 0);
+
+  // Text
+  if(sstNuklear.stContext.text_edit.active)
+  {
+    for(const orxCHAR *pc = orxKeyboard_ReadString(); *pc != orxCHAR_NULL;)
+    {
+      nk_input_unicode(&sstNuklear.stContext, orxString_GetFirstCharacterCodePoint(pc, &pc));
+    }
+  }
+
+  nk_input_end(&sstNuklear.stContext);
 
   return orxSTATUS_SUCCESS;
 }
 
 static orxSTATUS orxFASTCALL orxNuklear_EndFrame(const orxEVENT *_pstEvent)
 {
-  if(sbInFrame)
+  if(sbNuklearInFrame)
   {
-    sbInFrame = orxFALSE;
+    sbNuklearInFrame = orxFALSE;
 
     static const struct nk_draw_vertex_layout_element stVertexLayout[] =
     {
@@ -366,7 +372,7 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
   // Inits
   if(nk_init(&sstNuklear.stContext, &sstAllocator, &sstNuklear.pstDefaultFont->handle))
   {
-    sbInFrame = orxFALSE;
+    sbNuklearInFrame = orxFALSE;
 
     // Copy/Paste
     sstNuklear.stContext.clip.copy = orxNuklear_Copy;
