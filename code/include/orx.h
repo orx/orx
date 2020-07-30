@@ -105,19 +105,9 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 static void orxFASTCALL orx_MainSetup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_RENDER);
 
-  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONSOLE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PROFILER);
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
   return;
