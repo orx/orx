@@ -411,6 +411,62 @@ private:
 };
 
 
+//! Template function definitions
+template<class O>
+O *ScrollBase::GetNextObject(const O *_poObject) const
+{
+  const ScrollObjectBinder<O> *poBinder;
+  O                           *poResult = orxNULL;
+
+  // Gets binder
+  poBinder = ScrollObjectBinder<O>::GetInstance();
+
+  // Valid?
+  if(poBinder)
+  {
+    // Updates result
+    poResult = ScrollCast<O *>(poBinder->GetNextObject(_poObject));
+  }
+#ifdef __SCROLL_DEBUG__
+  else
+  {
+    // Logs message
+    orxLOG("Couldn't get next object of <%s>: no registered binder found!", typeid(O).name());
+  }
+#endif // __SCROLL_DEBUG__
+
+  // Done!
+  return poResult;
+}
+
+template<class O>
+O *ScrollBase::GetPreviousObject(const O *_poObject) const
+{
+  const ScrollObjectBinder<O> *poBinder;
+  O                           *poResult = orxNULL;
+
+  // Gets binder
+  poBinder = ScrollObjectBinder<O>::GetInstance();
+
+  // Valid?
+  if(poBinder)
+  {
+    // Updates result
+    poResult = ScrollCast<O *>(poBinder->GetPreviousObject(_poObject));
+  }
+#ifdef __SCROLL_DEBUG__
+  else
+  {
+    // Logs message
+    orxLOG("Couldn't get previous object of <%s>: no registered binder found!", typeid(O).name());
+  }
+#endif // __SCROLL_DEBUG__
+
+  // Done!
+  return poResult;
+}
+
+
 #ifdef __SCROLL_IMPL__
 
 //! Inline include
