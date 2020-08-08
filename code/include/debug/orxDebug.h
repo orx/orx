@@ -290,17 +290,25 @@ while(orxFALSE)
   /* Files */
   #define orxDEBUG_SETDEBUGFILE(FILE)         _orxDebug_SetDebugFile(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
-  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
-    do                                                        \
-    {                                                         \
-      orxCHAR   zBuffer[512];                                 \
-      zBuffer[511] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);\
-      _orxDebug_SetDebugFile(zBuffer);                        \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+  #define orxDEBUG_SETBASEFILENAME(FILE)                        \
+    do                                                          \
+    {                                                           \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))        \
+      {                                                         \
+        orxCHAR   zBuffer[512];                                 \
+        zBuffer[511] = orxCHAR_NULL;                            \
+        strncpy(zBuffer, FILE, 256);                            \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);\
+        _orxDebug_SetDebugFile(zBuffer);                        \
+        strncpy(zBuffer, FILE, 256);                            \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
+        _orxDebug_SetLogFile(zBuffer);                          \
+      }                                                         \
+      else                                                      \
+      {                                                         \
+        _orxDebug_SetDebugFile(FILE);                           \
+        _orxDebug_SetLogFile(FILE);                             \
+      }                                                         \
     } while(orxFALSE)
 
   /* Assert */
@@ -343,11 +351,18 @@ while(orxFALSE)
   #define orxDEBUG_SETBASEFILENAME(FILE)                      \
     do                                                        \
     {                                                         \
-      orxCHAR   zBuffer[512];                                 \
-      zBuffer[511] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))      \
+      {                                                       \
+        orxCHAR zBuffer[512];                                 \
+        zBuffer[511] = orxCHAR_NULL;                          \
+        strncpy(zBuffer, FILE, 256);                          \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);\
+        _orxDebug_SetLogFile(zBuffer);                        \
+      }                                                       \
+      else                                                    \
+      {                                                       \
+        _orxDebug_SetLogFile(FILE);                           \
+      }                                                       \
     } while(orxFALSE)
 
   #define orxASSERT(TEST, ...)

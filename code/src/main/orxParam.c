@@ -788,6 +788,11 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);
   }
+  else
+  {
+    /* Clears base names for debug */
+    orxDEBUG_SETBASEFILENAME(orxNULL);
+  }
 
   /* Done! */
   return eResult;
