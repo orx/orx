@@ -58,46 +58,46 @@ extension?: function [
   ]
   result
 ]
-apply-template: func [
+apply-template: function [
   {Replaces all templates with their content}
   content [text! binary!]
 ] [
-  use [template +extension -extension value] [
-    for-each [var condition] [
-      template    [not extension? entry]
-      +extension  [all [extension? entry get entry]]
-      -extension  [all [extension? entry not get entry]]
-    ] [
-      set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
-    ]
-    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
-    in-bracket: charset [not #"]"]
-    bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
-    extension-rule: [
-      begin-extension:
-      remove [
-        {[} (erase: no)
-        some [
-          [ [ {+} -extension | {-} +extension] (erase: yes)
-          | [ {+} +extension | {-} -extension]
-          ]
-          [{ } | {^M^/} | {^/}]
+  for-each [var condition] [
+    template    [not extension? entry]
+    +extension  [all [extension? entry get entry]]
+    -extension  [all [extension? entry not get entry]]
+  ] [
+    set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
+  ]
+  template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
+  in-bracket: charset [not #"]"]
+  bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
+  extension-rule: [
+    begin-extension:
+    remove [
+      {[} (erase: no)
+      some [
+        [ [ {+} -extension | {-} +extension] (erase: yes)
+        | [ {+} +extension | {-} -extension]
         ]
+        [{ } | {^M^/} | {^/}]
       ]
-      any
-      [ template-rule
-      | bracket-rule
-      | remove {]} end-extension: break
-      | skip
-      ]
-      if (erase) remove opt [{^M^/} | {^/}] (remove/part begin-extension end-extension) :begin-extension
     ]
+    any
+    [ template-rule
+    | bracket-rule
+    | remove {]} end-extension: break
+    | skip
+    ]
+    if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension) :begin-extension
   ]
   parse content [
+    (full-line: yes)
     any
     [ extension-rule
     | template-rule
-    | skip
+    | {^/} (full-line: yes)
+    | skip (full-line: no)
     ]
   ]
   content
