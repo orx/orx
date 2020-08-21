@@ -3,7 +3,8 @@
  * @date [date]
  */
 
-[+scroll #define __SCROLL_IMPL__
+[+scroll
+#define __SCROLL_IMPL__
 #include "[name].h"
 #undef __SCROLL_IMPL__
 
@@ -13,8 +14,7 @@
 
 #define orxNUKLEAR_IMPL
 #include "orxNuklear.h"
-#undef orxNUKLEAR_IMPL
-]
+#undef orxNUKLEAR_IMPL]
 [+imgui
 
 #define orxIMGUI_IMPL
