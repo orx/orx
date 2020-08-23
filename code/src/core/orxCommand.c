@@ -1993,6 +1993,26 @@ void orxFASTCALL orxCommand_CommandNormalize(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/* Command: ToSpherical */
+void orxFASTCALL orxCommand_CommandToSpherical(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  orxVector_FromCartesianToSpherical(&(_pstResult->vValue), &(_astArgList[0].vValue));
+
+  /* Done! */
+  return;
+}
+
+/* Command: ToCartesian */
+void orxFASTCALL orxCommand_CommandToCartesian(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  orxVector_FromSphericalToCartesian(&(_pstResult->vValue), &(_astArgList[0].vValue));
+
+  /* Done! */
+  return;
+}
+
 /* Command: VectorX */
 void orxFASTCALL orxCommand_CommandVectorX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2417,6 +2437,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: Normalize */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Normalize, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
 
+  /* Command: ToSpherical */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ToSpherical, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: ToCartesian */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, ToCartesian, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+
   /* Command: VectorX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorX, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: VectorY */
@@ -2533,6 +2558,16 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: Normalize */
   orxCommand_AddAlias("Normalize", "Vector.Normalize", orxNULL);
+
+  /* Alias: Vector.ToSpherical */
+  orxCommand_AddAlias("Vector.ToSpherical", "Command.ToSpherical", orxNULL);
+  /* Alias: Vector.ToCartesian */
+  orxCommand_AddAlias("Vector.ToCartesian", "Command.ToCartesian", orxNULL);
+
+  /* Alias: ToSpherical */
+  orxCommand_AddAlias("ToSpherical", "Vector.ToSpherical", orxNULL);
+  /* Alias: ToCartesian */
+  orxCommand_AddAlias("ToCartesian", "Vector.ToCartesian", orxNULL);
 
   /* Alias: Vector.X */
   orxCommand_AddAlias("Vector.X", "Command.VectorX", orxNULL);
@@ -2667,6 +2702,16 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Normalize */
   orxCommand_RemoveAlias("Normalize");
 
+  /* Alias: Vector.ToSpherical */
+  orxCommand_RemoveAlias("Vector.ToSpherical");
+  /* Alias: Vector.ToCartesian */
+  orxCommand_RemoveAlias("Vector.ToCartesian");
+
+  /* Alias: ToSpherical */
+  orxCommand_RemoveAlias("ToSpherical");
+  /* Alias: ToCartesian */
+  orxCommand_RemoveAlias("ToCartesian");
+
   /* Alias: Vector.X */
   orxCommand_RemoveAlias("Vector.X");
   /* Alias: Vector.Y */
@@ -2768,6 +2813,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Normalize */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Normalize);
+
+  /* Command: ToSpherical */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ToSpherical);
+  /* Command: ToCartesian */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ToCartesian);
 
   /* Command: VectorX */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorX);
