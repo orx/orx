@@ -664,7 +664,7 @@ var searchData=
   ['orxdebug_5fprint',['orxDEBUG_PRINT',['../group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2',1,'orxDebug.h']]],
   ['orxdebug_5fset_5fflags',['orxDEBUG_SET_FLAGS',['../group__orx_debug.html#gaf00cf24f2d5881602fa5e1eb0e3f7cf0',1,'orxDebug.h']]],
   ['orxdebug_5fset_5flog_5fcallback',['orxDEBUG_SET_LOG_CALLBACK',['../group__orx_debug.html#ga8a6844ca5481ba8c064d8eed5c641d2b',1,'orxDebug.h']]],
-  ['orxdebug_5fsetbasefilename',['orxDEBUG_SETBASEFILENAME',['../group__orx_debug.html#gaf759a250e945c1f6e3f7014b305cb50a',1,'orxDebug.h']]],
+  ['orxdebug_5fsetbasefilename',['orxDEBUG_SETBASEFILENAME',['../group__orx_debug.html#ga68b2aaefbe68c1562a4345bac9a0bce1',1,'orxDebug.h']]],
   ['orxdebug_5fsetdebugfile',['orxDEBUG_SETDEBUGFILE',['../group__orx_debug.html#ga90a2d4e5b531f4d44e0faebd2ecccb8e',1,'orxDebug.h']]],
   ['orxdebug_5fsetlogfile',['orxDEBUG_SETLOGFILE',['../group__orx_debug.html#gae976ea28bfe7551c5ec24a441e80b805',1,'orxDebug.h']]],
   ['orxdecl',['OrxDecl',['../group__orx_decl.html',1,'']]],
