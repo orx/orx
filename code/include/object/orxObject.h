@@ -462,29 +462,31 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstO
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT *_pstObject);
 
-/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+/** Gets object's first child object. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
- *
- * This function is typically used to iterate over the children of an object. For example:
+ * Note: this function will filter out any camera or spawner and retrieve the first child object.
+ * This function is typically used to iterate over the children objects of an object.
+ * For example, iterating over the first degree children objects:
  * @code
- * for(orxOBJECT *pstChild = orxOBJECT(orxObject_GetChild(pstObject));
+ * for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);
  *     pstChild != orxNULL;
- *     pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
+ *     pstChild = orxObject_GetSibling(pstChild))
  * {
- *     DoSomething(pstChild);
+ *     DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal
  * }
  * @endcode
  * @param[in]   _pstObject    Concerned object
  * @return      First child structure (object, spawner, camera or frame) / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetChild(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *_pstObject);
 
-/** Gets object's next sibling. This function is typically used for iterating over the children of an object,
+/** Gets object's next sibling object. This function is typically used for iterating over the children objects of an object,
  * see orxObject_GetChild() for an iteration example.
+ * Note: this function will filter out any camera or spawner and retrieve the next sibling object.
  * @param[in]   _pstObject    Concerned object
  * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetSibling(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
 
 
 /** Attaches an object to a parent while maintaining the object's world position.

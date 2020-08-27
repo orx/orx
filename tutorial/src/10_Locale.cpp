@@ -105,7 +105,7 @@ Logo::Logo()
   orxObject_SetUserData(mpstObject, this);
 
   // Stores our legend object (we don't use it in this tutorial, this is done for demonstration purposes)
-  mpstLegend = orxOBJECT(orxObject_GetChild(mpstObject));
+  mpstLegend = orxObject_GetChild(mpstObject);
 }
 
 // D-tor

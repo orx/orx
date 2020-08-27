@@ -291,9 +291,9 @@ void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
   }
 
   /* For all children */
-  for(pstChild = orxOBJECT(orxObject_GetChild(_pstObject));
+  for(pstChild = orxObject_GetChild(_pstObject);
       pstChild != orxNULL;
-      pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
+      pstChild = orxObject_GetSibling(pstChild))
   {
     /* Updates its body scale */
     orxObject_UpdateBodyScale(pstChild);
@@ -1980,7 +1980,7 @@ void orxFASTCALL orxObject_CommandGetChild(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    orxSTRUCTURE *pstChild;
+    orxOBJECT *pstChild;
 
     /* Gets its child */
     pstChild = orxObject_GetChild(pstObject);
@@ -2019,7 +2019,7 @@ void orxFASTCALL orxObject_CommandGetSibling(orxU32 _u32ArgNumber, const orxCOMM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    orxSTRUCTURE *pstSibling;
+    orxOBJECT *pstSibling;
 
     /* Gets its sibling */
     pstSibling = orxObject_GetSibling(pstObject);
@@ -6730,25 +6730,26 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
-/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+/** Gets object's first child object. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
- *
- * This function is typically used to iterate over the children of an object. For example:
+ * Note: this function will filter out any camera or spawner and retrieve the first child object.
+ * This function is typically used to iterate over the children objects of an object.
+ * For example, iterating over the first degree children objects:
  * @code
- * for(orxOBJECT *pstChild = orxOBJECT(orxObject_GetChild(pstObject));
+ * for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);
  *     pstChild != orxNULL;
- *     pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
+ *     pstChild = orxObject_GetSibling(pstChild))
  * {
- *     DoSomething(pstChild);
+ *     DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal
  * }
  * @endcode
  * @param[in]   _pstObject    Concerned object
  * @return      First child structure (object, spawner, camera or frame) / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
+orxOBJECT *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
 {
-  orxFRAME     *pstFrame, *pstChildFrame;
-  orxSTRUCTURE *pstResult;
+  orxFRAME   *pstFrame, *pstChildFrame;
+  orxOBJECT  *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6766,15 +6767,29 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
   /* Valid? */
   if(pstChildFrame != orxNULL)
   {
-    /* Gets its owner */
-    pstResult = orxStructure_GetOwner(pstChildFrame);
+    orxSTRUCTURE *pstChild;
 
-    /* No owner? */
-    if(pstResult == orxNULL)
+    /* Skips all non-objects */
+    for(pstChild = orxStructure_GetOwner(pstChildFrame);
+        (pstChild == orxNULL) || (orxStructure_GetID(pstChild) != orxSTRUCTURE_ID_OBJECT);
+        pstChild = orxStructure_GetOwner(pstChildFrame))
     {
-      /* Updates result with frame itself */
-      pstResult = (orxSTRUCTURE *)pstChildFrame;
+      /* Gets next sibling frame */
+      pstChildFrame = orxFrame_GetSibling(pstChildFrame);
+
+      /* No more siblings? */
+      if(pstChildFrame == orxNULL)
+      {
+        /* Updates child */
+        pstChild = orxNULL;
+
+        /* Stops */
+        break;
+      }
     }
+
+    /* Updates result */
+    pstResult = orxOBJECT(pstChild);
   }
   else
   {
@@ -6786,15 +6801,16 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
-/** Gets object's next sibling. This function is typically used for iterating over the children of an object,
+/** Gets object's next sibling object. This function is typically used for iterating over the children objects of an object,
  * see orxObject_GetChild() for an iteration example.
+ * Note: this function will filter out any camera or spawner and retrieve the next sibling object.
  * @param[in]   _pstObject    Concerned object
  * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
+orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
 {
-  orxFRAME     *pstFrame, *pstSiblingFrame;
-  orxSTRUCTURE *pstResult;
+  orxFRAME   *pstFrame, *pstSiblingFrame;
+  orxOBJECT  *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -6812,15 +6828,29 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
   /* Valid? */
   if(pstSiblingFrame != orxNULL)
   {
-    /* Gets its owner */
-    pstResult = orxStructure_GetOwner(pstSiblingFrame);
+    orxSTRUCTURE *pstSibling;
 
-    /* No owner? */
-    if(pstResult == orxNULL)
+    /* Skips all non-objects */
+    for(pstSibling = orxStructure_GetOwner(pstSiblingFrame);
+        (pstSibling == orxNULL) || (orxStructure_GetID(pstSibling) != orxSTRUCTURE_ID_OBJECT);
+        pstSibling = orxStructure_GetOwner(pstSiblingFrame))
     {
-      /* Updates result with frame itself */
-      pstResult = (orxSTRUCTURE *)pstSiblingFrame;
+      /* Gets next sibling frame */
+      pstSiblingFrame = orxFrame_GetSibling(pstSiblingFrame);
+
+      /* No more siblings? */
+      if(pstSiblingFrame == orxNULL)
+      {
+        /* Updates sibling */
+        pstSibling = orxNULL;
+
+        /* Stops */
+        break;
+      }
     }
+
+    /* Updates result */
+    pstResult = orxOBJECT(pstSibling);
   }
   else
   {
