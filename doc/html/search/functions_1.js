@@ -742,6 +742,7 @@ var searchData=
   ['orxobject_5fgetmasscenter',['orxObject_GetMassCenter',['../group__orx_object.html#gaf75085ea1999ed1adb461d9ddabb45fe',1,'orxObject.h']]],
   ['orxobject_5fgetname',['orxObject_GetName',['../group__orx_object.html#gaf6057aef62392d8ad9da2db34242cc4a',1,'orxObject.h']]],
   ['orxobject_5fgetnext',['orxObject_GetNext',['../group__orx_object.html#ga0b5af86af9961c1b84d17b6820047e49',1,'orxObject.h']]],
+  ['orxobject_5fgetnextchild',['orxObject_GetNextChild',['../group__orx_object.html#ga90f832ccb6f623dcd2d67ae550a3f66e',1,'orxObject.h']]],
   ['orxobject_5fgetorigin',['orxObject_GetOrigin',['../group__orx_object.html#ga5281d5b25fc332ca30172165bb18cbda',1,'orxObject.h']]],
   ['orxobject_5fgetownedchild',['orxObject_GetOwnedChild',['../group__orx_object.html#ga8be99631afb0f1cbd91684b78596ca33',1,'orxObject.h']]],
   ['orxobject_5fgetownedsibling',['orxObject_GetOwnedSibling',['../group__orx_object.html#gac60bf5ef1a20705b64ada55597510665',1,'orxObject.h']]],

@@ -300,6 +300,8 @@ Parent</h2></td></tr>
 <tr class="separator:ga60e76aead3f8fc80b4d55bc0f1906cb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf2463839fb0133188f721afd6cd76e1d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaf2463839fb0133188f721afd6cd76e1d">orxObject_GetSibling</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:gaf2463839fb0133188f721afd6cd76e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga90f832ccb6f623dcd2d67ae550a3f66e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga90f832ccb6f623dcd2d67ae550a3f66e">orxObject_GetNextChild</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pChild, <a class="el" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr class="separator:ga90f832ccb6f623dcd2d67ae550a3f66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac43eb6ebd857fd938f9c0c92bbcd6a74"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gac43eb6ebd857fd938f9c0c92bbcd6a74">orxObject_Attach</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pParent)</td></tr>
 <tr class="separator:gac43eb6ebd857fd938f9c0c92bbcd6a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab2c1240e6bec4a872ea25570d1ecf0ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab2c1240e6bec4a872ea25570d1ecf0ca">orxObject_Detach</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
@@ -1685,13 +1687,13 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object's first child object. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the first child object. This function is typically used to iterate over the children objects of an object. For example, iterating over the first degree children objects: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    pstChild != orxNULL;</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;    pstChild = orxObject_GetSibling(pstChild))</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;{</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+<p>Gets object's first child object. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the first child object. This function is typically used to iterate over the children objects of an object. For example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    pstChild != orxNULL;</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;    pstChild = orxObject_GetSibling(pstChild))</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;{</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>First child structure (object, spawner, camera or frame) / orxNULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>First child object / orxNULL </dd></dl>
 
 </div>
 </div>
@@ -2049,6 +2051,47 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga90f832ccb6f623dcd2d67ae550a3f66e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxObject_GetNextChild </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pChild</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&#160;</td>
+          <td class="paramname"><em>_eStructureID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets object's next child structure of a given type (camera, object or spawner). See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. See <a class="el" href="group__orx_object.html#ga60e76aead3f8fc80b4d55bc0f1906cb5">orxObject_GetChild()</a>/orxObject_GetSibling() if you want to only consider children objects. This function is typically used to iterate over the children of an object. For example, iterating over the immediate children cameras: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;for(orxCAMERA *pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, orxNULL, orxSTRUCTURE_ID_CAMERA));</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;    pstChild != orxNULL;</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;    pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, pstChild, orxSTRUCTURE_ID_CAMERA)))</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;{</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    DoSomethingWithCamera(pstChild);</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pChild</td><td>Concerned child to retrieve the next sibling, orxNULL to retrieve the first child </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eStructureID</td><td>ID of the structure to consider (camera, spawner, object or frame) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Next child/sibling structure (camera, spawner, object or frame) / orxNULL </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga5281d5b25fc332ca30172165bb18cbda"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2395,7 +2438,7 @@ Picking</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Next sibling structure (object, spawner, camera or frame) / orxNULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Next sibling object / orxNULL </dd></dl>
 
 </div>
 </div>
