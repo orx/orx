@@ -6020,6 +6020,9 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
   {
     orxBODY *pstBody;
 
+    /* Sets frame position */
+    orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
+
     /* Gets body */
     pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
 
@@ -6028,16 +6031,8 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
     {
       orxVECTOR vPos;
 
-      /* Sets frame position */
-      orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
-
       /* Updates body position */
       orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
-    }
-    else
-    {
-      /* Sets frame position */
-      orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
     }
   }
   else
@@ -6686,7 +6681,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 }
 
 /** Gets object's parent. See orxObject_SetParent() for a more detailed explanation.
- * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstObject      Concerned object
  * @return      Parent (object, spawner, camera or frame) / orxNULL
  */
 orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
@@ -6734,7 +6729,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
  * ownership and parenthood in Orx.
  * Note: this function will filter out any camera or spawner and retrieve the first child object.
  * This function is typically used to iterate over the children objects of an object.
- * For example, iterating over the first degree children objects:
+ * For example:
  * @code
  * for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);
  *     pstChild != orxNULL;
@@ -6743,8 +6738,8 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetParent(const orxOBJECT *_pstObject)
  *     DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal
  * }
  * @endcode
- * @param[in]   _pstObject    Concerned object
- * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
  */
 orxOBJECT *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
 {
@@ -6804,8 +6799,8 @@ orxOBJECT *orxFASTCALL orxObject_GetChild(const orxOBJECT *_pstObject)
 /** Gets object's next sibling object. This function is typically used for iterating over the children objects of an object,
  * see orxObject_GetChild() for an iteration example.
  * Note: this function will filter out any camera or spawner and retrieve the next sibling object.
- * @param[in]   _pstObject    Concerned object
- * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ * @param[in]   _pstObject      Concerned object
+ * @return      Next sibling object / orxNULL
  */
 orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
 {
@@ -6851,6 +6846,105 @@ orxOBJECT *orxFASTCALL orxObject_GetSibling(const orxOBJECT *_pstObject)
 
     /* Updates result */
     pstResult = orxOBJECT(pstSibling);
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets object's next child structure of a given type (camera, object or spawner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * See orxObject_GetChild()/orxObject_GetSibling() if you want to only consider children objects.
+ * This function is typically used to iterate over the children of an object.
+ * For example, iterating over the immediate children cameras:
+ * @code
+ * for(orxCAMERA *pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, orxNULL, orxSTRUCTURE_ID_CAMERA));
+ *     pstChild != orxNULL;
+ *     pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, pstChild, orxSTRUCTURE_ID_CAMERA)))
+ * {
+ *     DoSomethingWithCamera(pstChild);
+ * }
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pChild         Concerned child to retrieve the next sibling, orxNULL to retrieve the first child
+ * @param[in]   _eStructureID   ID of the structure to consider (camera, spawner, object or frame)
+ * @return      Next child/sibling structure (camera, spawner, object or frame) / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxObject_GetNextChild(const orxOBJECT *_pstObject, void *_pChild, orxSTRUCTURE_ID _eStructureID)
+{
+  orxFRAME     *pstFrame, *pstChildFrame;
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT((_eStructureID == orxSTRUCTURE_ID_CAMERA) || (_eStructureID == orxSTRUCTURE_ID_FRAME) || (_eStructureID == orxSTRUCTURE_ID_OBJECT) || (_eStructureID == orxSTRUCTURE_ID_SPAWNER));
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Gets frame's child */
+  pstChildFrame = orxFrame_GetChild(pstFrame);
+
+  /* Valid and has child? */
+  if((pstChildFrame != orxNULL) && (_pChild != orxNULL))
+  {
+    orxSTRUCTURE *pstChild;
+
+    /* Skips to it */
+    for(pstChild = orxStructure_GetOwner(pstChildFrame);
+        pstChild != _pChild;
+        pstChild = orxStructure_GetOwner(pstChildFrame))
+    {
+      /* Gets next sibling frame */
+      pstChildFrame = orxFrame_GetSibling(pstChildFrame);
+
+      /* No more siblings? */
+      if(pstChildFrame == orxNULL)
+      {
+        /* Stops */
+        break;
+      }
+    }
+
+    /* Found? */
+    if(pstChild == _pChild)
+    {
+      /* Gets its sibling frame */
+      pstChildFrame = orxFrame_GetSibling(pstChildFrame);
+    }
+  }
+
+  /* Valid? */
+  if(pstChildFrame != orxNULL)
+  {
+    /* Skips all non-related structures */
+    for(pstResult = orxStructure_GetOwner(pstChildFrame);
+        (pstResult == orxNULL) || (orxStructure_GetID(pstResult) != _eStructureID);
+        pstResult = orxStructure_GetOwner(pstChildFrame))
+    {
+      /* Gets next sibling frame */
+      pstChildFrame = orxFrame_GetSibling(pstChildFrame);
+
+      /* No more siblings? */
+      if(pstChildFrame == orxNULL)
+      {
+        /* Updates result */
+        pstResult = orxNULL;
+
+        /* Stops */
+        break;
+      }
+    }
   }
   else
   {
