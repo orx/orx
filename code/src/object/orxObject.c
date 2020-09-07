@@ -223,7 +223,8 @@ struct __orxOBJECT_t
   orxVECTOR         vSpeed;                     /**< Object speed : 132 */
   orxVECTOR         vSize;                      /**< Object size : 144 */
   orxVECTOR         vPivot;                     /**< Object pivot : 156 */
-  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 176 */
+  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 168 */
+  orxLINKLIST_NODE  stEnableNode;               /**< Enable node: 180 */
 };
 
 /** Static structure
@@ -236,6 +237,7 @@ typedef struct __orxOBJECT_STATIC_t
   orxHASHTABLE *pstGroupTable;                  /**< Group table */
   orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
   orxOBJECT    *pstCurrentObject;               /**< Current object */
+  orxLINKLIST   stEnableList;                   /**< Enabled objects list */
   orxSTRINGID   stDefaultGroupID;               /**< Default group ID */
   orxSTRINGID   stCurrentGroupID;               /**< Current group ID */
   orxSTRINGID   stCachedGroupID;                /**< Cached group ID */
@@ -3404,6 +3406,9 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
     /* Sets default group ID */
     orxObject_SetGroupID(pstResult, sstObject.stDefaultGroupID);
 
+    /* Adds it to the enable list */
+    orxLinkList_AddEnd(&(sstObject.stEnableList), &(pstResult->stEnableNode));
+
     /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
@@ -3470,6 +3475,12 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
       if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
       {
         orxLinkList_Remove(&(_pstObject->stGroupNode));
+      }
+
+      /* Removes object from the enable list */
+      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL)
+      {
+        orxLinkList_Remove(&(_pstObject->stEnableNode));
       }
 
       /* Deletes structure */
@@ -3546,12 +3557,10 @@ static orxINLINE void orxObject_DeleteAll()
  * @param[int] _pstObject         Concerned object
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  */
-static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxBOOL       bDeleted = orxFALSE;
   orxU32        u32UpdateFlags;
   orxSTRUCTURE *pstStructure;
-  orxOBJECT    *pstResult;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_Update");
@@ -3566,7 +3575,8 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    const orxCLOCK_INFO *pstClockInfo;
+    const orxCLOCK_INFO  *pstClockInfo;
+    orxBOOL               bDeleted = orxFALSE;
 
     /* Has clock? */
     if(orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_CLOCK))
@@ -3592,9 +3602,6 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       /* Should die? */
       if(_pstObject->fLifeTime <= orxFLOAT_0)
       {
-        /* Gets next object */
-        pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
-
         /* Deletes it */
         orxObject_Delete(_pstObject);
 
@@ -3604,7 +3611,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     }
 
     /* !!! TODO !!! */
-    /* Updates culling info before calling update subfunctions */
+    /* Updates culling info before calling update sub-functions */
 
     /* Wasn't object deleted? */
     if(bDeleted == orxFALSE)
@@ -3729,18 +3736,11 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     }
   }
 
-  /* Wasn't deleted? */
-  if(bDeleted == orxFALSE)
-  {
-    /* Gets next object */
-    pstResult = (orxOBJECT *)orxStructure_GetNext(_pstObject);
-  }
-
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return pstResult;
+  return;
 }
 
 /** Updates all the objects
@@ -3749,16 +3749,27 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxOBJECT *pstObject;
+  orxLINKLIST_NODE *pstNode, *pstNextNode;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
 
-  /* Updates all objects */
-  for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
-      pstObject != orxNULL;
-      pstObject = orxObject_UpdateInternal(pstObject, _pstClockInfo))
-  ;
+  /* For all enabled nodes */
+  for(pstNode = orxLinkList_GetFirst(&(sstObject.stEnableList));
+      pstNode != orxNULL;
+      pstNode = pstNextNode)
+  {
+    orxOBJECT *pstObject;
+
+    /* Gets next node */
+    pstNextNode = orxLinkList_GetNext(pstNode);
+
+    /* Gets associated object */
+    pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+
+    /* Updates it */
+    orxObject_UpdateInternal(pstObject, _pstClockInfo);
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -5351,6 +5362,13 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 
       /* Updates status flags */
       orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
+
+      /* Isn't already part of the enable list? */
+      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
+      {
+        /* Adds it to it */
+        orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
+      }
     }
   }
   else
@@ -5363,6 +5381,13 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 
       /* Updates status flags */
       orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
+
+      /* Isn't on death row? */
+      if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW))
+      {
+        /* Removes it from enable list */
+        orxLinkList_Remove(&(_pstObject->stEnableNode));
+      }
     }
   }
 
@@ -9718,6 +9743,27 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
   {
     /* Updates status */
     orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME | orxOBJECT_KU32_FLAG_DEATH_ROW);
+  }
+
+  /* Should die? */
+  if(_fLifeTime == orxFLOAT_0)
+  {
+    /* Isn't already part of the enable list? */
+    if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
+    {
+      /* Adds it to it */
+      orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
+    }
+  }
+  else
+  {
+    /* Is not enabled and part of the enable list? */
+    if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED)
+    && (orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL))
+    {
+      /* Removes it from it */
+      orxLinkList_Remove(&(_pstObject->stEnableNode));
+    }
   }
 
   /* Done! */
