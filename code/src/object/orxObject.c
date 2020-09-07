@@ -606,16 +606,25 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
   orxU32      u32Count;
   orxOBJECT  *pstObject;
 
-  /* For all objects */
-  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
-      pstObject != orxNULL;
-      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+  /* No name? */
+  if(_u32ArgNumber == 0)
   {
-    /* Match? */
-    if((_u32ArgNumber == 0) || (orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0))
+    /* Updates count */
+    u32Count = orxStructure_GetCount(orxSTRUCTURE_ID_OBJECT);
+  }
+  else
+  {
+    /* For all objects */
+    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
+        pstObject != orxNULL;
+        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
     {
-      /* Updates count */
-      u32Count++;
+      /* Match? */
+      if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+      {
+        /* Updates count */
+        u32Count++;
+      }
     }
   }
 
