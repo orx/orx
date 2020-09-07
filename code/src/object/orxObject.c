@@ -3740,19 +3740,16 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxOBJECT *pstObject, *pstNextObject;
+  orxOBJECT *pstObject;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
 
-  /* For all objects */
+  /* Updates all objects */
   for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
       pstObject != orxNULL;
-      pstObject = pstNextObject)
-  {
-    /* Updates it */
-    pstNextObject = orxObject_UpdateInternal(pstObject, _pstClockInfo);
-  }
+      pstObject = orxObject_UpdateInternal(pstObject, _pstClockInfo))
+  ;
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
