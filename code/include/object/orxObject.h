@@ -1197,6 +1197,12 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJ
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject);
 /** @} */
 
 

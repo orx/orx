@@ -9975,6 +9975,39 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstO
   return pstResult;
 }
 
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @return      orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_GetNextEnabled(const orxOBJECT *_pstObject)
+{
+  orxLINKLIST_NODE *pstNode;
+  orxOBJECT        *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstObject == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstObject) < orxSTRUCTURE_ID_NUMBER));
+  orxASSERT((_pstObject == orxNULL) || (orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL));
+
+  /* Gets node */
+  pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(&(sstObject.stEnableList)) : orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+  /* Valid? */
+  if(pstNode != orxNULL)
+  {
+    /* Updates result */
+    pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Picks the first active object with size "under" the given position, within a given group. See
  * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
  * objects.
