@@ -195,6 +195,7 @@ var searchData=
   ['orxbank_5fdelete',['orxBank_Delete',['../group__orx_bank.html#ga29e3b050cad7b27cc78efd243500a550',1,'orxBank.h']]],
   ['orxbank_5fexit',['orxBank_Exit',['../group__orx_bank.html#gaac6b0ec7f48717e7b49c3fc0f70b1563',1,'orxBank.h']]],
   ['orxbank_5ffree',['orxBank_Free',['../group__orx_bank.html#ga79adce27cc4c9367165dd2b381f8dda2',1,'orxBank.h']]],
+  ['orxbank_5ffreeatindex',['orxBank_FreeAtIndex',['../group__orx_bank.html#ga486ad2499afc60e8871d3c1c7a85775d',1,'orxBank.h']]],
   ['orxbank_5fgetatindex',['orxBank_GetAtIndex',['../group__orx_bank.html#gaf95868757d6eabc89dfb66491253cf86',1,'orxBank.h']]],
   ['orxbank_5fgetcount',['orxBank_GetCount',['../group__orx_bank.html#gac0dca7698dd17b3938ad694e636b6f6a',1,'orxBank.h']]],
   ['orxbank_5fgetindex',['orxBank_GetIndex',['../group__orx_bank.html#ga1feb3a29e189618bddab014bf32364d5',1,'orxBank.h']]],

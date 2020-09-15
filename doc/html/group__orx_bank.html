@@ -147,6 +147,8 @@ Functions</h2></td></tr>
 <tr class="separator:gaac6b0ec7f48717e7b49c3fc0f70b1563"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga79adce27cc4c9367165dd2b381f8dda2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga79adce27cc4c9367165dd2b381f8dda2">orxBank_Free</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pCell)</td></tr>
 <tr class="separator:ga79adce27cc4c9367165dd2b381f8dda2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga486ad2499afc60e8871d3c1c7a85775d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ga486ad2499afc60e8871d3c1c7a85775d">orxBank_FreeAtIndex</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxU32 _u32Index)</td></tr>
+<tr class="separator:ga486ad2499afc60e8871d3c1c7a85775d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf95868757d6eabc89dfb66491253cf86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gaf95868757d6eabc89dfb66491253cf86">orxBank_GetAtIndex</a> (const <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxU32 _u32Index)</td></tr>
 <tr class="separator:gaf95868757d6eabc89dfb66491253cf86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac0dca7698dd17b3938ad694e636b6f6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gac0dca7698dd17b3938ad694e636b6f6a">orxBank_GetCount</a> (const <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
@@ -446,6 +448,39 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Bank of memory from where _pCell has been allocated </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pCell</td><td>Pointer to the cell to free </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga486ad2499afc60e8871d3c1c7a85775d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxBank_FreeAtIndex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&#160;</td>
+          <td class="paramname"><em>_pstBank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32Index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Frees an allocated cell at a given index </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstBank</td><td>Bank of memory from where _pCell has been allocated </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Index</td><td>Index of the cell to free </td></tr>
   </table>
   </dd>
 </dl>
