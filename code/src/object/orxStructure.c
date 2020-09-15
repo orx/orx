@@ -622,7 +622,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add node to list.");
 
         /* Frees allocated structure */
-        orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
+        orxBank_FreeAtIndex(sstStructure.astStorage[_eStructureID].pstStructureBank, u32ItemID);
 
         /* Not created */
         pstStructure = orxNULL;
@@ -654,6 +654,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
 {
   orxSTRUCTURE_ID eStructureID;
+  orxU64          u64GUID;
   orxSTRUCTURE   *pstStructure;
 
   /* Checks */
@@ -696,10 +697,11 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   eStructureID = orxStructure_GetID(_pStructure);
 
   /* Tags structure as deleted */
-  orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
+  u64GUID               = pstStructure->u64GUID;
+  pstStructure->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
 
   /* Deletes structure */
-  orxBank_Free(sstStructure.astStorage[eStructureID].pstStructureBank, _pStructure);
+  orxBank_FreeAtIndex(sstStructure.astStorage[eStructureID].pstStructureBank, (orxU32)((u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
 
   /* Done! */
   return orxSTATUS_SUCCESS;

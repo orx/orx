@@ -488,6 +488,46 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   return;
 }
 
+/** Frees an allocated cell at a given index
+ * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
+ * @param[in] _u32Index   Index of the cell to free
+ */
+void orxFASTCALL orxBank_FreeAtIndex(orxBANK *_pstBank, orxU32 _u32Index)
+{
+  orxBANK_SEGMENT  *pstSegment;
+  orxU32            u32Index;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxBank_FreeAtIndex");
+
+  /* Checks */
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBank != orxNULL);
+
+  /* Skips all segments till we hit the right one */
+  for(u32Index = _u32Index, pstSegment = _pstBank->pstFirstSegment; (u32Index >= (orxU32)_pstBank->u16NbCellPerSegments) && (pstSegment != orxNULL); u32Index -= (orxU32)_pstBank->u16NbCellPerSegments, pstSegment = pstSegment->pstNext);
+
+  /* Checks */
+  orxASSERT(pstSegment != orxNULL);
+  orxASSERT((u32Index >> 5) < _pstBank->u16SizeSegmentBitField);
+  orxASSERT(pstSegment->au32CellAllocationMap[u32Index >> 5] & (1 << (u32Index & 31)));
+
+  /* Sets cell as free */
+  pstSegment->au32CellAllocationMap[u32Index >> 5] &= ~(1 << (u32Index & 31));
+
+  /* Updates segment's free count */
+  pstSegment->u32NbFree++;
+
+  /* Updates bank count */
+  _pstBank->u32Count--;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
 /** Free all allocated cell from a bank
  * @param[in] _pstBank    Bank of memory to clear
  */

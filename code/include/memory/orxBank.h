@@ -106,6 +106,12 @@ extern orxDLLAPI void *orxFASTCALL          orxBank_AllocateIndexed(orxBANK *_ps
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Free(orxBANK *_pstBank, void *_pCell);
 
+/** Frees an allocated cell at a given index
+ * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
+ * @param[in] _u32Index   Index of the cell to free
+ */
+extern orxDLLAPI void orxFASTCALL           orxBank_FreeAtIndex(orxBANK *_pstBank, orxU32 _u32Index);
+
 /** Frees all allocated cell from a bank
  * @param[in] _pstBank    Bank of memory to clear
  */
