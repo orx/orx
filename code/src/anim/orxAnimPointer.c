@@ -65,6 +65,7 @@
 #define orxANIMPOINTER_KU32_FLAG_LINK_TABLE           0x00000020  /**< Has link table flag */
 #define orxANIMPOINTER_KU32_FLAG_PAUSED               0x00000040  /**< Pause flag */
 #define orxANIMPOINTER_KU32_FLAG_INIT                 0x00000080  /**< Init flag */
+#define orxANIMPOINTER_KU32_FLAG_NEW_CURRENT          0x00000100  /**< New current animation flag */
 #define orxANIMPOINTER_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
 
 #define orxANIMPOINTER_KU32_MASK_FLAGS                0xFFFFFFFF  /**< Flags ID mask */
@@ -395,6 +396,12 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
               fEventStartTime = orx2F(-1.0f);
             }
           }
+          /* Newly set current anim? */
+          else if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NEW_CURRENT))
+          {
+            /* Updates event start time */
+            fEventStartTime = orx2F(-1.0f);
+          }
         }
       } while((bRecompute != orxFALSE) || (_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim)));
 
@@ -436,6 +443,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           orxAnimPointer_SendCustomEvents(pstAnim, pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
         }
       }
+
+      /* Removes newly set current anim flag */
+      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_NEW_CURRENT);
     }
     else
     {
@@ -1006,7 +1016,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
       orxFLOAT              fCurrentAnimTime;
 
       /* Updates its status */
-      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT, orxANIMPOINTER_KU32_FLAG_NONE);
+      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_INIT | orxANIMPOINTER_KU32_FLAG_NEW_CURRENT, orxANIMPOINTER_KU32_FLAG_NONE);
 
       /* Clears event payload */
       orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
