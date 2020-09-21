@@ -609,23 +609,58 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
   orxOBJECT  *pstObject;
 
   /* No name? */
-  if(_u32ArgNumber == 0)
+  if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == orxCHAR_NULL))
   {
-    /* Updates count */
-    u32Count = orxStructure_GetCount(orxSTRUCTURE_ID_OBJECT);
+    /* Enabled only? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Updates count */
+      u32Count = orxLinkList_GetCount(&(sstObject.stEnableList));
+    }
+    else
+    {
+      /* Updates count */
+      u32Count = orxStructure_GetCount(orxSTRUCTURE_ID_OBJECT);
+    }
   }
   else
   {
-    /* For all objects */
-    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
-        pstObject != orxNULL;
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    /* Enabled only? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
     {
-      /* Match? */
-      if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+      orxLINKLIST_NODE *pstNode;
+
+      /* For all enabled nodes */
+      for(pstNode = orxLinkList_GetFirst(&(sstObject.stEnableList)), u32Count = 0;
+          pstNode != orxNULL;
+          pstNode = orxLinkList_GetNext(pstNode))
       {
-        /* Updates count */
-        u32Count++;
+        orxOBJECT *pstObject;
+
+        /* Gets associated object */
+        pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+
+        /* Match? */
+        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        {
+          /* Updates count */
+          u32Count++;
+        }
+      }
+    }
+    else
+    {
+      /* For all objects */
+      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
+          pstObject != orxNULL;
+          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      {
+        /* Match? */
+        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        {
+          /* Updates count */
+          u32Count++;
+        }
       }
     }
   }
@@ -3036,7 +3071,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <none>", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: GetCount */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 2, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING}, {"EnabledOnly = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetID, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
