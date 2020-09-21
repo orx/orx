@@ -75,6 +75,9 @@ static orxINLINE orxSTATUS LoadConfig()
   orxVIEWPORT  *pstViewport;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
+  /* Pops config section */
+  orxConfig_PopSection();
+
   /* Deletes our scene */
   if(pstScene)
   {
