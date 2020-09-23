@@ -25,7 +25,7 @@
 /**
  * @file orxString.h
  * @date 21/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  * - Add autoindexing for ID generation

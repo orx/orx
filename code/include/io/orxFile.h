@@ -26,6 +26,7 @@
  * @file orxFile.h
  * @date 01/05/2005
  * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  */

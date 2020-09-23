@@ -455,7 +455,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
     /* Creates associated bank */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create((orxU16)_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
 
     /* Valid? */
     if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)

@@ -1926,7 +1926,7 @@ ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName
 ScrollObjectBinderBase::ScrollObjectBinderBase(orxS32 _s32SegmentSize, orxU32 _u32ElementSize)
 {
   // Creates bank
-  mpstBank = orxBank_Create((orxU16)_s32SegmentSize, _u32ElementSize, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+  mpstBank = orxBank_Create((orxU32)_s32SegmentSize, _u32ElementSize, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
   // Clears variables
   mpoFirstObject = mpoLastObject = orxNULL;

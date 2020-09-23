@@ -3585,6 +3585,7 @@ static orxINLINE void orxObject_DeleteAll()
     pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
   }
 
+  /* Done! */
   return;
 }
 
@@ -4045,6 +4046,7 @@ void orxFASTCALL orxObject_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit from object module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 

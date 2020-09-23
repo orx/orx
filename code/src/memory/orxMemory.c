@@ -25,7 +25,7 @@
 /**
  * @file orxMemory.c
  * @date 02/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -304,9 +304,10 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
  * @param[in]  _u32Size   Size of the memory to allocate
+ * @param[in]  _eMemType  Memory zone where data will be allocated
  * @return  returns a pointer to the reallocated memory block or orxNULL if an error has occurred
  */
-void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   void *pResult;
 
@@ -317,7 +318,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   if(_pMem == orxNULL)
   {
     /* Allocates it */
-    pResult = orxMemory_Allocate(_u32Size, orxMEMORY_TYPE_TEMP);
+    pResult = orxMemory_Allocate(_u32Size, _eMemType);
   }
   else
   {
@@ -330,7 +331,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     /* Updates pointer */
     _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
-    /* Gets memory type from memory chunk tag */
+    /* Gets current memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
 
     /* Gets memory chunk size */
@@ -343,11 +344,11 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     if(pResult != NULL)
     {
       /* Tags memory chunk */
-      *(orxMEMORY_TYPE *)pResult = eMemType;
+      *(orxMEMORY_TYPE *)pResult = _eMemType;
 
       /* Updates memory tracker */
       orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
-      orxMemory_Track(eMemType, (orxU32)(dlmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
+      orxMemory_Track(_eMemType, (orxU32)(dlmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
       /* Updates result */
       pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
