@@ -1266,7 +1266,7 @@ void orxFASTCALL orxResource_Exit()
     /* For all groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         pstGroup != orxNULL;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL))
     {
       /* Deletes it */
       orxResource_DeleteGroup(pstGroup);
