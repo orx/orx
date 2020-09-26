@@ -506,8 +506,8 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
       *_ppPrevious = (u32CellIndex == 0)
                    ? (u32SegmentIndex == 0)
                      ? orxNULL
-                     : (void*)(orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex - 1] + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE
-                   : (void*)(orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE;
+                     : (void*)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex - 1] + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE)
+                   : (void*)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
     }
 
     /* Updates result */
@@ -541,8 +541,8 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   orxASSERT(_pCell != orxNULL);
 
   /* Gets indices */
-  u32SegmentIndex = *(orxU32 *)((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) / _pstBank->u32SegmentSize;
-  u32CellIndex    = *(orxU32 *)((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) % _pstBank->u32SegmentSize;
+  u32SegmentIndex = *(orxU32 *)(((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) / _pstBank->u32SegmentSize);
+  u32CellIndex    = *(orxU32 *)(((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) % _pstBank->u32SegmentSize);
 
   /* Gets segment map size */
   u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
