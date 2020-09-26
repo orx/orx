@@ -1077,6 +1077,56 @@ void orxFASTCALL orxObject_CommandGetCustomGravity(orxU32 _u32ArgNumber, const o
   return;
 }
 
+/** Command: GetMass
+ */
+void orxFASTCALL orxObject_CommandGetMass(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxObject_GetMass(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetMassCenter
+ */
+void orxFASTCALL orxObject_CommandGetMassCenter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    orxObject_GetMassCenter(pstObject, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetText
  */
 void orxFASTCALL orxObject_CommandSetText(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3065,6 +3115,11 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetCustomGravity */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCustomGravity, "CustomGravity", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: GetMass */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMass, "Mass", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetMassCenter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMassCenter, "MassCenter", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: SetText */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetText, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Text", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetText */
@@ -3245,6 +3300,11 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAngularVelocity);
   /* Command: GetCustomGravity */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetCustomGravity);
+
+  /* Command: GetMass */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMass);
+  /* Command: GetMassCenter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMassCenter);
 
   /* Command: SetText */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetText);
