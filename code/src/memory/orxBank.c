@@ -503,11 +503,11 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
     if(_ppPrevious != orxNULL)
     {
       /* Updates it */
-      *_ppPrevious = (void*)(u32CellIndex == 0)
+      *_ppPrevious = (u32CellIndex == 0)
                    ? (u32SegmentIndex == 0)
                      ? orxNULL
-                     : (orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex - 1] + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE
-                   : (orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE;
+                     : (void*)(orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex - 1] + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE
+                   : (void*)(orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE;
     }
 
     /* Updates result */
