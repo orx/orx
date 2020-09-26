@@ -113,53 +113,57 @@ static orxINLINE orxSTATUS orxBank_AddSegment(orxBANK *_pstBank)
   /* Success? */
   if(apstNewSegmentData != orxNULL)
   {
-    orxU32 u32DataSize;
+    orxU32 *au32NewCellMap;
+    orxU32  u32MapSize;
 
-    /* Gets segment data size */
-    u32DataSize = _pstBank->u32SegmentSize * _pstBank->u32CellSize + sstBank.u32CacheLineSize - 1;
+    /* Stores it */
+    _pstBank->apstSegmentData = apstNewSegmentData;
 
-    /* Allocates new segment data */
-    apstNewSegmentData[_pstBank->u32SegmentCount] = (void *)orxMemory_Allocate(u32DataSize, _pstBank->eMemType);
+    /* Inits it */
+    apstNewSegmentData[_pstBank->u32SegmentCount] = orxNULL;
+
+    /* Gets segment map size */
+    u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+
+    /* Allocates new cell map */
+    au32NewCellMap = (orxU32 *)orxMemory_Reallocate(_pstBank->au32CellMap, u32NewSegmentCount * u32MapSize * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
 
     /* Success? */
-    if(apstNewSegmentData[_pstBank->u32SegmentCount] != orxNULL)
+    if(au32NewCellMap != orxNULL)
     {
-      orxU32 *au32NewCellMap;
-      orxU32  u32MapSize;
+      orxU32 *au32NewSegmentFree;
 
-      /* Gets segment map size */
-      u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+      /* Stores it */
+      _pstBank->au32CellMap = au32NewCellMap;
 
       /* Inits it */
-      orxMemory_Zero(apstNewSegmentData[_pstBank->u32SegmentCount], u32DataSize);
+      orxMemory_Set(au32NewCellMap + _pstBank->u32SegmentCount * u32MapSize, 0xFF, u32MapSize * sizeof(orxU32));
 
-      /* Allocates new cell map */
-      au32NewCellMap = (orxU32 *)orxMemory_Reallocate(_pstBank->au32CellMap, u32NewSegmentCount * u32MapSize * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
+      /* Allocates new segment free */
+      au32NewSegmentFree = (orxU32 *)orxMemory_Reallocate(_pstBank->au32SegmentFree, u32NewSegmentCount * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
 
       /* Success? */
-      if(au32NewCellMap != orxNULL)
+      if(au32NewSegmentFree != orxNULL)
       {
-        orxU32 *au32NewSegmentFree;
+        orxU32 u32DataSize;
+
+        /* Stores it */
+        _pstBank->au32SegmentFree = au32NewSegmentFree;
 
         /* Inits it */
-        orxMemory_Set(au32NewCellMap + _pstBank->u32SegmentCount * u32MapSize, 0xFF, u32MapSize * sizeof(orxU32));
+        au32NewSegmentFree[_pstBank->u32SegmentCount] = _pstBank->u32SegmentSize;
 
-        /* Allocates new segment free */
-        au32NewSegmentFree = (orxU32 *)orxMemory_Reallocate(_pstBank->au32SegmentFree, u32NewSegmentCount * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
+        /* Gets segment data size */
+        u32DataSize = _pstBank->u32SegmentSize * _pstBank->u32CellSize + sstBank.u32CacheLineSize - 1;
+
+        /* Allocates new segment data */
+        apstNewSegmentData[_pstBank->u32SegmentCount] = (void *)orxMemory_Allocate(u32DataSize, _pstBank->eMemType);
 
         /* Success? */
-        if(au32NewSegmentFree != orxNULL)
+        if(apstNewSegmentData[_pstBank->u32SegmentCount] != orxNULL)
         {
-          /* Inits it */
-          au32NewSegmentFree[_pstBank->u32SegmentCount] = _pstBank->u32SegmentSize;
-
-          /* Stores new segment info */
-          _pstBank->apstSegmentData = apstNewSegmentData;
-          _pstBank->au32CellMap     = au32NewCellMap;
-          _pstBank->au32SegmentFree = au32NewSegmentFree;
-
           /* Updates last operation index */
-          _pstBank->u32LastIndex    = _pstBank->u32SegmentCount * _pstBank->u32SegmentSize;
+          _pstBank->u32LastIndex = _pstBank->u32SegmentCount * _pstBank->u32SegmentSize;
 
           /* Updates segment count */
           _pstBank->u32SegmentCount++;
@@ -177,7 +181,7 @@ static orxINLINE orxSTATUS orxBank_AddSegment(orxBANK *_pstBank)
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "Couldn't add new segment to bank, aborting.");
 
-    /* Do not clear any successful allocations as they're re-allocations, they'll be cleared when the bank is deleted */
+    /* Do not clear any successful re-allocations, they'll be cleared when the bank is deleted */
   }
 
   /* Profiles */
@@ -507,12 +511,12 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
       *_ppPrevious = (u32CellIndex == 0)
                    ? (u32SegmentIndex == 0)
                      ? orxNULL
-                     : (void*)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex - 1] + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE)
-                   : (void*)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
+                     : (void*)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex - 1], sstBank.u32CacheLineSize) + (_pstBank->u32SegmentSize - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE)
+                   : (void*)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + (u32CellIndex - 1) * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
     }
 
     /* Updates result */
-    pResult = (void *)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
+    pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
 
     /* Stores its index */
     *(orxU32 *)((orxU8 *)pResult - orxBANK_KU32_TAG_SIZE) = u32ItemIndex;
@@ -839,7 +843,7 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
           u32CellIndex    = (pu32MapEntry - _pstBank->au32CellMap) % u32MapSize + orxMath_GetTrailingZeroCount(u32MaskedMapEntry);
 
           /* Updates result */
-          pResult = (void *)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
+          pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
 
           /* Stops */
           break;
@@ -929,7 +933,7 @@ void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
   if(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))))
   {
     /* Updates result */
-    pResult = (void *)((orxU8 *)_pstBank->apstSegmentData[u32SegmentIndex] + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
+    pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
   }
   else
   {
