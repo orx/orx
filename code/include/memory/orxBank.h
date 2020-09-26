@@ -117,7 +117,7 @@ extern orxDLLAPI void orxFASTCALL           orxBank_FreeAtIndex(orxBANK *_pstBan
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Clear(orxBANK *_pstBank);
 
-/** Compacts a bank by removing all its unused segments
+/** Compacts a bank by removing all its trailing unused segments
  * @param[in] _pstBank    Concerned bank
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_Compact(orxBANK *_pstBank);
