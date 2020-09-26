@@ -58,7 +58,6 @@ struct __orxBANK_t
   orxU32           *au32CellMap;            /**< Cell map */
   void            **apstSegmentData;        /**< Segment data */
   orxU32           *au32SegmentFree;        /**< Segment free */
-  orxU32            u32LastIndex;           /**< Last operation index */
   orxU32            u32CellSize;            /**< Cell size */
   orxU32            u32SegmentSize;         /**< Segment size */
   orxU32            u32CellCount;           /**< Allocated cells count */
@@ -162,9 +161,6 @@ static orxINLINE orxSTATUS orxBank_AddSegment(orxBANK *_pstBank)
         /* Success? */
         if(apstNewSegmentData[_pstBank->u32SegmentCount] != orxNULL)
         {
-          /* Updates last operation index */
-          _pstBank->u32LastIndex = _pstBank->u32SegmentCount * _pstBank->u32SegmentSize;
-
           /* Updates segment count */
           _pstBank->u32SegmentCount++;
 
@@ -434,8 +430,6 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
   {
     orxU32 *pu32MapEntry;
 
-    //! TODO: Last cell optim: scan from last cell, forward if full then scan from beginning if it fails, backward otherwise
-
     /* Finds non-full segment */
     for(u32SegmentIndex = 0; (u32SegmentIndex < _pstBank->u32SegmentCount) && (_pstBank->au32SegmentFree[u32SegmentIndex] == 0); u32SegmentIndex++)
       ;
@@ -520,9 +514,6 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
 
     /* Stores its index */
     *(orxU32 *)((orxU8 *)pResult - orxBANK_KU32_TAG_SIZE) = u32ItemIndex;
-
-    /* Updates last operation index */
-    _pstBank->u32LastIndex = u32ItemIndex;
   }
 
   /* Profiles */
@@ -557,9 +548,6 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
 
   /* Checks */
   orxASSERT(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))));
-
-  /* Updates last operation index */
-  _pstBank->u32LastIndex = *(orxU32 *)((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE);
 
   /* Marks cell as free */
   _pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] |= 1 << (u32CellIndex & 31);
@@ -605,9 +593,6 @@ void orxFASTCALL orxBank_FreeAtIndex(orxBANK *_pstBank, orxU32 _u32Index)
   /* Checks */
   orxASSERT(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))));
 
-  /* Updates last operation index */
-  _pstBank->u32LastIndex = _u32Index;
-
   /* Marks cell as free */
   _pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] |= 1 << (u32CellIndex & 31);
 
@@ -647,9 +632,6 @@ void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
     /* Resets its free */
     _pstBank->au32SegmentFree[i] = _pstBank->u32SegmentSize;
   }
-
-  /* Updates last operation index */
-  _pstBank->u32LastIndex = 0;
 
   /* Clears cell count */
   _pstBank->u32CellCount = 0;
@@ -732,9 +714,6 @@ void orxFASTCALL orxBank_Compact(orxBANK *_pstBank)
         }
       }
     }
-
-    /* Updates last operation index */
-    _pstBank->u32LastIndex = u32LastSegmentIndex * _pstBank->u32SegmentSize;
 
     /* Updates segment count */
     _pstBank->u32SegmentCount = u32NewSegmentCount;
