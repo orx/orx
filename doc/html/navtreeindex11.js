@@ -244,10 +244,10 @@ var NAVTREEINDEX11 =
 "group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379":[1,31,10],
 "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0":[3,0,0,8,1,2],
 "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0":[1,31,2],
+"group__orx_memory.html#gae5c2c5f182122468435fdf55d875a486":[3,0,0,8,1,12],
+"group__orx_memory.html#gae5c2c5f182122468435fdf55d875a486":[1,31,12],
 "group__orx_memory.html#gae9f162d0bd9c52e8bd44f827401093d9":[3,0,0,8,1,5],
 "group__orx_memory.html#gae9f162d0bd9c52e8bd44f827401093d9":[1,31,5],
-"group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b":[3,0,0,8,1,12],
-"group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b":[1,31,12],
 "group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d":[3,0,0,8,1,13],
 "group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d":[1,31,13]
 };
