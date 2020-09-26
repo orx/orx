@@ -89,10 +89,10 @@
 /** Defines
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
-#define orxCONFIG_KU32_STACK_BANK_SIZE            32          /**< Default stack bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
+#define orxCONFIG_KU32_STACK_SIZE                 64          /**< Section stack size */
 
 #define orxCONFIG_KU32_BUFFER_SIZE                16384       /**< Buffer size */
 #define orxCONFIG_KU32_LARGE_BUFFER_SIZE          524288      /**< Large buffer size */
@@ -232,15 +232,6 @@ typedef struct __orxCONFIG_SECTION_t
 
 } orxCONFIG_SECTION;
 
-/** Config stack entry structure
- */
-typedef struct __orxCONFIG_STACK_ENTRY_t
-{
-  orxLINKLIST_NODE    stNode;               /**< Linklist node : 12 */
-  orxCONFIG_SECTION  *pstSection;           /**< Section : 16 */
-
-} orxCONFIG_STACK_ENTRY;
-
 /** Static structure
  */
 typedef struct __orxCONFIG_STATIC_t
@@ -249,8 +240,6 @@ typedef struct __orxCONFIG_STATIC_t
   orxBANK            *pstEntryBank;         /**< Entry bank */
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
   orxBANK            *pstHistoryBank;       /**< History bank */
-  orxBANK            *pstStackBank;         /**< Stack bank */
-  orxLINKLIST         stStackList;          /**< Stack list */
   orxU32              u32Flags;             /**< Control flags */
   orxSTRINGID         stResourceGroupID;    /**< Resource group ID */
   orxU32              u32LoadCount;         /**< Load count */
@@ -263,6 +252,8 @@ typedef struct __orxCONFIG_STATIC_t
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
   orxCONFIG_SECTION  *pstDefaultSection;    /**< Default parent section */
+  orxU32              u32CurrentStackEntry; /**< Current stack entry */
+  orxCONFIG_SECTION*  apstSectionStack[orxCONFIG_KU32_STACK_SIZE]; /**< Section stack */
   orxCHAR             acCommandBuffer[orxCONFIG_KU32_COMMAND_BUFFER_SIZE]; /**< Command buffer */
   orxCHAR             zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH]; /**< Base file name */
   orxCHAR             acValueBuffer[orxCONFIG_KU32_LARGE_BUFFER_SIZE]; /**< Value buffer */
@@ -1523,29 +1514,33 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
       /* Not protected? */
       if(_pstSection->s32ProtectionCount == 0)
       {
-        orxCONFIG_STACK_ENTRY *pstStackEntry, *pstNextStackEntry;
+        orxU32 u32SrcEntry, u32DstEntry;
 
         /* For all stack entries */
-        for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
-            pstStackEntry != orxNULL;
-            pstStackEntry = pstNextStackEntry)
+        for(u32SrcEntry = 0, u32DstEntry = 0; u32SrcEntry < sstConfig.u32CurrentStackEntry; u32SrcEntry++)
         {
-          /* Gets next entry */
-          pstNextStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode));
-
-          /* Is deleted section? */
-          if(pstStackEntry->pstSection == _pstSection)
+          /* Should copy? */
+          if(u32SrcEntry != u32DstEntry)
           {
-            /* Removes it from stack list */
-            orxLinkList_Remove(&(pstStackEntry->stNode));
+            /* Copies it */
+            sstConfig.apstSectionStack[u32DstEntry] = sstConfig.apstSectionStack[u32SrcEntry];
+          }
 
-            /* Deletes it */
-            orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
-
+          /* Isn't deleted section? */
+          if(sstConfig.apstSectionStack[u32SrcEntry] != _pstSection)
+          {
+            /* Updates destination entry */
+            u32DstEntry++;
+          }
+          else
+          {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", _pstSection->zName);
           }
         }
+
+        /* Updates current stack entry */
+        sstConfig.u32CurrentStackEntry -= (u32SrcEntry - u32DstEntry);
 
         /* Is the current selected one? */
         if(sstConfig.pstCurrentSection == _pstSection)
@@ -3916,16 +3911,14 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Restores bootstrap */
     sstConfig.pfnBootstrap = pfnBackupBootstrap;
 
-    /* Creates stack bank, history bank & section bank/table */
-    sstConfig.pstStackBank    = orxBank_Create(orxCONFIG_KU32_STACK_BANK_SIZE, sizeof(orxCONFIG_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    /* Creates history bank, entry bank & section bank/table */
     sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxU32), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-    sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-
+    sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
       orxBOOL bLoadDefault;
 
@@ -3976,13 +3969,6 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     }
     else
     {
-      /* Should delete stack bank? */
-      if(sstConfig.pstStackBank != orxNULL)
-      {
-        /* Deletes it */
-        orxBank_Delete(sstConfig.pstStackBank);
-      }
-
       /* Should delete history bank? */
       if(sstConfig.pstHistoryBank != orxNULL)
       {
@@ -4005,7 +3991,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       }
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate stack bank and/or section bank/table.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate history bank, entry bank and/or section bank/table.");
     }
   }
   else
@@ -4054,9 +4040,6 @@ void orxFASTCALL orxConfig_Exit()
 
     /* Deletes history bank */
     orxBank_Delete(sstConfig.pstHistoryBank);
-
-    /* Deletes stack bank */
-    orxBank_Delete(sstConfig.pstStackBank);
 
     /* Deletes encryption key */
     orxConfig_SetEncryptionKey(orxNULL);
@@ -5355,25 +5338,17 @@ orxSTATUS orxFASTCALL orxConfig_PushSection(const orxSTRING _zSectionName)
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      orxCONFIG_STACK_ENTRY *pstStackEntry;
-
-      /* Allocates stack entry */
-      pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxBank_Allocate(sstConfig.pstStackBank);
-
-      /* Valid? */
-      if(pstStackEntry != orxNULL)
+      /* Isn't stack full? */
+      if(sstConfig.u32CurrentStackEntry < orxCONFIG_KU32_STACK_SIZE)
       {
-        /* Clears it */
-        orxMemory_Zero(pstStackEntry, sizeof(orxCONFIG_STACK_ENTRY));
-
-        /* Updates it */
-        pstStackEntry->pstSection = pstCurrentSection;
-
-        /* Adds it at end of list */
-        orxLinkList_AddEnd(&(sstConfig.stStackList), &(pstStackEntry->stNode));
+        /* Updates stack */
+        sstConfig.apstSectionStack[sstConfig.u32CurrentStackEntry++] = pstCurrentSection;
       }
       else
       {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Failed to push section: section stack is full.", _zSectionName);
+
         /* Restores current section */
         sstConfig.pstCurrentSection = pstCurrentSection;
 
@@ -5403,27 +5378,19 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Has stacked entry? */
-  if(orxLinkList_GetCount(&(sstConfig.stStackList)) > 0)
+  if(sstConfig.u32CurrentStackEntry != 0)
   {
-    orxCONFIG_STACK_ENTRY *pstStackEntry;
-
-    /* Gets stack entry */
-    pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetLast(&(sstConfig.stStackList));
-
     /* Updates current section */
-    sstConfig.pstCurrentSection = pstStackEntry->pstSection;
-
-    /* Removes it from stack list */
-    orxLinkList_Remove(&(pstStackEntry->stNode));
-
-    /* Deletes it */
-    orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
+    sstConfig.pstCurrentSection = sstConfig.apstSectionStack[--sstConfig.u32CurrentStackEntry];
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
   else
   {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to pop section: section stack is empty.");
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
