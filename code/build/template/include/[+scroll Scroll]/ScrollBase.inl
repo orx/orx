@@ -1286,30 +1286,39 @@ void ScrollBase::BaseExit()
 
 void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
 {
-  ScrollObject *poObject;
-
   // Not paused?
   if(!mbIsPaused)
   {
+    orxOBJECT *pstObject;
+
     // Locks object list
     mbObjectListLocked = orxTRUE;
 
-    // For all objects
-    for(poObject = GetNextObject();
-        poObject;
-        poObject = GetNextObject(poObject))
+    // For all enabled objects
+    for(pstObject = orxObject_GetNextEnabled(orxNULL);
+        pstObject;
+        pstObject = orxObject_GetNextEnabled(pstObject))
     {
       // Not paused and not pending deletion?
-      if(!orxObject_IsPaused(poObject->GetOrxObject())
-      && (poObject->GetLifeTime() != orxFLOAT_0))
+      if(!orxObject_IsPaused(pstObject)
+      && (orxObject_GetLifeTime(pstObject) != orxFLOAT_0))
       {
-        orxCLOCK *pstClock;
+        ScrollObject *poObject;
 
-        // Gets its clock
-        pstClock = orxObject_GetClock(poObject->GetOrxObject());
+        // Gets its associated scroll object
+        poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
 
-        // Updates object
-        poObject->Update(pstClock ? *orxClock_GetInfo(pstClock) : _rstInfo);
+        // Valid?
+        if(poObject)
+        {
+          orxCLOCK *pstClock;
+
+          // Gets its clock
+          pstClock = orxObject_GetClock(pstObject);
+
+          // Updates object
+          poObject->Update(pstClock ? *orxClock_GetInfo(pstClock) : _rstInfo);
+        }
       }
     }
 
