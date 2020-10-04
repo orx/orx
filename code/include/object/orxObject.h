@@ -1200,9 +1200,10 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_
 
 /** Gets next enabled object.
  * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 /** @} */
 
 

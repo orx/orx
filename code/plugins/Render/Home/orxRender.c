@@ -1826,9 +1826,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 stGroupID = orxCamera_GetGroupID(pstCamera, i);
 
                 /* For all objects in this group */
-                for(pstObject = orxObject_GetNext(orxNULL, stGroupID);
+                for(pstObject = orxObject_GetNextEnabled(orxNULL, stGroupID);
                     pstObject != orxNULL;
-                    pstObject = orxObject_GetNext(pstObject, stGroupID))
+                    pstObject = orxObject_GetNextEnabled(pstObject, stGroupID))
                 {
                   /* Is object enabled? */
                   if(orxObject_IsEnabled(pstObject) != orxFALSE)

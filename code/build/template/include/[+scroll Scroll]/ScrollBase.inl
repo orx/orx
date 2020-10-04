@@ -1295,9 +1295,9 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
     mbObjectListLocked = orxTRUE;
 
     // For all enabled objects
-    for(pstObject = orxObject_GetNextEnabled(orxNULL);
+    for(pstObject = orxObject_GetNextEnabled(orxNULL, orxSTRINGID_UNDEFINED);
         pstObject;
-        pstObject = orxObject_GetNextEnabled(pstObject))
+        pstObject = orxObject_GetNextEnabled(pstObject, orxSTRINGID_UNDEFINED))
     {
       // Not paused and not pending deletion?
       if(!orxObject_IsPaused(pstObject)
