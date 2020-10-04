@@ -481,23 +481,27 @@ orxSTATUS orxFASTCALL orxClock_Init()
           sstClock.fTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
           orxConfig_PopSection();
 
-          /* Creates default full speed core clock */
-          pstClock = orxClock_Create(sstClock.fTickSize, orxCLOCK_TYPE_CORE);
+          /* Pushes core clock section */
+          orxConfig_PushSection(orxCLOCK_KZ_CORE);
+
+          /* No frequency? */
+          if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE)
+          {
+            /* Updates it */
+            orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, (sstClock.fTickSize == orxFLOAT_0) ? orxFLOAT_0 : orxFLOAT_1 / sstClock.fTickSize);
+          }
+
+          /* Pops config section */
+          orxConfig_PopSection();
+
+          /* Creates core clock */
+          pstClock = orxClock_CreateFromConfig(orxCLOCK_KZ_CORE);
 
           /* Success? */
           if(pstClock != orxNULL)
           {
             /* Sets it as its own owner */
             orxStructure_SetOwner(pstClock, pstClock);
-
-            /* Stores its name */
-            pstClock->zReference = orxCLOCK_KZ_CORE;
-
-            /* Adds it to reference table */
-            orxHashTable_Add(sstClock.pstReferenceTable, orxString_ToCRC(pstClock->zReference), pstClock);
-
-            /* Updates its status flags */
-            orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
 
             /* Registers commands */
             orxClock_RegisterCommands();
