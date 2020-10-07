@@ -60,6 +60,7 @@
 #define orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED    0x00000002                      /**< Config loaded flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET        0x00000004                      /**< Watch set flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET       0x00000008                      /**< Notify set flag */
+#define orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED 0x00000010                      /**< Watch registered flag */
 
 #define orxRESOURCE_KU32_STATIC_MASK_ALL              0xFFFFFFFF                      /**< All mask */
 
@@ -888,12 +889,18 @@ static void orxResource_UpdatePostInit()
   /* Is config loaded now? */
   if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
   {
-    /* Doesn't have watch */
+    /* Watch not already set? */
     if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
     {
       /* Is clock module initialized? */
       if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
       {
+        orxBOOL bDebugLevelBackup;
+
+        /* Enables config logs */
+        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
+
         /* Pushes resource config section */
         orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
@@ -902,10 +909,16 @@ static void orxResource_UpdatePostInit()
         {
           /* Registers watch callbacks */
           orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+          /* Updates flags */
+          orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
         }
 
         /* Pops config section */
         orxConfig_PopSection();
+
+        /* Restores config logs */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bDebugLevelBackup);
 
         /* Updates flags */
         orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
@@ -2635,13 +2648,13 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
  */
 orxSTATUS orxFASTCALL orxResource_ClearCache()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
-  /* Doesn't have a watch set? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
+  /* Doesn't have a registered watch? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
   {
     orxRESOURCE_GROUP *pstGroup;
 
@@ -2669,11 +2682,17 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
 
     /* Clears info bank */
     orxBank_Clear(sstResource.pstResourceInfoBank);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Resource cache can't be cleared: the resource watch feature is currently active.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

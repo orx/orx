@@ -2715,7 +2715,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
   orxASSERT(_pvForce != orxNULL);
 
   /* Sets force */
-  vForce.Set(_pvForce->fX, _pvForce->fY);
+  vForce.Set(sstPhysics.fDimensionRatio * _pvForce->fX, sstPhysics.fDimensionRatio * _pvForce->fY);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody->poBody;

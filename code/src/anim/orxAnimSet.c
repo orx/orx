@@ -1793,9 +1793,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Gets its size */
           orxGraphic_GetSize(pstGraphic, &vTextureSize);
 
-          /* Updates it */
-          orxVector_Sub(&vTextureSize, &vTextureSize, &vTextureOrigin);
-
           /* Updates text status */
           bIsText = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT);
 
@@ -1990,8 +1987,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Doesn't have a config section? */
           if(orxConfig_HasSection(acFrameBuffer) == orxFALSE)
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame defined in config" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, _zConfigID);
+            /* First frame? */
+            if(i == 0)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame defined in config" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, _zConfigID);
+            }
 
             /* Stops */
             break;
