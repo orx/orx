@@ -1793,9 +1793,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Gets its size */
           orxGraphic_GetSize(pstGraphic, &vTextureSize);
 
-          /* Updates it */
-          orxVector_Sub(&vTextureSize, &vTextureSize, &vTextureOrigin);
-
           /* Updates text status */
           bIsText = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT);
 
