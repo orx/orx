@@ -11,5 +11,5 @@ LOCAL_STATIC_LIBRARIES := android_orx
 LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)
-$(call import-add-path,C:\Users\krist\Desktop\git\github\orx\code)
+$(call import-add-path,$(ORX))
 $(call import-module,lib/static/android-native)
