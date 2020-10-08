@@ -1,5 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
+ORX := $(or $(ORX),$(LOCAL_PATH)/../../../../../..)
+
 SRC_PATH := $(LOCAL_PATH)
 
 include $(CLEAR_VARS)
