@@ -1,57 +1,59 @@
 apply plugin: 'com.android.application'
 
 android {
-    buildToolsVersion = '30.0.2'
-    compileSdkVersion sdkVersion.toInteger()
+  buildToolsVersion = '30.0.2'
+  compileSdkVersion sdkVersion.toInteger()
 
-	ndkVersion "21.3.6528147"
+  ndkVersion "21.3.6528147"
 
-    defaultConfig {
-        applicationId "org.orxproject.orxtestnative"
-        targetSdkVersion sdkVersion.toInteger()
-        versionCode 1
-        versionName "1.0"
+  defaultConfig {
+    applicationId "org.orxproject.orxtestnative"
+    targetSdkVersion sdkVersion.toInteger()
+    versionCode 1
+    versionName "1.0"
 
-        minSdkVersion 17
-        
-		ndk {
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
-        }
-    }
-    
-	lintOptions {
-        abortOnError true
-        warningsAsErrors true
-    }
-	
-	buildTypes {
-        release {
-            debuggable false
-            shrinkResources true
-            minifyEnabled true
+    minSdkVersion 17
 
-			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            debuggable true
-            shrinkResources false
-            minifyEnabled false
-		}
+    ndk {
+      abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
     }
+  }
 
-    aaptOptions {
-        ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
-    }
+  lintOptions {
+    abortOnError true
+    warningsAsErrors true
+  }
 
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
-        }
+  buildTypes {
+    release {
+      debuggable false
+      shrinkResources true
+      minifyEnabled true
+
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
-	
-	sourceSets {
-        main {
-            assets.srcDirs = ['../../../data']
-        }
+    debug {
+      debuggable true
+      shrinkResources false
+      minifyEnabled false
     }
+  }
+
+  aaptOptions {
+    ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
+  }
+
+  externalNativeBuild {
+    ndkBuild {
+      path 'src/main/jni/Android.mk'
+    }
+  }
+
+  sourceSets {
+    main {
+      // For custom apps, you should have resources in some parent folder with orx data.
+      // E.g. '../../../data'
+      assets.srcDirs = ['./src/main/assets']
+    }
+  }
 }
