@@ -130,9 +130,9 @@ struct __orxCLOCK_t
  */
 typedef struct __orxCLOCK_STATIC_t
 {
+  orxCLOCK         *pstCore;                    /**< Core clock */
   orxBANK          *pstTimerBank;               /**< Timer bank */
   orxDOUBLE         dTime;                      /**< Current time */
-  orxFLOAT          fTickSize;                  /**< Main clock tick size */
   orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file */
   orxU32            u32Flags;                   /**< Control flags */
 
@@ -181,39 +181,6 @@ static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const o
 
   /* Done! */
   return pstFunctionStorage;
-}
-
-/** Finds the next clock in list given a tick size and a type
- * @param[in]   _fTickSize                            Desired tick size
- * @param[in]   _eType                                Desired type
- * @param[in]   _pstStartClock                        Clock used as a starting point in the list
- * @return      orxCLOCK / orxNULL
- */
-static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, const orxCLOCK *_pstStartClock)
-{
-  orxCLOCK *pstClock;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
-
-  /* Finds matching clock */
-  for(pstClock = (_pstStartClock != orxNULL) ? orxCLOCK(orxStructure_GetNext(_pstStartClock)) : orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
-      pstClock != orxNULL;
-      pstClock = orxCLOCK(orxStructure_GetNext(pstClock)))
-  {
-    /* Match? */
-    if((pstClock->stClockInfo.eType == _eType)
-    && ((_fTickSize < orxFLOAT_0)
-     || (pstClock->stClockInfo.fTickSize == _fTickSize)))
-    {
-      /* Found */
-      break;
-    }
-  }
-
-  /* Done! */
-  return pstClock;
 }
 
 /** Computes DT according to modifier
@@ -468,7 +435,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
         /* Valid? */
         if(sstClock.pstReferenceTable != orxNULL)
         {
-          orxCLOCK *pstClock;
+          orxFLOAT fTickSize;
 
           /* Gets init time */
           sstClock.dTime = orxSystem_GetTime();
@@ -478,7 +445,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
 
           /* Gets main clock tick size */
           orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
-          sstClock.fTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
+          fTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
           orxConfig_PopSection();
 
           /* Pushes core clock section */
@@ -488,20 +455,20 @@ orxSTATUS orxFASTCALL orxClock_Init()
           if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE)
           {
             /* Updates it */
-            orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, (sstClock.fTickSize == orxFLOAT_0) ? orxFLOAT_0 : orxFLOAT_1 / sstClock.fTickSize);
+            orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, (fTickSize == orxFLOAT_0) ? orxFLOAT_0 : orxFLOAT_1 / fTickSize);
           }
 
           /* Pops config section */
           orxConfig_PopSection();
 
           /* Creates core clock */
-          pstClock = orxClock_CreateFromConfig(orxCLOCK_KZ_CORE);
+          sstClock.pstCore = orxClock_CreateFromConfig(orxCLOCK_KZ_CORE);
 
           /* Success? */
-          if(pstClock != orxNULL)
+          if(sstClock.pstCore != orxNULL)
           {
             /* Sets it as its own owner */
-            orxStructure_SetOwner(pstClock, pstClock);
+            orxStructure_SetOwner(sstClock.pstCore, sstClock.pstCore);
 
             /* Registers commands */
             orxClock_RegisterCommands();
@@ -613,7 +580,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
     sstClock.dTime = dNewTime;
 
     /* Inits delay */
-    fDelay = sstClock.fTickSize;
+    fDelay = sstClock.pstCore->stClockInfo.fTickSize;
 
     /* For all clocks */
     for(pstClock = orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
@@ -742,7 +709,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
  * @param[in]   _eType                                Type of the clock
  * @return      orxCLOCK / orxNULL
  */
-orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize)
 {
   orxCLOCK *pstClock;
 
@@ -764,7 +731,6 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
     {
       /* Inits clock */
       pstClock->stClockInfo.fTickSize = _fTickSize;
-      pstClock->stClockInfo.eType     = _eType;
       pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
@@ -825,7 +791,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
       fFrequency = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY);
 
       /* Creates clock */
-      pstResult = orxClock_Create((fFrequency > orxFLOAT_0) ? orxFLOAT_1 / fFrequency : orxFLOAT_0, orxCLOCK_TYPE_USER);
+      pstResult = orxClock_Create((fFrequency > orxFLOAT_0) ? orxFLOAT_1 / fFrequency : orxFLOAT_0);
 
       /* Valid? */
       if(pstResult != orxNULL)
@@ -1244,13 +1210,6 @@ orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickS
     /* Updates clock tick size */
     _pstClock->stClockInfo.fTickSize = _fTickSize;
 
-    /* Is core clock? */
-    if(_pstClock->stClockInfo.eType == orxCLOCK_TYPE_CORE)
-    {
-      /* Updates main clock tick size */
-      sstClock.fTickSize = _fTickSize;
-    }
-
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -1449,45 +1408,6 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FU
 
   /* Done! */
   return eResult;
-}
-
-/** Finds a clock given its tick size and its type
- * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
- * @param[in]   _eType                                Type of the desired clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
-{
-  orxCLOCK *pstClock;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
-
-  /* Finds first matching clock */
-  pstClock = orxClock_FindClock(_fTickSize, _eType, orxNULL);
-
-  /* Done! */
-  return pstClock;
-}
-
-/** Finds next clock of same type/tick size
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_FindNext(const orxCLOCK *_pstClock)
-{
-  orxCLOCK *pstClock;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-
-  /* Finds next matching clock */
-  pstClock = orxClock_FindClock(_pstClock->stClockInfo.fTickSize, _pstClock->stClockInfo.eType, _pstClock);
-
-  /* Done! */
-  return pstClock;
 }
 
 /** Gets next existing clock in list (can be used to parse all existing clocks)

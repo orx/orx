@@ -56,22 +56,6 @@
 #define orxCLOCK_KZ_CORE                              "core"
 
 
-/** Clock type enum
- */
-typedef enum __orxCLOCK_TYPE_t
-{
-  orxCLOCK_TYPE_CORE = 0,
-  orxCLOCK_TYPE_USER,
-
-  orxCLOCK_TYPE_SECOND,
-
-  orxCLOCK_TYPE_NUMBER,
-
-  orxCLOCK_TYPE_NONE = orxENUM_NONE
-
-} orxCLOCK_TYPE;
-
-
 /** Clock mod type enum
  */
 typedef enum __orxCLOCK_MOD_TYPE_t
@@ -110,12 +94,11 @@ typedef enum __orxCLOCK_PRIORITY_t
  */
 typedef struct __orxCLOCK_INFO_t
 {
-  orxCLOCK_TYPE     eType;                            /**< Clock type : 4 */
-  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 8 */
-  orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 12 */
-  orxFLOAT          fModValue;                        /**< Clock mod value : 16 */
-  orxFLOAT          fDT;                              /**< Clock DT (time elapsed between 2 clock calls in seconds) : 20 */
-  orxFLOAT          fTime;                            /**< Clock time : 24 */
+  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 4 */
+  orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 8 */
+  orxFLOAT          fModValue;                        /**< Clock mod value : 12 */
+  orxFLOAT          fDT;                              /**< Clock DT (time elapsed between 2 clock calls in seconds) : 16 */
+  orxFLOAT          fTime;                            /**< Clock time : 20 */
 
 } orxCLOCK_INFO;
 
@@ -164,10 +147,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
 
 /** Creates a clock
  * @param[in]   _fTickSize                            Tick size for the clock (in seconds)
- * @param[in]   _eType                                Type of the clock
  * @return      orxCLOCK / orxNULL
  */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize);
 
 /** Creates a clock from config
  * @param[in]   _zConfigID    Config ID
@@ -276,19 +258,6 @@ extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
-
-/** Finds a clock given its tick size and its type
- * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
- * @param[in]   _eType                                Type of the desired clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
-
-/** Finds next clock of same type/tick size
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(const orxCLOCK *_pstClock);
 
 /** Gets next existing clock in list (can be used to parse all existing clocks)
  * @param[in]   _pstClock                             Concerned clock
