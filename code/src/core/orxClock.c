@@ -71,11 +71,10 @@
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
 #define orxCLOCK_KZ_CONFIG_FREQUENCY            "Frequency"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_TYPE        "ModifierType"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_VALUE       "ModifierValue"
+#define orxCLOCK_KZ_CONFIG_MODIFIER_LIST        "ModifierList"
 
-#define orxCLOCK_KZ_MODIFIER_CAPPED             "capped"
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
+#define orxCLOCK_KZ_MODIFIER_MAXED              "maxed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
@@ -190,46 +189,27 @@ static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const o
  */
 static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxFLOAT fResult;
+  orxFLOAT fResult = _fDT;
 
-  /* Depending on modifier type */
-  switch(_pstClockInfo->eModType)
+  /* Fixed modifier? */
+  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
   {
-    case orxCLOCK_MOD_TYPE_FIXED:
-    {
-      /* Fixed DT value */
-      fResult = _pstClockInfo->fModValue;
-      break;
-    }
+    /* Updates result */
+    fResult = _pstClockInfo->afModifierList[orxCLOCK_MODIFIER_FIXED];
+  }
 
-    case orxCLOCK_MOD_TYPE_MULTIPLY:
-    {
-      /* Multiplied DT value */
-      fResult = _pstClockInfo->fModValue * _fDT;
-      break;
-    }
+  /* Multiplied modifier? */
+  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult *= _pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
+  }
 
-    case orxCLOCK_MOD_TYPE_MAXED:
-    {
-      /* Updates DT value */
-      fResult = orxMIN(_pstClockInfo->fModValue, _fDT);
-      break;
-    }
-
-    default:
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%d).", _pstClockInfo->eModType);
-
-      /* Falls through */
-    }
-
-    case orxCLOCK_MOD_TYPE_NONE:
-    {
-      /* Gets base DT */
-      fResult = _fDT;
-      break;
-    }
+  /* Maxed modifier? */
+  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult = orxMIN(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
   }
 
   /* Done! */
@@ -314,7 +294,7 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
   /* Valid? */
   if(pstClock != orxNULL)
   {
-    orxCLOCK_MOD_TYPE eModifierType = orxCLOCK_MOD_TYPE_NONE;
+    orxCLOCK_MODIFIER eModifier = orxCLOCK_MODIFIER_NONE;
     orxFLOAT          fModifierValue;
 
     /* Gets modifier value */
@@ -323,34 +303,28 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
     /* Is modifier value valid? */
     if(fModifierValue >= orxFLOAT_0)
     {
-      /* Capped? */
-      if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_CAPPED) == 0) && (fModifierValue != orxFLOAT_0))
-      {
-        /* Updates modifier value */
-        fModifierValue = orxFLOAT_1 / fModifierValue;
-
-        /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_MAXED;
-      }
       /* Fixed? */
-      else if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0) && (fModifierValue != orxFLOAT_0))
+      if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0) && (fModifierValue != orxFLOAT_0))
       {
-        /* Updates modifier value */
-        fModifierValue = orxFLOAT_1 / fModifierValue;
-
         /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_FIXED;
+        eModifier = orxCLOCK_MODIFIER_FIXED;
+      }
+      /* Maxed? */
+      else if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MAXED) == 0) && (fModifierValue != orxFLOAT_0))
+      {
+        /* Updates modifier type */
+        eModifier = orxCLOCK_MODIFIER_MAXED;
       }
       /* Multiply? */
       else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
       {
         /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
+        eModifier = orxCLOCK_MODIFIER_MULTIPLY;
       }
     }
 
     /* Updates clock */
-    _pstResult->bValue = (orxClock_SetModifier(pstClock, eModifierType, fModifierValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+    _pstResult->bValue = (orxClock_SetModifier(pstClock, eModifier, fModifierValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
   }
   else
   {
@@ -731,7 +705,6 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize)
     {
       /* Inits clock */
       pstClock->stClockInfo.fTickSize = _fTickSize;
-      pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
       /* Increases count */
@@ -798,56 +771,57 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
       {
         orxCLOCK *pstClock;
 
-        /* Has a modifier? */
-        if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE) != orxFALSE)
+        /* Has a modifier list? */
+        if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) != orxFALSE)
         {
-          orxFLOAT fModifierValue;
+          orxS32 i, s32Count;
 
-          /* Gets its value */
-          fModifierValue = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MODIFIER_VALUE);
-
-          /* Valid? */
-          if(fModifierValue > orxFLOAT_0)
+          /* For all defined modifiers */
+          for(i = 0, s32Count = orxConfig_GetListCount(orxCLOCK_KZ_CONFIG_MODIFIER_LIST); i < s32Count; i++)
           {
-            const orxSTRING   zModifierType;
-            orxCLOCK_MOD_TYPE eModifierType;
+            const orxSTRING   zModifier;
+            orxCLOCK_MODIFIER eModifier = orxCLOCK_MODIFIER_NONE;
 
-            /* Gets modifier type */
-            zModifierType = orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE);
+            /* Gets its value */
+            zModifier = orxConfig_GetListString(orxCLOCK_KZ_CONFIG_MODIFIER_LIST, i);
 
-            /* Capped? */
-            if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
-            {
-              /* Updates modifier value */
-              fModifierValue = orxFLOAT_1 / fModifierValue;
-
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_MAXED;
-            }
             /* Fixed? */
-            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+            if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_FIXED) == zModifier)
             {
-              /* Updates modifier value */
-              fModifierValue = orxFLOAT_1 / fModifierValue;
-
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_FIXED;
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_FIXED);
+              eModifier   = orxCLOCK_MODIFIER_FIXED;
+            }
+            /* Maxed? */
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_MAXED) == zModifier)
+            {
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_MAXED);
+              eModifier   = orxCLOCK_MODIFIER_MAXED;
             }
             /* Multiply? */
-            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_MULTIPLY) == zModifier)
             {
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
-            }
-            /* None */
-            else
-            {
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_NONE;
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_MULTIPLY);
+              eModifier   = orxCLOCK_MODIFIER_MULTIPLY;
             }
 
-            /* Updates clock */
-            orxClock_SetModifier(pstResult, eModifierType, fModifierValue);
+            /* Valid? */
+            if(eModifier != orxCLOCK_MODIFIER_NONE)
+            {
+              orxFLOAT fValue = orxFLOAT_0;
+
+              /* Gets its value */
+              orxString_ToFloat(zModifier, &fValue, orxNULL);
+
+              /* Valid? */
+              if(fValue != orxFLOAT_0)
+              {
+                /* Sets it */
+                pstResult->stClockInfo.afModifierList[eModifier] = fValue;
+              }
+            }
           }
         }
 
@@ -1153,42 +1127,47 @@ orxCLOCK *orxFASTCALL orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo)
   return pstClock;
 }
 
-/** Sets a clock modifier
+/** Sets a clock's modifier
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _eModType                             Modifier type
- * @param[in]   _fModValue                            Modifier value
+ * @param[in]   _eModifier                            Concerned modifier
+ * @param[in]   _fValue                               Modifier value, orxFLOAT_0 to deactivate the modifier
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue)
+orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier, orxFLOAT _fValue)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT((_eModType < orxCLOCK_MOD_TYPE_NUMBER) || (_eModType == orxCLOCK_MOD_TYPE_NONE));
+  orxASSERT((_eModifier < orxCLOCK_MODIFIER_NUMBER) || (_eModifier == orxCLOCK_MODIFIER_NONE));
 
-  /* Valid modifier value? */
-  if(_fModValue >= orxFLOAT_0)
-  {
-    /* Updates clock modifier */
-    _pstClock->stClockInfo.eModType   = _eModType;
-    _pstClock->stClockInfo.fModValue  = _fModValue;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid modifier value.", _fModValue);
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
+  /* Updates modifier */
+  _pstClock->stClockInfo.afModifierList[_eModifier] = _fValue;
 
   /* Done! */
   return eResult;
+}
+
+/** Gets a clock's modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModifier                            Concerned modifier
+ * @return      Modifier value / orxFLOAT_0 if deactivated
+ */
+orxFLOAT orxFASTCALL orxClock_GetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstClock);
+  orxASSERT((_eModifier < orxCLOCK_MODIFIER_NUMBER) || (_eModifier == orxCLOCK_MODIFIER_NONE));
+
+  /* Updates result */
+  fResult = _pstClock->stClockInfo.afModifierList[_eModifier];
+
+  /* Done! */
+  return fResult;
 }
 
 /** Sets a clock tick size

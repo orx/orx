@@ -56,19 +56,19 @@
 #define orxCLOCK_KZ_CORE                              "core"
 
 
-/** Clock mod type enum
+/** Clock modifier enum
  */
-typedef enum __orxCLOCK_MOD_TYPE_t
+typedef enum __orxCLOCK_MODIFIER_t
 {
-  orxCLOCK_MOD_TYPE_FIXED = 0,                        /**< The given DT will always be constant (= modifier value) */
-  orxCLOCK_MOD_TYPE_MULTIPLY,                         /**< The given DT will be the real one * modifier */
-  orxCLOCK_MOD_TYPE_MAXED,                            /**< The given DT will be the real one maxed by the modifier value */
+  orxCLOCK_MODIFIER_FIXED = 0,                                    /**< The given DT will be constant, set to this modifier value */
+  orxCLOCK_MODIFIER_MULTIPLY,                                     /**< The given DT will be multiplied by this modifier value */
+  orxCLOCK_MODIFIER_MAXED,                                        /**< The given DT will be maxed by this modifier value */
 
-  orxCLOCK_MOD_TYPE_NUMBER,
+  orxCLOCK_MODIFIER_NUMBER,
 
-  orxCLOCK_MOD_TYPE_NONE = orxENUM_NONE,
+  orxCLOCK_MODIFIER_NONE = orxENUM_NONE,
 
-} orxCLOCK_MOD_TYPE;
+} orxCLOCK_MODIFIER;
 
 
 /** Clock priority
@@ -94,11 +94,10 @@ typedef enum __orxCLOCK_PRIORITY_t
  */
 typedef struct __orxCLOCK_INFO_t
 {
-  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 4 */
-  orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 8 */
-  orxFLOAT          fModValue;                        /**< Clock mod value : 12 */
-  orxFLOAT          fDT;                              /**< Clock DT (time elapsed between 2 clock calls in seconds) : 16 */
-  orxFLOAT          fTime;                            /**< Clock time : 20 */
+  orxFLOAT          fTickSize;                                    /**< Clock tick size (in seconds) : 4 */
+  orxFLOAT          fDT;                                          /**< Clock DT (time elapsed between 2 clock calls in seconds) : 8 */
+  orxFLOAT          fTime;                                        /**< Clock time : 12 */
+  orxFLOAT          afModifierList[orxCLOCK_MODIFIER_NUMBER];     /**< Clock modifiers : 24 */
 
 } orxCLOCK_INFO;
 
@@ -107,10 +106,10 @@ typedef struct __orxCLOCK_INFO_t
  */
 typedef enum __orxCLOCK_EVENT_t
 {
-  orxCLOCK_EVENT_RESTART = 0,                         /**< Event sent when a clock restarts */
-  orxCLOCK_EVENT_RESYNC,                              /**< Event sent when a clock resyncs */
-  orxCLOCK_EVENT_PAUSE,                               /**< Event sent when a clock is paused */
-  orxCLOCK_EVENT_UNPAUSE,                             /**< Event sent when a clock is unpaused */
+  orxCLOCK_EVENT_RESTART = 0,                                     /**< Event sent when a clock restarts */
+  orxCLOCK_EVENT_RESYNC,                                          /**< Event sent when a clock resyncs */
+  orxCLOCK_EVENT_PAUSE,                                           /**< Event sent when a clock is paused */
+  orxCLOCK_EVENT_UNPAUSE,                                         /**< Event sent when a clock is unpaused */
 
   orxCLOCK_EVENT_NUMBER,
 
@@ -210,13 +209,20 @@ extern orxDLLAPI const orxCLOCK_INFO *orxFASTCALL     orxClock_GetInfo(const orx
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo);
 
 
-/** Sets a clock modifier
+/** Sets a clock's modifier
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _eModType                             Modifier type
- * @param[in]   _fModValue                            Modifier value
+ * @param[in]   _eModifier                            Concerned modifier
+ * @param[in]   _fValue                               Modifier value, orxFLOAT_0 to deactivate the modifier
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier, orxFLOAT _fValue);
+
+/** Gets a clock's modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModifier                            Concerned modifier
+ * @return      Modifier value / orxFLOAT_0 if deactivated
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxClock_GetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier);
 
 /** Sets a clock tick size
  * @param[in]   _pstClock                             Concerned clock

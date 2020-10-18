@@ -2941,7 +2941,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
       || ((fMinFrequency = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) > orxFLOAT_0))
       {
         /* Sets clock modifier */
-        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
+        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MODIFIER_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
       }
 
       /* Pops config section */

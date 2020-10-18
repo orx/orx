@@ -955,7 +955,7 @@ static orxSTATUS orxFASTCALL orxSound_Update(orxSTRUCTURE *_pstStructure, const 
     orxFLOAT fPitchModifier;
 
     /* Gets pitch modifier */
-    fPitchModifier = (_pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY) ? _pstClockInfo->fModValue : orxFLOAT_1;
+    fPitchModifier = (_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0) ? _pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY] : orxFLOAT_1;
 
     /* Should update? */
     if(fPitchModifier != pstSound->fPitchModifier)

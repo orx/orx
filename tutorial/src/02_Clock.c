@@ -120,19 +120,19 @@ void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstConte
     if(orxInput_IsActive("Faster"))
     {
       /* Makes this clock go four time faster */
-      orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(4.0f));
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orx2F(4.0f));
     }
     /* Is slower input active? */
     else if(orxInput_IsActive("Slower"))
     {
       /* Makes this clock go four time slower */
-      orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(0.25f));
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orx2F(0.25f));
     }
     /* Is normal input active? */
     else if(orxInput_IsActive("Normal"))
     {
       /* Removes modifier from this clock */
-      orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_NONE, orxFLOAT_0);
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_NONE, orxFLOAT_0);
     }
   }
 }
