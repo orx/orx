@@ -53,7 +53,7 @@
 
 #define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
 
-#define orxCLOCK_KZ_CORE                              "core"
+#define orxCLOCK_KZ_CORE                              "Core"
 
 
 /** Clock modifier enum
