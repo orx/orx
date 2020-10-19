@@ -348,6 +348,9 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     {
       b2Body *poSource, *poDestination;
 
+      /* Clears it */
+      orxMemory_Zero(pstEventStorage, sizeof(orxPHYSICS_EVENT_STORAGE));
+
       /* Adds it to list */
       orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
@@ -411,6 +414,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     }
   }
 
+  /* Done! */
   return;
 }
 
@@ -419,6 +423,7 @@ void orxPhysicsContactListener::BeginContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_ADD);
 
+  /* Done! */
   return;
 }
 
@@ -427,6 +432,7 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_REMOVE);
 
+  /* Done! */
   return;
 }
 
