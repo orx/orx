@@ -24,6 +24,7 @@ var group__orx_clock =
       [ "orxCLOCK_MODIFIER_FIXED", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a914f6e1826ee02ac92f34e88f2ed3fd2", null ],
       [ "orxCLOCK_MODIFIER_MULTIPLY", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a63f6a7fbb2a451e8cbde79ab23b1aebe", null ],
       [ "orxCLOCK_MODIFIER_MAXED", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a53b5f759ae8698af0b7d4ae34b79108c", null ],
+      [ "orxCLOCK_MODIFIER_AVERAGE", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3ab51b687385fa2601981896acf3b1a38c", null ],
       [ "orxCLOCK_MODIFIER_NUMBER", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a6462678c0cf0886f51befeb61df214b4", null ],
       [ "orxCLOCK_MODIFIER_NONE", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3aa0a0fed3b3ba692598a3dc48e6977960", null ]
     ] ],

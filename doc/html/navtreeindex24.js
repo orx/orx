@@ -1,5 +1,7 @@
 var NAVTREEINDEX24 =
 {
+"orx_plugin_core_8h.html":[3,0,0,11,2],
+"orx_plugin_core_8h_source.html":[3,0,0,11,2],
 "orx_plugin_type_8h.html":[3,0,0,11,3],
 "orx_plugin_type_8h_source.html":[3,0,0,11,3],
 "orx_plugin_user_8h.html":[3,0,0,11,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX24 =
 "structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#af65831c9ae33d2482524248b096b0088":[1,15,7,1],
 "structorx_e_v_e_n_t.html":[1,16,0],
 "structorx_e_v_e_n_t.html#a38f4d78aa53bb9a75034d7658f1b937b":[1,16,0,1],
-"structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce":[1,16,0,4],
-"structorx_e_v_e_n_t.html#adfe27cf09914c8a51925bdb3904bb12b":[1,16,0,0],
-"structorx_e_v_e_n_t.html#ae2d8c2425840a34fe172b2a058e5bb77":[1,16,0,3]
+"structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce":[1,16,0,4]
 };

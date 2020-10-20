@@ -14,6 +14,7 @@ var searchData=
   ['orxclock_5fevent_5frestart',['orxCLOCK_EVENT_RESTART',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da41630991614af985a9d377a1e90cdc35',1,'orxClock.h']]],
   ['orxclock_5fevent_5fresync',['orxCLOCK_EVENT_RESYNC',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da9148967775d49709621a41aa3c4efe97',1,'orxClock.h']]],
   ['orxclock_5fevent_5funpause',['orxCLOCK_EVENT_UNPAUSE',['../group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791daddd9902df89d032e193f2de1c8da0c0f',1,'orxClock.h']]],
+  ['orxclock_5fmodifier_5faverage',['orxCLOCK_MODIFIER_AVERAGE',['../group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3ab51b687385fa2601981896acf3b1a38c',1,'orxClock.h']]],
   ['orxclock_5fmodifier_5ffixed',['orxCLOCK_MODIFIER_FIXED',['../group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a914f6e1826ee02ac92f34e88f2ed3fd2',1,'orxClock.h']]],
   ['orxclock_5fmodifier_5fmaxed',['orxCLOCK_MODIFIER_MAXED',['../group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a53b5f759ae8698af0b7d4ae34b79108c',1,'orxClock.h']]],
   ['orxclock_5fmodifier_5fmultiply',['orxCLOCK_MODIFIER_MULTIPLY',['../group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a63f6a7fbb2a451e8cbde79ab23b1aebe',1,'orxClock.h']]],
