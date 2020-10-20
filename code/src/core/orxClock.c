@@ -197,8 +197,21 @@ static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
   /* Fixed modifier? */
   if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
   {
-    /* Updates result */
-    fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
+    /* Should match tick size? */
+    if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] < orxFLOAT_0)
+    {
+      /* Has tick size? */
+      if(_pstClock->stClockInfo.fTickSize > orxFLOAT_0)
+      {
+        /* Updates result */
+        fResult = _pstClock->stClockInfo.fTickSize;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
+    }
   }
 
   /* Multiplied modifier? */
@@ -861,6 +874,11 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
             }
           }
         }
+        else
+        {
+          /* Defaults to fixed/-1 modifier */
+          orxClock_SetModifier(pstResult, orxCLOCK_MODIFIER_FIXED, -orxFLOAT_1);
+        }
 
         /* Has core clock? */
         if((pstClock = orxClock_Get(orxCLOCK_KZ_CORE)) != orxNULL)
@@ -1180,7 +1198,7 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIE
   orxASSERT((_eModifier >= 0) && (_eModifier < orxCLOCK_MODIFIER_NUMBER));
 
   /* Valid value? */
-  if(_fValue >= orxFLOAT_0)
+  if((_fValue >= orxFLOAT_0) || (_eModifier == orxCLOCK_MODIFIER_FIXED))
   {
     /* Updates modifier */
     _pstClock->stClockInfo.afModifierList[_eModifier] = _fValue;
