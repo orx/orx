@@ -74,8 +74,9 @@
 #define orxCLOCK_KZ_CONFIG_MODIFIER_LIST        "ModifierList"
 
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
-#define orxCLOCK_KZ_MODIFIER_MAXED              "maxed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
+#define orxCLOCK_KZ_MODIFIER_MAXED              "maxed"
+#define orxCLOCK_KZ_MODIFIER_AVERAGE            "average"
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
@@ -116,12 +117,14 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
 struct __orxCLOCK_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
-  orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 40 */
-  orxFLOAT          fPartialDT;                 /**< Clock partial DT : 44 */
-  orxBANK          *pstFunctionBank;            /**< Function bank : 48 */
-  orxLINKLIST       stFunctionList;             /**< Function list : 60 */
-  orxLINKLIST       stTimerList;                /**< Timer list : 72 */
-  const orxSTRING   zReference;                 /**< Reference : 76 */
+  orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 60 */
+  orxFLOAT          fPartialDT;                 /**< Clock partial DT : 64 */
+  orxBANK          *pstFunctionBank;            /**< Function bank : 68 */
+  orxLINKLIST       stFunctionList;             /**< Function list : 80 */
+  orxLINKLIST       stTimerList;                /**< Timer list : 92 */
+  const orxSTRING   zReference;                 /**< Reference : 96 */
+  orxU32            u32HistoryIndex;            /**< Average history index : 100 */
+  orxFLOAT         *afHistory;                  /**< Average history : 104 */
 };
 
 
@@ -184,32 +187,56 @@ static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const o
 
 /** Computes DT according to modifier
  * @param[in]   _fDT                                  Real DT
- * @param[in]   _pstClockInfo                         Concerned clock info
+ * @param[in]   _pstClock                             Concerned clock
  * @return      Modified DT
  */
-static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
+static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
 {
   orxFLOAT fResult = _fDT;
 
   /* Fixed modifier? */
-  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
   {
     /* Updates result */
-    fResult = _pstClockInfo->afModifierList[orxCLOCK_MODIFIER_FIXED];
+    fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
   }
 
   /* Multiplied modifier? */
-  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
   {
     /* Updates result */
-    fResult *= _pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
+    fResult *= _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
   }
 
   /* Maxed modifier? */
-  if(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
   {
     /* Updates result */
-    fResult = orxMIN(_pstClockInfo->afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
+    fResult = orxMIN(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
+  }
+
+  /* Average modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE] != orxFLOAT_0)
+  {
+    orxU32 i, iCount, u32HistorySize;
+
+    /* Gets history size */
+    u32HistorySize = orxF2U(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE]);
+
+    /* For all history */
+    for(i = 0, iCount = orxMIN(_pstClock->u32HistoryIndex, u32HistorySize);
+        i < iCount;
+        i++)
+    {
+      /* Sums values */
+      fResult += _pstClock->afHistory[i];
+    }
+
+    /* Updates result */
+    fResult /= orxU2F(1 + iCount);
+
+    /* Updates history */
+    _pstClock->afHistory[_pstClock->u32HistoryIndex++ % u32HistorySize] = fResult;
   }
 
   /* Done! */
@@ -301,7 +328,7 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
     fModifierValue = _astArgList[2].fValue;
 
     /* Fixed? */
-    if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0) && (fModifierValue != orxFLOAT_0))
+    if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
     {
       /* Updates modifier type */
       eModifier = orxCLOCK_MODIFIER_FIXED;
@@ -313,10 +340,16 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
       eModifier = orxCLOCK_MODIFIER_MULTIPLY;
     }
     /* Maxed? */
-    else if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MAXED) == 0) && (fModifierValue != orxFLOAT_0))
+    else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MAXED) == 0)
     {
       /* Updates modifier type */
       eModifier = orxCLOCK_MODIFIER_MAXED;
+    }
+    /* Average? */
+    else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_AVERAGE) == 0)
+    {
+      /* Updates modifier type */
+      eModifier = orxCLOCK_MODIFIER_AVERAGE;
     }
 
     /* Updates clock */
@@ -420,6 +453,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
 
           /* Pushes core clock section */
           orxConfig_PushSection(orxCLOCK_KZ_CORE);
+          orxConfig_SetParent(orxCLOCK_KZ_CORE, orxCLOCK_KZ_CONFIG_SECTION);
 
           /* No frequency? */
           if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE)
@@ -576,7 +610,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
           orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage;
 
           /* Gets clock modified DT */
-          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, &(pstClock->stClockInfo));
+          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, pstClock);
 
           /* Updates clock DT */
           pstClock->stClockInfo.fDT = fClockDT;
@@ -802,6 +836,13 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
               zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_MAXED);
               eModifier   = orxCLOCK_MODIFIER_MAXED;
             }
+            /* Average? */
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_AVERAGE) == zModifier)
+            {
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_AVERAGE);
+              eModifier   = orxCLOCK_MODIFIER_AVERAGE;
+            }
 
             /* Valid? */
             if(eModifier != orxCLOCK_MODIFIER_NONE)
@@ -825,7 +866,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         if((pstClock = orxClock_Get(orxCLOCK_KZ_CORE)) != orxNULL)
         {
           /* Updates clock's DT */
-          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, &(pstResult->stClockInfo));
+          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, pstResult);
         }
 
         /* Stores its reference key */
@@ -1143,6 +1184,28 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIE
   {
     /* Updates modifier */
     _pstClock->stClockInfo.afModifierList[_eModifier] = _fValue;
+
+    /* Average? */
+    if(_eModifier == orxCLOCK_MODIFIER_AVERAGE)
+    {
+      /* Should remove? */
+      if(_fValue == orxFLOAT_0)
+      {
+        /* Removes it */
+        orxMemory_Free(_pstClock->afHistory);
+        _pstClock->afHistory        = orxNULL;
+        _pstClock->u32HistoryIndex  = 0;
+      }
+      else
+      {
+        /* Allocates history */
+        _pstClock->afHistory        = (orxFLOAT *)orxMemory_Reallocate(_pstClock->afHistory, orxF2U(_fValue) * sizeof(orxFLOAT), orxMEMORY_TYPE_MAIN);
+        _pstClock->u32HistoryIndex  = 0;
+
+        /* Checks */
+        orxASSERT(_pstClock->afHistory != orxNULL);
+      }
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

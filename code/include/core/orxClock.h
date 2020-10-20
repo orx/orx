@@ -63,6 +63,7 @@ typedef enum __orxCLOCK_MODIFIER_t
   orxCLOCK_MODIFIER_FIXED = 0,                                    /**< The given DT will be constant, set to this modifier value */
   orxCLOCK_MODIFIER_MULTIPLY,                                     /**< The given DT will be multiplied by this modifier value */
   orxCLOCK_MODIFIER_MAXED,                                        /**< The given DT will be maxed by this modifier value */
+  orxCLOCK_MODIFIER_AVERAGE,                                      /**< The given DT will be averaged over a number of past updates defined by this modifier value */
 
   orxCLOCK_MODIFIER_NUMBER,
 
@@ -97,7 +98,7 @@ typedef struct __orxCLOCK_INFO_t
   orxFLOAT          fTickSize;                                    /**< Clock tick size (in seconds) : 4 */
   orxFLOAT          fDT;                                          /**< Clock DT (time elapsed between 2 clock calls in seconds) : 8 */
   orxFLOAT          fTime;                                        /**< Clock time : 12 */
-  orxFLOAT          afModifierList[orxCLOCK_MODIFIER_NUMBER];     /**< Clock modifiers : 24 */
+  orxFLOAT          afModifierList[orxCLOCK_MODIFIER_NUMBER];     /**< Clock modifiers : 28 */
 
 } orxCLOCK_INFO;
 
