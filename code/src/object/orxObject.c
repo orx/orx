@@ -2480,8 +2480,17 @@ void orxFASTCALL orxObject_CommandAddTrack(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Adds time line */
-    orxObject_AddTimeLineTrack(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Adds time line track */
+      orxObject_AddTimeLineTrackRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Adds time line track */
+      orxObject_AddTimeLineTrack(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2536,16 +2545,34 @@ void orxFASTCALL orxObject_CommandAddFX(orxU32 _u32ArgNumber, const orxCOMMAND_V
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Unique? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    /* Recursive? */
+    if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
     {
-      /* Adds unique FX */
-      orxObject_AddUniqueFX(pstObject, _astArgList[1].zValue);
+      /* Unique? */
+      if(_astArgList[2].bValue != orxFALSE)
+      {
+        /* Adds unique FX */
+        orxObject_AddUniqueFXRecursive(pstObject, _astArgList[1].zValue);
+      }
+      else
+      {
+        /* Adds FX */
+        orxObject_AddFXRecursive(pstObject, _astArgList[1].zValue);
+      }
     }
     else
     {
-      /* Adds FX */
-      orxObject_AddFX(pstObject, _astArgList[1].zValue);
+      /* Unique? */
+      if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+      {
+        /* Adds unique FX */
+        orxObject_AddUniqueFX(pstObject, _astArgList[1].zValue);
+      }
+      else
+      {
+        /* Adds FX */
+        orxObject_AddFX(pstObject, _astArgList[1].zValue);
+      }
     }
 
     /* Updates result */
@@ -2769,28 +2796,28 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Is asking for current anim? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    /* Recursive? */
+    if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
     {
-      /* Recursive? */
-      if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
+      /* Is asking for current anim? */
+      if(_astArgList[2].bValue != orxFALSE)
       {
         /* Sets its current anim */
         orxObject_SetCurrentAnimRecursive(pstObject, _astArgList[1].zValue);
       }
       else
       {
-        /* Sets its current anim */
-        orxObject_SetCurrentAnim(pstObject, _astArgList[1].zValue);
+        /* Sets its target anim */
+        orxObject_SetTargetAnimRecursive(pstObject, _astArgList[1].zValue);
       }
     }
     else
     {
-      /* Recursive? */
-      if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
+      /* Is asking for current anim? */
+      if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
       {
-        /* Sets its target anim */
-        orxObject_SetTargetAnimRecursive(pstObject, _astArgList[1].zValue);
+        /* Sets its current anim */
+        orxObject_SetCurrentAnim(pstObject, _astArgList[1].zValue);
       }
       else
       {
@@ -2858,8 +2885,17 @@ void orxFASTCALL orxObject_CommandSetAnimFrequency(orxU32 _u32ArgNumber, const o
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Sets its target anim */
-    orxObject_SetAnimFrequency(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].fValue : orxFLOAT_1);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its anim frequency */
+      orxObject_SetAnimFrequencyRecursive(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Sets its anim frequency */
+      orxObject_SetAnimFrequency(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].fValue : orxFLOAT_1);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -3211,12 +3247,12 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetClock, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveTrack */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: AddFX */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
 
@@ -3240,7 +3276,7 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetAnim */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnim, "Anim", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetAnimFrequency */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetAnimFrequency */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnimFrequency, "Frequency", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
