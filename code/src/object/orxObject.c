@@ -119,6 +119,7 @@
 #define orxOBJECT_KZ_CONFIG_ALPHA               "Alpha"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
+#define orxOBJECT_KZ_CONFIG_SPHERICAL_POSITION  "SphericalPosition"
 #define orxOBJECT_KZ_CONFIG_SPEED               "Speed"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_SIZE                "Size"
@@ -4175,7 +4176,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Number;
         orxCOLOR        stColor;
-        orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE;
+        orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
 
         /* Backups current spawner */
         pstPreviousObject = sstObject.pstCurrentObject;
@@ -4779,8 +4780,26 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Position & rotation */
 
-        /* Has a position? */
+        /* Has cartesian position? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+        {
+          /* Updates status */
+          bHasPosition = orxTRUE;
+        }
+        /* Has spherical position? */
+        else if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPHERICAL_POSITION, &vValue) != orxNULL)
+        {
+          /* Transforms it */
+          vValue.fTheta *= orxMATH_KF_DEG_TO_RAD;
+          vValue.fPhi   *= orxMATH_KF_DEG_TO_RAD;
+          orxVector_FromSphericalToCartesian(&vValue, &vValue);
+
+          /* Updates status */
+          bHasPosition = orxTRUE;
+        }
+
+        /* Has position? */
+        if(bHasPosition != orxFALSE)
         {
           /* Uses parent's position? */
           if(bUseParentPosition != orxFALSE)
