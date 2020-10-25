@@ -2468,8 +2468,7 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
             vStepValue = vOtherValue;
 
             /* Can get other value? */
-            if((orxVector_IsNull(&vStepValue) == orxFALSE)
-            && (vStepValue.fX >= orxFLOAT_0)
+            if((vStepValue.fX >= orxFLOAT_0)
             && (vStepValue.fY >= orxFLOAT_0)
             && (vStepValue.fZ >= orxFLOAT_0)
             && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))

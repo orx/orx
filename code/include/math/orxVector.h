@@ -690,7 +690,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
       }
 
       /* Sets phi */
-      fPhi = orxMATH_KF_PI_BY_2;
+      fPhi = orxFLOAT_0;
     }
     else
     {
@@ -704,7 +704,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
           fRho = orxMath_Abs(_pvOp->fZ);
 
           /* Sets phi */
-          fPhi = orxMATH_KF_PI;
+          fPhi = orxMATH_KF_PI_BY_2;
         }
         else
         {
@@ -712,7 +712,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
           fRho = _pvOp->fZ;
 
           /* Sets phi */
-          fPhi = orxFLOAT_0;
+          fPhi = -orxMATH_KF_PI_BY_2;
         }
       }
       else
@@ -721,7 +721,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
         fRho = orxMath_Sqrt(orxVector_GetSquareSize(_pvOp));
 
         /* Computes phi */
-        fPhi = orxMath_ACos(_pvOp->fZ / fRho);
+        fPhi = orxMath_ACos(_pvOp->fZ / fRho) - orxMATH_KF_PI_BY_2;
       }
     }
 
@@ -757,8 +757,8 @@ static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian
   /* Gets sine & cosine */
   fSinTheta = orxMath_Sin(_pvOp->fTheta);
   fCosTheta = orxMath_Cos(_pvOp->fTheta);
-  fSinPhi   = orxMath_Sin(_pvOp->fPhi);
-  fCosPhi   = orxMath_Cos(_pvOp->fPhi);
+  fSinPhi   = orxMath_Sin(_pvOp->fPhi + orxMATH_KF_PI_BY_2);
+  fCosPhi   = orxMath_Cos(_pvOp->fPhi + orxMATH_KF_PI_BY_2);
   if(orxMath_Abs(fSinTheta) < orxMATH_KF_EPSILON)
   {
     fSinTheta = orxFLOAT_0;
