@@ -1,5 +1,1 @@
 include ':app'
-include ':orx-lib'
-
-def orxRoot = new File(System.getenv("ORX") ?: "../../")
-project(':orx-lib').projectDir = new File(orxRoot, '/../extern/android/orx-lib')

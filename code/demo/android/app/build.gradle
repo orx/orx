@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def orx = System.getenv('ORX') ?: "../../.."
+
 android {
   compileSdkVersion sdkVersion.toInteger()
 
@@ -50,6 +52,8 @@ android {
 
   sourceSets {
     main {
+      java.srcDirs += ["${orx}/build/android/java"]
+
       // For custom apps, you should have resources in some parent folder with orx data.
       // E.g. '../../../data'
       assets.srcDirs = ['./src/main/assets']
@@ -63,7 +67,6 @@ repositories {
 
 dependencies {
   implementation 'androidx.fragment:fragment:1.2.5'
-  implementation project(':orx-lib')
 
   implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
