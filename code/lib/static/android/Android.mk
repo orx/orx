@@ -1,44 +1,42 @@
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := orx
-LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborx.a
-LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
+BASE_PATH := $(LOCAL_PATH)/../../../
 
-TARGET_PLATFORM = android-9
+include $(CLEAR_VARS)
+LOCAL_MODULE := android_orx
+LOCAL_ARM_MODE := arm
+LOCAL_STATIC_LIBRARIES := orx LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
 
 LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
+LOCAL_EXPORT_C_INCLUDES := $(BASE_PATH)include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
-include $(PREBUILT_STATIC_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := orxd
-LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborxd.a
-LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
-
-TARGET_PLATFORM = android-9
+LOCAL_MODULE := android_orxd
+LOCAL_ARM_MODE := arm
+LOCAL_STATIC_LIBRARIES := orxd LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
 
 LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID -D__orxDEBUG__
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
+LOCAL_EXPORT_C_INCLUDES := $(BASE_PATH)include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
-include $(PREBUILT_STATIC_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := orxp
-LOCAL_SRC_FILES := $(TARGET_ARCH_ABI)/liborxp.a
-LOCAL_STATIC_LIBRARIES := LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
-
-TARGET_PLATFORM = android-9
+LOCAL_MODULE := android_orxp
+LOCAL_ARM_MODE := arm
+LOCAL_STATIC_LIBRARIES := orxp LiquidFun-prebuilt OpenAL-prebuilt Tremolo-prebuilt WebP-prebuilt
 
 LOCAL_EXPORT_CFLAGS := -DTARGET_OS_ANDROID -D__orxPROFILER__
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../include
 LOCAL_EXPORT_LDLIBS := -llog -lGLESv2 -landroid -lEGL
 
-include $(PREBUILT_STATIC_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
+$(call import-add-path,$(BASE_PATH))
+$(call import-module,build/android/jni)
 $(call import-module,../extern/LiquidFun-1.1.0/lib/android)
 $(call import-module,../extern/openal-soft/lib/android)
 $(call import-module,../extern/Tremolo/lib/android)
