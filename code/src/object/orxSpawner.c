@@ -1756,6 +1756,26 @@ orxSTATUS orxFASTCALL orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT 
   return eResult;
 }
 
+/** Sets spawner next wave delay (without affecting the normal wave delay)
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _fWaveDelay     Delay before next wave / -1 for the current full wave delay
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetNextWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Updates wave timer */
+  _pstSpawner->fWaveTimer = (_fWaveDelay >= orxFLOAT_0) ? _fWaveDelay : _pstSpawner->fWaveDelay;
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      Number of objects spawned in a wave / 0 if not in wave mode

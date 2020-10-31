@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.orxproject.orxtestnative">
 
@@ -15,7 +16,7 @@
             android:screenOrientation="sensorPortrait"
             android:configChanges="orientation|keyboardHidden|screenSize">
 
-            <!-- Tell NativeActivity the name of our .so -->
+            <!-- Tell activity the name of our .so -->
             <meta-data android:name="android.app.lib_name"
                 android:value="orxTest" />
 

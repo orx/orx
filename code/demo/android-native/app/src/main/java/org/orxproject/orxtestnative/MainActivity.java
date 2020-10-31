@@ -7,17 +7,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-/**
- * Created by loki on 4/07/14.
- */
 public class MainActivity extends NativeActivity {
 
     private Handler mHandler = new Handler();
     private View mDecorView;
-
-    static {
-        System.loadLibrary("c++_shared");
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
