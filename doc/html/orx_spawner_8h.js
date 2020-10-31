@@ -52,6 +52,7 @@ var orx_spawner_8h =
     [ "orxSpawner_IsEnabled", "group__orx_spawner.html#ga64d22cba58280cc097133aaaec19ea57", null ],
     [ "orxSpawner_Reset", "group__orx_spawner.html#ga94e4e78d9003e0d5f140230552953c95", null ],
     [ "orxSpawner_SetActiveObjectLimit", "group__orx_spawner.html#ga447ab00a10c978925eaed817af28cddf", null ],
+    [ "orxSpawner_SetNextWaveDelay", "group__orx_spawner.html#ga26ae6b63a8db49505069447a50c0b26c", null ],
     [ "orxSpawner_SetObjectSpeed", "group__orx_spawner.html#ga56689aca0a6e07e4190e8b81804035ab", null ],
     [ "orxSpawner_SetParent", "group__orx_spawner.html#gabdbe00e4edfe81e1861c8eb27a23280f", null ],
     [ "orxSpawner_SetPosition", "group__orx_spawner.html#gad958a5a212705918dbb62446401306a1", null ],
