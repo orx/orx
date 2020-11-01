@@ -819,7 +819,7 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
 
           /* Gets associated indices */
           u32SegmentIndex = (orxU32)(pu32MapEntry - _pstBank->au32CellMap) / u32MapSize;
-          u32CellIndex    = (pu32MapEntry - _pstBank->au32CellMap) % u32MapSize + orxMath_GetTrailingZeroCount(u32MaskedMapEntry);
+          u32CellIndex    = 32 * ((orxU32)(pu32MapEntry - _pstBank->au32CellMap) % u32MapSize) + orxMath_GetTrailingZeroCount(u32MaskedMapEntry);
 
           /* Updates result */
           pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
