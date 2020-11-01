@@ -898,7 +898,7 @@ void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBank != orxNULL);
   orxASSERT(_u32Index < _pstBank->u32SegmentCount * _pstBank->u32SegmentSize);
-  orxASSERT(_pstBank->au32SegmentFree[_u32Index / _pstBank->u32SegmentSize] < _pstBank->u32SegmentSize);
+  orxASSERT(_pstBank->au32SegmentFree[_u32Index / _pstBank->u32SegmentSize] <= _pstBank->u32SegmentSize);
   orxASSERT(_pstBank->u32CellCount != 0);
 
   /* Gets segment map size */
