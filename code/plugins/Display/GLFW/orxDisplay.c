@@ -3369,14 +3369,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Swap()
 
     /* Swap buffers */
     glfwSwapBuffers(sstDisplay.pstWindow);
-
-    /* Is fullscreen & VSync? */
-    if(orxFLAG_TEST_ALL(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN | orxDISPLAY_KU32_STATIC_FLAG_VSYNC))
-    {
-      /* Waits for the end of GPU work */
-      glFinish();
-      glASSERT();
-    }
   }
 
   /* Done! */
