@@ -497,6 +497,9 @@ orxU32 orxFASTCALL _orxDebug_GetFlags()
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
   /* Is level enabled and not re-entrant? */
   if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)) && !orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_LOGGING))
   {
