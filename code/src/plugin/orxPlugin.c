@@ -42,13 +42,6 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-  #include <dlfcn.h>
-
-#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-
 /** Platform dependent type & function defines
  */
 
@@ -82,19 +75,13 @@
 
   #else /* __orxIOS__ */
 
+    #include <dlfcn.h>
+
     #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
     #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
     #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
-    #ifdef __orxMAC__
-
-      static const orxSTRING                                szPluginLibraryExt = "so";
-
-    #else /* __orxMAC__ */
-
-      static const orxSTRING                                szPluginLibraryExt = "so";
-
-    #endif /* __orxMAC__ */
+    static const orxSTRING                                  szPluginLibraryExt = "so";
 
     #define __orxPLUGIN_DYNAMIC__
 
