@@ -3847,11 +3847,13 @@ void orxFASTCALL orxConfig_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_RESOURCE);
 
+  orxModule_AddOptionalDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
+
+  /* Done! */
   return;
 }
 
@@ -4827,7 +4829,6 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
  */
 orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const orxSTRING *_azSrcFileName, orxU32 _u32Number, const orxSTRING _zEncryptionKey)
 {
-  orxFILE  *pstDstFile;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -4838,168 +4839,182 @@ orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const 
   orxASSERT(*_azSrcFileName != orxNULL);
   orxASSERT(_u32Number > 0);
 
-  /* Opens destination file */
-  pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
-
-  /* Success? */
-  if(pstDstFile != orxNULL)
+  /* Is file initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_FILE) != orxFALSE)
   {
-    orxCHAR  *pcEncryptionCharBackup, *pcEncryptionChar;
-    orxSTRING zPreviousEncryptionKey;
-    orxU32    u32PreviousEncryptionKeySize, i;
+    orxFILE *pstDstFile;
 
-    /* Backups encryption char */
-    pcEncryptionCharBackup = sstConfig.pcEncryptionChar;
+    /* Opens destination file */
+    pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
-    /* Uses encryption? */
-    if(_zEncryptionKey != orxNULL)
+    /* Success? */
+    if(pstDstFile != orxNULL)
     {
-      /* Stores previous encryption key */
-      zPreviousEncryptionKey        = sstConfig.zEncryptionKey;
-      u32PreviousEncryptionKeySize  = sstConfig.u32EncryptionKeySize;
+      orxCHAR  *pcEncryptionCharBackup, *pcEncryptionChar;
+      orxSTRING zPreviousEncryptionKey;
+      orxU32    u32PreviousEncryptionKeySize, i;
 
-      /* Inits encryption char */
-      pcEncryptionChar = (orxSTRING)_zEncryptionKey;
+      /* Backups encryption char */
+      pcEncryptionCharBackup = sstConfig.pcEncryptionChar;
 
-      /* Adds encryption tag */
-      orxFile_Print(pstDstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
-    }
-
-    /* For all source files */
-    for(i = 0; i < _u32Number; i++)
-    {
-      const orxSTRING zSrcFileName;
-
-      /* Gets its name */
-      zSrcFileName = _azSrcFileName[i];
-
-      /* Valid names */
-      if(orxString_Compare(_zDstFileName, zSrcFileName) != 0)
+      /* Uses encryption? */
+      if(_zEncryptionKey != orxNULL)
       {
-        orxFILE *pstSrcFile;
+        /* Stores previous encryption key */
+        zPreviousEncryptionKey        = sstConfig.zEncryptionKey;
+        u32PreviousEncryptionKeySize  = sstConfig.u32EncryptionKeySize;
 
-        /* Opens source file */
-        pstSrcFile = orxFile_Open(zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+        /* Inits encryption char */
+        pcEncryptionChar = (orxSTRING)_zEncryptionKey;
 
-        /* Valid? */
-        if(pstSrcFile != orxNULL)
+        /* Adds encryption tag */
+        orxFile_Print(pstDstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+      }
+
+      /* For all source files */
+      for(i = 0; i < _u32Number; i++)
+      {
+        const orxSTRING zSrcFileName;
+
+        /* Gets its name */
+        zSrcFileName = _azSrcFileName[i];
+
+        /* Valid names */
+        if(orxString_Compare(_zDstFileName, zSrcFileName) != 0)
         {
-          orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
-          orxU32  u32Size;
-          orxBOOL bFirstTime, bUseEncryption;
+          orxFILE *pstSrcFile;
 
-          /* While source file isn't empty */
-          for(u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxTRUE, bUseEncryption = orxFALSE;
-              u32Size > 0;
-              u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxFALSE)
+          /* Opens source file */
+          pstSrcFile = orxFile_Open(zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+
+          /* Valid? */
+          if(pstSrcFile != orxNULL)
           {
-            /* First time? */
-            if(bFirstTime != orxFALSE)
+            orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+            orxU32  u32Size;
+            orxBOOL bFirstTime, bUseEncryption;
+
+            /* While source file isn't empty */
+            for(u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxTRUE, bUseEncryption = orxFALSE;
+                u32Size > 0;
+                u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxFALSE)
             {
-              /* Has encryption tag? */
-              if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+              /* First time? */
+              if(bFirstTime != orxFALSE)
               {
-                /* Uses encryption */
-                bUseEncryption = orxTRUE;
+                /* Has encryption tag? */
+                if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+                {
+                  /* Uses encryption */
+                  bUseEncryption = orxTRUE;
 
-                /* Reinits encryption char */
-                sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+                  /* Reinits encryption char */
+                  sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
-                /* Decrypts remaining buffer */
-                orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
-              }
-            }
-            else
-            {
-              /* Uses encryption */
-              if(bUseEncryption != orxFALSE)
-              {
-                /* Decrypts buffer */
-                orxConfig_CryptBuffer(acBuffer, u32Size);
-              }
-            }
-
-            /* Use encryption for destination? */
-            if(_zEncryptionKey != orxNULL)
-            {
-              orxCHAR *pcPreviousEncryptionChar;
-
-              /* Stores previous encryption char */
-              pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
-
-              /* Stores new encryption key */
-              sstConfig.zEncryptionKey        = (orxSTRING)_zEncryptionKey;
-              sstConfig.u32EncryptionKeySize  = orxString_GetLength(_zEncryptionKey);
-
-              /* Sets encryption char */
-              sstConfig.pcEncryptionChar = pcEncryptionChar;
-
-              /* Encrypts buffer */
-              if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
-              {
-                orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                  /* Decrypts remaining buffer */
+                  orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                }
               }
               else
               {
-                orxConfig_CryptBuffer(acBuffer, u32Size);
+                /* Uses encryption */
+                if(bUseEncryption != orxFALSE)
+                {
+                  /* Decrypts buffer */
+                  orxConfig_CryptBuffer(acBuffer, u32Size);
+                }
               }
 
-              /* Saves encryption char */
-              pcEncryptionChar = sstConfig.pcEncryptionChar;
+              /* Use encryption for destination? */
+              if(_zEncryptionKey != orxNULL)
+              {
+                orxCHAR *pcPreviousEncryptionChar;
 
-              /* Restores encryption key */
-              sstConfig.zEncryptionKey        = zPreviousEncryptionKey;
-              sstConfig.u32EncryptionKeySize  = u32PreviousEncryptionKeySize;
+                /* Stores previous encryption char */
+                pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
 
-              /* Restores encryption char */
-              sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+                /* Stores new encryption key */
+                sstConfig.zEncryptionKey        = (orxSTRING)_zEncryptionKey;
+                sstConfig.u32EncryptionKeySize  = orxString_GetLength(_zEncryptionKey);
+
+                /* Sets encryption char */
+                sstConfig.pcEncryptionChar = pcEncryptionChar;
+
+                /* Encrypts buffer */
+                if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+                {
+                  orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                }
+                else
+                {
+                  orxConfig_CryptBuffer(acBuffer, u32Size);
+                }
+
+                /* Saves encryption char */
+                pcEncryptionChar = sstConfig.pcEncryptionChar;
+
+                /* Restores encryption key */
+                sstConfig.zEncryptionKey        = zPreviousEncryptionKey;
+                sstConfig.u32EncryptionKeySize  = u32PreviousEncryptionKeySize;
+
+                /* Restores encryption char */
+                sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+              }
+
+              /* Writes buffer */
+              if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+              {
+                orxFile_Write(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, sizeof(orxCHAR), (orxS64)(u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH), pstDstFile);
+              }
+              else
+              {
+                orxFile_Write(acBuffer, sizeof(orxCHAR), (orxS64)u32Size, pstDstFile);
+              }
             }
 
-            /* Writes buffer */
-            if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
-            {
-              orxFile_Write(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, sizeof(orxCHAR), (orxS64)(u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH), pstDstFile);
-            }
-            else
-            {
-              orxFile_Write(acBuffer, sizeof(orxCHAR), (orxS64)u32Size, pstDstFile);
-            }
+            /* Closes source file */
+            orxFile_Close(pstSrcFile);
           }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config file <%s> -> <%s>: can't open source file.", zSrcFileName, _zDstFileName);
 
-          /* Closes source file */
-          orxFile_Close(pstSrcFile);
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+            break;
+          }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config file <%s> -> <%s>: can't open source file.", zSrcFileName, _zDstFileName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge merge file <%s> -> <%s>: source and destination must be different.", zSrcFileName, _zDstFileName);
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
           break;
         }
       }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge merge file <%s> -> <%s>: source and destination must be different.", zSrcFileName, _zDstFileName);
 
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-        break;
-      }
+      /* Closes destination file */
+      orxFile_Close(pstDstFile);
+
+      /* Restores previous encryption char */
+      sstConfig.pcEncryptionChar = pcEncryptionCharBackup;
     }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> <%s>: can't open destination file.", _zDstFileName);
 
-    /* Closes destination file */
-    orxFile_Close(pstDstFile);
-
-    /* Restores previous encryption char */
-    sstConfig.pcEncryptionChar = pcEncryptionCharBackup;
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> <%s>: can't open destination file.", _zDstFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> file module hasn't been initialized.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
