@@ -3562,14 +3562,14 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
-        /* Updates timestamp */
-        *_pfTime -= fLength;
-
         /* Has next animation? */
         if((u32TargetAnim != orxU32_UNDEFINED)
         && ((fLength > orxFLOAT_0)
          || (u32TargetAnim != _u32SrcAnim)))
         {
+          /* Updates timestamp */
+          *_pfTime -= fLength;
+
           /* Gets link index */
           u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
 
@@ -3584,6 +3584,9 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         }
         else
         {
+          /* Clears timestamp */
+          *_pfTime = orxFLOAT_0;
+
           /* Has target anim? */
           if(_u32DstAnim != orxU32_UNDEFINED)
           {
