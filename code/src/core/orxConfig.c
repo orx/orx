@@ -2758,9 +2758,6 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             /* End of line? */
             if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
             {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete file name <%*s>, closing character '%c' not found", _zName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-
               /* Updates new line start */
               pcLineStart = pc + 1;
 
@@ -2814,6 +2811,11 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
               /* Makes sure we don't mistake remaining partial comment for a new key */
               *pcLineStart = orxCONFIG_KC_COMMENT;
             }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete name <%.*s> for included file, '%c' terminator not found, skipping!", _zName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
           }
 
           break;

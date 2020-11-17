@@ -2534,7 +2534,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Gets its cycle period */
       fCyclePeriod = orxConfig_GetFloat(orxFX_KZ_CONFIG_PERIOD);
 
-      /* Gets it cycle phase and convert it from degress to radians */
+      /* Gets it cycle phase and convert it from degrees to radians */
       fCyclePhase = orxConfig_GetFloat(orxFX_KZ_CONFIG_PHASE);
 
       /* Gets its amplification */
