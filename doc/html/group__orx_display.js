@@ -168,6 +168,7 @@ var group__orx_display =
     [ "orxDisplay_GetParameterID", "group__orx_display.html#gab67814d8200a6d3f0348fba25be8981d", null ],
     [ "orxDisplay_GetScreenBitmap", "group__orx_display.html#ga023526bf404541a05221652a94850c34", null ],
     [ "orxDisplay_GetScreenSize", "group__orx_display.html#ga16f67c9a5e6bd6bf733c3bc2bc4c7522", null ],
+    [ "orxDisplay_GetShaderID", "group__orx_display.html#gaaea57e472cf0fc7ab569db5f99962a5d", null ],
     [ "orxDisplay_GetTempBitmap", "group__orx_display.html#ga7052f393a9cdb5bc6c454beb8fafceac", null ],
     [ "orxDisplay_GetVideoMode", "group__orx_display.html#ga7099d1d4919c383535a31bbe900f7e3c", null ],
     [ "orxDisplay_GetVideoModeCount", "group__orx_display.html#ga9a6efbaeaa8c4434ab81dcb8d68a1033", null ],
