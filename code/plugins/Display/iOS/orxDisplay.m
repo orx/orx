@@ -4981,6 +4981,25 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderVector(orxHANDLE _hShader, orxS32 
   return eResult;
 }
 
+orxU32 orxFASTCALL orxDisplay_iOS_GetShaderID(const orxHANDLE _hShader)
+{
+  orxDISPLAY_SHADER  *pstShader;
+  orxU32              u32Result;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Updates result */
+  u32Result = (orxU32)pstShader->uiProgram;
+
+  /* Done! */
+  return u32Result;
+}
+
 
 /***************************************************************************
  * Plugin Related                                                          *
@@ -5024,6 +5043,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetParameterID, DISPLAY, GET_PAR
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetShaderID, DISPLAY, GET_SHADER_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

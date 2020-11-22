@@ -4976,6 +4976,26 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderVector(orxHANDLE _hShader, orx
   return eResult;
 }
 
+orxU32 orxFASTCALL orxDisplay_Android_GetShaderID(const orxHANDLE _hShader)
+{
+  orxDISPLAY_SHADER  *pstShader;
+  orxU32              u32Result;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Updates result */
+  u32Result = (orxU32)pstShader->uiProgram;
+
+  /* Done! */
+  return u32Result;
+}
+
+
 /***************************************************************************
  * Plugin Related                                                          *
  ***************************************************************************/
@@ -5017,6 +5037,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetParameterID, DISPLAY, GET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetShaderID, DISPLAY, GET_SHADER_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

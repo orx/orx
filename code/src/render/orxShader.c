@@ -1808,6 +1808,25 @@ const orxSTRING orxFASTCALL orxShader_GetName(const orxSHADER *_pstShader)
   return zResult;
 }
 
+/** Gets shader (internal) ID
+ * @param[in]   _pstShader            Concerned Shader
+ * @return      ID
+ */
+orxU32 orxFASTCALL orxShader_GetID(const orxSHADER *_pstShader)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+
+  /* Updates result */
+  u32Result = orxDisplay_GetShaderID(_pstShader->hData);
+
+  /* Done! */
+  return u32Result;
+}
+
 #ifdef __orxGCC__
 
   #pragma GCC diagnostic pop
