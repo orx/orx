@@ -1571,39 +1571,31 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         // Not an internal deletion?
         if(!roGame.mzCurrentObject || !orxString_SearchString(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
         {
-          ScrollObjectBinderBase *poBinder;
+          ScrollObject *poObject;
 
-          // Gets binder
-          poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
+          // Gets scroll object
+          poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
 
-          // Found?
-          if(poBinder)
+          // Checks
+          orxASSERT((!poObject) || (poObject->GetOrxObject() == pstObject));
+
+          // Valid?
+          if(poObject)
           {
-            ScrollObject *poObject;
+            ScrollObjectBinderBase *poBinder;
 
-            // Gets scroll object
-            poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
+            // Clears internal reference
+            poObject->SetOrxObject(orxNULL);
 
-            // Checks
-            orxASSERT((!poObject) || (poObject->GetOrxObject() == pstObject));
+            // Gets binder
+            poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
 
-            // Valid?
-            if(poObject)
+            // Found?
+            if(poBinder)
             {
-              // Clears internal reference
-              poObject->SetOrxObject(orxNULL);
-
-              // Uses it
+              // Uses it to delete object
               poBinder->DeleteObject(poObject, orxObject_GetName(pstObject));
             }
-          }
-          else
-          {
-            ScrollObject *poObject;
-
-            // Gets scroll object
-            poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
-
           }
         }
         else
