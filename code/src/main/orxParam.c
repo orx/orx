@@ -596,6 +596,7 @@ void orxFASTCALL orxParam_Exit()
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
   }
 
+  /* Done! */
   return;
 }
 
