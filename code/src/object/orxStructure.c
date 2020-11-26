@@ -166,6 +166,7 @@ static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orx
 
     /* Creates its node */
     pstNode = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(_pstBank);
+    orxMemory_Zero(pstNode, sizeof(orxSTRUCTURE_LOG_NODE));
     orxASSERT(pstNode != orxNULL);
     pstNode->pstStructure = _pstStructure;
 
@@ -204,10 +205,13 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
   /* Is Valid? */
   if(_pstNode != orxNULL)
   {
-    static orxCHAR  sacPrefixBuffer[1024] = {0};
+    static orxCHAR  sacPrefixBuffer[1024];
     static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
     orxSTRUCTURE   *pstStructure;
     orxTREE_NODE   *pstChild, *pstSibling;
+
+    /* Inits buffer */
+    sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = '\0';
 
     /* Gets next sibling */
     pstSibling = orxTree_GetSibling(_pstNode);
@@ -1222,7 +1226,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
   /* Valid? */
   if((pstTable != orxNULL) && (pstBank != orxNULL))
   {
-    orxTREE                 stTree = {0};
+    orxTREE                 stTree;
     orxSTRUCTURE_LOG_NODE  *pstRoot;
     orxU32                  u32DebugFlags;
     orxS32                  i;
@@ -1231,6 +1235,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
     pstRoot = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(pstBank);
     orxASSERT(pstRoot != orxNULL);
     orxMemory_Zero(pstRoot, sizeof(orxSTRUCTURE_LOG_NODE));
+    orxMemory_Zero(&stTree, sizeof(orxTREE));
     orxTree_AddRoot(&stTree, &(pstRoot->stNode));
 
     /* For all IDs */
