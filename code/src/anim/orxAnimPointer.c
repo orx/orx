@@ -401,6 +401,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           {
             /* Updates event start time */
             fEventStartTime = orx2F(-1.0f);
+
+            /* Removes newly set current anim flag */
+            orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_NEW_CURRENT);
           }
         }
       } while((bRecompute != orxFALSE) || (_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim)));
@@ -443,9 +446,6 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           orxAnimPointer_SendCustomEvents(pstAnim, pstOwner, fEventStartTime, _pstAnimPointer->fCurrentAnimTime);
         }
       }
-
-      /* Removes newly set current anim flag */
-      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_NEW_CURRENT);
     }
     else
     {
