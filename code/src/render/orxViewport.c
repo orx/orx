@@ -1665,7 +1665,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Config file does not contain viewport section named %s.", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't find config section named (%s).", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;

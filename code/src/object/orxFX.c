@@ -2760,7 +2760,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Config file does not have section named (%s).", _zSlotID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't find config section named (%s).", _zSlotID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
