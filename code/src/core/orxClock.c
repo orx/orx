@@ -288,6 +288,7 @@ static orxINLINE void orxClock_DeleteAll()
     pstClock = orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
   }
 
+  /* Done! */
   return;
 }
 
@@ -434,6 +435,7 @@ void orxFASTCALL orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_CONFIG);
 
+  /* Done! */
   return;
 }
 
@@ -576,6 +578,7 @@ void orxFASTCALL orxClock_Exit()
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_READY;
   }
 
+  /* Done! */
   return;
 }
 
@@ -1288,6 +1291,9 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNC
   if(pstFunctionStorage != orxNULL)
   {
     orxCLOCK_FUNCTION_STORAGE *pstRefFunctionStorage;
+
+    /* Clears it */
+    orxMemory_Zero(pstFunctionStorage, sizeof(orxCLOCK_FUNCTION_STORAGE));
 
     /* Finds correct index */
     for(pstRefFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
