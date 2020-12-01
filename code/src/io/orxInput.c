@@ -982,6 +982,7 @@ static orxINLINE void orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY
   /* Deletes it */
   orxBank_Free(_pstSet->pstEntryBank, _pstEntry);
 
+  /* Done! */
   return;
 }
 
@@ -1086,6 +1087,7 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   /* Removes set */
   orxBank_Free(sstInput.pstSetBank, _pstSet);
 
+  /* Done! */
   return;
 }
 
@@ -1137,6 +1139,7 @@ void orxFASTCALL orxInput_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_MOUSE);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_JOYSTICK);
 
+  /* Done! */
   return;
 }
 
@@ -1256,6 +1259,7 @@ void orxFASTCALL orxInput_Exit()
     orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_NONE, orxINPUT_KU32_STATIC_MASK_ALL);
   }
 
+  /* Done! */
   return;
 }
 

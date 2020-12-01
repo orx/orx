@@ -96,6 +96,7 @@ static void orxFASTCALL orx_MainSetup()
 
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
+  /* Done! */
   return;
 }
 
@@ -232,13 +233,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from the engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */
@@ -304,13 +305,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from the engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */

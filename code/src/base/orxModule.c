@@ -517,6 +517,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
     sstModule.u32InitCount--;
   }
 
+  /* Done! */
   return;
 }
 
