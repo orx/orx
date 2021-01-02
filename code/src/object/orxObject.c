@@ -2616,6 +2616,34 @@ void orxFASTCALL orxObject_CommandRemoveFX(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: RemoveAllFXs
+ */
+void orxFASTCALL orxObject_CommandRemoveAllFXs(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Removes all its FXs */
+    orxObject_RemoveAllFXs(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddShader
  */
 void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3255,6 +3283,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveAllFXs */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveAllFXs, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
@@ -3441,6 +3471,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddFX);
   /* Command: RemoveFX */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveFX);
+  /* Command: RemoveAllFXs */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveAllFXs);
 
   /* Command: AddShader */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
@@ -8527,7 +8559,7 @@ void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, co
 }
 
 /** Removes an FX using its config ID.
- * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -8548,6 +8580,33 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING 
   {
     /* Removes FX from config */
     eResult = orxFXPointer_RemoveFXFromConfig(pstFXPointer, _zFXConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes all FXs.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveAllFXs(orxOBJECT *_pstObject)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its FXPointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Removes all its FXs */
+    eResult = orxFXPointer_RemoveAllFXs(pstFXPointer);
   }
 
   /* Done! */
