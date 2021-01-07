@@ -805,6 +805,7 @@ extern "C" void orxAndroid_PumpEvents()
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
           break;
         case 1: // MotionEvent.ACTION_UP
+        case 3: // MotionEvent.ACTION_CANCEL
         case 6: // MotionEvent.ACTION_POINTER_UP
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
           break;
