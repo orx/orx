@@ -125,6 +125,8 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
     case AKEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}
     case AKEYCODE_DPAD_DOWN:          {eResult = orxKEYBOARD_KEY_DOWN; break;}
     case AKEYCODE_DPAD_LEFT:          {eResult = orxKEYBOARD_KEY_LEFT; break;}
+    case AKEYCODE_VOLUME_DOWN:        {eResult = orxKEYBOARD_KEY_VOLUME_DOWN; break;}
+    case AKEYCODE_VOLUME_UP:          {eResult = orxKEYBOARD_KEY_VOLUME_UP; break;}
     case AKEYCODE_A:                  {eResult = orxKEYBOARD_KEY_A; break;}
     case AKEYCODE_Z:                  {eResult = orxKEYBOARD_KEY_Z; break;}
     case AKEYCODE_E:                  {eResult = orxKEYBOARD_KEY_E; break;}
