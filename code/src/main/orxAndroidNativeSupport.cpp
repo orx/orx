@@ -260,6 +260,7 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
                 orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
                 break;
             case AMOTION_EVENT_ACTION_UP:
+            case AMOTION_EVENT_ACTION_CANCEL:
                 stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
                 stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
                 stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
