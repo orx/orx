@@ -371,6 +371,8 @@ var searchData=
   ['orxkeyboard_5fkey_5fu',['orxKEYBOARD_KEY_U',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea53af77f0c92b9df212d4d58198acfb21',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fkey_5fup',['orxKEYBOARD_KEY_UP',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaab933efc278ccf0cdacb62e0bd7e10da',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fkey_5fv',['orxKEYBOARD_KEY_V',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea5fdc716294255f26b1793d46fc4b6674',1,'orxKeyboard.h']]],
+  ['orxkeyboard_5fkey_5fvolume_5fdown',['orxKEYBOARD_KEY_VOLUME_DOWN',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea729326ccffa6b4358ed4add1e5922adf',1,'orxKeyboard.h']]],
+  ['orxkeyboard_5fkey_5fvolume_5fup',['orxKEYBOARD_KEY_VOLUME_UP',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96c97b0da6c7dcadb9e60c4f0a10647c',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fkey_5fw',['orxKEYBOARD_KEY_W',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea8b243a09ac69d14556b6025932158ecc',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fkey_5fworld_5f1',['orxKEYBOARD_KEY_WORLD_1',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaaefdd3d04f3b98aaaa084d5fedd1a71d',1,'orxKeyboard.h']]],
   ['orxkeyboard_5fkey_5fworld_5f2',['orxKEYBOARD_KEY_WORLD_2',['../group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea2cef3e5724d4740555c9d4d7453f1c3a',1,'orxKeyboard.h']]],

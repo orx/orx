@@ -70,6 +70,8 @@ var orx_keyboard_8h =
       [ "orxKEYBOARD_KEY_NUM_LOCK", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea557f7338be95d0c1d9a7709e7e13a756", null ],
       [ "orxKEYBOARD_KEY_PRINT_SCREEN", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea6910f547d66afea6833511c909cb4984", null ],
       [ "orxKEYBOARD_KEY_PAUSE", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea61bd9a18354b9d1ae9aba1a65c94ac75", null ],
+      [ "orxKEYBOARD_KEY_VOLUME_DOWN", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea729326ccffa6b4358ed4add1e5922adf", null ],
+      [ "orxKEYBOARD_KEY_VOLUME_UP", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96c97b0da6c7dcadb9e60c4f0a10647c", null ],
       [ "orxKEYBOARD_KEY_F1", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaaab38cca49d54836cc4f547ad7f732b0", null ],
       [ "orxKEYBOARD_KEY_F2", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feac19e736d85185f4182cf7b3012b24586", null ],
       [ "orxKEYBOARD_KEY_F3", "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea4a5926a7147569f7212bbeecf4cae2cc", null ],
