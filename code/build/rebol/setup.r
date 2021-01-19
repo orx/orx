@@ -8,7 +8,7 @@ REBOL [
 
 ; Default settings
 tag:            <version>
-host:           ["https://codeload.github.com/orx/orx-extern/zip/" tag]
+hosts:          [["http://orx-project.org/extern/" tag ".zip"] ["https://codeload.github.com/orx/orx-extern/zip/" tag]]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
@@ -79,15 +79,17 @@ either req-ver = cur-ver [
 
 
   ; Updates cache
-  local: rejoin [cache req-ver %.zip]
-  remote: replace rejoin host tag req-ver
-  either exists? local [
+  either exists? local: rejoin [cache req-ver %.zip] [
     print ["== [" req-ver "] found in cache!"]
   ] [
     attempt [make-dir/deep cache]
     print ["== [" req-ver "] not in cache"]
-    print ["== Fetching [" remote "]" newline "== Please wait!"]
-    write root/:local read to-url remote
+    for-each host hosts [
+      either attempt [
+        print ["== Fetching [" remote: replace rejoin host tag req-ver "]" newline "== Please wait!"]
+        write root/:local read to-url remote
+      ] [break] [print ["== Not found!"]]
+    ]
     print ["== [" req-ver "] cached!"]
   ]
 
@@ -95,7 +97,7 @@ either req-ver = cur-ver [
   ; Clears current version
   if exists? extern [
     print ["== Deleting [" extern "]"]
-    attempt [delete-dir extern]
+    until [wait 0.5 attempt [delete-dir extern] not exists? extern]
   ]
 
 
