@@ -442,12 +442,12 @@ void orxFASTCALL _orxDebug_Break()
 
   #else /* __orxMSVC__ */
 
-    #ifdef __GNUC__
+    #ifdef __orxGCC__
 
       /* Requires GCC >= 4.2.4 */
       orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
 
-    #endif /* __GNUC__ */
+    #endif /* __orxGCC__ */
 
     __builtin_trap();
 
