@@ -147,6 +147,15 @@ orxSTATUS orxFASTCALL orxMouse_iOS_ShowCursor(orxBOOL _bShow)
   /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates cursor status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
   /* Done! */
   return eResult;
 }
@@ -170,19 +179,15 @@ orxSTATUS orxFASTCALL orxMouse_iOS_Init()
       /* Updates status */
       sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
-      /* Sets config section */
+      /* Pushes config section */
       orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
-      /* Has show cursor value? */
-      if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-      {
-        /* Updates cursor status */
-        orxMouse_iOS_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-      }
-    }
+      /* Updates cursor status */
+      orxMouse_iOS_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
   }
 
   /* Done! */

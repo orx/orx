@@ -66,7 +66,7 @@ typedef struct __orxMOUSE_STATIC_t
   GLFWwindow *pstWindow;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bShowCursor, bUpdateCursor;
+  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bUpdateCursor;
 
 } orxMOUSE_STATIC;
 
@@ -150,15 +150,14 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
   /* Should update cursor? */
   if(sstMouse.bUpdateCursor != orxFALSE)
   {
+    /* Pushes config section */
+    orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
     /* Restores cursor status */
-    if(sstMouse.bShowCursor != orxFALSE)
-    {
-      glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
-    else
-    {
-      glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-    }
+    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+
+    /* Pops config section */
+    orxConfig_PopSection();
 
     /* Updates status */
     sstMouse.bUpdateCursor = orxFALSE;
@@ -270,18 +269,17 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  /* Stores status */
-  sstMouse.bShowCursor = _bShow;
+  /* Updates cursor status */
+  glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (_bShow != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 
-  /* Show cursor? */
-  if(_bShow != orxFALSE)
-  {
-    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  }
-  else
-  {
-    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-  }
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates cursor status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return eResult;
@@ -346,12 +344,8 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
         /* Pushes config section */
         orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
-        /* Has show cursor value? */
-        if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-        {
-          /* Updates cursor status */
-          orxMouse_GLFW_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-        }
+        /* Updates cursor status */
+        orxMouse_GLFW_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
 
         /* Pops config section */
         orxConfig_PopSection();
