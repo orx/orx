@@ -37,7 +37,7 @@
 #include "main/orxAndroid.h"
 #include <android/sensor.h>
 
-#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   4
+#include "io/orxJoystick.h"
 
 /** Module flags
  */
@@ -474,6 +474,16 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     {
       orxAndroid_JNI_GetDeviceIds(sstJoystick.au32DeviceIds);
       orxEvent_AddHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
+
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "useJoystick config is ON, devices:");
+      for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
+      {
+        if(sstJoystick.au32DeviceIds[i] != 0)
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "joystick deviceId: %d", sstJoystick.au32DeviceIds[i]);
+        }
+      }
+
     }
     else
     {

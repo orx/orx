@@ -173,7 +173,9 @@ void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
 #ifdef __orxANDROID_NATIVE__
+/* LOOPER_ID_USER is the first user defined looper ID */
 #define              LOOPER_ID_SENSOR        LOOPER_ID_USER
+#define              LOOPER_ID_JOYSTICK_EVENT        LOOPER_ID_USER+1
 ANativeActivity*     orxAndroid_GetNativeActivity();
 struct android_app*  orxAndroid_GetAndroidApp();
 #endif /* __orxANDROID_NATIVE__ */

@@ -387,7 +387,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnCreate(JNIEnv *env,
     pthread_cond_init(&sstAndroid.cond, NULL);
 }
 
-// Start up the Orx app
+// Start up the Orx app, called from new Java thread in OrxActivity
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_startOrx(JNIEnv* env, jobject thiz, jobject activity)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
@@ -640,11 +640,11 @@ extern "C" jobject orxAndroid_GetActivity()
   return sstAndroid.mActivity;
 }
 
-extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
+extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
   JNIEnv *env = Android_JNI_GetEnv();
   jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
-  env->GetIntArrayRegion(retval, 0, 4, (jint*) &deviceIds[0]);
+  env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
   env->DeleteLocalRef(retval);
 }
 

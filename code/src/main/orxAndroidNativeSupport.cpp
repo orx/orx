@@ -37,16 +37,21 @@
 #include <android_native_app_glue.h>
 #include <android/input.h>
 
+#include <errno.h>
+#include <unistd.h>
+
 #ifdef __orxDEBUG__
 
 #define MODULE "orxAndroidNativeSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,MODULE,__VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,MODULE,__VA_ARGS__)
+#define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__))
 
 #else
 
 #define LOGE(...)
 #define LOGI(...)
+#define LOGV(...)
 
 #endif
 
@@ -57,7 +62,19 @@
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
+        // Hosting Activity
+        jobject mActivity;
+
+        // method signatures
+        jmethodID midGetDeviceIds;
+
+        // AssetManager
         char *zAndroidInternalFilesPath;
+
+        // looper fd-pipe
+        ALooper* looper;
+        int pipeJoystickEvent[2];
+
         orxBOOL bPaused;
         orxBOOL bHasFocus;
 
@@ -67,6 +84,9 @@ typedef struct __orxANDROID_STATIC_t {
 
         struct android_app* app_;
 } orxANDROID_STATIC;
+
+// Guard against too early access of sstAndroid which is initialized in new thread created in native glue.
+static orxBOOL sstAndroidInitialized = orxFALSE;
 
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t sThreadKey;
@@ -140,7 +160,7 @@ extern "C" void *orxAndroid_GetJNIEnv()
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-  return sstAndroid.app_->activity->clazz;
+  return sstAndroid.mActivity;
 }
 
 extern "C" struct android_app* orxAndroid_GetAndroidApp()
@@ -148,9 +168,79 @@ extern "C" struct android_app* orxAndroid_GetAndroidApp()
   return sstAndroid.app_;
 }
 
-extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
+extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
-  // TODO
+  // Copied from orxAndroidSupport.cpp
+  JNIEnv *env = Android_JNI_GetEnv();
+  jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
+  env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
+  env->DeleteLocalRef(retval);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_nativeOnPause(JNIEnv* env, jobject thiz)
+{
+  LOGI("nativeOnPause");
+
+}
+
+// Resume
+extern "C" JNIEXPORT void JNICALL Java_nativeOnResume(JNIEnv* env, jobject thiz)
+{
+  if(!sstAndroidInitialized)
+  {
+    return;
+  }
+  LOGI("nativeOnResume");
+}
+
+
+/* Theses method are called from Activity if it implements InputDeviceListener */
+// Copied from orxAndroidSupport.cpp
+extern "C" void JNICALL Java_nativeOnInputDeviceAdded(JNIEnv* env, jobject thiz, jint deviceId)
+{
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_ADDED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
+}
+extern "C" void JNICALL Java_nativeOnInputDeviceChanged(JNIEnv* env, jobject thiz, jint deviceId)
+{
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_CHANGED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
+}
+
+extern "C" void JNICALL Java_nativeOnInputDeviceRemoved(JNIEnv* env, jobject thiz, jint deviceId)
+{
+  orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_REMOVED;
+  stJoystickEvent.u32DeviceId = deviceId;
+
+  if(sstAndroid.pipeJoystickEvent[1] != -1)
+  {
+    if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
+    {
+      LOGE("Failure writing joystick event: %s\n", strerror(errno));
+    }
+  }
 }
 
 extern "C" ANativeActivity* orxAndroid_GetNativeActivity()
@@ -170,9 +260,8 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
 
     JNIEnv *env = Android_JNI_GetEnv();
 
-    jActivity = sstAndroid.app_->activity->clazz;
     // fileObj = context.getFilesDir();
-    mid = env->GetMethodID(env->GetObjectClass(jActivity), "getFilesDir", "()Ljava/io/File;");
+    mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity), "getFilesDir", "()Ljava/io/File;");
     fileObject = env->CallObjectMethod(jActivity, mid);
     if (!fileObject)
     {
@@ -231,12 +320,12 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
 static int32_t handleInput(struct android_app* app, AInputEvent* event)
 {
     int32_t type = AInputEvent_getType(event);
+    int32_t deviceId = AInputEvent_getDeviceId(event);
 
     switch(type)
     {
     case AINPUT_EVENT_TYPE_MOTION:
     {
-        orxSYSTEM_EVENT_PAYLOAD stPayload;
 
         if(sstAndroid.fSurfaceScale == orxFLOAT_0)
         {
@@ -245,58 +334,116 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
           orxConfig_PopSection();
         }
 
-        /* Inits event's payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-        stPayload.stTouch.fPressure = orxFLOAT_0;
 
         int32_t action = AMotionEvent_getAction(event);
+        int32_t source = AInputEvent_getSource(event);
         unsigned int flags = action & AMOTION_EVENT_ACTION_MASK;
-        switch( flags )
+
+        /* Touch, mouse or joystick ? */
+        if ( (source & AINPUT_SOURCE_TOUCHSCREEN) == AINPUT_SOURCE_TOUCHSCREEN )
         {
-            case AMOTION_EVENT_ACTION_DOWN:
-                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
-                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
-                stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-                break;
-            case AMOTION_EVENT_ACTION_UP:
-            case AMOTION_EVENT_ACTION_CANCEL:
-                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
-                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
-                stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-                break;
-            case AMOTION_EVENT_ACTION_MOVE:
-            {
+          // touch screen
+          orxSYSTEM_EVENT_PAYLOAD stPayload;
+          /* Inits event's payload */
+          orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+          stPayload.stTouch.fPressure = orxFLOAT_0;
+
+          // only the primary pointer sends move messages so get the other pointer positions while we are here
+          switch( flags )
+          {
+              case AMOTION_EVENT_ACTION_DOWN:
+                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
+                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
+                  stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
+                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+                  break;
+              case AMOTION_EVENT_ACTION_UP:
+              case AMOTION_EVENT_ACTION_CANCEL:
+                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, 0));
+                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, 0));
+                  stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, 0);
+                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+                  break;
+              case AMOTION_EVENT_ACTION_MOVE:
+              {
                 int32_t count = AMotionEvent_getPointerCount(event);
 
-                for(int i = 0; i < count; i++)
-                {
-                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, i));
-                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, i));
-                  stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, i);
-                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
-                }
-                break;
-            }
-            case AMOTION_EVENT_ACTION_POINTER_DOWN:
-            {
-                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-                stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
-                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
-                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-                break;
-            }
-            case AMOTION_EVENT_ACTION_POINTER_UP:
-            {
-                int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-                stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
-                stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
-                stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
-                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-                break;
-            }
+                  for(int i = 0; i < count; i++)
+                  {
+                    stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, i));
+                    stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, i));
+                    stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, i);
+                    orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
+                  }
+                  break;
+              }
+              case AMOTION_EVENT_ACTION_POINTER_DOWN:
+              {
+                  int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+                  stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
+                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
+                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
+                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+                  break;
+              }
+              case AMOTION_EVENT_ACTION_POINTER_UP:
+              {
+                  int32_t iIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+                  stPayload.stTouch.u32ID = AMotionEvent_getPointerId(event, iIndex);
+                  stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getX(event, iIndex));
+                  stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orx2F(AMotionEvent_getY(event, iIndex));
+                  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+                  break;
+              }
+          }
+        }
+        else if ( (source & AINPUT_SOURCE_MOUSE) == AINPUT_SOURCE_MOUSE )
+        {
+          // mouse
+          // int pointer = (AMotionEvent_getAction( event ) >> 8) & 0xff;
+          // float x = AMotionEvent_getX( event, pointer );
+          // float y = AMotionEvent_getY( event, pointer );
+          //mousemoved( 0, x, y );
+        }
+        else if ( (source & AINPUT_SOURCE_JOYSTICK) == AINPUT_SOURCE_JOYSTICK )
+        {
+          // joystick
+
+          if (flags != AMOTION_EVENT_ACTION_MOVE) {
+              LOGE("Joystick motion event NOT action AMOTION_EVENT_ACTION_MOVE deviceId: %d\n", deviceId);
+              return 0;
+          }
+
+          orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+          /* Inits event's payload */
+          orxMemory_Zero(&stJoystickEvent, sizeof(orxANDROID_JOYSTICK_EVENT));
+
+          stJoystickEvent.u32DeviceId = deviceId;
+          int32_t pointerIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+
+          switch( flags )
+          {
+              case AMOTION_EVENT_ACTION_DOWN:
+                  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_DOWN;
+                  break;
+              case AMOTION_EVENT_ACTION_UP:
+                  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_UP;
+                  break;
+              case AMOTION_EVENT_ACTION_MOVE:
+                  stJoystickEvent.u32Type = orxANDROID_EVENT_JOYSTICK_MOVE;
+                  break;
+          }
+
+          stJoystickEvent.stAxisData.fX = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_X, pointerIndex));
+          stJoystickEvent.stAxisData.fY = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_Y, pointerIndex));
+          stJoystickEvent.stAxisData.fZ = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_Z, pointerIndex));
+          stJoystickEvent.stAxisData.fRZ = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_RZ, pointerIndex));
+          stJoystickEvent.stAxisData.fLTRIGGER = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_LTRIGGER, pointerIndex));
+          stJoystickEvent.stAxisData.fRTRIGGER = orx2F(AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_RTRIGGER, pointerIndex));
+
+          orxEVENT_SEND(orxANDROID_EVENT_TYPE_JOYSTICK, 0, orxNULL, orxNULL, &stJoystickEvent);
+        } else {
+          return 0;
         }
 
         return 1;
@@ -304,25 +451,66 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
 
     case AINPUT_EVENT_TYPE_KEY:
     {
-        orxANDROID_KEY_EVENT stKeyEvent;
         int32_t action = AKeyEvent_getAction(event);
+        int32_t keyCode = AKeyEvent_getKeyCode(event);
 
-        /* Inits event's payload */
-        orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-        stKeyEvent.u32KeyCode = AKeyEvent_getKeyCode(event);
-        stKeyEvent.u32Action = action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP;
-        // TODO stKeyEvent.u32Unicode = unicode;
+        // deviceId
+        /*
+          An input device id of 0 indicates that the event didn't come from a physical device; other numbers are arbitrary and you shouldn't depend on the values. Use the provided input device query API to obtain information about input devices.
+        */
+        int32_t source = AInputEvent_getSource(event);
 
-        if(action != AKEY_EVENT_ACTION_MULTIPLE)
-        {
-            orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+        if ((source & AINPUT_SOURCE_GAMEPAD) == AINPUT_SOURCE_GAMEPAD) {
+          LOGV("gamepad deviceId: %d, keyCode: %d\n", deviceId, keyCode);
         }
-        else
-        {
-            // TODO
+        else if ((source & AINPUT_SOURCE_JOYSTICK) == AINPUT_SOURCE_JOYSTICK) {
+          LOGV("joystick deviceId: %d, keyCode: %d\n", deviceId, keyCode);
+        }
+        else if ((source & AINPUT_SOURCE_KEYBOARD) == AINPUT_SOURCE_KEYBOARD) {
+          LOGV("keyboard deviceId: %d, keyCode: %d\n", deviceId, keyCode);
+        }
+        else if ((source & AINPUT_SOURCE_DPAD) == AINPUT_SOURCE_DPAD) {
+          LOGV("dpad deviceId: %d, keyCode: %d\n", deviceId, keyCode);
         }
 
-        if(stKeyEvent.u32KeyCode == AKEYCODE_VOLUME_UP || stKeyEvent.u32KeyCode == AKEYCODE_VOLUME_DOWN)
+        /* Key or joystick ? */
+
+        if(keyCode != AKEYCODE_BACK && // BACK is a keyboard event
+                ((source & AINPUT_SOURCE_JOYSTICK) == AINPUT_SOURCE_JOYSTICK ||
+                 (source & AINPUT_SOURCE_GAMEPAD) == AINPUT_SOURCE_GAMEPAD)) {
+
+          orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+          /* Inits event's payload */
+          orxMemory_Zero(&stJoystickEvent, sizeof(orxANDROID_JOYSTICK_EVENT));
+
+          stJoystickEvent.u32Type = action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_JOYSTICK_DOWN : orxANDROID_EVENT_JOYSTICK_UP;
+          stJoystickEvent.u32DeviceId = deviceId;
+          stJoystickEvent.u32KeyCode = keyCode;
+
+          orxEVENT_SEND(orxANDROID_EVENT_TYPE_JOYSTICK, 0, orxNULL, orxNULL, &stJoystickEvent);
+
+          LOGV("Joystick EVENT sent, type: %lu\n", stJoystickEvent.u32Type);
+        }
+        else if((source & AINPUT_SOURCE_KEYBOARD) == AINPUT_SOURCE_KEYBOARD ||
+                 (source & AINPUT_SOURCE_DPAD) == AINPUT_SOURCE_DPAD) {
+          // Keyboard and Dpad
+
+          orxANDROID_KEY_EVENT stKeyEvent;
+          stKeyEvent.u32KeyCode = keyCode;
+          stKeyEvent.u32Action = action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN : orxANDROID_EVENT_KEYBOARD_UP;
+          stKeyEvent.u32Unicode = 0; // not in Ndk, only in Java KeyEvent getUnicodeChar()
+
+          if(action != AKEY_EVENT_ACTION_MULTIPLE)
+          {
+              orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+          }
+          else
+          {
+              // TODO
+          }
+        }
+
+        if(keyCode == AKEYCODE_VOLUME_UP || keyCode == AKEYCODE_VOLUME_DOWN)
             return 0;
 
         return 1;
@@ -388,26 +576,39 @@ static inline orxBOOL isInteractible()
   return (sstAndroid.app_->window && !sstAndroid.bPaused && sstAndroid.bHasFocus);
 }
 
-
+// Called from within Orx
 extern "C" void orxAndroid_PumpEvents()
 {
     // Read all pending events.
-    int id;
+    int ident;
     int events;
     android_poll_source* source;
 
     // If not animating, we will block forever waiting for events.
     // If animating, we loop until all events are read, then continue
     // to draw the next frame of animation.
-    while( (id = ALooper_pollAll( isInteractible() ? 0 : -1, NULL, &events, (void**) &source )) >= 0 )
+    while( (ident = ALooper_pollAll( isInteractible() ? 0 : -1, NULL, &events, (void**) &source )) >= 0 )
     {
         // Process this event.
         if( source != NULL )
             source->process( sstAndroid.app_, source );
 
-        if (id == LOOPER_ID_SENSOR)
+        if (ident == LOOPER_ID_SENSOR)
         {
             orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
+        }
+
+        // read orxANDROID_JOYSTICK_EVENTs coming from device listener in Activity
+        if(ident == LOOPER_ID_JOYSTICK_EVENT)
+        {
+          orxANDROID_JOYSTICK_EVENT stJoystickEvent;
+
+          if (read(sstAndroid.pipeJoystickEvent[0], &stJoystickEvent, sizeof(stJoystickEvent)) == sizeof(stJoystickEvent))
+          {
+            orxEVENT_SEND(orxANDROID_EVENT_TYPE_JOYSTICK, 0, orxNULL, orxNULL, &stJoystickEvent);
+          } else {
+            LOGE("No data on command pipe!");
+          }
         }
 
         // Check if we are exiting.
@@ -444,11 +645,15 @@ extern int main(int argc, char *argv[]);
 
 void android_main( android_app* state )
 {
+    LOGI("android_main()");
+
     state->onAppCmd = handleCmd;
     state->onInputEvent = handleInput;
 
     /* Cleans static controller */
     memset(&sstAndroid, 0, sizeof(orxANDROID_STATIC));
+    sstAndroid.pipeJoystickEvent[0] = -1;
+    sstAndroid.pipeJoystickEvent[1] = -1;
 
     sstAndroid.app_ = state;
     sstAndroid.lastWidth = 0;
@@ -456,6 +661,12 @@ void android_main( android_app* state )
     sstAndroid.bPaused = orxTRUE;
     sstAndroid.bHasFocus = orxFALSE;
     sstAndroid.fSurfaceScale = orxFLOAT_0;
+
+    // setup Looper pipe for joystick lifecycle events
+    if (pipe(sstAndroid.pipeJoystickEvent)) {
+        LOGE("could not create pipe: %s", strerror(errno));
+        return;
+    }
 
     jVM = state->activity->vm;
 
@@ -470,6 +681,36 @@ void android_main( android_app* state )
         orxAndroid_JNI_SetupThread(orxNULL);
     }
 
+    JNIEnv *env = Android_JNI_GetEnv();
+
+    jobject jActivity = state->activity->clazz;
+    sstAndroid.mActivity = env->NewGlobalRef(jActivity);
+
+    // Create Java-method access to the activity.getDeviceIds();
+    sstAndroid.midGetDeviceIds = env->GetMethodID(env->GetObjectClass(jActivity), "getDeviceIds", "()[I");
+
+    if(!sstAndroid.midGetDeviceIds) {
+        __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java method getDeviceIds in the NativeActivity, check that they're named and typed correctly");
+    }
+
+    // Looper for Joystick lifecycle events
+    sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+    ALooper_addFd(sstAndroid.looper, sstAndroid.pipeJoystickEvent[0], LOOPER_ID_JOYSTICK_EVENT, ALOOPER_EVENT_INPUT, NULL, NULL);
+
+    // register jni methods manually becuase the automatic registration does not happens when Activity is not loading system library.
+    JNINativeMethod methodTable[]=
+      {
+          {"nativeOnPause", "()V", (void *)Java_nativeOnPause},
+          {"nativeOnResume", "()V", (void *)Java_nativeOnResume},
+          {"nativeOnInputDeviceAdded", "(I)V", (void *)Java_nativeOnInputDeviceAdded},
+          {"nativeOnInputDeviceChanged", "(I)V", (void *)Java_nativeOnInputDeviceChanged},
+          {"nativeOnInputDeviceRemoved", "(I)V", (void *)Java_nativeOnInputDeviceRemoved}
+      };
+    int methodTableSize=sizeof(methodTable)/sizeof(methodTable[0]);
+    env->RegisterNatives(env->GetObjectClass(jActivity), methodTable, methodTableSize);
+
+    sstAndroidInitialized = orxTRUE;
+
     /* Run the application code! */
     main(0, orxNULL);
 
@@ -477,6 +718,12 @@ void android_main( android_app* state )
     {
       free(sstAndroid.zAndroidInternalFilesPath);
     }
+
+  ALooper_removeFd(sstAndroid.looper, sstAndroid.pipeJoystickEvent[0]);
+  close(sstAndroid.pipeJoystickEvent[0]);
+  close(sstAndroid.pipeJoystickEvent[1]);
+  sstAndroid.pipeJoystickEvent[0] = -1;
+  sstAndroid.pipeJoystickEvent[1] = -1;
 
     if(state->destroyRequested == 0)
     {

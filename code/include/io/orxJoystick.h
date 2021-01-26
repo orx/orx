@@ -46,6 +46,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
+#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   16
 
 /** Helpers
  */
