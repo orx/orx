@@ -113,7 +113,7 @@
 
 #define orxANIMSET_KU32_LINK_LOWEST_PRIORITY          0x00000000  /**< Link lowest priority */
 #define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY         0x00000008  /**< Link default priority */
-#define orxANIMSET_KU32_LINK_HIGHEST_PRIORITY         0x0000000D  /**< Link highest priority */
+#define orxANIMSET_KU32_LINK_HIGHEST_PRIORITY         0x0000000F  /**< Link highest priority */
 
 
 /** Link table (status) flags
@@ -371,15 +371,17 @@ static orxINLINE orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_T
         /* Checks */
         orxASSERT(_u32Value <= (orxANIMSET_KU32_LINK_MASK_PRIORITY >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY));
 
-        /* Updates priority */
+        /* Clears priority */
+        _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~orxANIMSET_KU32_LINK_MASK_PRIORITY;
+
+        /* New priority? */
         if(_u32Value != orxU32_UNDEFINED)
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_FLAG_PRIORITY
-                                                   + ((_u32Value << orxANIMSET_KU32_LINK_SHIFT_PRIORITY) & orxANIMSET_KU32_LINK_MASK_PRIORITY);
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= ((_u32Value << orxANIMSET_KU32_LINK_SHIFT_PRIORITY) & orxANIMSET_KU32_LINK_MASK_PRIORITY);
         }
         else
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~(orxANIMSET_KU32_LINK_FLAG_PRIORITY | orxANIMSET_KU32_LINK_MASK_PRIORITY);
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_DEFAULT_PRIORITY << orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
         }
 
         break;
@@ -475,15 +477,8 @@ static orxINLINE orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABL
       /* Priority */
       case orxANIMSET_KU32_LINK_FLAG_PRIORITY:
       {
-        /* Has priority? */
-        if(_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_FLAG_PRIORITY)
-        {
-          u32Value = (_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
-        }
-        else
-        {
-          u32Value = (orxU32)orxANIMSET_KU32_LINK_DEFAULT_PRIORITY;
-        }
+        /* Updates result */
+        u32Value = (_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
 
         break;
       }
@@ -658,14 +653,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstIn
   orxASSERT(u32DirectLink & orxANIMSET_KU32_LINK_FLAG_LINK);
 
   /* Gets direct link priority */
-  if(u32DirectLink & orxANIMSET_KU32_LINK_FLAG_PRIORITY)
-  {
-    u32DirectPriority = (u32DirectLink & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
-  }
-  else
-  {
-    u32DirectPriority = (orxU32)orxANIMSET_KU32_LINK_DEFAULT_PRIORITY;
-  }
+  u32DirectPriority = (u32DirectLink & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
 
   /* Compares all paths */
   for(i = 0; i < (orxU32)(pstLinkTable->u16TableSize); i++)
@@ -694,14 +682,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstIn
           orxU32 u32Priority;
 
           /* Computes old path priority */
-          if(u32DstLink & orxANIMSET_KU32_LINK_FLAG_PRIORITY)
-          {
-            u32Priority = (u32DstLink & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
-          }
-          else
-          {
-            u32Priority = (orxU32)orxANIMSET_KU32_LINK_DEFAULT_PRIORITY;
-          }
+          u32Priority = (u32DstLink & orxANIMSET_KU32_LINK_MASK_PRIORITY) >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY;
 
           /* Lowest priority found? */
           if(u32Priority > u32DirectPriority)
