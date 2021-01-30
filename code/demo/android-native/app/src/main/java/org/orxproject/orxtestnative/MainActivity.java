@@ -1,13 +1,13 @@
 package org.orxproject.orxtestnative;
 
 import android.annotation.TargetApi;
-import android.app.NativeActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import org.orx.lib.OrxNativeActivity;
 
-public class MainActivity extends NativeActivity {
+public class MainActivity extends OrxNativeActivity {
 
     private Handler mHandler = new Handler();
     private View mDecorView;

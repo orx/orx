@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def orx = System.getenv('ORX') ?: "../../.."
+
 android {
   compileSdkVersion sdkVersion.toInteger()
 
@@ -20,7 +22,7 @@ android {
 
   lintOptions {
     abortOnError true
-    warningsAsErrors true
+    warningsAsErrors false
   }
 
   buildTypes {
@@ -50,6 +52,7 @@ android {
 
   sourceSets {
     main {
+      java.srcDirs += ["${orx}/build/android-native/java"]
       // For custom apps, you should have resources in some parent folder with orx data.
       // E.g. '../../../data'
       assets.srcDirs = ['./src/main/assets']

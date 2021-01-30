@@ -30,7 +30,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callback,
     View.OnKeyListener, View.OnTouchListener, InputManager.InputDeviceListener {
 
-    private SurfaceHolder mCurSurfaceHolder;
+  public static int orxANDROID_KU32_MAX_JOYSTICK_NUMBER = 16; // same as in Orx /code/include/io/orxJoystick.h
+
+  private SurfaceHolder mCurSurfaceHolder;
     private SurfaceView mSurface;
     private InputManager mInputManager;
 
@@ -334,7 +336,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @SuppressWarnings("UnusedDeclaration")
     public int[] getDeviceIds() {
         int deviceIds[] = mInputManager.getInputDeviceIds();
-        int result[] = new int[4];
+        int result[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
         int i = 0;
 
         for (int deviceId : deviceIds) {
@@ -343,7 +345,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             // if the device is a gamepad/joystick
             if ((((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
                     ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) &&
-                    i < 4 ) {
+                    i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER ) {
                 result[i++] = deviceId;
             }
         }

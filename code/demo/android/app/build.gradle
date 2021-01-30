@@ -22,7 +22,7 @@ android {
 
   lintOptions {
     abortOnError true
-    warningsAsErrors true
+    warningsAsErrors false
   }
 
   buildTypes {

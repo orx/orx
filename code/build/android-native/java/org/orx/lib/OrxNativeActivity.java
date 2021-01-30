@@ -1,0 +1,139 @@
+package org.orx.lib;
+
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.app.NativeActivity;
+import android.content.Context;
+import android.hardware.input.InputManager;
+import android.view.InputDevice;
+
+/**
+    Base class for the apps NativeActivity adapted to orxAndroidNativeSupport.cpp in orxlib.
+
+    NativeActivity is used with the android_native_app_glue.
+ */
+public class OrxNativeActivity extends NativeActivity implements InputManager.InputDeviceListener {
+
+    public static int orxANDROID_KU32_MAX_JOYSTICK_NUMBER = 16; // same as in Orx /code/include/io/orxJoystick.h
+
+    // C functions we call
+    public native void nativeOnInputDeviceAdded(int deviceId);
+    public native void nativeOnInputDeviceChanged(int deviceId);
+    public native void nativeOnInputDeviceRemoved(int deviceId);
+    private native void nativeOnPause();
+    private native void nativeOnResume();
+
+    private InputManager mInputManager;
+    private int mGameControllerIds[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
+
+    /*
+      NOTE: Do NOT to call any native methods before App is created (before this callback is done).
+      The native app structure is initialized in new thread when super.onCreate() is being executed.
+      So best is to wait until onStart() below has been called.
+    */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mInputManager = (InputManager)this.getSystemService(Context.INPUT_SERVICE);
+    }
+
+    @Override
+    protected void onStart() {
+      Log.d("OrxNativeActivity", "onStart()");
+    	super.onStart();
+
+      getAndStoreDeviceIds();
+      mInputManager.registerInputDeviceListener(this, null);
+    }
+
+    @Override
+    protected void onStop() {
+      Log.d("OrxNativeActivity", "onStop()");
+      mInputManager.unregisterInputDeviceListener(this);
+      super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        nativeOnPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nativeOnResume();
+    }
+
+    @Override
+    public void onInputDeviceAdded(int deviceId) {
+        Log.d("OrxNativeActivity", "onInputDeviceAdded() deviceId: "+deviceId);
+        if (isGameController(deviceId)) {
+            getAndStoreDeviceIds();
+            nativeOnInputDeviceAdded(deviceId);
+        }
+    }
+
+    @Override
+    public void onInputDeviceChanged(int deviceId) {
+        Log.d("OrxNativeActivity", "onInputDeviceChanged() deviceId: "+deviceId);
+        if (isGameController(deviceId)) {
+            getAndStoreDeviceIds();
+            nativeOnInputDeviceChanged(deviceId);
+        }
+    }
+
+    @Override
+    public void onInputDeviceRemoved(int deviceId) {
+        Log.d("OrxNativeActivity", "onInputDeviceRemoved() deviceId: "+deviceId);
+        // We must first check if this is a removed game controller before sending to Orx.
+        // We cannot use isGameController(deviceId) because getInputDevice(deviceId) returns null (removed);
+        for (int i=0; i<mGameControllerIds.length; i++) {
+            if (mGameControllerIds[i] == deviceId) {
+              mGameControllerIds[i] = 0;
+              nativeOnInputDeviceRemoved(deviceId);
+              break;
+            }
+        }
+    }
+
+    private void getAndStoreDeviceIds() {
+      mGameControllerIds = getDeviceIds();
+    }
+
+    private boolean isGameController(int deviceId) {
+      InputDevice dev = mInputManager.getInputDevice(deviceId);
+      if (dev == null) {
+        Log.e("OrxNativeActivity", "NULL device with deviceId: "+deviceId);
+        return false;
+      }
+      int sources = dev.getSources();
+      // if the device is a gamepad/joystick
+      return ((((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
+            ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)));
+    }
+
+    // Called from android/OrxJoystick via orxAndroidNativeSupport to get initial deviceIds for Orx Joysticks if UseJoystick = true
+    @SuppressWarnings("UnusedDeclaration")
+    public int[] getDeviceIds() {
+        int deviceIds[] = mInputManager.getInputDeviceIds();
+        int result[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
+        int i = 0;
+
+        for (int deviceId : deviceIds) {
+            InputDevice dev = mInputManager.getInputDevice(deviceId);
+            int sources = dev.getSources();
+            if (isGameController(deviceId) && i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER) {
+                result[i++] = deviceId;
+                Log.i("OrxNativeActivity", "Game controller '"+dev+"' connected, sources:"+sources+", deviceID: "+deviceId);
+            }
+        }
+        Log.i("OrxNativeActivity", "Nr of Game controllers connected: "+i);
+
+        return result;
+    }
+}
+
