@@ -1986,22 +1986,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           orxConfig_SetParent(zNewFrameParent, zCurrentSection);
         }
 
-        /* Gets current parent */
-        zParent = orxConfig_GetParent(acFrameBuffer);
-
-        /* Already has parent? */
-        if((zParent != orxNULL)
-        && (orxString_Compare(zParent, zNewFrameParent) != 0))
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewFrameParent);
-        }
-
-        /* Pushes it */
+        /* Pushes its section */
         orxConfig_SelectSection(acFrameBuffer);
-
-        /* Sets its parent */
-        orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
 
         /* From config? */
         if(bFromConfig != orxFALSE)
@@ -2102,6 +2088,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             bTempName = orxTRUE;
           }
         }
+
+        /* Gets current parent */
+        zParent = orxConfig_GetParent(acFrameBuffer);
+
+        /* Already has parent? */
+        if((zParent != orxNULL)
+        && (orxString_Compare(zParent, zNewFrameParent) != 0))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewFrameParent);
+        }
+
+        /* Sets section's parent */
+        orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
 
         /* Gets event value count */
         s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
