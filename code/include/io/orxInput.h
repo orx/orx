@@ -59,16 +59,16 @@
 #define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
 #define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList"       /**< Combine input list */
 
-#define orxINPUT_KU32_BINDING_NUMBER      8
+#define orxINPUT_KU32_BINDING_NUMBER                  16
 
-#define orxINPUT_KZ_INTERNAL_SET_PREFIX   "-="
+#define orxINPUT_KZ_INTERNAL_SET_PREFIX               "-="
 
-#define orxINPUT_KC_MODE_PREFIX_POSITIVE  '+'
-#define orxINPUT_KC_MODE_PREFIX_NEGATIVE  '-'
+#define orxINPUT_KC_MODE_PREFIX_POSITIVE              '+'
+#define orxINPUT_KC_MODE_PREFIX_NEGATIVE              '-'
 
-#define orxINPUT_GET_FLAG(TYPE)                         ((orxU32)(1U << (orxU32)(TYPE)))
-#define orxINPUT_KU32_FLAG_TYPE_NONE                    0x00000000
-#define orxINPUT_KU32_MASK_TYPE_ALL                     0x0000FFFF
+#define orxINPUT_GET_FLAG(TYPE)                       ((orxU32)(1U << (orxU32)(TYPE)))
+#define orxINPUT_KU32_FLAG_TYPE_NONE                  0x00000000
+#define orxINPUT_KU32_MASK_TYPE_ALL                   0x0000FFFF
 
 
 /** Input type enum
