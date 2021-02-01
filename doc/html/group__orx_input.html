@@ -123,13 +123,13 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gac98f1690996707985b9fbf5ebc65ff1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gac98f1690996707985b9fbf5ebc65ff1e">orxINPUT_GET_FLAG</a>(TYPE)                                              &#160;&#160;&#160;((orxU32)(1U &lt;&lt; (orxU32)(TYPE)))</td></tr>
-<tr class="separator:gac98f1690996707985b9fbf5ebc65ff1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga90f6283479c6ce541c1c989e1eb0fa6d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga90f6283479c6ce541c1c989e1eb0fa6d">orxINPUT_GET_FLAG</a>(TYPE)                                          &#160;&#160;&#160;((orxU32)(1U &lt;&lt; (orxU32)(TYPE)))</td></tr>
+<tr class="separator:ga90f6283479c6ce541c1c989e1eb0fa6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga818373c22d8ca5f51e1faeb77a7494f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga818373c22d8ca5f51e1faeb77a7494f6">orxINPUT_KC_MODE_PREFIX_NEGATIVE</a>&#160;&#160;&#160;'-'</td></tr>
 <tr class="separator:ga818373c22d8ca5f51e1faeb77a7494f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1f4d0bff738f8a3b3d3ffe7055723068"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga1f4d0bff738f8a3b3d3ffe7055723068">orxINPUT_KC_MODE_PREFIX_POSITIVE</a>&#160;&#160;&#160;'+'</td></tr>
 <tr class="separator:ga1f4d0bff738f8a3b3d3ffe7055723068"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaccb7c6f56180d6f17b0e9d6faee23767"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767">orxINPUT_KU32_BINDING_NUMBER</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memitem:gaccb7c6f56180d6f17b0e9d6faee23767"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767">orxINPUT_KU32_BINDING_NUMBER</a>&#160;&#160;&#160;16</td></tr>
 <tr class="separator:gaccb7c6f56180d6f17b0e9d6faee23767"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga17e917333ddf4b7b0329c6941dff0775"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga17e917333ddf4b7b0329c6941dff0775">orxINPUT_KU32_FLAG_TYPE_NONE</a>&#160;&#160;&#160;0x00000000</td></tr>
 <tr class="separator:ga17e917333ddf4b7b0329c6941dff0775"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -256,7 +256,7 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Input module Module that handles generalized inputs (keyboard, mouse, joystick, ...) </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="gac98f1690996707985b9fbf5ebc65ff1e"></a>
+<a class="anchor" id="ga90f6283479c6ce541c1c989e1eb0fa6d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -307,7 +307,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxINPUT_KU32_BINDING_NUMBER&#160;&#160;&#160;8</td>
+          <td class="memname">#define orxINPUT_KU32_BINDING_NUMBER&#160;&#160;&#160;16</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1453,7 +1453,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets current set's type flags, only set types will be polled when updating the set (use <a class="el" href="group__orx_input.html#gac98f1690996707985b9fbf5ebc65ff1e">orxINPUT_GET_FLAG(TYPE)</a> in order to get the flag that matches a type) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Sets current set's type flags, only set types will be polled when updating the set (use <a class="el" href="group__orx_input.html#ga90f6283479c6ce541c1c989e1eb0fa6d">orxINPUT_GET_FLAG(TYPE)</a> in order to get the flag that matches a type) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32AddTypeFlags</td><td>Type flags to add </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32RemoveTypeFlags</td><td>Type flags to remove </td></tr>

@@ -1118,7 +1118,7 @@ var searchData=
   ['orxinput_5fevent_5fpayload',['orxINPUT_EVENT_PAYLOAD',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxinput_5fevent_5fselect_5fset',['orxINPUT_EVENT_SELECT_SET',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72',1,'orxInput.h']]],
   ['orxinput_5fexit',['orxInput_Exit',['../group__orx_input.html#ga494bcae3fb2c30b26d44069ce7a844a1',1,'orxInput.h']]],
-  ['orxinput_5fget_5fflag',['orxINPUT_GET_FLAG',['../group__orx_input.html#gac98f1690996707985b9fbf5ebc65ff1e',1,'orxInput.h']]],
+  ['orxinput_5fget_5fflag',['orxINPUT_GET_FLAG',['../group__orx_input.html#ga90f6283479c6ce541c1c989e1eb0fa6d',1,'orxInput.h']]],
   ['orxinput_5fgetactivebinding',['orxInput_GetActiveBinding',['../group__orx_input.html#gab4636c9b964274cfe2cd10203ccd0dd6',1,'orxInput.h']]],
   ['orxinput_5fgetbinding',['orxInput_GetBinding',['../group__orx_input.html#ga2d9daa283a38740dff7ace1c6df24f82',1,'orxInput.h']]],
   ['orxinput_5fgetbindinglist',['orxInput_GetBindingList',['../group__orx_input.html#ga70a74994a419dc1b4ad7e7500317fe16',1,'orxInput.h']]],

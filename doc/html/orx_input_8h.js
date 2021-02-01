@@ -1,6 +1,6 @@
 var orx_input_8h =
 [
-    [ "orxINPUT_GET_FLAG", "group__orx_input.html#gac98f1690996707985b9fbf5ebc65ff1e", null ],
+    [ "orxINPUT_GET_FLAG", "group__orx_input.html#ga90f6283479c6ce541c1c989e1eb0fa6d", null ],
     [ "orxINPUT_KC_MODE_PREFIX_NEGATIVE", "group__orx_input.html#ga818373c22d8ca5f51e1faeb77a7494f6", null ],
     [ "orxINPUT_KC_MODE_PREFIX_POSITIVE", "group__orx_input.html#ga1f4d0bff738f8a3b3d3ffe7055723068", null ],
     [ "orxINPUT_KU32_BINDING_NUMBER", "group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
