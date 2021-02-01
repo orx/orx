@@ -264,6 +264,13 @@ if exists? git [
       ]
     ]
   ]
+
+  ; Creates build file
+  build-version: copy ""
+  call/shell/output {git rev-list --count HEAD} build-version
+  if not empty? trim/all build-version [
+    attempt [write build-file form reduce ["#define __orxVERSION_BUILD__" build-version]]
+  ]
 ]
 
 
