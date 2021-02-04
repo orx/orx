@@ -168,9 +168,9 @@ extern "C" struct android_app* orxAndroid_GetAndroidApp()
   return sstAndroid.app_;
 }
 
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
-  // Copied from orxAndroidSupport.cpp
   JNIEnv *env = Android_JNI_GetEnv();
   jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
   env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
@@ -180,7 +180,6 @@ extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX
 extern "C" JNIEXPORT void JNICALL Java_nativeOnPause(JNIEnv* env, jobject thiz)
 {
   LOGI("nativeOnPause");
-
 }
 
 // Resume
@@ -196,6 +195,7 @@ extern "C" JNIEXPORT void JNICALL Java_nativeOnResume(JNIEnv* env, jobject thiz)
 
 /* Theses method are called from Activity if it implements InputDeviceListener */
 // Copied from orxAndroidSupport.cpp
+// Function names doesn't have to fit Activity because they are registered manually.
 extern "C" void JNICALL Java_nativeOnInputDeviceAdded(JNIEnv* env, jobject thiz, jint deviceId)
 {
   orxANDROID_JOYSTICK_EVENT stJoystickEvent;
@@ -205,6 +205,8 @@ extern "C" void JNICALL Java_nativeOnInputDeviceAdded(JNIEnv* env, jobject thiz,
 
   if(sstAndroid.pipeJoystickEvent[1] != -1)
   {
+    LOGV("nativeOnInputDeviceAdded(), deviceId: %d\n", deviceId);
+
     if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
     {
       LOGE("Failure writing joystick event: %s\n", strerror(errno));
@@ -236,6 +238,8 @@ extern "C" void JNICALL Java_nativeOnInputDeviceRemoved(JNIEnv* env, jobject thi
 
   if(sstAndroid.pipeJoystickEvent[1] != -1)
   {
+    LOGV("nativeOnInputDeviceRemoved(), deviceId: %d\n", deviceId);
+
     if (write(sstAndroid.pipeJoystickEvent[1], &stJoystickEvent, sizeof(stJoystickEvent)) != sizeof(stJoystickEvent))
     {
       LOGE("Failure writing joystick event: %s\n", strerror(errno));
@@ -248,6 +252,7 @@ extern "C" ANativeActivity* orxAndroid_GetNativeActivity()
   return sstAndroid.app_->activity;
 }
 
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
   if (!sstAndroid.zAndroidInternalFilesPath)
@@ -256,13 +261,12 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     jobject fileObject;
     jstring pathString;
     const char *path;
-    jobject jActivity;
 
     JNIEnv *env = Android_JNI_GetEnv();
 
-    // fileObj = context.getFilesDir();
     mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity), "getFilesDir", "()Ljava/io/File;");
-    fileObject = env->CallObjectMethod(jActivity, mid);
+    fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
+
     if (!fileObject)
     {
       LOGE("Couldn't get internal directory");
@@ -281,6 +285,58 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
   }
 
   return sstAndroid.zAndroidInternalFilesPath;
+}
+
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
+extern "C" orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDROID_JOYSTICK_INFO *pstJoystickInfo)
+{
+    jmethodID mid;
+    jobject deviceObject;
+    jclass inputDeviceClass;
+    jstring deviceNameString;
+    const char *deviceName;
+
+    JNIEnv *env = Android_JNI_GetEnv();
+
+    inputDeviceClass = env->FindClass("android/view/InputDevice");
+    mid = env->GetStaticMethodID(inputDeviceClass, "getDevice", "(I)Landroid/view/InputDevice;");
+    deviceObject = env->CallStaticObjectMethod(inputDeviceClass, mid, (jint)_u32DeviceId);
+
+    if (!deviceObject)
+    {
+      LOGE("Couldn't get InputDevice.getDevice(%d)", (int)_u32DeviceId);
+      env->DeleteLocalRef(inputDeviceClass);
+      return orxSTATUS_FAILURE;
+    }
+
+    pstJoystickInfo->u32DeviceId = _u32DeviceId;
+
+    mid = env->GetMethodID(inputDeviceClass, "getVendorId", "()I");
+    pstJoystickInfo->u32VendorId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getProductId", "()I");
+    pstJoystickInfo->u32ProductId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getDescriptor", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->descriptor, deviceName, sizeof(pstJoystickInfo->descriptor) - 1);
+    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = '\0';
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    mid = env->GetMethodID(inputDeviceClass, "getName", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name));
+    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = '\0';
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    env->DeleteLocalRef(deviceObject);
+    env->DeleteLocalRef(inputDeviceClass);
+
+    return orxSTATUS_SUCCESS;
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
@@ -326,7 +382,6 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
     {
     case AINPUT_EVENT_TYPE_MOTION:
     {
-
         if(sstAndroid.fSurfaceScale == orxFLOAT_0)
         {
           orxConfig_PushSection(KZ_CONFIG_ANDROID);
@@ -334,13 +389,15 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
           orxConfig_PopSection();
         }
 
-
         int32_t action = AMotionEvent_getAction(event);
         int32_t source = AInputEvent_getSource(event);
         unsigned int flags = action & AMOTION_EVENT_ACTION_MASK;
 
-        /* Touch, mouse or joystick ? */
-        if ( (source & AINPUT_SOURCE_TOUCHSCREEN) == AINPUT_SOURCE_TOUCHSCREEN )
+        /* Touch/mouse or joystick ? */
+
+        // TODO: What about AINPUT_SOURCE_TRACKBALL & AINPUT_SOURCE_TOUCHPAD ?
+        if ((source & AINPUT_SOURCE_TOUCHSCREEN) == AINPUT_SOURCE_TOUCHSCREEN ||
+            (source & AINPUT_SOURCE_MOUSE) == AINPUT_SOURCE_MOUSE)
         {
           // touch screen
           orxSYSTEM_EVENT_PAYLOAD stPayload;
@@ -396,14 +453,6 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
                   break;
               }
           }
-        }
-        else if ( (source & AINPUT_SOURCE_MOUSE) == AINPUT_SOURCE_MOUSE )
-        {
-          // mouse
-          // int pointer = (AMotionEvent_getAction( event ) >> 8) & 0xff;
-          // float x = AMotionEvent_getX( event, pointer );
-          // float y = AMotionEvent_getY( event, pointer );
-          //mousemoved( 0, x, y );
         }
         else if ( (source & AINPUT_SOURCE_JOYSTICK) == AINPUT_SOURCE_JOYSTICK )
         {
@@ -489,7 +538,7 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
 
           orxEVENT_SEND(orxANDROID_EVENT_TYPE_JOYSTICK, 0, orxNULL, orxNULL, &stJoystickEvent);
 
-          LOGV("Joystick EVENT sent, type: %lu\n", stJoystickEvent.u32Type);
+          LOGV("Joystick EVENT sent, type: %s, keyCode: %d\n", (action == AKEY_EVENT_ACTION_DOWN ? "DOWN":"UP"), (int)keyCode);
         }
         else if((source & AINPUT_SOURCE_KEYBOARD) == AINPUT_SOURCE_KEYBOARD ||
                  (source & AINPUT_SOURCE_DPAD) == AINPUT_SOURCE_DPAD) {
@@ -506,7 +555,8 @@ static int32_t handleInput(struct android_app* app, AInputEvent* event)
           }
           else
           {
-              // TODO
+              // TODO See OrxActivity.onKey()
+              // https://stackoverflow.com/questions/21124051/receive-complete-android-unicode-input-in-c-c
           }
         }
 

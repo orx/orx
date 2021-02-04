@@ -46,8 +46,6 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
-#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   16
-
 /** Helpers
  */
 #define orxJOYSTICK_GET_AXIS(AXIS, ID)          ((((orxU32)AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
@@ -314,6 +312,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTIC
  * @return orxTRUE if connected / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsConnected(orxU32 _u32ID);
+
+/*
+  TODO: Joystick device info
+  Available now in plugin code for GLFW and Android.
+  extern orxDLLAPI orxJoystickInfo orxFASTCALL          orxJoystick_GetDeviceInfo(orxU32 _u32ID);
+*/
 
 #endif /* _orxJOYSTICK_H_ */
 

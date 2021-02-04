@@ -640,6 +640,7 @@ extern "C" jobject orxAndroid_GetActivity()
   return sstAndroid.mActivity;
 }
 
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
   JNIEnv *env = Android_JNI_GetEnv();
@@ -648,6 +649,7 @@ extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX
   env->DeleteLocalRef(retval);
 }
 
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
   if (!sstAndroid.zAndroidInternalFilesPath)
@@ -656,7 +658,6 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     jobject fileObject;
     jstring pathString;
     const char *path;
-    jobject jActivity;
 
     JNIEnv *env = Android_JNI_GetEnv();
 
@@ -681,6 +682,58 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
   }
 
   return sstAndroid.zAndroidInternalFilesPath;
+}
+
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
+extern "C" orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDROID_JOYSTICK_INFO *pstJoystickInfo)
+{
+    jmethodID mid;
+    jobject deviceObject;
+    jclass inputDeviceClass;
+    jstring deviceNameString;
+    const char *deviceName;
+
+    JNIEnv *env = Android_JNI_GetEnv();
+
+    inputDeviceClass = env->FindClass("android/view/InputDevice");
+    mid = env->GetStaticMethodID(inputDeviceClass, "getDevice", "(I)Landroid/view/InputDevice;");
+    deviceObject = env->CallStaticObjectMethod(inputDeviceClass, mid, (jint)_u32DeviceId);
+
+    if (!deviceObject)
+    {
+      LOGE("Couldn't get InputDevice.getDevice(%d)", (int)_u32DeviceId);
+      env->DeleteLocalRef(inputDeviceClass);
+      return orxSTATUS_FAILURE;
+    }
+
+    pstJoystickInfo->u32DeviceId = _u32DeviceId;
+
+    mid = env->GetMethodID(inputDeviceClass, "getVendorId", "()I");
+    pstJoystickInfo->u32VendorId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getProductId", "()I");
+    pstJoystickInfo->u32ProductId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getDescriptor", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->descriptor, deviceName, sizeof(pstJoystickInfo->descriptor) - 1);
+    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = '\0';
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    mid = env->GetMethodID(inputDeviceClass, "getName", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name));
+    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = '\0';
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    env->DeleteLocalRef(deviceObject);
+    env->DeleteLocalRef(inputDeviceClass);
+
+    return orxSTATUS_SUCCESS;
 }
 
 static inline orxBOOL isInteractible()

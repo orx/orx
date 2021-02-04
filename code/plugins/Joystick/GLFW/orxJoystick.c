@@ -117,6 +117,7 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     {
       orxCHAR acJoystick[16] = {};
 
+      // TODO: Save Joystick info (name, id, capabilities etc for use in new plugin API getJoystickInfo(deviceId) )
       /* Pushes input section */
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 

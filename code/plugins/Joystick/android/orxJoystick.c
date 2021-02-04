@@ -47,6 +47,9 @@
 
 #define orxJOYSTICK_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
 
+#define orxJOYSTICK_KZ_CONFIG_NAME            "JoyName"
+#define orxJOYSTICK_KZ_CONFIG_ID              "JoyID"
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -147,6 +150,40 @@ static orxS32 getDeviceIndex(orxU32 _u32DeviceId)
   return -1;
 }
 
+static void addJoyInfoInConfig(orxANDROID_JOYSTICK_INFO *pstJoystickInfo, orxS32 deviceIdx) {
+
+      orxCHAR acJoystick[40] = {};
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+      /* Stores its name */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, deviceIdx + 1);
+      orxConfig_SetString(acJoystick, pstJoystickInfo->name);
+
+      /* Stores its id */
+      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, deviceIdx + 1);
+      orxConfig_SetString(acJoystick, pstJoystickInfo->descriptor);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+}
+
+static orxSTATUS getAndAddJoystickInfo(orxU32 u32DeviceId, orxS32 deviceIdx)
+{
+      // TODO: Save Joystick info (name, id, capabilities etc for use in new plugin API getJoystickInfo(deviceId) )
+      orxANDROID_JOYSTICK_INFO stJoystickInfo;
+      orxSTATUS eResult = orxAndroid_JNI_GetInputDevice(u32DeviceId, &stJoystickInfo);
+      if(eResult == orxSTATUS_FAILURE)
+      {
+        return orxSTATUS_FAILURE;
+      }
+      addJoyInfoInConfig(&stJoystickInfo, deviceIdx);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Add Joystick #%d: ID: %04x:%04x %s %s", deviceIdx+1,
+        stJoystickInfo.u32VendorId, stJoystickInfo.u32ProductId, stJoystickInfo.name, stJoystickInfo.descriptor);
+
+      return orxSTATUS_SUCCESS;
+}
+
 static orxSTATUS newDeviceIndex(orxU32 _u32DeviceId)
 {
   for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
@@ -155,7 +192,7 @@ static orxSTATUS newDeviceIndex(orxU32 _u32DeviceId)
     {
       sstJoystick.au32DeviceIds[i] = _u32DeviceId;
 
-      return orxSTATUS_SUCCESS;
+      return getAndAddJoystickInfo(_u32DeviceId, i);
     }
   }
 
@@ -480,6 +517,7 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
       {
         if(sstJoystick.au32DeviceIds[i] != 0)
         {
+          getAndAddJoystickInfo(sstJoystick.au32DeviceIds[i], i);
           orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "joystick deviceId: %d", sstJoystick.au32DeviceIds[i]);
         }
       }

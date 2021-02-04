@@ -53,6 +53,10 @@
 
 #include <android/native_window.h>
 
+#include "../io/orxJoystick.h"
+
+#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER orxJOYSTICK_KU32_MAX_ID
+
 #ifdef __orxANDROID_NATIVE__
 
 #include <android_native_app_glue.h>
@@ -153,6 +157,14 @@ typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
 
 } orxANDROID_SURFACE_CHANGED_EVENT;
 
+typedef struct __orxANDROID_JOYSTICK_INFO_t {
+        orxU32   u32DeviceId;
+        orxU32   u32ProductId;
+        orxU32   u32VendorId;
+        char descriptor[40+1]; //33c71ad39e5691dc864057cce39f83859bc5b6c1
+        char name[40+1];       //NINTENDO CO.,LTD. Core Controller
+} orxANDROID_JOYSTICK_INFO;
+
 ANativeWindow * orxAndroid_GetNativeWindow();
 
 /**
@@ -160,7 +172,9 @@ ANativeWindow * orxAndroid_GetNativeWindow();
   */
 const char * orxAndroid_GetInternalStoragePath();
 orxU32       orxAndroid_JNI_GetRotation();
-void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[4]);
+void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[orxANDROID_KU32_MAX_JOYSTICK_NUMBER]);
+
+orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDROID_JOYSTICK_INFO *stJoystickInfo);
 
 /**
   Register APK resources IO
