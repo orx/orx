@@ -71,6 +71,8 @@ static orxSTATUS orxFASTCALL Init() {
     /* Registers event handler */
     orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
 
+    orxLOG("Application save directory: %s", orxFile_GetApplicationSaveDirectory(orxNULL));
+
     /* Done! */
     return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
