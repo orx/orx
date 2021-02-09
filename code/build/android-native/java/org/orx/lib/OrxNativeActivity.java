@@ -26,7 +26,6 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     private native void nativeOnResume();
 
     private InputManager mInputManager;
-    private int mGameControllerIds[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
 
     /*
       NOTE: Do NOT to call any native methods before App is created (before this callback is done).
@@ -45,7 +44,6 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
       Log.d("OrxNativeActivity", "onStart()");
     	super.onStart();
 
-      getAndStoreDeviceIds();
       mInputManager.registerInputDeviceListener(this, null);
     }
 
@@ -72,7 +70,6 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     public void onInputDeviceAdded(int deviceId) {
         Log.d("OrxNativeActivity", "onInputDeviceAdded() deviceId: "+deviceId);
         if (isGameController(deviceId)) {
-            getAndStoreDeviceIds();
             nativeOnInputDeviceAdded(deviceId);
         }
     }
@@ -81,27 +78,15 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     public void onInputDeviceChanged(int deviceId) {
         Log.d("OrxNativeActivity", "onInputDeviceChanged() deviceId: "+deviceId);
         if (isGameController(deviceId)) {
-            getAndStoreDeviceIds();
             nativeOnInputDeviceChanged(deviceId);
         }
     }
 
     @Override
     public void onInputDeviceRemoved(int deviceId) {
-        Log.d("OrxNativeActivity", "onInputDeviceRemoved() deviceId: "+deviceId);
-        // We must first check if this is a removed game controller before sending to Orx.
-        // We cannot use isGameController(deviceId) because getInputDevice(deviceId) returns null (removed);
-        for (int i=0; i<mGameControllerIds.length; i++) {
-            if (mGameControllerIds[i] == deviceId) {
-              mGameControllerIds[i] = 0;
-              nativeOnInputDeviceRemoved(deviceId);
-              break;
-            }
-        }
-    }
-
-    private void getAndStoreDeviceIds() {
-      mGameControllerIds = getDeviceIds();
+        Log.d("OrxActivity", "onInputDeviceRemoved() deviceId: "+deviceId);
+        // It is not a problem if this removed device is not a game controller, just a debug-print "unknown device" in OrxJoystick
+        nativeOnInputDeviceRemoved(deviceId);
     }
 
     private boolean isGameController(int deviceId) {
