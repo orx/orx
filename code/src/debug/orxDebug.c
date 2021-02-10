@@ -583,7 +583,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Debug Log */
     va_start(stArgs, _zFormat);
     vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
-    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
+    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
     va_end(stArgs);
 
     /* Doesn't implicitly use ANSI codes? */
@@ -603,7 +603,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #endif /* __orxMSVC__ */
 
-    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
+    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
 
     /* Doesn't have ANSI support? */
     if(!orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
