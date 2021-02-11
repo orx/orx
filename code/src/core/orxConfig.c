@@ -6159,7 +6159,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(const orxSTRING _zKey)
 /** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
- * @return The value
+ * @return The value if valid, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector)
 {
