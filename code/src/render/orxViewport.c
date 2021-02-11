@@ -83,6 +83,7 @@
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION "RelativePosition"
 #define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE     "RelativeSize"
+#define orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE "UseRelativeSize"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
 #define orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA  "BackgroundAlpha"
 #define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
@@ -1515,8 +1516,17 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Gets it */
         if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
         {
-          /* Applies it */
-          orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+          /* Use relative size? */
+          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
+          {
+            /* Applies it */
+            orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
+          }
+          else
+          {
+            /* Applies it */
+            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+          }
 
           /* Updates status */
           bFixedSize = orxTRUE;
@@ -1547,15 +1557,16 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           orxVECTOR vRelSize;
 
           /* Gets it */
-          orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize);
-
-          /* Applies it */
-          orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+          if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize) != orxNULL)
+          {
+            /* Applies it */
+            orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+          }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring relative size as fixed size was also defined.", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativeSize as Size was also defined.", _zConfigID);
         }
       }
 
