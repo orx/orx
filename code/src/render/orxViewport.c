@@ -259,42 +259,47 @@ void orxFASTCALL orxViewport_CommandSetRelativePosition(orxU32 _u32ArgNumber, co
   /* Valid? */
   if(pstViewport != orxNULL)
   {
-    orxCHAR   acBuffer[64];
-    orxSTRING zRelativePos;
-    orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+    orxCHAR         acBuffer[64];
+    const orxSTRING zRelativePos;
+    orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
     /* Gets its relative position */
-    zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
+    orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+    zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
 
-    /* Left? */
-    if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+    /* Not empty? */
+    if(*zRelativePos != orxCHAR_NULL)
     {
-      /* Updates alignment flags */
-      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
-    }
-    /* Right? */
-    else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
-    {
-      /* Updates alignment flags */
-      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
-    }
+      /* Left? */
+      if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+      {
+        /* Updates alignment flags */
+        u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+      }
+      /* Right? */
+      else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+      {
+        /* Updates alignment flags */
+        u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+      }
 
-    /* Top? */
-    if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
-    {
-      /* Updates alignment flags */
-      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
-    }
-    /* Bottom? */
-    else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
-    {
-      /* Updates alignment flags */
-      u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
-    }
+      /* Top? */
+      if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
+      {
+        /* Updates alignment flags */
+        u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+      }
+      /* Bottom? */
+      else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+      {
+        /* Updates alignment flags */
+        u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+      }
 
-    /* Applies it */
-    orxViewport_SetRelativePosition(pstViewport, u32AlignmentFlags);
+      /* Applies it */
+      orxViewport_SetRelativePosition(pstViewport, u32AlignmentFlags);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -920,8 +925,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxCHAR     acBuffer[256];
 
                   /* Gets its name */
-                  orxString_NPrint(acBuffer, 255, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
-                  acBuffer[255] = orxCHAR_NULL;
+                  acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]))] = orxCHAR_NULL;
 
                   /* Unlinks its bitmap */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
@@ -1191,62 +1195,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       {
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
-      }
-
-      /* Has plain size */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
-      {
-        orxVECTOR vSize;
-
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
-        {
-          /* Applies it */
-          orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
-
-          /* Updates status */
-          bFixedSize = orxTRUE;
-        }
-      }
-
-      /* No fixed size? */
-      if(bFixedSize == orxFALSE)
-      {
-        orxFLOAT fWidth, fHeight;
-
-        /* Defaults to screen size */
-        orxDisplay_GetScreenSize(&fWidth, &fHeight);
-
-        /* Applies it */
-        orxViewport_SetSize(pstResult, fWidth, fHeight);
-
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
-      }
-
-      /* Has plain position */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
-      {
-        orxVECTOR vPos;
-
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos) != orxNULL)
-        {
-          /* Applies it */
-          orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
-
-          /* Updates status */
-          bFixedPosition = orxTRUE;
-        }
-      }
-
-      /* Auto resize */
-      if(((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
-       && (bFixedSize == orxFALSE))
-      || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
-      {
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
       /* *** Textures *** */
@@ -1559,23 +1507,35 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
       }
 
-      /* Has background color? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
+      /* Has plain size */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
       {
-        orxCOLOR stColor;
+        orxVECTOR vSize;
 
-        /* Gets color vector */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
-        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-        stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
+        /* Gets it */
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        {
+          /* Applies it */
+          orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+
+          /* Updates status */
+          bFixedSize = orxTRUE;
+        }
+      }
+
+      /* No fixed size? */
+      if(bFixedSize == orxFALSE)
+      {
+        orxFLOAT fWidth, fHeight;
+
+        /* Defaults to screen size */
+        orxDisplay_GetScreenSize(&fWidth, &fHeight);
 
         /* Applies it */
-        orxViewport_SetBackgroundColor(pstResult, &stColor);
-      }
-      else
-      {
-        /* Clears background color */
-        orxViewport_ClearBackgroundColor(pstResult);
+        orxViewport_SetSize(pstResult, fWidth, fHeight);
+
+        /* Updates flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
       /* Has relative size? */
@@ -1599,54 +1559,150 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
       }
 
+      /* Has plain position */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
+      {
+        orxVECTOR vPos;
+
+        /* Gets it */
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos) != orxNULL)
+        {
+          /* Applies it */
+          orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
+
+          /* Updates status */
+          bFixedPosition = orxTRUE;
+        }
+        else
+        {
+          orxCHAR         acBuffer[64];
+          const orxSTRING zPos;
+          orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+
+          /* Gets it */
+          orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_POSITION), sizeof(acBuffer) - 1);
+          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zPos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
+
+          /* Not empty? */
+          if(*zPos != orxCHAR_NULL)
+          {
+            /* Left? */
+            if(orxString_SearchString(zPos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+            }
+            /* Right? */
+            else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+            }
+
+            /* Top? */
+            if(orxString_SearchString(zPos, orxVIEWPORT_KZ_TOP) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+            }
+            /* Bottom? */
+            else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+            }
+
+            /* Applies it */
+            orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+
+            /* Updates status */
+            bFixedPosition = orxTRUE;
+          }
+        }
+      }
+
+      /* Auto resize */
+      if(((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
+       && (bFixedSize == orxFALSE))
+      || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE, orxVIEWPORT_KU32_FLAG_NONE);
+      }
+
       /* Has relative position? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
       {
         /* No fixed position? */
         if(bFixedPosition == orxFALSE)
         {
-          orxCHAR   acBuffer[64];
-          orxSTRING zRelativePos;
-          orxU32    u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+          orxCHAR         acBuffer[64];
+          const orxSTRING zRelativePos;
+          orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
           /* Gets it */
-          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1));
+          orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1);
           acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
 
-          /* Left? */
-          if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+          /* Not empty? */
+          if(*zRelativePos != orxCHAR_NULL)
           {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
-          }
-          /* Right? */
-          else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
-          }
+            /* Left? */
+            if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+            }
+            /* Right? */
+            else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+            }
 
-          /* Top? */
-          if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
-          }
-          /* Bottom? */
-          else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
-          }
+            /* Top? */
+            if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+            }
+            /* Bottom? */
+            else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+            {
+              /* Updates alignment flags */
+              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+            }
 
-          /* Applies it */
-          orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+            /* Applies it */
+            orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+          }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring relative position as fixed position was also defined.", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativePosition as Position was also defined.", _zConfigID);
         }
+      }
+
+      /* Has background color? */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
+      {
+        orxCOLOR stColor;
+
+        /* Gets color vector */
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
+        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+        stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
+
+        /* Applies it */
+        orxViewport_SetBackgroundColor(pstResult, &stColor);
+      }
+      else
+      {
+        /* Clears background color */
+        orxViewport_ClearBackgroundColor(pstResult);
       }
 
       /* Stores its reference key */
