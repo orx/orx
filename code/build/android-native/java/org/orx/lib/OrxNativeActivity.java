@@ -22,8 +22,6 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     public native void nativeOnInputDeviceAdded(int deviceId);
     public native void nativeOnInputDeviceChanged(int deviceId);
     public native void nativeOnInputDeviceRemoved(int deviceId);
-    private native void nativeOnPause();
-    private native void nativeOnResume();
 
     private InputManager mInputManager;
 
@@ -55,18 +53,6 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        nativeOnPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        nativeOnResume();
-    }
-
-    @Override
     public void onInputDeviceAdded(int deviceId) {
         Log.d("OrxNativeActivity", "onInputDeviceAdded() deviceId: "+deviceId);
         if (isGameController(deviceId)) {
@@ -85,7 +71,8 @@ public class OrxNativeActivity extends NativeActivity implements InputManager.In
     @Override
     public void onInputDeviceRemoved(int deviceId) {
         Log.d("OrxActivity", "onInputDeviceRemoved() deviceId: "+deviceId);
-        // It is not a problem if this removed device is not a game controller, just a debug-print "unknown device" in OrxJoystick
+        // cannot use isGameController(deviceId) for removed device beacuse getInputDevice(deviceId) return null.
+        // But it is not a problem to send this deviceId to Orx even if it's not a game controller, just a debug-print "unknown device" in OrxJoystick
         nativeOnInputDeviceRemoved(deviceId);
     }
 
