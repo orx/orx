@@ -54,7 +54,7 @@
             Op = HARD;
         }
         nk_layout_row_dynamic(&sstNuklear.stContext, 25, 1);
-        nk_property_int(&sstNuklear.stContext, "Compression:", 0, &Property, 100, 10, 1);
+        nk_property_int(&sstNuklear.stContext, "Compression:", 0, (int *)&Property, 100, 10, 1);
     }
     nk_end(&sstNuklear.stContext);
 ]
