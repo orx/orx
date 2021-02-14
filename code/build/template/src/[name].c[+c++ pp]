@@ -28,7 +28,7 @@
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
-[+scroll void [name]::Update(const orxCLOCK_INFO &_rstInfo)]
+[+scroll void [!name]::Update(const orxCLOCK_INFO &_rstInfo)]
 [-scroll void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
 {
 [+nuklear
@@ -73,7 +73,7 @@
 
 /** Init function, it is called when all orx's modules have been initialized
  */
-[+scroll orxSTATUS [name]::Init()]
+[+scroll orxSTATUS [!name]::Init()]
 [-scroll orxSTATUS orxFASTCALL Init()]
 {
     // Display a small hint in console
@@ -118,7 +118,7 @@
 
 /** Run function, it should not contain any game logic
  */
-[+scroll orxSTATUS [name]::Run()]
+[+scroll orxSTATUS [!name]::Run()]
 [-scroll orxSTATUS orxFASTCALL Run()]
 {
     // Return orxSTATUS_FAILURE to instruct orx to quit
@@ -127,7 +127,7 @@
 
 /** Exit function, it is called before exiting from orx
  */
-[+scroll void [name]::Exit()]
+[+scroll void [!name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
 [+nuklear
@@ -144,7 +144,7 @@
 [+scroll
 /** BindObjects function, ScrollObject-derived classes are bound to config sections here
  */
-void [name]::BindObjects()
+void [!name]::BindObjects()
 {
     // Bind the Object class to the Object config section
     ScrollBindObject<Object>("Object");
@@ -152,7 +152,7 @@ void [name]::BindObjects()
 ]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
  */
-[+scroll orxSTATUS [name]::Bootstrap() const]
+[+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
     // Add a config storage to find the initial config file
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
 {
 [+scroll
     // Execute our game
-    [name]::GetInstance().Execute(argc, argv);]
+    [!name]::GetInstance().Execute(argc, argv);]
 [-scroll
     // Set the bootstrap function to provide at least one resource storage before loading any config files
     orxConfig_SetBootstrap(Bootstrap);
