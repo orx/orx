@@ -40,16 +40,17 @@
 #include <errno.h>
 #include <unistd.h>
 
-#ifdef __orxDEBUG__
-
 #define MODULE "orxAndroidNativeSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,MODULE,__VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN,MODULE,__VA_ARGS__)
+
+#ifdef __orxDEBUG__
+
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,MODULE,__VA_ARGS__)
 #define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__))
 
 #else
 
-#define LOGE(...)
 #define LOGI(...)
 #define LOGV(...)
 
@@ -171,10 +172,16 @@ extern "C" struct android_app* orxAndroid_GetAndroidApp()
 // TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
-  JNIEnv *env = Android_JNI_GetEnv();
-  jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
-  env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
-  env->DeleteLocalRef(retval);
+  if(sstAndroid.midGetDeviceIds)
+  {
+    JNIEnv *env = Android_JNI_GetEnv();
+    jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
+    env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
+    env->DeleteLocalRef(retval);
+  } else
+  {
+    // No IDs
+  }
 }
 
 // Theses method are called from Activity if it implements InputDeviceListener
@@ -306,15 +313,15 @@ extern "C" orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDRO
     deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
     deviceName = env->GetStringUTFChars(deviceNameString, NULL);
     strncpy(pstJoystickInfo->descriptor, deviceName, sizeof(pstJoystickInfo->descriptor) - 1);
-    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = '\0';
+    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = orxCHAR_NULL;
     env->ReleaseStringUTFChars(deviceNameString, deviceName);
     env->DeleteLocalRef(deviceNameString);
 
     mid = env->GetMethodID(inputDeviceClass, "getName", "()Ljava/lang/String;");
     deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
     deviceName = env->GetStringUTFChars(deviceNameString, NULL);
-    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name));
-    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = '\0';
+    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name) - 1);
+    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = orxCHAR_NULL;
     env->ReleaseStringUTFChars(deviceNameString, deviceName);
     env->DeleteLocalRef(deviceNameString);
 
@@ -712,7 +719,8 @@ void android_main( android_app* state )
     sstAndroid.midGetDeviceIds = env->GetMethodID(env->GetObjectClass(jActivity), "getDeviceIds", "()[I");
 
     if(!sstAndroid.midGetDeviceIds) {
-        __android_log_print(ANDROID_LOG_WARN, "Orx", "Couldn't locate Java method getDeviceIds in the NativeActivity, check that they're named and typed correctly");
+        env->ExceptionClear();
+        LOGW("Couldn't locate Java method getDeviceIds, provided in OrxNativeActivity.java. Joystick devices in Orx is now disabled.");
     }
 
     // Looper for Joystick lifecycle events
@@ -728,6 +736,10 @@ void android_main( android_app* state )
       };
     int methodTableSize=sizeof(methodTable)/sizeof(methodTable[0]);
     env->RegisterNatives(env->GetObjectClass(jActivity), methodTable, methodTableSize);
+    if (env->ExceptionCheck()) {
+       env->ExceptionClear();
+       LOGW("Couldn't locate Java method(s) nativeOnInputDevice[Added|Change|Removed], provided in OrxNativeActivity.java. Joystick add/remove tracking in Orx is now disabled.");
+    }
 
     sstAndroidInitialized = orxTRUE;
 

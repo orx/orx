@@ -718,15 +718,15 @@ extern "C" orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDRO
     deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
     deviceName = env->GetStringUTFChars(deviceNameString, NULL);
     strncpy(pstJoystickInfo->descriptor, deviceName, sizeof(pstJoystickInfo->descriptor) - 1);
-    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = '\0';
+    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = orxCHAR_NULL;
     env->ReleaseStringUTFChars(deviceNameString, deviceName);
     env->DeleteLocalRef(deviceNameString);
 
     mid = env->GetMethodID(inputDeviceClass, "getName", "()Ljava/lang/String;");
     deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
     deviceName = env->GetStringUTFChars(deviceNameString, NULL);
-    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name));
-    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = '\0';
+    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name) - 1);
+    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = orxCHAR_NULL;
     env->ReleaseStringUTFChars(deviceNameString, deviceName);
     env->DeleteLocalRef(deviceNameString);
 

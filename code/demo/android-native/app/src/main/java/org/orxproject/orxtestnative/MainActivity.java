@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 import org.orx.lib.OrxNativeActivity;
 
+// Note: if Game controller support is not needed then you can instead extend android.app.NativeActivity
 public class MainActivity extends OrxNativeActivity {
 
     private Handler mHandler = new Handler();

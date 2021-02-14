@@ -152,17 +152,23 @@ static orxS32 getDeviceIndex(orxU32 _u32DeviceId)
 
 static void addJoyInfoInConfig(orxANDROID_JOYSTICK_INFO *pstJoystickInfo, orxS32 deviceIdx) {
 
-      orxCHAR acJoystick[40] = {};
+      #define NAME_MAX_SIZE sizeof(pstJoystickInfo->name) - 1
+      #define DESC_MAX_SIZE sizeof(pstJoystickInfo->name) - 1
+
+      orxCHAR acJoystickName[NAME_MAX_SIZE + 1];
+      orxCHAR acJoystickId[DESC_MAX_SIZE + 1];
+
       /* Pushes input section */
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
-      /* Stores its name */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, deviceIdx + 1);
-      orxConfig_SetString(acJoystick, pstJoystickInfo->name);
+      orxString_NPrint(acJoystickName, NAME_MAX_SIZE, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, deviceIdx + 1);
+      acJoystickName[NAME_MAX_SIZE] = orxCHAR_NULL;
+      orxConfig_SetString(acJoystickName, pstJoystickInfo->name);
 
-      /* Stores its id */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, deviceIdx + 1);
-      orxConfig_SetString(acJoystick, pstJoystickInfo->descriptor);
+      /* Stores its id from description */
+      orxString_NPrint(acJoystickId, DESC_MAX_SIZE, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, deviceIdx + 1);
+      acJoystickId[DESC_MAX_SIZE] = orxCHAR_NULL;
+      orxConfig_SetString(acJoystickId, pstJoystickInfo->descriptor);
 
       /* Pops config section */
       orxConfig_PopSection();
