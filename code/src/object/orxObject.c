@@ -260,7 +260,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Update body scale
  */
-void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
+static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
 {
   orxOBJECT *pstChild;
 

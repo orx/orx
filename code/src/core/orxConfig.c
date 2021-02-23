@@ -38,6 +38,7 @@
 #include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "display/orxDisplay.h"
 #include "memory/orxBank.h"
 #include "math/orxMath.h"
 #include "io/orxFile.h"
@@ -3270,9 +3271,10 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
   /* Done! */
   return eResult;
 }
+
 /** Origin save callback
  */
-orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
+static orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult;
 
@@ -3290,6 +3292,116 @@ orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectionName, 
 
   /* Done! */
   return bResult;
+}
+
+/** Transforms a string to Pascal case
+ */
+static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING _zSrc)
+{
+  const orxCHAR  *pcSrc;
+  orxCHAR        *pcDst;
+  orxBOOL         bUpper;
+
+  /* For all characters */
+  for(pcSrc = _zSrc, pcDst = _zDst, bUpper = orxTRUE; *pcSrc != orxCHAR_NULL; pcSrc++, pcDst++)
+  {
+    /* Is an underscore? */
+    if(*pcSrc == '_')
+    {
+      /* Replaces it with a space */
+      *pcDst = ' ';
+
+      /* Updates status */
+      bUpper = orxTRUE;
+    }
+    /* Is a space? */
+    else if(*pcSrc == ' ')
+    {
+      /* Skips it */
+      pcDst--;
+
+      /* Updates status */
+      bUpper = orxTRUE;
+    }
+    else
+    {
+      /* Updates character */
+      *pcDst = ((bUpper != orxFALSE) && (*pcSrc >= 'a') && (*pcSrc <= 'z'))
+               ? *pcSrc & ~0x20
+               : ((bUpper == orxFALSE) && (*pcSrc >= 'A') && (*pcSrc <= 'Z'))
+                 ? *pcSrc | 0x20
+                 : *pcSrc;
+
+      /* Updates status */
+      bUpper = orxFALSE;
+    }
+  }
+
+  /* Ends string */
+  *pcDst = orxCHAR_NULL;
+
+  /* Done! */
+  return;
+}
+
+/** Set default color list
+ */
+static void orxFASTCALL orxConfig_SetDefaultColorList()
+{
+  orxCHAR acParentBuffer[64];
+  orxS32  s32Offset;
+
+#define orxCOLOR_DECLARE(NAME, R, G, B) {#NAME, &orxVECTOR_##NAME},
+
+  struct
+  {
+    const orxSTRING   zName;
+    const orxVECTOR  *pvColor;
+  } astColorList[] =
+  {
+    #include "display/orxColorList.inc"
+  };
+
+#undef orxCOLOR_DECLARE
+
+  /* Pushes color config section */
+  orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+  /* Inits parent buffer */
+  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@%s.", orxCOLOR_KZ_CONFIG_SECTION);
+
+  /* For all colors */
+  for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
+  {
+    orxVECTOR vColor;
+    orxCHAR   acBuffer[sizeof(acParentBuffer)];
+
+    /* Checks */
+    orxASSERT(orxString_GetLength(astColorList[i].zName) < sizeof(acParentBuffer) - s32Offset);
+
+    /* Gets PascalCase name with spaces */
+    orxConfig_ToPascalCase(acBuffer, astColorList[i].zName);
+
+    /* Sets PascalCase name without spaces as parent */
+    orxConfig_ToPascalCase(acParentBuffer + s32Offset, acBuffer);
+
+    /* Inherits from the no-space PascalCase for all the variations (Pascal case with spaces, lower case with and without spaces) */
+    orxConfig_SetString(acBuffer, acParentBuffer);
+    orxString_LowerCase(acBuffer);
+    orxConfig_SetString(acBuffer, acParentBuffer);
+    orxConfig_ToPascalCase(acBuffer, acBuffer);
+    orxString_LowerCase(acBuffer);
+    orxConfig_SetString(acBuffer, acParentBuffer);
+
+    /* Stores color values under PascalCase name without spaces */
+    orxConfig_SetVector(acParentBuffer + s32Offset, orxVector_Mulf(&vColor, astColorList[i].pvColor, orxCOLOR_DENORMALIZER));
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 /** Command: Load
@@ -3962,6 +4074,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
 
       /* Sets default parent */
       orxConfig_SetDefaultParent(orxConfig_GetString(orxCONFIG_KZ_CONFIG_DEFAULT_PARENT));
+
+      /* Sets default color list */
+      orxConfig_SetDefaultColorList();
 
       /* Pops section */
       orxConfig_PopSection();
