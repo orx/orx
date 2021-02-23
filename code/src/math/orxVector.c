@@ -32,6 +32,8 @@
 
 #include "math/orxVector.h"
 
+#include "display/orxDisplay.h"
+
 
 /* *** Vector functions *** */
 
@@ -126,13 +128,8 @@ const orxVECTOR orxVECTOR_Z       = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}
 const orxVECTOR orxVECTOR_0       = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
 const orxVECTOR orxVECTOR_1       = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
 
-const orxVECTOR orxVECTOR_RED     = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_GREEN   = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_BLUE    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+#define orxCOLOR_DECLARE(NAME, R, G, B) const orxVECTOR orxVECTOR_##NAME = {{orxCOLOR_NORMALIZER * orxU2F(R)}, {orxCOLOR_NORMALIZER * orxU2F(G)}, {orxCOLOR_NORMALIZER * orxU2F(B)}};
 
-const orxVECTOR orxVECTOR_YELLOW  = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_CYAN    = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
-const orxVECTOR orxVECTOR_MAGENTA = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+#include "display/orxColorList.inc"
 
-const orxVECTOR orxVECTOR_BLACK   = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-const orxVECTOR orxVECTOR_WHITE   = {{orx2F(1.0f)}, {orx2F(1.0f)}, {orx2F(1.0f)}};
+#undef orxCOLOR_DECLARE
