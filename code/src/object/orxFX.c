@@ -38,6 +38,7 @@
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
+#include "display/orxDisplay.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -2574,8 +2575,38 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         orxVECTOR vStartColor, vEndColor;
 
         /* Gets color values */
-        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
-        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+        {
+          const orxSTRING zColor;
+
+          /* Gets literal color */
+          zColor = orxConfig_GetString(orxFX_KZ_CONFIG_START_VALUE);
+
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vStartColor);
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+        {
+          const orxSTRING zColor;
+
+          /* Gets literal color */
+          zColor = orxConfig_GetString(orxFX_KZ_CONFIG_END_VALUE);
+
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vEndColor);
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
 
         /* Normalizes them */
         orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);

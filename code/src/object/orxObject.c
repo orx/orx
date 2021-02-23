@@ -4793,8 +4793,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if(pstGraphic != orxNULL)
             {
-              /* Retrieves its color */
-              orxGraphic_GetColor(pstGraphic, &stColor);
+              /* Has color? */
+              if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+              {
+                /* Retrieves it */
+                orxGraphic_GetColor(pstGraphic, &stColor);
+              }
             }
           }
 
