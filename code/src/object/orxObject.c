@@ -4782,6 +4782,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has alpha? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
         {
+          /* Doesn't have any color? */
+          if(bHasColor == orxFALSE)
+          {
+            orxGRAPHIC* pstGraphic;
+
+            /* Gets current graphic */
+            pstGraphic = orxObject_GetWorkingGraphic(pstResult);
+
+            /* Valid? */
+            if(pstGraphic != orxNULL)
+            {
+              /* Retrieves its color */
+              orxGraphic_GetColor(pstGraphic, &stColor);
+            }
+          }
+
           /* Applies it */
           orxColor_SetAlpha(&stColor, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 
