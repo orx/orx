@@ -2013,6 +2013,78 @@ void orxFASTCALL orxCommand_CommandToCartesian(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/* Command: FromRGBToHSV */
+void orxFASTCALL orxCommand_CommandFromRGBToHSV(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR stColor;
+
+  /* Inits color */
+  orxVector_Copy(&(stColor.vRGB), &(_astArgList[0].vValue));
+
+  /* Converts color */
+  orxColor_FromRGBToHSV(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vHSV));
+
+  /* Done! */
+  return;
+}
+
+/* Command: FromHSVToRGB */
+void orxFASTCALL orxCommand_CommandFromHSVToRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR stColor;
+
+  /* Inits color */
+  orxVector_Copy(&(stColor.vHSV), &(_astArgList[0].vValue));
+
+  /* Converts color */
+  orxColor_FromHSVToRGB(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vRGB));
+
+  /* Done! */
+  return;
+}
+
+/* Command: FromRGBToHSL */
+void orxFASTCALL orxCommand_CommandFromRGBToHSL(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR stColor;
+
+  /* Inits color */
+  orxVector_Copy(&(stColor.vRGB), &(_astArgList[0].vValue));
+
+  /* Converts color */
+  orxColor_FromRGBToHSL(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vHSL));
+
+  /* Done! */
+  return;
+}
+
+/* Command: FromHSLToRGB */
+void orxFASTCALL orxCommand_CommandFromHSLToRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOLOR stColor;
+
+  /* Inits color */
+  orxVector_Copy(&(stColor.vHSL), &(_astArgList[0].vValue));
+
+  /* Converts color */
+  orxColor_FromHSLToRGB(&stColor, &stColor);
+
+  /* Updates result */
+  orxVector_Copy(&(_pstResult->vValue), &(stColor.vRGB));
+
+  /* Done! */
+  return;
+}
+
 /* Command: VectorX */
 void orxFASTCALL orxCommand_CommandVectorX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2442,6 +2514,15 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: ToCartesian */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, ToCartesian, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
 
+  /* Command: FromRGBToHSV */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, FromRGBToHSV, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: FromHSVToRGB */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, FromHSVToRGB, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: FromRGBToHSL */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, FromRGBToHSL, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: FromHSLToRGB */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, FromHSLToRGB, "Result", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
+
   /* Command: VectorX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorX, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: VectorY */
@@ -2568,6 +2649,24 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("ToSpherical", "Vector.ToSpherical", orxNULL);
   /* Alias: ToCartesian */
   orxCommand_AddAlias("ToCartesian", "Vector.ToCartesian", orxNULL);
+
+  /* Alias: Vector.FromRGBToHSV */
+  orxCommand_AddAlias("Vector.FromRGBToHSV", "Command.FromRGBToHSV", orxNULL);
+  /* Alias: Vector.FromHSVToRGB */
+  orxCommand_AddAlias("Vector.FromHSVToRGB", "Command.FromHSVToRGB", orxNULL);
+  /* Alias: Vector.FromRGBToHSL */
+  orxCommand_AddAlias("Vector.FromRGBToHSL", "Command.FromRGBToHSL", orxNULL);
+  /* Alias: Vector.FromHSLToRGB */
+  orxCommand_AddAlias("Vector.FromHSLToRGB", "Command.FromHSLToRGB", orxNULL);
+
+  /* Alias: FromRGBToHSV */
+  orxCommand_AddAlias("FromRGBToHSV", "Vector.FromRGBToHSV", orxNULL);
+  /* Alias: FromHSVToRGB */
+  orxCommand_AddAlias("FromHSVToRGB", "Vector.FromHSVToRGB", orxNULL);
+  /* Alias: FromRGBToHSL */
+  orxCommand_AddAlias("FromRGBToHSL", "Vector.FromRGBToHSL", orxNULL);
+  /* Alias: FromHSLToRGB */
+  orxCommand_AddAlias("FromHSLToRGB", "Vector.FromHSLToRGB", orxNULL);
 
   /* Alias: Vector.X */
   orxCommand_AddAlias("Vector.X", "Command.VectorX", orxNULL);
@@ -2712,6 +2811,24 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: ToCartesian */
   orxCommand_RemoveAlias("ToCartesian");
 
+  /* Alias: Vector.FromRGBToHSV */
+  orxCommand_RemoveAlias("Vector.FromRGBToHSV");
+  /* Alias: Vector.FromHSVToRGB */
+  orxCommand_RemoveAlias("Vector.FromHSVToRGB");
+  /* Alias: Vector.FromRGBToHSL */
+  orxCommand_RemoveAlias("Vector.FromRGBToHSL");
+  /* Alias: Vector.FromHSLToRGB */
+  orxCommand_RemoveAlias("Vector.FromHSLToRGB");
+
+  /* Alias: FromRGBToHSV */
+  orxCommand_RemoveAlias("FromRGBToHSV");
+  /* Alias: FromHSVToRGB */
+  orxCommand_RemoveAlias("FromHSVToRGB");
+  /* Alias: FromRGBToHSL */
+  orxCommand_RemoveAlias("FromRGBToHSL");
+  /* Alias: FromHSLToRGB */
+  orxCommand_RemoveAlias("FromHSLToRGB");
+
   /* Alias: Vector.X */
   orxCommand_RemoveAlias("Vector.X");
   /* Alias: Vector.Y */
@@ -2818,6 +2935,15 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ToSpherical);
   /* Command: ToCartesian */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, ToCartesian);
+
+  /* Command: FromRGBToHSV */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, FromRGBToHSV);
+  /* Command: FromHSVToRGB */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, FromHSVToRGB);
+  /* Command: FromRGBToHSL */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, FromRGBToHSL);
+  /* Command: FromHSLToRGB */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, FromHSLToRGB);
 
   /* Command: VectorX */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorX);
