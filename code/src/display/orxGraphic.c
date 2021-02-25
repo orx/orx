@@ -713,14 +713,39 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         {
           orxVECTOR vColor;
 
-          /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor);
+          /* Is a vector value? */
+          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+          {
+            /* Normalizes and applies it */
+            orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
-          /* Normalizes and applies it */
-          orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          }
+          /* Color literal */
+          else
+          {
+            const orxSTRING zColor;
 
-          /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            /* Gets literal color */
+            zColor = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_COLOR);
+
+            /* Pushes color section */
+            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+            /* Retrieves its value */
+            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
+            {
+              /* Normalizes and applies it */
+              orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+
+              /* Updates status */
+              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
         /* Has RGB values? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_RGB) != orxFALSE)

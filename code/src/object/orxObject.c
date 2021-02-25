@@ -260,7 +260,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Update body scale
  */
-void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
+static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
 {
   orxOBJECT *pstChild;
 
@@ -4709,13 +4709,41 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
 
         /* Has color? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+        if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
         {
-          /* Normalizes and applies it */
-          orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+          /* Is a vector value? */
+          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+          {
+            /* Normalizes it */
+            orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
-          /* Updates status */
-          bHasColor = orxTRUE;
+            /* Updates status */
+            bHasColor = orxTRUE;
+          }
+          /* Color literal */
+          else
+          {
+            const orxSTRING zColor;
+
+            /* Gets color name */
+            zColor = orxConfig_GetString(orxOBJECT_KZ_CONFIG_COLOR);
+
+            /* Pushes color section */
+            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+            /* Retrieves its value */
+            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
+            {
+              /* Normalizes it */
+              orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+
+              /* Updates status */
+              bHasColor = orxTRUE;
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
         /* Has RGB values? */
         else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
@@ -4754,6 +4782,26 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has alpha? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
         {
+          /* Doesn't have any color? */
+          if(bHasColor == orxFALSE)
+          {
+            orxGRAPHIC* pstGraphic;
+
+            /* Gets current graphic */
+            pstGraphic = orxObject_GetWorkingGraphic(pstResult);
+
+            /* Valid? */
+            if(pstGraphic != orxNULL)
+            {
+              /* Has color? */
+              if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+              {
+                /* Retrieves it */
+                orxGraphic_GetColor(pstGraphic, &stColor);
+              }
+            }
+          }
+
           /* Applies it */
           orxColor_SetAlpha(&stColor, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 

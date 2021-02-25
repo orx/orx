@@ -1285,7 +1285,7 @@ static orxINLINE orxSTRING                                orxString_LowerCase(or
   for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
-    if(*pc >= 'A' && *pc <= 'Z')
+    if((*pc >= 'A') && (*pc <= 'Z'))
     {
       /* Lower case */
       *pc |= 0x20;
@@ -1310,7 +1310,7 @@ static orxINLINE orxSTRING                                orxString_UpperCase(or
   for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
-    if(*pc >= 'a' && *pc <= 'z')
+    if((*pc >= 'a') && (*pc <= 'z'))
     {
       /* Upper case */
       *pc &= ~0x20;

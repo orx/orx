@@ -382,7 +382,8 @@ project "orxLIB"
     {
         "../src/**.cpp",
         "../src/**.c",
-        "../include/**.h"
+        "../include/**.h",
+        "../include/**.inc"
     }
 
     excludes {"../src/main/orxMain.c"}
