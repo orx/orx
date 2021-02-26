@@ -140,9 +140,11 @@ either platform = "windows" [
 ] [
   env-home: local-to-file dirize get-env "HOME"
   for-each [env-file env-prefix mandatory] reduce [
-    env-home/.bashrc                      rejoin ["export " env-variable "="]   true
     env-home/.profile                     rejoin ["export " env-variable "="]   true
+    env-home/.bashrc                      rejoin ["export " env-variable "="]   true
+    env-home/.bash_profile                rejoin ["export " env-variable "="]   true
     env-home/.zshrc                       rejoin ["export " env-variable "="]   false
+    env-home/.zprofile                    rejoin ["export " env-variable "="]   false
     env-home/.config/fish/fish_variables  rejoin ["SETUVAR " env-variable ":"]  false
   ] [
     if any [mandatory exists? env-file] [
