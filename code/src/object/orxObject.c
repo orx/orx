@@ -4591,17 +4591,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Valid? */
                 if(pstGraphic != orxNULL)
                 {
-                  orxBOOL bDebugLevelBackup;
-
-                  /* Disables display logs */
-                  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
-                  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
-
                   /* Creates a clone */
-                  pstGraphic = orxGraphic_CreateFromConfig(orxGraphic_GetName(pstGraphic));
-
-                  /* Re-enables display logs */
-                  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
+                  pstGraphic = orxGraphic_Clone(pstGraphic);
 
                   /* Valid? */
                   if(pstGraphic != orxNULL)
