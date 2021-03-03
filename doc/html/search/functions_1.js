@@ -515,6 +515,7 @@ var searchData=
   ['orxfxpointer_5fsynchronize',['orxFXPointer_Synchronize',['../group__orx_f_x_pointer.html#gae34de9529ee823b8f5b27ac87c7c4cdf',1,'orxFXPointer.h']]],
   ['orxgraphic_5fclearblendmode',['orxGraphic_ClearBlendMode',['../group__orx_graphic.html#ga88ab242eaf175c1e1b3b064cc4368add',1,'orxGraphic.h']]],
   ['orxgraphic_5fclearcolor',['orxGraphic_ClearColor',['../group__orx_graphic.html#ga23f4eb005f820bf37f464ea9e21c0f9e',1,'orxGraphic.h']]],
+  ['orxgraphic_5fclone',['orxGraphic_Clone',['../group__orx_graphic.html#gae3f420e9b48b4bca2f96c4aae4e83e1d',1,'orxGraphic.h']]],
   ['orxgraphic_5fcreate',['orxGraphic_Create',['../group__orx_graphic.html#ga507654f360017d1eb9f440bf11b185d1',1,'orxGraphic.h']]],
   ['orxgraphic_5fcreatefromconfig',['orxGraphic_CreateFromConfig',['../group__orx_graphic.html#gaac8f9dab82e59eae140fdcbdb7a4af5f',1,'orxGraphic.h']]],
   ['orxgraphic_5fdelete',['orxGraphic_Delete',['../group__orx_graphic.html#ga190c5eee80c688a1689ae399b73dc77d',1,'orxGraphic.h']]],
