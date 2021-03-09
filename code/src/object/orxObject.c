@@ -2517,8 +2517,17 @@ void orxFASTCALL orxObject_CommandRemoveTrack(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes time line */
-    orxObject_RemoveTimeLineTrack(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes time line track */
+      orxObject_RemoveTimeLineTrackRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes time line track */
+      orxObject_RemoveTimeLineTrack(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2600,8 +2609,17 @@ void orxFASTCALL orxObject_CommandRemoveFX(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes FX */
-    orxObject_RemoveFX(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes FX */
+      orxObject_RemoveFXRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes FX */
+      orxObject_RemoveFX(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2656,8 +2674,17 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Adds shader */
-    orxObject_AddShader(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Adds shader */
+      orxObject_AddShaderRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Adds shader */
+      orxObject_AddShader(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2684,8 +2711,17 @@ void orxFASTCALL orxObject_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCO
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes shader */
-    orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes shader */
+      orxObject_RemoveShaderRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes shader */
+      orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -3277,19 +3313,19 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: AddTrack */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveFX */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveAllFXs */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveAllFXs, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddSound */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
