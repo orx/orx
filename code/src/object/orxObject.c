@@ -8630,6 +8630,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING 
   return eResult;
 }
 
+/** Removes an FX from an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveFX, const orxSTRING);
+
 /** Removes all FXs.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -8998,6 +9004,12 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
+/** Adds a shader to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ */
+orxOBJECT_MAKE_RECURSIVE(AddShader, const orxSTRING);
+
 /** Removes a shader using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
@@ -9025,6 +9037,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTR
   /* Done! */
   return eResult;
 }
+
+/** Removes a shader from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -9181,6 +9199,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const
   /* Done! */
   return eResult;
 }
+
+/** Removes a timeline track from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveTimeLineTrack, const orxSTRING);
 
 /** Enables an object's timeline.
  * @param[in]   _pstObject        Concerned object
