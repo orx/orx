@@ -691,6 +691,7 @@ var searchData=
   ['orxmouse_5fgetmovedelta',['orxMouse_GetMoveDelta',['../group__orx_mouse.html#ga3be75b10a7f67d76f63c66c626aaac36',1,'orxMouse.h']]],
   ['orxmouse_5fgetposition',['orxMouse_GetPosition',['../group__orx_mouse.html#ga6b2ba55d2755279233740ec8b008bb97',1,'orxMouse.h']]],
   ['orxmouse_5fgetwheeldelta',['orxMouse_GetWheelDelta',['../group__orx_mouse.html#gac62f80b39434be0ab05eaf445065819f',1,'orxMouse.h']]],
+  ['orxmouse_5fgrab',['orxMouse_Grab',['../group__orx_mouse.html#gaaa8ec29f3b4ac282f306e64d831f3a4d',1,'orxMouse.h']]],
   ['orxmouse_5finit',['orxMouse_Init',['../group__orx_mouse.html#gaf02257fd334c672afea2bbf9ae03fe37',1,'orxMouse.h']]],
   ['orxmouse_5fisbuttonpressed',['orxMouse_IsButtonPressed',['../group__orx_mouse.html#gae169232145ac3e80beb2431471a7ba84',1,'orxMouse.h']]],
   ['orxmouse_5fsetcursor',['orxMouse_SetCursor',['../group__orx_mouse.html#ga2d59cd935ccb30cc91953d9b52e09111',1,'orxMouse.h']]],
