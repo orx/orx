@@ -86,6 +86,20 @@ void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: Grab
+ */
+void orxFASTCALL orxMouse_CommandGrab(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates grab */
+  orxMouse_Grab(_astArgList[0].bValue);
+
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue;
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetCursor
  */
 void orxFASTCALL orxMouse_CommandSetCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -121,7 +135,9 @@ static orxINLINE void orxMouse_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
 
   /* Command: ShowCursor */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Show", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: Grab */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, Grab, "Grabbed", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Grab", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetCursor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetCursor, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Name = none", orxCOMMAND_VAR_TYPE_STRING}, {"Pivot = (0, 0)", orxCOMMAND_VAR_TYPE_VECTOR});
 }
@@ -136,6 +152,8 @@ static orxINLINE void orxMouse_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
   /* Command: ShowCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
+  /* Command: Grab */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, Grab);
   /* Command: SetCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetCursor);
 }
