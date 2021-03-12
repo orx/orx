@@ -306,6 +306,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTO
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_ShowCursor, orxSTATUS, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Grab, orxSTATUS, orxBOOL);
 
 
 /* *** Core function info array *** */
@@ -320,6 +321,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPre
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE_DELTA, orxMouse_GetMoveDelta)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_WHEEL_DELTA, orxMouse_GetWheelDelta)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, SHOW_CURSOR, orxMouse_ShowCursor)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GRAB, orxMouse_Grab)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
@@ -403,9 +405,19 @@ orxFLOAT orxFASTCALL orxMouse_GetWheelDelta()
 }
 
 /** Shows mouse (hardware) cursor
+ * @param[in] _bShow            Show / Hide
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxMouse_ShowCursor(orxBOOL _bShow)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_ShowCursor)(_bShow);
+}
+
+/** Grabs the mouse
+ * @param[in] _bGrab            Grab / Release
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxMouse_Grab(orxBOOL _bGrab)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Grab)(_bGrab);
 }
