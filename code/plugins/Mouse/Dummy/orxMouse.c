@@ -72,7 +72,7 @@ orxSTATUS orxFASTCALL orxMouse_Dummy_Grab(orxBOOL _bGrab)
 
 orxSTATUS orxFASTCALL orxMouse_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
@@ -141,6 +141,7 @@ orxFLOAT orxFASTCALL orxMouse_Dummy_GetWheelDelta()
   /* Done! */
   return fResult;
 }
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
