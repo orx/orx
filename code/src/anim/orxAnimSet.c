@@ -141,6 +141,7 @@
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
+#define orxANIMSET_KZ_CONFIG_FRAME_INDEX              "FrameIndex"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 #define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
@@ -1628,7 +1629,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     const orxSTRING zNewAnimParent;
     const orxSTRING zCurrentSection;
     orxU32          u32Digits;
-    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE;
+    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
     orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
     orxCHAR         acAnimBuffer[128];
 
@@ -1690,6 +1691,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* Gets frame size */
       orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
       vFrameSize.fZ = orxFLOAT_0;
+
+      /* Updates status */
+      bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
 
       /* Gets texture origin */
       orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
@@ -2055,6 +2059,57 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Overrides computed one with it */
             orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
+          }
+          /* Has frame index? */
+          else if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+          {
+            orxU32 u32FrameIndex;
+
+            /* Retrieves it */
+            u32FrameIndex = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX) - 1;
+
+            /* Has valid frame size? */
+            if(bHasFrameSize != orxFALSE)
+            {
+              orxU32 u32FramesPerRow;
+
+              /* Gets number of frames per row */
+              u32FramesPerRow = orxF2U(fRowSign * (fRowBoundary - fTextureRowOrigin) / *pfRowDelta);
+
+              /* Computes frame's coordinates */
+              *pfRowOrigin    = fTextureRowOrigin + fRowSign * *pfRowDelta * orxU2F(u32FrameIndex % u32FramesPerRow);
+              *pfColumnOrigin = fTextureColumnOrigin + fColumnSign * fRowWidth * orxU2F(u32FrameIndex / u32FramesPerRow);
+
+              /* Gets actual frame origin */
+              vFrameOrigin.fX -= *pfOriginDeltaX;
+              vFrameOrigin.fY -= *pfOriginDeltaY;
+
+              /* Inside boundaries? */
+              if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
+              {
+                /* Stores computed one */
+                orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
+
+                /* Updates staus */
+                bTempOrigin = orxTRUE;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
+
+                /* Stops */
+                break;
+              }
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
+
+              /* Stops */
+              break;
+            }
           }
           else
           {
