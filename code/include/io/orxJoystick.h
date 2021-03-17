@@ -313,12 +313,6 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTIC
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsConnected(orxU32 _u32ID);
 
-/*
-  TODO: Joystick device info
-  Available now in plugin code for GLFW and Android.
-  extern orxDLLAPI orxJoystickInfo orxFASTCALL          orxJoystick_GetDeviceInfo(orxU32 _u32ID);
-*/
-
 #endif /* _orxJOYSTICK_H_ */
 
 /** @} */

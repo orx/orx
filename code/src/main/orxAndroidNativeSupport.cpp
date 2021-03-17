@@ -63,12 +63,6 @@
 /** Static structure
  */
 typedef struct __orxANDROID_STATIC_t {
-        // Hosting Activity
-        jobject mActivity;
-
-        // method signatures
-        jmethodID midGetDeviceIds;
-
         // AssetManager
         char *zAndroidInternalFilesPath;
 
@@ -161,7 +155,7 @@ extern "C" void *orxAndroid_GetJNIEnv()
 
 extern "C" jobject orxAndroid_GetActivity()
 {
-  return sstAndroid.mActivity;
+  return sstAndroid.app_->activity->clazz;
 }
 
 extern "C" struct android_app* orxAndroid_GetAndroidApp()
@@ -172,15 +166,21 @@ extern "C" struct android_app* orxAndroid_GetAndroidApp()
 // TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
-  if(sstAndroid.midGetDeviceIds)
+  JNIEnv *env = Android_JNI_GetEnv();
+  jobject jActivity = orxAndroid_GetActivity();
+
+  // Create Java-method access to the activity.getDeviceIds();
+  jmethodID midGetDeviceIds = env->GetMethodID(env->GetObjectClass(jActivity), "getDeviceIds", "()[I");
+
+  if(midGetDeviceIds)
   {
-    JNIEnv *env = Android_JNI_GetEnv();
-    jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
+    jintArray retval = (jintArray) env->CallObjectMethod(jActivity, midGetDeviceIds);
     env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
     env->DeleteLocalRef(retval);
   } else
   {
-    // No IDs
+    env->ExceptionClear();
+    LOGW("Couldn't locate Java method getDeviceIds, provided in OrxNativeActivity.java. Joystick devices in Orx is now disabled.");
   }
 }
 
@@ -256,8 +256,8 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
 
     JNIEnv *env = Android_JNI_GetEnv();
 
-    mid = env->GetMethodID(env->GetObjectClass(sstAndroid.mActivity), "getFilesDir", "()Ljava/io/File;");
-    fileObject = env->CallObjectMethod(sstAndroid.mActivity, mid);
+    mid = env->GetMethodID(env->GetObjectClass(orxAndroid_GetActivity()), "getFilesDir", "()Ljava/io/File;");
+    fileObject = env->CallObjectMethod(orxAndroid_GetActivity(), mid);
 
     if (!fileObject)
     {
@@ -713,15 +713,6 @@ void android_main( android_app* state )
     JNIEnv *env = Android_JNI_GetEnv();
 
     jobject jActivity = state->activity->clazz;
-    sstAndroid.mActivity = env->NewGlobalRef(jActivity);
-
-    // Create Java-method access to the activity.getDeviceIds();
-    sstAndroid.midGetDeviceIds = env->GetMethodID(env->GetObjectClass(jActivity), "getDeviceIds", "()[I");
-
-    if(!sstAndroid.midGetDeviceIds) {
-        env->ExceptionClear();
-        LOGW("Couldn't locate Java method getDeviceIds, provided in OrxNativeActivity.java. Joystick devices in Orx is now disabled.");
-    }
 
     // Looper for Joystick lifecycle events
     sstAndroid.looper = ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
