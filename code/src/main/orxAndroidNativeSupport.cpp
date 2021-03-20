@@ -80,9 +80,6 @@ typedef struct __orxANDROID_STATIC_t {
         struct android_app* app_;
 } orxANDROID_STATIC;
 
-// Guard against too early access of sstAndroid which is initialized in new thread created in native glue.
-static orxBOOL sstAndroidInitialized = orxFALSE;
-
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t sThreadKey;
 static JavaVM* jVM;
@@ -731,8 +728,6 @@ void android_main( android_app* state )
        env->ExceptionClear();
        LOGW("Couldn't locate Java method(s) nativeOnInputDevice[Added|Change|Removed], provided in OrxNativeActivity.java. Joystick add/remove tracking in Orx is now disabled.");
     }
-
-    sstAndroidInitialized = orxTRUE;
 
     /* Run the application code! */
     main(0, orxNULL);
