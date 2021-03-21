@@ -154,7 +154,7 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
     orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
     /* Restores cursor status */
-    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_GRAB) != orxFALSE) ? GLFW_CURSOR_DISABLED : (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -269,14 +269,41 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_ShowCursor(orxBOOL _bShow)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Not grabbed? */
+  if(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_GRAB) == orxFALSE)
+  {
+    /* Updates cursor status */
+    glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (_bShow != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+  }
+
   /* Updates cursor status */
-  glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (_bShow != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMouse_GLFW_Grab(orxBOOL _bGrab)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* Pushes config section */
   orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
   /* Updates cursor status */
-  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+  glfwSetInputMode(sstMouse.pstWindow, GLFW_CURSOR, (_bGrab != orxFALSE) ? GLFW_CURSOR_DISABLED : (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+
+  /* Updates grab status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_GRAB, _bGrab);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -391,15 +418,15 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_SetPosition(const orxVECTOR *_pvPosition)
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
-  /* Gets mouse position */
-  glfwGetCursorPos(sstMouse.pstWindow, (double *)&dX, (double *)&dY);
+    /* Gets mouse position */
+    glfwGetCursorPos(sstMouse.pstWindow, (double *)&dX, (double *)&dY);
 
-  /* Updates accumulator */
-  sstMouse.vMouseAcc.fX += orx2F(dX) - _pvPosition->fX;
-  sstMouse.vMouseAcc.fY += orx2F(dY) - _pvPosition->fY;
+    /* Updates accumulator */
+    sstMouse.vMouseAcc.fX += orx2F(dX) - _pvPosition->fX;
+    sstMouse.vMouseAcc.fY += orx2F(dY) - _pvPosition->fY;
 
-  /* Moves mouse */
-  glfwSetCursorPos(sstMouse.pstWindow, (double)_pvPosition->fX, (double)_pvPosition->fY);
+    /* Moves mouse */
+    glfwSetCursorPos(sstMouse.pstWindow, (double)_pvPosition->fX, (double)_pvPosition->fY);
 
   /* Done! */
   return eResult;
@@ -568,4 +595,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_IsButtonPressed, MOUSE, IS_BUTTON
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_ShowCursor, MOUSE, SHOW_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GLFW_Grab, MOUSE, GRAB);
 orxPLUGIN_USER_CORE_FUNCTION_END();

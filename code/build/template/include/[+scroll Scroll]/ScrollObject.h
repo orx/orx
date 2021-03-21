@@ -94,7 +94,7 @@ public:
                 void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
 
                 void                    AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
-                void                    AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive = orxTRUE);
+                void                    AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive = orxTRUE, orxBOOL _bPropagate = orxFALSE);
                 void                    RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddShader(const orxSTRING _zShaderName, orxBOOL _bRecursive = orxTRUE);

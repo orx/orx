@@ -27,7 +27,7 @@
  * @date 25/01/2010
  * @author iarwain@orx-project.org
  *
- * iOS keyboard plugin implementation
+ * Dummy keyboard plugin implementation
  *
  */
 
@@ -51,7 +51,7 @@
 
 orxSTATUS orxFASTCALL orxKeyboard_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Done! */
   return eResult;

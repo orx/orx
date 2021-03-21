@@ -3,15 +3,15 @@
  * @date [date]
  */
 
-#ifndef __[NAME]_H__
-#define __[NAME]_H__
+#ifndef __[!NAME]_H__
+#define __[!NAME]_H__
 
 #define __NO_SCROLLED__
 #include "Scroll.h"
 
 /** Game Class
  */
-class [name] : public Scroll<[name]>
+class [!name] : public Scroll<[!name]>
 {
 public:
 
@@ -31,4 +31,4 @@ private:
 private:
 };
 
-#endif // __[NAME]_H__
+#endif // __[!NAME]_H__

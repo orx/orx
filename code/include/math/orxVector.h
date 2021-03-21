@@ -878,21 +878,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_CatmullRom(orxVECTOR *_pvRes, 
 
 /* *** Vector constants *** */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_X;     /**< X-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Y;     /**< Y-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Z;     /**< Z-Axis unit vector */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_0;      /**< Null vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
+extern orxDLLAPI const orxVECTOR orxVECTOR_0;     /**< Null vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_1;     /**< Vector filled with 1s */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_RED;    /**< Red color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_YELLOW; /**< Yellow color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_CYAN;   /**< Cyan color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_MAGENTA;/**< Magenta color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_BLACK;  /**< Black color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
+#define orxCOLOR_DECLARE(NAME, R, G, B)           extern orxDLLAPI const orxVECTOR orxVECTOR_##NAME;
+
+#include "display/orxColorList.inc"
+
+#undef orxCOLOR_DECLARE
 
 #ifdef __orxGCC__
 

@@ -141,6 +141,7 @@
 #define orxANIMSET_KZ_CONFIG_PREFIX                   "Prefix"
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
+#define orxANIMSET_KZ_CONFIG_FRAME_INDEX              "FrameIndex"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 #define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
@@ -1482,13 +1483,13 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
   if(*pzTableBucket == orxNULL)
   {
     orxU32  i, u32Count;
-    orxCHAR acLinkName[64] = {};
+    orxCHAR acLinkName[64];
 
     /* Stores it */
     *pzTableBucket = _zAnim;
 
     /* Gets its link name */
-    orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
+    acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
 
     /* For all linked animations */
     for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
@@ -1622,15 +1623,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   /* Valid? */
   if(zAnim != orxSTRING_EMPTY)
   {
-    orxVECTOR       vTextureOrigin = {}, vTextureSize = {}, vFrameSize = {};
+    orxVECTOR       vTextureOrigin, vTextureSize, vFrameSize;
     const orxSTRING zPrefix;
     const orxSTRING zParent;
     const orxSTRING zNewAnimParent;
     const orxSTRING zCurrentSection;
     orxU32          u32Digits;
-    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE;
+    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
     orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
-    orxCHAR         acAnimBuffer[128] = {};
+    orxCHAR         acAnimBuffer[128];
+
+    /* Clears variables */
+    orxMemory_Zero(&vTextureOrigin, sizeof(orxVECTOR));
+    orxMemory_Zero(&vTextureSize, sizeof(orxVECTOR));
+    orxMemory_Zero(&vFrameSize, sizeof(orxVECTOR));
 
     /* Gets number of digits */
     u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
@@ -1648,7 +1654,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       orxConfig_SetParent(zNewAnimParent, zAnimSet);
 
       /* Gets anim's section name */
-      orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent);
+      acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent)] = orxCHAR_NULL;
     }
     else
     {
@@ -1656,7 +1662,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       zNewAnimParent = zAnimSet;
 
       /* Gets anim's section name */
-      orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim);
+      acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim)] = orxCHAR_NULL;
     }
 
     /* Gets current parent */
@@ -1686,10 +1692,13 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
       vFrameSize.fZ = orxFLOAT_0;
 
+      /* Updates status */
+      bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
+
       /* Gets texture origin */
       orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
 
-      /* Has orientation? */
+      /* Has direction? */
       if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
       {
         /* Valid? */
@@ -1797,7 +1806,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     /* Should continue? */
     if(bContinue != orxFALSE)
     {
-      orxVECTOR       vFrameOrigin = {}, vCurrentSize;
+      orxVECTOR       vFrameOrigin, vCurrentSize;
       orxU32          u32FrameCount, u32EventCount, i;
       orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
       const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
@@ -1805,6 +1814,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
       const orxFLOAT *pfColumnDelta;
       orxFLOAT       *pfColumnOrigin = &fTextureColumnOrigin;
+
+      /* Clears variables */
+      orxMemory_Zero(&vFrameOrigin, sizeof(orxVECTOR));
 
       /* From config? */
       if(bFromConfig != orxFALSE)
@@ -1937,17 +1949,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         orxFLOAT        fEventValue = orxFLOAT_0;
         orxS32          s32EventValueCount;
         orxBOOL         bDebugLevelBackup;
-        orxCHAR         acParentBuffer[128] = {}, acFrameBuffer[128] = {};
+        orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
         /* Has prefix? */
         if(*zPrefix != orxCHAR_NULL)
         {
           /* Gets new parent */
-          orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt);
+          acParentBuffer[orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
           zNewFrameParent = acParentBuffer;
 
           /* Gets frame name */
-          orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent);
+          acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent)] = orxCHAR_NULL;
         }
         else
         {
@@ -1955,7 +1967,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           zNewFrameParent = zCurrentSection;
 
           /* Gets frame name */
-          orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt);
+          acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
         }
 
         /* From config and should auto-stop? */
@@ -2047,6 +2059,57 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Overrides computed one with it */
             orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
+          }
+          /* Has frame index? */
+          else if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+          {
+            orxU32 u32FrameIndex;
+
+            /* Retrieves it */
+            u32FrameIndex = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX) - 1;
+
+            /* Has valid frame size? */
+            if(bHasFrameSize != orxFALSE)
+            {
+              orxU32 u32FramesPerRow;
+
+              /* Gets number of frames per row */
+              u32FramesPerRow = orxF2U(fRowSign * (fRowBoundary - fTextureRowOrigin) / *pfRowDelta);
+
+              /* Computes frame's coordinates */
+              *pfRowOrigin    = fTextureRowOrigin + fRowSign * *pfRowDelta * orxU2F(u32FrameIndex % u32FramesPerRow);
+              *pfColumnOrigin = fTextureColumnOrigin + fColumnSign * fRowWidth * orxU2F(u32FrameIndex / u32FramesPerRow);
+
+              /* Gets actual frame origin */
+              vFrameOrigin.fX -= *pfOriginDeltaX;
+              vFrameOrigin.fY -= *pfOriginDeltaY;
+
+              /* Inside boundaries? */
+              if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
+              {
+                /* Stores computed one */
+                orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
+
+                /* Updates staus */
+                bTempOrigin = orxTRUE;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
+
+                /* Stops */
+                break;
+              }
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
+
+              /* Stops */
+              break;
+            }
           }
           else
           {
@@ -2408,11 +2471,11 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
           hIterator != orxHANDLE_UNDEFINED;
           hIterator = orxHashTable_GetNext(sstAnimSet.pstCreationTable, hIterator, &u64AnimCRC, (void **)&zAnim))
       {
-        orxU32 u32AnimID;
-        orxCHAR acLinkName[64] = {};
+        orxU32  u32AnimID;
+        orxCHAR acLinkName[64];
 
         /* Gets link config property name */
-        orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX);
+        acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
 
         /* Gets self anim ID */
         u32AnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);

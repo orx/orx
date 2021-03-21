@@ -828,6 +828,12 @@ extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueDelayedFXRecursiv
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Removes an FX from an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_RemoveFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
 /** Removes all FXs.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -903,12 +909,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Stop(orxOBJECT *_pstObject
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
+/** Adds a shader to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
 /** Removes a shader using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
+/** Removes a shader from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -945,6 +963,12 @@ extern orxDLLAPI void orxFASTCALL           orxObject_AddTimeLineTrackRecursive(
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Removes a timeline track from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
 /** Enables an object's timeline.
  * @param[in]   _pstObject        Concerned object

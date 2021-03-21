@@ -1,0 +1,183 @@
+/* Orx - Portable Game Engine
+ *
+ * Copyright (c) 2008-2021 Orx-Project
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+/**
+ * @file orxColorList.inc
+ * @date 22/02/2021
+ * @author iarwain@orx-project.org
+ *
+ */
+
+#ifdef orxCOLOR_DECLARE
+
+  orxCOLOR_DECLARE(ALICE_BLUE,              240, 248, 255)
+  orxCOLOR_DECLARE(ANTIQUE_WHITE,           250, 235, 215)
+  orxCOLOR_DECLARE(AQUA,                    0,   255, 255)
+  orxCOLOR_DECLARE(AQUAMARINE,              127, 255, 212)
+  orxCOLOR_DECLARE(AZURE,                   240, 255, 255)
+  orxCOLOR_DECLARE(BEIGE,                   245, 245, 220)
+  orxCOLOR_DECLARE(BISQUE,                  255, 228, 196)
+  orxCOLOR_DECLARE(BLACK,                   0,   0,   0)
+  orxCOLOR_DECLARE(BLANCHED_ALMOND,         255, 235, 205)
+  orxCOLOR_DECLARE(BLUE,                    0,   0,   255)
+  orxCOLOR_DECLARE(BLUE_VIOLET,             138, 43,  226)
+  orxCOLOR_DECLARE(BROWN,                   165, 42,  42)
+  orxCOLOR_DECLARE(BURLY_WOOD,              222, 184, 135)
+  orxCOLOR_DECLARE(CADET_BLUE,              95,  158, 160)
+  orxCOLOR_DECLARE(CHARTREUSE,              127, 255, 0)
+  orxCOLOR_DECLARE(CHOCOLATE,               210, 105, 30)
+  orxCOLOR_DECLARE(CORAL,                   255, 127, 80)
+  orxCOLOR_DECLARE(CORNFLOWER_BLUE,         100, 149, 237)
+  orxCOLOR_DECLARE(CORNSILK,                255, 248, 220)
+  orxCOLOR_DECLARE(CRIMSON,                 220, 20,  60)
+  orxCOLOR_DECLARE(CYAN,                    0,   255, 255)
+  orxCOLOR_DECLARE(DARK_BLUE,               0,   0,   139)
+  orxCOLOR_DECLARE(DARK_CYAN,               0,   139, 139)
+  orxCOLOR_DECLARE(DARK_GOLDEN_ROD,         184, 134, 11)
+  orxCOLOR_DECLARE(DARK_GRAY,               169, 169, 169)
+  orxCOLOR_DECLARE(DARK_GREY,               169, 169, 169)
+  orxCOLOR_DECLARE(DARK_GREEN,              0,   100, 0)
+  orxCOLOR_DECLARE(DARK_KHAKI,              189, 183, 107)
+  orxCOLOR_DECLARE(DARK_MAGENTA,            139, 0,   139)
+  orxCOLOR_DECLARE(DARK_OLIVE_GREEN,        85,  107, 47)
+  orxCOLOR_DECLARE(DARK_ORANGE,             255, 140, 0)
+  orxCOLOR_DECLARE(DARK_ORCHID,             153, 50,  204)
+  orxCOLOR_DECLARE(DARK_RED,                139, 0,   0)
+  orxCOLOR_DECLARE(DARK_SALMON,             233, 150, 122)
+  orxCOLOR_DECLARE(DARK_SEA_GREEN,          143, 188, 143)
+  orxCOLOR_DECLARE(DARK_SLATE_BLUE,         72,  61,  139)
+  orxCOLOR_DECLARE(DARK_SLATE_GRAY,         47,  79,  79)
+  orxCOLOR_DECLARE(DARK_SLATE_GREY,         47,  79,  79)
+  orxCOLOR_DECLARE(DARK_TURQUOISE,          0,   206, 209)
+  orxCOLOR_DECLARE(DARK_VIOLET,             148, 0,   211)
+  orxCOLOR_DECLARE(DEEP_PINK,               255, 20,  147)
+  orxCOLOR_DECLARE(DEEP_SKY_BLUE,           0,   191, 255)
+  orxCOLOR_DECLARE(DIM_GRAY,                105, 105, 105)
+  orxCOLOR_DECLARE(DIM_GREY,                105, 105, 105)
+  orxCOLOR_DECLARE(DODGER_BLUE,             30,  144, 255)
+  orxCOLOR_DECLARE(FIRE_BRICK,              178, 34,  34)
+  orxCOLOR_DECLARE(FLORAL_WHITE,            255, 250, 240)
+  orxCOLOR_DECLARE(FOREST_GREEN,            34,  139, 34)
+  orxCOLOR_DECLARE(FUCHSIA,                 255, 0,   255)
+  orxCOLOR_DECLARE(GAINSBORO,               220, 220, 220)
+  orxCOLOR_DECLARE(GHOST_WHITE,             248, 248, 255)
+  orxCOLOR_DECLARE(GOLD,                    255, 215, 0)
+  orxCOLOR_DECLARE(GOLDEN_ROD,              218, 165, 32)
+  orxCOLOR_DECLARE(GRAY,                    128, 128, 128)
+  orxCOLOR_DECLARE(GREY,                    128, 128, 128)
+  orxCOLOR_DECLARE(GREEN,                   0,   128, 0)
+  orxCOLOR_DECLARE(GREEN_YELLOW,            173, 255, 47)
+  orxCOLOR_DECLARE(HONEY_DEW,               240, 255, 240)
+  orxCOLOR_DECLARE(HOT_PINK,                255, 105, 180)
+  orxCOLOR_DECLARE(INDIAN_RED,              205, 92,  92)
+  orxCOLOR_DECLARE(INDIGO,                  75,  0,   130)
+  orxCOLOR_DECLARE(IVORY,                   255, 255, 240)
+  orxCOLOR_DECLARE(KHAKI,                   240, 230, 140)
+  orxCOLOR_DECLARE(LAVENDER,                230, 230, 250)
+  orxCOLOR_DECLARE(LAVENDER_BLUSH,          255, 240, 245)
+  orxCOLOR_DECLARE(LAWN_GREEN,              124, 252, 0)
+  orxCOLOR_DECLARE(LEMON_CHIFFON,           255, 250, 205)
+  orxCOLOR_DECLARE(LIGHT_BLUE,              173, 216, 230)
+  orxCOLOR_DECLARE(LIGHT_CORAL,             240, 128, 128)
+  orxCOLOR_DECLARE(LIGHT_CYAN,              224, 255, 255)
+  orxCOLOR_DECLARE(LIGHT_GOLDEN_ROD_YELLOW, 250, 250, 210)
+  orxCOLOR_DECLARE(LIGHT_GRAY,              211, 211, 211)
+  orxCOLOR_DECLARE(LIGHT_GREY,              211, 211, 211)
+  orxCOLOR_DECLARE(LIGHT_GREEN,             144, 238, 144)
+  orxCOLOR_DECLARE(LIGHT_PINK,              255, 182, 193)
+  orxCOLOR_DECLARE(LIGHT_SALMON,            255, 160, 122)
+  orxCOLOR_DECLARE(LIGHT_SEA_GREEN,         32,  178, 170)
+  orxCOLOR_DECLARE(LIGHT_SKY_BLUE,          135, 206, 250)
+  orxCOLOR_DECLARE(LIGHT_SLATE_GRAY,        119, 136, 153)
+  orxCOLOR_DECLARE(LIGHT_SLATE_GREY,        119, 136, 153)
+  orxCOLOR_DECLARE(LIGHT_STEEL_BLUE,        176, 196, 222)
+  orxCOLOR_DECLARE(LIGHT_YELLOW,            255, 255, 224)
+  orxCOLOR_DECLARE(LIME,                    0,   255, 0)
+  orxCOLOR_DECLARE(LIME_GREEN,              50,  205, 50)
+  orxCOLOR_DECLARE(LINEN,                   250, 240, 230)
+  orxCOLOR_DECLARE(MAGENTA,                 255, 0,   255)
+  orxCOLOR_DECLARE(MAROON,                  128, 0,   0)
+  orxCOLOR_DECLARE(MEDIUM_AQUA_MARINE,      102, 205, 170)
+  orxCOLOR_DECLARE(MEDIUM_BLUE,             0,   0,   205)
+  orxCOLOR_DECLARE(MEDIUM_ORCHID,           186, 85,  211)
+  orxCOLOR_DECLARE(MEDIUM_PURPLE,           147, 112, 219)
+  orxCOLOR_DECLARE(MEDIUM_SEA_GREEN,        60,  179, 113)
+  orxCOLOR_DECLARE(MEDIUM_SLATE_BLUE,       123, 104, 238)
+  orxCOLOR_DECLARE(MEDIUM_SPRING_GREEN,     0,   250, 154)
+  orxCOLOR_DECLARE(MEDIUM_TURQUOISE,        72,  209, 204)
+  orxCOLOR_DECLARE(MEDIUM_VIOLET_RED,       199, 21,  133)
+  orxCOLOR_DECLARE(MIDNIGHT_BLUE,           25,  25,  112)
+  orxCOLOR_DECLARE(MINT_CREAM,              245, 255, 250)
+  orxCOLOR_DECLARE(MISTY_ROSE,              255, 228, 225)
+  orxCOLOR_DECLARE(MOCCASIN,                255, 228, 181)
+  orxCOLOR_DECLARE(NAVAJO_WHITE,            255, 222, 173)
+  orxCOLOR_DECLARE(NAVY,                    0,   0,   128)
+  orxCOLOR_DECLARE(OLD_LACE,                253, 245, 230)
+  orxCOLOR_DECLARE(OLIVE,                   128, 128, 0)
+  orxCOLOR_DECLARE(OLIVE_DRAB,              107, 142, 35)
+  orxCOLOR_DECLARE(ORANGE,                  255, 165, 0)
+  orxCOLOR_DECLARE(ORANGE_RED,              255, 69,  0)
+  orxCOLOR_DECLARE(ORCHID,                  218, 112, 214)
+  orxCOLOR_DECLARE(PALE_GOLDEN_ROD,         238, 232, 170)
+  orxCOLOR_DECLARE(PALE_GREEN,              152, 251, 152)
+  orxCOLOR_DECLARE(PALE_TURQUOISE,          175, 238, 238)
+  orxCOLOR_DECLARE(PALE_VIOLET_RED,         219, 112, 147)
+  orxCOLOR_DECLARE(PAPAYA_WHIP,             255, 239, 213)
+  orxCOLOR_DECLARE(PEACH_PUFF,              255, 218, 185)
+  orxCOLOR_DECLARE(PERU,                    205, 133, 63)
+  orxCOLOR_DECLARE(PINK,                    255, 192, 203)
+  orxCOLOR_DECLARE(PLUM,                    221, 160, 221)
+  orxCOLOR_DECLARE(POWDER_BLUE,             176, 224, 230)
+  orxCOLOR_DECLARE(PURPLE,                  128, 0,   128)
+  orxCOLOR_DECLARE(REBECCA_PURPLE,          102, 51,  153)
+  orxCOLOR_DECLARE(RED,                     255, 0,   0)
+  orxCOLOR_DECLARE(ROSY_BROWN,              188, 143, 143)
+  orxCOLOR_DECLARE(ROYAL_BLUE,              65,  105, 225)
+  orxCOLOR_DECLARE(SADDLE_BROWN,            139, 69,  19)
+  orxCOLOR_DECLARE(SALMON,                  250, 128, 114)
+  orxCOLOR_DECLARE(SANDY_BROWN,             244, 164, 96)
+  orxCOLOR_DECLARE(SEA_GREEN,               46,  139, 87)
+  orxCOLOR_DECLARE(SEA_SHELL,               255, 245, 238)
+  orxCOLOR_DECLARE(SIENNA,                  160, 82,  45)
+  orxCOLOR_DECLARE(SILVER,                  192, 192, 192)
+  orxCOLOR_DECLARE(SKY_BLUE,                135, 206, 235)
+  orxCOLOR_DECLARE(SLATE_BLUE,              106, 90,  205)
+  orxCOLOR_DECLARE(SLATE_GRAY,              112, 128, 144)
+  orxCOLOR_DECLARE(SLATE_GREY,              112, 128, 144)
+  orxCOLOR_DECLARE(SNOW,                    255, 250, 250)
+  orxCOLOR_DECLARE(SPRING_GREEN,            0,   255, 127)
+  orxCOLOR_DECLARE(STEEL_BLUE,              70,  130, 180)
+  orxCOLOR_DECLARE(TAN,                     210, 180, 140)
+  orxCOLOR_DECLARE(TEAL,                    0,   128, 128)
+  orxCOLOR_DECLARE(THISTLE,                 216, 191, 216)
+  orxCOLOR_DECLARE(TOMATO,                  255, 99,  71)
+  orxCOLOR_DECLARE(TURQUOISE,               64,  224, 208)
+  orxCOLOR_DECLARE(VIOLET,                  238, 130, 238)
+  orxCOLOR_DECLARE(WHEAT,                   245, 222, 179)
+  orxCOLOR_DECLARE(WHITE,                   255, 255, 255)
+  orxCOLOR_DECLARE(WHITE_SMOKE,             245, 245, 245)
+  orxCOLOR_DECLARE(YELLOW,                  255, 255, 0)
+  orxCOLOR_DECLARE(YELLOW_GREEN,            154, 205, 50)
+
+#endif /* orxCOLOR_DECLARE */

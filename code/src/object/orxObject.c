@@ -271,7 +271,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Update body scale
  */
-void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
+static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
 {
   orxOBJECT *pstChild;
 
@@ -2563,8 +2563,17 @@ void orxFASTCALL orxObject_CommandRemoveTrack(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes time line */
-    orxObject_RemoveTimeLineTrack(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes time line track */
+      orxObject_RemoveTimeLineTrackRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes time line track */
+      orxObject_RemoveTimeLineTrack(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2646,8 +2655,17 @@ void orxFASTCALL orxObject_CommandRemoveFX(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes FX */
-    orxObject_RemoveFX(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes FX */
+      orxObject_RemoveFXRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes FX */
+      orxObject_RemoveFX(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2702,8 +2720,17 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Adds shader */
-    orxObject_AddShader(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Adds shader */
+      orxObject_AddShaderRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Adds shader */
+      orxObject_AddShader(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -2730,8 +2757,17 @@ void orxFASTCALL orxObject_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCO
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Removes shader */
-    orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes shader */
+      orxObject_RemoveShaderRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes shader */
+      orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -3323,19 +3359,19 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: AddTrack */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveFX */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveAllFXs */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveAllFXs, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddSound */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
@@ -4650,17 +4686,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 /* Valid? */
                 if(pstGraphic != orxNULL)
                 {
-                  orxBOOL bDebugLevelBackup;
-
-                  /* Disables display logs */
-                  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
-                  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
-
                   /* Creates a clone */
-                  pstGraphic = orxGraphic_CreateFromConfig(orxGraphic_GetName(pstGraphic));
-
-                  /* Re-enables display logs */
-                  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
+                  pstGraphic = orxGraphic_Clone(pstGraphic);
 
                   /* Valid? */
                   if(pstGraphic != orxNULL)
@@ -4768,13 +4795,41 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
 
         /* Has color? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+        if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
         {
-          /* Normalizes and applies it */
-          orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+          /* Is a vector value? */
+          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+          {
+            /* Normalizes it */
+            orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
-          /* Updates status */
-          bHasColor = orxTRUE;
+            /* Updates status */
+            bHasColor = orxTRUE;
+          }
+          /* Color literal */
+          else
+          {
+            const orxSTRING zColor;
+
+            /* Gets color name */
+            zColor = orxConfig_GetString(orxOBJECT_KZ_CONFIG_COLOR);
+
+            /* Pushes color section */
+            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+            /* Retrieves its value */
+            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
+            {
+              /* Normalizes it */
+              orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+
+              /* Updates status */
+              bHasColor = orxTRUE;
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
         /* Has RGB values? */
         else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
@@ -4813,6 +4868,26 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has alpha? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
         {
+          /* Doesn't have any color? */
+          if(bHasColor == orxFALSE)
+          {
+            orxGRAPHIC* pstGraphic;
+
+            /* Gets current graphic */
+            pstGraphic = orxObject_GetWorkingGraphic(pstResult);
+
+            /* Valid? */
+            if(pstGraphic != orxNULL)
+            {
+              /* Has color? */
+              if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
+              {
+                /* Retrieves it */
+                orxGraphic_GetColor(pstGraphic, &stColor);
+              }
+            }
+          }
+
           /* Applies it */
           orxColor_SetAlpha(&stColor, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 
@@ -7301,11 +7376,16 @@ orxSTATUS orxFASTCALL orxObject_Detach(orxOBJECT *_pstObject)
 orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
 {
   orxU32    u32DebugFlags;
+  orxCHAR   acBuffer[512], acTempBuffer[128];
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Clears buffers */
+  orxMemory_Zero(&acBuffer, sizeof(acBuffer));
+  orxMemory_Zero(&acTempBuffer, sizeof(acTempBuffer));
 
   /* Backups debug flags */
   u32DebugFlags = orxDEBUG_GET_FLAGS();
@@ -7316,7 +7396,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
 
   /* Logs header */
   orxLOG("*** BEGIN PARENTS LOG: \"" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "\" [" orxANSI_KZ_COLOR_FG_MAGENTA "0x%016llX" orxANSI_KZ_COLOR_FG_DEFAULT "] ***\n", orxObject_GetName(_pstObject), orxStructure_GetGUID(_pstObject));
-  orxLOG("             NAME                     GUID             [LOCAL]   POSITION        ROTATION           SCALE      =>    [WORLD]   POSITION        ROTATION           SCALE      [IGNORE FLAGS]");
+  orxLOG("             NAME                     GUID             [LOCAL]     POSITION          ROTATION             SCALE        =>    [WORLD]     POSITION          ROTATION             SCALE        [IGNORE FLAGS]");
 
   /* For all structures in parent hierarchy */
   for(orxSTRUCTURE *pstParent = orxSTRUCTURE(_pstObject); pstParent != orxNULL;)
@@ -7412,8 +7492,8 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
     /* Has frame? */
     if(pstFrame != orxNULL)
     {
-      orxCHAR   acBuffer[512] = {}, acTempBuffer[128] = {}, *pc = acBuffer;
       orxVECTOR vTemp;
+      orxCHAR  *pc = acBuffer;
       orxFLOAT  fRotation;
 
       /* Prints name */
@@ -7427,7 +7507,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
       /* Prints local position */
       orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vTemp);
       orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%.6g, %.6g, %.6g)", vTemp.fX, vTemp.fY, vTemp.fZ);
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%28s", acTempBuffer);
 
       /* Prints local rotation */
       fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
@@ -7437,7 +7517,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
       /* Prints local scale */
       orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, &vTemp);
       orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%.4g, %.4g, %.4g)", vTemp.fX, vTemp.fY, vTemp.fZ);
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%28s", acTempBuffer);
 
       /* Prints separator */
       pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_DEFAULT " => ");
@@ -7445,7 +7525,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
       /* Prints world position */
       orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp);
       orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%.6g, %.6g, %.6g)", vTemp.fX, vTemp.fY, vTemp.fZ);
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%28s", acTempBuffer);
 
       /* Prints world rotation */
       fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
@@ -7455,7 +7535,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
       /* Prints world scale */
       orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp);
       orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, "(%.4g, %.4g, %.4g)", vTemp.fX, vTemp.fY, vTemp.fZ);
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%24s", acTempBuffer);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - 1 - (pc - acBuffer)), orxANSI_KZ_COLOR_FG_GREEN "%28s", acTempBuffer);
 
       /* Prints ignore flags */
       orxString_NPrint(acTempBuffer, sizeof(acTempBuffer) - 1, orxANSI_KZ_COLOR_FG_DEFAULT " [" orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]", orxFrame_GetIgnoreFlagNames(orxStructure_GetFlags(pstFrame, orxFRAME_KU32_MASK_IGNORE_ALL)));
@@ -8684,6 +8764,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING 
   return eResult;
 }
 
+/** Removes an FX from an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveFX, const orxSTRING);
+
 /** Removes all FXs.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -9052,6 +9138,12 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
+/** Adds a shader to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ */
+orxOBJECT_MAKE_RECURSIVE(AddShader, const orxSTRING);
+
 /** Removes a shader using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
@@ -9079,6 +9171,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTR
   /* Done! */
   return eResult;
 }
+
+/** Removes a shader from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -9235,6 +9333,12 @@ orxSTATUS orxFASTCALL orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const
   /* Done! */
   return eResult;
 }
+
+/** Removes a timeline track from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveTimeLineTrack, const orxSTRING);
 
 /** Enables an object's timeline.
  * @param[in]   _pstObject        Concerned object

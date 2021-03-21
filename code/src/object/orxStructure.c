@@ -211,7 +211,7 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
     orxTREE_NODE   *pstChild, *pstSibling;
 
     /* Inits buffer */
-    sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = '\0';
+    sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets next sibling */
     pstSibling = orxTree_GetSibling(_pstNode);

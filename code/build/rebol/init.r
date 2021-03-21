@@ -69,7 +69,13 @@ apply-template: function [
   ] [
     set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
   ]
-  template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
+  clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
+  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] copy value template {]} end-template: (
+      value: copy get load trim value
+      if sanitize [parse value [some [clean-chars | char: skip (change char #"_")]]]
+      end-template: change/part begin-template value end-template
+    ) :end-template
+  ]
   in-bracket: charset [not #"]"]
   bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
   extension-rule: [
