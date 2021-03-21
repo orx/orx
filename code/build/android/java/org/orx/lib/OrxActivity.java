@@ -38,7 +38,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     @Override
     protected void onCreate(Bundle arg0) {
-    	super.onCreate(arg0);
+    	  super.onCreate(arg0);
 
         nativeOnCreate();
         mInputManager = InputManagerCompat.Factory.getInputManager(this);
@@ -52,6 +52,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     protected void onStart() {
     	super.onStart();
 
@@ -74,16 +75,13 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
                 setContentView(mSurface);
             }
 
-        	mSurface.getHolder().addCallback(this);
-        	mSurface.setFocusable(true);
-        	mSurface.setFocusableInTouchMode(true);
-        	mSurface.setOnKeyListener(this);
-        	mSurface.setOnTouchListener(this);
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this, mInputManager));
-            }
-    	}
+            mSurface.getHolder().addCallback(this);
+            mSurface.setFocusable(true);
+            mSurface.setFocusableInTouchMode(true);
+            mSurface.setOnKeyListener(this);
+            mSurface.setOnTouchListener(this);
+            mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this, mInputManager));
+    	  }
 
         if(!mRunning.getAndSet(true)) {
             mOrxThread.start();
@@ -236,7 +234,8 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     // Touch events
-	public boolean onTouch(View v, MotionEvent event) {
+    @SuppressLint("ClickableViewAccessibility")
+  	public boolean onTouch(View v, MotionEvent event) {
         final int touchDevId = event.getDeviceId();
         final int pointerCount = event.getPointerCount();
         // touchId, pointerId, action, x, y, pressure
