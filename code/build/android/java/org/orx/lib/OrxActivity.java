@@ -2,7 +2,8 @@ package org.orx.lib;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Build;
+import android.content.Context;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.InputDevice;
@@ -18,19 +19,22 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.orx.lib.inputmanagercompat.InputManagerCompat;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
-    Orx Activity
+ * Orx Activity
+ * Base Activity class for use in Orx "android" apps (not "android-native").
+ *
+ * NOTE: Must be in sync with native methods in orxAndroidSupport.cpp
 */
 public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callback,
-    View.OnKeyListener, View.OnTouchListener, InputManagerCompat.InputDeviceListener {
+    View.OnKeyListener, View.OnTouchListener, InputManager.InputDeviceListener {
+
+  public static int orxANDROID_KU32_MAX_JOYSTICK_NUMBER = 16; // same as in Orx /code/include/io/orxJoystick.h
 
     private SurfaceHolder mCurSurfaceHolder;
     private SurfaceView mSurface;
-    private InputManagerCompat mInputManager;
+    private InputManager mInputManager;
 
     private AtomicBoolean mRunning = new AtomicBoolean(false);
     private Thread mOrxThread;
@@ -41,7 +45,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     	  super.onCreate(arg0);
 
         nativeOnCreate();
-        mInputManager = InputManagerCompat.Factory.getInputManager(this);
+        mInputManager = (InputManager)this.getSystemService(Context.INPUT_SERVICE);
         mOrxThread = new Thread("OrxThread") {
             @Override
             public void run() {
@@ -97,7 +101,6 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @Override
     protected void onPause() {
         super.onPause();
-        mInputManager.onPause();
 
         if(mRunning.get()) {
             nativeOnPause();
@@ -107,7 +110,6 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @Override
     protected void onResume() {
         super.onResume();
-        mInputManager.onResume();
 
         if(mRunning.get()) {
             nativeOnResume();
@@ -336,7 +338,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @SuppressWarnings("UnusedDeclaration")
     public int[] getDeviceIds() {
         int deviceIds[] = mInputManager.getInputDeviceIds();
-        int result[] = new int[4];
+        int result[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
         int i = 0;
 
         for (int deviceId : deviceIds) {
@@ -345,7 +347,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             // if the device is a gamepad/joystick
             if ((((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
                     ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) &&
-                    i < 4 ) {
+                    i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER ) {
                 result[i++] = deviceId;
             }
         }
