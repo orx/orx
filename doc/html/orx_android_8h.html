@@ -124,6 +124,7 @@ $(document).ready(function(){initNavTree('orx_android_8h.html','');});
 <code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;android/native_window.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="orx_joystick_8h_source.html">../io/orxJoystick.h</a>&quot;</code><br />
 </div>
 <p><a href="orx_android_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -132,6 +133,8 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a.html">orxANDROID_AXIS_DATA</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html">orxANDROID_JOYSTICK_EVENT</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html">orxANDROID_JOYSTICK_INFO</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html">orxANDROID_KEY_EVENT</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -178,6 +181,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga2571fc956eb158bdd227cc4477fd5e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae1fe3d56113fcf936fd4ef5fc20e9d81"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81">orxANDROID_EVENT_TYPE_SURFACE</a>&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 1)</td></tr>
 <tr class="separator:gae1fe3d56113fcf936fd4ef5fc20e9d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6b733850fcd358e5fc35c4aca02abc69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga6b733850fcd358e5fc35c4aca02abc69">orxANDROID_KU32_MAX_JOYSTICK_NUMBER</a>&#160;&#160;&#160;<a class="el" href="group__orx_joystick.html#ga2db095870cde5bdfff649fec696bb510">orxJOYSTICK_KU32_MAX_ID</a></td></tr>
+<tr class="separator:ga6b733850fcd358e5fc35c4aca02abc69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -189,8 +194,10 @@ Functions</h2></td></tr>
 <tr class="separator:gaf51bfa3c5118859198b0cd74a5003809"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2655223eb8e84adf8378018f210c1604"><td class="memItemLeft" align="right" valign="top">ANativeWindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga2655223eb8e84adf8378018f210c1604">orxAndroid_GetNativeWindow</a> ()</td></tr>
 <tr class="separator:ga2655223eb8e84adf8378018f210c1604"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabc76eaa5b17cbcf4e70dc1dcf58ef301"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gabc76eaa5b17cbcf4e70dc1dcf58ef301">orxAndroid_JNI_GetDeviceIds</a> (orxS32 devicesId[4])</td></tr>
-<tr class="separator:gabc76eaa5b17cbcf4e70dc1dcf58ef301"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac041c786c6a37f3f1d56f6a27c8d1762"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gac041c786c6a37f3f1d56f6a27c8d1762">orxAndroid_JNI_GetDeviceIds</a> (orxS32 devicesId[<a class="el" href="group__orx_android.html#ga6b733850fcd358e5fc35c4aca02abc69">orxANDROID_KU32_MAX_JOYSTICK_NUMBER</a>])</td></tr>
+<tr class="separator:gac041c786c6a37f3f1d56f6a27c8d1762"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaf69b10a049059c72c7d26d7556ad8d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gaaf69b10a049059c72c7d26d7556ad8d8">orxAndroid_JNI_GetInputDevice</a> (orxU32 _u32DeviceId, <a class="el" href="structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html">orxANDROID_JOYSTICK_INFO</a> *stJoystickInfo)</td></tr>
+<tr class="separator:gaaf69b10a049059c72c7d26d7556ad8d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10c24f6007e9bfd70608c16dc103f17d"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d">orxAndroid_JNI_GetRotation</a> ()</td></tr>
 <tr class="separator:ga10c24f6007e9bfd70608c16dc103f17d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8497f0065453b50165d9ac20dd951dba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba">orxAndroid_JNI_SetupThread</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
