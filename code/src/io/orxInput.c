@@ -2217,11 +2217,11 @@ orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOA
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult = -orxFLOAT_1;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));

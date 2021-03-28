@@ -257,7 +257,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetThreshold(const or
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetMultiplier(const orxSTRING _zInputName);
 
