@@ -42,7 +42,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     @Override
     protected void onCreate(Bundle arg0) {
-    	  super.onCreate(arg0);
+          super.onCreate(arg0);
 
         nativeOnCreate();
         mInputManager = (InputManager)this.getSystemService(Context.INPUT_SERVICE);
@@ -58,7 +58,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @Override
     @SuppressLint("ClickableViewAccessibility")
     protected void onStart() {
-    	super.onStart();
+        super.onStart();
 
         mInputManager.registerInputDeviceListener(this, null);
 
@@ -84,8 +84,8 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             mSurface.setFocusableInTouchMode(true);
             mSurface.setOnKeyListener(this);
             mSurface.setOnTouchListener(this);
-            mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this, mInputManager));
-    	  }
+            mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this));
+          }
 
         if(!mRunning.getAndSet(true)) {
             mOrxThread.start();
@@ -133,31 +133,31 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     // Called when we have a valid drawing surface
-	@SuppressLint("NewApi")
-	public void surfaceCreated(SurfaceHolder holder) {
+    @SuppressLint("NewApi")
+    public void surfaceCreated(SurfaceHolder holder) {
         if(!mDestroyed) {
             mCurSurfaceHolder = holder;
             nativeOnSurfaceCreated(holder.getSurface());
         }
-	}
+    }
 
-	// Called when we lose the surface
-	public void surfaceDestroyed(SurfaceHolder holder) {
+    // Called when we lose the surface
+    public void surfaceDestroyed(SurfaceHolder holder) {
         mCurSurfaceHolder = null;
         if(!mDestroyed) {
             nativeOnSurfaceDestroyed();
         }
-	}
+    }
 
-	// Called when the surface is resized
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {
+    // Called when the surface is resized
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if(!mDestroyed) {
             nativeOnSurfaceChanged(width, height);
         }
-	}
+    }
 
-	// Key events
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+    // Key events
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
         int source = event.getSource();
 
         if(keyCode != KeyEvent.KEYCODE_BACK && // BACK is a keyboard event
@@ -225,8 +225,8 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             return false;
         }
 
-		return false;
-	}
+        return false;
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -237,7 +237,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     // Touch events
     @SuppressLint("ClickableViewAccessibility")
-  	public boolean onTouch(View v, MotionEvent event) {
+    public boolean onTouch(View v, MotionEvent event) {
         final int touchDevId = event.getDeviceId();
         final int pointerCount = event.getPointerCount();
         // touchId, pointerId, action, x, y, pressure
@@ -269,7 +269,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             nativeOnTouch(touchDevId, pointerFingerId, action, x, y, p);
         }
         return true;
-	}
+    }
 
     @Override
     public void onInputDeviceAdded(int deviceId) {
@@ -314,25 +314,25 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     @SuppressWarnings("UnusedDeclaration")
     public int getRotation() {
-    	WindowManager windowMgr = (WindowManager) getSystemService(WINDOW_SERVICE);
-    	return windowMgr.getDefaultDisplay().getRotation();
+        WindowManager windowMgr = (WindowManager) getSystemService(WINDOW_SERVICE);
+        return windowMgr.getDefaultDisplay().getRotation();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void showKeyboard(final boolean show) {
-    	runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
 
-			@Override
-			public void run() {
-		        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-		        if (show) {
-		        	imm.showSoftInput(mSurface, InputMethodManager.SHOW_IMPLICIT);
-		        } else {
-		        	imm.hideSoftInputFromWindow(mSurface.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-		        }
-			}
-		});
+                if (show) {
+                    imm.showSoftInput(mSurface, InputMethodManager.SHOW_IMPLICIT);
+                } else {
+                    imm.hideSoftInputFromWindow(mSurface.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("UnusedDeclaration")

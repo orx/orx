@@ -22,8 +22,8 @@ public class OrxOnGenericMotionListener implements View.OnGenericMotionListener 
     public boolean onGenericMotion(View view, MotionEvent motionEvent) {
         int eventSource = motionEvent.getSource();
         if ((((eventSource & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
-                ((eventSource & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK))
-                && motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            ((eventSource & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK))
+            && motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
             // Process the current movement sample in the batch.
             processJoystickInput(motionEvent, -1);
