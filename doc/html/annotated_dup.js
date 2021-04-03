@@ -3,6 +3,7 @@ var annotated_dup =
     [ "orxAABOX", "structorx_a_a_b_o_x.html", "structorx_a_a_b_o_x" ],
     [ "orxANDROID_AXIS_DATA", "structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a.html", "structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a" ],
     [ "orxANDROID_JOYSTICK_EVENT", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t" ],
+    [ "orxANDROID_JOYSTICK_INFO", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o" ],
     [ "orxANDROID_KEY_EVENT", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t" ],
     [ "orxANDROID_SURFACE_CHANGED_EVENT", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t" ],
     [ "orxANIM_CUSTOM_EVENT", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t" ],

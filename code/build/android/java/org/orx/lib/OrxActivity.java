@@ -2,7 +2,8 @@ package org.orx.lib;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Build;
+import android.content.Context;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.InputDevice;
@@ -18,19 +19,22 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.orx.lib.inputmanagercompat.InputManagerCompat;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
-    Orx Activity
+ * Orx Activity
+ * Base Activity class for use in Orx "android" apps (not "android-native").
+ *
+ * NOTE: Must be in sync with native methods in orxAndroidSupport.cpp
 */
 public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callback,
-    View.OnKeyListener, View.OnTouchListener, InputManagerCompat.InputDeviceListener {
+    View.OnKeyListener, View.OnTouchListener, InputManager.InputDeviceListener {
+
+  public static int orxANDROID_KU32_MAX_JOYSTICK_NUMBER = 16; // same as in Orx /code/include/io/orxJoystick.h
 
     private SurfaceHolder mCurSurfaceHolder;
     private SurfaceView mSurface;
-    private InputManagerCompat mInputManager;
+    private InputManager mInputManager;
 
     private AtomicBoolean mRunning = new AtomicBoolean(false);
     private Thread mOrxThread;
@@ -38,10 +42,10 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     @Override
     protected void onCreate(Bundle arg0) {
-    	super.onCreate(arg0);
+          super.onCreate(arg0);
 
         nativeOnCreate();
-        mInputManager = InputManagerCompat.Factory.getInputManager(this);
+        mInputManager = (InputManager)this.getSystemService(Context.INPUT_SERVICE);
         mOrxThread = new Thread("OrxThread") {
             @Override
             public void run() {
@@ -52,8 +56,9 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     protected void onStart() {
-    	super.onStart();
+        super.onStart();
 
         mInputManager.registerInputDeviceListener(this, null);
 
@@ -74,16 +79,13 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
                 setContentView(mSurface);
             }
 
-        	mSurface.getHolder().addCallback(this);
-        	mSurface.setFocusable(true);
-        	mSurface.setFocusableInTouchMode(true);
-        	mSurface.setOnKeyListener(this);
-        	mSurface.setOnTouchListener(this);
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-                mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this, mInputManager));
-            }
-    	}
+            mSurface.getHolder().addCallback(this);
+            mSurface.setFocusable(true);
+            mSurface.setFocusableInTouchMode(true);
+            mSurface.setOnKeyListener(this);
+            mSurface.setOnTouchListener(this);
+            mSurface.setOnGenericMotionListener(new OrxOnGenericMotionListener(this));
+          }
 
         if(!mRunning.getAndSet(true)) {
             mOrxThread.start();
@@ -99,7 +101,6 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @Override
     protected void onPause() {
         super.onPause();
-        mInputManager.onPause();
 
         if(mRunning.get()) {
             nativeOnPause();
@@ -109,7 +110,6 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     @Override
     protected void onResume() {
         super.onResume();
-        mInputManager.onResume();
 
         if(mRunning.get()) {
             nativeOnResume();
@@ -133,31 +133,31 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     // Called when we have a valid drawing surface
-	@SuppressLint("NewApi")
-	public void surfaceCreated(SurfaceHolder holder) {
+    @SuppressLint("NewApi")
+    public void surfaceCreated(SurfaceHolder holder) {
         if(!mDestroyed) {
             mCurSurfaceHolder = holder;
             nativeOnSurfaceCreated(holder.getSurface());
         }
-	}
+    }
 
-	// Called when we lose the surface
-	public void surfaceDestroyed(SurfaceHolder holder) {
+    // Called when we lose the surface
+    public void surfaceDestroyed(SurfaceHolder holder) {
         mCurSurfaceHolder = null;
         if(!mDestroyed) {
             nativeOnSurfaceDestroyed();
         }
-	}
+    }
 
-	// Called when the surface is resized
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {
+    // Called when the surface is resized
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if(!mDestroyed) {
             nativeOnSurfaceChanged(width, height);
         }
-	}
+    }
 
-	// Key events
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
+    // Key events
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
         int source = event.getSource();
 
         if(keyCode != KeyEvent.KEYCODE_BACK && // BACK is a keyboard event
@@ -225,8 +225,8 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             return false;
         }
 
-		return false;
-	}
+        return false;
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -236,7 +236,8 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
     }
 
     // Touch events
-	public boolean onTouch(View v, MotionEvent event) {
+    @SuppressLint("ClickableViewAccessibility")
+    public boolean onTouch(View v, MotionEvent event) {
         final int touchDevId = event.getDeviceId();
         final int pointerCount = event.getPointerCount();
         // touchId, pointerId, action, x, y, pressure
@@ -268,7 +269,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             nativeOnTouch(touchDevId, pointerFingerId, action, x, y, p);
         }
         return true;
-	}
+    }
 
     @Override
     public void onInputDeviceAdded(int deviceId) {
@@ -313,31 +314,31 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
 
     @SuppressWarnings("UnusedDeclaration")
     public int getRotation() {
-    	WindowManager windowMgr = (WindowManager) getSystemService(WINDOW_SERVICE);
-    	return windowMgr.getDefaultDisplay().getRotation();
+        WindowManager windowMgr = (WindowManager) getSystemService(WINDOW_SERVICE);
+        return windowMgr.getDefaultDisplay().getRotation();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void showKeyboard(final boolean show) {
-    	runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
 
-			@Override
-			public void run() {
-		        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-		        if (show) {
-		        	imm.showSoftInput(mSurface, InputMethodManager.SHOW_IMPLICIT);
-		        } else {
-		        	imm.hideSoftInputFromWindow(mSurface.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-		        }
-			}
-		});
+                if (show) {
+                    imm.showSoftInput(mSurface, InputMethodManager.SHOW_IMPLICIT);
+                } else {
+                    imm.hideSoftInputFromWindow(mSurface.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public int[] getDeviceIds() {
         int deviceIds[] = mInputManager.getInputDeviceIds();
-        int result[] = new int[4];
+        int result[] = new int[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
         int i = 0;
 
         for (int deviceId : deviceIds) {
@@ -346,7 +347,7 @@ public class OrxActivity extends FragmentActivity implements SurfaceHolder.Callb
             // if the device is a gamepad/joystick
             if ((((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
                     ((sources & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK)) &&
-                    i < 4 ) {
+                    i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER ) {
                 result[i++] = deviceId;
             }
         }

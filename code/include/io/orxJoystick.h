@@ -46,7 +46,6 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
-
 /** Helpers
  */
 #define orxJOYSTICK_GET_AXIS(AXIS, ID)          ((((orxU32)AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))

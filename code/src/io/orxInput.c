@@ -457,7 +457,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
       default:
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type [%d] is not recognized!", _eType);
 
         break;
       }
@@ -489,16 +489,45 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
     /* Selects set */
     if(orxInput_SelectSet(_zSetName) != orxSTATUS_FAILURE)
     {
+      orxU64  u64JoyIDs = 0;
       orxU32  eType;
       orxU32  i, u32Number;
+
+      /* Check */
+      orxASSERT(orxJOYSTICK_KU32_MAX_ID <= 8 * sizeof(u64JoyIDs));
 
       /* Updates result */
       pstResult = sstInput.pstCurrentSet;
 
+      /* For all defined joystick IDs */
+      for(u32Number = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST), i = 0; i < u32Number; i++)
+      {
+        orxU32 u32JoyID;
+
+        /* Gets it */
+        u32JoyID = orxConfig_GetListU32(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST, i);
+
+        /* Valid? */
+        if((u32JoyID >= orxJOYSTICK_KU32_MIN_ID) && (u32JoyID <= orxJOYSTICK_KU32_MAX_ID))
+        {
+          /* Updates joystick IDs */
+          u64JoyIDs |= ((orxU64)1) << (u32JoyID - 1);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "[%s]: Invalid value <%d> in input set's JoyIDList, valid range is [%u - %u], skipping.", _zSetName, u32JoyID, orxJOYSTICK_KU32_MIN_ID, orxJOYSTICK_KU32_MAX_ID);
+        }
+      }
+
       /* For all input types */
       for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
       {
-        orxU32 eMode;
+        orxU32  eMode;
+        orxBOOL bIsJoystick;
+
+        /* Updates status */
+        bIsJoystick = ((eType == orxINPUT_TYPE_JOYSTICK_AXIS) || (eType == orxINPUT_TYPE_JOYSTICK_BUTTON)) ? orxTRUE : orxFALSE;
 
         /* For all modes */
         for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
@@ -515,6 +544,36 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
             /* Valid? */
             if(zBinding != orxSTRING_EMPTY)
             {
+              orxCHAR acBuffer[64];
+
+              /* Is joystick and not defined? */
+              if((bIsJoystick != orxFALSE) && (orxConfig_HasValue(zBinding) == orxFALSE))
+              {
+                orxS32 s32Index, s32NextIndex;
+                orxU32 u32JoyID;
+
+                /* Finds last separator */
+                for (s32Index = orxString_SearchCharIndex(zBinding, '_', 0);
+                    (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(zBinding, '_', s32Index + 1)) > 0);
+                    s32Index = s32NextIndex)
+                  ;
+
+                /* Checks */
+                orxASSERT((s32Index > 0) && (s32Index < sizeof(acBuffer)));
+
+                /* Gets its ID */
+                orxString_ToU32(zBinding + s32Index + 1, &u32JoyID, orxNULL);
+
+                /* Defined? */
+                if(u64JoyIDs & (((orxU64)1) << (u32JoyID - 1)))
+                {
+                  /* Uses binding's base name */
+                  orxString_NCopy(acBuffer, zBinding, s32Index);
+                  acBuffer[s32Index] = orxCHAR_NULL;
+                  zBinding = acBuffer;
+                }
+              }
+
               /* For all defined inputs */
               for(u32Number = orxConfig_GetListCount(zBinding), i = 0; i < u32Number; i++)
               {
@@ -1029,7 +1088,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating set name failed.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't retrieve input set's name for ID [%u].", _stSetID);
 
         /* Deletes its bank */
         orxBank_Delete(pstResult->pstEntryBank);
@@ -1044,7 +1103,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create input bank.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't allocate input set for ID [%u].", _stSetID);
 
       /* Deletes the set */
       orxBank_Free(sstInput.pstSetBank, pstResult);
@@ -1209,7 +1268,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize input module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Tried to initialize input module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -1551,7 +1610,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Failed to create input set with parameters (%s, %d).", _zSetName, stSetID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create input set [%s].", _zSetName);
       }
     }
 
@@ -2221,11 +2280,11 @@ orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOA
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult = -orxFLOAT_1;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -2951,7 +3010,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type [%d] is not recognized!", _eType);
 
       break;
     }
@@ -2992,7 +3051,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
         if((_eType == orxINPUT_TYPE_MOUSE_AXIS) || (_eType == orxINPUT_TYPE_JOYSTICK_AXIS))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode [%d] is not recognized!", _eMode);
         }
 
         break;

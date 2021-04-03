@@ -6,30 +6,24 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 
-import org.orx.lib.inputmanagercompat.InputManagerCompat;
-
 /**
  * Created by philippe on 29/10/14.
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
 public class OrxOnGenericMotionListener implements View.OnGenericMotionListener {
 
-    private InputManagerCompat mInputManager;
     private OrxActivity mOrxActivity;
 
-    public OrxOnGenericMotionListener(OrxActivity activity, InputManagerCompat inputManager) {
+    public OrxOnGenericMotionListener(OrxActivity activity) {
         mOrxActivity = activity;
-        mInputManager = inputManager;
     }
 
     @Override
     public boolean onGenericMotion(View view, MotionEvent motionEvent) {
-        mInputManager.onGenericMotionEvent(motionEvent);
-
         int eventSource = motionEvent.getSource();
         if ((((eventSource & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) ||
-                ((eventSource & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK))
-                && motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            ((eventSource & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK))
+            && motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
             // Process the current movement sample in the batch.
             processJoystickInput(motionEvent, -1);

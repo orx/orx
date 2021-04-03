@@ -58,6 +58,7 @@
 #define orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD          "DefaultThreshold"  /**< Input default threshold */
 #define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
 #define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList"       /**< Combine input list */
+#define orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST           "JoyIDList"         /**< Joystick ID list */
 
 #define orxINPUT_KU32_BINDING_NUMBER                  16
 
@@ -257,7 +258,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetThreshold(const or
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetMultiplier(const orxSTRING _zInputName);
 
