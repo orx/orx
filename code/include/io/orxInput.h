@@ -58,6 +58,7 @@
 #define orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD          "DefaultThreshold"  /**< Input default threshold */
 #define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
 #define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList"       /**< Combine input list */
+#define orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST           "JoyIDList"         /**< Joystick ID list */
 
 #define orxINPUT_KU32_BINDING_NUMBER                  16
 
