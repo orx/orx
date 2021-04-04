@@ -36,22 +36,6 @@ build_script:
 
     msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
 
-    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
-
-    msbuild tools/orxFontGen/build/windows/%Folder%/orxFontGen.sln /p:Platform=%Platform% /p:Configuration=Release
-
-    msbuild tools/orxCrypt/build/windows/%Folder%/orxCrypt.sln /p:Platform=%Platform% /p:Configuration=Release
-
-    pushd .
-
-    cd code/build/python
-
-    python package.py -p %PackageVersion%
-
-    python package.py -p tuto%PackageVersion%
-
-    popd
-
     init.bat test +scroll +imgui
 
     msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Release
@@ -59,6 +43,18 @@ build_script:
     msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Profile
 
     msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Debug
+
+    msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
+
+    msbuild tools/orxFontGen/build/windows/%Folder%/orxFontGen.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    msbuild tools/orxCrypt/build/windows/%Folder%/orxCrypt.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    cd code/build/python
+
+    python package.py -p %PackageVersion%
+
+    python package.py -p tuto%PackageVersion%
 
 artifacts:
 - path: code/build/python/packages/*vs2017-64*.zip
