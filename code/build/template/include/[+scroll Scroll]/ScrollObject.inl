@@ -325,7 +325,7 @@ orxBOOL ScrollObject::IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
   return bResult;
 }
 
-void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent, orXBOOL _bRecursive)
+void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent, orxBOOL _bRecursive)
 {
   // Recursive?
   if(_bRecursive)
