@@ -25,10 +25,13 @@
 #include <stddef.h>
 
 
-// Deactivates invalid offsetof warnings for GCC for the rest of this file
-#ifdef __orxGCC__
+// Deactivates invalid offsetof warnings for GCC & Clang for the rest of this file
+#if defined(__orxGCC__)
   #pragma GCC system_header
-#endif // __orxGCC__
+#elif defined(__orxLLVM__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Winvalid-offsetof"
+#endif
 
 
 //! Constants
@@ -2265,3 +2268,7 @@ ScrollObject *ScrollObjectBinderBase::GetPreviousObject(const ScrollObject *_poO
   // Done!
   return poResult;
 }
+
+#ifdef __orxLLVM__
+  #pragma clang diagnostic pop
+#endif // __orxLLVM__
