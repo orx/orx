@@ -325,18 +325,36 @@ orxBOOL ScrollObject::IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
   return bResult;
 }
 
-void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
+void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent, orXBOOL _bRecursive)
 {
-  // Target anim?
-  if(!_bCurrent)
+  // Recursive?
+  if(_bRecursive)
   {
-    // Sets it
-    orxObject_SetTargetAnim(mpstObject, _zAnim);
+    // Target anim?
+    if(!_bCurrent)
+    {
+      // Sets it
+      orxObject_SetTargetAnimRecursive(mpstObject, _zAnim);
+    }
+    else
+    {
+      // Sets it
+      orxObject_SetCurrentAnimRecursive(mpstObject, _zAnim);
+    }
   }
   else
   {
-    // Sets it
-    orxObject_SetCurrentAnim(mpstObject, _zAnim);
+    // Target anim?
+    if(!_bCurrent)
+    {
+      // Sets it
+      orxObject_SetTargetAnim(mpstObject, _zAnim);
+    }
+    else
+    {
+      // Sets it
+      orxObject_SetCurrentAnim(mpstObject, _zAnim);
+    }
   }
 }
 
