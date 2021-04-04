@@ -1,4 +1,4 @@
-version: 1.9-dev.{build}
+version: 1.12-dev.{build}
 
 image:
 - Visual Studio 2017
@@ -35,6 +35,8 @@ build_script:
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Debug
 
     msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    set ORX=%CD%\code
 
     init.bat test +scroll +imgui
 
