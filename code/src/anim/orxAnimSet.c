@@ -1807,7 +1807,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     if(bContinue != orxFALSE)
     {
       orxVECTOR       vFrameOrigin, vCurrentSize;
-      orxU32          u32FrameCount, u32EventCount, i;
+      orxU32          u32FrameCount, u32EventCount, i, u32FrameID;
       orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
       const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
       orxFLOAT       *pfRowOrigin = &fTextureRowOrigin;
@@ -1939,9 +1939,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       }
 
       /* For all frames */
-      for(i = 0, u32EventCount = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
+      for(i = 0, u32FrameID = 1, u32EventCount = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
           (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
-          i++)
+          i++, u32FrameID++)
       {
         orxGRAPHIC     *pstGraphic;
         const orxSTRING zEventName = orxNULL;
@@ -2144,8 +2144,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Doesn't have texture? */
           if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
           {
+            orxCHAR acTextureBuffer[128];
+
+            /* Has frame index? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+            {
+              /* Updates frame ID */
+              u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+            }
+
+            /* Gets texture name */
+            acTextureBuffer[orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+
             /* Sets it */
-            orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acFrameBuffer);
+            orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
 
             /* Updates status */
             bTempName = orxTRUE;
