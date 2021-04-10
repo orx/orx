@@ -157,6 +157,7 @@
 #define orxANIMSET_KZ_DIRECTION_RIGHT                 "right"
 #define orxANIMSET_KZ_DIRECTION_DOWN                  "down"
 #define orxANIMSET_KZ_DIRECTION_UP                    "up"
+#define orxANIMSET_KZ_EMPTY                           "empty"
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 64          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          128         /**< Reference table size */
@@ -1567,6 +1568,15 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         /* Uses self as name */
         zAnim = _zConfigID;
       }
+      /* Empty animation? */
+      else if(orxString_ICompare(zValue, orxANIMSET_KZ_EMPTY) == 0)
+      {
+        /* Creates empty animation */
+        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, 0, 0);
+
+        /* Stores its name */
+        orxAnim_SetName(pstResult, orxString_Store(_zConfigID));
+      }
       else
       {
         /* Gets anim name */
@@ -1620,466 +1630,502 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
     }
   }
 
-  /* Valid? */
-  if(zAnim != orxSTRING_EMPTY)
+  /* Not already created? */
+  if(pstResult == orxNULL)
   {
-    orxVECTOR       vTextureOrigin, vTextureSize, vFrameSize;
-    const orxSTRING zPrefix;
-    const orxSTRING zParent;
-    const orxSTRING zNewAnimParent;
-    const orxSTRING zCurrentSection;
-    orxU32          u32Digits;
-    orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
-    orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
-    orxCHAR         acAnimBuffer[128];
-
-    /* Clears variables */
-    orxMemory_Zero(&vTextureOrigin, sizeof(orxVECTOR));
-    orxMemory_Zero(&vTextureSize, sizeof(orxVECTOR));
-    orxMemory_Zero(&vFrameSize, sizeof(orxVECTOR));
-
-    /* Gets number of digits */
-    u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
-
-    /* Gets prefix */
-    zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
-
-    /* Has prefix? */
-    if(*zPrefix != orxCHAR_NULL)
+    /* Valid? */
+    if(zAnim != orxSTRING_EMPTY)
     {
-      /* Gets new parent */
-      zNewAnimParent = zAnim;
-
-      /* Sets new parent's parent */
-      orxConfig_SetParent(zNewAnimParent, zAnimSet);
-
-      /* Gets anim's section name */
-      acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent)] = orxCHAR_NULL;
-    }
-    else
-    {
-      /* Gets new parent */
-      zNewAnimParent = zAnimSet;
-
-      /* Gets anim's section name */
-      acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim)] = orxCHAR_NULL;
-    }
-
-    /* Gets current parent */
-    zParent = orxConfig_GetParent(acAnimBuffer);
-
-    /* Already has parent? */
-    if((zParent != orxNULL)
-    && (orxString_Compare(zParent, zNewAnimParent) != 0))
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acAnimBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewAnimParent);
-    }
-
-    /* Pushes it */
-    orxConfig_PushSection(acAnimBuffer);
-
-    /* Sets its parent */
-    orxConfig_SetParent(acAnimBuffer, zNewAnimParent);
-
-    /* Stores it */
-    zCurrentSection = orxConfig_GetCurrentSection();
-
-    /* From config? */
-    if(bFromConfig != orxFALSE)
-    {
-      /* Gets frame size */
-      orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
-      vFrameSize.fZ = orxFLOAT_0;
-
-      /* Updates status */
-      bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
-
-      /* Gets texture origin */
-      orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
-
-      /* Has direction? */
-      if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
-      {
-        /* Valid? */
-        if(orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
-        {
-          orxU32        i;
-          orxDIRECTION *aeDirections[] =
-          {
-            &eRowDirection,
-            &eColumnDirection
-          };
-
-          /* For all directions */
-          for(i = 0; i < 2; i++)
-          {
-            const orxSTRING zDirection;
-
-            /* Gets it */
-            zDirection = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, i);
-
-            /* Right? */
-            if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_RIGHT) == 0)
-            {
-              /* Sets direction */
-              *aeDirections[i] = orxDIRECTION_RIGHT;
-            }
-            /* Left? */
-            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_LEFT) == 0)
-            {
-              /* Sets direction */
-              *aeDirections[i] = orxDIRECTION_LEFT;
-            }
-            /* Down? */
-            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_DOWN) == 0)
-            {
-              /* Sets direction */
-              *aeDirections[i] = orxDIRECTION_DOWN;
-            }
-            /* Up? */
-            else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_UP) == 0)
-            {
-              /* Sets direction */
-              *aeDirections[i] = orxDIRECTION_UP;
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction value" orxANSI_KZ_COLOR_FG_DEFAULT " [%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, zDirection, _zConfigID);
-            }
-          }
-
-          /* Both values on the same axis? */
-          if((!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x03))
-          || (!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x0C)))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid combination of direction values" orxANSI_KZ_COLOR_FG_DEFAULT " [%s-%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 0), orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 1), _zConfigID);
-
-            /* Restores default values */
-            eRowDirection     = orxDIRECTION_RIGHT;
-            eColumnDirection  = orxDIRECTION_DOWN;
-          }
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction property" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, _zConfigID);
-        }
-      }
-
-      /* Gets texture size */
-      if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
-      {
-        orxGRAPHIC *pstGraphic;
-
-        /* Creates graphic */
-        pstGraphic = orxGraphic_CreateFromConfig(acAnimBuffer);
-
-        /* Valid? */
-        if(pstGraphic != orxNULL)
-        {
-          /* Gets its size */
-          orxGraphic_GetSize(pstGraphic, &vTextureSize);
-
-          /* Updates text status */
-          bIsText = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT);
-
-          /* Deletes it */
-          orxGraphic_Delete(pstGraphic);
-        }
-      }
-
-      /* No texture size? */
-      if((vTextureSize.fX == orxFLOAT_0) && (vTextureSize.fY == orxFLOAT_0))
-      {
-        /* Not a text? */
-        if(bIsText == orxFALSE)
-        {
-          /* Stops */
-          bContinue = orxFALSE;
-        }
-      }
-    }
-
-    /* Should continue? */
-    if(bContinue != orxFALSE)
-    {
-      orxVECTOR       vFrameOrigin, vCurrentSize;
-      orxU32          u32FrameCount, u32EventCount, i, u32FrameID;
-      orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
-      const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
-      orxFLOAT       *pfRowOrigin = &fTextureRowOrigin;
-      orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
-      const orxFLOAT *pfColumnDelta;
-      orxFLOAT       *pfColumnOrigin = &fTextureColumnOrigin;
+      orxVECTOR       vTextureOrigin, vTextureSize, vFrameSize;
+      const orxSTRING zPrefix;
+      const orxSTRING zParent;
+      const orxSTRING zNewAnimParent;
+      const orxSTRING zCurrentSection;
+      orxU32          u32Digits;
+      orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
+      orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
+      orxCHAR         acAnimBuffer[128];
 
       /* Clears variables */
-      orxMemory_Zero(&vFrameOrigin, sizeof(orxVECTOR));
+      orxMemory_Zero(&vTextureOrigin, sizeof(orxVECTOR));
+      orxMemory_Zero(&vTextureSize, sizeof(orxVECTOR));
+      orxMemory_Zero(&vFrameSize, sizeof(orxVECTOR));
+
+      /* Gets number of digits */
+      u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
+
+      /* Gets prefix */
+      zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+
+      /* Has prefix? */
+      if(*zPrefix != orxCHAR_NULL)
+      {
+        /* Gets new parent */
+        zNewAnimParent = zAnim;
+
+        /* Sets new parent's parent */
+        orxConfig_SetParent(zNewAnimParent, zAnimSet);
+
+        /* Gets anim's section name */
+        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent)] = orxCHAR_NULL;
+      }
+      else
+      {
+        /* Gets new parent */
+        zNewAnimParent = zAnimSet;
+
+        /* Gets anim's section name */
+        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim)] = orxCHAR_NULL;
+      }
+
+      /* Gets current parent */
+      zParent = orxConfig_GetParent(acAnimBuffer);
+
+      /* Already has parent? */
+      if((zParent != orxNULL)
+      && (orxString_Compare(zParent, zNewAnimParent) != 0))
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acAnimBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewAnimParent);
+      }
+
+      /* Pushes it */
+      orxConfig_PushSection(acAnimBuffer);
+
+      /* Sets its parent */
+      orxConfig_SetParent(acAnimBuffer, zNewAnimParent);
+
+      /* Stores it */
+      zCurrentSection = orxConfig_GetCurrentSection();
 
       /* From config? */
       if(bFromConfig != orxFALSE)
       {
-        /* Inits default values */
-        fTextureRowOrigin = orxFLOAT_0;
-        fRowSign          = orxFLOAT_1;
-        fRowBoundary      = orxFLOAT_0;
-        pfOriginDeltaX    =
-        pfOriginDeltaY    =
-        pfColumnDelta     = &orxVECTOR_0.fX;
+        /* Gets frame size */
+        orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
+        vFrameSize.fZ = orxFLOAT_0;
 
-        /* Inits values depending on row direction */
-        switch(eRowDirection)
+        /* Updates status */
+        bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
+
+        /* Gets texture origin */
+        orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
+
+        /* Has direction? */
+        if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
         {
-          case orxDIRECTION_LEFT:
+          /* Valid? */
+          if(orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_DIRECTION) == 2)
           {
-            pfOriginDeltaX    = &vCurrentSize.fX;
-            fTextureRowOrigin = vTextureSize.fX;
-            fRowBoundary      = -vTextureSize.fX;
-            fRowSign          = -orxFLOAT_1;
-
-            /* Fall through */
-          }
-
-          case orxDIRECTION_RIGHT:
-          {
-            fRowMaxWidth      =
-            fRowWidth         = vFrameSize.fY;
-            pfRowWidth        = &vCurrentSize.fY;
-            pfRowDelta        = &vCurrentSize.fX;
-            pfRowOrigin       = &vFrameOrigin.fX;
-            fTextureRowOrigin+= vTextureOrigin.fX;
-            fRowBoundary     += vTextureOrigin.fX + vTextureSize.fX;
-
-            break;
-          }
-
-          case orxDIRECTION_UP:
-          {
-            pfOriginDeltaY    = &vCurrentSize.fY;
-            fTextureRowOrigin = vTextureSize.fY;
-            fRowBoundary      = -vTextureSize.fY;
-            fRowSign          = -orxFLOAT_1;
-
-            /* Fall through */
-          }
-
-          case orxDIRECTION_DOWN:
-          {
-            fRowMaxWidth      =
-            fRowWidth         = vFrameSize.fX;
-            pfRowWidth        = &vCurrentSize.fX;
-            pfRowDelta        = &vCurrentSize.fY;
-            pfRowOrigin       = &vFrameOrigin.fY;
-            fTextureRowOrigin+= vTextureOrigin.fY;
-            fRowBoundary     += vTextureOrigin.fY + vTextureSize.fY;
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-
-        /* Inits values depending on column direction */
-        switch(eColumnDirection)
-        {
-          case orxDIRECTION_LEFT:
-          {
-            fColumnSign       = -orxFLOAT_1;
-            pfColumnOrigin    = &vFrameOrigin.fX;
-            fTextureColumnOrigin = vTextureOrigin.fX + vTextureSize.fX;
-            fColumnBoundary   = vTextureOrigin.fX;
-            pfOriginDeltaX    = &vCurrentSize.fX;
-
-            break;
-          }
-
-          case orxDIRECTION_RIGHT:
-          {
-            fColumnSign       = orxFLOAT_1;
-            pfColumnOrigin    = &vFrameOrigin.fX;
-            fTextureColumnOrigin = vTextureOrigin.fX;
-            fColumnBoundary   = vTextureOrigin.fX + vTextureSize.fX;
-            pfColumnDelta     = &vCurrentSize.fX;
-
-            break;
-          }
-
-          case orxDIRECTION_UP:
-          {
-            fColumnSign       = -orxFLOAT_1;
-            pfColumnOrigin    = &vFrameOrigin.fY;
-            fTextureColumnOrigin = vTextureOrigin.fY + vTextureSize.fY;
-            fColumnBoundary   = vTextureOrigin.fY;
-            pfOriginDeltaY    = &vCurrentSize.fY;
-
-            break;
-          }
-
-          case orxDIRECTION_DOWN:
-          {
-            fColumnSign       = orxFLOAT_1;
-            pfColumnOrigin    = &vFrameOrigin.fY;
-            fTextureColumnOrigin = vTextureOrigin.fY;
-            fColumnBoundary   = vTextureOrigin.fY + vTextureSize.fY;
-            pfColumnDelta     = &vCurrentSize.fY;
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-      }
-
-      /* For all frames */
-      for(i = 0, u32FrameID = 1, u32EventCount = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
-          (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
-          i++, u32FrameID++)
-      {
-        orxGRAPHIC     *pstGraphic;
-        const orxSTRING zEventName = orxNULL;
-        const orxSTRING zNewFrameParent;
-        orxFLOAT        fEventValue = orxFLOAT_0;
-        orxS32          s32EventValueCount;
-        orxBOOL         bDebugLevelBackup;
-        orxCHAR         acParentBuffer[128], acFrameBuffer[128];
-
-        /* Has prefix? */
-        if(*zPrefix != orxCHAR_NULL)
-        {
-          /* Gets new parent */
-          acParentBuffer[orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
-          zNewFrameParent = acParentBuffer;
-
-          /* Gets frame name */
-          acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent)] = orxCHAR_NULL;
-        }
-        else
-        {
-          /* Gets new parent */
-          zNewFrameParent = zCurrentSection;
-
-          /* Gets frame name */
-          acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
-        }
-
-        /* From config and should auto-stop? */
-        if((s32MaxFrames == 0)
-        && (bFromConfig != orxFALSE))
-        {
-          /* Doesn't have a config section? */
-          if((orxConfig_HasSection(acFrameBuffer) == orxFALSE)
-          && ((*zPrefix == orxCHAR_NULL)
-           || (orxConfig_HasSection(zNewFrameParent) == orxFALSE)))
-          {
-            /* First frame? */
-            if(i == 0)
+            orxU32        i;
+            orxDIRECTION *aeDirections[] =
             {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame defined in config" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, _zConfigID);
-            }
+              &eRowDirection,
+              &eColumnDirection
+            };
 
-            /* Stops */
-            break;
-          }
-        }
-
-        /* Has prefix? */
-        if(*zPrefix != orxCHAR_NULL)
-        {
-          /* Sets new parent's parent */
-          orxConfig_SetParent(zNewFrameParent, zCurrentSection);
-        }
-
-        /* Pushes its section */
-        orxConfig_SelectSection(acFrameBuffer);
-
-        /* From config? */
-        if(bFromConfig != orxFALSE)
-        {
-          orxVECTOR vCurrentOrigin;
-
-          /* No local size? */
-          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
-          {
-            /* No frame size and not a text? */
-            if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
+            /* For all directions */
+            for(i = 0; i < 2; i++)
             {
-              /* Single frame animation? */
-              if((s32MaxFrames == 1) || (s32MaxFrames < 0))
+              const orxSTRING zDirection;
+
+              /* Gets it */
+              zDirection = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, i);
+
+              /* Right? */
+              if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_RIGHT) == 0)
               {
-                /* Use texture size as frame size */
-                orxVector_Copy(&vFrameSize, &vTextureSize);
+                /* Sets direction */
+                *aeDirections[i] = orxDIRECTION_RIGHT;
+              }
+              /* Left? */
+              else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_LEFT) == 0)
+              {
+                /* Sets direction */
+                *aeDirections[i] = orxDIRECTION_LEFT;
+              }
+              /* Down? */
+              else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_DOWN) == 0)
+              {
+                /* Sets direction */
+                *aeDirections[i] = orxDIRECTION_DOWN;
+              }
+              /* Up? */
+              else if(orxString_ICompare(zDirection, orxANIMSET_KZ_DIRECTION_UP) == 0)
+              {
+                /* Sets direction */
+                *aeDirections[i] = orxDIRECTION_UP;
               }
               else
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acFrameBuffer);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction value" orxANSI_KZ_COLOR_FG_DEFAULT " [%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, zDirection, _zConfigID);
+              }
+            }
+
+            /* Both values on the same axis? */
+            if((!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x03))
+            || (!orxFLAG_TEST((0x01 << eRowDirection) | (0x01 << eColumnDirection), 0x0C)))
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid combination of direction values" orxANSI_KZ_COLOR_FG_DEFAULT " [%s-%s] for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 0), orxConfig_GetListString(orxANIMSET_KZ_CONFIG_DIRECTION, 1), _zConfigID);
+
+              /* Restores default values */
+              eRowDirection     = orxDIRECTION_RIGHT;
+              eColumnDirection  = orxDIRECTION_DOWN;
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid direction property" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", ignoring!", zAnimSet, _zConfigID);
+          }
+        }
+
+        /* Gets texture size */
+        if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
+        {
+          orxGRAPHIC *pstGraphic;
+
+          /* Creates graphic */
+          pstGraphic = orxGraphic_CreateFromConfig(acAnimBuffer);
+
+          /* Valid? */
+          if(pstGraphic != orxNULL)
+          {
+            /* Gets its size */
+            orxGraphic_GetSize(pstGraphic, &vTextureSize);
+
+            /* Updates text status */
+            bIsText = orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT);
+
+            /* Deletes it */
+            orxGraphic_Delete(pstGraphic);
+          }
+        }
+
+        /* No texture size? */
+        if((vTextureSize.fX == orxFLOAT_0) && (vTextureSize.fY == orxFLOAT_0))
+        {
+          /* Not a text? */
+          if(bIsText == orxFALSE)
+          {
+            /* Stops */
+            bContinue = orxFALSE;
+          }
+        }
+      }
+
+      /* Should continue? */
+      if(bContinue != orxFALSE)
+      {
+        orxVECTOR       vFrameOrigin, vCurrentSize;
+        orxU32          u32FrameCount, u32EventCount, i, u32FrameID;
+        orxFLOAT        fTextureRowOrigin, fRowBoundary, fRowSign, fRowMaxWidth, fRowWidth;
+        const orxFLOAT *pfRowWidth, *pfRowDelta, *pfOriginDeltaX, *pfOriginDeltaY;
+        orxFLOAT       *pfRowOrigin = &fTextureRowOrigin;
+        orxFLOAT        fTextureColumnOrigin, fColumnSign, fColumnBoundary;
+        const orxFLOAT *pfColumnDelta;
+        orxFLOAT       *pfColumnOrigin = &fTextureColumnOrigin;
+
+        /* Clears variables */
+        orxMemory_Zero(&vFrameOrigin, sizeof(orxVECTOR));
+
+        /* From config? */
+        if(bFromConfig != orxFALSE)
+        {
+          /* Inits default values */
+          fTextureRowOrigin = orxFLOAT_0;
+          fRowSign          = orxFLOAT_1;
+          fRowBoundary      = orxFLOAT_0;
+          pfOriginDeltaX    =
+          pfOriginDeltaY    =
+          pfColumnDelta     = &orxVECTOR_0.fX;
+
+          /* Inits values depending on row direction */
+          switch(eRowDirection)
+          {
+            case orxDIRECTION_LEFT:
+            {
+              pfOriginDeltaX    = &vCurrentSize.fX;
+              fTextureRowOrigin = vTextureSize.fX;
+              fRowBoundary      = -vTextureSize.fX;
+              fRowSign          = -orxFLOAT_1;
+
+              /* Fall through */
+            }
+
+            case orxDIRECTION_RIGHT:
+            {
+              fRowMaxWidth      =
+              fRowWidth         = vFrameSize.fY;
+              pfRowWidth        = &vCurrentSize.fY;
+              pfRowDelta        = &vCurrentSize.fX;
+              pfRowOrigin       = &vFrameOrigin.fX;
+              fTextureRowOrigin+= vTextureOrigin.fX;
+              fRowBoundary     += vTextureOrigin.fX + vTextureSize.fX;
+
+              break;
+            }
+
+            case orxDIRECTION_UP:
+            {
+              pfOriginDeltaY    = &vCurrentSize.fY;
+              fTextureRowOrigin = vTextureSize.fY;
+              fRowBoundary      = -vTextureSize.fY;
+              fRowSign          = -orxFLOAT_1;
+
+              /* Fall through */
+            }
+
+            case orxDIRECTION_DOWN:
+            {
+              fRowMaxWidth      =
+              fRowWidth         = vFrameSize.fX;
+              pfRowWidth        = &vCurrentSize.fX;
+              pfRowDelta        = &vCurrentSize.fY;
+              pfRowOrigin       = &vFrameOrigin.fY;
+              fTextureRowOrigin+= vTextureOrigin.fY;
+              fRowBoundary     += vTextureOrigin.fY + vTextureSize.fY;
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+
+          /* Inits values depending on column direction */
+          switch(eColumnDirection)
+          {
+            case orxDIRECTION_LEFT:
+            {
+              fColumnSign       = -orxFLOAT_1;
+              pfColumnOrigin    = &vFrameOrigin.fX;
+              fTextureColumnOrigin = vTextureOrigin.fX + vTextureSize.fX;
+              fColumnBoundary   = vTextureOrigin.fX;
+              pfOriginDeltaX    = &vCurrentSize.fX;
+
+              break;
+            }
+
+            case orxDIRECTION_RIGHT:
+            {
+              fColumnSign       = orxFLOAT_1;
+              pfColumnOrigin    = &vFrameOrigin.fX;
+              fTextureColumnOrigin = vTextureOrigin.fX;
+              fColumnBoundary   = vTextureOrigin.fX + vTextureSize.fX;
+              pfColumnDelta     = &vCurrentSize.fX;
+
+              break;
+            }
+
+            case orxDIRECTION_UP:
+            {
+              fColumnSign       = -orxFLOAT_1;
+              pfColumnOrigin    = &vFrameOrigin.fY;
+              fTextureColumnOrigin = vTextureOrigin.fY + vTextureSize.fY;
+              fColumnBoundary   = vTextureOrigin.fY;
+              pfOriginDeltaY    = &vCurrentSize.fY;
+
+              break;
+            }
+
+            case orxDIRECTION_DOWN:
+            {
+              fColumnSign       = orxFLOAT_1;
+              pfColumnOrigin    = &vFrameOrigin.fY;
+              fTextureColumnOrigin = vTextureOrigin.fY;
+              fColumnBoundary   = vTextureOrigin.fY + vTextureSize.fY;
+              pfColumnDelta     = &vCurrentSize.fY;
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+        }
+
+        /* For all frames */
+        for(i = 0, u32FrameID = 1, u32EventCount = 0, *pfRowOrigin = fTextureRowOrigin, *pfColumnOrigin = fTextureColumnOrigin;
+            (s32MaxFrames <= 0) || (i < (orxU32)s32MaxFrames);
+            i++, u32FrameID++)
+        {
+          orxGRAPHIC     *pstGraphic;
+          const orxSTRING zEventName = orxNULL;
+          const orxSTRING zNewFrameParent;
+          orxFLOAT        fEventValue = orxFLOAT_0;
+          orxS32          s32EventValueCount;
+          orxBOOL         bDebugLevelBackup;
+          orxCHAR         acParentBuffer[128], acFrameBuffer[128];
+
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
+          {
+            /* Gets new parent */
+            acParentBuffer[orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+            zNewFrameParent = acParentBuffer;
+
+            /* Gets frame name */
+            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent)] = orxCHAR_NULL;
+          }
+          else
+          {
+            /* Gets new parent */
+            zNewFrameParent = zCurrentSection;
+
+            /* Gets frame name */
+            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+          }
+
+          /* From config and should auto-stop? */
+          if((s32MaxFrames == 0)
+          && (bFromConfig != orxFALSE))
+          {
+            /* Doesn't have a config section? */
+            if((orxConfig_HasSection(acFrameBuffer) == orxFALSE)
+            && ((*zPrefix == orxCHAR_NULL)
+             || (orxConfig_HasSection(zNewFrameParent) == orxFALSE)))
+            {
+              /* First frame? */
+              if(i == 0)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame defined in config" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, _zConfigID);
+              }
+
+              /* Stops */
+              break;
+            }
+          }
+
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
+          {
+            /* Sets new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+          }
+
+          /* Pushes its section */
+          orxConfig_SelectSection(acFrameBuffer);
+
+          /* From config? */
+          if(bFromConfig != orxFALSE)
+          {
+            orxVECTOR vCurrentOrigin;
+
+            /* No local size? */
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
+            {
+              /* No frame size and not a text? */
+              if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
+              {
+                /* Single frame animation? */
+                if((s32MaxFrames == 1) || (s32MaxFrames < 0))
+                {
+                  /* Use texture size as frame size */
+                  orxVector_Copy(&vFrameSize, &vTextureSize);
+                }
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acFrameBuffer);
+
+                  /* Stops */
+                  break;
+                }
+              }
+
+              /* Stores default one */
+              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+
+              /* Copies to local */
+              orxVector_Copy(&vCurrentSize, &vFrameSize);
+
+              /* Updates status */
+              bTempSize = orxTRUE;
+            }
+
+            /* Should go to next row? */
+            if(fRowSign * *pfRowOrigin + *pfRowDelta > fRowSign * fRowBoundary)
+            {
+              /* Updates frame's origin */
+              *pfRowOrigin      = fTextureRowOrigin;
+              *pfColumnOrigin  += fColumnSign * fRowMaxWidth;
+
+              /* Resets max vertical value */
+              fRowMaxWidth      = fRowWidth;
+            }
+            else
+            {
+              /* Updates max width value */
+              fRowMaxWidth = orxMAX(fRowMaxWidth, *pfRowWidth);
+            }
+
+            /* Has local origin? */
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vCurrentOrigin) != orxNULL)
+            {
+              /* Overrides computed one with it */
+              orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
+            }
+            /* Has frame index? */
+            else if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+            {
+              orxU32 u32FrameIndex;
+
+              /* Retrieves it */
+              u32FrameIndex = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX) - 1;
+
+              /* Has valid frame size? */
+              if(bHasFrameSize != orxFALSE)
+              {
+                orxU32 u32FramesPerRow;
+
+                /* Gets number of frames per row */
+                u32FramesPerRow = orxF2U(fRowSign * (fRowBoundary - fTextureRowOrigin) / *pfRowDelta);
+
+                /* Computes frame's coordinates */
+                *pfRowOrigin    = fTextureRowOrigin + fRowSign * *pfRowDelta * orxU2F(u32FrameIndex % u32FramesPerRow);
+                *pfColumnOrigin = fTextureColumnOrigin + fColumnSign * fRowWidth * orxU2F(u32FrameIndex / u32FramesPerRow);
+
+                /* Gets actual frame origin */
+                vFrameOrigin.fX -= *pfOriginDeltaX;
+                vFrameOrigin.fY -= *pfOriginDeltaY;
+
+                /* Inside boundaries? */
+                if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
+                {
+                  /* Stores computed one */
+                  orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
+
+                  /* Updates staus */
+                  bTempOrigin = orxTRUE;
+                }
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
+
+                  /* Stops */
+                  break;
+                }
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
 
                 /* Stops */
                 break;
               }
             }
-
-            /* Stores default one */
-            orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
-
-            /* Copies to local */
-            orxVector_Copy(&vCurrentSize, &vFrameSize);
-
-            /* Updates status */
-            bTempSize = orxTRUE;
-          }
-
-          /* Should go to next row? */
-          if(fRowSign * *pfRowOrigin + *pfRowDelta > fRowSign * fRowBoundary)
-          {
-            /* Updates frame's origin */
-            *pfRowOrigin      = fTextureRowOrigin;
-            *pfColumnOrigin  += fColumnSign * fRowMaxWidth;
-
-            /* Resets max vertical value */
-            fRowMaxWidth      = fRowWidth;
-          }
-          else
-          {
-            /* Updates max width value */
-            fRowMaxWidth = orxMAX(fRowMaxWidth, *pfRowWidth);
-          }
-
-          /* Has local origin? */
-          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vCurrentOrigin) != orxNULL)
-          {
-            /* Overrides computed one with it */
-            orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
-          }
-          /* Has frame index? */
-          else if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
-          {
-            orxU32 u32FrameIndex;
-
-            /* Retrieves it */
-            u32FrameIndex = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX) - 1;
-
-            /* Has valid frame size? */
-            if(bHasFrameSize != orxFALSE)
+            else
             {
-              orxU32 u32FramesPerRow;
-
-              /* Gets number of frames per row */
-              u32FramesPerRow = orxF2U(fRowSign * (fRowBoundary - fTextureRowOrigin) / *pfRowDelta);
-
-              /* Computes frame's coordinates */
-              *pfRowOrigin    = fTextureRowOrigin + fRowSign * *pfRowDelta * orxU2F(u32FrameIndex % u32FramesPerRow);
-              *pfColumnOrigin = fTextureColumnOrigin + fColumnSign * fRowWidth * orxU2F(u32FrameIndex / u32FramesPerRow);
-
               /* Gets actual frame origin */
               vFrameOrigin.fX -= *pfOriginDeltaX;
               vFrameOrigin.fY -= *pfOriginDeltaY;
@@ -2095,276 +2141,244 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               }
               else
               {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
-
-                /* Stops */
                 break;
               }
             }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
 
-              /* Stops */
-              break;
+            /* Updates frame origin */
+            vFrameOrigin.fX += *pfOriginDeltaX;
+            vFrameOrigin.fY += *pfOriginDeltaY;
+
+            /* Moves to next frame on same row */
+            *pfRowOrigin += fRowSign * *pfRowDelta;
+          }
+          else
+          {
+            /* Doesn't have texture? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
+            {
+              orxCHAR acTextureBuffer[128];
+
+              /* Has frame index? */
+              if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+              {
+                /* Updates frame ID */
+                u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+              }
+
+              /* Gets texture name */
+              acTextureBuffer[orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+
+              /* Sets it */
+              orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
+
+              /* Updates status */
+              bTempName = orxTRUE;
+            }
+          }
+
+          /* Gets current parent */
+          zParent = orxConfig_GetParent(acFrameBuffer);
+
+          /* Already has parent? */
+          if((zParent != orxNULL)
+          && (orxString_Compare(zParent, zNewFrameParent) != 0))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewFrameParent);
+          }
+
+          /* Sets section's parent */
+          orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+
+          /* Gets event value count */
+          s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
+
+          /* Found event? */
+          if(s32EventValueCount > 0)
+          {
+            /* Gets event info */
+            zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
+            fEventValue = (s32EventValueCount > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
+
+            /* Updates event count */
+            u32EventCount++;
+          }
+
+          /* Disables display logs */
+          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
+
+          /* Creates graphic */
+          pstGraphic = orxGraphic_CreateFromConfig(acFrameBuffer);
+
+          /* Re-enables display logs */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
+
+          /* Success? */
+          if(pstGraphic != orxNULL)
+          {
+            orxFRAME_INFO *pstFrameInfo;
+
+            /* Allocates frame info */
+            pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
+            orxASSERT(pstFrameInfo);
+
+            /* Stores info */
+            pstFrameInfo->pstGraphic  = pstGraphic;
+            pstFrameInfo->zEventName  = zEventName;
+            pstFrameInfo->fEventValue = fEventValue;
+            pstFrameInfo->fDuration   = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
+
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Clears new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, orxNULL);
             }
           }
           else
           {
-            /* Gets actual frame origin */
-            vFrameOrigin.fX -= *pfOriginDeltaX;
-            vFrameOrigin.fY -= *pfOriginDeltaY;
-
-            /* Inside boundaries? */
-            if(fColumnSign * *pfColumnOrigin + *pfColumnDelta <= fColumnSign * fColumnBoundary)
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
             {
-              /* Stores computed one */
-              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vFrameOrigin);
-
-              /* Updates staus */
-              bTempOrigin = orxTRUE;
-            }
-            else
-            {
-              break;
-            }
-          }
-
-          /* Updates frame origin */
-          vFrameOrigin.fX += *pfOriginDeltaX;
-          vFrameOrigin.fY += *pfOriginDeltaY;
-
-          /* Moves to next frame on same row */
-          *pfRowOrigin += fRowSign * *pfRowDelta;
-        }
-        else
-        {
-          /* Doesn't have texture? */
-          if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
-          {
-            orxCHAR acTextureBuffer[128];
-
-            /* Has frame index? */
-            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
-            {
-              /* Updates frame ID */
-              u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+              /* Clears new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, orxNULL);
             }
 
-            /* Gets texture name */
-            acTextureBuffer[orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (zExt != orxSTRING_EMPTY) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
-
-            /* Sets it */
-            orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
-
-            /* Updates status */
-            bTempName = orxTRUE;
-          }
-        }
-
-        /* Gets current parent */
-        zParent = orxConfig_GetParent(acFrameBuffer);
-
-        /* Already has parent? */
-        if((zParent != orxNULL)
-        && (orxString_Compare(zParent, zNewFrameParent) != 0))
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (zParent == orxSTRING_EMPTY) ? "@" : zParent, zNewFrameParent);
-        }
-
-        /* Sets section's parent */
-        orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
-
-        /* Gets event value count */
-        s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
-
-        /* Found event? */
-        if(s32EventValueCount > 0)
-        {
-          /* Gets event info */
-          zEventName  = orxConfig_GetListString(orxANIMSET_KZ_CONFIG_KEY_EVENT, 0);
-          fEventValue = (s32EventValueCount > 1) ? orxConfig_GetListFloat(orxANIMSET_KZ_CONFIG_KEY_EVENT, 1) : orxFLOAT_0;
-
-          /* Updates event count */
-          u32EventCount++;
-        }
-
-        /* Disables display logs */
-        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
-
-        /* Creates graphic */
-        pstGraphic = orxGraphic_CreateFromConfig(acFrameBuffer);
-
-        /* Re-enables display logs */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
-
-        /* Success? */
-        if(pstGraphic != orxNULL)
-        {
-          orxFRAME_INFO *pstFrameInfo;
-
-          /* Allocates frame info */
-          pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
-          orxASSERT(pstFrameInfo);
-
-          /* Stores info */
-          pstFrameInfo->pstGraphic  = pstGraphic;
-          pstFrameInfo->zEventName  = zEventName;
-          pstFrameInfo->fEventValue = fEventValue;
-          pstFrameInfo->fDuration   = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
-
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Clears new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, orxNULL);
-          }
-        }
-        else
-        {
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Clears new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, orxNULL);
+            /* Stops */
+            break;
           }
 
-          /* Stops */
-          break;
-        }
-
-        /* Use temp size? */
-        if(bTempSize != orxFALSE)
-        {
-          /* Clears it */
-          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
-        }
-
-        /* Use temp origin? */
-        if(bTempOrigin != orxFALSE)
-        {
-          /* Clears it */
-          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
-        }
-
-        /* Use temp name? */
-        if(bTempName != orxFALSE)
-        {
-          /* Clears it */
-          orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
-        }
-
-        /* Clears frame's section parent */
-        orxConfig_SetParent(acFrameBuffer, orxNULL);
-      }
-
-      /* Restores config section */
-      orxConfig_SelectSection(zCurrentSection);
-
-      /* Gets frame count */
-      u32FrameCount = orxBank_GetCount(sstAnimSet.pstCreationBank);
-
-      /* Found frames? */
-      if(u32FrameCount != 0)
-      {
-        /* Creates 2D animation */
-        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCount, u32EventCount);
-
-        /* Valid? */
-        if(pstResult != orxNULL)
-        {
-          orxFRAME_INFO  *pstFrameInfo;
-          orxFLOAT        fTimeStamp = orxFLOAT_0;
-
-          /* Stores its name */
-          orxAnim_SetName(pstResult, orxString_Store(_zConfigID));
-
-          /* For all frames */
-          for(pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, orxNULL);
-              pstFrameInfo != orxNULL;
-              pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
+          /* Use temp size? */
+          if(bTempSize != orxFALSE)
           {
-            const orxSTRING zName;
+            /* Clears it */
+            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+          }
 
-            /* Gets its name */
-            zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
+          /* Use temp origin? */
+          if(bTempOrigin != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
+          }
 
-            /* Has event? */
-            if(pstFrameInfo->zEventName != orxNULL)
+          /* Use temp name? */
+          if(bTempName != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
+          }
+
+          /* Clears frame's section parent */
+          orxConfig_SetParent(acFrameBuffer, orxNULL);
+        }
+
+        /* Restores config section */
+        orxConfig_SelectSection(zCurrentSection);
+
+        /* Gets frame count */
+        u32FrameCount = orxBank_GetCount(sstAnimSet.pstCreationBank);
+
+        /* Found frames? */
+        if(u32FrameCount != 0)
+        {
+          /* Creates 2D animation */
+          pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32FrameCount, u32EventCount);
+
+          /* Valid? */
+          if(pstResult != orxNULL)
+          {
+            orxFRAME_INFO  *pstFrameInfo;
+            orxFLOAT        fTimeStamp = orxFLOAT_0;
+
+            /* Stores its name */
+            orxAnim_SetName(pstResult, orxString_Store(_zConfigID));
+
+            /* For all frames */
+            for(pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, orxNULL);
+                pstFrameInfo != orxNULL;
+                pstFrameInfo = (orxFRAME_INFO *)orxBank_GetNext(sstAnimSet.pstCreationBank, pstFrameInfo))
             {
-              /* Adds it */
-              orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
-            }
+              const orxSTRING zName;
 
-            /* Valid? */
-            if(pstFrameInfo->fDuration > orxFLOAT_0)
-            {
-              /* Updates its timestamp */
-              fTimeStamp += pstFrameInfo->fDuration;
+              /* Gets its name */
+              zName = orxGraphic_GetName(pstFrameInfo->pstGraphic);
 
-              /* Adds it */
-              if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+              /* Has event? */
+              if(pstFrameInfo->zEventName != orxNULL)
               {
-                /* Updates graphic's owner */
-                orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
+                /* Adds it */
+                orxAnim_AddEvent(pstResult, pstFrameInfo->zEventName, fTimeStamp, pstFrameInfo->fEventValue);
               }
-              else
+
+              /* Valid? */
+              if(pstFrameInfo->fDuration > orxFLOAT_0)
+              {
+                /* Updates its timestamp */
+                fTimeStamp += pstFrameInfo->fDuration;
+
+                /* Adds it */
+                if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstFrameInfo->pstGraphic), fTimeStamp) != orxSTATUS_FAILURE)
+                {
+                  /* Updates graphic's owner */
+                  orxStructure_SetOwner(pstFrameInfo->pstGraphic, pstResult);
+                }
+                else
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, zName, _zConfigID);
+
+                  /* Deletes it */
+                  orxGraphic_Delete(pstFrameInfo->pstGraphic);
+                }
+              }
+              /* No associated event? */
+              else if(pstFrameInfo->zEventName == orxNULL)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to add frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT " to anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, zName, _zConfigID);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No valid duration defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, _zConfigID, zName);
 
                 /* Deletes it */
                 orxGraphic_Delete(pstFrameInfo->pstGraphic);
               }
             }
-            /* No associated event? */
-            else if(pstFrameInfo->zEventName == orxNULL)
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No valid duration defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, _zConfigID, zName);
-
-              /* Deletes it */
-              orxGraphic_Delete(pstFrameInfo->pstGraphic);
-            }
           }
-        }
 
-        /* Clears bank */
-        orxBank_Clear(sstAnimSet.pstCreationBank);
+          /* Clears bank */
+          orxBank_Clear(sstAnimSet.pstCreationBank);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't create any frames.", zAnimSet, _zConfigID);
+        }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't create any frames.", zAnimSet, _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't retrieve associated texture's size.", zAnimSet, _zConfigID);
       }
+
+      /* Has prefix? */
+      if(*zPrefix != orxCHAR_NULL)
+      {
+        /* Clears new parent's parent */
+        orxConfig_SetParent(zNewAnimParent, orxNULL);
+      }
+
+      /* Clears anim's section parent */
+      orxConfig_SetParent(acAnimBuffer, orxNULL);
+
+      /* Pops config section */
+      orxConfig_PopSection();
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", couldn't retrieve associated texture's size.", zAnimSet, _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", invalid config data.", zAnimSet, _zConfigID);
     }
-
-    /* Has prefix? */
-    if(*zPrefix != orxCHAR_NULL)
-    {
-      /* Clears new parent's parent */
-      orxConfig_SetParent(zNewAnimParent, orxNULL);
-    }
-
-    /* Clears anim's section parent */
-    orxConfig_SetParent(acAnimBuffer, orxNULL);
-
-    /* Pops config section */
-    orxConfig_PopSection();
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": Failed to create anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", invalid config data.", zAnimSet, _zConfigID);
   }
 
   /* Done! */

@@ -2932,7 +2932,7 @@ void orxFASTCALL orxObject_CommandSetAnim(orxU32 _u32ArgNumber, const orxCOMMAND
       else
       {
         /* Sets its target anim */
-        orxObject_SetTargetAnim(pstObject, _astArgList[1].zValue);
+        orxObject_SetTargetAnim(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
       }
     }
 
@@ -3384,7 +3384,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
 
   /* Command: SetAnim */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnim, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 3, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Anim = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetAnim */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnim, "Anim", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Current = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetAnimFrequency */
