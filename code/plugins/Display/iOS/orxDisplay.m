@@ -800,8 +800,7 @@ static orxView *spoInstance;
   /* Success? */
   if(bResult != NO)
   {
-    orxVECTOR vFramebufferSize;
-    GLint     iWidth, iHeight;
+    GLint iWidth, iHeight;
 
     /* Links it to frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
@@ -812,15 +811,6 @@ static orxView *spoInstance;
     glASSERT();
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
     glASSERT();
-
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-    /* Stores framebuffer size */
-    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
-
-    /* Pops config section */
-    orxConfig_PopSection();
 
     /* Uses depth buffer? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
@@ -4159,6 +4149,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       && (sstDisplay.pstShaderBank != orxNULL))
       {
         orxDISPLAY_EVENT_PAYLOAD  stPayload;
+        orxVECTOR                 vFramebufferSize;
         GLint                     iWidth, iHeight;
 
         /* Pushes display section */
@@ -4191,6 +4182,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
         glASSERT();
+
+        /* Stores framebuffer size */
+        orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
