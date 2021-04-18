@@ -1529,7 +1529,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   const orxSTRING zExt = orxSTRING_EMPTY;
   const orxSTRING zAnimSet;
   orxS32          s32ValueCount, s32MaxFrames = -1;
-  orxBOOL         bFromConfig = orxTRUE, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
+  orxBOOL         bFromConfig = orxTRUE;
   orxANIM        *pstResult = orxNULL;
 
   /* Gets current anim set */
@@ -1961,7 +1961,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           const orxSTRING zNewFrameParent;
           orxFLOAT        fEventValue = orxFLOAT_0;
           orxS32          s32EventValueCount;
-          orxBOOL         bDebugLevelBackup;
+          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
           /* Has prefix? */
