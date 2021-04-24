@@ -4755,6 +4755,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       {
         GLFWwindow *pstNewWindow;
 
+        /* Updates window hints */
+        glfwWindowHint(GLFW_RESIZABLE, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE) ? GLFW_FALSE : GLFW_TRUE);
+        glfwWindowHint(GLFW_DECORATED, orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION) ? GLFW_FALSE : GLFW_TRUE);
+        glfwWindowHint(GLFW_REFRESH_RATE, iRefreshRate);
+
         /* Creates new window sharing the context */
         pstNewWindow = glfwCreateWindow(iWidth, iHeight, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), (_pstVideoMode->bFullScreen != orxFALSE) ? pstMonitor : orxNULL, sstDisplay.pstWindow);
 
@@ -4952,12 +4957,15 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
       }
 
+      /* Updates default mode */
+      orxDisplay_GLFW_UpdateDefaultMode();
+
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
       stPayload.stVideoMode.u32Width                = (orxU32)iWidth;
       stPayload.stVideoMode.u32Height               = (orxU32)iHeight;
       stPayload.stVideoMode.u32Depth                = (orxU32)iDepth;
-      stPayload.stVideoMode.u32RefreshRate          = (orxU32)iRefreshRate;
+      stPayload.stVideoMode.u32RefreshRate          = sstDisplay.u32DefaultRefreshRate;
       stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
       stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
@@ -5052,9 +5060,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
       sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
-
-      /* Updates default mode */
-      orxDisplay_GLFW_UpdateDefaultMode();
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
