@@ -3679,6 +3679,9 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
   {
     /* Stores current object as temporary parent in payload */
     *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentObject;
+
+    /* Sets it as owner */
+    orxStructure_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentObject);
   }
 
   /* Done! */
@@ -4997,9 +5000,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(pstChild != orxNULL)
               {
-                /* Stores its owner */
-                orxStructure_SetOwner(pstChild, pstResult);
-
                 /* Has last child? */
                 if(pstLastChild != orxNULL)
                 {
