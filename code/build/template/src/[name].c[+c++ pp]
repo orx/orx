@@ -26,6 +26,14 @@
 #include "orxArchive.h"
 #undef orxARCHIVE_IMPL]
 
+#ifdef __orxWINDOWS__
+
+/* Requesting high performance dedicated GPU on hybrid laptops */
+_declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
+_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif // __orxWINDOWS__
+
 /** Update function, it has been registered to be called every tick of the core clock
  */
 [+scroll void [!name]::Update(const orxCLOCK_INFO &_rstInfo)]
