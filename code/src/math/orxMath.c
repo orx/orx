@@ -102,7 +102,7 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
 
 /** Gets a random orxFLOAT value using step increments
  * @param[in]   _fMin                           Minimum boundary (inclusive)
- * @param[in]   _fMax                           Maximum boundary (exclusive)
+ * @param[in]   _fMax                           Maximum boundary (inclusive)
  * @param[in]   _fStep                          Step value, must be strictly positive
  * @return      Random value
  */
@@ -122,8 +122,9 @@ orxFLOAT orxFASTCALL orxMath_GetSteppedRandomFloat(orxFLOAT _fMin, orxFLOAT _fMa
   stSwap.u32Value = (orxMath_Xor128() >> 9) | 0x3f800000;
 
   /* Updates result */
-  fTemp   = (stSwap.fValue - orxFLOAT_1) * (_fMax - _fMin);
-  fResult = _fMin + (fTemp - orxMath_Mod(fTemp, _fStep));
+  fTemp   = orxMath_Abs(_fMax - _fMin);
+  fTemp   = (stSwap.fValue - orxFLOAT_1) * (fTemp + _fStep - orxMath_Mod(fTemp, _fStep) - orxMATH_KF_EPSILON);
+  fResult = orxMIN(_fMin, _fMax) + (fTemp - orxMath_Mod(fTemp, _fStep));
 
   /* Done! */
   return fResult;
