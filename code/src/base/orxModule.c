@@ -23,14 +23,15 @@
  */
 
 /**
- * @file orxModule.h
+ * @file orxModule.c
  * @date 12/09/2005
  * @author iarwain@orx-project.org
  *
  */
 
 
-#include "orxInclude.h"
+#include "base/orxModule.h"
+
 #include "orxKernel.h"
 #include "orxUtils.h"
 

@@ -30,20 +30,19 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "core/orxConfig.h"
+
 #include "core/orxCommand.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "display/orxDisplay.h"
-#include "memory/orxBank.h"
-#include "math/orxMath.h"
 #include "io/orxFile.h"
-#include "utils/orxLinkList.h"
+#include "math/orxMath.h"
+#include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
+#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 #ifdef __orxMSVC__

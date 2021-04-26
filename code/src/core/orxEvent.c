@@ -30,9 +30,8 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "core/orxEvent.h"
+
 #include "core/orxThread.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
