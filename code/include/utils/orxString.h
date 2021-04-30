@@ -46,8 +46,9 @@
 
 
 #include "orxInclude.h"
-#include "memory/orxMemory.h"
+
 #include "math/orxVector.h"
+#include "memory/orxMemory.h"
 
 #ifdef __orxMSVC__
 
@@ -72,21 +73,17 @@
 #include "debug/orxDebug.h"
 
 
-#define orxSTRING_KC_VECTOR_START       '('
-#define orxSTRING_KC_VECTOR_START_ALT   '{'
-#define orxSTRING_KC_VECTOR_SEPARATOR   ','
-#define orxSTRING_KC_VECTOR_END         ')'
-#define orxSTRING_KC_VECTOR_END_ALT     '}'
+#define orxSTRING_KC_VECTOR_START                         '('
+#define orxSTRING_KC_VECTOR_START_ALT                     '{'
+#define orxSTRING_KC_VECTOR_SEPARATOR                     ','
+#define orxSTRING_KC_VECTOR_END                           ')'
+#define orxSTRING_KC_VECTOR_END_ALT                       '}'
+
 
 
 /** Defines
  */
-#define orxSTRING_KU32_CRC_POLYNOMIAL   0xEDB88320U       /**< Using 0x04C11DB7's reverse polynomial for CRC32B */
-
-
-/** CRC Tables (slice-by-8)
- */
-extern orxDLLAPI orxU32 saau32CRCTable[8][256];
+#define orxString_ToCRC                                   orxString_Hash
 
 
 /* *** String inlined functions *** */
@@ -1320,136 +1317,6 @@ static orxINLINE orxSTRING                                orxString_UpperCase(or
   return _zString;
 }
 
-/** Continues a CRC with a string one
- * @param[in] _zString        String used to continue the given CRC
- * @param[in] _stCRC          Base CRC
- * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC (orxSTRINGID)
- */
-static orxINLINE orxSTRINGID                              orxString_NContinueCRC(const orxSTRING _zString, orxSTRINGID _stCRC, orxU32 _u32CharNumber)
-{
-  orxU32        u32CRC, u32Length;
-  const orxU8  *pu8;
-
-#ifdef __orxLITTLE_ENDIAN__
-
-#define orxCRC_GET_FIRST(VALUE) VALUE
-#define orxCRC_INDEX_0          0
-#define orxCRC_INDEX_1          1
-#define orxCRC_INDEX_2          2
-#define orxCRC_INDEX_3          3
-#define orxCRC_INDEX_4          4
-#define orxCRC_INDEX_5          5
-#define orxCRC_INDEX_6          6
-#define orxCRC_INDEX_7          7
-
-#else /* __orxLITTLE_ENDIAN__ */
-
-#define orxCRC_GET_FIRST(VALUE) (((VALUE) >> 24) | (((VALUE) >> 8) & 0x0000FF00) | (((VALUE) << 8) & 0x00FF0000) | ((VALUE) << 24))
-#define orxCRC_INDEX_0          3
-#define orxCRC_INDEX_1          2
-#define orxCRC_INDEX_2          1
-#define orxCRC_INDEX_3          0
-#define orxCRC_INDEX_4          7
-#define orxCRC_INDEX_5          6
-#define orxCRC_INDEX_6          5
-#define orxCRC_INDEX_7          4
-
-#endif /* __orxLITTLE_ENDIAN__ */
-
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
-
-  /* Inits CRC */
-  u32CRC = ~(orxU32)_stCRC;
-
-  /* For all slices */
-  for(u32Length = _u32CharNumber, pu8 = (const orxU8 *)_zString; u32Length >= 8; u32Length -= 8, pu8 += 8)
-  {
-    orxU32 u32First, u32Second;
-
-    /* Gets the slice's data */
-    orxMemory_Copy(&u32First, pu8, sizeof(orxU32));
-    orxMemory_Copy(&u32Second, pu8 + 4, sizeof(orxU32));
-    u32First ^= orxCRC_GET_FIRST(u32CRC);
-
-    /* Updates the CRC */
-    u32CRC  = saau32CRCTable[orxCRC_INDEX_7][u32First & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_6][(u32First >> 8) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_5][(u32First >> 16) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_4][u32First >> 24]
-            ^ saau32CRCTable[orxCRC_INDEX_3][u32Second & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_2][(u32Second >> 8) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_1][(u32Second >> 16) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_0][u32Second >> 24];
-  }
-
-  /* For all remaining characters */
-  for(; u32Length != 0; u32Length--, pu8++)
-  {
-    /* Updates the CRC */
-    u32CRC = saau32CRCTable[0][((orxU8)(u32CRC & 0xFF)) ^ *pu8] ^ (u32CRC >> 8);
-  }
-
-#undef orxCRC_GET_FIRST
-#undef orxCRC_INDEX_0
-#undef orxCRC_INDEX_1
-#undef orxCRC_INDEX_2
-#undef orxCRC_INDEX_3
-#undef orxCRC_INDEX_4
-#undef orxCRC_INDEX_5
-#undef orxCRC_INDEX_6
-#undef orxCRC_INDEX_7
-
-  /* Done! */
-  return (orxSTRINGID)~u32CRC;
-}
-
-/** Continues a CRC with a string one
- * @param[in] _zString        String used to continue the given CRC
- * @param[in] _stCRC          Base CRC
- * @return The resulting CRC (orxSTRINGID)
- */
-static orxINLINE orxSTRINGID                              orxString_ContinueCRC(const orxSTRING _zString, orxSTRINGID _stCRC)
-{
-  orxSTRINGID stCRC;
-
-  /* Updates CRC */
-  stCRC = orxString_NContinueCRC(_zString, _stCRC, orxString_GetLength(_zString));
-
-  /* Done! */
-  return stCRC;
-}
-
-/** Converts a string to a CRC
- * @param[in] _zString        String To convert
- * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC (orxSTRINGID)
- */
-static orxINLINE orxSTRINGID                              orxString_NToCRC(const orxSTRING _zString, orxU32 _u32CharNumber)
-{
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
-
-  /* Done! */
-  return orxString_NContinueCRC(_zString, 0, _u32CharNumber);
-}
-
-/** Converts a string to a CRC
- * @param[in] _zString          String To convert
- * @return The resulting CRC (orxSTRINGID)
- */
-static orxINLINE orxSTRINGID                              orxString_ToCRC(const orxSTRING _zString)
-{
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-
-  /* Done! */
-  return orxString_ContinueCRC(_zString, 0);
-}
-
 /** Returns the first occurrence of _zString2 in _zString1
  * @param[in] _zString1 String to analyze
  * @param[in] _zString2 String that must be inside _zString1
@@ -1665,6 +1532,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxString_Init();
  */
 extern orxDLLAPI void orxFASTCALL                         orxString_Exit();
 
+
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @param[in]   _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
+ * @return      String's ID/hash
+ */
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_NHash(const orxSTRING _zString, orxU32 _u32CharNumber);
+
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @return      String's ID/hash
+ */
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_Hash(const orxSTRING _zString);
 
 /** Gets a string's ID (and stores the string internally to prevent duplication)
  * @param[in]   _zString        Concerned string

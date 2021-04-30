@@ -969,7 +969,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstClock.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstClock.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags | orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
@@ -1034,7 +1034,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
       if(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED))
       {
         /* Removes it from reference table */
-        orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
+        orxHashTable_Remove(sstClock.pstReferenceTable, orxString_Hash(_pstClock->zReference));
       }
 
       /* Deletes clock */
@@ -1591,7 +1591,7 @@ orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
   if(_zName != orxSTRING_EMPTY)
   {
     /* Updates result */
-    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_ToCRC(_zName));
+    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_Hash(_zName));
   }
   else
   {

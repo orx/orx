@@ -99,6 +99,7 @@ solution "orx"
     {
         "../include",
         "../../extern/dlmalloc",
+        "../../extern/xxHash",
         "../../extern/glfw-3/include",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",

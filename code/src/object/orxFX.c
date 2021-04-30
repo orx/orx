@@ -352,7 +352,7 @@ static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxFX *pstFX;
 
@@ -574,7 +574,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets FX ID */
-  stID = orxString_ToCRC(_zConfigID);
+  stID = orxString_Hash(_zConfigID);
 
   /* Search for reference */
   pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, stID);
@@ -685,7 +685,7 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
     && (_pstFX->zReference != orxSTRING_EMPTY))
     {
       /* Removes from hashtable */
-      orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
+      orxHashTable_Remove(sstFX.pstReferenceTable, orxString_Hash(_pstFX->zReference));
     }
 
     /* Deletes structure */

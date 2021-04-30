@@ -2399,11 +2399,11 @@ void orxFASTCALL orxCommand_CommandCompare(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
-/* Command: CRC */
-void orxFASTCALL orxCommand_CommandCRC(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+/* Command: Hash */
+void orxFASTCALL orxCommand_CommandHash(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->u32Value = (orxU32)orxString_ToCRC(_astArgList[0].zValue);
+  _pstResult->u64Value = orxString_Hash(_astArgList[0].zValue);
 
   /* Done! */
   return;
@@ -2413,7 +2413,7 @@ void orxFASTCALL orxCommand_CommandCRC(orxU32 _u32ArgNumber, const orxCOMMAND_VA
 void orxFASTCALL orxCommand_CommandGetStringID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->u32Value = (orxU32)orxString_GetID(_astArgList[0].zValue);
+  _pstResult->u64Value = orxString_GetID(_astArgList[0].zValue);
 
   /* Done! */
   return;
@@ -2644,12 +2644,12 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Command: Compare */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Compare, "Result", orxCOMMAND_VAR_TYPE_S32, 2, 1, {"String1", orxCOMMAND_VAR_TYPE_STRING}, {"String2", orxCOMMAND_VAR_TYPE_STRING}, {"CaseSensitive = false", orxCOMMAND_VAR_TYPE_BOOL});
-  /* Command: CRC */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, CRC, "CRC", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Hash */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Hash, "Hash", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringID */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringFromID */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringFromID, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"ID", orxCOMMAND_VAR_TYPE_U32});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringFromID, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"ID", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: Version */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Version, "String", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Type = full [minor|major|build|release|numeric|full]", orxCOMMAND_VAR_TYPE_STRING});
@@ -2802,8 +2802,10 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: String.Compare */
   orxCommand_AddAlias("String.Compare", "Command.Compare", orxNULL);
+  /* Alias: String.Hash */
+  orxCommand_AddAlias("String.Hash", "Command.Hash", orxNULL);
   /* Alias: String.CRC */
-  orxCommand_AddAlias("String.CRC", "Command.CRC", orxNULL);
+  orxCommand_AddAlias("String.CRC", "String.Hash", orxNULL);
 
   /* Alias: String.GetID */
   orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
@@ -2967,9 +2969,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Clamp */
   orxCommand_RemoveAlias("Clamp");
 
-  /* Alias: Compare */
+  /* Alias: String.Compare */
   orxCommand_RemoveAlias("String.Compare");
-  /* Alias: CRC */
+  /* Alias: String.Hash */
+  orxCommand_RemoveAlias("String.Hash");
+  /* Alias: String.CRC */
   orxCommand_RemoveAlias("String.CRC");
   /* Alias: String.GetID */
   orxCommand_RemoveAlias("String.GetID");
@@ -3081,8 +3085,8 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: Compare */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Compare);
-  /* Command: CRC */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, CRC);
+  /* Command: Hash */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Hash);
   /* Command: GetStringID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
   /* Command: GetStringFromID */

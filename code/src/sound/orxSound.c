@@ -567,7 +567,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Is config group? */
-      if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
       {
         orxSOUND *pstSound;
 
@@ -627,7 +627,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
         }
       }
       /* Is sound group? */
-      else if(pstPayload->stGroupID == orxString_ToCRC(orxSOUND_KZ_RESOURCE_GROUP))
+      else if(pstPayload->stGroupID == orxString_Hash(orxSOUND_KZ_RESOURCE_GROUP))
       {
         orxHANDLE         hIterator;
         orxU64            u64Key;
@@ -1210,7 +1210,7 @@ void orxFASTCALL orxSound_CommandGetBusParent(orxU32 _u32ArgNumber, const orxCOM
   orxSTRINGID stBusID, stParentID;
 
   /* Gets bus ID */
-  stBusID = orxString_ToCRC(_astArgList[0].zValue);
+  stBusID = orxString_Hash(_astArgList[0].zValue);
 
   /* Gets parent ID */
   stParentID = orxSound_GetBusParent(stBusID);
@@ -1229,7 +1229,7 @@ void orxFASTCALL orxSound_CommandGetBusChild(orxU32 _u32ArgNumber, const orxCOMM
   orxSTRINGID stBusID, stChildID;
 
   /* Gets bus ID */
-  stBusID = orxString_ToCRC(_astArgList[0].zValue);
+  stBusID = orxString_Hash(_astArgList[0].zValue);
 
   /* Gets child ID */
   stChildID = orxSound_GetBusChild(stBusID);
@@ -1248,7 +1248,7 @@ void orxFASTCALL orxSound_CommandGetBusSibling(orxU32 _u32ArgNumber, const orxCO
   orxSTRINGID stBusID, stSiblingID;
 
   /* Gets bus ID */
-  stBusID = orxString_ToCRC(_astArgList[0].zValue);
+  stBusID = orxString_Hash(_astArgList[0].zValue);
 
   /* Gets sibling ID */
   stSiblingID = orxSound_GetBusSibling(stBusID);
@@ -1305,7 +1305,7 @@ void orxFASTCALL orxSound_CommandGetBusVolume(orxU32 _u32ArgNumber, const orxCOM
   orxSTRINGID stBusID;
 
   /* Gets bus ID */
-  stBusID = orxString_ToCRC(_astArgList[0].zValue);
+  stBusID = orxString_Hash(_astArgList[0].zValue);
 
   /* Updates result */
   _pstResult->fValue = orxSound_GetBusVolume(stBusID);
@@ -1321,7 +1321,7 @@ void orxFASTCALL orxSound_CommandGetBusPitch(orxU32 _u32ArgNumber, const orxCOMM
   orxSTRINGID stBusID;
 
   /* Gets bus ID */
-  stBusID = orxString_ToCRC(_astArgList[0].zValue);
+  stBusID = orxString_Hash(_astArgList[0].zValue);
 
   /* Updates result */
   _pstResult->fValue = orxSound_GetBusPitch(stBusID);
@@ -1826,7 +1826,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
     orxSTRINGID stID;
 
     /* Gets its ID */
-    stID = orxString_ToCRC(_zName);
+    stID = orxString_Hash(_zName);
 
     /* Not already present? */
     if(orxHashTable_Get(sstSound.pstSampleTable, stID) == orxNULL)
@@ -1899,7 +1899,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName)
     orxSTRINGID       stID;
 
     /* Gets its ID */
-    stID = orxString_ToCRC(_zName);
+    stID = orxString_Hash(_zName);
 
     /* Gets associated sound sample from table */
     pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstSampleTable, stID);
@@ -1935,7 +1935,7 @@ orxSTATUS orxFASTCALL orxSound_DeleteSample(const orxSTRING _zName)
     orxSTRINGID       stID;
 
     /* Gets its ID */
-    stID = orxString_ToCRC(_zName);
+    stID = orxString_Hash(_zName);
 
     /* Gets associated sound sample from table */
     pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstSampleTable, stID);

@@ -969,7 +969,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
         pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
         /* Is config group? */
-        if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+        if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
         {
           orxSPAWNER *pstSpawner;
 

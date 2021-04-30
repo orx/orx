@@ -852,7 +852,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets ID */
-  stID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_Hash(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -866,7 +866,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
+      if(orxString_Hash(orxFX_GetName(pstFX)) == stID)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -908,7 +908,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
   /* Gets ID */
-  stID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_Hash(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -922,7 +922,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
+      if(orxString_Hash(orxFX_GetName(pstFX)) == stID)
       {
         orxFX_EVENT_PAYLOAD stPayload;
 

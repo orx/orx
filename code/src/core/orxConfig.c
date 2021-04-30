@@ -1106,7 +1106,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
         orxSTRINGID stNewKeyID;
 
         /* Gets new key */
-        stNewKeyID = orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
+        stNewKeyID = orxString_Hash(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
 
         /* Same section? */
         if(s32SeparatorIndex == 1)
@@ -1130,7 +1130,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
           *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
 
           /* Checks */
-          orxASSERT((stNewKeyID != _stKeyID) || (orxString_ToCRC(pstEntry->stValue.zValue + 1) != orxString_ToCRC(pstPreviousSection->zName)));
+          orxASSERT((stNewKeyID != _stKeyID) || (orxString_Hash(pstEntry->stValue.zValue + 1) != orxString_Hash(pstPreviousSection->zName)));
 
           /* Selects parent section */
           orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
@@ -1145,7 +1145,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
       else
       {
         /* Checks */
-        orxASSERT(orxString_ToCRC(pstEntry->stValue.zValue + 1) != orxString_ToCRC(pstPreviousSection->zName));
+        orxASSERT(orxString_Hash(pstEntry->stValue.zValue + 1) != orxString_Hash(pstPreviousSection->zName));
 
         /* Selects parent section */
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
@@ -1235,7 +1235,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
     orxSTRINGID         stID;
 
     /* Gets its ID */
-    stID = orxString_ToCRC(_zKey);
+    stID = orxString_Hash(_zKey);
 
     /* Gets value */
     pstResult = orxConfig_GetValueFromKey(stID, sstConfig.pstCurrentSection, &pstDummy);
@@ -1446,7 +1446,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
     orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
 
     /* Adds it to table */
-    orxHashTable_Add(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName), pstSection);
+    orxHashTable_Add(sstConfig.pstSectionTable, orxString_Hash(_zSectionName), pstSection);
 
     /* Stores its name */
     pstSection->zName = _zSectionName;
@@ -1563,7 +1563,7 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
         orxLinkList_Remove(&(_pstSection->stNode));
 
         /* Removes it from table */
-        orxHashTable_Remove(sstConfig.pstSectionTable, orxString_ToCRC(_pstSection->zName));
+        orxHashTable_Remove(sstConfig.pstSectionTable, orxString_Hash(_pstSection->zName));
 
         /* Removes section */
         orxBank_Free(sstConfig.pstSectionBank, _pstSection);
@@ -2657,7 +2657,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           orxSTRINGID       stKeyID;
 
           /* Gets key ID */
-          stKeyID = orxString_ToCRC(pcLineStart);
+          stKeyID = orxString_Hash(pcLineStart);
 
           /* Already defined? */
           if((pstEntry = orxConfig_GetEntry(stKeyID)) != orxNULL)
@@ -3171,7 +3171,7 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
     || (sstConfig.pstCurrentSection->zName != zSectionName))
     {
       /* Gets it from table */
-      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName));
+      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName));
 
       /* Valid? */
       if(pstSection != orxNULL)
@@ -3762,7 +3762,7 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
   }
 
   /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_astArgList[1].zValue));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_astArgList[1].zValue));
 
   /* Found? */
   if(pstEntry != orxNULL)
@@ -5189,7 +5189,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
       orxSTRINGID         stID;
 
       /* Gets section name ID */
-      stID = orxString_ToCRC(_zSectionName);
+      stID = orxString_Hash(_zSectionName);
 
       /* Gets it from table */
       pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5209,7 +5209,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
         orxHashTable_Remove(sstConfig.pstSectionTable, stID);
 
         /* Adds it again with the new ID */
-        orxHashTable_Add(sstConfig.pstSectionTable, orxString_ToCRC(_zNewSectionName), pstSection);
+        orxHashTable_Add(sstConfig.pstSectionTable, orxString_Hash(_zNewSectionName), pstSection);
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -5545,7 +5545,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   if(_zSectionName != orxSTRING_EMPTY)
   {
     /* Updates result */
-    bResult = (orxHashTable_Get(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName)) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName)) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -5568,7 +5568,7 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
   orxASSERT(_zSectionName != orxNULL);
 
   /* Gets section name ID */
-  stID = orxString_ToCRC(_zSectionName);
+  stID = orxString_Hash(_zSectionName);
 
   /* Gets it from table */
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5631,7 +5631,7 @@ orxSTRINGID orxFASTCALL orxConfig_GetOriginID(const orxSTRING _zSectionName)
   orxASSERT(_zSectionName != orxNULL);
 
   /* Gets section name ID */
-  stID = orxString_ToCRC(_zSectionName);
+  stID = orxString_Hash(_zSectionName);
 
   /* Gets it from table */
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5764,12 +5764,12 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
   if(s32MarkerIndex >= 0)
   {
     /* Gets section name ID */
-    stID = orxString_NToCRC(_zSectionName, (orxU32)s32MarkerIndex);
+    stID = orxString_NHash(_zSectionName, (orxU32)s32MarkerIndex);
   }
   else
   {
     /* Gets section name ID */
-    stID = orxString_ToCRC(_zSectionName);
+    stID = orxString_Hash(_zSectionName);
   }
 
   /* Gets it from table */
@@ -5801,7 +5801,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_zKey));
 
   /* Found? */
   if(pstEntry != orxNULL)
@@ -5838,7 +5838,7 @@ orxBOOL orxFASTCALL orxConfig_IsLocallyInheritedValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntryFromKey(stKeyID);
@@ -5874,7 +5874,7 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(stKeyID);
@@ -6031,7 +6031,7 @@ const orxSTRING orxFASTCALL orxConfig_GetValueSource(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(stKeyID);
@@ -6302,7 +6302,7 @@ orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_zKey));
 
   /* Found? */
   if(pstEntry != orxNULL)

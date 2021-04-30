@@ -1165,7 +1165,7 @@ static orxSTATUS orxFASTCALL orxInput_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       /* Reloads input */
       orxInput_Load(orxNULL);
@@ -1689,7 +1689,7 @@ orxSTATUS orxFASTCALL orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEn
     orxSTRINGID   stSetID;
 
     /* Gets the set ID */
-    stSetID = orxString_ToCRC(_zSetName);
+    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1741,7 +1741,7 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
     orxSTRINGID   stSetID;
 
     /* Gets the set ID */
-    stSetID = orxString_ToCRC(_zSetName);
+    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1808,7 +1808,7 @@ orxBOOL orxFASTCALL orxInput_IsActive(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1849,7 +1849,7 @@ orxBOOL orxFASTCALL orxInput_HasBeenActivated(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1890,7 +1890,7 @@ orxBOOL orxFASTCALL orxInput_HasBeenDeactivated(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1931,7 +1931,7 @@ orxBOOL orxFASTCALL orxInput_HasNewStatus(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1972,7 +1972,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2039,7 +2039,7 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2101,7 +2101,7 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2162,7 +2162,7 @@ orxSTATUS orxFASTCALL orxInput_ResetValue(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2209,7 +2209,7 @@ orxFLOAT orxFASTCALL orxInput_GetThreshold(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2252,7 +2252,7 @@ orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOA
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2296,7 +2296,7 @@ orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2338,7 +2338,7 @@ orxSTATUS orxFASTCALL orxInput_SetMultiplier(const orxSTRING _zInputName, orxFLO
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2383,7 +2383,7 @@ orxSTATUS orxFASTCALL orxInput_SetCombineMode(const orxSTRING _zName, orxBOOL _b
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2436,7 +2436,7 @@ orxBOOL orxFASTCALL orxInput_IsInCombineMode(const orxSTRING _zName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2492,7 +2492,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     }
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2610,7 +2610,7 @@ orxSTATUS orxFASTCALL orxInput_Unbind(const orxSTRING _zName, orxS32 _s32Binding
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2816,7 +2816,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2874,7 +2874,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -3086,7 +3086,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
     orxSTRINGID stID;
 
     /* Gets binding ID */
-    stID = orxString_ToCRC(_zName);
+    stID = orxString_Hash(_zName);
 
     /* Valid? */
     if(stID != orxSTRINGID_UNDEFINED)
@@ -3111,7 +3111,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
             zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
 
             /* Found? */
-            if(orxString_ToCRC(zBinding) == stID)
+            if(orxString_Hash(zBinding) == stID)
             {
               /* Updates result */
               *_peType  = (orxINPUT_TYPE)eType;

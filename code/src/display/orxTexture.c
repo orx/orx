@@ -295,7 +295,7 @@ static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
   orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
-  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
+  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_Hash(_zDataName));
 
   /* Done! */
   return pstTexture;
