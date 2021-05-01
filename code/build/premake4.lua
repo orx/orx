@@ -98,7 +98,7 @@ solution "orx"
     includedirs
     {
         "../include",
-        "../../extern/dlmalloc",
+        "../../extern/rpmalloc/rpmalloc",
         "../../extern/xxHash",
         "../../extern/glfw-3/include",
         "../../extern/LiquidFun-1.1.0/include",
