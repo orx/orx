@@ -284,10 +284,10 @@ struct __orxBITMAP_t
  */
 typedef struct __orxDISPLAY_SAVE_INFO_t
 {
-  orxU8    *pu8ImageData;
-  orxHANDLE hResource;
-  orxU32    u32Width;
-  orxU32    u32Height;
+  orxU8      *pu8ImageData;
+  orxHANDLE   hResource;
+  orxU32      u32Width;
+  orxU32      u32Height;
 
 } orxDISPLAY_SAVE_INFO;
 
