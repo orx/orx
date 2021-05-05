@@ -295,6 +295,28 @@ void orxFASTCALL orxInput_CommandHasNewStatus(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: HasBeenActivated
+ */
+void orxFASTCALL orxInput_CommandHasBeenActivated(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_HasBeenActivated(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Command: HasBeenDeactivated
+ */
+void orxFASTCALL orxInput_CommandHasBeenDeactivated(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_HasBeenDeactivated(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the input commands
  */
 static orxINLINE void orxInput_RegisterCommands()
@@ -320,6 +342,10 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsActive, "Active?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasNewStatus */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasNewStatus, "NewStatus?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: HasBeenActivated */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenActivated, "BeenActivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: HasBeenDeactivated */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenDeactivated, "BeenDeactivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the input commands
@@ -347,6 +373,10 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, IsActive);
   /* Command: HasNewStatus */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasNewStatus);
+  /* Command: HasBeenActivated */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenActivated);
+  /* Command: HasBeenDeactivated */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenDeactivated);
 }
 
 static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThreshold, orxFLOAT _fMultiplier)
