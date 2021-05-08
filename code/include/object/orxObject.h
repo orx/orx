@@ -798,7 +798,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_p
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate    Should the delay be incremented with each child application?
+ * @param[in]   _bPropagate     Should the delay be incremented with each child application?
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate);
 
@@ -1227,6 +1227,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJ
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 /** @} */
 
 

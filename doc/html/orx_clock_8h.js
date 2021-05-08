@@ -14,12 +14,13 @@ var orx_clock_8h =
       [ "orxCLOCK_EVENT_NUMBER", "group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791da50713812454a2a348fa091d04a64ee35", null ],
       [ "orxCLOCK_EVENT_NONE", "group__orx_clock.html#gga5d61e2fc9dcad950bc23ff7a5525791dad2c2a028497b40243a3d52eb20f4b0fa", null ]
     ] ],
-    [ "orxCLOCK_MOD_TYPE", "group__orx_clock.html#gada60c0d5d6014d13f9822cb81391e38d", [
-      [ "orxCLOCK_MOD_TYPE_FIXED", "group__orx_clock.html#ggada60c0d5d6014d13f9822cb81391e38da74c26cf7b6b21979a1a0f31fe0143f04", null ],
-      [ "orxCLOCK_MOD_TYPE_MULTIPLY", "group__orx_clock.html#ggada60c0d5d6014d13f9822cb81391e38da91a1e4a5a03c64c4a233db8456a7d02a", null ],
-      [ "orxCLOCK_MOD_TYPE_MAXED", "group__orx_clock.html#ggada60c0d5d6014d13f9822cb81391e38da3b637987f220412994ea5054ae595f24", null ],
-      [ "orxCLOCK_MOD_TYPE_NUMBER", "group__orx_clock.html#ggada60c0d5d6014d13f9822cb81391e38da05e7b2ff66c68204456d1860fca9ace7", null ],
-      [ "orxCLOCK_MOD_TYPE_NONE", "group__orx_clock.html#ggada60c0d5d6014d13f9822cb81391e38da58a11437216d0ba61fe5927e14b4713b", null ]
+    [ "orxCLOCK_MODIFIER", "group__orx_clock.html#ga4ec0bce152b97b492d6308eba27428a3", [
+      [ "orxCLOCK_MODIFIER_FIXED", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a914f6e1826ee02ac92f34e88f2ed3fd2", null ],
+      [ "orxCLOCK_MODIFIER_MULTIPLY", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a63f6a7fbb2a451e8cbde79ab23b1aebe", null ],
+      [ "orxCLOCK_MODIFIER_MAXED", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a53b5f759ae8698af0b7d4ae34b79108c", null ],
+      [ "orxCLOCK_MODIFIER_AVERAGE", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3ab51b687385fa2601981896acf3b1a38c", null ],
+      [ "orxCLOCK_MODIFIER_NUMBER", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3a6462678c0cf0886f51befeb61df214b4", null ],
+      [ "orxCLOCK_MODIFIER_NONE", "group__orx_clock.html#gga4ec0bce152b97b492d6308eba27428a3aa0a0fed3b3ba692598a3dc48e6977960", null ]
     ] ],
     [ "orxCLOCK_PRIORITY", "group__orx_clock.html#gae63cc0f7b3f765aaccb21184bee35bb9", [
       [ "orxCLOCK_PRIORITY_LOWEST", "group__orx_clock.html#ggae63cc0f7b3f765aaccb21184bee35bb9a539560f597ba3dca78e1aecbc37f5b7e", null ],
@@ -32,25 +33,17 @@ var orx_clock_8h =
       [ "orxCLOCK_PRIORITY_NUMBER", "group__orx_clock.html#ggae63cc0f7b3f765aaccb21184bee35bb9a1548835310e2369809523aa3f7bd7742", null ],
       [ "orxCLOCK_PRIORITY_NONE", "group__orx_clock.html#ggae63cc0f7b3f765aaccb21184bee35bb9aedd698417c29823d478a9e5de6633bb1", null ]
     ] ],
-    [ "orxCLOCK_TYPE", "group__orx_clock.html#ga8e27772673f124fc5d31b8596539e8d7", [
-      [ "orxCLOCK_TYPE_CORE", "group__orx_clock.html#gga8e27772673f124fc5d31b8596539e8d7ae66b3023f59d135e96002c29650969ff", null ],
-      [ "orxCLOCK_TYPE_USER", "group__orx_clock.html#gga8e27772673f124fc5d31b8596539e8d7a6c31ce89039d103b99a6ba57c8c24282", null ],
-      [ "orxCLOCK_TYPE_SECOND", "group__orx_clock.html#gga8e27772673f124fc5d31b8596539e8d7aadbaec96d1f059b7735e9bab3b1e3d52", null ],
-      [ "orxCLOCK_TYPE_NUMBER", "group__orx_clock.html#gga8e27772673f124fc5d31b8596539e8d7a789ac9e1f4746dfa1ec2b03cf0bbe2cb", null ],
-      [ "orxCLOCK_TYPE_NONE", "group__orx_clock.html#gga8e27772673f124fc5d31b8596539e8d7ab1f10735dae8ed95572b041836f98744", null ]
-    ] ],
     [ "orxClock_AddGlobalTimer", "group__orx_clock.html#ga153e90a40237dabd7a1e5025ec4b8e33", null ],
     [ "orxClock_AddTimer", "group__orx_clock.html#gad1d377c0cfe953d16d614b44bae42e6c", null ],
-    [ "orxClock_Create", "group__orx_clock.html#gaeaddca772571521857434876f61aea0e", null ],
+    [ "orxClock_Create", "group__orx_clock.html#ga1fe33b0c4025cc6214f3083bdde0d3d8", null ],
     [ "orxClock_CreateFromConfig", "group__orx_clock.html#ga2877a0cb560d9394397ce42b1cf71ec7", null ],
     [ "orxClock_Delete", "group__orx_clock.html#ga93f8fe8c1e9aa8d220c1513d280f20ba", null ],
     [ "orxClock_Exit", "group__orx_clock.html#ga78eec70b53edef4982d4b69370934a49", null ],
-    [ "orxClock_FindFirst", "group__orx_clock.html#gae0e97d173bb7d9dfc6050f39fe071627", null ],
-    [ "orxClock_FindNext", "group__orx_clock.html#gaad1fb87c20e41fd7cc9ee2f7cbe346b8", null ],
     [ "orxClock_Get", "group__orx_clock.html#ga460ad1bad34a106d35fae03a3768b4f1", null ],
     [ "orxClock_GetContext", "group__orx_clock.html#gafa14b59e3a6e6312a40bfb535431b008", null ],
     [ "orxClock_GetFromInfo", "group__orx_clock.html#ga0aca451a4b2abd1ab42c6674b4a3198b", null ],
     [ "orxClock_GetInfo", "group__orx_clock.html#ga8d3b728555b290fbb0c68e358fd3ea1f", null ],
+    [ "orxClock_GetModifier", "group__orx_clock.html#ga06a40ba8124b21fe3bd237e12b85a105", null ],
     [ "orxClock_GetName", "group__orx_clock.html#ga2febcd1fdcc22f2a0b10f45455a90cbb", null ],
     [ "orxClock_GetNext", "group__orx_clock.html#ga85c2ed06f5fe9246269cabb8ad3ab6be", null ],
     [ "orxClock_Init", "group__orx_clock.html#gad206221403f4932f57ee5c7c9d137ed7", null ],
@@ -63,7 +56,7 @@ var orx_clock_8h =
     [ "orxClock_Resync", "group__orx_clock.html#ga646ec2e3a995507a81f71e7ee602458e", null ],
     [ "orxClock_ResyncAll", "group__orx_clock.html#gaffde552ec5eb3e198164e15a5f651c6a", null ],
     [ "orxClock_SetContext", "group__orx_clock.html#ga353fa74ddcf06236de1c099dc5aeebd6", null ],
-    [ "orxClock_SetModifier", "group__orx_clock.html#ga55a74c9309e565e375d1e8b2b2775b0c", null ],
+    [ "orxClock_SetModifier", "group__orx_clock.html#gabac353a9ef584ddd641986b1871ecbc7", null ],
     [ "orxClock_SetTickSize", "group__orx_clock.html#gaae909eff9a38f2e9c136f368d225f2be", null ],
     [ "orxClock_Setup", "group__orx_clock.html#gaf96e5f8bbc774b945ee16858f59a7715", null ],
     [ "orxClock_Unpause", "group__orx_clock.html#ga7db97b7c6ea0907d9d5648be876f464d", null ],

@@ -905,16 +905,16 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
-        /* Uses it */
-        fCoef = (pstClockInfo->fModValue != orxFLOAT_0) ? orxFLOAT_1 / pstClockInfo->fModValue : orxFLOAT_0;
+        /* Updates coef */
+        fCoef = orxFLOAT_1 / fModifier;
       }
     }
 
@@ -1067,16 +1067,16 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
       /* Valid */
       if(pstClock != orxNULL)
       {
-        const orxCLOCK_INFO *pstClockInfo;
+        orxFLOAT fModifier;
 
-        /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(pstClock);
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-        /* Has multiplier? */
-        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
         {
           /* Uses it */
-          fCoef = pstClockInfo->fModValue;
+          fCoef = fModifier;
         }
       }
 
@@ -2687,16 +2687,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyTorque(orxPHYSICS_BOD
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates torque */
-        fTorque *= (float32)pstClockInfo->fModValue;
+        fTorque *= (float32)fModifier;
       }
     }
   }
@@ -2740,16 +2740,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates force */
-        vForce *= (float32)(pstClockInfo->fModValue * pstClockInfo->fModValue);
+        vForce *= (float32)(fModifier * fModifier);
       }
     }
   }
@@ -2805,16 +2805,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyImpulse(orxPHYSICS_BO
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates impulse */
-        vImpulse *= (float32)pstClockInfo->fModValue;
+        vImpulse *= (float32)fModifier;
       }
     }
   }

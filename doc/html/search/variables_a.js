@@ -23,6 +23,7 @@ var searchData=
   ['u32previousrefreshrate',['u32PreviousRefreshRate',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a1fdf2fe3e1400dbb7fa3130287e57a5a',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32previouswidth',['u32PreviousWidth',['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a09e8ddcd607dceacf8021000c0e857b4',1,'orxDISPLAY_EVENT_PAYLOAD']]],
   ['u32productid',['u32ProductId',['../structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#abdae3b7830e6f10a48ed1ab6c3fa0771',1,'orxANDROID_JOYSTICK_INFO']]],
+  ['u32refcount',['u32RefCount',['../structorx_s_t_r_u_c_t_u_r_e.html#acf225787d2879ff880c6adae8c622a11',1,'orxSTRUCTURE']]],
   ['u32refreshrate',['u32RefreshRate',['../structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html#a2f2a2bfc180013f76bb2dcecaf0b9f17',1,'orxDISPLAY_VIDEO_MODE::u32RefreshRate()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a7911b5fd6b34107c04ea9c7d8313df3f',1,'orxDISPLAY_EVENT_PAYLOAD::u32RefreshRate()']]],
   ['u32rgba',['u32RGBA',['../structorx_r_g_b_a.html#a1d098c654c5068c202e1576293fe71b6',1,'orxRGBA']]],
   ['u32samplenumber',['u32SampleNumber',['../structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a5cce9ecad10aa6fa8390885373f43d8b',1,'orxSOUND_STREAM_PACKET']]],

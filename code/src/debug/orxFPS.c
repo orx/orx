@@ -135,7 +135,7 @@ orxSTATUS orxFASTCALL orxFPS_Init()
     orxMemory_Zero(&sstFPS, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
-    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_SECOND);
+    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE);
 
     /* Valid? */
     if(sstFPS.pstClock != orxNULL)

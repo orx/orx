@@ -25,10 +25,13 @@
 #include <stddef.h>
 
 
-// Deactivates invalid offsetof warnings for GCC for the rest of this file
-#ifdef __orxGCC__
+// Deactivates invalid offsetof warnings for GCC & Clang for the rest of this file
+#if defined(__orxGCC__)
   #pragma GCC system_header
-#endif // __orxGCC__
+#elif defined(__orxLLVM__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Winvalid-offsetof"
+#endif
 
 
 //! Constants
@@ -1286,30 +1289,39 @@ void ScrollBase::BaseExit()
 
 void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
 {
-  ScrollObject *poObject;
-
   // Not paused?
   if(!mbIsPaused)
   {
+    orxOBJECT *pstObject;
+
     // Locks object list
     mbObjectListLocked = orxTRUE;
 
-    // For all objects
-    for(poObject = GetNextObject();
-        poObject;
-        poObject = GetNextObject(poObject))
+    // For all enabled objects
+    for(pstObject = orxObject_GetNextEnabled(orxNULL, orxSTRINGID_UNDEFINED);
+        pstObject;
+        pstObject = orxObject_GetNextEnabled(pstObject, orxSTRINGID_UNDEFINED))
     {
       // Not paused and not pending deletion?
-      if(!orxObject_IsPaused(poObject->GetOrxObject())
-      && (poObject->GetLifeTime() != orxFLOAT_0))
+      if(!orxObject_IsPaused(pstObject)
+      && (orxObject_GetLifeTime(pstObject) != orxFLOAT_0))
       {
-        orxCLOCK *pstClock;
+        ScrollObject *poObject;
 
-        // Gets its clock
-        pstClock = orxObject_GetClock(poObject->GetOrxObject());
+        // Gets its associated scroll object
+        poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
 
-        // Updates object
-        poObject->Update(pstClock ? *orxClock_GetInfo(pstClock) : _rstInfo);
+        // Valid?
+        if(poObject)
+        {
+          orxCLOCK *pstClock;
+
+          // Gets its clock
+          pstClock = orxObject_GetClock(pstObject);
+
+          // Updates object
+          poObject->Update(pstClock ? *orxClock_GetInfo(pstClock) : _rstInfo);
+        }
       }
     }
 
@@ -1562,39 +1574,31 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         // Not an internal deletion?
         if(!roGame.mzCurrentObject || !orxString_SearchString(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
         {
-          ScrollObjectBinderBase *poBinder;
+          ScrollObject *poObject;
 
-          // Gets binder
-          poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
+          // Gets scroll object
+          poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
 
-          // Found?
-          if(poBinder)
+          // Checks
+          orxASSERT((!poObject) || (poObject->GetOrxObject() == pstObject));
+
+          // Valid?
+          if(poObject)
           {
-            ScrollObject *poObject;
+            ScrollObjectBinderBase *poBinder;
 
-            // Gets scroll object
-            poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
+            // Clears internal reference
+            poObject->SetOrxObject(orxNULL);
 
-            // Checks
-            orxASSERT((!poObject) || (poObject->GetOrxObject() == pstObject));
+            // Gets binder
+            poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
 
-            // Valid?
-            if(poObject)
+            // Found?
+            if(poBinder)
             {
-              // Clears internal reference
-              poObject->SetOrxObject(orxNULL);
-
-              // Uses it
+              // Uses it to delete object
               poBinder->DeleteObject(poObject, orxObject_GetName(pstObject));
             }
-          }
-          else
-          {
-            ScrollObject *poObject;
-
-            // Gets scroll object
-            poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
-
           }
         }
         else
@@ -1926,7 +1930,7 @@ ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName
 ScrollObjectBinderBase::ScrollObjectBinderBase(orxS32 _s32SegmentSize, orxU32 _u32ElementSize)
 {
   // Creates bank
-  mpstBank = orxBank_Create((orxU16)_s32SegmentSize, _u32ElementSize, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+  mpstBank = orxBank_Create((orxU32)_s32SegmentSize, _u32ElementSize, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
   // Clears variables
   mpoFirstObject = mpoLastObject = orxNULL;
@@ -2264,3 +2268,7 @@ ScrollObject *ScrollObjectBinderBase::GetPreviousObject(const ScrollObject *_poO
   // Done!
   return poResult;
 }
+
+#ifdef __orxLLVM__
+  #pragma clang diagnostic pop
+#endif // __orxLLVM__

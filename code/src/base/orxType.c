@@ -30,7 +30,7 @@
  */
 
 
-#include "orxInclude.h"
+#include "base/orxType.h"
 
 
 /* *** String & character constants *** */

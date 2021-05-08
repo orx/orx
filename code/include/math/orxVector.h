@@ -294,7 +294,6 @@ static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, 
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_pvOp2 != orxNULL);
-  orxASSERT(_fOp >= orxFLOAT_0);
 
   /* Lerps all*/
   _pvRes->fX = orxLERP(_pvOp1->fX, _pvOp2->fX, _fOp);

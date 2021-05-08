@@ -1140,7 +1140,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
   orxASSERT((_zSoundConfigID != orxNULL) && (_zSoundConfigID != orxSTRING_EMPTY));
 
   /* Gets sound ID */
-  stID = orxString_ToCRC(_zSoundConfigID);
+  stID = orxString_Hash(_zSoundConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
@@ -1154,7 +1154,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
     if(pstSound != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxSound_GetName(pstSound)) == stID)
+      if(orxString_Hash(orxSound_GetName(pstSound)) == stID)
       {
         orxSOUND_EVENT_PAYLOAD  stPayload;
         orxSTRUCTURE           *pstOwner;

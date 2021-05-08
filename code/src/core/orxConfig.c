@@ -30,20 +30,19 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "core/orxConfig.h"
+
 #include "core/orxCommand.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "display/orxDisplay.h"
-#include "memory/orxBank.h"
-#include "math/orxMath.h"
 #include "io/orxFile.h"
-#include "utils/orxLinkList.h"
+#include "math/orxMath.h"
+#include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
+#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 #ifdef __orxMSVC__
@@ -90,10 +89,10 @@
 /** Defines
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
-#define orxCONFIG_KU32_STACK_BANK_SIZE            32          /**< Default stack bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
+#define orxCONFIG_KU32_STACK_SIZE                 64          /**< Section stack size */
 
 #define orxCONFIG_KU32_BUFFER_SIZE                16384       /**< Buffer size */
 #define orxCONFIG_KU32_LARGE_BUFFER_SIZE          524288      /**< Large buffer size */
@@ -233,15 +232,6 @@ typedef struct __orxCONFIG_SECTION_t
 
 } orxCONFIG_SECTION;
 
-/** Config stack entry structure
- */
-typedef struct __orxCONFIG_STACK_ENTRY_t
-{
-  orxLINKLIST_NODE    stNode;               /**< Linklist node : 12 */
-  orxCONFIG_SECTION  *pstSection;           /**< Section : 16 */
-
-} orxCONFIG_STACK_ENTRY;
-
 /** Static structure
  */
 typedef struct __orxCONFIG_STATIC_t
@@ -250,8 +240,6 @@ typedef struct __orxCONFIG_STATIC_t
   orxBANK            *pstEntryBank;         /**< Entry bank */
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
   orxBANK            *pstHistoryBank;       /**< History bank */
-  orxBANK            *pstStackBank;         /**< Stack bank */
-  orxLINKLIST         stStackList;          /**< Stack list */
   orxU32              u32Flags;             /**< Control flags */
   orxSTRINGID         stResourceGroupID;    /**< Resource group ID */
   orxU32              u32LoadCount;         /**< Load count */
@@ -264,6 +252,8 @@ typedef struct __orxCONFIG_STATIC_t
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
   orxCONFIG_SECTION  *pstDefaultSection;    /**< Default parent section */
+  orxU32              u32CurrentStackEntry; /**< Current stack entry */
+  orxCONFIG_SECTION*  apstSectionStack[orxCONFIG_KU32_STACK_SIZE]; /**< Section stack */
   orxCHAR             acCommandBuffer[orxCONFIG_KU32_COMMAND_BUFFER_SIZE]; /**< Command buffer */
   orxCHAR             zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH]; /**< Base file name */
   orxCHAR             acValueBuffer[orxCONFIG_KU32_LARGE_BUFFER_SIZE]; /**< Value buffer */
@@ -830,7 +820,7 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
   if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
   {
     /* Reallocates index table */
-    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCount - 1) * sizeof(orxU32));
+    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCount - 1) * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
 
     /* Checks */
     orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
@@ -839,7 +829,7 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
     u32BufferSize = _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2] + orxString_GetLength(_pstValue->zValue + _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2]) + 1;
 
     /* Reallocates buffer */
-    _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer));
+    _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
 
     /* Checks */
     orxASSERT(_pstValue->zValue != orxNULL);
@@ -1116,7 +1106,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
         orxSTRINGID stNewKeyID;
 
         /* Gets new key */
-        stNewKeyID = orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
+        stNewKeyID = orxString_Hash(pstEntry->stValue.zValue + s32SeparatorIndex + 1);
 
         /* Same section? */
         if(s32SeparatorIndex == 1)
@@ -1140,7 +1130,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
           *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
 
           /* Checks */
-          orxASSERT((stNewKeyID != _stKeyID) || (orxString_ToCRC(pstEntry->stValue.zValue + 1) != orxString_ToCRC(pstPreviousSection->zName)));
+          orxASSERT((stNewKeyID != _stKeyID) || (orxString_Hash(pstEntry->stValue.zValue + 1) != orxString_Hash(pstPreviousSection->zName)));
 
           /* Selects parent section */
           orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
@@ -1155,7 +1145,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
       else
       {
         /* Checks */
-        orxASSERT(orxString_ToCRC(pstEntry->stValue.zValue + 1) != orxString_ToCRC(pstPreviousSection->zName));
+        orxASSERT(orxString_Hash(pstEntry->stValue.zValue + 1) != orxString_Hash(pstPreviousSection->zName));
 
         /* Selects parent section */
         orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
@@ -1245,7 +1235,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
     orxSTRINGID         stID;
 
     /* Gets its ID */
-    stID = orxString_ToCRC(_zKey);
+    stID = orxString_Hash(_zKey);
 
     /* Gets value */
     pstResult = orxConfig_GetValueFromKey(stID, sstConfig.pstCurrentSection, &pstDummy);
@@ -1456,7 +1446,7 @@ static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSe
     orxLinkList_AddEnd(&(sstConfig.stSectionList), &(pstSection->stNode));
 
     /* Adds it to table */
-    orxHashTable_Add(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName), pstSection);
+    orxHashTable_Add(sstConfig.pstSectionTable, orxString_Hash(_zSectionName), pstSection);
 
     /* Stores its name */
     pstSection->zName = _zSectionName;
@@ -1524,29 +1514,33 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
       /* Not protected? */
       if(_pstSection->s32ProtectionCount == 0)
       {
-        orxCONFIG_STACK_ENTRY *pstStackEntry, *pstNextStackEntry;
+        orxU32 u32SrcEntry, u32DstEntry;
 
         /* For all stack entries */
-        for(pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetFirst(&(sstConfig.stStackList));
-            pstStackEntry != orxNULL;
-            pstStackEntry = pstNextStackEntry)
+        for(u32SrcEntry = 0, u32DstEntry = 0; u32SrcEntry < sstConfig.u32CurrentStackEntry; u32SrcEntry++)
         {
-          /* Gets next entry */
-          pstNextStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetNext(&(pstStackEntry->stNode));
-
-          /* Is deleted section? */
-          if(pstStackEntry->pstSection == _pstSection)
+          /* Should copy? */
+          if(u32SrcEntry != u32DstEntry)
           {
-            /* Removes it from stack list */
-            orxLinkList_Remove(&(pstStackEntry->stNode));
+            /* Copies it */
+            sstConfig.apstSectionStack[u32DstEntry] = sstConfig.apstSectionStack[u32SrcEntry];
+          }
 
-            /* Deletes it */
-            orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
-
+          /* Isn't deleted section? */
+          if(sstConfig.apstSectionStack[u32SrcEntry] != _pstSection)
+          {
+            /* Updates destination entry */
+            u32DstEntry++;
+          }
+          else
+          {
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Warning: deleted section [%s] was previously pushed and has to be removed from stack.", _pstSection->zName);
           }
         }
+
+        /* Updates current stack entry */
+        sstConfig.u32CurrentStackEntry -= (u32SrcEntry - u32DstEntry);
 
         /* Is the current selected one? */
         if(sstConfig.pstCurrentSection == _pstSection)
@@ -1569,7 +1563,7 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
         orxLinkList_Remove(&(_pstSection->stNode));
 
         /* Removes it from table */
-        orxHashTable_Remove(sstConfig.pstSectionTable, orxString_ToCRC(_pstSection->zName));
+        orxHashTable_Remove(sstConfig.pstSectionTable, orxString_Hash(_pstSection->zName));
 
         /* Removes section */
         orxBank_Free(sstConfig.pstSectionBank, _pstSection);
@@ -2663,7 +2657,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           orxSTRINGID       stKeyID;
 
           /* Gets key ID */
-          stKeyID = orxString_ToCRC(pcLineStart);
+          stKeyID = orxString_Hash(pcLineStart);
 
           /* Already defined? */
           if((pstEntry = orxConfig_GetEntry(stKeyID)) != orxNULL)
@@ -2764,9 +2758,6 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             /* End of line? */
             if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
             {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete file name <%*s>, closing character '%c' not found", _zName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-
               /* Updates new line start */
               pcLineStart = pc + 1;
 
@@ -2820,6 +2811,11 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
               /* Makes sure we don't mistake remaining partial comment for a new key */
               *pcLineStart = orxCONFIG_KC_COMMENT;
             }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete name <%.*s> for included file, '%c' terminator not found, skipping!", _zName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
           }
 
           break;
@@ -3175,7 +3171,7 @@ static orxSTATUS orxConfig_SelectSectionInternal(const orxSTRING _zSectionName)
     || (sstConfig.pstCurrentSection->zName != zSectionName))
     {
       /* Gets it from table */
-      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName));
+      pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName));
 
       /* Valid? */
       if(pstSection != orxNULL)
@@ -3766,7 +3762,7 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
   }
 
   /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_astArgList[1].zValue));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_astArgList[1].zValue));
 
   /* Found? */
   if(pstEntry != orxNULL)
@@ -3964,11 +3960,13 @@ void orxFASTCALL orxConfig_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_RESOURCE);
 
+  orxModule_AddOptionalDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_FILE);
+
+  /* Done! */
   return;
 }
 
@@ -4027,16 +4025,14 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     /* Restores bootstrap */
     sstConfig.pfnBootstrap = pfnBackupBootstrap;
 
-    /* Creates stack bank, history bank & section bank/table */
-    sstConfig.pstStackBank    = orxBank_Create(orxCONFIG_KU32_STACK_BANK_SIZE, sizeof(orxCONFIG_STACK_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    /* Creates history bank, entry bank & section bank/table */
     sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxU32), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-    sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
-
+    sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstStackBank != orxNULL) && (sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
     {
       orxBOOL bLoadDefault;
 
@@ -4090,13 +4086,6 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     }
     else
     {
-      /* Should delete stack bank? */
-      if(sstConfig.pstStackBank != orxNULL)
-      {
-        /* Deletes it */
-        orxBank_Delete(sstConfig.pstStackBank);
-      }
-
       /* Should delete history bank? */
       if(sstConfig.pstHistoryBank != orxNULL)
       {
@@ -4119,7 +4108,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       }
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate stack bank and/or section bank/table.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate history bank, entry bank and/or section bank/table.");
     }
   }
   else
@@ -4168,9 +4157,6 @@ void orxFASTCALL orxConfig_Exit()
 
     /* Deletes history bank */
     orxBank_Delete(sstConfig.pstHistoryBank);
-
-    /* Deletes stack bank */
-    orxBank_Delete(sstConfig.pstStackBank);
 
     /* Deletes encryption key */
     orxConfig_SetEncryptionKey(orxNULL);
@@ -4959,7 +4945,6 @@ orxSTATUS orxFASTCALL orxConfig_CopyFile(const orxSTRING _zDstFileName, const or
  */
 orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const orxSTRING *_azSrcFileName, orxU32 _u32Number, const orxSTRING _zEncryptionKey)
 {
-  orxFILE  *pstDstFile;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -4970,168 +4955,182 @@ orxSTATUS orxFASTCALL orxConfig_MergeFiles(const orxSTRING _zDstFileName, const 
   orxASSERT(*_azSrcFileName != orxNULL);
   orxASSERT(_u32Number > 0);
 
-  /* Opens destination file */
-  pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
-
-  /* Success? */
-  if(pstDstFile != orxNULL)
+  /* Is file initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_FILE) != orxFALSE)
   {
-    orxCHAR  *pcEncryptionCharBackup, *pcEncryptionChar;
-    orxSTRING zPreviousEncryptionKey;
-    orxU32    u32PreviousEncryptionKeySize, i;
+    orxFILE *pstDstFile;
 
-    /* Backups encryption char */
-    pcEncryptionCharBackup = sstConfig.pcEncryptionChar;
+    /* Opens destination file */
+    pstDstFile = orxFile_Open(_zDstFileName, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY);
 
-    /* Uses encryption? */
-    if(_zEncryptionKey != orxNULL)
+    /* Success? */
+    if(pstDstFile != orxNULL)
     {
-      /* Stores previous encryption key */
-      zPreviousEncryptionKey        = sstConfig.zEncryptionKey;
-      u32PreviousEncryptionKeySize  = sstConfig.u32EncryptionKeySize;
+      orxCHAR  *pcEncryptionCharBackup, *pcEncryptionChar;
+      orxSTRING zPreviousEncryptionKey;
+      orxU32    u32PreviousEncryptionKeySize, i;
 
-      /* Inits encryption char */
-      pcEncryptionChar = (orxSTRING)_zEncryptionKey;
+      /* Backups encryption char */
+      pcEncryptionCharBackup = sstConfig.pcEncryptionChar;
 
-      /* Adds encryption tag */
-      orxFile_Print(pstDstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
-    }
-
-    /* For all source files */
-    for(i = 0; i < _u32Number; i++)
-    {
-      const orxSTRING zSrcFileName;
-
-      /* Gets its name */
-      zSrcFileName = _azSrcFileName[i];
-
-      /* Valid names */
-      if(orxString_Compare(_zDstFileName, zSrcFileName) != 0)
+      /* Uses encryption? */
+      if(_zEncryptionKey != orxNULL)
       {
-        orxFILE *pstSrcFile;
+        /* Stores previous encryption key */
+        zPreviousEncryptionKey        = sstConfig.zEncryptionKey;
+        u32PreviousEncryptionKeySize  = sstConfig.u32EncryptionKeySize;
 
-        /* Opens source file */
-        pstSrcFile = orxFile_Open(zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+        /* Inits encryption char */
+        pcEncryptionChar = (orxSTRING)_zEncryptionKey;
 
-        /* Valid? */
-        if(pstSrcFile != orxNULL)
+        /* Adds encryption tag */
+        orxFile_Print(pstDstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+      }
+
+      /* For all source files */
+      for(i = 0; i < _u32Number; i++)
+      {
+        const orxSTRING zSrcFileName;
+
+        /* Gets its name */
+        zSrcFileName = _azSrcFileName[i];
+
+        /* Valid names */
+        if(orxString_Compare(_zDstFileName, zSrcFileName) != 0)
         {
-          orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
-          orxU32  u32Size;
-          orxBOOL bFirstTime, bUseEncryption;
+          orxFILE *pstSrcFile;
 
-          /* While source file isn't empty */
-          for(u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxTRUE, bUseEncryption = orxFALSE;
-              u32Size > 0;
-              u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxFALSE)
+          /* Opens source file */
+          pstSrcFile = orxFile_Open(zSrcFileName, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_BINARY);
+
+          /* Valid? */
+          if(pstSrcFile != orxNULL)
           {
-            /* First time? */
-            if(bFirstTime != orxFALSE)
+            orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+            orxU32  u32Size;
+            orxBOOL bFirstTime, bUseEncryption;
+
+            /* While source file isn't empty */
+            for(u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxTRUE, bUseEncryption = orxFALSE;
+                u32Size > 0;
+                u32Size = (orxU32)orxFile_Read(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstSrcFile), bFirstTime = orxFALSE)
             {
-              /* Has encryption tag? */
-              if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+              /* First time? */
+              if(bFirstTime != orxFALSE)
               {
-                /* Uses encryption */
-                bUseEncryption = orxTRUE;
+                /* Has encryption tag? */
+                if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+                {
+                  /* Uses encryption */
+                  bUseEncryption = orxTRUE;
 
-                /* Reinits encryption char */
-                sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+                  /* Reinits encryption char */
+                  sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
 
-                /* Decrypts remaining buffer */
-                orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
-              }
-            }
-            else
-            {
-              /* Uses encryption */
-              if(bUseEncryption != orxFALSE)
-              {
-                /* Decrypts buffer */
-                orxConfig_CryptBuffer(acBuffer, u32Size);
-              }
-            }
-
-            /* Use encryption for destination? */
-            if(_zEncryptionKey != orxNULL)
-            {
-              orxCHAR *pcPreviousEncryptionChar;
-
-              /* Stores previous encryption char */
-              pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
-
-              /* Stores new encryption key */
-              sstConfig.zEncryptionKey        = (orxSTRING)_zEncryptionKey;
-              sstConfig.u32EncryptionKeySize  = orxString_GetLength(_zEncryptionKey);
-
-              /* Sets encryption char */
-              sstConfig.pcEncryptionChar = pcEncryptionChar;
-
-              /* Encrypts buffer */
-              if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
-              {
-                orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                  /* Decrypts remaining buffer */
+                  orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                }
               }
               else
               {
-                orxConfig_CryptBuffer(acBuffer, u32Size);
+                /* Uses encryption */
+                if(bUseEncryption != orxFALSE)
+                {
+                  /* Decrypts buffer */
+                  orxConfig_CryptBuffer(acBuffer, u32Size);
+                }
               }
 
-              /* Saves encryption char */
-              pcEncryptionChar = sstConfig.pcEncryptionChar;
+              /* Use encryption for destination? */
+              if(_zEncryptionKey != orxNULL)
+              {
+                orxCHAR *pcPreviousEncryptionChar;
 
-              /* Restores encryption key */
-              sstConfig.zEncryptionKey        = zPreviousEncryptionKey;
-              sstConfig.u32EncryptionKeySize  = u32PreviousEncryptionKeySize;
+                /* Stores previous encryption char */
+                pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
 
-              /* Restores encryption char */
-              sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+                /* Stores new encryption key */
+                sstConfig.zEncryptionKey        = (orxSTRING)_zEncryptionKey;
+                sstConfig.u32EncryptionKeySize  = orxString_GetLength(_zEncryptionKey);
+
+                /* Sets encryption char */
+                sstConfig.pcEncryptionChar = pcEncryptionChar;
+
+                /* Encrypts buffer */
+                if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+                {
+                  orxConfig_CryptBuffer(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH);
+                }
+                else
+                {
+                  orxConfig_CryptBuffer(acBuffer, u32Size);
+                }
+
+                /* Saves encryption char */
+                pcEncryptionChar = sstConfig.pcEncryptionChar;
+
+                /* Restores encryption key */
+                sstConfig.zEncryptionKey        = zPreviousEncryptionKey;
+                sstConfig.u32EncryptionKeySize  = u32PreviousEncryptionKeySize;
+
+                /* Restores encryption char */
+                sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+              }
+
+              /* Writes buffer */
+              if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
+              {
+                orxFile_Write(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, sizeof(orxCHAR), (orxS64)(u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH), pstDstFile);
+              }
+              else
+              {
+                orxFile_Write(acBuffer, sizeof(orxCHAR), (orxS64)u32Size, pstDstFile);
+              }
             }
 
-            /* Writes buffer */
-            if((bFirstTime != orxFALSE) && (bUseEncryption != orxFALSE))
-            {
-              orxFile_Write(acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH, sizeof(orxCHAR), (orxS64)(u32Size - orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH), pstDstFile);
-            }
-            else
-            {
-              orxFile_Write(acBuffer, sizeof(orxCHAR), (orxS64)u32Size, pstDstFile);
-            }
+            /* Closes source file */
+            orxFile_Close(pstSrcFile);
           }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config file <%s> -> <%s>: can't open source file.", zSrcFileName, _zDstFileName);
 
-          /* Closes source file */
-          orxFile_Close(pstSrcFile);
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+            break;
+          }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config file <%s> -> <%s>: can't open source file.", zSrcFileName, _zDstFileName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge merge file <%s> -> <%s>: source and destination must be different.", zSrcFileName, _zDstFileName);
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
           break;
         }
       }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge merge file <%s> -> <%s>: source and destination must be different.", zSrcFileName, _zDstFileName);
 
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-        break;
-      }
+      /* Closes destination file */
+      orxFile_Close(pstDstFile);
+
+      /* Restores previous encryption char */
+      sstConfig.pcEncryptionChar = pcEncryptionCharBackup;
     }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> <%s>: can't open destination file.", _zDstFileName);
 
-    /* Closes destination file */
-    orxFile_Close(pstDstFile);
-
-    /* Restores previous encryption char */
-    sstConfig.pcEncryptionChar = pcEncryptionCharBackup;
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> <%s>: can't open destination file.", _zDstFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't merge config files -> file module hasn't been initialized.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -5190,7 +5189,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
       orxSTRINGID         stID;
 
       /* Gets section name ID */
-      stID = orxString_ToCRC(_zSectionName);
+      stID = orxString_Hash(_zSectionName);
 
       /* Gets it from table */
       pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5210,7 +5209,7 @@ orxSTATUS orxFASTCALL orxConfig_RenameSection(const orxSTRING _zSectionName, con
         orxHashTable_Remove(sstConfig.pstSectionTable, stID);
 
         /* Adds it again with the new ID */
-        orxHashTable_Add(sstConfig.pstSectionTable, orxString_ToCRC(_zNewSectionName), pstSection);
+        orxHashTable_Add(sstConfig.pstSectionTable, orxString_Hash(_zNewSectionName), pstSection);
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -5469,25 +5468,17 @@ orxSTATUS orxFASTCALL orxConfig_PushSection(const orxSTRING _zSectionName)
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      orxCONFIG_STACK_ENTRY *pstStackEntry;
-
-      /* Allocates stack entry */
-      pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxBank_Allocate(sstConfig.pstStackBank);
-
-      /* Valid? */
-      if(pstStackEntry != orxNULL)
+      /* Isn't stack full? */
+      if(sstConfig.u32CurrentStackEntry < orxCONFIG_KU32_STACK_SIZE)
       {
-        /* Clears it */
-        orxMemory_Zero(pstStackEntry, sizeof(orxCONFIG_STACK_ENTRY));
-
-        /* Updates it */
-        pstStackEntry->pstSection = pstCurrentSection;
-
-        /* Adds it at end of list */
-        orxLinkList_AddEnd(&(sstConfig.stStackList), &(pstStackEntry->stNode));
+        /* Updates stack */
+        sstConfig.apstSectionStack[sstConfig.u32CurrentStackEntry++] = pstCurrentSection;
       }
       else
       {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Failed to push section: section stack is full.", _zSectionName);
+
         /* Restores current section */
         sstConfig.pstCurrentSection = pstCurrentSection;
 
@@ -5517,27 +5508,19 @@ orxSTATUS orxFASTCALL orxConfig_PopSection()
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Has stacked entry? */
-  if(orxLinkList_GetCount(&(sstConfig.stStackList)) > 0)
+  if(sstConfig.u32CurrentStackEntry != 0)
   {
-    orxCONFIG_STACK_ENTRY *pstStackEntry;
-
-    /* Gets stack entry */
-    pstStackEntry = (orxCONFIG_STACK_ENTRY *)orxLinkList_GetLast(&(sstConfig.stStackList));
-
     /* Updates current section */
-    sstConfig.pstCurrentSection = pstStackEntry->pstSection;
-
-    /* Removes it from stack list */
-    orxLinkList_Remove(&(pstStackEntry->stNode));
-
-    /* Deletes it */
-    orxBank_Free(sstConfig.pstStackBank, pstStackEntry);
+    sstConfig.pstCurrentSection = sstConfig.apstSectionStack[--sstConfig.u32CurrentStackEntry];
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
   else
   {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to pop section: section stack is empty.");
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -5562,7 +5545,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
   if(_zSectionName != orxSTRING_EMPTY)
   {
     /* Updates result */
-    bResult = (orxHashTable_Get(sstConfig.pstSectionTable, orxString_ToCRC(_zSectionName)) != orxNULL) ? orxTRUE : orxFALSE;
+    bResult = (orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName)) != orxNULL) ? orxTRUE : orxFALSE;
   }
 
   /* Done! */
@@ -5585,7 +5568,7 @@ orxSTATUS orxFASTCALL orxConfig_ProtectSection(const orxSTRING _zSectionName, or
   orxASSERT(_zSectionName != orxNULL);
 
   /* Gets section name ID */
-  stID = orxString_ToCRC(_zSectionName);
+  stID = orxString_Hash(_zSectionName);
 
   /* Gets it from table */
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5648,7 +5631,7 @@ orxSTRINGID orxFASTCALL orxConfig_GetOriginID(const orxSTRING _zSectionName)
   orxASSERT(_zSectionName != orxNULL);
 
   /* Gets section name ID */
-  stID = orxString_ToCRC(_zSectionName);
+  stID = orxString_Hash(_zSectionName);
 
   /* Gets it from table */
   pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
@@ -5781,12 +5764,12 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
   if(s32MarkerIndex >= 0)
   {
     /* Gets section name ID */
-    stID = orxString_NToCRC(_zSectionName, (orxU32)s32MarkerIndex);
+    stID = orxString_NHash(_zSectionName, (orxU32)s32MarkerIndex);
   }
   else
   {
     /* Gets section name ID */
-    stID = orxString_ToCRC(_zSectionName);
+    stID = orxString_Hash(_zSectionName);
   }
 
   /* Gets it from table */
@@ -5818,7 +5801,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_zKey));
 
   /* Found? */
   if(pstEntry != orxNULL)
@@ -5855,7 +5838,7 @@ orxBOOL orxFASTCALL orxConfig_IsLocallyInheritedValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntryFromKey(stKeyID);
@@ -5891,7 +5874,7 @@ orxBOOL orxFASTCALL orxConfig_IsInheritedValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(stKeyID);
@@ -6048,7 +6031,7 @@ const orxSTRING orxFASTCALL orxConfig_GetValueSource(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets ID */
-  stKeyID = orxString_ToCRC(_zKey);
+  stKeyID = orxString_Hash(_zKey);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(stKeyID);
@@ -6319,7 +6302,7 @@ orxSTRING orxFASTCALL orxConfig_DuplicateRawValue(const orxSTRING _zKey)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
-  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+  pstEntry = orxConfig_GetEntry(orxString_Hash(_zKey));
 
   /* Found? */
   if(pstEntry != orxNULL)

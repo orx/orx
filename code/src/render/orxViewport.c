@@ -1720,7 +1720,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       pstResult->zReference = orxConfig_GetCurrentSection();
 
       /* Adds it to reference table */
-      orxHashTable_Add(sstViewport.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+      orxHashTable_Add(sstViewport.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
       /* Updates status flags */
       orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_REFERENCED, orxVIEWPORT_KU32_FLAG_NONE);
@@ -1732,7 +1732,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Config file does not contain viewport section named %s.", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't find config section named (%s).", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -1791,7 +1791,7 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
     if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstViewport.pstReferenceTable, orxString_ToCRC(_pstViewport->zReference));
+      orxHashTable_Remove(sstViewport.pstReferenceTable, orxString_Hash(_pstViewport->zReference));
     }
 
     /* Deletes structure */
@@ -2711,7 +2711,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_Get(const orxSTRING _zName)
   orxASSERT(_zName != orxNULL);
 
   /* Updates result */
-  pstResult = (orxVIEWPORT *)orxHashTable_Get(sstViewport.pstReferenceTable, orxString_ToCRC(_zName));
+  pstResult = (orxVIEWPORT *)orxHashTable_Get(sstViewport.pstReferenceTable, orxString_Hash(_zName));
 
   /* Done! */
   return pstResult;

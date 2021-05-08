@@ -202,11 +202,11 @@ template<class O>
 void ScrollObjectBinder<O>::Register(const orxSTRING _zName, orxS32 _s32SegmentSize)
 {
   // Checks
-  orxASSERT(!orxHashTable_Get(ScrollObjectBinderBase::GetTable(), orxString_ToCRC(_zName)));
+  orxASSERT(!orxHashTable_Get(ScrollObjectBinderBase::GetTable(), orxString_Hash(_zName)));
   orxASSERT(_s32SegmentSize > 0);
 
   // Adds binder to table
-  orxHashTable_Add(GetTable(), orxString_ToCRC(_zName ? _zName : orxSTRING_EMPTY), GetInstance(_s32SegmentSize));
+  orxHashTable_Add(GetTable(), orxString_Hash(_zName ? _zName : orxSTRING_EMPTY), GetInstance(_s32SegmentSize));
 }
 
 template<class O>

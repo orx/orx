@@ -1368,7 +1368,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
           orxStructure_SetOwner(pstAnim, pstResult);
 
           /* Adds it to ID table */
-          orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+          orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
         }
       }
     }
@@ -1400,8 +1400,8 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
         zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
 
         /* Gets source & destination anim IDs */
-        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
-        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
+        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zSrcAnim)) - 1);
+        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDstAnim)) - 1);
 
         /* Valid? */
         if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
@@ -1451,7 +1451,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
     }
 
     /* Adds it to reference table */
-    orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+    orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
     /* Updates status flags */
     orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
@@ -1478,7 +1478,7 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
   const orxSTRING *pzTableBucket;
 
   /* Retrieves its entry from the creation table */
-  pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_ToCRC(_zAnim));
+  pzTableBucket = (const orxSTRING *)orxHashTable_Retrieve(sstAnimSet.pstCreationTable, orxString_Hash(_zAnim));
 
   /* Not already referenced? */
   if(*pzTableBucket == orxNULL)
@@ -2458,7 +2458,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxStructure_SetOwner(pstAnim, pstResult);
 
         /* Adds it to ID table */
-        orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
       }
 
       /* For all animations */
@@ -2545,7 +2545,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
                   ;
 
                 /* Gets its anim ID */
-                u32DestAnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDestAnim)) - 1);
+                u32DestAnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDestAnim)) - 1);
 
                 /* Valid? */
                 if(u32DestAnimID != orxU32_UNDEFINED)
@@ -2622,7 +2622,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
       }
 
       /* Adds anim set to the reference table */
-      orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+      orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
       /* Updates status flags */
       orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
@@ -2871,7 +2871,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
 
   /* Search for reference */
-  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_ToCRC(_zConfigID));
+  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_Hash(_zConfigID));
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -2952,7 +2952,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstAnimSet.pstReferenceTable, orxString_ToCRC(_pstAnimSet->zReference));
+      orxHashTable_Remove(sstAnimSet.pstReferenceTable, orxString_Hash(_pstAnimSet->zReference));
     }
 
     /* Has ID table? */
@@ -3638,14 +3638,14 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
-        /* Updates timestamp */
-        *_pfTime -= fLength;
-
         /* Has next animation? */
         if((u32TargetAnim != orxU32_UNDEFINED)
         && ((fLength > orxFLOAT_0)
          || (u32TargetAnim != _u32SrcAnim)))
         {
+          /* Updates timestamp */
+          *_pfTime -= fLength;
+
           /* Gets link index */
           u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
 
@@ -3660,6 +3660,9 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
         }
         else
         {
+          /* Clears timestamp */
+          *_pfTime = orxFLOAT_0;
+
           /* Has target anim? */
           if(_u32DstAnim != orxU32_UNDEFINED)
           {
@@ -3783,7 +3786,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding ID */
-    u32Result = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_ToCRC(_zAnimName)) - 1);
+    u32Result = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_Hash(_zAnimName)) - 1);
   }
 
   /* Done! */

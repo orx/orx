@@ -77,24 +77,10 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Close event */
-    case orxSYSTEM_EVENT_CLOSE:
-    {
-      /* Updates status */
-      sbStopByEvent = orxTRUE;
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
+  /* Updates status */
+  sbStopByEvent = orxTRUE;
 
   /* Done! */
   return eResult;
@@ -110,6 +96,7 @@ static void orxFASTCALL orx_MainSetup()
 
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
+  /* Done! */
   return;
 }
 
@@ -219,6 +206,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Clears payload */
       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
@@ -233,7 +221,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs the engine */
+        /* Runs game specific code */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
@@ -245,13 +233,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */
@@ -292,6 +280,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Clears payload */
       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
@@ -304,7 +293,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs the engine */
+        /* Runs game specific code */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
@@ -316,13 +305,13 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
-
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
   }
 
   /* Exits from the Debug system */

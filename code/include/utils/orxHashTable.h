@@ -26,6 +26,7 @@
  * @file orxHashTable.h
  * @date 05/05/2005
  * @author cursor@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  */

@@ -1991,7 +1991,7 @@ orxSTATUS ScrollEd::InitUI()
   }
 
   // Creates button bank
-  mpstButtonBank = orxBank_Create((orxS16)orxConfig_GetListCount(szConfigButtonList), sizeof(ButtonData), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_MAIN);
+  mpstButtonBank = orxBank_Create((orxU32)orxConfig_GetListCount(szConfigButtonList), sizeof(ButtonData), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_MAIN);
 
   // For all buttons
   for(i = 0, s32Number = orxConfig_GetListCount(szConfigButtonList); i < s32Number; i++)

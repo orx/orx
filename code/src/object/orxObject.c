@@ -207,6 +207,14 @@ typedef struct __orxOBJECT_STORAGE_t
 
 } orxOBJECT_STORAGE;
 
+/** Object lists
+ */
+typedef struct __orxOBJECT_LISTS_t
+{
+  orxLINKLIST       stList;                     /**< List : 12 */
+  orxLINKLIST       stEnableList;               /**< Enable list : 24 */
+} orxOBJECT_LISTS;
+
 /** Object structure
  */
 struct __orxOBJECT_t
@@ -224,23 +232,26 @@ struct __orxOBJECT_t
   orxVECTOR         vSpeed;                     /**< Object speed : 132 */
   orxVECTOR         vSize;                      /**< Object size : 144 */
   orxVECTOR         vPivot;                     /**< Object pivot : 156 */
-  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 176 */
+  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 168 */
+  orxLINKLIST_NODE  stEnableNode;               /**< Enable node: 180 */
+  orxLINKLIST_NODE  stEnableGroupNode;          /**< Enable group node: 192 */
 };
 
 /** Static structure
  */
 typedef struct __orxOBJECT_STATIC_t
 {
-  orxCLOCK     *pstClock;                       /**< Clock */
-  orxBANK      *pstGroupBank;                   /**< Group bank */
-  orxBANK      *pstAgeBank;                     /**< Age bank */
-  orxHASHTABLE *pstGroupTable;                  /**< Group table */
-  orxLINKLIST  *pstCachedGroupList;             /**< Cached group list */
-  orxOBJECT    *pstCurrentObject;               /**< Current object */
-  orxSTRINGID   stDefaultGroupID;               /**< Default group ID */
-  orxSTRINGID   stCurrentGroupID;               /**< Current group ID */
-  orxSTRINGID   stCachedGroupID;                /**< Cached group ID */
-  orxU32        u32Flags;                       /**< Control flags */
+  orxCLOCK         *pstClock;                   /**< Clock */
+  orxBANK          *pstGroupBank;               /**< Group bank */
+  orxBANK          *pstAgeBank;                 /**< Age bank */
+  orxHASHTABLE     *pstGroupTable;              /**< Group table */
+  orxOBJECT_LISTS  *pstCachedGroupLists;        /**< Cached group lists */
+  orxOBJECT        *pstCurrentObject;           /**< Current object */
+  orxLINKLIST       stEnableList;               /**< Enabled objects list */
+  orxSTRINGID       stDefaultGroupID;           /**< Default group ID */
+  orxSTRINGID       stCurrentGroupID;           /**< Current group ID */
+  orxSTRINGID       stCachedGroupID;            /**< Cached group ID */
+  orxU32            u32Flags;                   /**< Control flags */
 
 } orxOBJECT_STATIC;
 
@@ -608,23 +619,58 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
   orxOBJECT  *pstObject;
 
   /* No name? */
-  if(_u32ArgNumber == 0)
+  if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == orxCHAR_NULL))
   {
-    /* Updates count */
-    u32Count = orxStructure_GetCount(orxSTRUCTURE_ID_OBJECT);
+    /* Enabled only? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Updates count */
+      u32Count = orxLinkList_GetCount(&(sstObject.stEnableList));
+    }
+    else
+    {
+      /* Updates count */
+      u32Count = orxStructure_GetCount(orxSTRUCTURE_ID_OBJECT);
+    }
   }
   else
   {
-    /* For all objects */
-    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
-        pstObject != orxNULL;
-        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    /* Enabled only? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
     {
-      /* Match? */
-      if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+      orxLINKLIST_NODE *pstNode;
+
+      /* For all enabled nodes */
+      for(pstNode = orxLinkList_GetFirst(&(sstObject.stEnableList)), u32Count = 0;
+          pstNode != orxNULL;
+          pstNode = orxLinkList_GetNext(pstNode))
       {
-        /* Updates count */
-        u32Count++;
+        orxOBJECT *pstObject;
+
+        /* Gets associated object */
+        pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+
+        /* Match? */
+        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        {
+          /* Updates count */
+          u32Count++;
+        }
+      }
+    }
+    else
+    {
+      /* For all objects */
+      for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
+          pstObject != orxNULL;
+          pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+      {
+        /* Match? */
+        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        {
+          /* Updates count */
+          u32Count++;
+        }
       }
     }
   }
@@ -3185,7 +3231,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <none>", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: GetCount */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 2, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING}, {"EnabledOnly = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetID, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
@@ -3569,6 +3615,9 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
     /* Sets default group ID */
     orxObject_SetGroupID(pstResult, sstObject.stDefaultGroupID);
 
+    /* Adds it to the enable list */
+    orxLinkList_AddEnd(&(sstObject.stEnableList), &(pstResult->stEnableNode));
+
     /* Increases count */
     orxStructure_IncreaseCount(pstResult);
   }
@@ -3635,6 +3684,16 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
       if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
       {
         orxLinkList_Remove(&(_pstObject->stGroupNode));
+      }
+
+      /* Removes object from the enable lists */
+      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL)
+      {
+        orxLinkList_Remove(&(_pstObject->stEnableNode));
+      }
+      if(orxLinkList_GetList(&(_pstObject->stEnableGroupNode)) != orxNULL)
+      {
+        orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
       }
 
       /* Deletes structure */
@@ -3707,6 +3766,7 @@ static orxINLINE void orxObject_DeleteAll()
     pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
   }
 
+  /* Done! */
   return;
 }
 
@@ -3714,12 +3774,10 @@ static orxINLINE void orxObject_DeleteAll()
  * @param[int] _pstObject         Concerned object
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  */
-static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxBOOL       bDeleted = orxFALSE;
   orxU32        u32UpdateFlags;
   orxSTRUCTURE *pstStructure;
-  orxOBJECT    *pstResult;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_Update");
@@ -3734,7 +3792,8 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    const orxCLOCK_INFO *pstClockInfo;
+    const orxCLOCK_INFO  *pstClockInfo;
+    orxBOOL               bDeleted = orxFALSE;
 
     /* Has clock? */
     if(orxStructure_TestFlags(_pstObject, 1 << orxSTRUCTURE_ID_CLOCK))
@@ -3760,9 +3819,6 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       /* Should die? */
       if(_pstObject->fLifeTime <= orxFLOAT_0)
       {
-        /* Gets next object */
-        pstResult = orxOBJECT(orxStructure_GetNext(_pstObject));
-
         /* Deletes it */
         orxObject_Delete(_pstObject);
 
@@ -3772,7 +3828,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     }
 
     /* !!! TODO !!! */
-    /* Updates culling info before calling update subfunctions */
+    /* Updates culling info before calling update sub-functions */
 
     /* Wasn't object deleted? */
     if(bDeleted == orxFALSE)
@@ -3897,18 +3953,11 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     }
   }
 
-  /* Wasn't deleted? */
-  if(bDeleted == orxFALSE)
-  {
-    /* Gets next object */
-    pstResult = (orxOBJECT *)orxStructure_GetNext(_pstObject);
-  }
-
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return pstResult;
+  return;
 }
 
 /** Updates all the objects
@@ -3917,16 +3966,27 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxOBJECT *pstObject;
+  orxLINKLIST_NODE *pstNode, *pstNextNode;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
 
-  /* Updates all objects */
-  for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
-      pstObject != orxNULL;
-      pstObject = orxObject_UpdateInternal(pstObject, _pstClockInfo))
-  ;
+  /* For all enabled nodes */
+  for(pstNode = orxLinkList_GetFirst(&(sstObject.stEnableList));
+      pstNode != orxNULL;
+      pstNode = pstNextNode)
+  {
+    orxOBJECT *pstObject;
+
+    /* Gets next node */
+    pstNextNode = orxLinkList_GetNext(pstNode);
+
+    /* Gets associated object */
+    pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+
+    /* Updates it */
+    orxObject_UpdateInternal(pstObject, _pstClockInfo);
+  }
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
@@ -3954,12 +4014,10 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRING);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TEXTURE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FONT);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADERPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
@@ -4013,7 +4071,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
           if(eResult != orxSTATUS_FAILURE)
           {
             /* Creates banks */
-            sstObject.pstGroupBank  = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxLINKLIST), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+            sstObject.pstGroupBank  = orxBank_Create(orxOBJECT_KU32_GROUP_BANK_SIZE, sizeof(orxOBJECT_LISTS), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
             sstObject.pstAgeBank    = orxBank_Create(orxOBJECT_KU32_AGE_BANK_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
             /* Success? */
@@ -4167,6 +4225,7 @@ void orxFASTCALL orxObject_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit from object module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -5308,10 +5367,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxMemory_Copy(&stAgeClockInfo, pstClockInfo, sizeof(orxCLOCK_INFO));
 
             /* Has multiply modifier? */
-            if(stAgeClockInfo.eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+            if(stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
             {
               /* Updates age */
-              fAge *= stAgeClockInfo.fModValue;
+              fAge *= stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
             }
 
             /* For all time slices */
@@ -5582,6 +5641,37 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 
       /* Updates status flags */
       orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
+
+      /* Isn't already part of the enable list? */
+      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
+      {
+        orxOBJECT_LISTS *pstGroupLists;
+
+        /* Adds it to enable list */
+        orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
+
+        /* Is cached group list? */
+        if(_pstObject->stGroupID == sstObject.stCachedGroupID)
+        {
+          /* Gets it */
+          pstGroupLists = sstObject.pstCachedGroupLists;
+        }
+        else
+        {
+          /* Gets group list */
+          pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _pstObject->stGroupID);
+
+          /* Checks */
+          orxASSERT(pstGroupLists != orxNULL);
+
+          /* Caches it */
+          sstObject.pstCachedGroupLists = pstGroupLists;
+          sstObject.stCachedGroupID     = _pstObject->stGroupID;
+        }
+
+        /* Adds object to enable group list */
+        orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
+      }
     }
   }
   else
@@ -5594,6 +5684,14 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 
       /* Updates status flags */
       orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
+
+      /* Isn't on death row? */
+      if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW))
+      {
+        /* Removes it from enable lists */
+        orxLinkList_Remove(&(_pstObject->stEnableNode));
+        orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+      }
     }
   }
 
@@ -8491,7 +8589,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate    Should the delay be incremented with each child application?
+ * @param[in]   _bPropagate     Should the delay be incremented with each child application?
  */
 void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate)
 {
@@ -10007,6 +10105,52 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
     orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME | orxOBJECT_KU32_FLAG_DEATH_ROW);
   }
 
+  /* Should die? */
+  if(_fLifeTime == orxFLOAT_0)
+  {
+    /* Isn't already part of the enable list? */
+    if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
+    {
+      orxOBJECT_LISTS *pstGroupLists;
+
+      /* Adds it to enable list */
+      orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
+
+      /* Is cached group list? */
+      if(_pstObject->stGroupID == sstObject.stCachedGroupID)
+      {
+        /* Gets it */
+        pstGroupLists = sstObject.pstCachedGroupLists;
+      }
+      else
+      {
+        /* Gets group list */
+        pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _pstObject->stGroupID);
+
+        /* Checks */
+        orxASSERT(pstGroupLists != orxNULL);
+
+        /* Caches it */
+        sstObject.pstCachedGroupLists = pstGroupLists;
+        sstObject.stCachedGroupID     = _pstObject->stGroupID;
+      }
+
+      /* Adds object to enable group list */
+      orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
+    }
+  }
+  else
+  {
+    /* Is not enabled and part of the enable lists? */
+    if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED)
+    && (orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL))
+    {
+      /* Removes it from enable lists */
+      orxLinkList_Remove(&(_pstObject->stEnableNode));
+      orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+    }
+  }
+
   /* Done! */
   return eResult;
 }
@@ -10093,9 +10237,9 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
 {
-  orxLINKLIST **ppstBucket;
-  orxLINKLIST  *pstGroupList;
-  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+  orxOBJECT_LISTS **ppstBucket;
+  orxOBJECT_LISTS  *pstGroupLists;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -10107,9 +10251,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
   {
     orxLinkList_Remove(&(_pstObject->stGroupNode));
   }
+  /* Removes object from its current enable group */
+  if(orxLinkList_GetList(&(_pstObject->stEnableGroupNode)) != orxNULL)
+  {
+    orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+  }
 
   /* Gets group list bucker*/
-  ppstBucket = (orxLINKLIST **)orxHashTable_Retrieve(sstObject.pstGroupTable, _stGroupID);
+  ppstBucket = (orxOBJECT_LISTS **)orxHashTable_Retrieve(sstObject.pstGroupTable, _stGroupID);
 
   /* Checks */
   orxASSERT(ppstBucket != orxNULL);
@@ -10118,19 +10267,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
   if(*ppstBucket == orxNULL)
   {
     /* Allocates it */
-    pstGroupList = (orxLINKLIST *)orxBank_Allocate(sstObject.pstGroupBank);
+    pstGroupLists = (orxOBJECT_LISTS *)orxBank_Allocate(sstObject.pstGroupBank);
+
+    /* Checks */
+    orxASSERT(pstGroupLists != orxNULL);
+
+    /* Clears it */
+    orxMemory_Zero(pstGroupLists, sizeof(orxOBJECT_LISTS));
 
     /* Stores it */
-    *ppstBucket = pstGroupList;
+    *ppstBucket = pstGroupLists;
   }
   else
   {
     /* Gets it */
-    pstGroupList = *ppstBucket;
+    pstGroupLists = *ppstBucket;
   }
 
-  /* Adds object to end of list */
-  orxLinkList_AddEnd(pstGroupList, &(_pstObject->stGroupNode));
+  /* Adds object to end of group list */
+  orxLinkList_AddEnd(&(pstGroupLists->stList), &(_pstObject->stGroupNode));
+
+  /* Is enabled? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    /* Adds object to end of enable group list */
+    orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
+  }
 
   /* Stores group ID */
   _pstObject->stGroupID = _stGroupID;
@@ -10141,13 +10303,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
 
 /** Sets group ID of an object and all its children.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _stGroupID     Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  */
 orxOBJECT_MAKE_RECURSIVE(SetGroupID, orxSTRINGID);
 
 /** Gets next object in group.
  * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
- * @param[in]   _stGroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
@@ -10157,32 +10319,32 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstO
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstObject == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstObject) < orxSTRUCTURE_ID_NUMBER));
-  orxASSERT((_pstObject == orxNULL) || (_stGroupID == orxSTRINGID_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stGroupNode)) == orxHashTable_Get(sstObject.pstGroupTable, _stGroupID)));
+  orxASSERT((_pstObject == orxNULL) || (_stGroupID == orxSTRINGID_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stGroupNode)) == &(((orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _stGroupID))->stList)));
 
   /* Has group? */
   if(_stGroupID != orxSTRINGID_UNDEFINED)
   {
-    orxLINKLIST *pstGroupList;
+    orxOBJECT_LISTS *pstGroupLists;
 
     /* Is cached one? */
     if(_stGroupID == sstObject.stCachedGroupID)
     {
       /* Gets group list */
-      pstGroupList = sstObject.pstCachedGroupList;
+      pstGroupLists = sstObject.pstCachedGroupLists;
     }
     else
     {
       /* Gets group list */
-      pstGroupList = (orxLINKLIST *)orxHashTable_Get(sstObject.pstGroupTable, _stGroupID);
+      pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _stGroupID);
     }
 
     /* Valid? */
-    if(pstGroupList != orxNULL)
+    if(pstGroupLists != orxNULL)
     {
       orxLINKLIST_NODE *pstNode;
 
       /* Gets node */
-      pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(pstGroupList) : orxLinkList_GetNext(&(_pstObject->stGroupNode));
+      pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(&(pstGroupLists->stList)) : orxLinkList_GetNext(&(_pstObject->stGroupNode));
 
       /* Valid? */
       if(pstNode != orxNULL)
@@ -10197,7 +10359,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstO
       }
 
       /* Caches group list */
-      sstObject.pstCachedGroupList  = pstGroupList;
+      sstObject.pstCachedGroupLists = pstGroupLists;
       sstObject.stCachedGroupID     = _stGroupID;
     }
     else
@@ -10216,11 +10378,96 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstO
   return pstResult;
 }
 
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
+{
+  orxOBJECT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstObject == orxNULL) || (orxStructure_GetID((orxSTRUCTURE *)_pstObject) < orxSTRUCTURE_ID_NUMBER));
+  orxASSERT((_pstObject == orxNULL) || (_stGroupID == orxSTRINGID_UNDEFINED) || (orxLinkList_GetList(&(_pstObject->stEnableGroupNode)) == &(((orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _stGroupID))->stEnableList)));
+
+  /* Has group? */
+  if(_stGroupID != orxSTRINGID_UNDEFINED)
+  {
+    orxOBJECT_LISTS *pstGroupLists;
+
+    /* Is cached one? */
+    if(_stGroupID == sstObject.stCachedGroupID)
+    {
+      /* Gets group list */
+      pstGroupLists = sstObject.pstCachedGroupLists;
+    }
+    else
+    {
+      /* Gets group list */
+      pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _stGroupID);
+    }
+
+    /* Valid? */
+    if(pstGroupLists != orxNULL)
+    {
+      orxLINKLIST_NODE *pstNode;
+
+      /* Gets node */
+      pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(&(pstGroupLists->stEnableList)) : orxLinkList_GetNext(&(_pstObject->stEnableGroupNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Updates result */
+        pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableGroupNode, pstNode);
+      }
+      else
+      {
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+
+      /* Caches group list */
+      sstObject.pstCachedGroupLists = pstGroupLists;
+      sstObject.stCachedGroupID     = _stGroupID;
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    orxLINKLIST_NODE *pstNode;
+
+    /* Gets node */
+    pstNode = (_pstObject == orxNULL) ? orxLinkList_GetFirst(&(sstObject.stEnableList)) : orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+    /* Valid? */
+    if(pstNode != orxNULL)
+    {
+      /* Updates result */
+      pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Picks the first active object with size "under" the given position, within a given group. See
  * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
  * objects.
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _stGroupID      Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID)
@@ -10279,7 +10526,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
  * orxObject_CreateNeighborList() to get all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
- * @param[in]   _stGroupID      Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
 orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _stGroupID)

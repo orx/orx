@@ -253,6 +253,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxShader_IsEnabled(const orxSHA
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL    orxShader_GetName(const orxSHADER *_pstShader);
 
+/** Gets shader (internal) ID
+ * @param[in]   _pstShader            Concerned Shader
+ * @return      ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxShader_GetID(const orxSHADER *_pstShader);
+
 #endif /* _orxSHADER_H_ */
 
 /** @} */

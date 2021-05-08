@@ -59,6 +59,8 @@
 
 #endif /* __orxWINDOWS__ */
 
+#include "rpmalloc.h"
+
 
 /** Module flags
  */
@@ -180,6 +182,9 @@ static void *orxThread_Execute(void *_pContext)
   while(pstInfo->hThread == 0)
     ;
 
+  /* Initializes rpmalloc */
+  rpmalloc_thread_initialize();
+
   /* Should run? */
   if((sstThread.pfnThreadStart == orxNULL)
   || (sstThread.pfnThreadStart(sstThread.pThreadContext) != orxSTATUS_FAILURE))
@@ -210,6 +215,9 @@ static void *orxThread_Execute(void *_pContext)
     /* Runs it */
     sstThread.pfnThreadStop(sstThread.pThreadContext);
   }
+
+  /* Finalizes rpmalloc */
+  rpmalloc_thread_finalize(1);
 
   /* Done! */
   return 0;
