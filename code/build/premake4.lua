@@ -568,6 +568,9 @@ project "orxLIB"
     configuration {"windows", "vs*"}
         buildoptions {"/wd\"4577\""}
 
+    configuration {"windows", "not vs*"}
+        defines {"_WIN32_WINNT=_WIN32_WINNT_VISTA"}
+
     configuration {"windows", "not *Core*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
