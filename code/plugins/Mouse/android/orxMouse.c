@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -147,6 +147,38 @@ orxSTATUS orxFASTCALL orxMouse_Android_ShowCursor(orxBOOL _bShow)
   /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates cursor status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMouse_Android_Grab(orxBOOL _bGrab)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates grab status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_GRAB, _bGrab);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
   /* Done! */
   return eResult;
 }
@@ -173,16 +205,12 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
       /* Sets config section */
       orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
-      /* Has show cursor value? */
-      if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-      {
-        /* Updates cursor status */
-        orxMouse_Android_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-      }
-    }
+      /* Updates cursor status */
+      orxMouse_Android_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
   }
 
   /* Done! */
@@ -304,4 +332,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_IsButtonPressed, MOUSE, IS_BUT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_ShowCursor, MOUSE, SHOW_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_Grab, MOUSE, GRAB);
 orxPLUGIN_USER_CORE_FUNCTION_END();

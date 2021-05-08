@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -294,7 +294,6 @@ static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, 
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_pvOp2 != orxNULL);
-  orxASSERT(_fOp >= orxFLOAT_0);
 
   /* Lerps all*/
   _pvRes->fX = orxLERP(_pvOp1->fX, _pvOp2->fX, _fOp);
@@ -690,7 +689,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
       }
 
       /* Sets phi */
-      fPhi = orxMATH_KF_PI_BY_2;
+      fPhi = orxFLOAT_0;
     }
     else
     {
@@ -704,7 +703,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
           fRho = orxMath_Abs(_pvOp->fZ);
 
           /* Sets phi */
-          fPhi = orxMATH_KF_PI;
+          fPhi = orxMATH_KF_PI_BY_2;
         }
         else
         {
@@ -712,7 +711,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
           fRho = _pvOp->fZ;
 
           /* Sets phi */
-          fPhi = orxFLOAT_0;
+          fPhi = -orxMATH_KF_PI_BY_2;
         }
       }
       else
@@ -721,7 +720,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
         fRho = orxMath_Sqrt(orxVector_GetSquareSize(_pvOp));
 
         /* Computes phi */
-        fPhi = orxMath_ACos(_pvOp->fZ / fRho);
+        fPhi = orxMath_ACos(_pvOp->fZ / fRho) - orxMATH_KF_PI_BY_2;
       }
     }
 
@@ -757,8 +756,8 @@ static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian
   /* Gets sine & cosine */
   fSinTheta = orxMath_Sin(_pvOp->fTheta);
   fCosTheta = orxMath_Cos(_pvOp->fTheta);
-  fSinPhi   = orxMath_Sin(_pvOp->fPhi);
-  fCosPhi   = orxMath_Cos(_pvOp->fPhi);
+  fSinPhi   = orxMath_Sin(_pvOp->fPhi + orxMATH_KF_PI_BY_2);
+  fCosPhi   = orxMath_Cos(_pvOp->fPhi + orxMATH_KF_PI_BY_2);
   if(orxMath_Abs(fSinTheta) < orxMATH_KF_EPSILON)
   {
     fSinTheta = orxFLOAT_0;
@@ -879,21 +878,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_CatmullRom(orxVECTOR *_pvRes, 
 
 /* *** Vector constants *** */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_X;     /**< X-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Y;     /**< Y-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Z;     /**< Z-Axis unit vector */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_0;      /**< Null vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
+extern orxDLLAPI const orxVECTOR orxVECTOR_0;     /**< Null vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_1;     /**< Vector filled with 1s */
 
-extern orxDLLAPI const orxVECTOR orxVECTOR_RED;    /**< Red color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_YELLOW; /**< Yellow color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_CYAN;   /**< Cyan color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_MAGENTA;/**< Magenta color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_BLACK;  /**< Black color vector */
-extern orxDLLAPI const orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
+#define orxCOLOR_DECLARE(NAME, R, G, B)           extern orxDLLAPI const orxVECTOR orxVECTOR_##NAME;
+
+#include "display/orxColorList.inc"
+
+#undef orxCOLOR_DECLARE
 
 #ifdef __orxGCC__
 

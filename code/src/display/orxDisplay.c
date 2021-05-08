@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -139,9 +139,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMA
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapData, orxSTATUS, const orxBITMAP *, orxU8 *, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetPartialBitmapData, orxSTATUS, orxBITMAP *, const orxU8 *, orxU32, orxU32, orxU32, orxU32);
-
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
-
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapID, orxU32, const orxBITMAP *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, const orxBITMAP *, const orxDISPLAY_TRANSFORM *, orxRGBA, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
@@ -163,6 +161,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetParameterID, orxS32, const orxHANDL
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderBitmap, orxSTATUS, orxHANDLE, orxS32, const orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderFloat, orxSTATUS, orxHANDLE, orxS32, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetShaderVector, orxSTATUS, orxHANDLE, orxS32, const orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetShaderID, orxU32, const orxHANDLE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
@@ -228,6 +227,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_PARAMETER_ID, orxDisplay_GetParam
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_BITMAP, orxDisplay_SetShaderBitmap)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_FLOAT, orxDisplay_SetShaderFloat)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_SHADER_VECTOR, orxDisplay_SetShaderVector)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SHADER_ID, orxDisplay_GetShaderID)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, ENABLE_VSYNC, orxDisplay_EnableVSync)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, IS_VSYNC_ENABLED, orxDisplay_IsVSyncEnabled)
@@ -428,6 +428,11 @@ orxSTATUS orxFASTCALL orxDisplay_SetShaderFloat(orxHANDLE _hShader, orxS32 _s32I
 orxSTATUS orxFASTCALL orxDisplay_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetShaderVector)(_hShader, _s32ID, _pvValue);
+}
+
+orxU32 orxFASTCALL orxDisplay_GetShaderID(const orxHANDLE _hShader)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetShaderID)(_hShader);
 }
 
 orxSTATUS orxFASTCALL orxDisplay_EnableVSync(orxBOOL _bEnable)

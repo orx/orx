@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,20 +53,24 @@
 
 /** Spawner flags
  */
-#define orxSPAWNER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
+#define orxSPAWNER_KU32_FLAG_NONE                       0x00000000  /**< No flags */
 
-#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x00000001  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x00000002  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x00000004  /**< Use alpha flag */
-#define orxSPAWNER_KU32_FLAG_USE_COLOR            0x00000008  /**< Use color flag */
-#define orxSPAWNER_KU32_FLAG_USE_ROTATION         0x00000010  /**< Use rotation flag */
-#define orxSPAWNER_KU32_FLAG_USE_SCALE            0x00000020  /**< Use scale flag */
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00000040  /**< Use relative speed flag */
-#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00000080  /**< Use self as parent flag */
-#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE      0x00000100  /**< Clean on delete flag */
-#define orxSPAWNER_KU32_FLAG_INTERPOLATE          0x00000200  /**< Interpolate flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_DELETE                0x00000001  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET                 0x00000002  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_USE_ALPHA                  0x00000004  /**< Use alpha flag */
+#define orxSPAWNER_KU32_FLAG_USE_COLOR                  0x00000008  /**< Use color flag */
+#define orxSPAWNER_KU32_FLAG_USE_ROTATION               0x00000010  /**< Use rotation flag */
+#define orxSPAWNER_KU32_FLAG_USE_SCALE                  0x00000020  /**< Use scale flag */
 
-#define orxSPAWNER_KU32_MASK_USER_ALL             0x000000FF  /**< All mask */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT  0x00000040  /**< Use relative speed (object) flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER 0x00000080  /**< Use relative speed (spawner) flag */
+#define orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED         0x000000C0  /**< Use relative speed mask */
+
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT         0x00000100  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE            0x00000200  /**< Clean on delete flag */
+#define orxSPAWNER_KU32_FLAG_INTERPOLATE                0x00000400  /**< Interpolate flag */
+
+#define orxSPAWNER_KU32_MASK_USER_ALL                   0x000004FF  /**< All mask */
 
 
 /** Event enum
@@ -192,6 +196,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveSize(orxSPAWNER *_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay);
+
+/** Sets spawner next wave delay (without affecting the normal wave delay)
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _fWaveDelay     Delay before next wave / -1 for the current full wave delay
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetNextWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay);
 
 /** Gets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner

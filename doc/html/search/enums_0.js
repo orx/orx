@@ -2,9 +2,8 @@ var searchData=
 [
   ['orxanim_5fevent',['orxANIM_EVENT',['../group__orx_anim.html#ga35c8d85da4576521adb85018dd46f3e0',1,'orxAnim.h']]],
   ['orxclock_5fevent',['orxCLOCK_EVENT',['../group__orx_clock.html#ga5d61e2fc9dcad950bc23ff7a5525791d',1,'orxClock.h']]],
-  ['orxclock_5fmod_5ftype',['orxCLOCK_MOD_TYPE',['../group__orx_clock.html#gada60c0d5d6014d13f9822cb81391e38d',1,'orxClock.h']]],
+  ['orxclock_5fmodifier',['orxCLOCK_MODIFIER',['../group__orx_clock.html#ga4ec0bce152b97b492d6308eba27428a3',1,'orxClock.h']]],
   ['orxclock_5fpriority',['orxCLOCK_PRIORITY',['../group__orx_clock.html#gae63cc0f7b3f765aaccb21184bee35bb9',1,'orxClock.h']]],
-  ['orxclock_5ftype',['orxCLOCK_TYPE',['../group__orx_clock.html#ga8e27772673f124fc5d31b8596539e8d7',1,'orxClock.h']]],
   ['orxcommand_5fvar_5ftype',['orxCOMMAND_VAR_TYPE',['../group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa',1,'orxCommand.h']]],
   ['orxconfig_5fevent',['orxCONFIG_EVENT',['../group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267',1,'orxConfig.h']]],
   ['orxdebug_5flevel',['orxDEBUG_LEVEL',['../group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb',1,'orxDebug.h']]],

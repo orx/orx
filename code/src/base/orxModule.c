@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,14 +23,15 @@
  */
 
 /**
- * @file orxModule.h
+ * @file orxModule.c
  * @date 12/09/2005
  * @author iarwain@orx-project.org
  *
  */
 
 
-#include "orxInclude.h"
+#include "base/orxModule.h"
+
 #include "orxKernel.h"
 #include "orxUtils.h"
 
@@ -429,8 +430,12 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
 
-      /* Displays help */
-      eResult = orxParam_DisplayHelp();
+      /* Is param initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+      {
+        /* Displays help */
+        eResult = orxParam_DisplayHelp();
+      }
     }
   }
 
@@ -513,6 +518,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
     sstModule.u32InitCount--;
   }
 
+  /* Done! */
   return;
 }
 

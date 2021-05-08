@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -165,9 +165,6 @@ static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _
   /* Empty animation */
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animation count is 0.");
-
     /* Not defined */
     u32Index = orxU32_UNDEFINED;
   }
@@ -1099,13 +1096,6 @@ orxU32 orxFASTCALL orxAnim_GetKey(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 
   /* Updates result */
   u32Result = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
-
-  /* Not found? */
-  if(u32Result == orxU32_UNDEFINED)
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "[%s] Timestamp <%g> not found!", _pstAnim->zName, _fTimeStamp);
-  }
 
   /* Done! */
   return u32Result;

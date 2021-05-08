@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -342,7 +342,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
         /* Updates title string */
         orxConfig_PushSection("Bounce");
-        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s (%dx%d)", orxConfig_GetString("Title"), pstPayload->stVideoMode.u32Width, pstPayload->stVideoMode.u32Height);
+        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s (%ux%u)@%uHz", orxConfig_GetString("Title"), pstPayload->stVideoMode.u32Width, pstPayload->stVideoMode.u32Height, pstPayload->stVideoMode.u32RefreshRate);
         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
         orxConfig_PopSection();
 
@@ -631,7 +631,7 @@ static orxSTATUS orxBounce_Init()
     }
 
     /* Gets rendering clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Registers callback */
     eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

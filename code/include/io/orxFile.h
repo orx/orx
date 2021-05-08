@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -26,6 +26,7 @@
  * @file orxFile.h
  * @date 01/05/2005
  * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  */

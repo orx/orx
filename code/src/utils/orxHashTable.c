@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -26,6 +26,7 @@
  * @file orxHashTable.c
  * @date 05/05/2005
  * @author cursor@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -136,7 +137,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE) + (u32Size * sizeof(orxHASHTABLE_CELL *)));
 
     /* Allocate bank for cells */
-    pstHashTable->pstBank = orxBank_Create((orxU16)u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
+    pstHashTable->pstBank = orxBank_Create(u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
 
     /* Correct bank allocation ? */
     if(pstHashTable->pstBank != orxNULL)

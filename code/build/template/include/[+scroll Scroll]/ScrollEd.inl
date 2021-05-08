@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -287,7 +287,7 @@ orxSTATUS ScrollEd::Init()
           orxCamera_AddGroupID(roGame.GetMainCamera(), orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP), orxFALSE);
 
           // Registers update
-          eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+          eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
           // Registers event handler
           eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, StaticEventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -1991,7 +1991,7 @@ orxSTATUS ScrollEd::InitUI()
   }
 
   // Creates button bank
-  mpstButtonBank = orxBank_Create((orxS16)orxConfig_GetListCount(szConfigButtonList), sizeof(ButtonData), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_MAIN);
+  mpstButtonBank = orxBank_Create((orxU32)orxConfig_GetListCount(szConfigButtonList), sizeof(ButtonData), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_MAIN);
 
   // For all buttons
   for(i = 0, s32Number = orxConfig_GetListCount(szConfigButtonList); i < s32Number; i++)

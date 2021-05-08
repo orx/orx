@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -325,158 +325,111 @@ orxBOOL ScrollObject::IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
   return bResult;
 }
 
-void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
+void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent, orxBOOL _bRecursive)
 {
-  // Target anim?
-  if(!_bCurrent)
+  // Recursive?
+  if(_bRecursive)
   {
-    // Sets it
-    orxObject_SetTargetAnim(mpstObject, _zAnim);
+    // Target anim?
+    if(!_bCurrent)
+    {
+      // Sets it
+      orxObject_SetTargetAnimRecursive(mpstObject, _zAnim);
+    }
+    else
+    {
+      // Sets it
+      orxObject_SetCurrentAnimRecursive(mpstObject, _zAnim);
+    }
   }
   else
   {
-    // Sets it
-    orxObject_SetCurrentAnim(mpstObject, _zAnim);
+    // Target anim?
+    if(!_bCurrent)
+    {
+      // Sets it
+      orxObject_SetTargetAnim(mpstObject, _zAnim);
+    }
+    else
+    {
+      // Sets it
+      orxObject_SetCurrentAnim(mpstObject, _zAnim);
+    }
   }
 }
 
 void ScrollObject::AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive)
 {
-  // Adds FX to object
-  orxObject_AddFX(mpstObject, _zFXName);
-
   // Recursive?
   if(_bRecursive)
   {
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      ScrollObject *poChild;
-
-      // Gets its scroll object
-      poChild = (ScrollObject *)orxObject_GetUserData(pstChild);
-
-      // Valid?
-      if(poChild)
-      {
-        // Adds FX to it
-        poChild->AddFX(_zFXName, _bRecursive);
-      }
-    }
+    // Adds FX to object
+    orxObject_AddFXRecursive(mpstObject, _zFXName);
+  }
+  else
+  {
+    // Adds FX to object
+    orxObject_AddFX(mpstObject, _zFXName);
   }
 }
 
-void ScrollObject::AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive)
+void ScrollObject::AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive, orxBOOL _bPropagate)
 {
-  // Adds FX to object
-  orxObject_AddDelayedFX(mpstObject, _zFXName, _fDelay);
-
   // Recursive?
   if(_bRecursive)
   {
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      ScrollObject *poChild;
-
-      // Gets its scroll object
-      poChild = (ScrollObject *)orxObject_GetUserData(pstChild);
-
-      // Valid?
-      if(poChild)
-      {
-        // Adds FX to it
-        poChild->AddFX(_zFXName, _fDelay, _bRecursive);
-      }
-    }
+    // Adds FX to object
+    orxObject_AddDelayedFXRecursive(mpstObject, _zFXName, _fDelay, _bPropagate);
+  }
+  else
+  {
+    // Adds FX to object
+    orxObject_AddDelayedFX(mpstObject, _zFXName, _fDelay);
   }
 }
 
 void ScrollObject::RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive)
 {
-  // Removes FX from object
-  orxObject_RemoveFX(mpstObject, _zFXName);
-
   // Recursive?
   if(_bRecursive)
   {
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      ScrollObject *poChild;
-
-      // Gets its scroll object
-      poChild = (ScrollObject *)orxObject_GetUserData(pstChild);
-
-      // Valid?
-      if(poChild)
-      {
-        // Removes FX from it
-        poChild->RemoveFX(_zFXName, _bRecursive);
-      }
-    }
+    // Removes FX from object
+    orxObject_RemoveFXRecursive(mpstObject, _zFXName);
+  }
+  else
+  {
+    // Removes FX from object
+    orxObject_RemoveFX(mpstObject, _zFXName);
   }
 }
 
 void ScrollObject::AddShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
 {
-  // Adds shader to object
-  orxObject_AddShader(mpstObject, _zShaderName);
-
   // Recursive?
   if(_bRecursive)
   {
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      ScrollObject *poChild;
-
-      // Gets its scroll object
-      poChild = (ScrollObject *)orxObject_GetUserData(pstChild);
-
-      // Valid?
-      if(poChild)
-      {
-        // Adds shader to it
-        poChild->AddShader(_zShaderName, _bRecursive);
-      }
-    }
+    // Adds shader to object
+    orxObject_AddShaderRecursive(mpstObject, _zShaderName);
+  }
+  else
+  {
+    // Adds shader to object
+    orxObject_AddShader(mpstObject, _zShaderName);
   }
 }
 
 void ScrollObject::RemoveShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
 {
-  // Removes shader from object
-  orxObject_RemoveShader(mpstObject, _zShaderName);
-
   // Recursive?
   if(_bRecursive)
   {
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      ScrollObject *poChild;
-
-      // Gets its scroll object
-      poChild = (ScrollObject *)orxObject_GetUserData(pstChild);
-
-      // Valid?
-      if(poChild)
-      {
-        // Removes shader from it
-        poChild->RemoveShader(_zShaderName, _bRecursive);
-      }
-    }
+    // Removes shader from object
+    orxObject_RemoveShaderRecursive(mpstObject, _zShaderName);
+  }
+  else
+  {
+    // Removes shader from object
+    orxObject_RemoveShader(mpstObject, _zShaderName);
   }
 }
 

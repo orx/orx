@@ -1,37 +1,61 @@
 apply plugin: 'com.android.application'
 
+def orx = System.getenv('ORX') ?: "../../.."
+
 android {
-    compileSdkVersion 28
+  compileSdkVersion sdkVersion.toInteger()
 
-    defaultConfig {
-        applicationId "org.orxproject.orxtestnative"
-        minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+  ndkVersion "21.3.6528147"
 
-        ndk{
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
-        }
+  defaultConfig {
+    applicationId "org.orxproject.orxtestnative"
+    targetSdkVersion sdkVersion.toInteger()
+    versionCode 1
+    versionName "1.0"
 
+    minSdkVersion 17
+
+    ndk {
+      abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            jniDebuggable true
-        }
-    }
+  }
 
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
-        }
-    }
-}
+  lintOptions {
+    abortOnError true
+    warningsAsErrors true
+  }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+  buildTypes {
+    release {
+      debuggable false
+      shrinkResources true
+      minifyEnabled true
+
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+    debug {
+      debuggable true
+      shrinkResources false
+      minifyEnabled false
+    }
+  }
+
+  aaptOptions {
+    ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
+  }
+
+  externalNativeBuild {
+    ndkBuild {
+      path 'src/main/jni/Android.mk'
+    }
+  }
+
+  sourceSets {
+    main {
+      java.srcDirs += ["${orx}/build/android-native/java"]
+      // For custom apps, you should have resources in some parent folder with orx data.
+      // E.g. '../../../data'
+      assets.srcDirs = ['./src/main/assets']
+    }
+  }
 }

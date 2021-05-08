@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -414,7 +414,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxHANDLE           hIterator;
       orxU64              u64Key;
@@ -1011,7 +1011,7 @@ orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, 
     orxSTRINGID         stID;
 
     /* Gets track ID */
-    stID = orxString_ToCRC(_zTrackID);
+    stID = orxString_Hash(_zTrackID);
 
     /* Search for reference */
     pstTrack = (orxTIMELINE_TRACK *)orxHashTable_Get(sstTimeLine.pstTrackTable, stID);
@@ -1096,7 +1096,7 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
   pstOwner = orxStructure_GetOwner(_pstTimeLine);
 
   /* Gets track ID */
-  stTrackID = orxString_ToCRC(_zTrackID);
+  stTrackID = orxString_Hash(_zTrackID);
 
   /* For all tracks */
   for(u32Index = 0; u32Index < orxTIMELINE_KU32_TRACK_NUMBER; u32Index++)
@@ -1178,7 +1178,7 @@ orxFLOAT orxFASTCALL orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID)
   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
 
   /* Gets track CRC */
-  stTrackID = orxString_ToCRC(_zTrackID);
+  stTrackID = orxString_Hash(_zTrackID);
 
   /* Gets it */
   if((pstTrack = (orxTIMELINE_TRACK *)orxHashTable_Get(sstTimeLine.pstTrackTable, stTrackID)) != orxNULL)

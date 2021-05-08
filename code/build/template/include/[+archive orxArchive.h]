@@ -1,5 +1,8 @@
 //! Includes
 
+#ifndef _orxARCHIVE_H_
+#define _orxARCHIVE_H_
+
 #include "orx.h"
 
 
@@ -8,7 +11,9 @@
 orxSTATUS orxFASTCALL orxArchive_Init();
 
 
-#ifndef orxARCHIVE_HEADER_ONLY
+//! Code
+
+#ifdef orxARCHIVE_IMPL
 
 #ifdef _MSC_VER
 #pragma warning (push)
@@ -5210,4 +5215,6 @@ orxSTATUS orxFASTCALL orxArchive_Init()
 #pragma warning (pop)
 #endif
 
-#endif // orxARCHIVE_HEADER_ONLY
+#endif // orxARCHIVE_IMPL
+
+#endif // _orxARCHIVE_H_

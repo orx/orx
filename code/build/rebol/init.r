@@ -7,10 +7,12 @@ REBOL [
 
 ; Variables
 params: [
-  name        {Project name (relative or full path)}                                  _
-  archive     {orxArchive support (resources can be stored inside ZIP files)}         -
-  imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -
-  scroll      {C++ convenience layer with config-object binding}                      -
+  name        {Project name (relative or full path)}                                  _       _
+  archive     {orxArchive support (resources can be stored inside ZIP files)}         -       []
+  c++         {Create a C++ project instead of C}                                     +       []
+  imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
+  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
+  scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
 ]
 platforms:  [
   {windows}   [config [{gmake} {codelite} {codeblocks} {vs2015} {vs2017} {vs2019}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
@@ -56,46 +58,52 @@ extension?: function [
   ]
   result
 ]
-apply-template: func [
+apply-template: function [
   {Replaces all templates with their content}
   content [text! binary!]
 ] [
-  use [template +extension -extension value] [
-    for-each [var condition] [
-      template    [not extension? entry]
-      +extension  [all [extension? entry get entry]]
-      -extension  [all [extension? entry not get entry]]
-    ] [
-      set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
-    ]
-    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
-    in-bracket: charset [not #"]"]
-    bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
-    extension-rule: [
-      begin-extension:
-      remove [
-        {[} (erase: no)
-        some [
-          [ [ {+} -extension | {-} +extension] (erase: yes)
-          | [ {+} +extension | {-} -extension]
-          ]
-          [{ } | {^M^/} | {^/}]
+  for-each [var condition] [
+    template    [not extension? entry]
+    +extension  [all [extension? entry get entry]]
+    -extension  [all [extension? entry not get entry]]
+  ] [
+    set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
+  ]
+  clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
+  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] copy value template {]} end-template: (
+      value: copy get load trim value
+      if sanitize [parse value [some [clean-chars | char: skip (change char #"_")]]]
+      end-template: change/part begin-template value end-template
+    ) :end-template
+  ]
+  in-bracket: charset [not #"]"]
+  bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
+  extension-rule: [
+    begin-extension:
+    remove [
+      {[} (erase: no)
+      some [
+        [ [ {+} -extension | {-} +extension] (erase: yes)
+        | [ {+} +extension | {-} -extension]
         ]
+        [{ } | {^M^/} | {^/}]
       ]
-      any
-      [ template-rule
-      | bracket-rule
-      | remove {]} end-extension: break
-      | skip
-      ]
-      if (erase) remove opt [{^M^/} | {^/}] (remove/part begin-extension end-extension) :begin-extension
     ]
+    any
+    [ template-rule
+    | bracket-rule
+    | remove {]} end-extension: break
+    | skip
+    ]
+    if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension) :begin-extension
   ]
   parse content [
+    (full-line: yes)
     any
     [ extension-rule
     | template-rule
-    | skip
+    | {^/} (full-line: yes)
+    | skip (full-line: no)
     ]
   ]
   content
@@ -111,7 +119,7 @@ switch platform: lowercase to-text system/platform/1 [
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
 templates: append collect [
-  for-each [param desc default] params [keep param]
+  for-each [param desc default deps] params [keep param]
 ] [date code-path]
 
 ; Usage
@@ -126,7 +134,7 @@ usage: func [
 
   prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
 
-  for-each [param desc default] params [
+  for-each [param desc default deps] params [
     prin rejoin [
       { }
       case [
@@ -143,12 +151,12 @@ usage: func [
     ]
   ]
   print [newline]
-  for-each [param desc default] params [
+  for-each [param desc default deps] params [
     print rejoin [
       {  - } param {: } desc
       case [
         extension? param [
-          rejoin [{=[} either default = '+ [{yes}] [{no}] {], optional}]
+          rejoin [{=[} either default = '+ [{yes}] [{no}] {]} either empty? deps [{}] [rejoin [{, triggers [} deps {]}]] {, optional}]
         ]
         default [
           rejoin [{=[} default {], optional}]
@@ -169,10 +177,11 @@ either all [
   not find system/options/args {-h}
   not find system/options/args {--help}
 ] [
-  use [interactive? args value] [
+  use [interactive? args value +extensions -extensions] [
+    +extensions: copy [] -extensions: copy []
     either interactive?: zero? length? args: copy system/options/args [
       print {== No argument, switching to interactive mode}
-      for-each [param desc default] params [
+      for-each [param desc default deps] params [
         either extension? param [
           until [
             any [
@@ -180,11 +189,11 @@ either all [
               logic? value: get load trim value
             ]
           ]
-          set param either logic? value [
-            value
+          append either logic? value [
+            either value [+extensions] [-extensions]
           ] [
-            default = '+
-          ]
+            either default = '+ [+extensions] [-extensions]
+          ] param
         ] [
           until [
             any [
@@ -195,21 +204,21 @@ either all [
         ]
       ]
     ] [
-      for-each [param desc default] params [
+      for-each [param desc default deps] params [
         case [
           extension? param [
             use [extension] [
-              set param case [
+              case [
                 extension: find args rejoin ['+ param] [
+                  append +extensions param
                   remove extension
-                  true
                 ]
                 extension: find args rejoin ['- param] [
+                  append -extensions param
                   remove extension
-                  false
                 ]
                 true [
-                  default = '+
+                  if default = '+ [append +extensions param]
                 ]
               ]
             ]
@@ -225,6 +234,33 @@ either all [
       ]
       if not tail? args [
         usage/message [{Too many arguments:} mold system/options/args]
+      ]
+    ]
+
+    ; Handles extensions dependencies
+    use [test-extensions extension-group extension] [
+      until [
+        test-extensions: copy +extensions
+        for-each param test-extensions [
+          for-each dep fourth find params param [
+            extension-group: either #"+" = first to-text dep [+extensions] [-extensions]
+            extension: to-word next to-text dep
+            if not find extension-group extension [
+              append extension-group extension
+              log [{== [} param {] triggers [} dep {]}]
+            ]
+          ]
+        ]
+        test-extensions = +extensions
+      ]
+      either empty? test-extensions: intersect +extensions -extensions [
+        for-each [param desc default deps] params [
+          if extension? param [
+            set param either find +extensions param [true] [false]
+          ]
+        ]
+      ] [
+        usage/message [{Aborting, the following extensions have been both required and prohibited: [} form test-extensions {]}]
       ]
     ]
   ]

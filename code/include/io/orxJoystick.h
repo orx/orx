@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,7 +46,6 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
-
 /** Helpers
  */
 #define orxJOYSTICK_GET_AXIS(AXIS, ID)          ((((orxU32)AXIS) % orxJOYSTICK_AXIS_SINGLE_NUMBER) + ((ID - 1) * orxJOYSTICK_AXIS_SINGLE_NUMBER))
@@ -86,7 +85,16 @@
   orxJOYSTICK_BUTTON_13_##ID,               \
   orxJOYSTICK_BUTTON_14_##ID,               \
   orxJOYSTICK_BUTTON_15_##ID,               \
-  orxJOYSTICK_BUTTON_16_##ID
+  orxJOYSTICK_BUTTON_16_##ID,               \
+  orxJOYSTICK_BUTTON_17_##ID,               \
+  orxJOYSTICK_BUTTON_18_##ID,               \
+  orxJOYSTICK_BUTTON_19_##ID,               \
+  orxJOYSTICK_BUTTON_20_##ID,               \
+  orxJOYSTICK_BUTTON_21_##ID,               \
+  orxJOYSTICK_BUTTON_22_##ID,               \
+  orxJOYSTICK_BUTTON_23_##ID,               \
+  orxJOYSTICK_BUTTON_24_##ID,               \
+  orxJOYSTICK_BUTTON_25_##ID
 
 #define orxJOYSTICK_DECLARE_AXIS_ENUM(ID)   \
   orxJOYSTICK_AXIS_LX_##ID,                 \
@@ -131,6 +139,15 @@ typedef enum __orxJOYSTICK_BUTTON_t
   orxJOYSTICK_BUTTON_14_1,
   orxJOYSTICK_BUTTON_15_1,
   orxJOYSTICK_BUTTON_16_1,
+  orxJOYSTICK_BUTTON_17_1,
+  orxJOYSTICK_BUTTON_18_1,
+  orxJOYSTICK_BUTTON_19_1,
+  orxJOYSTICK_BUTTON_20_1,
+  orxJOYSTICK_BUTTON_21_1,
+  orxJOYSTICK_BUTTON_22_1,
+  orxJOYSTICK_BUTTON_23_1,
+  orxJOYSTICK_BUTTON_24_1,
+  orxJOYSTICK_BUTTON_25_1,
 
   orxJOYSTICK_BUTTON_SINGLE_NUMBER,
 
@@ -165,6 +182,15 @@ typedef enum __orxJOYSTICK_BUTTON_t
   orxJOYSTICK_BUTTON_14_2,
   orxJOYSTICK_BUTTON_15_2,
   orxJOYSTICK_BUTTON_16_2,
+  orxJOYSTICK_BUTTON_17_2,
+  orxJOYSTICK_BUTTON_18_2,
+  orxJOYSTICK_BUTTON_19_2,
+  orxJOYSTICK_BUTTON_20_2,
+  orxJOYSTICK_BUTTON_21_2,
+  orxJOYSTICK_BUTTON_22_2,
+  orxJOYSTICK_BUTTON_23_2,
+  orxJOYSTICK_BUTTON_24_2,
+  orxJOYSTICK_BUTTON_25_2,
 
   orxJOYSTICK_DECLARE_BUTTON_ENUM(3),
   orxJOYSTICK_DECLARE_BUTTON_ENUM(4),

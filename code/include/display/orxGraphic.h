@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -74,6 +74,8 @@
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE   0x00000100  /**< Truncate alignment value */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_ROUND      0x00000200  /**< Round alignment value */
 
+#define orxGRAPHIC_KU32_MASK_ALIGN            0x000003F0  /**< Alignment mask */
+
 #define orxGRAPHIC_KU32_MASK_USER_ALL         0x00000FFF  /**< User all ID mask */
 
 
@@ -130,6 +132,12 @@ extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(const 
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Delete(orxGRAPHIC *_pstGraphic);
+
+/** Clones a graphic
+ * @param[in]   _pstGraphic     Graphic model to clone
+ * @ return orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Clone(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic config name
  * @param[in]   _pstGraphic     Concerned graphic

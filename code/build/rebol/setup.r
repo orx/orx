@@ -8,7 +8,7 @@ REBOL [
 
 ; Default settings
 tag:            <version>
-host:           ["https://codeload.github.com/orx/orx-extern/zip/" tag]
+hosts:          [["http://orx-project.org/extern/" tag ".zip"] ["https://codeload.github.com/orx/orx-extern/zip/" tag]]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
@@ -22,15 +22,15 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code
 platform-data:  compose/deep [
-  "windows"   [premake "windows"                                                              config ["gmake" "codelite" "codeblocks" "vs2015" "vs2017" "vs2019"]                                                                             env-msg "Please restart your favorite IDE before using orx."]
-  "mac"       [premake "mac"                                                                  config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                             env-msg "Please logout/login to refresh your environment if you're using an IDE."]
-  "linux"     [premake (either find to-text system/platform/2 "x64" ["linux64"] ["linux32"])  config ["gmake" "codelite" "codeblocks"                           ]   deps ["freeglut3-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
+  "windows"   [premake "windows"                                                              config ["gmake" "codelite" "codeblocks" "vs2015" "vs2017" "vs2019"]                                                                               env-msg "Please restart your favorite IDE before using orx."]
+  "mac"       [premake "mac"                                                                  config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                               env-msg "Please logout/login to refresh your environment if you're using an IDE."]
+  "linux"     [premake (either find to-text system/platform/2 "x64" ["linux64"] ["linux32"])  config ["gmake" "codelite" "codeblocks"                           ]   deps ["libgl1-mesa-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
 ]
 
 
 ; Inits
 begin: now/time
-skip-hook: false
+new-env: skip-env: skip-hook: false
 
 switch platform: lowercase to-text system/platform/1 [
   "macintosh" [platform: "mac"]
@@ -55,6 +55,13 @@ delete-dir: function [
 ]
 
 
+; Should override cache?
+if not empty? system/options/args [
+  print ["== Overriding cache [" cache "] => [" cache: dirize to-file system/options/args/1 "]"]
+  skip-env: skip-hook: true
+]
+
+
 ; Checks version
 req-file: %.extern
 cur-file: extern/.version
@@ -71,23 +78,18 @@ either req-ver = cur-ver [
   print ["== [" req-ver "] needed, current [" cur-ver "]"]
 
 
-  ; Should override cache?
-  if not empty? system/options/args [
-    print ["== Overriding cache [" cache "] => [" cache: dirize to-file system/options/args/1 "]"]
-    skip-hook: true
-  ]
-
-
   ; Updates cache
-  local: rejoin [cache req-ver %.zip]
-  remote: replace rejoin host tag req-ver
-  either exists? local [
+  either exists? local: rejoin [cache req-ver %.zip] [
     print ["== [" req-ver "] found in cache!"]
   ] [
     attempt [make-dir/deep cache]
     print ["== [" req-ver "] not in cache"]
-    print ["== Fetching [" remote "]" newline "== Please wait!"]
-    write root/:local read to-url remote
+    for-each host hosts [
+      either attempt [
+        print ["== Fetching [" remote: replace rejoin host tag req-ver "]" newline "== Please wait!"]
+        write root/:local read to-url remote
+      ] [break] [print ["== Not found!"]]
+    ]
     print ["== [" req-ver "] cached!"]
   ]
 
@@ -95,7 +97,7 @@ either req-ver = cur-ver [
   ; Clears current version
   if exists? extern [
     print ["== Deleting [" extern "]"]
-    attempt [delete-dir extern]
+    until [wait 0.5 attempt [delete-dir extern] not exists? extern]
   ]
 
 
@@ -130,28 +132,34 @@ either req-ver = cur-ver [
 
 
 ; Sets environment variable
-new-env: (get-env env-variable) != env-path: to-text file-to-local clean-path root/:env-path
-print ["== Setting environment: [" env-variable "=" env-path "]"]
-set-env env-variable env-path
-either platform = "windows" [
-  call/shell form reduce ["setx" env-variable env-path]
+either skip-env [
+  print "== Skipping environment setup"
 ] [
-  env-home: local-to-file dirize get-env "HOME"
-  for-each [env-file env-prefix mandatory] reduce [
-    env-home/.bashrc                      rejoin ["export " env-variable "="]   true
-    env-home/.profile                     rejoin ["export " env-variable "="]   true
-    env-home/.config/fish/fish_variables  rejoin ["SETUVAR " env-variable ":"]  false
+  new-env: (get-env env-variable) != env-path: to-text file-to-local clean-path root/:env-path
+  print ["== Setting environment: [" env-variable "=" env-path "]"]
+  set-env env-variable env-path
+  either platform = "windows" [
+    call/shell form reduce ["setx" env-variable env-path]
   ] [
-    if any [mandatory exists? env-file] [
-      parse env-content: any [attempt [to-text read env-file] copy ""] [
-        thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
-      | to end start: (insert start rejoin [newline env-prefix env-path newline])
+    env-home: local-to-file dirize get-env "HOME"
+    for-each [env-file env-prefix mandatory] reduce [
+      env-home/.profile                     rejoin ["export " env-variable "="]   true
+      env-home/.bashrc                      rejoin ["export " env-variable "="]   true
+      env-home/.bash_profile                rejoin ["export " env-variable "="]   true
+      env-home/.zshrc                       rejoin ["export " env-variable "="]   false
+      env-home/.zprofile                    rejoin ["export " env-variable "="]   false
+      env-home/.config/fish/fish_variables  rejoin ["SETUVAR " env-variable ":"]  false
+    ] [
+      if any [mandatory exists? env-file] [
+        parse env-content: any [attempt [to-text read env-file] copy ""] [
+          thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+        | to end start: (insert start rejoin [newline env-prefix env-path newline])
+        ]
+        attempt [write env-file env-content]
       ]
-      attempt [write env-file env-content]
     ]
   ]
 ]
-
 
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
@@ -260,6 +268,13 @@ if exists? git [
         print ["== Git hook [" hook "] already installed"]
       ]
     ]
+  ]
+
+  ; Creates build file
+  build-version: copy ""
+  call/shell/output {git rev-list --count HEAD} build-version
+  if not empty? trim/all build-version [
+    attempt [write build-file form reduce ["#define __orxVERSION_BUILD__" build-version]]
   ]
 ]
 

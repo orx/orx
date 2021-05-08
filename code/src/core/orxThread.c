@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -58,6 +58,8 @@
   #endif /* __orxLINUX__ */
 
 #endif /* __orxWINDOWS__ */
+
+#include "rpmalloc.h"
 
 
 /** Module flags
@@ -180,6 +182,9 @@ static void *orxThread_Execute(void *_pContext)
   while(pstInfo->hThread == 0)
     ;
 
+  /* Initializes rpmalloc */
+  rpmalloc_thread_initialize();
+
   /* Should run? */
   if((sstThread.pfnThreadStart == orxNULL)
   || (sstThread.pfnThreadStart(sstThread.pThreadContext) != orxSTATUS_FAILURE))
@@ -210,6 +215,9 @@ static void *orxThread_Execute(void *_pContext)
     /* Runs it */
     sstThread.pfnThreadStop(sstThread.pThreadContext);
   }
+
+  /* Finalizes rpmalloc */
+  rpmalloc_thread_finalize(1);
 
   /* Done! */
   return 0;
@@ -1038,7 +1046,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
     /* Are we on main thread, is clock module initialized and did we register callback? */
     if((orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     && (orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-    && (orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
+    && (orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
     {
       /* Updates status */
       orxFLAG_SET(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED, orxTHREAD_KU32_STATIC_FLAG_NONE);

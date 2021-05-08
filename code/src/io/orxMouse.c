@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -86,6 +86,20 @@ void orxFASTCALL orxMouse_CommandShowCursor(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: Grab
+ */
+void orxFASTCALL orxMouse_CommandGrab(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates grab */
+  orxMouse_Grab(_astArgList[0].bValue);
+
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue;
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetCursor
  */
 void orxFASTCALL orxMouse_CommandSetCursor(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -121,7 +135,9 @@ static orxINLINE void orxMouse_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
 
   /* Command: ShowCursor */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Shown", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, ShowCursor, "Shown", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Show", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: Grab */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, Grab, "Grabbed", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Grab", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetCursor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Mouse, SetCursor, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Name = none", orxCOMMAND_VAR_TYPE_STRING}, {"Pivot = (0, 0)", orxCOMMAND_VAR_TYPE_VECTOR});
 }
@@ -136,6 +152,8 @@ static orxINLINE void orxMouse_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetPosition);
   /* Command: ShowCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, ShowCursor);
+  /* Command: Grab */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, Grab);
   /* Command: SetCursor */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Mouse, SetCursor);
 }
@@ -259,10 +277,10 @@ orxSTATUS orxFASTCALL orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR
     /* Has pivot? */
     if(_pvPivot != orxNULL)
     {
-      orxCHAR acBuffer[128] = {};
+      orxCHAR acBuffer[128];
 
       /* Prints name & pivot */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s#(%g,%g)", _zName, _pvPivot->fX, _pvPivot->fY);
+      acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s#(%g,%g)", _zName, _pvPivot->fX, _pvPivot->fY)] = orxCHAR_NULL;
 
       /* Stores it */
       orxConfig_SetString(orxDISPLAY_KZ_CONFIG_CURSOR, acBuffer);
@@ -306,6 +324,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTO
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_ShowCursor, orxSTATUS, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Grab, orxSTATUS, orxBOOL);
 
 
 /* *** Core function info array *** */
@@ -320,6 +339,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPre
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE_DELTA, orxMouse_GetMoveDelta)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_WHEEL_DELTA, orxMouse_GetWheelDelta)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, SHOW_CURSOR, orxMouse_ShowCursor)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GRAB, orxMouse_Grab)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
@@ -403,9 +423,19 @@ orxFLOAT orxFASTCALL orxMouse_GetWheelDelta()
 }
 
 /** Shows mouse (hardware) cursor
+ * @param[in] _bShow            Show / Hide
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxMouse_ShowCursor(orxBOOL _bShow)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_ShowCursor)(_bShow);
+}
+
+/** Grabs the mouse
+ * @param[in] _bGrab            Grab / Release
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxMouse_Grab(orxBOOL _bGrab)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Grab)(_bGrab);
 }

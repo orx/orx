@@ -108,8 +108,7 @@ $(document).ready(function(){initNavTree('group__orx_string.html','');});
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OrxString</div>  </div>
 </div><!--header-->
@@ -127,8 +126,8 @@ Macros</h2></td></tr>
 <tr class="separator:ga642c9bffe67569c7fb80665b6f42c499"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa8986a6ede4e3a578f54f816488ce1b6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gaa8986a6ede4e3a578f54f816488ce1b6">orxSTRING_KC_VECTOR_START_ALT</a>&#160;&#160;&#160;'{'</td></tr>
 <tr class="separator:gaa8986a6ede4e3a578f54f816488ce1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa9bf6baa46fd3120845d5d350977feba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gaa9bf6baa46fd3120845d5d350977feba">orxSTRING_KU32_CRC_POLYNOMIAL</a>&#160;&#160;&#160;0xEDB88320U</td></tr>
-<tr class="separator:gaa9bf6baa46fd3120845d5d350977feba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20d5a3d9ecc3f8665d2efd41faff87ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga20d5a3d9ecc3f8665d2efd41faff87ab">orxString_ToCRC</a>&#160;&#160;&#160;<a class="el" href="group__orx_string.html#ga05c535ba20452243d725f828f926b1e8">orxString_Hash</a></td></tr>
+<tr class="separator:ga20d5a3d9ecc3f8665d2efd41faff87ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac3346d324ba58207dd77076759c38dfa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gac3346d324ba58207dd77076759c38dfa">STRTO_CAST</a>&#160;&#160;&#160;(int)</td></tr>
 <tr class="separator:gac3346d324ba58207dd77076759c38dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -136,8 +135,6 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:gafb8549f0953530a87577d2dbb0d09e0c"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c">orxString_Compare</a> (const orxSTRING _zString1, const orxSTRING _zString2)</td></tr>
 <tr class="separator:gafb8549f0953530a87577d2dbb0d09e0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga61bc85167582f9576f396aed528f0091"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRINGID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga61bc85167582f9576f396aed528f0091">orxString_ContinueCRC</a> (const orxSTRING _zString, orxSTRINGID _stCRC)</td></tr>
-<tr class="separator:ga61bc85167582f9576f396aed528f0091"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga27ae7f7f06d5e7d7710f65754966da28"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28">orxString_Delete</a> (orxSTRING _zString)</td></tr>
 <tr class="separator:ga27ae7f7f06d5e7d7710f65754966da28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac4aa5642b4c1106e8a2056515c3f5cbd"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd">orxString_Duplicate</a> (const orxSTRING _zSrcString)</td></tr>
@@ -160,6 +157,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga5dd29b1e41db0845ef80863df67f5670"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa62f828ae9bbcad9957df3195a4aca3b"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gaa62f828ae9bbcad9957df3195a4aca3b">orxString_GetUTF8CharacterLength</a> (orxU32 _u32CharacterCodePoint)</td></tr>
 <tr class="separator:gaa62f828ae9bbcad9957df3195a4aca3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga05c535ba20452243d725f828f926b1e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxSTRINGID orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga05c535ba20452243d725f828f926b1e8">orxString_Hash</a> (const orxSTRING _zString)</td></tr>
+<tr class="separator:ga05c535ba20452243d725f828f926b1e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga981c39a82ad021ec08f84a8cb074a695"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga981c39a82ad021ec08f84a8cb074a695">orxString_ICompare</a> (const orxSTRING _zString1, const orxSTRING _zString2)</td></tr>
 <tr class="separator:ga981c39a82ad021ec08f84a8cb074a695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga70a6c603e21569ac76e5e4033737ecd6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga70a6c603e21569ac76e5e4033737ecd6">orxString_Init</a> ()</td></tr>
@@ -172,16 +171,14 @@ Functions</h2></td></tr>
 <tr class="separator:ga688414a65e9accbe3faa0f5d78b7316d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae19745a57dd2d6f3769a4ce4ce608657"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gae19745a57dd2d6f3769a4ce4ce608657">orxString_NCompare</a> (const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)</td></tr>
 <tr class="separator:gae19745a57dd2d6f3769a4ce4ce608657"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1d58279bb8575a94907cd296cb863753"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRINGID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga1d58279bb8575a94907cd296cb863753">orxString_NContinueCRC</a> (const orxSTRING _zString, orxSTRINGID _stCRC, orxU32 _u32CharNumber)</td></tr>
-<tr class="separator:ga1d58279bb8575a94907cd296cb863753"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga79b5537709b17a25daaa794769112723"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga79b5537709b17a25daaa794769112723">orxString_NCopy</a> (orxSTRING _zDstString, const orxSTRING _zSrcString, orxU32 _u32CharNumber)</td></tr>
 <tr class="separator:ga79b5537709b17a25daaa794769112723"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga99795df21d34cc66d15fbc7111af32ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxSTRINGID orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga99795df21d34cc66d15fbc7111af32ba">orxString_NHash</a> (const orxSTRING _zString, orxU32 _u32CharNumber)</td></tr>
+<tr class="separator:ga99795df21d34cc66d15fbc7111af32ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga79cd63e7940941385c40c0a0a0f62d16"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga79cd63e7940941385c40c0a0a0f62d16">orxString_NICompare</a> (const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)</td></tr>
 <tr class="separator:ga79cd63e7940941385c40c0a0a0f62d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8efae7ba83881a8facdbc8bb8f52e9b1"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32 orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga8efae7ba83881a8facdbc8bb8f52e9b1">orxString_NPrint</a> (orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString,...)</td></tr>
 <tr class="separator:ga8efae7ba83881a8facdbc8bb8f52e9b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad09b9e1e0bd0457711402f0a3624303a"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRINGID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gad09b9e1e0bd0457711402f0a3624303a">orxString_NToCRC</a> (const orxSTRING _zString, orxU32 _u32CharNumber)</td></tr>
-<tr class="separator:gad09b9e1e0bd0457711402f0a3624303a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5ffe64ef217d7745c6b0c3af518083f2"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxS32 orxCDECL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga5ffe64ef217d7745c6b0c3af518083f2">orxString_Print</a> (orxSTRING _zDstString, const orxSTRING _zSrcString,...)</td></tr>
 <tr class="separator:ga5ffe64ef217d7745c6b0c3af518083f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga73609453472017913e3e329ce2c12ff4"><td class="memItemLeft" align="right" valign="top">static orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga73609453472017913e3e329ce2c12ff4">orxString_PrintUTF8Character</a> (orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)</td></tr>
@@ -204,8 +201,6 @@ Functions</h2></td></tr>
 <tr class="separator:ga94c86ba15a4ce44d29de9a37b113f55d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga675eb3b066ac037e9815c565c4ddbe1c"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga675eb3b066ac037e9815c565c4ddbe1c">orxString_ToBool</a> (const orxSTRING _zString, orxBOOL *_pbOutValue, const orxSTRING *_pzRemaining)</td></tr>
 <tr class="separator:ga675eb3b066ac037e9815c565c4ddbe1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga590e1327a7b8ca5cf61f5d1357cd1473"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRINGID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga590e1327a7b8ca5cf61f5d1357cd1473">orxString_ToCRC</a> (const orxSTRING _zString)</td></tr>
-<tr class="separator:ga590e1327a7b8ca5cf61f5d1357cd1473"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga62381e5a5af1f8243953b3c586ec4875"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga62381e5a5af1f8243953b3c586ec4875">orxString_ToFloat</a> (const orxSTRING _zString, orxFLOAT *_pfOutValue, const orxSTRING *_pzRemaining)</td></tr>
 <tr class="separator:ga62381e5a5af1f8243953b3c586ec4875"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga12dff19357cd18ca1832e3cf83e555e0"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0">orxString_ToS32</a> (const orxSTRING _zString, orxS32 *_ps32OutValue, const orxSTRING *_pzRemaining)</td></tr>
@@ -228,11 +223,6 @@ Functions</h2></td></tr>
 <tr class="separator:gace05f65773927e3d5fa88f94ca845d15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga05a31fee6e03d85a57bfd33cce575c0f"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f">orxString_UpperCase</a> (orxSTRING _zString)</td></tr>
 <tr class="separator:ga05a31fee6e03d85a57bfd33cce575c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:gabeb4116095640f9af7fa661dd80e047d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gabeb4116095640f9af7fa661dd80e047d">saau32CRCTable</a> [8][256]</td></tr>
-<tr class="separator:gabeb4116095640f9af7fa661dd80e047d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>String module Module that handles strings </p>
@@ -247,7 +237,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00078">78</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00079">79</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -261,7 +251,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00079">79</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00080">80</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +265,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00077">77</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00078">78</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -289,7 +279,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00075">75</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00076">76</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -303,22 +293,22 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00076">76</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00077">77</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gaa9bf6baa46fd3120845d5d350977feba"></a>
+<a class="anchor" id="ga20d5a3d9ecc3f8665d2efd41faff87ab"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSTRING_KU32_CRC_POLYNOMIAL&#160;&#160;&#160;0xEDB88320U</td>
+          <td class="memname">#define orxString_ToCRC&#160;&#160;&#160;<a class="el" href="group__orx_string.html#ga05c535ba20452243d725f828f926b1e8">orxString_Hash</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>DefinesUsing 0x04C11DB7's reverse polynomial for CRC32B </p>
+<p>Defines </p>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00084">84</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00086">86</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -332,7 +322,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00061">61</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00062">62</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -377,51 +367,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00604">604</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga61bc85167582f9576f396aed528f0091"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static orxINLINE orxSTRINGID orxString_ContinueCRC </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zString</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxSTRINGID&#160;</td>
-          <td class="paramname"><em>_stCRC</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Continues a CRC with a string one </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String used to continue the given CRC </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_stCRC</td><td>Base CRC </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting CRC (orxSTRINGID) </dd></dl>
-
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01414">1414</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00601">601</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -453,7 +399,7 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00585">585</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00582">582</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -486,7 +432,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Duplicated string. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00557">557</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00554">554</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -546,7 +492,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Base or the numerical value, defaults to 10 (decimal) when no prefix is found or the literal value couldn't be identified </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00689">689</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00686">686</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +525,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00509">509</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00506">506</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -612,7 +558,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Extension if exists, orxSTRING_EMPTY otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01633">1633</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01500">1500</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -656,7 +602,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00342">342</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00339">339</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -735,7 +681,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Length of the string (doesn't count final orxCHAR_NULL) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00173">173</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00170">170</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -768,7 +714,30 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00208">208</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00205">205</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga05c535ba20452243d725f828f926b1e8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxSTRINGID orxFASTCALL orxString_Hash </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a string's ID (aka hash), without storing the string internally </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>Concerned string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String's ID/hash </dd></dl>
 
 </div>
 </div>
@@ -812,7 +781,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00638">638</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00635">635</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -861,7 +830,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE is it's a non-extended ASCII alpha-numerical character, orxFALSE otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00196">196</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00193">193</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -894,7 +863,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00186">186</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00183">183</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -927,7 +896,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The converted string. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01277">1277</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01274">1274</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -978,58 +947,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00622">622</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga1d58279bb8575a94907cd296cb863753"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static orxINLINE orxSTRINGID orxString_NContinueCRC </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zString</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxSTRINGID&#160;</td>
-          <td class="paramname"><em>_stCRC</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32CharNumber</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Continues a CRC with a string one </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String used to continue the given CRC </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_stCRC</td><td>Base CRC </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32CharNumber</td><td>Number of character to process, should be &lt;= orxString_GetLength(_zString) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting CRC (orxSTRINGID) </dd></dl>
-
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01329">1329</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00619">619</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1080,7 +998,41 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Copied string </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00543">543</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00540">540</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga99795df21d34cc66d15fbc7111af32ba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxSTRINGID orxFASTCALL orxString_NHash </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32CharNumber</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets a string's ID (aka hash), without storing the string internally </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>Concerned string </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32CharNumber</td><td>Number of character to process, should be &lt;= orxString_GetLength(_zString) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String's ID/hash </dd></dl>
 
 </div>
 </div>
@@ -1131,7 +1083,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00665">665</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00662">662</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1188,51 +1140,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of written characters </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01546">1546</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gad09b9e1e0bd0457711402f0a3624303a"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static orxINLINE orxSTRINGID orxString_NToCRC </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zString</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32CharNumber</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Converts a string to a CRC </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32CharNumber</td><td>Number of character to process, should be &lt;= orxString_GetLength(_zString) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting CRC (orxSTRINGID) </dd></dl>
-
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01430">1430</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01413">1413</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1282,7 +1190,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of written characters </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01519">1519</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01386">1386</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1333,7 +1241,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00249">249</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00246">246</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1383,7 +1291,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of scanned items </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01581">1581</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01448">1448</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1427,7 +1335,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The pointer of the first occurrence of _cChar, or orxNULL if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01473">1473</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01340">1340</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1478,7 +1386,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index of the next occurrence of requested character, starting at given position / -1 if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01488">1488</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01355">1355</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1522,7 +1430,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The pointer of the first occurrence of _zString2, or orxNULL if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01458">1458</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01325">1325</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1571,7 +1479,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Sub string located after all non-terminal directory separators </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00130">130</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00127">127</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1604,7 +1512,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Sub string located after all leading white spaces, including EOL characters </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00099">99</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00096">96</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1678,40 +1586,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01204">1204</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga590e1327a7b8ca5cf61f5d1357cd1473"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static orxINLINE orxSTRINGID orxString_ToCRC </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zString</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Converts a string to a CRC </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting CRC (orxSTRINGID) </dd></dl>
-
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01444">1444</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01201">1201</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1762,7 +1637,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01052">1052</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01049">1049</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1813,7 +1688,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00822">822</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00819">819</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1871,7 +1746,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00781">781</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00778">778</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1922,7 +1797,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00958">958</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00955">955</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1980,7 +1855,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00917">917</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00914">914</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2031,7 +1906,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00890">890</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00887">887</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2089,7 +1964,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00849">849</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00846">846</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2140,7 +2015,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01026">1026</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01023">1023</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2198,7 +2073,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00985">985</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00982">982</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2249,7 +2124,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01103">1103</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01100">1100</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2282,21 +2157,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The converted string. </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01302">1302</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="gabeb4116095640f9af7fa661dd80e047d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 saau32CRCTable[8][256]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>CRC Tables (slice-by-8) </p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01299">1299</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>

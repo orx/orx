@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,10 +51,9 @@
 
 /** Defines
  */
-#define orxTEXTURE_KZ_SCREEN_NAME         "screen"
-
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 
+#define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"
 
 

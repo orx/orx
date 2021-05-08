@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -295,7 +295,7 @@ static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
   orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
-  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
+  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_Hash(_zDataName));
 
   /* Done! */
   return pstTexture;
@@ -663,7 +663,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
           orxStructure_SetOwner(sstTexture.pstPixel, sstTexture.pstPixel);
 
           /* Links screen bitmap */
-          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME, orxFALSE);
+          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN, orxFALSE);
 
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)

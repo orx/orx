@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -645,6 +645,67 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
   return eResult;
 }
 
+/** Removes all FXs
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_RemoveAllFXs(orxFXPOINTER *_pstFXPointer)
+{
+  orxU32              i;
+  orxFX_EVENT_PAYLOAD stPayload;
+  orxSTRUCTURE       *pstOwner;
+  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Gets owner */
+  pstOwner = orxStructure_GetOwner(_pstFXPointer);
+
+  /* Inits event payload */
+  orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
+
+  /* For all slots */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    orxFX *pstFX;
+
+    /* Gets FX */
+    pstFX = _pstFXPointer->astFXList[i].pstFX;
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      /* Decreases its reference count */
+      orxStructure_DecreaseCount(pstFX);
+
+      /* Removes its reference */
+      _pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+      /* Updates event payload */
+      stPayload.pstFX   = pstFX;
+      stPayload.zFXName = orxFX_GetName(pstFX);
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_FX, orxFX_EVENT_REMOVE, pstOwner, pstOwner, &stPayload);
+
+      /* Is internal? */
+      if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+      {
+        /* Removes its owner */
+        orxStructure_SetOwner(pstFX, orxNULL);
+
+        /* Deletes it */
+        orxFX_Delete(pstFX);
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds an FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
@@ -791,7 +852,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets ID */
-  stID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_Hash(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -805,7 +866,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_p
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
+      if(orxString_Hash(orxFX_GetName(pstFX)) == stID)
       {
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -847,7 +908,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   pstOwner = orxStructure_GetOwner(_pstFXPointer);
 
   /* Gets ID */
-  stID = orxString_ToCRC(_zFXConfigID);
+  stID = orxString_Hash(_zFXConfigID);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -861,7 +922,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxFX_GetName(pstFX)) == stID)
+      if(orxString_Hash(orxFX_GetName(pstFX)) == stID)
       {
         orxFX_EVENT_PAYLOAD stPayload;
 

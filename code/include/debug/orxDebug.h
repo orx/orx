@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -164,7 +164,7 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
     u32DebugFlags = _orxDebug_GetFlags();                                                                         \
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                         \
                        orxDEBUG_KU32_STATIC_FLAG_FILE                                                             \
-                       orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
+                      |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                        \
   } while(orxFALSE)
@@ -209,7 +209,7 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
       u32DebugFlags = _orxDebug_GetFlags();                                                                       \
       _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                       \
                          orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
-                         orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
+                        |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
     } while(orxFALSE)
@@ -290,17 +290,27 @@ while(orxFALSE)
   /* Files */
   #define orxDEBUG_SETDEBUGFILE(FILE)         _orxDebug_SetDebugFile(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
-  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
-    do                                                        \
-    {                                                         \
-      orxCHAR   zBuffer[512];                                 \
-      zBuffer[511] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);\
-      _orxDebug_SetDebugFile(zBuffer);                        \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+  #define orxDEBUG_SETBASEFILENAME(FILE)                                                                            \
+    do                                                                                                              \
+    {                                                                                                               \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))                                                            \
+      {                                                                                                             \
+        orxCHAR zBuffer[512];                                                                                       \
+        zBuffer[511] = orxCHAR_NULL;                                                                                \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);                                                    \
+        _orxDebug_SetDebugFile(zBuffer);                                                                            \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);                                                      \
+        _orxDebug_SetLogFile(zBuffer);                                                                              \
+      }                                                                                                             \
+      else                                                                                                          \
+      {                                                                                                             \
+        _orxDebug_SetDebugFile(FILE);                                                                               \
+        _orxDebug_SetLogFile(FILE);                                                                                 \
+      }                                                                                                             \
     } while(orxFALSE)
 
   /* Assert */
@@ -340,14 +350,22 @@ while(orxFALSE)
   /* File */
   #define orxDEBUG_SETDEBUGFILE(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
-  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
-    do                                                        \
-    {                                                         \
-      orxCHAR   zBuffer[512];                                 \
-      zBuffer[511] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 256);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+  #define orxDEBUG_SETBASEFILENAME(FILE)                                                                            \
+    do                                                                                                              \
+    {                                                                                                               \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))                                                            \
+      {                                                                                                             \
+        orxCHAR zBuffer[512];                                                                                       \
+        zBuffer[511] = orxCHAR_NULL;                                                                                \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);                                                      \
+        _orxDebug_SetLogFile(zBuffer);                                                                              \
+      }                                                                                                             \
+      else                                                                                                          \
+      {                                                                                                             \
+        _orxDebug_SetLogFile(FILE);                                                                                 \
+      }                                                                                                             \
     } while(orxFALSE)
 
   #define orxASSERT(TEST, ...)

@@ -1,1 +1,1 @@
-include ':app', ':orx-lib'
+include ':app'

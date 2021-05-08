@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,6 +52,10 @@
 #define KZ_CONFIG_USE_JOYSTICK                   "UseJoystick"
 
 #include <android/native_window.h>
+
+#include "../io/orxJoystick.h"
+
+#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER orxJOYSTICK_KU32_MAX_ID
 
 #ifdef __orxANDROID_NATIVE__
 
@@ -153,6 +157,14 @@ typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
 
 } orxANDROID_SURFACE_CHANGED_EVENT;
 
+typedef struct __orxANDROID_JOYSTICK_INFO_t {
+        orxU32   u32DeviceId;
+        orxU32   u32ProductId;
+        orxU32   u32VendorId;
+        char descriptor[40+1]; //33c71ad39e5691dc864057cce39f83859bc5b6c1
+        char name[40+1];       //NINTENDO CO.,LTD. Core Controller
+} orxANDROID_JOYSTICK_INFO;
+
 ANativeWindow * orxAndroid_GetNativeWindow();
 
 /**
@@ -160,7 +172,9 @@ ANativeWindow * orxAndroid_GetNativeWindow();
   */
 const char * orxAndroid_GetInternalStoragePath();
 orxU32       orxAndroid_JNI_GetRotation();
-void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[4]);
+void         orxAndroid_JNI_GetDeviceIds(orxS32 devicesId[orxANDROID_KU32_MAX_JOYSTICK_NUMBER]);
+
+orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDROID_JOYSTICK_INFO *stJoystickInfo);
 
 /**
   Register APK resources IO
@@ -173,7 +187,9 @@ void *orxAndroid_GetJNIEnv();
 jobject orxAndroid_GetActivity();
 
 #ifdef __orxANDROID_NATIVE__
+/* LOOPER_ID_USER is the first user defined looper ID */
 #define              LOOPER_ID_SENSOR        LOOPER_ID_USER
+#define              LOOPER_ID_JOYSTICK_EVENT        LOOPER_ID_USER+1
 ANativeActivity*     orxAndroid_GetNativeActivity();
 struct android_app*  orxAndroid_GetAndroidApp();
 #endif /* __orxANDROID_NATIVE__ */

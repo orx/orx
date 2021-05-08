@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -84,6 +84,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_t
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR,
+  orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SHADER_ID,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED,
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_FULL_SCREEN,

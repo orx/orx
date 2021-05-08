@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -120,6 +120,8 @@ typedef enum __orxKEYBOARD_KEY_t
   orxKEYBOARD_KEY_NUM_LOCK,
   orxKEYBOARD_KEY_PRINT_SCREEN,
   orxKEYBOARD_KEY_PAUSE,
+  orxKEYBOARD_KEY_VOLUME_DOWN,
+  orxKEYBOARD_KEY_VOLUME_UP,
   orxKEYBOARD_KEY_F1,
   orxKEYBOARD_KEY_F2,
   orxKEYBOARD_KEY_F3,

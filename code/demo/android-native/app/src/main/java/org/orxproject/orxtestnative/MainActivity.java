@@ -1,23 +1,17 @@
 package org.orxproject.orxtestnative;
 
 import android.annotation.TargetApi;
-import android.app.NativeActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import org.orx.lib.OrxNativeActivity;
 
-/**
- * Created by loki on 4/07/14.
- */
-public class MainActivity extends NativeActivity {
+// Note: if Game controller support is not needed then you can instead extend android.app.NativeActivity
+public class MainActivity extends OrxNativeActivity {
 
     private Handler mHandler = new Handler();
     private View mDecorView;
-
-    static {
-        System.loadLibrary("c++_shared");
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

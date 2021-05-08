@@ -162,8 +162,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga9f26236adad8a0a4d07aa6212280b379"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga12cc30293a8637b811b731b445bc5c6c"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#ga12cc30293a8637b811b731b445bc5c6c">orxMemory_Move</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pDest, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pSrc, orxU32 _u32Size)</td></tr>
 <tr class="separator:ga12cc30293a8637b811b731b445bc5c6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaee9f4b5c3e1c3c3946b6220d563c5a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gaee9f4b5c3e1c3c3946b6220d563c5a0b">orxMemory_Reallocate</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pMem, orxU32 _u32Size)</td></tr>
-<tr class="separator:gaee9f4b5c3e1c3c3946b6220d563c5a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae5c2c5f182122468435fdf55d875a486"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gae5c2c5f182122468435fdf55d875a486">orxMemory_Reallocate</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pMem, orxU32 _u32Size, <a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
+<tr class="separator:gae5c2c5f182122468435fdf55d875a486"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf19f65244ab0a99424048ef0b43d681d"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d">orxMemory_Set</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pDest, orxU8 _u8Data, orxU32 _u32Size)</td></tr>
 <tr class="separator:gaf19f65244ab0a99424048ef0b43d681d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf91c778332c819f06bdde51acfda9fa0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0">orxMemory_Setup</a> ()</td></tr>
@@ -360,7 +360,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a value less than, equal to or greater than 0 if the content of _pMem1 is respectively smaller, equal or greater than _pMem2's </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00180">180</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00181">181</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +412,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>if _pSrc and _pDest overlap, use orxMemory_Move instead </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00148">148</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00149">149</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -556,11 +556,11 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00164">164</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00165">165</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gaee9f4b5c3e1c3c3946b6220d563c5a0b"></a>
+<a class="anchor" id="gae5c2c5f182122468435fdf55d875a486"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -574,7 +574,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Size</em>&#160;</td>
+          <td class="paramname"><em>_u32Size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a>&#160;</td>
+          <td class="paramname"><em>_eMemType</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -587,6 +593,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pMem</td><td>Memory block to reallocate </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the memory to allocate </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eMemType</td><td>Memory zone where data will be allocated </td></tr>
   </table>
   </dd>
 </dl>
@@ -641,7 +648,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00196">196</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00197">197</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -701,7 +708,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00210">210</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00211">211</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>

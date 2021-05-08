@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -166,6 +166,7 @@ static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orx
 
     /* Creates its node */
     pstNode = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(_pstBank);
+    orxMemory_Zero(pstNode, sizeof(orxSTRUCTURE_LOG_NODE));
     orxASSERT(pstNode != orxNULL);
     pstNode->pstStructure = _pstStructure;
 
@@ -204,10 +205,13 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
   /* Is Valid? */
   if(_pstNode != orxNULL)
   {
-    static orxCHAR  sacPrefixBuffer[1024] = {0};
+    static orxCHAR  sacPrefixBuffer[1024];
     static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
     orxSTRUCTURE   *pstStructure;
     orxTREE_NODE   *pstChild, *pstSibling;
+
+    /* Inits buffer */
+    sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets next sibling */
     pstSibling = orxTree_GetSibling(_pstNode);
@@ -455,7 +459,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
     /* Creates associated bank */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create((orxU16)_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
 
     /* Valid? */
     if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
@@ -601,7 +605,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Checks */
-        orxASSERT(_eStructureID <= (orxU32)(orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
+        orxASSERT(_eStructureID <= orxSTRUCTURE_ID_NUMBER);
         orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
         orxASSERT(sstStructure.au32InstanceCount[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
@@ -622,7 +626,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add node to list.");
 
         /* Frees allocated structure */
-        orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
+        orxBank_FreeAtIndex(sstStructure.astStorage[_eStructureID].pstStructureBank, u32ItemID);
 
         /* Not created */
         pstStructure = orxNULL;
@@ -654,6 +658,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
 {
   orxSTRUCTURE_ID eStructureID;
+  orxU64          u64GUID;
   orxSTRUCTURE   *pstStructure;
 
   /* Checks */
@@ -696,10 +701,11 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   eStructureID = orxStructure_GetID(_pStructure);
 
   /* Tags structure as deleted */
-  orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
+  u64GUID               = pstStructure->u64GUID;
+  pstStructure->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
 
   /* Deletes structure */
-  orxBank_Free(sstStructure.astStorage[eStructureID].pstStructureBank, _pStructure);
+  orxBank_FreeAtIndex(sstStructure.astStorage[eStructureID].pstStructureBank, (orxU32)((u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -1220,7 +1226,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
   /* Valid? */
   if((pstTable != orxNULL) && (pstBank != orxNULL))
   {
-    orxTREE                 stTree = {0};
+    orxTREE                 stTree;
     orxSTRUCTURE_LOG_NODE  *pstRoot;
     orxU32                  u32DebugFlags;
     orxS32                  i;
@@ -1229,6 +1235,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
     pstRoot = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(pstBank);
     orxASSERT(pstRoot != orxNULL);
     orxMemory_Zero(pstRoot, sizeof(orxSTRUCTURE_LOG_NODE));
+    orxMemory_Zero(&stTree, sizeof(orxTREE));
     orxTree_AddRoot(&stTree, &(pstRoot->stNode));
 
     /* For all IDs */

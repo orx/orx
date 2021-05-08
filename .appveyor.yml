@@ -1,4 +1,4 @@
-version: 1.9-dev.{build}
+version: 1.12-dev.{build}
 
 image:
 - Visual Studio 2017
@@ -36,6 +36,16 @@ build_script:
 
     msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
 
+    set ORX=%CD%\code
+
+    init.bat test +scroll +imgui
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Profile
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Debug
+
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
 
     msbuild tools/orxFontGen/build/windows/%Folder%/orxFontGen.sln /p:Platform=%Platform% /p:Configuration=Release
@@ -57,5 +67,7 @@ artifacts:
   name: package-vs2019-64
 - path: code/build/python/packages/*vs2019-32*.zip
   name: package-vs2019-32
+- path: test/bin/test.exe
+  name: test-project
 
 deploy: off
