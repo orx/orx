@@ -40,7 +40,7 @@
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
 #define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
-#define orxMEMORY_KU32_TAG_SIZE                 8
+#define orxMEMORY_KU32_TAG_SIZE                 16
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
