@@ -39,7 +39,16 @@
   #pragma clang diagnostic ignored "-Wunknown-attributes"
 #endif /* __orxMAC__ */
 
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wstatic-in-inline"
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+
 #include "rpmalloc.h"
+
+#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #pragma clang diagnostic pop
+#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
 #ifdef __orxMAC__
   #pragma clang diagnostic pop
