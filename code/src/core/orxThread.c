@@ -60,18 +60,18 @@
 #endif /* __orxWINDOWS__ */
 
 #ifdef __orxLLVM__
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wunknown-attributes"
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 #endif /* __orxLLVM__ */
 
 #include "rpmalloc.h"
 
 #ifdef __orxLLVM__
-  #ifdef __orxMAC__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
     #pragma clang diagnostic pop
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 #endif /* __orxLLVM__ */
 
 
