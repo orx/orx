@@ -588,7 +588,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
                   ;
 
                 /* Checks */
-                orxASSERT((s32Index > 0) && (s32Index < sizeof(acBuffer)));
+                orxASSERT((s32Index > 0) && (s32Index < (orxS32)sizeof(acBuffer)));
 
                 /* Gets its ID */
                 orxString_ToU32(zBinding + s32Index + 1, &u32JoyID, orxNULL);
