@@ -46,7 +46,15 @@
   #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 #endif /* __orxLLVM__ */
 
+#ifdef __orxIOS__
+  #define ENABLE_PRELOAD 1
+#endif /* __orxIOS__ */
+
 #include "rpmalloc.c"
+
+#ifdef __orxIOS__
+  #undef ENABLE_PRELOAD
+#endif /* __orxIOS__ */
 
 #ifdef __orxLLVM__
   #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
