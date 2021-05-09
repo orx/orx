@@ -34,7 +34,37 @@
 #include "debug/orxDebug.h"
 
 
+#ifdef __orxLLVM__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunknown-attributes"
+  #endif /* __orxMAC__ || __orxIOS__ */
+
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wstatic-in-inline"
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
+
+#ifdef __orxIOS__
+  #define ENABLE_PRELOAD 1
+#endif /* __orxIOS__ */
+
 #include "rpmalloc.c"
+
+#ifdef __orxIOS__
+  #undef ENABLE_PRELOAD
+#endif /* __orxIOS__ */
+
+#ifdef __orxLLVM__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
+
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxMAC__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */

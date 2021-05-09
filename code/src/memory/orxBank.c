@@ -122,7 +122,7 @@ static orxINLINE orxSTATUS orxBank_AddSegment(orxBANK *_pstBank)
     apstNewSegmentData[_pstBank->u32SegmentCount] = orxNULL;
 
     /* Gets segment map size */
-    u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+    u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
     /* Allocates new cell map */
     au32NewCellMap = (orxU32 *)orxMemory_Reallocate(_pstBank->au32CellMap, u32NewSegmentCount * u32MapSize * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
@@ -423,7 +423,7 @@ void *orxFASTCALL orxBank_AllocateIndexed(orxBANK *_pstBank, orxU32 *_pu32ItemIn
   orxASSERT(_pu32ItemIndex != orxNULL);
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Has room? */
   if(_pstBank->u32CellCount < _pstBank->u32SegmentCount * _pstBank->u32SegmentSize)
@@ -544,7 +544,7 @@ void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
   u32CellIndex    = *(orxU32 *)((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) % _pstBank->u32SegmentSize;
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Checks */
   orxASSERT(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))));
@@ -584,7 +584,7 @@ void orxFASTCALL orxBank_FreeAtIndex(orxBANK *_pstBank, orxU32 _u32Index)
   orxASSERT(_pstBank->u32CellCount != 0);
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Gets indices */
   u32SegmentIndex = _u32Index / _pstBank->u32SegmentSize;
@@ -621,7 +621,7 @@ void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
   orxASSERT(_pstBank != orxNULL);
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Clears cell map */
   orxMemory_Set(_pstBank->au32CellMap, 0xFF, _pstBank->u32SegmentCount * u32MapSize * sizeof(orxU32));
@@ -690,7 +690,7 @@ void orxFASTCALL orxBank_Compact(orxBANK *_pstBank)
       _pstBank->apstSegmentData = apstNewSegmentData;
 
       /* Gets segment map size */
-      u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+      u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
       /* Allocates new cell map */
       au32NewCellMap = (orxU32 *)orxMemory_Reallocate(_pstBank->au32CellMap, u32NewSegmentCount * u32MapSize * sizeof(orxU32), orxMEMORY_TYPE_SYSTEM);
@@ -767,7 +767,7 @@ void *orxFASTCALL orxBank_GetNext(const orxBANK *_pstBank, const void *_pCell)
     orxU32 *pu32MapEntry = orxNULL, u32Mask = 0xFFFFFFFF, u32MapSize;
 
     /* Gets segment map size */
-    u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+    u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
     /* No cell? */
     if(_pCell == orxNULL)
@@ -856,7 +856,7 @@ orxU32 orxFASTCALL orxBank_GetIndex(const orxBANK *_pstBank, const void *_pCell)
   orxASSERT(_pCell != orxNULL);
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Gets indices */
   u32SegmentIndex = *(orxU32 *)((orxU8 *)_pCell - orxBANK_KU32_TAG_SIZE) / _pstBank->u32SegmentSize;
@@ -902,7 +902,7 @@ void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
   orxASSERT(_pstBank->u32CellCount != 0);
 
   /* Gets segment map size */
-  u32MapSize = orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
 
   /* Gets indices */
   u32SegmentIndex = _u32Index / _pstBank->u32SegmentSize;
