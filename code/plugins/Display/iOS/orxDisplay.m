@@ -38,6 +38,7 @@
 
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_THREAD_LOCALS
 #define STBI_NO_PSD
 #define STBI_NO_GIF
 #define STBI_NO_HDR
@@ -61,6 +62,7 @@
 #undef STBI_NO_HDR
 #undef STBI_NO_GIF
 #undef STBI_NO_PSD
+#undef STBI_NO_THREAD_LOCALS
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 

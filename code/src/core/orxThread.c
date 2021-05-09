@@ -59,7 +59,16 @@
 
 #endif /* __orxWINDOWS__ */
 
+#ifdef __orxMAC__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wunknown-attributes"
+#endif /* __orxMAC__ */
+
 #include "rpmalloc.h"
+
+#ifdef __orxMAC__
+  #pragma clang diagnostic pop
+#endif /* __orxMAC__ */
 
 
 /** Module flags

@@ -34,7 +34,16 @@
 #include "debug/orxDebug.h"
 
 
-#include "rpmalloc.c"
+#ifdef __orxMAC__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wunknown-attributes"
+#endif /* __orxMAC__ */
+
+#include "rpmalloc.h"
+
+#ifdef __orxMAC__
+  #pragma clang diagnostic pop
+#endif /* __orxMAC__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
