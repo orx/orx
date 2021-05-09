@@ -36,6 +36,11 @@
 
 #include "webp/decode.h"
 
+#ifdef __orxLLVM__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wsign-compare"
+#endif /* __orxLLVM__ */
+
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_THREAD_LOCALS
@@ -81,6 +86,10 @@
 #undef STBIW_MALLOC
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef STBI_WRITE_NO_STDIO
+
+#ifdef __orxLLVM__
+  #pragma clang diagnostic pop
+#endif /* __orxLLVM__ */
 
 #import <QuartzCore/QuartzCore.h>
 

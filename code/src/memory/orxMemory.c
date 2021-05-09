@@ -40,10 +40,10 @@
     #pragma clang diagnostic ignored "-Wunknown-attributes"
   #endif /* __orxMAC__ */
 
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wstatic-in-inline"
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
 #endif /* __orxLLVM__ */
 
 #ifdef __orxIOS__
@@ -57,9 +57,9 @@
 #endif /* __orxIOS__ */
 
 #ifdef __orxLLVM__
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
     #pragma clang diagnostic pop
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
 
   #ifdef __orxMAC__
     #pragma clang diagnostic pop
