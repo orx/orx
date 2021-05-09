@@ -46,7 +46,7 @@
   #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 #endif /* __orxLLVM__ */
 
-#include "rpmalloc.h"
+#include "rpmalloc.c"
 
 #ifdef __orxLLVM__
   #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
