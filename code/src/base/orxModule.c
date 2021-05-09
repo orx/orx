@@ -396,35 +396,11 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   /* Was external call? */
   if(sstModule.u32InitLoopCount == 0)
   {
-    /* Failed? */
-    if(eResult == orxSTATUS_FAILURE)
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* For all modules */
-      for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
-      {
-        /* Is param initialized? */
-        if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
-        {
-          /* Displays help */
-          orxParam_DisplayHelp();
-        }
-
-        /* Is temporary initialized? */
-        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_PENDING)
-        {
-          /* Updates flags */
-          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~(orxU64)1 << _eModuleID;
-
-          /* Internal exit call */
-          orxModule_Exit((orxMODULE_ID)u32Index);
-        }
-      }
-    }
-    /* Successful */
-    else
-    {
-      /* For all modules */
-      for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
+      for (u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
       {
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
@@ -436,6 +412,22 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Displays help */
         eResult = orxParam_DisplayHelp();
       }
+    }
+    /* Failure */
+    else
+    {
+      /* Is param initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+      {
+        /* Displays help */
+        orxParam_DisplayHelp();
+      }
+
+      /* Updates temp flag */
+      sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
+
+      /* Exits from module */
+      orxModule_Exit(_eModuleID);
     }
   }
 
@@ -451,7 +443,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
 
   /* Is initialized? */
-  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
+  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING))
   {
     orxU64 u64Depend;
     orxU32 u32Index;
