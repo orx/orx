@@ -34,25 +34,29 @@
 #include "debug/orxDebug.h"
 
 
-#ifdef __orxMAC__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wunknown-attributes"
-#endif /* __orxMAC__ */
+#ifdef __orxLLVM__
+  #ifdef __orxMAC__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunknown-attributes"
+  #endif /* __orxMAC__ */
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wstatic-in-inline"
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wstatic-in-inline"
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxLLVM__ */
 
 #include "rpmalloc.h"
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-  #pragma clang diagnostic pop
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#ifdef __orxLLVM__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+    #pragma clang diagnostic pop
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
 
-#ifdef __orxMAC__
-  #pragma clang diagnostic pop
-#endif /* __orxMAC__ */
+  #ifdef __orxMAC__
+    #pragma clang diagnostic pop
+  #endif /* __orxMAC__ */
+#endif /* __orxLLVM__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
