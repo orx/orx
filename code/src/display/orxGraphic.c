@@ -979,8 +979,11 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
         /* Copies color */
         orxColor_Copy(&(pstResult->stColor), &(_pstGraphic->stColor));
 
-        /* Updates its size */
-        orxGraphic_UpdateSize(pstResult);
+        /* Copies coordinates */
+        pstResult->fTop     = _pstGraphic->fTop;
+        pstResult->fLeft    = _pstGraphic->fLeft;
+        pstResult->fWidth   = _pstGraphic->fWidth;
+        pstResult->fHeight  = _pstGraphic->fHeight;
 
         /* Copies repeat */
         pstResult->fRepeatX = _pstGraphic->fRepeatX;
