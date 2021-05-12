@@ -338,6 +338,45 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Update callback
+ */
+void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
+{
+  /* Stores mouse position as current light position */
+  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
+
+  /* Creates a new light? */
+  if (orxInput_HasBeenActivated("CreateLight"))
+  {
+    /* Updates light index */
+    s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
+  }
+  /* Clears all lights? */
+  else if (orxInput_HasBeenActivated("ClearLights"))
+  {
+    /* Clears all lights */
+    ClearLights();
+
+    /* Resets light index */
+    s32LightIndex = 0;
+  }
+  /* Increases radius? */
+  else if (orxInput_HasBeenActivated("IncreaseRadius"))
+  {
+    astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
+  }
+  /* Decreases radius? */
+  else if (orxInput_HasBeenActivated("DecreaseRadius"))
+  {
+    astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
+  }
+  /* Toggle alpha? */
+  else if (orxInput_HasBeenActivated("ToggleAlpha"))
+  {
+    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
+  }
+}
+
 /** Init function
  */
 orxSTATUS orxFASTCALL Init()
@@ -392,6 +431,9 @@ orxSTATUS orxFASTCALL Init()
   /* Clear all lights */
   ClearLights();
 
+  /* Registers our update callback */
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   /* Done! */
   return eResult;
 }
@@ -402,41 +444,8 @@ orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Stores mouse position as current light position */
-  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
-
-  /* Creates a new light? */
-  if(orxInput_HasBeenActivated("CreateLight"))
-  {
-    /* Updates light index */
-    s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
-  }
-  /* Clears all lights? */
-  else if(orxInput_HasBeenActivated("ClearLights"))
-  {
-    /* Clears all lights */
-    ClearLights();
-
-    /* Resets light index */
-    s32LightIndex = 0;
-  }
-  /* Increases radius? */
-  else if(orxInput_HasBeenActivated("IncreaseRadius"))
-  {
-    astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
-  }
-  /* Decreases radius? */
-  else if(orxInput_HasBeenActivated("DecreaseRadius"))
-  {
-    astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
-  }
-  /* Toggle alpha? */
-  else if(orxInput_HasBeenActivated("ToggleAlpha"))
-  {
-    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
-  }
   /* Should quit? */
-  else if(orxInput_IsActive("Quit"))
+  if(orxInput_IsActive("Quit"))
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
