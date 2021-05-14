@@ -326,10 +326,20 @@ void orxFASTCALL orxClock_CommandSetFrequency(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstClock != orxNULL)
   {
-    orxFLOAT fTickSize;
+    orxFLOAT fTickSize = orxFLOAT_0;
 
-    /* Gets tick size */
-    fTickSize = ((_u32ArgNumber > 1) && (_astArgList[1].fValue > orxFLOAT_0)) ? orxFLOAT_1 / _astArgList[1].fValue : orxFLOAT_0;
+    /* No valid tick size? */
+    if((_u32ArgNumber == 1) || (orxString_ToFloat(_astArgList[1].zValue, &fTickSize, orxNULL) == orxSTATUS_FAILURE))
+    {
+      /* Defaults to display */
+      fTickSize = -orxFLOAT_1;
+    }
+    /* No frequency? */
+    else if(fTickSize != orxFLOAT_0)
+    {
+      /* Gets tick size */
+      fTickSize = orxFLOAT_1 / fTickSize;
+    }
 
     /* Sets it */
     _pstResult->bValue = (orxClock_SetTickSize(pstClock, fTickSize) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
@@ -412,7 +422,7 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
 static orxINLINE void orxClock_RegisterCommands()
 {
   /* Command: SetFrequency */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = 0.0", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = display", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetModifier */
   orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetModifier, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 3, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Type", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT});
 }
@@ -1342,33 +1352,30 @@ orxFLOAT orxFASTCALL orxClock_GetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER
 
 /** Sets a clock tick size
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fTickSize                            Tick size
+ * @param[in]   _fTickSize                            Tick size, -1 for 'display'
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Valid modifier value? */
-  if(_fTickSize >= orxFLOAT_0)
-  {
-    /* Updates clock tick size */
-    _pstClock->stClockInfo.fTickSize = _fTickSize;
+  /* Updates clock tick size */
+  _pstClock->stClockInfo.fTickSize = orxMAX(_fTickSize, orxFLOAT_0);
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+  /* Sync with display? */
+  if(_fTickSize < orxFLOAT_0)
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_DISPLAY, orxCLOCK_KU32_FLAG_NONE);
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid tick size.", _fTickSize);
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_DISPLAY);
   }
 
   /* Done! */
