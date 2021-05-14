@@ -227,7 +227,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxClock_GetModifier(orxCL
 
 /** Sets a clock tick size
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fTickSize                            Tick size
+ * @param[in]   _fTickSize                            Tick size, -1 for 'display'
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize);
