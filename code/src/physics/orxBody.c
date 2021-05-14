@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1192,7 +1192,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Gets part ID */
-  stID = orxString_ToCRC(_zConfigID);
+  stID = orxString_Hash(_zConfigID);
 
   /* For all parts */
   for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
@@ -1200,7 +1200,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
       pstPart = orxBody_GetNextPart(_pstBody, pstPart))
   {
     /* Found? */
-    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == stID)
+    if(orxString_Hash(orxBody_GetPartName(pstPart)) == stID)
     {
       /* Removes it */
       eResult = orxBody_RemovePart(pstPart);

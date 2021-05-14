@@ -34,9 +34,15 @@ matrix:
 
     - os: osx
       compiler: clang
-      osx_image: xcode11.2
+      osx_image: xcode11.6
       script: ./code/build/travis/desktop.sh
       name: OSX / XCode 11
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode12.5
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 12
 
     - os: osx
       compiler: clang
@@ -58,7 +64,7 @@ matrix:
 
     - os: osx
       compiler: clang
-      osx_image: xcode11.2
+      osx_image: xcode11.6
       script: ./code/build/travis/ios.sh
       name: iOS / XCode 11
 

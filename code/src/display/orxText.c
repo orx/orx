@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -325,7 +325,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Is config group? */
-      if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
       {
         orxTEXT *pstText;
 

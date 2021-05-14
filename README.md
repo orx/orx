@@ -1,14 +1,14 @@
-[![Join the chat at https://gitter.im/orx/orx](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orx/orx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat on https://orx-project.org/discord](https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield)](https://orx-project.org/discord)
 [![Travis build](https://travis-ci.org/orx/orx.svg?branch=master)](https://travis-ci.org/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
-Orx - Portable Game Engine (Version 1.11)
+Orx - Portable Game Engine (Version 1.12)
 ========================================
 
 
 Email iarwain [at] orx-project.org to contact the author; or, better,
 check [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
-You can also come [chat with us](https://gitter.im/orx/orx)
+You can also come [chat with us](https://orx-project.org/discord)
 if you have any questions or comments.
 
 This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
@@ -21,7 +21,7 @@ Summary
 [Orx](https://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.11. If you find any bugs,
+This is a release candidate for orx v1.12. If you find any bugs,
 please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
 
@@ -120,36 +120,36 @@ Some tools (precompiled binaries only) are also shipped with the dev packages:
 Packages
 --------
 
-You can download all the packages from [sourceforge](https://orx.sf.net) or [github](https://github.com/orx/orx/releases).
+You can download all the packages from [sourceforge](https://sf.net/projects/orx) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.11.zip`                  : orx's API doxygen documentation
-- `orx-src-1.11.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.11.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.11.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.11.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-32-1.11.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
-- `orx-dev-mingw-64-1.11.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2015-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
-- `orx-dev-vs2015-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2019-32-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
-- `orx-dev-vs2019-64-1.11.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.11.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.11.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.11.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.11.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.11.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.11.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-32-1.11.zip`    : tutorials for Windows (mingw/x86)
-- `orx-tutorial-mingw-64-1.11.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2015-32-1.11.zip`   : tutorials for Windows (Visual Studio 2015, x86)
-- `orx-tutorial-vs2015-64-1.11.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
-- `orx-tutorial-vs2017-32-1.11.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.11.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
-- `orx-tutorial-vs2019-32-1.11.zip`   : tutorials for Windows (Visual Studio 2019, x86)
-- `orx-tutorial-vs2019-64-1.11.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
+- `orx-doc-1.12.zip`                  : orx's API doxygen documentation
+- `orx-src-1.12.zip`                  : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.12.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.12.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.12.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
+- `orx-dev-vs2015-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
+- `orx-dev-vs2015-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.12.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.12.zip`          : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.12.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.12.tar.bz2` : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.12.tar.bz2` : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.12.zip`         : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-32-1.12.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.12.zip`    : tutorials for Windows (mingw/x86-64)
+- `orx-tutorial-vs2015-32-1.12.zip`   : tutorials for Windows (Visual Studio 2015, x86)
+- `orx-tutorial-vs2015-64-1.12.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
+- `orx-tutorial-vs2017-32-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.12.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.12.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
 
 All the `*-dev-*` packages above include:
 
@@ -241,7 +241,7 @@ Comments
 
 If you have any questions, comments, ideas or reviews, feel free to either
 post them on [orx's forum](https://forum.orx-project.org),
-come [chat with us](https://gitter.im/orx/orx)
+come [chat with us](https://orx-project.org/discord)
 or send them directly by email to iarwain [at] orx-project.org
 
 Enjoy!

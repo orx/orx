@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -101,7 +101,16 @@ const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButto
   orxJOYSTICK_DECLARE_BUTTON_NAME(13_##ID);       \
   orxJOYSTICK_DECLARE_BUTTON_NAME(14_##ID);       \
   orxJOYSTICK_DECLARE_BUTTON_NAME(15_##ID);       \
-  orxJOYSTICK_DECLARE_BUTTON_NAME(16_##ID);
+  orxJOYSTICK_DECLARE_BUTTON_NAME(16_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(17_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(18_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(19_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(20_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(21_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(22_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(23_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(24_##ID);       \
+  orxJOYSTICK_DECLARE_BUTTON_NAME(25_##ID);
 
   /* Checks */
   orxASSERT(_eButton < orxJOYSTICK_BUTTON_NUMBER);

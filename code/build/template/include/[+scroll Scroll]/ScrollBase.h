@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -202,11 +202,11 @@ template<class O>
 void ScrollObjectBinder<O>::Register(const orxSTRING _zName, orxS32 _s32SegmentSize)
 {
   // Checks
-  orxASSERT(!orxHashTable_Get(ScrollObjectBinderBase::GetTable(), orxString_ToCRC(_zName)));
+  orxASSERT(!orxHashTable_Get(ScrollObjectBinderBase::GetTable(), orxString_Hash(_zName)));
   orxASSERT(_s32SegmentSize > 0);
 
   // Adds binder to table
-  orxHashTable_Add(GetTable(), orxString_ToCRC(_zName ? _zName : orxSTRING_EMPTY), GetInstance(_s32SegmentSize));
+  orxHashTable_Add(GetTable(), orxString_Hash(_zName ? _zName : orxSTRING_EMPTY), GetInstance(_s32SegmentSize));
 }
 
 template<class O>
@@ -409,6 +409,62 @@ private:
                 orxU32          mu32FrameCount;
                 orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
 };
+
+
+//! Template function definitions
+template<class O>
+O *ScrollBase::GetNextObject(const O *_poObject) const
+{
+  const ScrollObjectBinder<O> *poBinder;
+  O                           *poResult = orxNULL;
+
+  // Gets binder
+  poBinder = ScrollObjectBinder<O>::GetInstance();
+
+  // Valid?
+  if(poBinder)
+  {
+    // Updates result
+    poResult = ScrollCast<O *>(poBinder->GetNextObject(_poObject));
+  }
+#ifdef __SCROLL_DEBUG__
+  else
+  {
+    // Logs message
+    orxLOG("Couldn't get next object of <%s>: no registered binder found!", typeid(O).name());
+  }
+#endif // __SCROLL_DEBUG__
+
+  // Done!
+  return poResult;
+}
+
+template<class O>
+O *ScrollBase::GetPreviousObject(const O *_poObject) const
+{
+  const ScrollObjectBinder<O> *poBinder;
+  O                           *poResult = orxNULL;
+
+  // Gets binder
+  poBinder = ScrollObjectBinder<O>::GetInstance();
+
+  // Valid?
+  if(poBinder)
+  {
+    // Updates result
+    poResult = ScrollCast<O *>(poBinder->GetPreviousObject(_poObject));
+  }
+#ifdef __SCROLL_DEBUG__
+  else
+  {
+    // Logs message
+    orxLOG("Couldn't get previous object of <%s>: no registered binder found!", typeid(O).name());
+  }
+#endif // __SCROLL_DEBUG__
+
+  // Done!
+  return poResult;
+}
 
 
 #ifdef __SCROLL_IMPL__

@@ -60,7 +60,8 @@ ORX_SRC_FILES := \
 	main/orxAndroidSupport.cpp
 
 ORX_INCLUDES := $(LOCAL_PATH)/../include \
-                    $(LOCAL_PATH)/../../extern/dlmalloc \
+                    $(LOCAL_PATH)/../../extern/rpmalloc/rpmalloc \
+                    $(LOCAL_PATH)/../../extern/xxHash \
                     $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/LiquidFun-1.1.0/include \
                     $(LOCAL_PATH)/../../extern/openal-soft/include \

@@ -15,6 +15,7 @@ var group__orx_vector =
       [ "fY", "structorx_v_e_c_t_o_r.html#a35e6c8a57dbd23dd510f847b1d72e8d9", null ],
       [ "fZ", "structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97", null ]
     ] ],
+    [ "orxCOLOR_DECLARE", "group__orx_vector.html#ga45c1921b4c7d81a45242f5e3dfeb8ce5", null ],
     [ "orxVector_2DDot", "group__orx_vector.html#ga0d14352e51599167da56d705b97087c6", null ],
     [ "orxVector_2DRotate", "group__orx_vector.html#gad8e43d373a71b5fdb1bae79cf3254185", null ],
     [ "orxVector_Add", "group__orx_vector.html#gabe4db2c5e46746a1d83d1682e1620176", null ],
@@ -49,15 +50,7 @@ var group__orx_vector =
     [ "orxVector_Sub", "group__orx_vector.html#ga3bdb24b7f3f8fda8af8b034ad82db7ba", null ],
     [ "orxVECTOR_0", "group__orx_vector.html#gaf418598c5e4fac78020674e538941c9a", null ],
     [ "orxVECTOR_1", "group__orx_vector.html#gab20d9cfbfd0c1fcc33eed217002e2e2d", null ],
-    [ "orxVECTOR_BLACK", "group__orx_vector.html#gacc40ca7963eb044a36ffcc9137840979", null ],
-    [ "orxVECTOR_BLUE", "group__orx_vector.html#ga985c3c50241def531dcd7f814fbbf39d", null ],
-    [ "orxVECTOR_CYAN", "group__orx_vector.html#gac192455857d011033c22249c1f8f66a0", null ],
-    [ "orxVECTOR_GREEN", "group__orx_vector.html#ga8b01c25bb39320c77bbbf2ea17e53121", null ],
-    [ "orxVECTOR_MAGENTA", "group__orx_vector.html#gad7deedc3eaffd713c743fa29be0143f9", null ],
-    [ "orxVECTOR_RED", "group__orx_vector.html#ga4d21972e46bbd1b8080869f1c3ba8d11", null ],
-    [ "orxVECTOR_WHITE", "group__orx_vector.html#ga3be932853f91805505cdf2beb4d43921", null ],
     [ "orxVECTOR_X", "group__orx_vector.html#gad26c9f30eb2ebab761abc31e3f5eafc2", null ],
     [ "orxVECTOR_Y", "group__orx_vector.html#ga1bd603a689d5973393dec83966aa18d8", null ],
-    [ "orxVECTOR_YELLOW", "group__orx_vector.html#ga0d08141fa0b5fd327c88ccc789761869", null ],
     [ "orxVECTOR_Z", "group__orx_vector.html#gafb49da17b1f47004004b7bdfb803fda1", null ]
 ];

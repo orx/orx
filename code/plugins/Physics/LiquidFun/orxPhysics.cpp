@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -83,6 +83,7 @@ namespace orxPhysics
 {
   static const orxU32   su32DefaultIterations   = 10;
   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+  static const orxFLOAT sfMinStepDuration       = orx2F(0.001f);
   static const orxU32   su32MessageBankSize     = 512;
   static const orxU32   su32BodyBankSize        = 512;
   static const orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
@@ -347,6 +348,9 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     {
       b2Body *poSource, *poDestination;
 
+      /* Clears it */
+      orxMemory_Zero(pstEventStorage, sizeof(orxPHYSICS_EVENT_STORAGE));
+
       /* Adds it to list */
       orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
@@ -410,6 +414,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     }
   }
 
+  /* Done! */
   return;
 }
 
@@ -418,6 +423,7 @@ void orxPhysicsContactListener::BeginContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_ADD);
 
+  /* Done! */
   return;
 }
 
@@ -426,6 +432,7 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_REMOVE);
 
+  /* Done! */
   return;
 }
 
@@ -898,16 +905,16 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
-        /* Uses it */
-        fCoef = (pstClockInfo->fModValue != orxFLOAT_0) ? orxFLOAT_1 / pstClockInfo->fModValue : orxFLOAT_0;
+        /* Updates coef */
+        fCoef = orxFLOAT_1 / fModifier;
       }
     }
 
@@ -1060,16 +1067,16 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
       /* Valid */
       if(pstClock != orxNULL)
       {
-        const orxCLOCK_INFO *pstClockInfo;
+        orxFLOAT fModifier;
 
-        /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(pstClock);
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-        /* Has multiplier? */
-        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
         {
           /* Uses it */
-          fCoef = pstClockInfo->fModValue;
+          fCoef = fModifier;
         }
       }
 
@@ -1138,7 +1145,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
     sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
 
     /* Computes the number of steps */
-    u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxMATH_KF_EPSILON) / sstPhysics.fFixedDT);
+    u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxPhysics::sfMinStepDuration) / sstPhysics.fFixedDT);
 
     /* Updates accumulator */
     sstPhysics.fDTAccumulator = orxMAX(orxFLOAT_0, sstPhysics.fDTAccumulator - (orxU2F(u32Steps) * sstPhysics.fFixedDT));
@@ -1161,11 +1168,15 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
     /* Not absolute fixed DT? */
     if(!orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT))
     {
-      /* Updates last step of world simulation */
-      sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1, sstPhysics.u32ParticleIterations);
+      /* Should run a last simulation step? */
+      if(sstPhysics.fDTAccumulator >= orxPhysics::sfMinStepDuration)
+      {
+        /* Updates last step of world simulation */
+        sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1, sstPhysics.u32ParticleIterations);
 
-      /* Clears accumulator */
-      sstPhysics.fDTAccumulator = orxFLOAT_0;
+        /* Clears accumulator */
+        sstPhysics.fDTAccumulator = orxFLOAT_0;
+      }
     }
 
     /* Clears forces */
@@ -2676,16 +2687,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyTorque(orxPHYSICS_BOD
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates torque */
-        fTorque *= (float32)pstClockInfo->fModValue;
+        fTorque *= (float32)fModifier;
       }
     }
   }
@@ -2710,7 +2721,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
   orxASSERT(_pvForce != orxNULL);
 
   /* Sets force */
-  vForce.Set(_pvForce->fX, _pvForce->fY);
+  vForce.Set(sstPhysics.fDimensionRatio * _pvForce->fX, sstPhysics.fDimensionRatio * _pvForce->fY);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody->poBody;
@@ -2729,16 +2740,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates force */
-        vForce *= (float32)(pstClockInfo->fModValue * pstClockInfo->fModValue);
+        vForce *= (float32)(fModifier * fModifier);
       }
     }
   }
@@ -2794,16 +2805,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyImpulse(orxPHYSICS_BO
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates impulse */
-        vImpulse *= (float32)pstClockInfo->fModValue;
+        vImpulse *= (float32)fModifier;
       }
     }
   }
@@ -3294,7 +3305,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
     fStepFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY);
 
     /* Deactivated? */
-    if(fStepFrequency < orxFLOAT_0)
+    if(fStepFrequency <= orxFLOAT_0)
     {
       /* Uses default frequency */
       sstPhysics.fFixedDT = orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
@@ -3302,13 +3313,13 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
     else
     {
       /* Stores fixed DT */
-      sstPhysics.fFixedDT = (fStepFrequency != orxFLOAT_0) ? orxFLOAT_1 / fStepFrequency : orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
+      sstPhysics.fFixedDT = orxFLOAT_1 / fStepFrequency;
 
       /* Updates status */
       orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT, orxPHYSICS_KU32_STATIC_FLAG_NONE);
 
       /* Should interpolate? */
-      if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE)
+      if((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE))
       {
         /* Updates status */
         orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE, orxPHYSICS_KU32_STATIC_FLAG_NONE);
@@ -3376,7 +3387,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       sstPhysics.u32ParticleIterations = sstPhysics.poWorld->CalculateReasonableParticleIterations(sstPhysics.fFixedDT);
 
       /* Gets core clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Resyncs clocks */
       orxClock_ResyncAll();

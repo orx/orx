@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -117,6 +117,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFX(orxFXP
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX);
+
+/** Removes all FXs
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveAllFXs(orxFXPOINTER *_pstFXPointer);
 
 /** Adds an FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer

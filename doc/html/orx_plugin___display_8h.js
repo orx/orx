@@ -38,6 +38,7 @@ var orx_plugin___display_8h =
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a618d76e814a5b5e7aa3bbb3d33b63855", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa692fa753cd4b971738b434058bade1f", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa35d79123513b6e51b89287f7b514395", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SHADER_ID", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa119e5baad364f848efca75546abbbc5", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a6757daa70c97abd8291373ff1cd2d392", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a92bed8869928b756ca47acc76f3489ef", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_FULL_SCREEN", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a0c267a57b705e543e31fd2defa316876", null ],

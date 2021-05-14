@@ -17,6 +17,13 @@ var group__orx_android =
       [ "u32KeyCode", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#a6f1cfa7e832d15bb3ba471e63f75d712", null ],
       [ "u32Type", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html#ae611d9a4f1194d30fc3696acecb54fa3", null ]
     ] ],
+    [ "orxANDROID_JOYSTICK_INFO", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html", [
+      [ "descriptor", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#a434ebb581221775c0eb76b3afc5144f7", null ],
+      [ "name", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#a9768eaad143fb1a5f08d25c62d9d78f5", null ],
+      [ "u32DeviceId", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#a1cb7a148e93fd488b265e39fe09940b8", null ],
+      [ "u32ProductId", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#abdae3b7830e6f10a48ed1ab6c3fa0771", null ],
+      [ "u32VendorId", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___i_n_f_o.html#a7a1d3265f9eec681aa76b232366b69e1", null ]
+    ] ],
     [ "orxANDROID_KEY_EVENT", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html", [
       [ "u32Action", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#ab4cad326be6bad13365c249bf5d9031c", null ],
       [ "u32KeyCode", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html#a673c71415d15ff8ff7e2ab6bb5ea72e6", null ],
@@ -45,11 +52,13 @@ var group__orx_android =
     [ "orxANDROID_EVENT_TYPE_JOYSTICK", "group__orx_android.html#ga735b7140687836fac5bdbcbbf017c548", null ],
     [ "orxANDROID_EVENT_TYPE_KEYBOARD", "group__orx_android.html#ga2571fc956eb158bdd227cc4477fd5e6c", null ],
     [ "orxANDROID_EVENT_TYPE_SURFACE", "group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81", null ],
+    [ "orxANDROID_KU32_MAX_JOYSTICK_NUMBER", "group__orx_android.html#ga6b733850fcd358e5fc35c4aca02abc69", null ],
     [ "orxAndroid_GetActivity", "group__orx_android.html#ga20a0d5ce4493d08bbd5a8e726c602ec0", null ],
     [ "orxAndroid_GetInternalStoragePath", "group__orx_android.html#gae61fe62bd38977850791da3eb9522237", null ],
     [ "orxAndroid_GetJNIEnv", "group__orx_android.html#gaf51bfa3c5118859198b0cd74a5003809", null ],
     [ "orxAndroid_GetNativeWindow", "group__orx_android.html#ga2655223eb8e84adf8378018f210c1604", null ],
-    [ "orxAndroid_JNI_GetDeviceIds", "group__orx_android.html#gabc76eaa5b17cbcf4e70dc1dcf58ef301", null ],
+    [ "orxAndroid_JNI_GetDeviceIds", "group__orx_android.html#gac041c786c6a37f3f1d56f6a27c8d1762", null ],
+    [ "orxAndroid_JNI_GetInputDevice", "group__orx_android.html#gaaf69b10a049059c72c7d26d7556ad8d8", null ],
     [ "orxAndroid_JNI_GetRotation", "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
     [ "orxAndroid_JNI_SetupThread", "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba", null ],
     [ "orxAndroid_PumpEvents", "group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367", null ],

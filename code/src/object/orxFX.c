@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -38,6 +38,7 @@
 #include "core/orxClock.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
+#include "display/orxDisplay.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -351,7 +352,7 @@ static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxFX *pstFX;
 
@@ -573,7 +574,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets FX ID */
-  stID = orxString_ToCRC(_zConfigID);
+  stID = orxString_Hash(_zConfigID);
 
   /* Search for reference */
   pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, stID);
@@ -684,7 +685,7 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
     && (_pstFX->zReference != orxSTRING_EMPTY))
     {
       /* Removes from hashtable */
-      orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
+      orxHashTable_Remove(sstFX.pstReferenceTable, orxString_Hash(_pstFX->zReference));
     }
 
     /* Deletes structure */
@@ -2534,7 +2535,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Gets its cycle period */
       fCyclePeriod = orxConfig_GetFloat(orxFX_KZ_CONFIG_PERIOD);
 
-      /* Gets it cycle phase and convert it from degress to radians */
+      /* Gets it cycle phase and convert it from degrees to radians */
       fCyclePhase = orxConfig_GetFloat(orxFX_KZ_CONFIG_PHASE);
 
       /* Gets its amplification */
@@ -2574,8 +2575,38 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         orxVECTOR vStartColor, vEndColor;
 
         /* Gets color values */
-        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
-        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+        {
+          const orxSTRING zColor;
+
+          /* Gets literal color */
+          zColor = orxConfig_GetString(orxFX_KZ_CONFIG_START_VALUE);
+
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vStartColor);
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+        {
+          const orxSTRING zColor;
+
+          /* Gets literal color */
+          zColor = orxConfig_GetString(orxFX_KZ_CONFIG_END_VALUE);
+
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vEndColor);
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
 
         /* Normalizes them */
         orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);
@@ -2760,7 +2791,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Config file does not have section named (%s).", _zSlotID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't find config section named (%s).", _zSlotID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -293,7 +293,7 @@ static orxINLINE void orxFont_CreateDefaultFont()
               sstFont.pstDefaultFont->zReference = orxFONT_KZ_DEFAULT_FONT_NAME;
 
               /* Adds it to reference table */
-              orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(sstFont.pstDefaultFont->zReference), sstFont.pstDefaultFont);
+              orxHashTable_Add(sstFont.pstReferenceTable, orxString_Hash(sstFont.pstDefaultFont->zReference), sstFont.pstDefaultFont);
 
               /* Updates its flags */
               orxStructure_SetFlags(sstFont.pstDefaultFont, orxFONT_KU32_FLAG_REFERENCED, orxFONT_KU32_FLAG_NONE);
@@ -408,6 +408,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           /* Sets it */
           if(orxFont_SetCharacterList(_pstFont, zCharacterList) != orxSTATUS_FAILURE)
           {
+            orxVECTOR vValue;
             orxFLOAT *afCharacterWidthList = orxNULL, fCharacterHeight;
             orxU32    u32CharacterCount;
 
@@ -417,33 +418,24 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             /* Gets character count */
             u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
-            /* Has origin/size? */
-            if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN) != orxFALSE)
-            && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+            /* Has origin / corner? */
+            if((orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN, &vValue) != orxNULL)
+            || (orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_CORNER, &vValue) != orxNULL))
             {
-              orxVECTOR vTextureOrigin, vTextureSize;
+              /* Applies it */
+              orxFont_SetOrigin(_pstFont, &vValue);
 
-              /* Gets both values */
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Updates them */
-              orxFont_SetOrigin(_pstFont, &vTextureOrigin);
-              orxFont_SetSize(_pstFont, &vTextureSize);
+              /* Updates size */
+              vValue.fX = orxMAX(orxFLOAT_0, _pstFont->fWidth - vValue.fX);
+              vValue.fY = orxMAX(orxFLOAT_0, _pstFont->fHeight - vValue.fY);
+              orxFont_SetSize(_pstFont, &vValue);
             }
-            /* Has corner/size? */
-            else if((orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
-                 && (orxConfig_HasValue(orxFONT_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
+
+            /* Has size? */
+            if(orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vValue) != orxNULL)
             {
-              orxVECTOR vTextureCorner, vTextureSize;
-
-              /* Gets both values */
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_CORNER, &vTextureCorner);
-              orxConfig_GetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize);
-
-              /* Updates them */
-              orxFont_SetOrigin(_pstFont, &vTextureCorner);
-              orxFont_SetSize(_pstFont, &vTextureSize);
+              /* Applies it */
+              orxFont_SetSize(_pstFont, &vValue);
             }
 
             /* Gets character spacing */
@@ -590,7 +582,7 @@ static orxSTATUS orxFASTCALL orxFont_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxFONT *pstFont;
 
@@ -897,7 +889,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT(_zConfigID != orxNULL);
 
   /* Search for font */
-  pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_ToCRC(_zConfigID));
+  pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_Hash(_zConfigID));
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -924,7 +916,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxFont_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
         {
           /* Adds it to reference table */
-          orxHashTable_Add(sstFont.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+          orxHashTable_Add(sstFont.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
         }
         else
         {
@@ -990,7 +982,7 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
     if(orxStructure_TestFlags(_pstFont, orxFONT_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstFont.pstReferenceTable, orxString_ToCRC(_pstFont->zReference));
+      orxHashTable_Remove(sstFont.pstReferenceTable, orxString_Hash(_pstFont->zReference));
     }
 
     /* Deletes structure */

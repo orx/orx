@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -30,9 +30,8 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "io/orxInput.h"
+
 #include "core/orxClock.h"
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
@@ -296,6 +295,28 @@ void orxFASTCALL orxInput_CommandHasNewStatus(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: HasBeenActivated
+ */
+void orxFASTCALL orxInput_CommandHasBeenActivated(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_HasBeenActivated(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Command: HasBeenDeactivated
+ */
+void orxFASTCALL orxInput_CommandHasBeenDeactivated(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxInput_HasBeenDeactivated(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the input commands
  */
 static orxINLINE void orxInput_RegisterCommands()
@@ -321,6 +342,10 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsActive, "Active?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasNewStatus */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasNewStatus, "NewStatus?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: HasBeenActivated */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenActivated, "BeenActivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: HasBeenDeactivated */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenDeactivated, "BeenDeactivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the input commands
@@ -348,6 +373,10 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, IsActive);
   /* Command: HasNewStatus */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasNewStatus);
+  /* Command: HasBeenActivated */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenActivated);
+  /* Command: HasBeenDeactivated */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenDeactivated);
 }
 
 static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThreshold, orxFLOAT _fMultiplier)
@@ -457,7 +486,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
       default:
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type [%d] is not recognized!", _eType);
 
         break;
       }
@@ -489,17 +518,45 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
     /* Selects set */
     if(orxInput_SelectSet(_zSetName) != orxSTATUS_FAILURE)
     {
+      orxU64  u64JoyIDs = 0;
       orxU32  eType;
       orxU32  i, u32Number;
-      orxCHAR acBuffer[128] = {};
+
+      /* Check */
+      orxASSERT(orxJOYSTICK_KU32_MAX_ID <= 8 * sizeof(u64JoyIDs));
 
       /* Updates result */
       pstResult = sstInput.pstCurrentSet;
 
+      /* For all defined joystick IDs */
+      for(u32Number = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST), i = 0; i < u32Number; i++)
+      {
+        orxU32 u32JoyID;
+
+        /* Gets it */
+        u32JoyID = orxConfig_GetListU32(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST, i);
+
+        /* Valid? */
+        if((u32JoyID >= orxJOYSTICK_KU32_MIN_ID) && (u32JoyID <= orxJOYSTICK_KU32_MAX_ID))
+        {
+          /* Updates joystick IDs */
+          u64JoyIDs |= ((orxU64)1) << (u32JoyID - 1);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "[%s]: Invalid value <%d> in input set's JoyIDList, valid range is [%u - %u], skipping.", _zSetName, u32JoyID, orxJOYSTICK_KU32_MIN_ID, orxJOYSTICK_KU32_MAX_ID);
+        }
+      }
+
       /* For all input types */
       for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
       {
-        orxU32 eMode;
+        orxU32  eMode;
+        orxBOOL bIsJoystick;
+
+        /* Updates status */
+        bIsJoystick = ((eType == orxINPUT_TYPE_JOYSTICK_AXIS) || (eType == orxINPUT_TYPE_JOYSTICK_BUTTON)) ? orxTRUE : orxFALSE;
 
         /* For all modes */
         for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
@@ -516,6 +573,36 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
             /* Valid? */
             if(zBinding != orxSTRING_EMPTY)
             {
+              orxCHAR acBuffer[64];
+
+              /* Is joystick and not defined? */
+              if((bIsJoystick != orxFALSE) && (orxConfig_HasValue(zBinding) == orxFALSE))
+              {
+                orxS32 s32Index, s32NextIndex;
+                orxU32 u32JoyID;
+
+                /* Finds last separator */
+                for (s32Index = orxString_SearchCharIndex(zBinding, '_', 0);
+                    (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(zBinding, '_', s32Index + 1)) > 0);
+                    s32Index = s32NextIndex)
+                  ;
+
+                /* Checks */
+                orxASSERT((s32Index > 0) && (s32Index < (orxS32)sizeof(acBuffer)));
+
+                /* Gets its ID */
+                orxString_ToU32(zBinding + s32Index + 1, &u32JoyID, orxNULL);
+
+                /* Defined? */
+                if(u64JoyIDs & (((orxU64)1) << (u32JoyID - 1)))
+                {
+                  /* Uses binding's base name */
+                  orxString_NCopy(acBuffer, zBinding, s32Index);
+                  acBuffer[s32Index] = orxCHAR_NULL;
+                  zBinding = acBuffer;
+                }
+              }
+
               /* For all defined inputs */
               for(u32Number = orxConfig_GetListCount(zBinding), i = 0; i < u32Number; i++)
               {
@@ -527,17 +614,19 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
                 /* Valid? */
                 if(zInput != orxSTRING_EMPTY)
                 {
+                  orxCHAR acBuffer[128];
+
                   /* Binds it */
                   if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
                   {
                     /* Gets threshold name */
-                    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
+                    acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, zInput)] = orxCHAR_NULL;
 
                     /* Stores threshold */
                     orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.fDefaultThreshold);
 
                     /* Gets multiplier name */
-                    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
+                    acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, zInput)] = orxCHAR_NULL;
 
                     /* Stores multiplier */
                     orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.fDefaultMultiplier);
@@ -982,6 +1071,7 @@ static orxINLINE void orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY
   /* Deletes it */
   orxBank_Free(_pstSet->pstEntryBank, _pstEntry);
 
+  /* Done! */
   return;
 }
 
@@ -1027,7 +1117,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating set name failed.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't retrieve input set's name for ID [%u].", _stSetID);
 
         /* Deletes its bank */
         orxBank_Delete(pstResult->pstEntryBank);
@@ -1042,7 +1132,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create input bank.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't allocate input set for ID [%u].", _stSetID);
 
       /* Deletes the set */
       orxBank_Free(sstInput.pstSetBank, pstResult);
@@ -1086,6 +1176,7 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   /* Removes set */
   orxBank_Free(sstInput.pstSetBank, _pstSet);
 
+  /* Done! */
   return;
 }
 
@@ -1104,7 +1195,7 @@ static orxSTATUS orxFASTCALL orxInput_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       /* Reloads input */
       orxInput_Load(orxNULL);
@@ -1137,6 +1228,7 @@ void orxFASTCALL orxInput_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_MOUSE);
   orxModule_AddOptionalDependency(orxMODULE_ID_INPUT, orxMODULE_ID_JOYSTICK);
 
+  /* Done! */
   return;
 }
 
@@ -1162,7 +1254,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
       orxCLOCK *pstClock;
 
       /* Gets core clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Valid? */
       if(pstClock != orxNULL)
@@ -1205,7 +1297,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize input module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Tried to initialize input module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -1243,7 +1335,7 @@ void orxFASTCALL orxInput_Exit()
     sstInput.pstSetBank = orxNULL;
 
     /* Gets core clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Valid? */
     if(pstClock != orxNULL)
@@ -1256,6 +1348,7 @@ void orxFASTCALL orxInput_Exit()
     orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_NONE, orxINPUT_KU32_STATIC_MASK_ALL);
   }
 
+  /* Done! */
   return;
 }
 
@@ -1347,7 +1440,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
   {
     orxU32            u32Index, u32PrefixLength;
     orxINPUT_SET     *pstSet;
-    orxCHAR           acBuffer[128] = {};
+    orxCHAR           acBuffer[128];
 
 #ifdef __orxMSVC__
 
@@ -1422,7 +1515,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
           if(pstEntry->fThreshold != sstInput.fDefaultThreshold)
           {
             /* Gets threshold name */
-            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, pstEntry->zName);
+            acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, pstEntry->zName)] = orxCHAR_NULL;
 
             /* Saves it */
             orxConfig_SetFloat(acBuffer, pstEntry->fThreshold);
@@ -1432,7 +1525,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
           if(pstEntry->fMultiplier != sstInput.fDefaultMultiplier)
           {
             /* Gets multiplier name */
-            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, pstEntry->zName);
+            acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, pstEntry->zName)] = orxCHAR_NULL;
 
             /* Saves it */
             orxConfig_SetFloat(acBuffer, pstEntry->fMultiplier);
@@ -1546,7 +1639,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Failed to create input set with parameters (%s, %d).", _zSetName, stSetID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create input set [%s].", _zSetName);
       }
     }
 
@@ -1626,7 +1719,7 @@ orxSTATUS orxFASTCALL orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEn
     orxSTRINGID   stSetID;
 
     /* Gets the set ID */
-    stSetID = orxString_ToCRC(_zSetName);
+    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1678,7 +1771,7 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
     orxSTRINGID   stSetID;
 
     /* Gets the set ID */
-    stSetID = orxString_ToCRC(_zSetName);
+    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1745,7 +1838,7 @@ orxBOOL orxFASTCALL orxInput_IsActive(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1786,7 +1879,7 @@ orxBOOL orxFASTCALL orxInput_HasBeenActivated(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1827,7 +1920,7 @@ orxBOOL orxFASTCALL orxInput_HasBeenDeactivated(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1868,7 +1961,7 @@ orxBOOL orxFASTCALL orxInput_HasNewStatus(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1909,7 +2002,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets its ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -1976,7 +2069,7 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2038,7 +2131,7 @@ orxSTATUS orxFASTCALL orxInput_SetPermanentValue(const orxSTRING _zInputName, or
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2099,7 +2192,7 @@ orxSTATUS orxFASTCALL orxInput_ResetValue(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2146,7 +2239,7 @@ orxFLOAT orxFASTCALL orxInput_GetThreshold(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2189,7 +2282,7 @@ orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOA
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2216,11 +2309,11 @@ orxSTATUS orxFASTCALL orxInput_SetThreshold(const orxSTRING _zInputName, orxFLOA
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult = -orxFLOAT_1;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -2233,7 +2326,7 @@ orxFLOAT orxFASTCALL orxInput_GetMultiplier(const orxSTRING _zInputName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2275,7 +2368,7 @@ orxSTATUS orxFASTCALL orxInput_SetMultiplier(const orxSTRING _zInputName, orxFLO
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zInputName);
+    stEntryID = orxString_Hash(_zInputName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2320,7 +2413,7 @@ orxSTATUS orxFASTCALL orxInput_SetCombineMode(const orxSTRING _zName, orxBOOL _b
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2373,7 +2466,7 @@ orxBOOL orxFASTCALL orxInput_IsInCombineMode(const orxSTRING _zName)
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2429,7 +2522,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     }
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2547,7 +2640,7 @@ orxSTATUS orxFASTCALL orxInput_Unbind(const orxSTRING _zName, orxS32 _s32Binding
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2753,7 +2846,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2811,7 +2904,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
     orxSTRINGID     stEntryID;
 
     /* Gets entry ID */
-    stEntryID = orxString_ToCRC(_zName);
+    stEntryID = orxString_Hash(_zName);
 
     /* For all entries */
     for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
@@ -2946,7 +3039,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type [%d] is not recognized!", _eType);
 
       break;
     }
@@ -2987,7 +3080,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
         if((_eType == orxINPUT_TYPE_MOUSE_AXIS) || (_eType == orxINPUT_TYPE_JOYSTICK_AXIS))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode <%d> is not recognized!", _eMode);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input mode [%d] is not recognized!", _eMode);
         }
 
         break;
@@ -3023,7 +3116,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
     orxSTRINGID stID;
 
     /* Gets binding ID */
-    stID = orxString_ToCRC(_zName);
+    stID = orxString_Hash(_zName);
 
     /* Valid? */
     if(stID != orxSTRINGID_UNDEFINED)
@@ -3048,7 +3141,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
             zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
 
             /* Found? */
-            if(orxString_ToCRC(zBinding) == stID)
+            if(orxString_Hash(zBinding) == stID)
             {
               /* Updates result */
               *_peType  = (orxINPUT_TYPE)eType;

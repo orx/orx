@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -78,20 +78,6 @@
 
   #endif /* __orxX86_64__ */
 
-  typedef float                   orxFLOAT;
-  typedef double                  orxDOUBLE;
-
-  typedef char                    orxCHAR;
-  #define orxSTRING               orxCHAR *
-  typedef orxU32                  orxSTRINGID;
-
-  typedef orxU32                  orxENUM;
-
-  #define orx2F(V)                ((orxFLOAT)(V))
-  #define orx2D(V)                ((orxDOUBLE)(V))
-
-  #define orxENUM_NONE            0xFFFFFFFF
-
   /* Compiler specific */
   #ifdef __orxGCC__
 
@@ -111,6 +97,20 @@
     typedef signed    __int64     orxS64;
 
   #endif /* __orxMSVC__ */
+
+  typedef float                   orxFLOAT;
+  typedef double                  orxDOUBLE;
+
+  typedef char                    orxCHAR;
+  #define orxSTRING               orxCHAR *
+  typedef orxU64                  orxSTRINGID;
+
+  typedef orxU32                  orxENUM;
+
+  #define orx2F(V)                ((orxFLOAT)(V))
+  #define orx2D(V)                ((orxDOUBLE)(V))
+
+  #define orxENUM_NONE            0xFFFFFFFF
 
 #else /* __orxWINDOWS__ */
 
@@ -154,7 +154,7 @@
 
     typedef char                  orxCHAR;
     #define orxSTRING             orxCHAR *
-    typedef orxU32                orxSTRINGID;
+    typedef orxU64                orxSTRINGID;
 
     typedef orxU32                orxENUM;
 

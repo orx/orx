@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -147,6 +147,8 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
     orxKEYBOARD_DECLARE_KEY_NAME(NUM_LOCK);
     orxKEYBOARD_DECLARE_KEY_NAME(PRINT_SCREEN);
     orxKEYBOARD_DECLARE_KEY_NAME(PAUSE);
+    orxKEYBOARD_DECLARE_KEY_NAME(VOLUME_DOWN);
+    orxKEYBOARD_DECLARE_KEY_NAME(VOLUME_UP);
     orxKEYBOARD_DECLARE_KEY_NAME(F1);
     orxKEYBOARD_DECLARE_KEY_NAME(F2);
     orxKEYBOARD_DECLARE_KEY_NAME(F3);

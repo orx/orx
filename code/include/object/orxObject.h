@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -457,34 +457,57 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
 
 /** Gets object's parent. See orxObject_SetParent() for a more detailed explanation.
- * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstObject      Concerned object
  * @return      Parent (object, spawner, camera or frame) / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT *_pstObject);
 
-/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+/** Gets object's first child object. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
- *
- * This function is typically used to iterate over the children of an object. For example:
+ * Note: this function will filter out any camera or spawner and retrieve the first child object.
+ * This function is typically used to iterate over the children objects of an object.
+ * For example:
  * @code
- * for(orxOBJECT *pstChild = orxOBJECT(orxObject_GetChild(pstObject));
+ * for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);
  *     pstChild != orxNULL;
- *     pstChild = orxOBJECT(orxObject_GetSibling(pstChild)))
+ *     pstChild = orxObject_GetSibling(pstChild))
  * {
- *     DoSomething(pstChild);
+ *     DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal
  * }
  * @endcode
- * @param[in]   _pstObject    Concerned object
- * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetChild(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *_pstObject);
 
-/** Gets object's next sibling. This function is typically used for iterating over the children of an object,
+/** Gets object's next sibling object. This function is typically used for iterating over the children objects of an object,
  * see orxObject_GetChild() for an iteration example.
- * @param[in]   _pstObject    Concerned object
- * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ * Note: this function will filter out any camera or spawner and retrieve the next sibling object.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Next sibling object / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetSibling(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+/** Gets object's next child structure of a given type (camera, object or spawner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * See orxObject_GetChild()/orxObject_GetSibling() if you want to only consider children objects.
+ * This function is typically used to iterate over the children of an object.
+ * For example, iterating over the immediate children cameras:
+ * @code
+ * for(orxCAMERA *pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, orxNULL, orxSTRUCTURE_ID_CAMERA));
+ *     pstChild != orxNULL;
+ *     pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, pstChild, orxSTRUCTURE_ID_CAMERA)))
+ * {
+ *     DoSomethingWithCamera(pstChild);
+ * }
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pChild         Concerned child to retrieve the next sibling, orxNULL to retrieve the first child
+ * @param[in]   _eStructureID   ID of the structure to consider (camera, spawner, object or frame)
+ * @return      Next child/sibling structure (camera, spawner, object or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJECT *_pstObject, void *_pChild, orxSTRUCTURE_ID _eStructureID);
 
 
 /** Attaches an object to a parent while maintaining the object's world position.
@@ -743,6 +766,12 @@ extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Adds an FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
 /** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this
  * function is the same as it with the delay argument set to 0.
  * @param[in]   _pstObject      Concerned object
@@ -751,6 +780,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObjec
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Adds a unique FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
 /** Adds a delayed FX using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
@@ -758,6 +793,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueFX(orxOBJECT *_ps
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+
+/** Adds a delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @param[in]   _bPropagate     Should the delay be incremented with each child application?
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate);
 
 /** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
  * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
@@ -770,12 +813,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
+/** Adds a unique delayed FX to an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @param[in]   _bPropagate    Should the delay be incremented with each child application?
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate);
+
 /** Removes an FX using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
+/** Removes an FX from an object and its children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_RemoveFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
+/** Removes all FXs.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXs(orxOBJECT *_pstObject);
 
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).
  * @param[in]   _pstObject      Concerned object
@@ -846,12 +909,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Stop(orxOBJECT *_pstObject
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
+/** Adds a shader to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
 /** Removes a shader using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
+/** Removes a shader from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -876,12 +951,24 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
+/** Adds a timeline track to an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
 /** Removes a timeline track using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Removes a timeline track from an object and its children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
 /** Enables an object's timeline.
  * @param[in]   _pstObject        Concerned object
@@ -1140,6 +1227,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJ
  * @return      orxOBJECT / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 /** @} */
 
 

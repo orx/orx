@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -846,7 +846,7 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlagValues(const orxSTRING _zFlags)
 }
 
 /** Get ignore flag names (beware: result won't persist from one call to the other)
- * @param[in]   _zFlags         Literal ignore flags
+ * @param[in]   _u32Flags       Literal ignore flags
  * @return Ignore flags names
  */
 const orxSTRING orxFASTCALL orxFrame_GetIgnoreFlagNames(orxU32 _u32Flags)

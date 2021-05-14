@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -129,7 +129,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orx
 
 /** Gets a random orxFLOAT value using step increments
  * @param[in]   _fMin                           Minimum boundary (inclusive)
- * @param[in]   _fMax                           Maximum boundary (exclusive)
+ * @param[in]   _fMax                           Maximum boundary (inclusive)
  * @param[in]   _fStep                          Step value, must be strictly positive
  * @return      Random value
  */

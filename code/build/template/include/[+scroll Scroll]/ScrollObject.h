@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -91,10 +91,10 @@ public:
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
                 orxBOOL                 IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
-                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
+                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxFALSE);
 
                 void                    AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
-                void                    AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive = orxTRUE);
+                void                    AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive = orxTRUE, orxBOOL _bPropagate = orxFALSE);
                 void                    RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddShader(const orxSTRING _zShaderName, orxBOOL _bRecursive = orxTRUE);

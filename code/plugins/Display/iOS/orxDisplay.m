@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,8 +36,14 @@
 
 #include "webp/decode.h"
 
+#ifdef __orxLLVM__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wsign-compare"
+#endif /* __orxLLVM__ */
+
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
+#define STBI_NO_THREAD_LOCALS
 #define STBI_NO_PSD
 #define STBI_NO_GIF
 #define STBI_NO_HDR
@@ -47,7 +53,7 @@
   #define STBI_NEON
 #endif /* __orxARM__ */
 #define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_VIDEO)
-#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz)
+#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBI_FREE(p)            orxMemory_Free(p)
 #include "stb_image.h"
 #undef STBI_FREE
@@ -61,20 +67,29 @@
 #undef STBI_NO_HDR
 #undef STBI_NO_GIF
 #undef STBI_NO_PSD
+#undef STBI_NO_THREAD_LOCALS
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
+#define STBI_WRITE_NO_STDIO
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)
-#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz)
+#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBIW_FREE(p)           orxMemory_Free(p)
 #define STBIW_MEMMOVE(a, b, sz) orxMemory_Move(a, b, sz)
+#define STBIW_ASSERT(x)         orxASSERT(x)
 #include "stb_image_write.h"
+#undef STBIW_ASSERT
 #undef STBIW_MEMMOVE
 #undef STBIW_FREE
 #undef STBIW_REALLOC
 #undef STBIW_MALLOC
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
+#undef STBI_WRITE_NO_STDIO
+
+#ifdef __orxLLVM__
+  #pragma clang diagnostic pop
+#endif /* __orxLLVM__ */
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -243,9 +258,9 @@ struct __orxBITMAP_t
 typedef struct __orxDISPLAY_SAVE_INFO_t
 {
   orxU8      *pu8ImageData;
+  orxHANDLE   hResource;
   orxU32      u32Width;
   orxU32      u32Height;
-  orxSTRINGID stFilenameID;
 
 } orxDISPLAY_SAVE_INFO;
 
@@ -570,7 +585,7 @@ static orxView *spoInstance;
       /* Shader support? */
       if(bShaderSupport != NO)
       {
-        /* Enables vextex attribute arrays */
+        /* Enables vertex attribute arrays */
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
         glASSERT();
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
@@ -578,7 +593,7 @@ static orxView *spoInstance;
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
 
-        /* Sets vextex attribute arrays */
+        /* Sets vertex attribute arrays */
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -683,7 +698,7 @@ static orxView *spoInstance;
         glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
         glASSERT();
 
-        /* Sets vextex attribute arrays */
+        /* Sets vertex attribute arrays */
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
         glASSERT();
         glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -800,8 +815,7 @@ static orxView *spoInstance;
   /* Success? */
   if(bResult != NO)
   {
-    orxVECTOR vFramebufferSize;
-    GLint     iWidth, iHeight;
+    GLint iWidth, iHeight;
 
     /* Links it to frame buffer */
     glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, uiRenderBuffer);
@@ -812,15 +826,6 @@ static orxView *spoInstance;
     glASSERT();
     glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
     glASSERT();
-
-    /* Pushes display section */
-    orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
-    /* Stores framebuffer size */
-    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
-
-    /* Pops config section */
-    orxConfig_PopSection();
 
     /* Uses depth buffer? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER))
@@ -1835,44 +1840,52 @@ static void orxFASTCALL orxDisplay_iOS_ReadResourceCallback(orxHANDLE _hResource
   orxResource_Close(_hResource);
 }
 
+static void orxDisplay_iOS_WriteResourceCallback(void *_pContext, void *_pData, int _iSize)
+{
+  /* Writes resource synchronously */
+  orxResource_Write((orxHANDLE)_pContext, (orxS64)_iSize, _pData, orxNULL, orxNULL);
+}
+
+
 static orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmapData(void *_pContext)
 {
   orxDISPLAY_SAVE_INFO *pstInfo;
-  const orxCHAR        *zExtension;
-  const orxSTRING       zFilename;
-  orxU32                u32Length;
+  const orxSTRING       zExtension;
   orxSTATUS             eResult = orxSTATUS_FAILURE;
 
   /* Gets save info */
   pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
 
-  /* Gets filename */
-  zFilename = orxString_GetFromID(pstInfo->stFilenameID);
-
-  /* Gets file name's length */
-  u32Length = orxString_GetLength(zFilename);
-
   /* Gets extension */
-  zExtension = (u32Length > 3) ? zFilename + u32Length - 3 : orxSTRING_EMPTY;
+  zExtension = orxString_GetExtension(orxResource_GetLocation(pstInfo->hResource));
 
   /* PNG? */
   if(orxString_ICompare(zExtension, "png") == 0)
   {
     /* Saves image to disk */
-    eResult = stbi_write_png(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_png_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* JPG? */
+  if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_jpg_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   /* BMP? */
   else if(orxString_ICompare(zExtension, "bmp") == 0)
   {
     /* Saves image to disk */
-    eResult = stbi_write_bmp(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_bmp_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   /* TGA */
   else
   {
     /* Saves image to disk */
-    eResult = stbi_write_tga(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_tga_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
+
+  /* Closes resource */
+  orxResource_Close(pstInfo->hResource);
 
   /* Deletes data */
   orxMemory_Free(pstInfo->pu8ImageData);
@@ -3705,7 +3718,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformBitmap(const orxBITMAP *_pstSrc, c
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)
 {
   orxU32    u32BufferSize;
   orxU8    *pu8ImageData;
@@ -3714,7 +3727,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_zFilename != orxNULL);
+  orxASSERT(_zFileName != orxNULL);
 
   /* Gets buffer size */
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
@@ -3730,20 +3743,33 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
     /* Gets bitmap data */
     if(orxDisplay_iOS_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      /* Allocates save info */
-      pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
+      const orxSTRING zResourceLocation;
+      orxHANDLE       hResource;
 
-      /* Valid? */
-      if(pstInfo != orxNULL)
+      /* Valid file to open? */
+      if(((zResourceLocation = orxResource_LocateInStorage(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, _zFileName)) != orxNULL)
+      && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
       {
-        /* Inits it */
-        pstInfo->pu8ImageData   = pu8ImageData;
-        pstInfo->stFilenameID   = orxString_GetID(_zFilename);
-        pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
-        pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
+        /* Allocates save info */
+        pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
 
-        /* Runs asynchronous task */
-        eResult = orxThread_RunTask(&orxDisplay_iOS_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
+        /* Valid? */
+        if(pstInfo != orxNULL)
+        {
+          /* Inits it */
+          pstInfo->pu8ImageData   = pu8ImageData;
+          pstInfo->hResource      = hResource;
+          pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
+          pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
+
+          /* Runs asynchronous task */
+          eResult = orxThread_RunTask(&orxDisplay_iOS_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
+        }
+        else
+        {
+          /* Closes resource */
+          orxResource_Close(hResource);
+        }
       }
     }
 
@@ -3793,7 +3819,7 @@ const orxBITMAP *orxFASTCALL orxDisplay_iOS_GetTempBitmap()
   return pstResult;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
+orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFileName)
 {
   const orxSTRING zResourceLocation;
   orxBITMAP      *pstBitmap = orxNULL;
@@ -3802,7 +3828,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Locates resource */
-  zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+  zResourceLocation = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFileName);
 
   /* Success? */
   if(zResourceLocation != orxNULL)
@@ -3816,7 +3842,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFilename)
       /* Inits it */
       pstBitmap->bSmoothing     = sstDisplay.bDefaultSmoothing;
       pstBitmap->zLocation      = zResourceLocation;
-      pstBitmap->stFilenameID   = orxString_GetID(_zFilename);
+      pstBitmap->stFilenameID   = orxString_GetID(_zFileName);
       pstBitmap->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
@@ -4028,7 +4054,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   /* Shader support? */
   if([sstDisplay.poView bShaderSupport] != NO)
   {
-    /* Enables vextex attribute arrays */
+    /* Enables vertex attribute arrays */
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX);
     glASSERT();
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD);
@@ -4036,7 +4062,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
     glEnableVertexAttribArray(orxDISPLAY_ATTRIBUTE_LOCATION_COLOR);
     glASSERT();
 
-    /* Sets vextex attribute arrays */
+    /* Sets vertex attribute arrays */
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_VERTEX, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fX));
     glASSERT();
     glVertexAttribPointer(orxDISPLAY_ATTRIBUTE_LOCATION_TEXCOORD, 2, GL_FLOAT, GL_FALSE, sizeof(orxDISPLAY_VERTEX), &(sstDisplay.astVertexList[0].fU));
@@ -4080,15 +4106,15 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_
   ? orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, sstDisplay.fLastOrthoBottom, orxFLOAT_0, -orxFLOAT_1, orxFLOAT_1)
   : orxDisplay_iOS_OrthoProjMatrix(&(sstDisplay.mProjectionMatrix), orxFLOAT_0, sstDisplay.fLastOrthoRight, orxFLOAT_0, -sstDisplay.fLastOrthoBottom, -orxFLOAT_1, orxFLOAT_1);
 
+  /* Passes it to shader */
+  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
+
   /* Clears cache */
   sstDisplay.stLastColor          = orx2RGBA(0x00, 0x00, 0x00, 0x00);
   sstDisplay.iLastViewportX       = 0;
   sstDisplay.iLastViewportY       = 0;
   sstDisplay.iLastViewportWidth   = 0;
   sstDisplay.iLastViewportHeight  = 0;
-
-  /* Passes it to shader */
-  glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
 
   /* Clears last blend mode */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
@@ -4133,7 +4159,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
     sstDisplay.stSTBICallbacks.eof  = orxDisplay_iOS_EOFSTBICallback;
 
     /* Registers update function */
-    eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
+    eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
@@ -4159,6 +4185,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       && (sstDisplay.pstShaderBank != orxNULL))
       {
         orxDISPLAY_EVENT_PAYLOAD  stPayload;
+        orxVECTOR                 vFramebufferSize;
         GLint                     iWidth, iHeight;
 
         /* Pushes display section */
@@ -4191,6 +4218,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
         glASSERT();
+
+        /* Stores framebuffer size */
+        orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
@@ -4306,7 +4336,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         }
 
         /* Unregisters update function */
-        orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -4332,7 +4362,7 @@ void orxFASTCALL orxDisplay_iOS_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
 
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxDisplay_iOS_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
 
     /* Deletes default shaders */
     orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);
@@ -4695,6 +4725,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_StopShader(orxHANDLE _hShader)
     {
       /* Don't reset shader */
       bResetShader = orxFALSE;
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -4978,6 +5011,25 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SetShaderVector(orxHANDLE _hShader, orxS32 
   return eResult;
 }
 
+orxU32 orxFASTCALL orxDisplay_iOS_GetShaderID(const orxHANDLE _hShader)
+{
+  orxDISPLAY_SHADER  *pstShader;
+  orxU32              u32Result;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Updates result */
+  u32Result = (orxU32)pstShader->uiProgram;
+
+  /* Done! */
+  return u32Result;
+}
+
 
 /***************************************************************************
  * Plugin Related                                                          *
@@ -5021,6 +5073,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetParameterID, DISPLAY, GET_PAR
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetShaderID, DISPLAY, GET_SHADER_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

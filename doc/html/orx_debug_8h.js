@@ -33,7 +33,7 @@ var orx_debug_8h =
     [ "orxDEBUG_PRINT", "group__orx_debug.html#ga4749ff81bc0a51e8a3fd3256205af3e2", null ],
     [ "orxDEBUG_SET_FLAGS", "group__orx_debug.html#gaf00cf24f2d5881602fa5e1eb0e3f7cf0", null ],
     [ "orxDEBUG_SET_LOG_CALLBACK", "group__orx_debug.html#ga8a6844ca5481ba8c064d8eed5c641d2b", null ],
-    [ "orxDEBUG_SETBASEFILENAME", "group__orx_debug.html#gaf759a250e945c1f6e3f7014b305cb50a", null ],
+    [ "orxDEBUG_SETBASEFILENAME", "group__orx_debug.html#ga68b2aaefbe68c1562a4345bac9a0bce1", null ],
     [ "orxDEBUG_SETDEBUGFILE", "group__orx_debug.html#ga90a2d4e5b531f4d44e0faebd2ecccb8e", null ],
     [ "orxDEBUG_SETLOGFILE", "group__orx_debug.html#gae976ea28bfe7551c5ec24a441e80b805", null ],
     [ "orxDEBUG_CALLBACK_FUNCTION", "group__orx_debug.html#gae0b8709d32707d5377660d1dbc6435f8", null ],

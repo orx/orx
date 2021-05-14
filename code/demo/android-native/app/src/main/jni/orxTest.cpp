@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -71,6 +71,8 @@ static orxSTATUS orxFASTCALL Init() {
     /* Registers event handler */
     orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
 
+    orxLOG("Application save directory: %s", orxFile_GetApplicationSaveDirectory(orxNULL));
+
     /* Done! */
     return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
@@ -111,8 +113,7 @@ static orxSTATUS orxFASTCALL Run() {
         orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
 
         /* Updates camera rotation */
-        orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxMATH_KF_PI_BY_2
-                +orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
+        orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
     }
 
     // Is quit action active?

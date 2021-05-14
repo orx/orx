@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -30,9 +30,8 @@
  */
 
 
-#include "orxInclude.h"
-
 #include "core/orxEvent.h"
+
 #include "core/orxThread.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
@@ -76,6 +75,7 @@ typedef struct __orxEVENT_HANDLER_INFO_t
  */
 typedef struct __orxEVENT_HANDLER_STORAGE_t
 {
+  orxU8       au8HandledIDList[32];
   orxLINKLIST stList;
   orxBANK    *pstBank;
 
@@ -314,7 +314,26 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
       pstInfo->u32IDFlags = orxEVENT_KU32_MASK_ID_ALL;
 
       /* Adds it to the list */
-      eResult = orxLinkList_AddEnd(&(pstStorage->stList), &(pstInfo->stNode));
+      if(orxLinkList_AddEnd(&(pstStorage->stList), &(pstInfo->stNode)) != orxSTATUS_FAILURE)
+      {
+        /* For all IDs */
+        for(orxU32 i = 0; i < 32; i++)
+        {
+          /* Checks */
+          orxASSERT(pstStorage->au8HandledIDList[i] < 255);
+
+          /* Updates ID tracking */
+          pstStorage->au8HandledIDList[i]++;
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Frees handler info */
+        orxBank_Free(pstStorage->pstBank, pstInfo);
+      }
     }
   }
 
@@ -378,6 +397,25 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventTyp
         /* Frees it */
         orxBank_Free(pstStorage->pstBank, pstInfo);
 
+        /* For all IDs */
+        for(orxU32 i = 0; i < 32; i++)
+        {
+          orxU32 u32ID;
+
+          /* Gets it */
+          u32ID = (orxU32)(1 << i);
+
+          /* Should be removed? */
+          if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
+          {
+            /* Checks */
+            orxASSERT(pstStorage->au8HandledIDList[i] > 0);
+
+            /* Updates ID tracking */
+            pstStorage->au8HandledIDList[i]--;
+          }
+        }
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
 
@@ -435,6 +473,38 @@ orxSTATUS orxFASTCALL orxEvent_SetHandlerIDFlags(orxEVENT_HANDLER _pfnEventHandl
       && ((_pContext == orxNULL)
        || (_pContext == _pfnEventHandler)))
       {
+        /* For all IDs */
+        for(orxU32 i = 0; i < 32; i++)
+        {
+          orxU32 u32ID;
+
+          /* Gets it */
+          u32ID = (orxU32)(1 << i);
+
+          /* Should be removed? */
+          if(orxFLAG_TEST(_u32RemoveIDFlags, u32ID) && orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
+          {
+            /* Shouldn't be added back? */
+            if(!orxFLAG_TEST(_u32AddIDFlags, u32ID))
+            {
+              /* Checks */
+              orxASSERT(pstStorage->au8HandledIDList[i] > 0);
+
+              /* Updates ID tracking */
+              pstStorage->au8HandledIDList[i]--;
+            }
+          }
+          /* Should be added? */
+          else if(orxFLAG_TEST(_u32AddIDFlags, u32ID) && !orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
+          {
+            /* Checks */
+            orxASSERT(pstStorage->au8HandledIDList[i] < 255);
+
+            /* Updates ID tracking */
+            pstStorage->au8HandledIDList[i]++;
+          }
+        }
+
         /* Updates its ID flags */
         orxFLAG_SET(pstInfo->u32IDFlags, _u32AddIDFlags, _u32RemoveIDFlags);
 
@@ -470,8 +540,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
   /* Valid? */
   if(pstStorage != orxNULL)
   {
-    /* Has handler(s)? */
-    if(orxLinkList_GetCount(&(pstStorage->stList)) != 0)
+    /* Should handle this ID? */
+    if(pstStorage->au8HandledIDList[_pstEvent->eID] != 0)
     {
       orxEVENT_HANDLER_INFO  *pstInfo;
       orxU32                  u32IDFlag, u32CurrentThread;
