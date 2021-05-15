@@ -2,7 +2,6 @@ cache/
 code/bin/
 code/build/
 extern/
-code/demo/
 code/include/base/orxBuild\.h
 code/lib/
 tools/orxCrypt/bin/
