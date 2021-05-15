@@ -15,7 +15,11 @@ tools/**/lib
 tutorial/bin
 tutorial/build
 tutorial/lib
+android*/**/.external*
 android*/**/.gradle
 android*/**/.idea
-android*/**/.external*
+android*/**/app/build
+android*/**/captures
+android*/**/local.properties
+android*/**/*.cxx
 android*/**/*.iml
