@@ -131,8 +131,8 @@ void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstConte
     /* Is normal input active? */
     else if(orxInput_IsActive("Normal"))
     {
-      /* Removes modifier from this clock */
-      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_NONE, orxFLOAT_0);
+      /* Clears multiply modifier from this clock */
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orxFLOAT_0);
     }
   }
 }
