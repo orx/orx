@@ -5,7 +5,7 @@ def orx = System.getenv('ORX') ?: "../../.."
 android {
   compileSdkVersion sdkVersion.toInteger()
 
-  ndkVersion "21.3.6528147"
+  ndkVersion "22.1.7171670"
 
   defaultConfig {
     applicationId "org.orxproject.orxtestnative"
@@ -14,6 +14,7 @@ android {
     versionName "1.0"
 
     minSdkVersion 17
+    vectorDrawables.useSupportLibrary = true
 
     ndk {
       abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
