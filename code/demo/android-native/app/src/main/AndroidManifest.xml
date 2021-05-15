@@ -6,7 +6,8 @@
 
     <application android:allowBackup="false"
         android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@drawable/ic_launcher_round"
         android:theme="@style/AppTheme">
 
         <!-- Our activity is the built-in NativeActivity framework class.

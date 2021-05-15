@@ -7,7 +7,7 @@ android {
 
   // NDK: https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
   // Verify result of ndk_locator in android/app/.cxx/ndk_locator_record_*.log
-  ndkVersion "21.3.6528147"
+  ndkVersion "22.1.7171670"
 
   defaultConfig {
     applicationId "org.orxproject.orxtest"
@@ -16,6 +16,7 @@ android {
     versionName "1.0"
 
     minSdkVersion 17
+    vectorDrawables.useSupportLibrary = true
 
     ndk {
       abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
@@ -63,12 +64,8 @@ android {
   }
 }
 
-repositories {
-  maven { url 'https://maven.google.com' }
-}
-
 dependencies {
-  implementation 'androidx.fragment:fragment:1.3.1'
+  implementation 'androidx.fragment:fragment:1.3.3'
 
   implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
