@@ -180,7 +180,7 @@ void orxFASTCALL orxObject_##FUNCTION##Recursive(orxOBJECT *_pstObject, PARAM_TY
   /* Updates object */                                                                      \
   orxObject_##FUNCTION(_pstObject, _Param);                                                 \
                                                                                             \
-  /* For all its owned children */                                                                \
+  /* For all its owned children */                                                          \
   for(pstChild = orxObject_GetOwnedChild(_pstObject);                                       \
       pstChild != orxNULL;                                                                  \
       pstChild = orxObject_GetOwnedSibling(pstChild))                                       \
