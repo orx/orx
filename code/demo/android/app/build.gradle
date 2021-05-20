@@ -3,72 +3,70 @@ apply plugin: 'com.android.application'
 def orx = System.getenv('ORX') ?: "../../.."
 
 android {
-  compileSdkVersion sdkVersion.toInteger()
+    compileSdkVersion sdkVersion.toInteger()
 
-  // NDK: https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-  // Verify result of ndk_locator in android/app/.cxx/ndk_locator_record_*.log
-  ndkVersion "21.3.6528147"
+    // NDK: https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
+    // Verify result of ndk_locator in android/app/.cxx/ndk_locator_record_*.log
+    ndkVersion "22.1.7171670"
 
-  defaultConfig {
-    applicationId "org.orxproject.orxtest"
-    targetSdkVersion sdkVersion.toInteger()
-    versionCode 1
-    versionName "1.0"
+    defaultConfig {
+        applicationId "org.orxproject.orxtest"
+        targetSdkVersion sdkVersion.toInteger()
+        versionCode 1
+        versionName "1.0"
 
-    minSdkVersion 17
+        minSdkVersion 17
+        vectorDrawables.useSupportLibrary = true
 
-    ndk {
-      abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+        ndk {
+            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+        }
     }
-  }
 
-  lintOptions {
-    abortOnError true
-    warningsAsErrors true
-  }
-
-  buildTypes {
-    release {
-      debuggable false
-      shrinkResources true
-      minifyEnabled true
-
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    lintOptions {
+        abortOnError true
+        warningsAsErrors true
+        disable 'GradleDependency'
     }
-    debug {
-      debuggable true
-      shrinkResources false
-      minifyEnabled false
+
+    buildTypes {
+        release {
+            debuggable false
+            shrinkResources true
+            minifyEnabled true
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            shrinkResources false
+            minifyEnabled false
+        }
     }
-  }
 
-  aaptOptions {
-    ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
-  }
-
-  externalNativeBuild {
-    ndkBuild {
-      path 'src/main/jni/Android.mk'
+    aaptOptions {
+        ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
     }
-  }
 
-  sourceSets {
-    main {
-      java.srcDirs += ["${orx}/build/android/java"]
-
-      // For custom apps, you should have resources in some parent folder with orx data.
-      // E.g. '../../../data'
-      assets.srcDirs = ['./src/main/assets']
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
     }
-  }
-}
 
-repositories {
-  maven { url 'https://maven.google.com' }
+    sourceSets {
+        main {
+            java.srcDirs += ["${orx}/build/android/java"]
+
+            // For custom apps, you should have resources in some parent folder with orx data.
+            // E.g. '../../../data'
+            assets.srcDirs = ['./src/main/assets']
+        }
+    }
 }
 
 dependencies {
-  implementation 'androidx.fragment:fragment:1.3.1'
+    implementation 'androidx.fragment:fragment:1.3.3'
 
-  implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 }

@@ -764,15 +764,13 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     } orxFX_VALUE;
 
     orxFX_VALUE astValueList[orxFX_TYPE_NUMBER];
-    orxU32      i;
     orxCOLOR    stObjectColor;
-    orxBOOL     abLockList[orxFX_TYPE_NUMBER], abUpdateList[orxFX_TYPE_NUMBER], bFirstCall;
-    orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
+    orxU32      u32LockFlags = 0, u32UpdateFlags = 0, i;
     orxFLOAT    fRecDuration;
+    orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
+    orxBOOL     bFirstCall;
 
-    /* Clears lock, upates and values */
-    orxMemory_Zero(abLockList, orxFX_TYPE_NUMBER * sizeof(orxBOOL));
-    orxMemory_Zero(abUpdateList, orxFX_TYPE_NUMBER * sizeof(orxBOOL));
+    /* Clears values */
     orxMemory_Zero(astValueList, orxFX_TYPE_NUMBER * sizeof(struct __orxFX_VALUE_t));
     orxVector_SetAll(&(astValueList[orxFX_TYPE_SCALE].vValue), orxFLOAT_1);
 
@@ -850,7 +848,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
           eFXType = orxFX_GetSlotType(pstFXSlot);
 
           /* Is FX type not blocked? */
-          if(abLockList[eFXType] == orxFALSE)
+          if(!orxFLAG_TEST(u32LockFlags, (1 << eFXType)))
           {
             orxFLOAT fPeriod, fFrequency, fStartCoef, fEndCoef;
 
@@ -1156,7 +1154,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   astValueList[eFXType].fValue = orxLERP(pstFXSlot->fStartValue, pstFXSlot->fEndValue, fEndCoef);
 
                   /* Locks it */
-                  abLockList[eFXType] = orxTRUE;
+                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
                 }
                 else
                 {
@@ -1182,7 +1180,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 }
 
                 /* Updates status */
-                abUpdateList[eFXType] = orxTRUE;
+                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
 
                 break;
               }
@@ -1201,7 +1199,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                     orxVector_Lerp(&(astValueList[orxFX_TYPE_RGB].vValue), &(pstFXSlot->vStartValue), &(pstFXSlot->vEndValue), fEndCoef);
 
                     /* Locks it */
-                    abLockList[orxFX_TYPE_RGB] = abLockList[orxFX_TYPE_HSL] = abLockList[orxFX_TYPE_HSV] = orxTRUE;
+                    orxFLAG_SET(u32LockFlags, ((1 << orxFX_TYPE_RGB) | (1 << orxFX_TYPE_HSL) | (1 << orxFX_TYPE_HSV)), 0);
                   }
                   else
                   {
@@ -1264,7 +1262,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   }
 
                   /* Locks it */
-                  abLockList[eFXType] = orxTRUE;
+                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
                 }
                 else
                 {
@@ -1309,7 +1307,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 }
 
                 /* Updates status */
-                abUpdateList[eFXType] = orxTRUE;
+                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
 
                 break;
               }
@@ -1322,8 +1320,18 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   /* Overrides values */
                   orxVector_Lerp(&(astValueList[eFXType].vValue), &(pstFXSlot->vStartValue), &(pstFXSlot->vEndValue), fEndCoef);
 
+                  /* Makes sure we have valid values */
+                  if(astValueList[eFXType].vValue.fX == orxFLOAT_0)
+                  {
+                    astValueList[eFXType].vValue.fX = orx2F(0.000001f);
+                  }
+                  if(astValueList[eFXType].vValue.fY == orxFLOAT_0)
+                  {
+                    astValueList[eFXType].vValue.fY = orx2F(0.000001f);
+                  }
+
                   /* Locks it */
-                  abLockList[eFXType] = orxTRUE;
+                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
                 }
                 else
                 {
@@ -1339,9 +1347,6 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                   {
                     /* Gets start value */
                     orxVector_Lerp(&vStartScale, &(pstFXSlot->vStartValue), &(pstFXSlot->vEndValue), fStartCoef);
-
-                    /* Neutralizes Z scale */
-                    vStartScale.fZ = orxFLOAT_1;
 
                     /* Makes sure we have valid values */
                     if(vStartScale.fX == orxFLOAT_0)
@@ -1372,7 +1377,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
                 }
 
                 /* Updates scale status */
-                abUpdateList[eFXType] = orxTRUE;
+                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
 
                 break;
               }
@@ -1396,16 +1401,16 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Global color update? */
-    if((abUpdateList[orxFX_TYPE_ALPHA] != orxFALSE)
+    if((orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
     || (eColorBlendUpdate != orxFX_TYPE_NONE))
     {
       orxCOLOR stColor;
 
       /* Update alpha? */
-      if(abUpdateList[orxFX_TYPE_ALPHA] != orxFALSE)
+      if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
       {
         /* Non absolute? */
-        if(abLockList[orxFX_TYPE_ALPHA] == orxFALSE)
+        if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_ALPHA)))
         {
           /* Updates alpha with previous one */
           stColor.fAlpha = astValueList[orxFX_TYPE_ALPHA].fValue + stObjectColor.fAlpha;
@@ -1425,8 +1430,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       /* Update color blend? */
       if(eColorBlendUpdate != orxFX_TYPE_NONE)
       {
-        /* Non absolute */
-        if(abLockList[orxFX_TYPE_RGB] == orxFALSE)
+        /* Non absolute? */
+        if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_RGB)))
         {
           /* HSL? */
           if(eColorBlendUpdate == orxFX_TYPE_HSL)
@@ -1501,10 +1506,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update rotation? */
-    if(abUpdateList[orxFX_TYPE_ROTATION] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ROTATION)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_ROTATION] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_ROTATION)))
       {
         /* Updates rotation with previous one */
         astValueList[orxFX_TYPE_ROTATION].fValue += orxObject_GetRotation(_pstObject);
@@ -1515,10 +1520,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update scale? */
-    if(abUpdateList[orxFX_TYPE_SCALE] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_SCALE)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_SCALE] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_SCALE)))
       {
         orxVECTOR vObjectScale;
 
@@ -1534,10 +1539,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update translation? */
-    if(abUpdateList[orxFX_TYPE_POSITION] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_POSITION)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_POSITION] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_POSITION)))
       {
         orxVECTOR vObjectPosition;
 
@@ -1550,10 +1555,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update speed? */
-    if(abUpdateList[orxFX_TYPE_SPEED] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_SPEED)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_SPEED] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_SPEED)))
       {
         orxVECTOR vObjectSpeed;
 
@@ -1566,10 +1571,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update volume? */
-    if(abUpdateList[orxFX_TYPE_VOLUME] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_VOLUME)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_VOLUME] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_VOLUME)))
       {
         orxSOUND *pstSound;
 
@@ -1589,10 +1594,10 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update pitch? */
-    if(abUpdateList[orxFX_TYPE_PITCH] != orxFALSE)
+    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_PITCH)))
     {
       /* Non absolute? */
-      if(abLockList[orxFX_TYPE_PITCH] == orxFALSE)
+      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_PITCH)))
       {
         orxSOUND *pstSound;
 
