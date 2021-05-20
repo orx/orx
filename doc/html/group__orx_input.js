@@ -19,7 +19,6 @@ var group__orx_input =
     [ "orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD", "group__orx_input.html#ga7948bfb78497b11dd9dc28cfcaf0c6d7", null ],
     [ "orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST", "group__orx_input.html#gaa09530193cf0f7c3acf1f28f47345a75", null ],
     [ "orxINPUT_KZ_CONFIG_SECTION", "group__orx_input.html#gac8e1119e7d86bc7238e6e9d646f7a028", null ],
-    [ "orxINPUT_KZ_CONFIG_SET_LIST", "group__orx_input.html#ga81743020199c66daff943fc0a95398e9", null ],
     [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
       [ "orxINPUT_EVENT_ON", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809", null ],

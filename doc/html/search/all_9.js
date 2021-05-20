@@ -1142,7 +1142,6 @@ var searchData=
   ['orxinput_5fkz_5fconfig_5fdefault_5fthreshold',['orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD',['../group__orx_input.html#ga7948bfb78497b11dd9dc28cfcaf0c6d7',1,'orxInput.h']]],
   ['orxinput_5fkz_5fconfig_5fjoystick_5fid_5flist',['orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST',['../group__orx_input.html#gaa09530193cf0f7c3acf1f28f47345a75',1,'orxInput.h']]],
   ['orxinput_5fkz_5fconfig_5fsection',['orxINPUT_KZ_CONFIG_SECTION',['../group__orx_input.html#gac8e1119e7d86bc7238e6e9d646f7a028',1,'orxInput.h']]],
-  ['orxinput_5fkz_5fconfig_5fset_5flist',['orxINPUT_KZ_CONFIG_SET_LIST',['../group__orx_input.html#ga81743020199c66daff943fc0a95398e9',1,'orxInput.h']]],
   ['orxinput_5fkz_5finternal_5fset_5fprefix',['orxINPUT_KZ_INTERNAL_SET_PREFIX',['../group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32',1,'orxInput.h']]],
   ['orxinput_5fload',['orxInput_Load',['../group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb',1,'orxInput.h']]],
   ['orxinput_5fmode',['orxINPUT_MODE',['../group__orx_input.html#ga792a36e293073c41ca434b9d6afd30e5',1,'orxInput.h']]],
