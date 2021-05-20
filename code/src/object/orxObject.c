@@ -180,7 +180,7 @@ void orxFASTCALL orxObject_##FUNCTION##Recursive(orxOBJECT *_pstObject, PARAM_TY
   /* Updates object */                                                                      \
   orxObject_##FUNCTION(_pstObject, _Param);                                                 \
                                                                                             \
-  /* For all its children */                                                                \
+  /* For all its owned children */                                                          \
   for(pstChild = orxObject_GetOwnedChild(_pstObject);                                       \
       pstChild != orxNULL;                                                                  \
       pstChild = orxObject_GetOwnedSibling(pstChild))                                       \
@@ -5699,7 +5699,7 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
   return;
 }
 
-/** Enables/disables an object and all its children.
+/** Enables/disables an object and all its owned children.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable
  */
@@ -5758,7 +5758,7 @@ void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
   return;
 }
 
-/** Pauses/unpauses an object and all its children.
+/** Pauses/unpauses an object and all its owned children.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
  */
@@ -5815,10 +5815,10 @@ void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
 }
 
 /** Sets owner for an object. Ownership in Orx is only about lifetime management. That is, when an object
- * dies, it also kills its children. Compare this with orxObject_SetParent().
+ * dies, it also kills its owned children. Compare this with orxObject_SetParent().
  *
  * Note that the "ChildList" field of an object's config section implies two things; that the object is both
- * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an
+ * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its owned children. There is an
  * exception to this though; when an object's child has a parent camera, the object is only the owner, and
  * the camera is the parent.
  * @param[in]   _pstObject    Concerned object
@@ -7639,7 +7639,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
   return eResult;
 }
 
-/** Sets the relative animation frequency for an object and its children.
+/** Sets the relative animation frequency for an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -7712,7 +7712,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxS
   return eResult;
 }
 
-/** Sets current animation for an object and its children.
+/** Sets current animation for an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -7754,7 +7754,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxST
   return eResult;
 }
 
-/** Sets target animation for an object and its children.
+/** Sets target animation for an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -8485,7 +8485,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
   return eResult;
 }
 
-/** Adds an FX to an object and its children.
+/** Adds an FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  */
@@ -8513,7 +8513,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRI
   return eResult;
 }
 
-/** Adds a unique FX to an object and its children.
+/** Adds a unique FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  */
@@ -8585,7 +8585,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
   return eResult;
 }
 
-/** Adds a delayed FX to an object and its children.
+/** Adds a delayed FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
@@ -8606,7 +8606,7 @@ void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const or
   /* Updates object */
   orxObject_AddDelayedFX(_pstObject, _zFXConfigID, fDelay);
 
-  /* For all its children */
+  /* For all its owned children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
       pstChild != orxNULL;
       pstChild = orxObject_GetOwnedSibling(pstChild))
@@ -8695,7 +8695,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
   return eResult;
 }
 
-/** Adds a unique delayed FX to an object and its children.
+/** Adds a unique delayed FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fDelay         Delay time
@@ -8716,7 +8716,7 @@ void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, co
   /* Updates object */
   orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, fDelay);
 
-  /* For all its children */
+  /* For all its owned children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
       pstChild != orxNULL;
       pstChild = orxObject_GetOwnedSibling(pstChild))
@@ -8764,7 +8764,7 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING 
   return eResult;
 }
 
-/** Removes an FX from an object and its children.
+/** Removes an FX from an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  */
@@ -9138,7 +9138,7 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
-/** Adds a shader to an object and its children.
+/** Adds a shader to an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zShaderConfigID  Config ID of the shader to add
  */
@@ -9172,7 +9172,7 @@ orxSTATUS orxFASTCALL orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTR
   return eResult;
 }
 
-/** Removes a shader from an object and its children.
+/** Removes a shader from an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zShaderConfigID  Config ID of the shader to remove
  */
@@ -9300,7 +9300,7 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
   return eResult;
 }
 
-/** Adds a timeline track to an object and its children.
+/** Adds a timeline track to an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
  */
@@ -9334,7 +9334,7 @@ orxSTATUS orxFASTCALL orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const
   return eResult;
 }
 
-/** Removes a timeline track from an object and its children.
+/** Removes a timeline track from an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
  */
@@ -9568,7 +9568,7 @@ orxSTATUS orxFASTCALL orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_S
   return eResult;
 }
 
-/** Sets smoothing for an object and its children.
+/** Sets smoothing for an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -9698,7 +9698,7 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   return eResult;
 }
 
-/** Sets color of an object and all its children.
+/** Sets color of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  */
@@ -9826,7 +9826,7 @@ orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_
   return eResult;
 }
 
-/** Sets color of an object and all its children.
+/** Sets color of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvRGB          RGB values to set
  */
@@ -9885,7 +9885,7 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
   return eResult;
 }
 
-/** Sets alpha of an object and all its children.
+/** Sets alpha of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fAlpha         Alpha value to set
  */
@@ -10003,7 +10003,7 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
   return eResult;
 }
 
-/** Sets blend mode of an object and its children.
+/** Sets blend mode of an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -10301,7 +10301,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObjec
   return eResult;
 }
 
-/** Sets group ID of an object and all its children.
+/** Sets group ID of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  */

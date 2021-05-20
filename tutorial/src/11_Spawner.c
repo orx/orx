@@ -131,6 +131,30 @@ static orxINLINE orxSTATUS LoadConfig()
   return eResult;
 }
 
+/** Update callback
+ */
+void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
+{
+  /* Next config requested? */
+  if (orxInput_HasBeenActivated("NextConfig"))
+  {
+    /* Updates config ID */
+    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCount("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
+
+    /* Loads it */
+    LoadConfig();
+  }
+  /* Previous config requested? */
+  else if (orxInput_HasBeenActivated("PreviousConfig"))
+  {
+    /* Updates config ID */
+    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCount("ConfigList") - 1;
+
+    /* Loads it */
+    LoadConfig();
+  }
+}
+
 /** Init function
  */
 orxSTATUS orxFASTCALL Init()
@@ -155,6 +179,9 @@ orxSTATUS orxFASTCALL Init()
          "\n* All the tests use the same minimalist code (creating 1 object & 1 viewport)",
          zInputNextConfig, zInputPreviousConfig);
 
+  /* Registers our update callback */
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   /* Loads default configuration */
   return LoadConfig();
 }
@@ -165,26 +192,8 @@ orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Next config requested? */
-  if(orxInput_HasBeenActivated("NextConfig"))
-  {
-    /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID < orxConfig_GetListCount("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
-
-    /* Loads it */
-    LoadConfig();
-  }
-  /* Previous config requested? */
-  else if(orxInput_HasBeenActivated("PreviousConfig"))
-  {
-    /* Updates config ID */
-    ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCount("ConfigList") - 1;
-
-    /* Loads it */
-    LoadConfig();
-  }
   /* Should quit? */
-  else if(orxInput_IsActive("Quit"))
+  if(orxInput_IsActive("Quit"))
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
