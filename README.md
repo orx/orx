@@ -12,7 +12,7 @@ You can also come [chat with us](https://orx-project.org/discord)
 if you have any questions or comments.
 
 This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
-see the [LICENSE](https://bitbucket.org/orx/orx/src/default/LICENSE) file for details.
+see the [LICENSE](https://github.com/orx/orx/blob/master/LICENSE) file for details.
 
 
 Summary
@@ -23,7 +23,7 @@ See below for a list of supported platforms.
 
 This is a release candidate for orx v1.12. If you find any bugs,
 please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
-or via orx's [issue page/tracker](https://bitbucket.org/orx/orx/issues?status=new&status=open).
+or via orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
 Some notable features of the engine are:
 
@@ -61,7 +61,7 @@ See [orx's wiki](https://orx-project.org/wiki) for detailed information, includi
 - samples
 - detailed tutorials (both official and community-made ones)
 
-See the [doc/html](https://bitbucket.org/orx/orx/src/default/doc/html) directory for the doxygen documentation of orx's API.
+See the [doc/html](https://github.com/orx/orx/tree/master/doc/html) directory for the doxygen documentation of orx's API.
 The documentation for the latest release version is [available here](https://orx-project.org/orx/doc/html) at orx's homepage.
 
 
