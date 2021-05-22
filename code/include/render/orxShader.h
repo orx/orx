@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -252,6 +252,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxShader_IsEnabled(const orxSHA
  * @return      orxSTRING / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL    orxShader_GetName(const orxSHADER *_pstShader);
+
+/** Gets shader (internal) ID
+ * @param[in]   _pstShader            Concerned Shader
+ * @return      ID
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxShader_GetID(const orxSHADER *_pstShader);
 
 #endif /* _orxSHADER_H_ */
 

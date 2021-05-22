@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -683,7 +683,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Gets ID */
-  stID = orxString_ToCRC(_zShaderConfigID);
+  stID = orxString_Hash(_zShaderConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
@@ -697,7 +697,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
     if(pstShader != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxShader_GetName(pstShader)) == stID)
+      if(orxString_Hash(orxShader_GetName(pstShader)) == stID)
       {
         /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);

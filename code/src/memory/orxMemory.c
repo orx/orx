@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 /**
  * @file orxMemory.c
  * @date 02/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -34,27 +34,43 @@
 #include "debug/orxDebug.h"
 
 
-#define USE_DL_PREFIX
-#define USE_BUILTIN_FFS 1
-#define USE_LOCKS 1
-#undef _GNU_SOURCE
+#ifdef __orxLLVM__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunknown-attributes"
+  #endif /* __orxMAC__ || __orxIOS__ */
 
-#if defined(__orxIOS__) && defined(__orxLLVM__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wshorten-64-to-32"
-#endif /* __orxIOS__ && __orxLLVM__ */
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wstatic-in-inline"
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
-#include "malloc.c"
+#ifdef __orxIOS__
+  #define ENABLE_PRELOAD 1
+#endif /* __orxIOS__ */
 
-#if defined(__orxIOS__) && defined(__orxLLVM__)
-  #pragma clang diagnostic pop
-#endif /* __orxIOS__ && __orxLLVM__ */
+#include "rpmalloc.c"
+
+#ifdef __orxIOS__
+  #undef ENABLE_PRELOAD
+#endif /* __orxIOS__ */
+
+#ifdef __orxLLVM__
+  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ || __orxIOS__ */
+
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxMAC__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
 #define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
-#define orxMEMORY_KU32_TAG_SIZE                 8
+#define orxMEMORY_KU32_TAG_SIZE                 16
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
@@ -219,11 +235,23 @@ orxSTATUS orxFASTCALL orxMemory_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstMemory, sizeof(orxMEMORY_STATIC));
 
-    /* Module initialized */
-    sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
+    /* Initializes rpmalloc */
+    if(rpmalloc_initialize() == 0)
+    {
+      /* Module initialized */
+      sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
 
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "Failed to initialize rpmalloc, aborting.");
+
+      /* Already initialized */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
   else
   {
@@ -245,6 +273,9 @@ void orxFASTCALL orxMemory_Exit()
   /* Module initialized ? */
   if((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
   {
+    /* Finalizes rpmalloc */
+    rpmalloc_finalize();
+
     /* Module uninitialized */
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;
   }
@@ -268,7 +299,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 #ifdef __orxPROFILER__
 
   /* Allocates memory */
-  pResult = dlmalloc((size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
+  pResult = rpmalloc((size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
   /* Success? */
   if(pResult != NULL)
@@ -279,7 +310,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
     *(orxMEMORY_TYPE *)pResult = _eMemType;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(pResult);
+    uMemoryChunkSize = rpmalloc_usable_size(pResult);
 
     /* Updates memory tracker */
     orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
@@ -291,7 +322,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 #else /* __orxPROFILER__ */
 
   /* Allocates memory */
-  pResult = dlmalloc((size_t)_u32Size);
+  pResult = rpmalloc((size_t)_u32Size);
 
 #endif /* __orxPROFILER__ */
 
@@ -304,9 +335,10 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
  * @param[in]  _u32Size   Size of the memory to allocate
+ * @param[in]  _eMemType  Memory zone where data will be allocated
  * @return  returns a pointer to the reallocated memory block or orxNULL if an error has occurred
  */
-void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   void *pResult;
 
@@ -317,7 +349,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   if(_pMem == orxNULL)
   {
     /* Allocates it */
-    pResult = orxMemory_Allocate(_u32Size, orxMEMORY_TYPE_TEMP);
+    pResult = orxMemory_Allocate(_u32Size, _eMemType);
   }
   else
   {
@@ -330,24 +362,24 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     /* Updates pointer */
     _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
-    /* Gets memory type from memory chunk tag */
+    /* Gets current memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
+    uMemoryChunkSize = rpmalloc_usable_size(_pMem);
 
     /* Reallocates memory */
-    pResult = dlrealloc(_pMem, (size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
+    pResult = rprealloc(_pMem, (size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
     /* Success? */
     if(pResult != NULL)
     {
       /* Tags memory chunk */
-      *(orxMEMORY_TYPE *)pResult = eMemType;
+      *(orxMEMORY_TYPE *)pResult = _eMemType;
 
       /* Updates memory tracker */
       orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
-      orxMemory_Track(eMemType, (orxU32)(dlmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
+      orxMemory_Track(_eMemType, (orxU32)(rpmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
       /* Updates result */
       pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
@@ -356,7 +388,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 #else /* __orxPROFILER__ */
 
     /* Reallocates memory */
-    pResult = dlrealloc(_pMem, (size_t)_u32Size);
+    pResult = rprealloc(_pMem, (size_t)_u32Size);
 
 #endif /* __orxPROFILER__ */
   }
@@ -388,7 +420,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     eMemType = *(orxMEMORY_TYPE *)_pMem;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
+    uMemoryChunkSize = rpmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
     orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
@@ -397,7 +429,7 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
 #endif /* __orxPROFILER__ */
 
   /* System call to free memory */
-  dlfree(_pMem);
+  rpfree(_pMem);
 
   return;
 }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -196,6 +196,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveSize(orxSPAWNER *_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay);
+
+/** Sets spawner next wave delay (without affecting the normal wave delay)
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _fWaveDelay     Delay before next wave / -1 for the current full wave delay
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetNextWaveDelay(orxSPAWNER *_pstSpawner, orxFLOAT _fWaveDelay);
 
 /** Gets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner

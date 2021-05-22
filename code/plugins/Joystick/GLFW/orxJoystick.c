@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -108,24 +108,24 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
   /* Is connected? */
   if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
   {
-    GLFWgamepadstate  stState = {};
+    GLFWgamepadstate  stState;
     orxS32            iButtonCount = 0;
     const orxU8      *au8Buttons;
 
     /* Wasn't connected? */
     if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected == orxFALSE)
     {
-      orxCHAR acJoystick[16] = {};
+      orxCHAR acJoystick[16];
 
       /* Pushes input section */
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
       /* Stores its name */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1)] = orxCHAR_NULL;
       orxConfig_SetString(acJoystick, glfwGetJoystickName((int)_u32ID));
 
       /* Stores its id */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1)] = orxCHAR_NULL;
       orxConfig_SetString(acJoystick, glfwGetJoystickGUID((int)_u32ID));
 
       /* Pops config section */
@@ -200,17 +200,17 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     /* Was connected? */
     if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected != orxFALSE)
     {
-      orxCHAR acJoystick[16] = {};
+      orxCHAR acJoystick[16];
 
       /* Pushes input section */
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
       /* Removes its name */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
+      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1)] = orxCHAR_NULL;
       orxConfig_ClearValue(acJoystick);
 
       /* Removes its id */
-      orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
+      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1)] = orxCHAR_NULL;
       orxConfig_ClearValue(acJoystick);
 
       /* Pops config section */

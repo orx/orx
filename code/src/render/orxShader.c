@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -433,7 +433,7 @@ static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Is config group? */
-    if(pstPayload->stGroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxSHADER *pstShader;
 
@@ -710,7 +710,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets shader ID */
-  stID = orxString_ToCRC(_zConfigID);
+  stID = orxString_Hash(_zConfigID);
 
   /* Search for reference */
   pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, stID);
@@ -807,7 +807,7 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
       orxSHADER_PARAM_VALUE *pstParamValue;
 
       /* Removes from hashtable */
-      orxHashTable_Remove(sstShader.pstReferenceTable, orxString_ToCRC(_pstShader->zReference));
+      orxHashTable_Remove(sstShader.pstReferenceTable, orxString_Hash(_pstShader->zReference));
 
       /* Has data? */
       if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_COMPILED))
@@ -1806,6 +1806,25 @@ const orxSTRING orxFASTCALL orxShader_GetName(const orxSHADER *_pstShader)
 
   /* Done! */
   return zResult;
+}
+
+/** Gets shader (internal) ID
+ * @param[in]   _pstShader            Concerned Shader
+ * @return      ID
+ */
+orxU32 orxFASTCALL orxShader_GetID(const orxSHADER *_pstShader)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShader);
+
+  /* Updates result */
+  u32Result = orxDisplay_GetShaderID(_pstShader->hData);
+
+  /* Done! */
+  return u32Result;
 }
 
 #ifdef __orxGCC__

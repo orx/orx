@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1826,9 +1826,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                 stGroupID = orxCamera_GetGroupID(pstCamera, i);
 
                 /* For all objects in this group */
-                for(pstObject = orxObject_GetNext(orxNULL, stGroupID);
+                for(pstObject = orxObject_GetNextEnabled(orxNULL, stGroupID);
                     pstObject != orxNULL;
-                    pstObject = orxObject_GetNext(pstObject, stGroupID))
+                    pstObject = orxObject_GetNextEnabled(pstObject, stGroupID))
                 {
                   /* Is object enabled? */
                   if(orxObject_IsEnabled(pstObject) != orxFALSE)
@@ -2941,7 +2941,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
       || ((fMinFrequency = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) > orxFLOAT_0))
       {
         /* Sets clock modifier */
-        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
+        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MODIFIER_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
       }
 
       /* Pops config section */

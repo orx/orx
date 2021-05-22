@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -348,6 +348,9 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     {
       b2Body *poSource, *poDestination;
 
+      /* Clears it */
+      orxMemory_Zero(pstEventStorage, sizeof(orxPHYSICS_EVENT_STORAGE));
+
       /* Adds it to list */
       orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
 
@@ -411,6 +414,7 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
     }
   }
 
+  /* Done! */
   return;
 }
 
@@ -419,6 +423,7 @@ void orxPhysicsContactListener::BeginContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_ADD);
 
+  /* Done! */
   return;
 }
 
@@ -427,6 +432,7 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
   /* Sends contact event */
   orxPhysics_LiquidFun_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_REMOVE);
 
+  /* Done! */
   return;
 }
 
@@ -899,16 +905,16 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
-        /* Uses it */
-        fCoef = (pstClockInfo->fModValue != orxFLOAT_0) ? orxFLOAT_1 / pstClockInfo->fModValue : orxFLOAT_0;
+        /* Updates coef */
+        fCoef = orxFLOAT_1 / fModifier;
       }
     }
 
@@ -1061,16 +1067,16 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
       /* Valid */
       if(pstClock != orxNULL)
       {
-        const orxCLOCK_INFO *pstClockInfo;
+        orxFLOAT fModifier;
 
-        /* Gets its info */
-        pstClockInfo = orxClock_GetInfo(pstClock);
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-        /* Has multiplier? */
-        if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
         {
           /* Uses it */
-          fCoef = pstClockInfo->fModValue;
+          fCoef = fModifier;
         }
       }
 
@@ -2681,16 +2687,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyTorque(orxPHYSICS_BOD
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates torque */
-        fTorque *= (float32)pstClockInfo->fModValue;
+        fTorque *= (float32)fModifier;
       }
     }
   }
@@ -2715,7 +2721,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
   orxASSERT(_pvForce != orxNULL);
 
   /* Sets force */
-  vForce.Set(_pvForce->fX, _pvForce->fY);
+  vForce.Set(sstPhysics.fDimensionRatio * _pvForce->fX, sstPhysics.fDimensionRatio * _pvForce->fY);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody->poBody;
@@ -2734,16 +2740,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates force */
-        vForce *= (float32)(pstClockInfo->fModValue * pstClockInfo->fModValue);
+        vForce *= (float32)(fModifier * fModifier);
       }
     }
   }
@@ -2799,16 +2805,16 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyImpulse(orxPHYSICS_BO
     /* Valid */
     if(pstClock != orxNULL)
     {
-      const orxCLOCK_INFO *pstClockInfo;
+      orxFLOAT fModifier;
 
-      /* Gets its info */
-      pstClockInfo = orxClock_GetInfo(pstClock);
+      /* Gets multiply modifier */
+      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
 
-      /* Has multiplier? */
-      if(pstClockInfo->eModType == orxCLOCK_MOD_TYPE_MULTIPLY)
+      /* Valid? */
+      if(fModifier != orxFLOAT_0)
       {
         /* Updates impulse */
-        vImpulse *= (float32)pstClockInfo->fModValue;
+        vImpulse *= (float32)fModifier;
       }
     }
   }

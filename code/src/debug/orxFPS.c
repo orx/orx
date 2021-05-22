@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -135,7 +135,7 @@ orxSTATUS orxFASTCALL orxFPS_Init()
     orxMemory_Zero(&sstFPS, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
-    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_SECOND);
+    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE);
 
     /* Valid? */
     if(sstFPS.pstClock != orxNULL)

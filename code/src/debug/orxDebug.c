@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -442,12 +442,12 @@ void orxFASTCALL _orxDebug_Break()
 
   #else /* __orxMSVC__ */
 
-    #ifdef __GNUC__
+    #ifdef __orxGCC__
 
       /* Requires GCC >= 4.2.4 */
       orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
 
-    #endif /* __GNUC__ */
+    #endif /* __orxGCC__ */
 
     __builtin_trap();
 
@@ -497,6 +497,9 @@ orxU32 orxFASTCALL _orxDebug_GetFlags()
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
   /* Is level enabled and not re-entrant? */
   if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)) && !orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_LOGGING))
   {
@@ -583,7 +586,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Debug Log */
     va_start(stArgs, _zFormat);
     vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
-    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
+    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
     va_end(stArgs);
 
     /* Doesn't implicitly use ANSI codes? */
@@ -603,7 +606,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #endif /* __orxMSVC__ */
 
-    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
+    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
 
     /* Doesn't have ANSI support? */
     if(!orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -186,11 +186,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
   }
   else
   {
-    orxU32      u32Index;          /* Index to traverse extra parameters */
-    orxSTRINGID stLongPrefixCRC;  /* CRC for the long prefix string */
-
-    /* Create the CRC value of the prefix */
-    stLongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
+    orxU32 u32Index;                /* Index to traverse extra parameters */
 
     /* Display the long description of the extra parameters only */
     for(u32Index = 1; u32Index < _u32NbParam; u32Index++)
@@ -199,7 +195,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
-      stName = orxString_ContinueCRC(_azParams[u32Index], stLongPrefixCRC);
+      stName = orxString_Hash(_azParams[u32Index]);
 
       /* Get the parameter info */
       pstParamInfo = (orxPARAM_INFO *)orxParam_Get(stName);
@@ -596,6 +592,7 @@ void orxFASTCALL orxParam_Exit()
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
   }
 
+  /* Done! */
   return;
 }
 
@@ -621,8 +618,7 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
     orxSTRINGID stShortName;
 
     /* Creates CRC for the Short Name */
-    stShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
-    stShortName = orxString_ContinueCRC(_pstParam->zShortName, stShortName);
+    stShortName = orxString_Hash(_pstParam->zShortName);
 
     /* Check if options with the same name don't have already been registered */
     if(orxParam_Get(stShortName) == orxNULL)
@@ -637,8 +633,7 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
         bStoreParam = orxFALSE;
 
         /* Create CRC For the long name */
-        stLongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
-        stLongName = orxString_ContinueCRC(_pstParam->zLongName, stLongName);
+        stLongName = orxString_Hash(_pstParam->zLongName);
 
         /* Found ? */
         if(orxParam_Get(stLongName) == orxNULL)
@@ -787,6 +782,11 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);
+  }
+  else
+  {
+    /* Clears base names for debug */
+    orxDEBUG_SETBASEFILENAME(orxNULL);
   }
 
   /* Done! */

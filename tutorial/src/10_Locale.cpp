@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -105,7 +105,7 @@ Logo::Logo()
   orxObject_SetUserData(mpstObject, this);
 
   // Stores our legend object (we don't use it in this tutorial, this is done for demonstration purposes)
-  mpstLegend = orxOBJECT(orxObject_GetChild(mpstObject));
+  mpstLegend = orxObject_GetChild(mpstObject);
 }
 
 // D-tor
@@ -129,6 +129,8 @@ public:
   static orxSTATUS orxFASTCALL  Init();
   static void orxFASTCALL       Exit();
   static orxSTATUS orxFASTCALL  Run();
+  static void orxFASTCALL       Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext);
+
 
   void SelectNextLanguage();
 
@@ -237,6 +239,9 @@ orxSTATUS Game::Init()
 
   orxLOG("10_Locale Init() called!");
 
+  // Registers our update function
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   // Inits our game
   eResult = soMyGame.InitGame();
 
@@ -260,13 +265,6 @@ orxSTATUS Game::Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Cycle action is active?
-  if(orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
-  {
-    // Selects next language
-    soMyGame.SelectNextLanguage();
-  }
-
   // Is quit action active?
   if(orxInput_IsActive("Quit"))
   {
@@ -279,6 +277,18 @@ orxSTATUS Game::Run()
 
   // Done!
   return eResult;
+}
+
+/** Update callback
+ */
+void orxFASTCALL Game::Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
+{
+  // Cycle action is active?
+  if (orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
+  {
+    // Selects next language
+    soMyGame.SelectNextLanguage();
+  }
 }
 
 

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -104,16 +104,20 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       /* Gets event payload */
       pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Has a multi-input info? */
-      if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+      /* Main input? */
+      if(orxString_Compare(pstPayload->zSetName, orxINPUT_KZ_CONFIG_SECTION) == 0)
       {
-        /* Logs info */
-        orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]));
-      }
-      else
-      {
-        /* Logs info */
-        orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]));
+        /* Has a multi-input info? */
+        if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+        {
+          /* Logs info */
+          orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]));
+        }
+        else
+        {
+          /* Logs info */
+          orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]));
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 /**
  * @file orxMemory.h
  * @date 02/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  * - Manage memory alignment
@@ -128,9 +128,10 @@ extern orxDLLAPI void *orxFASTCALL                        orxMemory_Allocate(orx
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
  * @param[in]  _u32Size   Size of the memory to allocate
+ * @param[in]  _eMemType  Memory zone where data will be allocated
  * @return  returns a pointer to the reallocated memory block or orxNULL if an error has occurred
  */
-extern orxDLLAPI void *orxFASTCALL                        orxMemory_Reallocate(void *_pMem, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL                        orxMemory_Reallocate(void *_pMem, orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 
 /** Frees some memory allocated with orxMemory_Allocate
  * @param[in]  _pMem     Pointer to the memory allocated by orx

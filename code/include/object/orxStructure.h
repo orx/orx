@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -96,17 +96,14 @@
 
 /** Structure GUID masks/shifts
  */
-#define orxSTRUCTURE_GUID_MASK_STRUCTURE_ID   0x000000000000001FULL
+#define orxSTRUCTURE_GUID_MASK_STRUCTURE_ID   0x00000000000000FFULL
 #define orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID  0
 
-#define orxSTRUCTURE_GUID_MASK_ITEM_ID        0x0000FFFF00000000ULL
-#define orxSTRUCTURE_GUID_SHIFT_ITEM_ID       32
+#define orxSTRUCTURE_GUID_MASK_ITEM_ID        0x00000000FFFFFF00ULL
+#define orxSTRUCTURE_GUID_SHIFT_ITEM_ID       8
 
-#define orxSTRUCTURE_GUID_MASK_REF_COUNT      0xFFFF000000000000ULL
-#define orxSTRUCTURE_GUID_SHIFT_REF_COUNT     48
-
-#define orxSTRUCTURE_GUID_MASK_INSTANCE_ID    0x00000000FFFFFFE0ULL
-#define orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID   5
+#define orxSTRUCTURE_GUID_MASK_INSTANCE_ID    0xFFFFFFFF00000000ULL
+#define orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID   32
 
 
 /** Structure IDs
@@ -167,14 +164,14 @@ typedef struct __orxSTRUCTURE_t
 {
   orxU64              u64GUID;        /**< Structure GUID : 8 */
   orxU64              u64OwnerGUID;   /**< Owner's GUID : 16 */
+  orxU32              u32Flags;       /**< Flags : 20 */
+  orxU32              u32RefCount;    /**< Ref count : 24 */
 
   union
   {
-    orxLINKLIST_NODE  stLinkListNode; /**< Linklist node : 28/40 */
-    orxTREE_NODE      stTreeNode;     /**< Tree node : 36/56 */
-  } stStorage;                        /**< Storage node union : 36/56 */
-
-  orxU32              u32Flags;       /**< Flags : 40/64 */
+    orxLINKLIST_NODE  stLinkListNode; /**< Linklist node : 36/48 */
+    orxTREE_NODE      stTreeNode;     /**< Tree node : 44/64 */
+  } stStorage;                        /**< Storage node union : 44/64 */
 
 } orxSTRUCTURE;
 
@@ -397,22 +394,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_LogAll();
  */
 static orxINLINE void                                   orxStructure_IncreaseCount(void *_pStructure)
 {
-  orxU64 u64Count;
-
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCount < 0xFFFFFFFF);
 
-  /* Gets current count */
-  u64Count = (orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNT) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNT;
-
-  /* Updates it */
-  u64Count++;
-
-  /* Checks */
-  orxASSERT(u64Count <= (orxSTRUCTURE_GUID_MASK_REF_COUNT >> orxSTRUCTURE_GUID_SHIFT_REF_COUNT));
-
-  /* Stores it */
-  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNT) | (u64Count << orxSTRUCTURE_GUID_SHIFT_REF_COUNT);
+  /* Increases ref count */
+  orxSTRUCTURE(_pStructure)->u32RefCount++;
 
   /* Done! */
   return;
@@ -423,22 +410,12 @@ static orxINLINE void                                   orxStructure_IncreaseCou
  */
 static orxINLINE void                                   orxStructure_DecreaseCount(void *_pStructure)
 {
-  orxU64 u64Count;
-
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
+  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCount != 0);
 
-  /* Gets current count */
-  u64Count = (orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNT) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNT;
-
-  /* Checks */
-  orxASSERT(u64Count != 0);
-
-  /* Updates it */
-  u64Count--;
-
-  /* Stores it */
-  orxSTRUCTURE(_pStructure)->u64GUID = (orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNT) | (u64Count << orxSTRUCTURE_GUID_SHIFT_REF_COUNT);
+  /* Decreases ref count */
+  orxSTRUCTURE(_pStructure)->u32RefCount--;
 
   /* Done! */
   return;
@@ -454,7 +431,7 @@ static orxINLINE orxU32                                 orxStructure_GetRefCount
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return((orxU32)((orxSTRUCTURE(_pStructure)->u64GUID & orxSTRUCTURE_GUID_MASK_REF_COUNT) >> orxSTRUCTURE_GUID_SHIFT_REF_COUNT));
+  return orxSTRUCTURE(_pStructure)->u32RefCount;
 }
 
 /** Gets structure GUID
@@ -467,7 +444,7 @@ static orxINLINE orxU64                                 orxStructure_GetGUID(con
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return orxSTRUCTURE(_pStructure)->u64GUID & ~orxSTRUCTURE_GUID_MASK_REF_COUNT;
+  return orxSTRUCTURE(_pStructure)->u64GUID;
 }
 
 /** Gets structure ID

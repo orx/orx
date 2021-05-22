@@ -1,6 +1,65 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.12
+-----
+* IMPORTANT: orxCLOCK_TYPE, orxClock_FindFirst & orxClock_FindNext have been removed, use newly added orxClock_Get(orxCLOCK_KZ_CORE) to retrieve the core clock
+* IMPORTANT: Clock modifiers can now be stacked & defined in config, replaced ModifierType/ModifierValue with ModifierList, added new modifier orxCLOCK_MODIFIER_AVERAGE, command/config modifier values are now expressed in seconds (formerly Hz)
+* IMPORTANT: Clock's fixed modifier now accept -1 to match the clock's frequency if defined (new default behavior)
+* IMPORTANT: Clock's frequency now accept 'display' as value to match display's refresh rate at anytime (new default behavior)
+* IMPORTANT: Retired Clock.MainClockFrequency property in favor of core properties being defined inside the core clock's section
+* IMPORTANT: orxSTRINGID: 32bit CRCs have been replaced with 64bit Hashes, orxString_[N]ToCRC() -> orxString_[N]Hash() (orxString_CRC() has been kept as an alias to orxString_Hash())
+* IMPORTANT: Major speed & scalability improvements: from 65k to 16M concurrent objects in memory, complete rewrite of orxBANK module, object update rewrite, add support for early exit events handling, ...
+* IMPORTANT: Added orxObject_GetNextEnabled() to iterate over enabled objects (with or without grouping)
+* IMPORTANT: Spherical vector's Phi component has been shifted by -Pi/2 for convenience (Phi=0 now matches Z=0), similar to azimuth/longitude
+* IMPORTANT: Viewport's config properties RelativePosition/RelativeSize have now been folded into Position/Size with the addition of UseRelativeSize
+* IMPORTANT: Spawners now only track children when an active limit or CleanOnDelete has be set on them (optimization)
+* IMPORTANT: Spawner's UseRelativeSpeed property can now be 'false', 'spawner' (similar to former true), 'object' or 'both'/'true'
+* IMPORTANT: Objects with a valid animation set will now use the first anim's first frame as default Graphic when none is provided
+* IMPORTANT: orxObject_GetChild()/orxObject_GetSibling() now filter out non-object structures (camera, spawner, ...), added orxObject_GetNextChild() to access non-objects structures in a hierarchy
+* IMPORTANT: Added JoyIDList config property for generic inputs definition (JoyIDList = 1 # 2 + JOY_A = Action <=> JOY_A_1 = Action + JOY_A_2 = Action)
+* IMPORTANT: Reworked Android build pipeline which doesn't require separate ndk build calls any longer
+* IMPORTANT: Added complete support for joysticks on Android-Native
+* IMPORTANT: orxMemory_Reallocate() now takes an extra orxMEMORY_TYPE parameter
+* IMPORTANT: orxInput_GetMultiplier() now returns a negative value if the input isn't found
+* IMPORTANT: New video mode event will now containt the actual real refresh rate while the config property Display.RefreshRate will contain the requested one (switching from fullscreen to windowed and back will now retain the desired refresh rate)
+* IMPORTANT: Both boundaries for orxMath_GetSteppedRandomFloat() are now inclusive
+* IMPORTANT: Replaced freeglut3 with mesaGL dependency on Linux
+
+* Added color literals for all HTML web colors (can be modified/expanded directly inside the Color config section), can be used for Object, Graphic & FX Color values
+* Added color space conversion commands: From[RGB|HSL|HSV]To[RGB|HSL|HSV]
+* Added suport for mouse cursor grab with orxMouse_Grab() function, Mouse.Grab command & Mouse.Grab config property
+* Added config property SphericalPosition for objects (only used if Position isn't defined)
+* Added optional extension for Nuklear to Init script + C/C++ language selection option
+* Improved variable DT handling in LiquidFun plugin's physics simulation update (fixed micro-stuttering)
+* Physics interpolation is now on by default when a simulation step is provided
+* Replaced dlmalloc with rpmalloc (+ memory alignment has changed from 8 to 16 bytes)
+* Added recursive versions of orxObject_ functions AddTimeLineTrack(), Add[Unique][Delayed]FX(), AddShader(), RemoveShader(), RemoveFX() & RemoveTimeLineTrack()
+* Added FrameIndex config property to animation frames: when defined the frame's TextureOrigin will be computed using this value along the animation's FrameSize & Direction, when defined for file-based animation, it's used a a suffix
+* Added support for empty animation in config using the 'empty' keyword (ex. MyAnim = empty)
+* Added support for resetting target animation in Object.SetAnim command (by using an empty name)
+* Added optional recursive parameter for Object. commands: SetAnimFrequency, AddTrack, AddFX, AddShader, RemoveShader, RemoveFX & RemoveTrack
+* FrameSize for single frame animations will now default to TextureSize
+* A child object's owner is now available during its creation (set in the prepare phase)
+* Supports up to 25 buttons for joysticks (previously 16)
+* Added multiple maths commands (random, vectors, cartesian/spherical, ...)
+* Fixed LiquidFun physics plugin not taking dimension ratio into account in orxPhysics_ApplyForce()
+* Fixed issue in contact handlin in LiquidFun physics plugin when too many contacts were added/removed within the same frame
+* Null step value is now accepted when retrieving random vectors (ie. all components are unconstrained)
+* Added orxSpawner_SetNextWaveDelay()
+* Added orxGraphic_Clone()
+* Removed all calls to glFinish() in GLFW display plugin
+* Many fixes and improvements for multiple animation edge use cases
+* Each input can now support up to 16 bindings (previously 8)
+* Added commands Input.HasBeenActivated & Input.HasBeenDeactivated
+* Added Dummy Physics plugin when physics isn't needed
+* Misc fixes when exiting/re-initializing orx within the same process
+* Added support for volume keys inputs to Android
+* Better support for ORX environment variable definition in setup script on OSX/Linux (including ZSH & fish)
+* Updated Dear ImGUI to 1.83 WIP/docking, stb_image_write from 1.02 to 1.15 & stb_image 2.12 to 2.26
+* JPEG is now supported when saving an image
+* Misc fixes, optimizations and additions
+
 orx 1.11
 -----
 * IMPORTANT: Init script now support optional extensions through templates: current available extensions are Scroll, Dear ImGui and orxArchive

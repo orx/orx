@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -60,6 +60,7 @@
 #define orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED    0x00000002                      /**< Config loaded flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET        0x00000004                      /**< Watch set flag */
 #define orxRESOURCE_KU32_STATIC_FLAG_NOTIFY_SET       0x00000008                      /**< Notify set flag */
+#define orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED 0x00000010                      /**< Watch registered flag */
 
 #define orxRESOURCE_KU32_STATIC_MASK_ALL              0xFFFFFFFF                      /**< All mask */
 
@@ -781,7 +782,7 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     orxSTRINGID         stGroupID;
 
     /* Gets its ID */
-    stGroupID = orxString_ToCRC(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
+    stGroupID = orxString_Hash(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
 
     /* Looks for it in registered groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -888,12 +889,18 @@ static void orxResource_UpdatePostInit()
   /* Is config loaded now? */
   if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_CONFIG_LOADED))
   {
-    /* Doesn't have watch */
+    /* Watch not already set? */
     if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
     {
       /* Is clock module initialized? */
       if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
       {
+        orxBOOL bDebugLevelBackup;
+
+        /* Enables config logs */
+        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
+
         /* Pushes resource config section */
         orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
@@ -902,10 +909,16 @@ static void orxResource_UpdatePostInit()
         {
           /* Registers watch callbacks */
           orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST);
+
+          /* Updates flags */
+          orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED, orxRESOURCE_KU32_STATIC_FLAG_NONE);
         }
 
         /* Pops config section */
         orxConfig_PopSection();
+
+        /* Restores config logs */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bDebugLevelBackup);
 
         /* Updates flags */
         orxFLAG_SET(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET, orxRESOURCE_KU32_STATIC_FLAG_NONE);
@@ -1266,7 +1279,7 @@ void orxFASTCALL orxResource_Exit()
     /* For all groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         pstGroup != orxNULL;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL))
     {
       /* Deletes it */
       orxResource_DeleteGroup(pstGroup);
@@ -1464,7 +1477,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
-    stGroupID = orxString_ToCRC(_zGroup);
+    stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -1479,7 +1492,7 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
       orxSTRINGID           stStorageID;
 
       /* Gets storage ID */
-      stStorageID = orxString_ToCRC(_zStorage);
+      stStorageID = orxString_Hash(_zStorage);
 
       /* For all storages in group */
       for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
@@ -1626,10 +1639,10 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     zGroup = orxConfig_GetKey(i);
 
     /* Gets group ID */
-    stGroupID = orxString_ToCRC(zGroup);
+    stGroupID = orxString_Hash(zGroup);
 
     /* Is not watch list? */
-    if(stGroupID != orxString_ToCRC(orxRESOURCE_KZ_CONFIG_WATCH_LIST))
+    if(stGroupID != orxString_Hash(orxRESOURCE_KZ_CONFIG_WATCH_LIST))
     {
       orxRESOURCE_GROUP  *pstGroup = orxNULL;
       orxS32              j, jCount;
@@ -1656,7 +1669,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
           orxSTRINGID           stStorageID;
 
           /* Gets storage ID */
-          stStorageID = orxString_ToCRC(zStorage);
+          stStorageID = orxString_Hash(zStorage);
 
           /* For all storages in group */
           for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
@@ -1744,7 +1757,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* Gets resource info key */
-      stKey = orxString_ToCRC(_zName);
+      stKey = orxString_Hash(_zName);
 
       /* Gets resource info from cache */
       pstResourceInfo = (orxRESOURCE_INFO *)orxHashTable_Get(pstGroup->pstCacheTable, stKey);
@@ -1862,7 +1875,7 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
       orxSTRINGID           stStorageID;
 
       /* Gets storage ID */
-      stStorageID = (_zStorage != orxNULL) ? orxString_ToCRC(_zStorage) : orxSTRINGID_UNDEFINED;
+      stStorageID = (_zStorage != orxNULL) ? orxString_Hash(_zStorage) : orxSTRINGID_UNDEFINED;
 
       /* For all storages in group */
       for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
@@ -2635,13 +2648,13 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
  */
 orxSTATUS orxFASTCALL orxResource_ClearCache()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
-  /* Doesn't have a watch set? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_SET))
+  /* Doesn't have a registered watch? */
+  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
   {
     orxRESOURCE_GROUP *pstGroup;
 
@@ -2669,11 +2682,17 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
 
     /* Clears info bank */
     orxBank_Clear(sstResource.pstResourceInfoBank);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Resource cache can't be cleared: the resource watch feature is currently active.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

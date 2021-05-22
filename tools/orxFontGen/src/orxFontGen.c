@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,7 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_MAIN)
-#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz)
+#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_MAIN)
 #define STBIW_FREE(p)           orxMemory_Free(p)
 #define STBIW_MEMMOVE(a, b, sz) orxMemory_Move(a, b, sz)
 #include "stb_image_write.h"

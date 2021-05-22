@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 /**
  * @file orxString.c
  * @date 21/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -36,6 +36,10 @@
 #include "debug/orxProfiler.h"
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
+
+#define XXH_INLINE_ALL
+#include "xxhash.h"
+#undef XXH_INLINE_ALL
 
 
 /** Module flags
@@ -51,12 +55,6 @@
 /** Defines
  */
 #define orxSTRING_KU32_ID_TABLE_SIZE                      32768
-
-
-/***************************************************************************
- * CRC Tables (slice-by-8)                                                 *
- ***************************************************************************/
-orxU32 saau32CRCTable[8][256];
 
 
 /***************************************************************************
@@ -95,43 +93,6 @@ static orxSTRING_STATIC sstString;
  */
 void orxFASTCALL orxString_Setup()
 {
-  orxU32 i;
-
-  /* For all CRC lookup table entries */
-  for(i = 0; i < 256; i++)
-  {
-    orxU32 u32CRC, j;
-
-    /* For all bits */
-    for(u32CRC = i, j = 0; j < 8; j++)
-    {
-      /* Updates CRC */
-      u32CRC = (u32CRC >> 1) ^ ((u32CRC & 1) * orxSTRING_KU32_CRC_POLYNOMIAL);
-    }
-
-    /* Stores it */
-    saau32CRCTable[0][i] = u32CRC;
-  }
-
-  /* For all CRC lookup table entries */
-  for(i = 0; i < 256; i++)
-  {
-    orxU32 u32CRC, j;
-
-    /* Gets original CRC */
-    u32CRC = saau32CRCTable[0][i];
-
-    /* For all other CRC lookup tables */
-    for(j = 1; j < 8; j++)
-    {
-      /* Updates CRC */
-      u32CRC = saau32CRCTable[0][u32CRC & 0xFF] ^ (u32CRC >> 8);
-
-      /* Stores it */
-      saau32CRCTable[j][i] = u32CRC;
-    }
-  }
-
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_STRING, orxMODULE_ID_BANK);
@@ -238,7 +199,7 @@ orxSTRINGID orxFASTCALL orxString_GetID(const orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Gets its ID */
-  stResult = orxString_ToCRC(_zString);
+  stResult = orxString_Hash(_zString);
 
   /* Gets stored string bucket */
   pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, stResult);
@@ -299,6 +260,31 @@ const orxSTRING orxFASTCALL orxString_GetFromID(orxSTRINGID _stID)
   return zResult;
 }
 
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @param[in]   _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
+ * @return      String's ID/hash
+ */
+orxSTRINGID orxFASTCALL orxString_NHash(const orxSTRING _zString, orxU32 _u32CharNumber)
+{
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
+
+  /* Done! */
+  return XXH3_64bits(_zString, _u32CharNumber);
+}
+
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @return      String's ID/hash
+ */
+orxSTRINGID orxFASTCALL orxString_Hash(const orxSTRING _zString)
+{
+  /* Done! */
+  return orxString_NHash(_zString, orxString_GetLength(_zString));
+}
+
 /** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
  * @param[in]   _zString        Concerned string
  * @return      Stored orxSTRING
@@ -317,7 +303,7 @@ const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Gets its ID */
-  stID = orxString_ToCRC(_zString);
+  stID = orxString_Hash(_zString);
 
   /* Gets stored string bucket */
   pzBucket = (const orxSTRING *)orxHashTable_Retrieve(sstString.pstIDTable, stID);

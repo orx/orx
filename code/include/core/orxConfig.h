@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -355,7 +355,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetBool(const orxSTRING 
 /** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
- * @return The value
+ * @return The value if valid, orxNULL otherwise
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
 

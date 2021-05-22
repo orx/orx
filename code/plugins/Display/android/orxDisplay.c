@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,7 +51,7 @@
 #define STBI_NO_PIC
 #define STBI_NO_PNM
 #define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_VIDEO)
-#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz)
+#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBI_FREE(p)            orxMemory_Free(p)
 #include "stb_image.h"
 #undef STBI_FREE
@@ -65,17 +65,21 @@
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
+#define STBI_WRITE_NO_STDIO
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)
-#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz)
+#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBIW_FREE(p)           orxMemory_Free(p)
 #define STBIW_MEMMOVE(a, b, sz) orxMemory_Move(a, b, sz)
+#define STBIW_ASSERT(x)         orxASSERT(x)
 #include "stb_image_write.h"
+#undef STBIW_ASSERT
 #undef STBIW_MEMMOVE
 #undef STBIW_FREE
 #undef STBIW_REALLOC
 #undef STBIW_MALLOC
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
+#undef STBI_WRITE_NO_STDIO
 
 
 /** Module flags
@@ -223,9 +227,9 @@ struct __orxBITMAP_t
 typedef struct __orxDISPLAY_SAVE_INFO_t
 {
   orxU8      *pu8ImageData;
+  orxHANDLE   hResource;
   orxU32      u32Width;
   orxU32      u32Height;
-  orxSTRINGID stFilenameID;
 
 } orxDISPLAY_SAVE_INFO;
 
@@ -1493,45 +1497,52 @@ static void orxFASTCALL orxDisplay_Android_DeleteBitmapData(orxBITMAP *_pstBitma
   return;
 }
 
+static void orxDisplay_Android_WriteResourceCallback(void *_pContext, void *_pData, int _iSize)
+{
+  /* Writes resource synchronously */
+  orxResource_Write((orxHANDLE)_pContext, (orxS64)_iSize, _pData, orxNULL, orxNULL);
+}
+
 
 static orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmapData(void *_pContext)
 {
   orxDISPLAY_SAVE_INFO *pstInfo;
-  const orxCHAR        *zExtension;
-  const orxSTRING       zFilename;
-  orxU32                u32Length;
+  const orxSTRING       zExtension;
   orxSTATUS             eResult = orxSTATUS_FAILURE;
 
   /* Gets save info */
   pstInfo = (orxDISPLAY_SAVE_INFO *)_pContext;
 
-  /* Gets filename */
-  zFilename = orxString_GetFromID(pstInfo->stFilenameID);
-
-  /* Gets file name's length */
-  u32Length = orxString_GetLength(zFilename);
-
   /* Gets extension */
-  zExtension = (u32Length > 3) ? zFilename + u32Length - 3 : orxSTRING_EMPTY;
+  zExtension = orxString_GetExtension(orxResource_GetLocation(pstInfo->hResource));
 
   /* PNG? */
   if(orxString_ICompare(zExtension, "png") == 0)
   {
     /* Saves image to disk */
-    eResult = stbi_write_png(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_png_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  /* JPG? */
+  if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
+  {
+    /* Saves image to disk */
+    eResult = stbi_write_jpg_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   /* BMP? */
   else if(orxString_ICompare(zExtension, "bmp") == 0)
   {
     /* Saves image to disk */
-    eResult = stbi_write_bmp(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_bmp_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   /* TGA */
   else
   {
     /* Saves image to disk */
-    eResult = stbi_write_tga(zFilename, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = stbi_write_tga_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
+
+  /* Closes resource */
+  orxResource_Close(pstInfo->hResource);
 
   /* Deletes data */
   orxMemory_Free(pstInfo->pu8ImageData);
@@ -3449,7 +3460,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)
 {
   orxU32    u32BufferSize;
   orxU8    *pu8ImageData;
@@ -3458,7 +3469,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_zFilename != orxNULL);
+  orxASSERT(_zFileName != orxNULL);
 
   /* Gets buffer size */
   u32BufferSize = orxF2U(_pstBitmap->fWidth * _pstBitmap->fHeight) * 4 * sizeof(orxU8);
@@ -3474,20 +3485,33 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmap(const orxBITMAP *_pstBitmap,
     /* Gets bitmap data */
     if(orxDisplay_Android_GetBitmapData(_pstBitmap, pu8ImageData, u32BufferSize) != orxSTATUS_FAILURE)
     {
-      /* Allocates save info */
-      pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
+      const orxSTRING zResourceLocation;
+      orxHANDLE       hResource;
 
-      /* Valid? */
-      if(pstInfo != orxNULL)
+      /* Valid file to open? */
+      if(((zResourceLocation = orxResource_LocateInStorage(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, _zFileName)) != orxNULL)
+      && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
       {
-        /* Inits it */
-        pstInfo->pu8ImageData   = pu8ImageData;
-        pstInfo->stFilenameID   = orxString_GetID(_zFilename);
-        pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
-        pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
+        /* Allocates save info */
+        pstInfo = (orxDISPLAY_SAVE_INFO *)orxMemory_Allocate(sizeof(orxDISPLAY_SAVE_INFO), orxMEMORY_TYPE_TEMP);
 
-        /* Runs asynchronous task */
-        eResult = orxThread_RunTask(&orxDisplay_Android_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
+        /* Valid? */
+        if(pstInfo != orxNULL)
+        {
+          /* Inits it */
+          pstInfo->pu8ImageData   = pu8ImageData;
+          pstInfo->hResource      = hResource;
+          pstInfo->u32Width       = orxF2U(_pstBitmap->fWidth);
+          pstInfo->u32Height      = orxF2U(_pstBitmap->fHeight);
+
+          /* Runs asynchronous task */
+          eResult = orxThread_RunTask(&orxDisplay_Android_SaveBitmapData, orxNULL, orxNULL, (void *)pstInfo);
+        }
+        else
+        {
+          /* Closes resource */
+          orxResource_Close(hResource);
+        }
       }
     }
 
@@ -3537,17 +3561,17 @@ const orxBITMAP *orxFASTCALL orxDisplay_Android_GetTempBitmap()
   return pstResult;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
+orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
 {
   const orxSTRING zResourceName;
   orxBITMAP      *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zFilename != orxNULL);
+  orxASSERT(_zFileName != orxNULL);
 
   /* Gets resource name */
-  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFilename);
+  zResourceName = orxResource_Locate(orxTEXTURE_KZ_RESOURCE_GROUP, _zFileName);
 
   /* Success? */
   if(zResourceName != orxNULL)
@@ -3561,11 +3585,11 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFilename)
       /* Inits it */
       pstResult->bSmoothing     = sstDisplay.bDefaultSmoothing;
       pstResult->zLocation      = zResourceName;
-      pstResult->stFilenameID   = orxString_GetID(_zFilename);
+      pstResult->stFilenameID   = orxString_GetID(_zFileName);
       pstResult->u32Flags       = orxDISPLAY_KU32_BITMAP_FLAG_NONE;
 
       /* Loads its data */
-      if(orxString_SearchString(_zFilename, szKTXExtention) != orxNULL)
+      if(orxString_SearchString(_zFileName, szKTXExtention) != orxNULL)
       {
         if(orxDisplay_Android_LoadKTXBitmapData(pstResult) == orxSTATUS_FAILURE)
         {
@@ -4976,6 +5000,26 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetShaderVector(orxHANDLE _hShader, orx
   return eResult;
 }
 
+orxU32 orxFASTCALL orxDisplay_Android_GetShaderID(const orxHANDLE _hShader)
+{
+  orxDISPLAY_SHADER  *pstShader;
+  orxU32              u32Result;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxHANDLE_UNDEFINED) && (_hShader != orxNULL));
+
+  /* Gets shader */
+  pstShader = (orxDISPLAY_SHADER *)_hShader;
+
+  /* Updates result */
+  u32Result = (orxU32)pstShader->uiProgram;
+
+  /* Done! */
+  return u32Result;
+}
+
+
 /***************************************************************************
  * Plugin Related                                                          *
  ***************************************************************************/
@@ -5017,6 +5061,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetParameterID, DISPLAY, GET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_GetShaderID, DISPLAY, GET_SHADER_ID);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Android_SetFullScreen, DISPLAY, SET_FULL_SCREEN);

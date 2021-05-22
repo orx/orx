@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -64,8 +64,6 @@
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00800000  /**< Blend mode premul flag */
-
-#define orxGRAPHIC_KU32_MASK_ALIGN                0x000003F0  /**< Alignment mask */
 
 #define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x00F00000  /**< Blend mode mask */
 
@@ -571,7 +569,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture (%s) data to graphic (%s).", zName, _zConfigID);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture <%s> data to graphic <%s>.", zName, _zConfigID);
 
             /* Deletes structures */
             orxTexture_Delete(pstTexture);
@@ -605,7 +603,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text (%s) data to graphic (%s).", zName, _zConfigID);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text <%s> data to graphic <%s>.", zName, _zConfigID);
 
               /* Deletes structures */
               orxText_Delete(pstText);
@@ -713,14 +711,39 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         {
           orxVECTOR vColor;
 
-          /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor);
+          /* Is a vector value? */
+          if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+          {
+            /* Normalizes and applies it */
+            orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
 
-          /* Normalizes and applies it */
-          orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          }
+          /* Color literal */
+          else
+          {
+            const orxSTRING zColor;
 
-          /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            /* Gets literal color */
+            zColor = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_COLOR);
+
+            /* Pushes color section */
+            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+            /* Retrieves its value */
+            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
+            {
+              /* Normalizes and applies it */
+              orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+
+              /* Updates status */
+              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
         /* Has RGB values? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_RGB) != orxFALSE)
@@ -801,7 +824,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic (%s).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic <%s>.", _zConfigID);
 
         /* Deletes structures */
         orxGraphic_Delete(pstResult);
@@ -817,7 +840,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named <%s>.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -858,6 +881,138 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return eResult;
+}
+
+/** Clones a graphic
+ * @param[in]   _pstGraphic     Graphic model to clone
+ * @ return orxGRAPHIC / orxNULL
+ */
+orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
+{
+  orxGRAPHIC *pstResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstGraphic != orxNULL)
+  {
+    /* Creates graphic */
+    pstResult = orxGraphic_Create();
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      /* Clears its data */
+      pstResult->pstData = orxNULL;
+
+      /* Updates its flags */
+      orxStructure_SetFlags(pstResult, orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_ALL), orxGRAPHIC_KU32_MASK_ALL);
+
+      /* Has texture? */
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+      {
+        /* Checks */
+        orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
+
+        /* Increases texture's reference count */
+        orxStructure_IncreaseCount(orxTEXTURE(_pstGraphic->pstData));
+
+        /* Can't link it? */
+        if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)orxTEXTURE(_pstGraphic->pstData), orxTRUE) == orxSTATUS_FAILURE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture <%s> data to cloned graphic <%s>.", orxTexture_GetName(orxTEXTURE(_pstGraphic->pstData)), _pstGraphic->zReference);
+
+          /* Decreases texture's reference count */
+          orxStructure_DecreaseCount(orxTEXTURE(_pstGraphic->pstData));
+        }
+      }
+      /* Has text? */
+      else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
+      {
+        orxTEXT *pstText;
+
+        /* Checks */
+        orxSTRUCTURE_ASSERT(orxTEXT(_pstGraphic->pstData));
+
+        /* Creates new text */
+        pstText = orxText_Create();
+
+        /* Valid? */
+        if(pstText != orxNULL)
+        {
+          orxTEXT *pstModel;
+
+          /* Gets model */
+          pstModel = orxTEXT(_pstGraphic->pstData);
+
+          /* Copies its font */
+          orxText_SetFont(pstText, orxText_GetFont(pstModel));
+
+          /* Copies its string */
+          orxText_SetString(pstText, orxText_GetString(pstModel));
+
+          /* Can't link it? */
+          if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstText, orxTRUE) == orxSTATUS_FAILURE)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text <%s> data to cloned graphic <%s>.", orxText_GetName(pstModel), _pstGraphic->zReference);
+
+            /* Deletes text */
+            orxText_Delete(pstText);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create text data for cloned graphic <%s>.", _pstGraphic->zReference);
+        }
+      }
+
+      /* Has data? */
+      if(pstResult->pstData != orxNULL)
+      {
+        /* Copies pivot */
+        orxVector_Copy(&(pstResult->vPivot), &(_pstGraphic->vPivot));
+
+        /* Copies color */
+        orxColor_Copy(&(pstResult->stColor), &(_pstGraphic->stColor));
+
+        /* Copies coordinates */
+        pstResult->fTop     = _pstGraphic->fTop;
+        pstResult->fLeft    = _pstGraphic->fLeft;
+        pstResult->fWidth   = _pstGraphic->fWidth;
+        pstResult->fHeight  = _pstGraphic->fHeight;
+
+        /* Copies repeat */
+        pstResult->fRepeatX = _pstGraphic->fRepeatX;
+        pstResult->fRepeatY = _pstGraphic->fRepeatY;
+
+        /* Copies reference */
+        pstResult->zReference = _pstGraphic->zReference;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't clone text or texture from graphic <%s>.", _pstGraphic->zReference);
+
+        /* Deletes structures */
+        orxGraphic_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets graphic config name
@@ -1433,14 +1588,20 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Is data a texture? */
-  if(orxTEXTURE(_pstGraphic->pstData) != orxNULL)
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
   {
+    /* Checks */
+    orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
+
     /* Updates coordinates */
     orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
   }
   /* Is data a text? */
-  else if(orxTEXT(_pstGraphic->pstData) != orxNULL)
+  else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
   {
+    /* Checks */
+    orxSTRUCTURE_ASSERT(orxTEXT(_pstGraphic->pstData));
+
     /* Inits full coordinates */
     orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
   }

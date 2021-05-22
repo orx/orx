@@ -1,17 +1,15 @@
 Orx authors:
 
-  Architecture and all core features except memory management and file handling:
+  Architecture and all core features except file handling:
     Romain Killian
 
-  Memory management and file handling:
+  File handling:
     Nicolas Antoniazzi
 
   Tools:
     Romain Killian
 
-  IDE project files (CodeLite, Visual Studio, XCode, Android, Premake) and external dependencies:
-    4babce
-    Grey
+  Premake/IDE project files (CodeLite, Visual Studio, XCode, Android, Premake) and external dependencies:
     Lydesik
     Romain Killian
 
@@ -52,7 +50,7 @@ Orx authors:
     Lydesik
     TDomhan
 
-  Most error and warning messages:
+  Many error and warning messages:
     M1SF17
 
   Logo, tutorial graphics and music:
@@ -61,22 +59,27 @@ Orx authors:
   Demo graphics:
     Ebe
     Matthieu 'Pixoshiru' Gallais
+    Treb
 
   Default font (dina):
     Jørgen 'Jibs' Ibsen
 
   Additional contributors:
+    4babce
     Andrew 'danvd'
     Cai 'laschweinski' Huaxu
     Denis 'thegwydd' Brachet
-    Emilien Kia
+    Emilien 'cursor' Kia
     Enis 'enobayram' Bayramoğlu
     Eric Poulsen
     Fritz 'acksys' Mahnke
+    Grey
     Hezekiah 'hcarty' Carty
+    Jonas Ohrn
     Kevin Watters
     Konrad 'Graag' Klimaszewski
     OneArb
     Ray Yee
     Sergei Gnezdov
     Wayne 'Sausage' Johnson
+    Kristoffer 'Znakeye'

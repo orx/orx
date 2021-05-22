@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -283,6 +283,7 @@ static orxINLINE void orxTexture_DeleteAll()
     pstTexture = orxTEXTURE(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE));
   }
 
+  /* Done! */
   return;
 }
 
@@ -295,7 +296,7 @@ static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
   orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
-  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
+  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_Hash(_zDataName));
 
   /* Done! */
   return pstTexture;
@@ -617,6 +618,7 @@ void orxFASTCALL orxTexture_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
+  /* Done! */
   return;
 }
 
@@ -813,6 +815,7 @@ void orxFASTCALL orxTexture_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to exit texture module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 

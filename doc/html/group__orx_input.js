@@ -8,7 +8,7 @@ var group__orx_input =
       [ "zInputName", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a08e6a0ce11c5a30a3ff68e18cefec922", null ],
       [ "zSetName", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a532745a46c44d576c975c80d9a5a8af0", null ]
     ] ],
-    [ "orxINPUT_GET_FLAG", "group__orx_input.html#gac98f1690996707985b9fbf5ebc65ff1e", null ],
+    [ "orxINPUT_GET_FLAG", "group__orx_input.html#ga90f6283479c6ce541c1c989e1eb0fa6d", null ],
     [ "orxINPUT_KC_MODE_PREFIX_NEGATIVE", "group__orx_input.html#ga818373c22d8ca5f51e1faeb77a7494f6", null ],
     [ "orxINPUT_KC_MODE_PREFIX_POSITIVE", "group__orx_input.html#ga1f4d0bff738f8a3b3d3ffe7055723068", null ],
     [ "orxINPUT_KU32_BINDING_NUMBER", "group__orx_input.html#gaccb7c6f56180d6f17b0e9d6faee23767", null ],
@@ -17,8 +17,8 @@ var group__orx_input =
     [ "orxINPUT_KZ_CONFIG_COMBINE_LIST", "group__orx_input.html#gad9ff247f5b0c5f7a7d4a87c4d6a3df15", null ],
     [ "orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER", "group__orx_input.html#ga6d24b6c5e07d4e92df6c93c98fa09f48", null ],
     [ "orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD", "group__orx_input.html#ga7948bfb78497b11dd9dc28cfcaf0c6d7", null ],
+    [ "orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST", "group__orx_input.html#gaa09530193cf0f7c3acf1f28f47345a75", null ],
     [ "orxINPUT_KZ_CONFIG_SECTION", "group__orx_input.html#gac8e1119e7d86bc7238e6e9d646f7a028", null ],
-    [ "orxINPUT_KZ_CONFIG_SET_LIST", "group__orx_input.html#ga81743020199c66daff943fc0a95398e9", null ],
     [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
       [ "orxINPUT_EVENT_ON", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809", null ],

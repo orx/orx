@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -206,13 +206,13 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
   /* Valid? */
   if(zName && zName != orxSTRING_EMPTY)
   {
-    orxSTRINGID stCRC;
+    orxSTRINGID stHash;
 
-    /* Gets its CRC */
-    stCRC = orxString_ToCRC(zName);
+    /* Gets its Hash */
+    stHash = orxString_Hash(zName);
 
     /* Does not already exist? */
-    if(!orxHashTable_Get(pstTextureTable, stCRC))
+    if(!orxHashTable_Get(pstTextureTable, stHash))
     {
       orxFLOAT    fWidth, fHeight;
       orxU32      u32BufferSize;
@@ -260,8 +260,8 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       /* Sets its bitmap */
       orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName, orxFALSE);
 
-      /* Add it to the table using the CRC of the original as key */
-      orxHashTable_Add(pstTextureTable, stCRC, pstNMTexture);
+      /* Add it to the table using the hash of the original as key */
+      orxHashTable_Add(pstTextureTable, stHash, pstNMTexture);
     }
   }
 }
@@ -338,6 +338,45 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Update callback
+ */
+void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
+{
+  /* Stores mouse position as current light position */
+  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
+
+  /* Creates a new light? */
+  if (orxInput_HasBeenActivated("CreateLight"))
+  {
+    /* Updates light index */
+    s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
+  }
+  /* Clears all lights? */
+  else if (orxInput_HasBeenActivated("ClearLights"))
+  {
+    /* Clears all lights */
+    ClearLights();
+
+    /* Resets light index */
+    s32LightIndex = 0;
+  }
+  /* Increases radius? */
+  else if (orxInput_HasBeenActivated("IncreaseRadius"))
+  {
+    astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
+  }
+  /* Decreases radius? */
+  else if (orxInput_HasBeenActivated("DecreaseRadius"))
+  {
+    astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
+  }
+  /* Toggle alpha? */
+  else if (orxInput_HasBeenActivated("ToggleAlpha"))
+  {
+    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
+  }
+}
+
 /** Init function
  */
 orxSTATUS orxFASTCALL Init()
@@ -392,6 +431,9 @@ orxSTATUS orxFASTCALL Init()
   /* Clear all lights */
   ClearLights();
 
+  /* Registers our update callback */
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   /* Done! */
   return eResult;
 }
@@ -402,41 +444,8 @@ orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Stores mouse position as current light position */
-  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
-
-  /* Creates a new light? */
-  if(orxInput_HasBeenActivated("CreateLight"))
-  {
-    /* Updates light index */
-    s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
-  }
-  /* Clears all lights? */
-  else if(orxInput_HasBeenActivated("ClearLights"))
-  {
-    /* Clears all lights */
-    ClearLights();
-
-    /* Resets light index */
-    s32LightIndex = 0;
-  }
-  /* Increases radius? */
-  else if(orxInput_HasBeenActivated("IncreaseRadius"))
-  {
-    astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
-  }
-  /* Decreases radius? */
-  else if(orxInput_HasBeenActivated("DecreaseRadius"))
-  {
-    astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
-  }
-  /* Toggle alpha? */
-  else if(orxInput_HasBeenActivated("ToggleAlpha"))
-  {
-    astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
-  }
   /* Should quit? */
-  else if(orxInput_IsActive("Quit"))
+  if(orxInput_IsActive("Quit"))
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

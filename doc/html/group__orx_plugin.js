@@ -89,6 +89,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a618d76e814a5b5e7aa3bbb3d33b63855", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa692fa753cd4b971738b434058bade1f", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa35d79123513b6e51b89287f7b514395", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SHADER_ID", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7aa119e5baad364f848efca75546abbbc5", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a6757daa70c97abd8291373ff1cd2d392", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a92bed8869928b756ca47acc76f3489ef", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_FULL_SCREEN", "group__orx_plugin.html#ggab155bd6d5a09b625a08a9fc69c35bcb7a0c267a57b705e543e31fd2defa316876", null ],
@@ -130,6 +131,7 @@ var group__orx_plugin =
       [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_MOVE_DELTA", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3dac4d022ca5885e333f2eea1c3a57e4bb1", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_WHEEL_DELTA", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3daeb893f1ccbdc3f50d1663eec04350e0c", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_SHOW_CURSOR", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3daf38bb4b8f25080e7d004868dea1c8d22", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GRAB", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3dae92918877d588322291f6a445bfb3a64", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NUMBER", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da306951297060a4dcbe1b8de59bcb00ba", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NONE", "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3da4b3696274cc5072ee56b1712174916f2", null ]
     ] ],

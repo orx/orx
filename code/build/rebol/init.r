@@ -11,7 +11,7 @@ params: [
   archive     {orxArchive support (resources can be stored inside ZIP files)}         -       []
   c++         {Create a C++ project instead of C}                                     +       []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
-  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       [+c++]
+  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
   scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
 ]
 platforms:  [
@@ -58,46 +58,52 @@ extension?: function [
   ]
   result
 ]
-apply-template: func [
+apply-template: function [
   {Replaces all templates with their content}
   content [text! binary!]
 ] [
-  use [template +extension -extension value] [
-    for-each [var condition] [
-      template    [not extension? entry]
-      +extension  [all [extension? entry get entry]]
-      -extension  [all [extension? entry not get entry]]
-    ] [
-      set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
-    ]
-    template-rule: [begin-template: {[} copy value template {]} end-template: (end-template: change/part begin-template get load trim value end-template) :end-template]
-    in-bracket: charset [not #"]"]
-    bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
-    extension-rule: [
-      begin-extension:
-      remove [
-        {[} (erase: no)
-        some [
-          [ [ {+} -extension | {-} +extension] (erase: yes)
-          | [ {+} +extension | {-} -extension]
-          ]
-          [{ } | {^M^/} | {^/}]
+  for-each [var condition] [
+    template    [not extension? entry]
+    +extension  [all [extension? entry get entry]]
+    -extension  [all [extension? entry not get entry]]
+  ] [
+    set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
+  ]
+  clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
+  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] copy value template {]} end-template: (
+      value: copy get load trim value
+      if sanitize [parse value [some [clean-chars | char: skip (change char #"_")]]]
+      end-template: change/part begin-template value end-template
+    ) :end-template
+  ]
+  in-bracket: charset [not #"]"]
+  bracket-rule: [{[} any [bracket-rule | in-bracket] {]}]
+  extension-rule: [
+    begin-extension:
+    remove [
+      {[} (erase: no)
+      some [
+        [ [ {+} -extension | {-} +extension] (erase: yes)
+        | [ {+} +extension | {-} -extension]
         ]
+        [{ } | {^M^/} | {^/}]
       ]
-      any
-      [ template-rule
-      | bracket-rule
-      | remove {]} end-extension: break
-      | skip
-      ]
-      if (erase) remove opt [{^M^/} | {^/}] (remove/part begin-extension end-extension) :begin-extension
     ]
+    any
+    [ template-rule
+    | bracket-rule
+    | remove {]} end-extension: break
+    | skip
+    ]
+    if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension) :begin-extension
   ]
   parse content [
+    (full-line: yes)
     any
     [ extension-rule
     | template-rule
-    | skip
+    | {^/} (full-line: yes)
+    | skip (full-line: no)
     ]
   ]
   content

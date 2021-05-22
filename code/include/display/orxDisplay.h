@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -229,6 +229,8 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
 #define orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER            "TextureUnitNumber"
 #define orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER             "DrawBufferNumber"
+
+#define orxCOLOR_KZ_CONFIG_SECTION                          "Color"
 
 
 /** Shader texture suffixes
@@ -996,12 +998,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetPartialBitma
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-
 /** Gets a bitmap (internal) ID
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @return orxU32
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetBitmapID(const orxBITMAP *_pstBitmap);
+
 
 /** Transforms (and blits onto another) a bitmap
  * @param[in]   _pstSrc                               Bitmap to transform and draw
@@ -1140,6 +1142,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderFloat(
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetShaderVector(orxHANDLE _hShader, orxS32 _s32ID, const orxVECTOR *_pvValue);
+
+/** Gets a shader (internal) ID
+ * @param[in]   _hShader                              Concerned bitmap
+ * @return orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetShaderID(const orxHANDLE _hShader);
 
 
 /** Enables / disables vertical synchro

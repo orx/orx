@@ -1,4 +1,4 @@
-Orx - Portable Game Engine  (Version iOS 1.11)
+Orx - Portable Game Engine  (Version iOS 1.12)
 ================================================
 
 Email iarwain [at] orx-project -dot- org to contact the author; or better, check

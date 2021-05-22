@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -387,7 +387,7 @@ extern "C" void JNICALL Java_org_orx_lib_OrxActivity_nativeOnCreate(JNIEnv *env,
     pthread_cond_init(&sstAndroid.cond, NULL);
 }
 
-// Start up the Orx app
+// Start up the Orx app, called from new Java thread in OrxActivity
 extern "C" void JNICALL Java_org_orx_lib_OrxActivity_startOrx(JNIEnv* env, jobject thiz, jobject activity)
 {
     /* This interface could expand with ABI negotiation, calbacks, etc. */
@@ -640,14 +640,16 @@ extern "C" jobject orxAndroid_GetActivity()
   return sstAndroid.mActivity;
 }
 
-extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[4])
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
+extern "C" void orxAndroid_JNI_GetDeviceIds(orxS32 deviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER])
 {
   JNIEnv *env = Android_JNI_GetEnv();
   jintArray retval = (jintArray) env->CallObjectMethod(sstAndroid.mActivity, sstAndroid.midGetDeviceIds);
-  env->GetIntArrayRegion(retval, 0, 4, (jint*) &deviceIds[0]);
+  env->GetIntArrayRegion(retval, 0, orxANDROID_KU32_MAX_JOYSTICK_NUMBER, (jint*) &deviceIds[0]);
   env->DeleteLocalRef(retval);
 }
 
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
 extern "C" const char * orxAndroid_GetInternalStoragePath()
 {
   if (!sstAndroid.zAndroidInternalFilesPath)
@@ -656,7 +658,6 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
     jobject fileObject;
     jstring pathString;
     const char *path;
-    jobject jActivity;
 
     JNIEnv *env = Android_JNI_GetEnv();
 
@@ -681,6 +682,58 @@ extern "C" const char * orxAndroid_GetInternalStoragePath()
   }
 
   return sstAndroid.zAndroidInternalFilesPath;
+}
+
+// TODO: Duplicated in orxAndroid(Native)Support.cpp. Refactor to orxAndroidCommon or similar
+extern "C" orxSTATUS orxAndroid_JNI_GetInputDevice(orxU32 _u32DeviceId, orxANDROID_JOYSTICK_INFO *pstJoystickInfo)
+{
+    jmethodID mid;
+    jobject deviceObject;
+    jclass inputDeviceClass;
+    jstring deviceNameString;
+    const char *deviceName;
+
+    JNIEnv *env = Android_JNI_GetEnv();
+
+    inputDeviceClass = env->FindClass("android/view/InputDevice");
+    mid = env->GetStaticMethodID(inputDeviceClass, "getDevice", "(I)Landroid/view/InputDevice;");
+    deviceObject = env->CallStaticObjectMethod(inputDeviceClass, mid, (jint)_u32DeviceId);
+
+    if (!deviceObject)
+    {
+      LOGE("Couldn't get InputDevice.getDevice(%d)", (int)_u32DeviceId);
+      env->DeleteLocalRef(inputDeviceClass);
+      return orxSTATUS_FAILURE;
+    }
+
+    pstJoystickInfo->u32DeviceId = _u32DeviceId;
+
+    mid = env->GetMethodID(inputDeviceClass, "getVendorId", "()I");
+    pstJoystickInfo->u32VendorId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getProductId", "()I");
+    pstJoystickInfo->u32ProductId = env->CallIntMethod(deviceObject, mid);
+
+    mid = env->GetMethodID(inputDeviceClass, "getDescriptor", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->descriptor, deviceName, sizeof(pstJoystickInfo->descriptor) - 1);
+    pstJoystickInfo->descriptor[sizeof(pstJoystickInfo->descriptor) - 1] = orxCHAR_NULL;
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    mid = env->GetMethodID(inputDeviceClass, "getName", "()Ljava/lang/String;");
+    deviceNameString = (jstring)env->CallObjectMethod(deviceObject, mid);
+    deviceName = env->GetStringUTFChars(deviceNameString, NULL);
+    strncpy(pstJoystickInfo->name, deviceName, sizeof(pstJoystickInfo->name) - 1);
+    pstJoystickInfo->name[sizeof(pstJoystickInfo->name) - 1] = orxCHAR_NULL;
+    env->ReleaseStringUTFChars(deviceNameString, deviceName);
+    env->DeleteLocalRef(deviceNameString);
+
+    env->DeleteLocalRef(deviceObject);
+    env->DeleteLocalRef(inputDeviceClass);
+
+    return orxSTATUS_SUCCESS;
 }
 
 static inline orxBOOL isInteractible()
@@ -805,6 +858,7 @@ extern "C" void orxAndroid_PumpEvents()
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
           break;
         case 1: // MotionEvent.ACTION_UP
+        case 3: // MotionEvent.ACTION_CANCEL
         case 6: // MotionEvent.ACTION_POINTER_UP
           orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
           break;

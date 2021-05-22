@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -925,7 +925,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_REFERENCED, orxCAMERA_KU32_FLAG_NONE);
@@ -979,7 +979,7 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
     if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_ToCRC(_pstCamera->zReference));
+      orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_Hash(_pstCamera->zReference));
     }
 
     /* Deletes structure */
@@ -1354,7 +1354,7 @@ orxCAMERA *orxFASTCALL orxCamera_Get(const orxSTRING _zName)
   orxASSERT(_zName != orxNULL);
 
   /* Updates result */
-  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zName));
+  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, orxString_Hash(_zName));
 
   /* Done! */
   return pstResult;

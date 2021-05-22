@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2020 Orx-Project
+ * Copyright (c) 2008-2021 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -94,8 +94,8 @@ typedef struct __orxPROFILER_HISTORY_ENTRY_t
  */
 typedef struct __orxPROFILER_MARKER_t
 {
+  orxSTRINGID             stNameID;
   orxSTRING               zName;
-  orxU32                  u32NameID;
 
 } orxPROFILER_MARKER;
 
@@ -391,8 +391,8 @@ void orxFASTCALL orxProfiler_Exit()
  */
 orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
 {
-  orxS32 s32MarkerID;
-  orxU32 u32NameID;
+  orxSTRINGID stNameID;
+  orxS32      s32MarkerID;
 
   /* Checks */
   orxASSERT(sstProfiler.u32Flags & orxPROFILER_KU32_STATIC_FLAG_READY);
@@ -402,13 +402,13 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
   orxThread_WaitSemaphore(sstProfiler.pstSemaphore);
 
   /* Gets name ID */
-  u32NameID = orxString_ToCRC(_zName);
+  stNameID = orxString_Hash(_zName);
 
   /* For all markers */
   for(s32MarkerID = 0; s32MarkerID < sstProfiler.s32MarkerCount; s32MarkerID++)
   {
     /* Matches? */
-    if(u32NameID == sstProfiler.astMarkerList[s32MarkerID].u32NameID)
+    if(stNameID == sstProfiler.astMarkerList[s32MarkerID].stNameID)
     {
       /* Stops */
       break;
@@ -425,8 +425,8 @@ orxS32 orxFASTCALL orxProfiler_GetIDFromName(const orxSTRING _zName)
       sstProfiler.s32MarkerCount++;
 
       /* Inits it */
-      sstProfiler.astMarkerList[s32MarkerID].zName     = orxString_Duplicate(_zName);
-      sstProfiler.astMarkerList[s32MarkerID].u32NameID = u32NameID;
+      sstProfiler.astMarkerList[s32MarkerID].stNameID = stNameID;
+      sstProfiler.astMarkerList[s32MarkerID].zName    = orxString_Duplicate(_zName);
 
       /* Stamps result */
       s32MarkerID |= sstProfiler.s32WaterStamp;
