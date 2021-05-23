@@ -3740,7 +3740,7 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentObject;
 
     /* Sets it as owner */
-    orxStructure_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentObject);
+    orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentObject);
   }
 
   /* Done! */
