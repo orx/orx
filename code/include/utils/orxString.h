@@ -1553,10 +1553,10 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_Hash(const o
 extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_GetID(const orxSTRING _zString);
 
 /** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
- * @param[in]   _u32ID          Concerned string ID
+ * @param[in]   _stID           Concerned string ID
  * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxSTRINGID _u32ID);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxSTRINGID _stID);
 
 /** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
  * @param[in]   _zString        Concerned string

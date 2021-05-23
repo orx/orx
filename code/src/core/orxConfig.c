@@ -4026,7 +4026,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     sstConfig.pfnBootstrap = pfnBackupBootstrap;
 
     /* Creates history bank, entry bank & section bank/table */
-    sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxU32), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    sstConfig.pstHistoryBank  = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxSTRINGID), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
@@ -4629,7 +4629,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   /* Has history? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
   {
-    orxU32 *pu32HistoryEntry;
+    orxSTRINGID *pstHistoryEntry;
 
     /* Sends event */
     orxEvent_SendShort(orxEVENT_TYPE_CONFIG, orxCONFIG_EVENT_RELOAD_START);
@@ -4641,14 +4641,14 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxConfig_Clear(orxNULL);
 
     /* For all entries in history */
-    for(pu32HistoryEntry = (orxU32 *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
-        (pu32HistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
-        pu32HistoryEntry = (orxU32 *)orxBank_GetNext(sstConfig.pstHistoryBank, pu32HistoryEntry))
+    for(pstHistoryEntry = (orxSTRINGID *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
+        (pstHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
+        pstHistoryEntry = (orxSTRINGID *)orxBank_GetNext(sstConfig.pstHistoryBank, pstHistoryEntry))
     {
       const orxSTRING zFileName;
 
       /* Gets its filename */
-      zFileName = orxString_GetFromID(*pu32HistoryEntry);
+      zFileName = orxString_GetFromID(*pstHistoryEntry);
 
       /* Reloads it */
       eResult = orxConfig_Load(zFileName);
