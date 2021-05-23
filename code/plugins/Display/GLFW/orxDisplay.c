@@ -55,7 +55,7 @@
 #define GLFW_INCLUDE_GLEXT
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 #include "GLFW/glfw3.h"
-#undef GLFW_INCLUDE_ES2
+#undef GLFW_INCLUDE_ES3
 #undef GLFW_INCLUDE_GLEXT
 
 #if !defined(__orxMSVC__) || (_MSC_VER > 1600)
