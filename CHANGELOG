@@ -22,13 +22,13 @@ orx 1.12
 * IMPORTANT: Added complete support for joysticks on Android-Native
 * IMPORTANT: orxMemory_Reallocate() now takes an extra orxMEMORY_TYPE parameter
 * IMPORTANT: orxInput_GetMultiplier() now returns a negative value if the input isn't found
-* IMPORTANT: New video mode event will now containt the actual real refresh rate while the config property Display.RefreshRate will contain the requested one (switching from fullscreen to windowed and back will now retain the desired refresh rate)
+* IMPORTANT: New video mode event will now contain the actual real refresh rate while the config property Display.RefreshRate will contain the requested one (switching from fullscreen to windowed and back will now retain the desired refresh rate)
 * IMPORTANT: Both boundaries for orxMath_GetSteppedRandomFloat() are now inclusive
 * IMPORTANT: Replaced freeglut3 with mesaGL dependency on Linux
 
 * Added color literals for all HTML web colors (can be modified/expanded directly inside the Color config section), can be used for Object, Graphic & FX Color values
 * Added color space conversion commands: From[RGB|HSL|HSV]To[RGB|HSL|HSV]
-* Added suport for mouse cursor grab with orxMouse_Grab() function, Mouse.Grab command & Mouse.Grab config property
+* Added support for mouse cursor grab with orxMouse_Grab() function, Mouse.Grab command & Mouse.Grab config property
 * Added config property SphericalPosition for objects (only used if Position isn't defined)
 * Added optional extension for Nuklear to Init script + C/C++ language selection option
 * Improved variable DT handling in LiquidFun plugin's physics simulation update (fixed micro-stuttering)
@@ -44,7 +44,7 @@ orx 1.12
 * Supports up to 25 buttons for joysticks (previously 16)
 * Added multiple maths commands (random, vectors, cartesian/spherical, ...)
 * Fixed LiquidFun physics plugin not taking dimension ratio into account in orxPhysics_ApplyForce()
-* Fixed issue in contact handlin in LiquidFun physics plugin when too many contacts were added/removed within the same frame
+* Fixed issue in contact handling in LiquidFun physics plugin when too many contacts were added/removed within the same frame
 * Null step value is now accepted when retrieving random vectors (ie. all components are unconstrained)
 * Added orxSpawner_SetNextWaveDelay()
 * Added orxGraphic_Clone()
