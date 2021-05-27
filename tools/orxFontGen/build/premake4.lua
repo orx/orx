@@ -191,6 +191,7 @@ solution "orxFontGen"
         {
             "-stdlib=libc++",
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings"
         }
         linkoptions

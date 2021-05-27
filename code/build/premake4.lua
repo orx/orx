@@ -203,6 +203,7 @@ solution "orx"
         {
             "-x c++",
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings",
             "-fvisibility-inlines-hidden",
             "-stdlib=libc++"
