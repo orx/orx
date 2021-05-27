@@ -2740,7 +2740,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
       while((pc < _acBuffer + _u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
       {
         /* Updates pointers */
-        pcLineStart++, pc++;
+        pcLineStart++; pc++;
       }
 
       /* Depending on first character */

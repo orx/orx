@@ -61,6 +61,13 @@
 
 #endif /* __orxGCC__ */
 
+#ifdef __orxLLVM__
+
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wcomma"
+
+#endif /* __orxLLVM__ */
+
 #include "stb_vorbis.c"
 #include "sndfile.h"
 
@@ -2731,3 +2738,9 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma GCC diagnostic pop
 
 #endif /* __orxGCC__ */
+
+#ifdef __orxLLVM__
+
+  #pragma clang diagnostic pop
+
+#endif /* __orxLLVM__ */
