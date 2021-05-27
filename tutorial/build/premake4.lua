@@ -163,14 +163,12 @@ solution "Tutorial"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++",
             "-gdwarf-2",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++",
             "-dead_strip"
         }

@@ -205,12 +205,10 @@ solution "orx"
             "-gdwarf-2",
             "-Wno-write-strings",
             "-fvisibility-inlines-hidden",
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++",
             "-dead_strip"
         }
