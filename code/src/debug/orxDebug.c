@@ -382,6 +382,24 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
 
 #endif /* __orxWINDOWS__ */
 
+#ifdef __orxMAC__
+
+    {
+      const char *zTerminal;
+
+      /* Gets TERM environment variable */
+      zTerminal = getenv("TERM");
+
+      /* No valid ANSI terminal found? */
+      if((zTerminal == orxNULL) || (orxString_SearchString(zTerminal, "color") == orxNULL))
+      {
+        /* Removes ANSI flag */
+        sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
+      }
+    }
+
+#endif /* __orxMAC__ */
+
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
