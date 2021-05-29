@@ -57,15 +57,14 @@
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
-#define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
-#define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
-#define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000020  /**< Fixed ratio flag */
-#define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000040  /**< Referenced flag */
+#define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000008  /**< Auto-resize flag */
+#define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000010  /**< Fixed ratio flag */
+#define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000020  /**< Referenced flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x00100000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x00200000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00400000  /**< Internal camera handling flag  */
 
-#define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000009  /**< Default flags */
+#define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000001  /**< Default flags */
 
 #define orxVIEWPORT_KU32_MASK_ALIGN             0xF0000000  /**< Alignment mask */
 
@@ -1187,6 +1186,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      orxVECTOR       vSize;
       const orxSTRING zCameraName;
       orxS32          s32Number;
       orxBOOL         bFixedSize = orxFALSE, bFixedPosition = orxFALSE;
@@ -1196,6 +1196,24 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       {
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
+      }
+
+      /* Has plain size */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      {
+        /* Gets it */
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        {
+          /* Don't use relative size? */
+          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) == orxFALSE)
+          {
+            /* Applies it */
+            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+          }
+
+          /* Updates status */
+          bFixedSize = orxTRUE;
+        }
       }
 
       /* *** Textures *** */
@@ -1508,44 +1526,15 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
       }
 
-      /* Has plain size */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      /* Has fixed size? */
+      if(bFixedSize != orxFALSE)
       {
-        orxVECTOR vSize;
-
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        /* Use relative size? */
+        if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
         {
-          /* Use relative size? */
-          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
-          {
-            /* Applies it */
-            orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
-          }
-          else
-          {
-            /* Applies it */
-            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
-          }
-
-          /* Updates status */
-          bFixedSize = orxTRUE;
+          /* Applies it */
+          orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
         }
-      }
-
-      /* No fixed size? */
-      if(bFixedSize == orxFALSE)
-      {
-        orxFLOAT fWidth, fHeight;
-
-        /* Defaults to screen size */
-        orxDisplay_GetScreenSize(&fWidth, &fHeight);
-
-        /* Applies it */
-        orxViewport_SetSize(pstResult, fWidth, fHeight);
-
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
       /* Has relative size? */
