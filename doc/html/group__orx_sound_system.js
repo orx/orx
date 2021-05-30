@@ -13,10 +13,10 @@ var group__orx_sound_system =
       [ "orxSOUNDSYSTEM_STATUS_NUMBER", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aafa35b7d509158f5ef6bdd363ffc3f27b", null ],
       [ "orxSOUNDSYSTEM_STATUS_NONE", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aadec474cdc54c1936077541fb4cdefb58", null ]
     ] ],
-    [ "orxSoundSystem_CreateFromSample", "group__orx_sound_system.html#gaa8ec8dbf1b5c62e983a6c4ea9e8b270b", null ],
+    [ "orxSoundSystem_CreateFromSample", "group__orx_sound_system.html#ga7b42a811e4521547b70152b8830fc960", null ],
     [ "orxSoundSystem_CreateSample", "group__orx_sound_system.html#gaa7f5fb69ce624beb3d84305602ebd383", null ],
-    [ "orxSoundSystem_CreateStream", "group__orx_sound_system.html#gad5295d2f1c0f742f21865eac1cebe577", null ],
-    [ "orxSoundSystem_CreateStreamFromFile", "group__orx_sound_system.html#ga79dbe0b465090ff02504bef014eae11e", null ],
+    [ "orxSoundSystem_CreateStream", "group__orx_sound_system.html#ga94da0c4bedae98e3739f29458823b2d6", null ],
+    [ "orxSoundSystem_CreateStreamFromFile", "group__orx_sound_system.html#gac7a20f04a44186d971e28f85a14af86c", null ],
     [ "orxSoundSystem_Delete", "group__orx_sound_system.html#ga614d73a798aa537b7a154774ab623dd2", null ],
     [ "orxSoundSystem_DeleteSample", "group__orx_sound_system.html#ga99a0ec3cf09c49fdeafdc6ee6911e3d7", null ],
     [ "orxSoundSystem_Exit", "group__orx_sound_system.html#gaac66b824ebaeea2e7b32a33e10413d47", null ],
