@@ -147,6 +147,7 @@ typedef struct __orxSOUNDSYSTEM_STREAM_t
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
+  orxHANDLE hUserData;
   orxBOOL   bIsStream;
   ALuint    uiSource;
   orxFLOAT  fDuration;
