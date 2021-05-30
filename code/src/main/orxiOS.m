@@ -247,6 +247,7 @@ const orxSTRING orxiOS_GetDocumentsPath()
 
     /* Registers default event handler */
     orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+    orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
     /* Pushes config section */
     orxConfig_PushSection(orxIOS_KZ_CONFIG_SECTION);
