@@ -174,6 +174,7 @@ typedef struct __orxSOUNDSYSTEM_STREAM_t
   orxBOOL                 bStop         : 1;
   orxBOOL                 bStopping     : 1;
   orxBOOL                 bPause        : 1;
+
   ALuint                  auiBufferList[0];
 
 } orxSOUNDSYSTEM_STREAM;
@@ -731,14 +732,14 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
         stPayload.pstSound                          = orxSOUND(_pstSound->hUserData);
 
         /* Stores sound name */
-        stPayload.stStream.stInfo.zName               = _pstSound->stStream.stData.zName;
+        stPayload.stStream.stInfo.zName             = _pstSound->stStream.stData.zName;
 
         /* Stores stream info */
         stPayload.stStream.stInfo.u32SampleRate     = _pstSound->stStream.stData.stInfo.u32SampleRate;
         stPayload.stStream.stInfo.u32ChannelNumber  = _pstSound->stStream.stData.stInfo.u32ChannelNumber;
 
         /* Stores time stamp */
-        stPayload.stStream.stPacket.fTimeStamp = (orxFLOAT)orxSystem_GetTime();
+        stPayload.stStream.stPacket.fTimeStamp      = (orxFLOAT)orxSystem_GetTime();
 
         /* Gets buffer's frame number */
         u32BufferFrameNumber = sstSoundSystem.s32StreamBufferSize / _pstSound->stStream.stData.stInfo.u32ChannelNumber;
@@ -1742,6 +1743,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_OpenAL_CreateFromSample(orxHAND
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT((_hUserData != orxNULL) && (_hUserData != orxHANDLE_UNDEFINED));
+  orxASSERT(_pstSample != orxNULL);
 
   /* Allocates sound */
   pstResult = (orxSOUNDSYSTEM_SOUND *)orxBank_Allocate(sstSoundSystem.pstSoundBank);
