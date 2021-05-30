@@ -334,11 +334,15 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             pstText != orxNULL;
             pstText = orxTEXT(orxStructure_GetNext(pstText)))
         {
-          /* Match origin? */
-          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
+          /* Has reference? */
+          if((pstText->zReference != orxNULL) && (pstText->zReference != orxSTRING_EMPTY))
           {
-            /* Re-processes its config data */
-            orxText_ProcessConfigData(pstText);
+            /* Match origin? */
+            if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
+            {
+              /* Re-processes its config data */
+              orxText_ProcessConfigData(pstText);
+            }
           }
         }
       }
