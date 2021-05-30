@@ -88,8 +88,8 @@
 
 #define orxSOUND_KU32_BANK_SIZE                         64          /**< Bank size */
 
-#define orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER       1
-#define orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE          44100
+#define orxSOUND_KU32_STREAM_DEFAULT_CHANNEL_NUMBER     1
+#define orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE        44100
 
 #define orxSOUND_KU32_BUS_BANK_SIZE                     64
 #define orxSOUND_KU32_BUS_TABLE_SIZE                    64
@@ -420,10 +420,35 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         }
 
         /* Is empty stream ? */
-        if(orxString_ICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
+        if(orxString_NICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM, orxString_GetLength(orxSOUND_KZ_CONFIG_EMPTY_STREAM)) == 0)
         {
+          const orxSTRING zStream;
+          orxU32          u32Value, u32SampleRate, u32ChannelNumber;
+
+          /* Gets default sample rate and channel number */
+          u32SampleRate     = orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE;
+          u32ChannelNumber  = orxSOUND_KU32_STREAM_DEFAULT_CHANNEL_NUMBER;
+
+          /* Gets stream specifications */
+          zStream = zName + orxString_GetLength(orxSOUND_KZ_CONFIG_EMPTY_STREAM);
+
+          /* For all specifications */
+          while(orxString_ToU32(orxString_SkipWhiteSpaces(zStream), &u32Value, &zStream) != orxSTATUS_FAILURE)
+          {
+            /* Channel? */
+            if(u32Value < 100)
+            {
+              u32ChannelNumber = u32Value;
+            }
+            /* Sample rate */
+            else
+            {
+              u32SampleRate = u32Value;
+            }
+          }
+
           /* Creates empty stream */
-          _pstSound->pstData = orxSoundSystem_CreateStream(_pstSound, orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE);
+          _pstSound->pstData = orxSoundSystem_CreateStream(_pstSound, u32ChannelNumber, u32SampleRate);
         }
         else
         {
