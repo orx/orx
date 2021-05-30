@@ -381,7 +381,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(_pstSound->pstSample != orxNULL)
         {
           /* Creates sound data based on it */
-          _pstSound->pstData = orxSoundSystem_CreateFromSample(_pstSound->pstSample->pstData);
+          _pstSound->pstData = orxSoundSystem_CreateFromSample(_pstSound, _pstSound->pstSample->pstData);
 
           /* Valid? */
           if(_pstSound->pstData != orxNULL)
@@ -423,12 +423,12 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(orxString_ICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM) == 0)
         {
           /* Creates empty stream */
-          _pstSound->pstData = orxSoundSystem_CreateStream(orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE, _pstSound->zReference);
+          _pstSound->pstData = orxSoundSystem_CreateStream(_pstSound, orxSOUND_KZ_STREAM_DEFAULT_CHANNEL_NUMBER, orxSOUND_KZ_STREAM_DEFAULT_SAMPLE_RATE);
         }
         else
         {
           /* Loads it */
-          _pstSound->pstData = orxSoundSystem_CreateStreamFromFile(zName, _pstSound->zReference);
+          _pstSound->pstData = orxSoundSystem_CreateStreamFromFile(_pstSound, zName);
         }
 
         /* Valid? */
@@ -712,7 +712,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
               if(bLoaded != orxFALSE)
               {
                 /* Recreates sound data based on sample */
-                pstSound->pstData = orxSoundSystem_CreateFromSample(pstSound->pstSample->pstData);
+                pstSound->pstData = orxSoundSystem_CreateFromSample(pstSound, pstSound->pstSample->pstData);
               }
               else
               {
@@ -1644,7 +1644,7 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
     if(pstResult != orxNULL)
     {
       /* Creates empty stream */
-      pstResult->pstData = orxSoundSystem_CreateStream(_u32ChannelNumber, _u32SampleRate, _zName);
+      pstResult->pstData = orxSoundSystem_CreateStream(pstResult, _u32ChannelNumber, _u32SampleRate);
 
       /* Stores its reference */
       pstResult->zReference = orxString_Store(_zName);
@@ -2002,7 +2002,7 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
       _pstSound->pstSample = pstSoundSample;
 
       /* Creates sound data based on it */
-      _pstSound->pstData = orxSoundSystem_CreateFromSample(pstSoundSample->pstData);
+      _pstSound->pstData = orxSoundSystem_CreateFromSample(_pstSound, pstSoundSample->pstData);
 
       /* Valid? */
       if(_pstSound->pstData != orxNULL)

@@ -140,25 +140,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSampleIn
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber);
 
 /** Creates a sound from preloaded sample (can be played directly)
+ * @param[in]   _hUserData                            User data to associate with this sound
  * @param[in]   _pstSample                            Concerned sample
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
 /** Creates an empty stream
+ * @param[in]   _hUserData                            User data to associate with this sound
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
  * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
- * @param[in]   _zReference                           Reference name used for streaming events (usually the corresponding config ID)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
 
 /** Creates a streamed sound from file (can be played directly)
+ * @param[in]   _hUserData                            User data to associate with this sound
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
- * @param[in]   _zReference                           Reference name used for streaming events (usually the corresponding config ID)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename);
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound

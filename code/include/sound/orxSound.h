@@ -99,8 +99,9 @@ typedef enum __orxSOUND_EVENT_t
  */
 typedef struct __orxSOUND_STREAM_INFO_t
 {
-  orxU32    u32SampleRate;                    /**< The sample rate, e.g. 44100 Hertz : 4 */
-  orxU32    u32ChannelNumber;                 /**< Number of channels, either mono (1) or stereo (2) : 8 */
+  const orxSTRING zName;                      /**< Stream name : 4 */
+  orxU32          u32SampleRate;              /**< The sample rate, e.g. 44100 Hertz : 8 */
+  orxU32          u32ChannelNumber;           /**< Number of channels, either mono (1) or stereo (2) : 12 */
 
 } orxSOUND_STREAM_INFO;
 
@@ -121,17 +122,13 @@ typedef struct __orxSOUND_STREAM_PACKET_t
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  union
-  {
-    orxSOUND                   *pstSound;     /**< Sound reference : 4 */
+  orxSOUND                   *pstSound;     /**< Sound reference : 4 */
 
-    struct
-    {
-      const orxSTRING           zSoundName;   /**< Sound name : 4 */
-      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
-      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
-    } stStream;
-  };                                          /**< Stream : 32 */
+  struct
+  {
+    orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
+    orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 36 */
+  } stStream;
 
 } orxSOUND_EVENT_PAYLOAD;
 

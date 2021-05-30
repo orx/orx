@@ -80,19 +80,19 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetSampleData(orxSOUNDSYSTEM_SAMPLE *
   return orxSTATUS_FAILURE;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   /* Done! */
   return orxNULL;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zReference)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate)
 {
   /* Done! */
   return orxNULL;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStreamFromFile(const orxSTRING _zFilename, const orxSTRING _zReference)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename)
 {
   /* Done! */
   return orxNULL;
