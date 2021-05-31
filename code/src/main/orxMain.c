@@ -73,6 +73,15 @@ typedef struct __orxMAIN_STATIC_t
 static orxMAIN_STATIC sstMain;
 
 
+#ifdef __orxMSVC__
+
+/* Requesting high performance dedicated GPU on hybrid laptops */
+__declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif // __orxMSVC__
+
+
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
