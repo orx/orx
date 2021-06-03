@@ -323,7 +323,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       else if(!orxString_Compare(pstPayload->zParamName, "NormalMap"))
       {
         /* Gets associated normal map */
-        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_ToCRC(orxTexture_GetName(pstPayload->pstValue)));
+        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_Hash(orxTexture_GetName(pstPayload->pstValue)));
       }
     }
   }

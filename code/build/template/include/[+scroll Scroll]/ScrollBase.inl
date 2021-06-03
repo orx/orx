@@ -1911,9 +1911,9 @@ ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName
     const orxSTRING zSection;
 
     // Gets associated binder, using config hierarchy
-    for(zSection = _zName, poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_ToCRC(zSection));
+    for(zSection = _zName, poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(zSection));
         (!poResult) && ((zSection = orxConfig_GetParent(zSection)));
-        poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_ToCRC(zSection)));
+        poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(zSection)));
   }
 
   // Not found and default allowed?
