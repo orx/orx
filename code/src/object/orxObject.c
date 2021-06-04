@@ -5341,6 +5341,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxASSERT(ppstObject != orxNULL);
           *ppstObject = pstResult;
 
+          /* Has a body? */
+          if(orxOBJECT_GET_STRUCTURE(pstResult, BODY) != orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has a body. Age cannot be applied to it: this object will remain " orxANSI_KZ_COLOR_FG_RED "static" orxANSI_KZ_COLOR_FG_DEFAULT " while aging for " orxANSI_KZ_COLOR_FG_YELLOW "<%g>" orxANSI_KZ_COLOR_FG_DEFAULT " seconds.", orxObject_GetName(pstResult), fAge);
+          }
+
           /* Should apply age? */
           if(fAge > orxFLOAT_0)
           {
