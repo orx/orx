@@ -333,16 +333,16 @@ project "orx"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
-
-    configuration {"linux", "*Core*"}
-        linkoptions {"-Wl,--no-whole-archive"}
         links
         {
             "dl",
             "m",
-            "rt",
-            "pthread"
+            "rt"
         }
+
+    configuration {"linux", "*Core*"}
+        linkoptions {"-Wl,--no-whole-archive"}
+        links {"pthread"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
