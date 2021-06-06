@@ -151,12 +151,12 @@
 #define orxOBJECT_KZ_LEFT_PIVOT                 "left"
 #define orxOBJECT_KZ_BOTTOM_PIVOT               "bottom"
 #define orxOBJECT_KZ_RIGHT_PIVOT                "right"
+#define orxOBJECT_KZ_ANIM                       "anim"
+#define orxOBJECT_KZ_CHILD                      "child"
 #define orxOBJECT_KZ_FX                         "fx"
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
-#define orxOBJECT_KZ_CHILD                      "child"
-#define orxOBJECT_KZ_ANIM                       "anim"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -454,82 +454,6 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid size retrieved from object.");
       }
     }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Sets literal lifetime
- */
-static orxINLINE orxSTATUS orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime)
-{
-  orxCHAR   acBuffer[128];
-  orxU32    u32Flags = orxOBJECT_KU32_FLAG_NONE;
-  orxSTATUS eResult;
-
-  /* Gets lower case value */
-  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-  orxString_LowerCase(orxString_NCopy(acBuffer, _zLifeTime, sizeof(acBuffer) - 1));
-
-  /* FX? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_FX) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_FX_LIFETIME;
-  }
-
-  /* Sound? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SOUND) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_SOUND_LIFETIME;
-  }
-
-  /* Spawn? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SPAWN) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME;
-  }
-
-  /* Track? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_TRACK) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
-  }
-
-  /* Child? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_CHILD) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
-  }
-
-  /* Anim? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_ANIM) != orxNULL)
-  {
-    /* Updates flags */
-    u32Flags |= orxOBJECT_KU32_FLAG_ANIM_LIFETIME;
-  }
-
-  /* Has flags? */
-  if(orxFLAG_TEST(u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME))
-  {
-    /* Clears previous lifetime */
-    orxObject_SetLifeTime(_pstObject, -orxFLOAT_1);
-
-    /* Applies them */
-    orxStructure_SetFlags(_pstObject, u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -5626,6 +5550,7 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
     orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, 1 << _eStructureID);
   }
 
+  /* Done! */
   return;
 }
 
@@ -5793,6 +5718,7 @@ void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
     }
   }
 
+  /* Done! */
   return;
 }
 
@@ -5830,6 +5756,7 @@ void orxFASTCALL    orxObject_SetUserData(orxOBJECT *_pstObject, void *_pUserDat
   /* Stores it */
   _pstObject->pUserData = _pUserData;
 
+  /* Done! */
   return;
 }
 
@@ -9400,7 +9327,8 @@ void orxFASTCALL orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnabl
     orxTimeLine_Enable(pstTimeLine, _bEnable);
   }
 
-  /* Done! */
+
+    /* Done! *//* Done! */
   return;
 }
 
@@ -10109,6 +10037,89 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstOb
 
     /* Updates result */
     eResult = orxDISPLAY_BLEND_MODE_NONE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object literal lifetime.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zLifeTime      Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime)
+{
+  orxCHAR   acBuffer[128];
+  orxU32    u32Flags = orxOBJECT_KU32_FLAG_NONE;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets lower case value */
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  orxString_LowerCase(orxString_NCopy(acBuffer, _zLifeTime, sizeof(acBuffer) - 1));
+
+  /* FX? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_FX) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_FX_LIFETIME;
+  }
+
+  /* Sound? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SOUND) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_SOUND_LIFETIME;
+  }
+
+  /* Spawn? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_SPAWN) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_SPAWNER_LIFETIME;
+  }
+
+  /* Track? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_TRACK) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME;
+  }
+
+  /* Child? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_CHILD) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME;
+  }
+
+  /* Anim? */
+  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_ANIM) != orxNULL)
+  {
+    /* Updates flags */
+    u32Flags |= orxOBJECT_KU32_FLAG_ANIM_LIFETIME;
+  }
+
+  /* Has flags? */
+  if(orxFLAG_TEST(u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME))
+  {
+    /* Clears previous lifetime */
+    orxObject_SetLifeTime(_pstObject, -orxFLOAT_1);
+
+    /* Applies them */
+    orxStructure_SetFlags(_pstObject, u32Flags, orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
