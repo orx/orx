@@ -1098,6 +1098,90 @@ void orxFASTCALL orxObject_CommandGetMassCenter(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+/** Command: ApplyTorque
+ */
+void orxFASTCALL orxObject_CommandApplyTorque(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Applies torque */
+    orxObject_ApplyTorque(pstObject, _astArgList[1].fValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: ApplyForce
+ */
+void orxFASTCALL orxObject_CommandApplyForce(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Applies force */
+    orxObject_ApplyForce(pstObject, &(_astArgList[1].vValue), (_u32ArgNumber > 2) ? &(_astArgList[2].vValue) : orxNULL);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: ApplyImpulse
+ */
+void orxFASTCALL orxObject_CommandApplyImpulse(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Applies impulse */
+    orxObject_ApplyImpulse(pstObject, &(_astArgList[1].vValue), (_u32ArgNumber > 2) ? &(_astArgList[2].vValue) : orxNULL);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetText
  */
 void orxFASTCALL orxObject_CommandSetText(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3216,6 +3300,13 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetMassCenter */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMassCenter, "MassCenter", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: ApplyTorque */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyTorque, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Torque", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: ApplyForce */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyForce, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Force", orxCOMMAND_VAR_TYPE_VECTOR}, {"MassCenter = <empty>", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: ApplyImpulse */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyImpulse, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Impulse", orxCOMMAND_VAR_TYPE_VECTOR}, {"MassCenter = <empty>", orxCOMMAND_VAR_TYPE_VECTOR});
+
   /* Command: SetText */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetText, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Text", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetText */
@@ -3406,6 +3497,13 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMass);
   /* Command: GetMassCenter */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMassCenter);
+
+  /* Command: ApplyTorque */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ApplyTorque);
+  /* Command: ApplyForce */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ApplyForce);
+  /* Command: ApplyImpulse */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ApplyImpulse);
 
   /* Command: SetText */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetText);
