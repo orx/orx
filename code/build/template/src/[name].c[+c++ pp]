@@ -163,7 +163,9 @@ void [!name]::BindObjects()
 [+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
-    // Add a config storage to find the initial config file
+    // Add config storage to find the initial config file
+[+archive
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 
     // Return orxSTATUS_FAILURE to prevent orx from loading the default config file

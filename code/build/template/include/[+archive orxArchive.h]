@@ -4956,26 +4956,65 @@ typedef struct ZipArchive
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
 const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
 {
+  static orxCHAR  sacBuffer[512];
+  orxCHAR         acArchive[512];
   mz_zip_archive  stZipArchive;
+  const orxSTRING zArchive = _zStorage;
+  const orxSTRING zDirectory;
   orxSTRING       zResult = orxNULL;
-  static orxCHAR  acBuffer[512] = {0};
 
   // Clears zip archive memory
   orxMemory_Zero(&stZipArchive, sizeof(mz_zip_archive));
 
-  // Can open zip file?
-  if(mz_zip_reader_init_file(&stZipArchive, _zStorage, 0))
+  // Locates directory separator
+  zDirectory = orxString_SearchChar(_zStorage, orxRESOURCE_KC_LOCATION_SEPARATOR);
+
+  // Extracts archive name
+  if(zDirectory != orxNULL)
   {
-    int iIndex;
+    acArchive[orxString_NPrint(acArchive, sizeof(acArchive) - 1, "%.*s", zDirectory - _zStorage, _zStorage)] = orxCHAR_NULL;
+    zArchive = acArchive;
+  }
+
+  // Can open archive file?
+  if(mz_zip_reader_init_file(&stZipArchive, zArchive, 0))
+  {
+    orxCHAR         acPath[512];
+    const orxSTRING zPath = _zResource;
+    int             iIndex;
+
+    // Has directory?
+    if(zDirectory != orxNULL)
+    {
+      // Skips any leading directory separator
+      do
+      {
+        zDirectory += 1;
+      } while (*zDirectory == orxCHAR_DIRECTORY_SEPARATOR_LINUX);
+
+      // Gets full content path
+      if(*zDirectory != orxCHAR_NULL)
+      {
+        if(*(zDirectory + orxString_GetLength(zDirectory) - 1) != orxCHAR_DIRECTORY_SEPARATOR_LINUX)
+        {
+          acPath[orxString_NPrint(acPath, sizeof(acPath) - 1, "%s%c%s", zDirectory, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zResource)] = orxCHAR_NULL;
+        }
+        else
+        {
+          acPath[orxString_NPrint(acPath, sizeof(acPath) - 1, "%s%s", zDirectory, _zResource)] = orxCHAR_NULL;
+        }
+        zPath = acPath;
+      }
+    }
 
     // Can locate content inside?
-    if((iIndex = mz_zip_reader_locate_file(&stZipArchive, _zResource, NULL, 0)) >= 0)
+    if((iIndex = mz_zip_reader_locate_file(&stZipArchive, zPath, NULL, 0)) >= 0)
     {
       // Creates location string: storage name + index of file
-      orxString_NPrint(acBuffer, 511, "%s%c%d", _zStorage, orxRESOURCE_KC_LOCATION_SEPARATOR, iIndex);
+      sacBuffer[orxString_NPrint(sacBuffer, sizeof(sacBuffer) - 1, "%s%c%d", zArchive, orxRESOURCE_KC_LOCATION_SEPARATOR, iIndex)] = orxCHAR_NULL;
 
       // Updates result
-      zResult = acBuffer;
+      zResult = sacBuffer;
     }
 
     // Closes zip file
