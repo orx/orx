@@ -231,15 +231,15 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
 #define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS   '\\'
 #define orxCHAR_DIRECTORY_SEPARATOR_LINUX     '/'
 
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '\\'
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#else /* __orxWINDOWS__ */
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '/'
 
-#endif
+#endif /* __orxWINDOWS__ */
 
 
 /* *** Status defines *** */
