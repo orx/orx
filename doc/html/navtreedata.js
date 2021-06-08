@@ -42,18 +42,18 @@ var NAVTREEINDEX =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feab25fe032f7bc7a51f780679ea5edc364",
 "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0",
 "group__orx_object.html#ga07d3d5f43109b5d142634e9bc5e67b84",
-"group__orx_object.html#gadeeecee1ac395151f2026da169932faf",
-"group__orx_physics.html#gacdad775a326cabdc10b2981370c47ba7",
-"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4becb7e609e1a4174e36df39ded715f8",
-"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999faa6357e5200935495237ccb148490b32d",
-"group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8",
-"group__orx_sound.html#gad7ac60220902db5d08dab4c44a734d5f",
-"group__orx_spawner.html#ga77225815024bf3bd63ebf72c38da65ab",
-"group__orx_structure.html#ga7648d4b9d2a689fb22c8ff6d903e36e5",
-"group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a",
-"group__orx_vector.html#ga764c813fd21abc9f463dcdb6f0264165",
-"orx_physics_8h.html",
-"structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a43768f29fd84462567cb4f82840a7338"
+"group__orx_object.html#gadce3e7887f764197d8a03aa9a8eaaae4",
+"group__orx_physics.html#gacc85fccf6ee1b34191c2eacec867cfbe",
+"group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4436ee95f3203ab9bcb8a5b4458ae6a3",
+"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa9aa56496367d7eeb92465df7c64856fd",
+"group__orx_resource.html#ga8a058c9512ae7ebbc7cbb62956e95f34",
+"group__orx_sound.html#gad2c5d121b81cbd87ad8c2ff26516a8b9",
+"group__orx_spawner.html#ga757d724e3601950fccbb85d625991400",
+"group__orx_structure.html#ga729e081eb94e229eb9862e64d466feec",
+"group__orx_texture.html#gad4dc28990d43e356a822a9b79ab02725",
+"group__orx_vector.html#ga55f049a5f889276aa34fc527d3e4356e",
+"orx_object_8h.html",
+"structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

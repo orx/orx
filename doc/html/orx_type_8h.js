@@ -3,6 +3,7 @@ var orx_type_8h =
     [ "_orxSTRINGIFY", "group__orx_type.html#gaffaecf095a8d27771d76c40c84627f34", null ],
     [ "orxCHAR_ASCII_NUMBER", "group__orx_type.html#ga4d349445a40afddcddc979ae95d18a91", null ],
     [ "orxCHAR_CR", "group__orx_type.html#ga3c6a34e6acad7009dda01358aa90d2c0", null ],
+    [ "orxCHAR_DIRECTORY_SEPARATOR", "group__orx_type.html#ga7f57a1dc12499cb7bc483a611e2d822e", null ],
     [ "orxCHAR_DIRECTORY_SEPARATOR_LINUX", "group__orx_type.html#gae411f0589bfd492bd54d2dd1547fe508", null ],
     [ "orxCHAR_DIRECTORY_SEPARATOR_WINDOWS", "group__orx_type.html#ga353da1d4489596d58d3ceb2020576dee", null ],
     [ "orxCHAR_EOL", "group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a", null ],

@@ -130,6 +130,7 @@ var orx_object_8h =
     [ "orxObject_SetGroupID", "group__orx_object.html#gaca0481739fb050023c745246b805cca8", null ],
     [ "orxObject_SetGroupIDRecursive", "group__orx_object.html#gad42a94bbeb8f1d276f1f16806c8b3e2e", null ],
     [ "orxObject_SetLifeTime", "group__orx_object.html#gac69b4f8092aed5ac984d87990086a61d", null ],
+    [ "orxObject_SetLiteralLifeTime", "group__orx_object.html#ga76e1175b731037d2d0b3e4678dfd352c", null ],
     [ "orxObject_SetOrigin", "group__orx_object.html#gaba6395e153b0e580949380fc06112acc", null ],
     [ "orxObject_SetOwner", "group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833", null ],
     [ "orxObject_SetParent", "group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5", null ],
