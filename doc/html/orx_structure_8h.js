@@ -18,7 +18,7 @@ var orx_structure_8h =
     [ "orxSOUNDPOINTER", "group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5", null ],
     [ "orxSPAWNER", "group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6", null ],
     [ "orxSTRUCTURE", "group__orx_structure.html#gaddc00a1cba0a753ebf56c690930f5d84", null ],
-    [ "orxSTRUCTURE_ASSERT", "group__orx_structure.html#gab95bfa491beac04a52f1ac3357b84b2e", null ],
+    [ "orxSTRUCTURE_ASSERT", "group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205", null ],
     [ "orxSTRUCTURE_DECLARE_ID_ENTRY", "orx_structure_8h.html#ae218aea6817ac1a8cecc967377dcb2d8", null ],
     [ "orxSTRUCTURE_GET_POINTER", "group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9", null ],
     [ "orxSTRUCTURE_GUID_MAGIC_TAG_DELETED", "group__orx_structure.html#ga07319f5b8e3a32798ae498e15535b641", null ],
