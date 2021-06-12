@@ -103,10 +103,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Initialize Dear ImGui
     orxImGui_Init();
 ]
-[+archive
-    // Initialize archive (ZIP) resource type
-    orxArchive_Init();
-]
 [+scroll
     // Create the scene
     CreateObject("Scene");]
@@ -163,6 +159,10 @@ void [!name]::BindObjects()
 [+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
+[+archive
+    // Initialize archive (ZIP) resource type
+    orxArchive_Init();
+]
     // Add config storage to find the initial config file
 [+archive
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]

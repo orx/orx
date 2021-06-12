@@ -4946,8 +4946,10 @@ void *mz_zip_extract_archive_file_to_heap(const char *pZip_filename, const char 
 
 typedef struct ZipArchive
 {
-  orxS64  s64Size, s64Cursor;
-  orxU8  *pu8Buffer;
+  mz_zip_archive  stZip;
+  orxS64          s64Size, s64Cursor;
+  orxU8          *pu8Buffer;
+  orxS32          s32Index;
 } ZipArchive;
 
 
@@ -4977,7 +4979,7 @@ const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, cons
   }
 
   // Can open archive file?
-  if(mz_zip_reader_init_file(&stZipArchive, zArchive, 0))
+  if(mz_zip_reader_init_file(&stZipArchive, zArchive, 0) != MZ_FALSE)
   {
     orxCHAR         acPath[512];
     const orxSTRING zPath = _zResource;
@@ -5031,81 +5033,63 @@ orxHANDLE orxFASTCALL orxArchive_ZipOpen(const orxSTRING _zLocation, orxBOOL _bE
   orxS32    s32Separator;
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
-  // Not in erase mode and is this location correctly formated?
+  // Not in erase mode and is this location correctly formatted?
   if((_bEraseMode == orxFALSE)
   && ((s32Separator = orxString_SearchCharIndex(_zLocation, orxRESOURCE_KC_LOCATION_SEPARATOR, 0)) >= 0))
   {
-    mz_zip_archive stZipArchive;
+    ZipArchive *pstZipArchive;
 
-    // Clears separator for now
-    *((orxSTRING)_zLocation + s32Separator) = orxCHAR_NULL;
+    // Allocates memory for our archive wrapper
+    pstZipArchive = (ZipArchive *)orxMemory_Allocate(sizeof(ZipArchive), orxMEMORY_TYPE_MAIN);
 
-    // Clears archive memory
-    orxMemory_Zero(&stZipArchive, sizeof(mz_zip_archive));
-
-    // Can open zip file?
-    if(mz_zip_reader_init_file(&stZipArchive, _zLocation, 0))
+    // Success?
+    if(pstZipArchive != orxNULL)
     {
-      orxS32 s32Index;
+      // Clears memory
+      orxMemory_Zero(pstZipArchive, sizeof(ZipArchive));
 
-      // Gets content's index from location string
-      orxString_ToS32(_zLocation + s32Separator + 1, &s32Index, orxNULL);
+      // Clears separator for now
+      *((orxSTRING)_zLocation + s32Separator) = orxCHAR_NULL;
 
-      // Valid?
-      if(s32Index >= 0)
+      // Can open zip file?
+      if(mz_zip_reader_init_file(&pstZipArchive->stZip, _zLocation, 0) != MZ_FALSE)
       {
-        ZipArchive *pstZipArchive;
+        // Gets content's index from location string
+        orxString_ToS32(_zLocation + s32Separator + 1, &pstZipArchive->s32Index, orxNULL);
 
-        // Allocates memory for our archive wrapper
-        pstZipArchive = (ZipArchive *)orxMemory_Allocate(sizeof(ZipArchive), orxMEMORY_TYPE_MAIN);
-
-        // Success?
-        if(pstZipArchive != orxNULL)
+        // Valid?
+        if(pstZipArchive->s32Index >= 0)
         {
           mz_zip_archive_file_stat stStat;
 
           // Gets content's stat
-          mz_zip_reader_file_stat(&stZipArchive, (mz_uint)s32Index, &stStat);
-
-          // Stores its size
-          pstZipArchive->s64Size = (orxS64)stStat.m_uncomp_size;
-
-          // Allocates a buffer for storing uncompressed content
-          pstZipArchive->pu8Buffer = (orxU8 *)orxMemory_Allocate((orxS32)pstZipArchive->s64Size, orxMEMORY_TYPE_MAIN);
-
-          // Success?
-          if(pstZipArchive->pu8Buffer != orxNULL)
+          if(mz_zip_reader_file_stat(&pstZipArchive->stZip, (mz_uint)pstZipArchive->s32Index, &stStat) != MZ_FALSE)
           {
-            // Extracts content to the buffer
-            if(mz_zip_reader_extract_to_mem(&stZipArchive, (mz_uint)s32Index, pstZipArchive->pu8Buffer, (size_t)stStat.m_uncomp_size, 0) != MZ_FALSE)
-            {
-              // Inits read cursor
-              pstZipArchive->s64Cursor = 0;
+            // Stores its size
+            pstZipArchive->s64Size = (orxS64)stStat.m_uncomp_size;
 
-              // Updates result
-              hResult = (orxHANDLE)pstZipArchive;
-            }
-            else
-            {
-              // Frees our buffer and archive wrapper: extraction failure
-              orxMemory_Free(pstZipArchive->pu8Buffer);
-              orxMemory_Free(pstZipArchive);
-            }
+            // Inits read cursor
+            pstZipArchive->s64Cursor = 0;
+
+            // Updates result
+            hResult = (orxHANDLE)pstZipArchive;
           }
           else
           {
-            // Frees our archive wrapper: buffer allocation failure
-            orxMemory_Free(pstZipArchive);
+            // Closes zip file
+            mz_zip_reader_end(&pstZipArchive->stZip);
           }
+        }
+        else
+        {
+          // Closes zip file
+          mz_zip_reader_end(&pstZipArchive->stZip);
         }
       }
 
-      // Closes zip file
-      mz_zip_reader_end(&stZipArchive);
+      // Restores separator in original location
+      *((orxSTRING)_zLocation + s32Separator) = orxRESOURCE_KC_LOCATION_SEPARATOR;
     }
-
-    // Restores separator in original location
-    *((orxSTRING)_zLocation + s32Separator) = orxRESOURCE_KC_LOCATION_SEPARATOR;
   }
 
   // Done!
@@ -5120,8 +5104,14 @@ void orxFASTCALL orxArchive_ZipClose(orxHANDLE _hResource)
   // Gets archive wrapper
   pstZipArchive = (ZipArchive *)_hResource;
 
+  // Closes zip file
+  mz_zip_reader_end(&pstZipArchive->stZip);
+
   // Frees its internal buffer
-  orxMemory_Free(pstZipArchive->pu8Buffer);
+  if(pstZipArchive->pu8Buffer != orxNULL)
+  {
+    orxMemory_Free(pstZipArchive->pu8Buffer);
+  }
 
   // Frees it
   orxMemory_Free(pstZipArchive);
@@ -5215,8 +5205,51 @@ orxS64 orxFASTCALL orxArchive_ZipRead(orxHANDLE _hResource, orxS64 _s64Size, voi
   // Gets actual copy size to prevent any out-of-bound access
   s64CopySize = orxMIN(_s64Size, pstZipArchive->s64Size - pstZipArchive->s64Cursor);
 
-  // Copies content
-  orxMemory_Copy(_pu8Buffer, pstZipArchive->pu8Buffer + pstZipArchive->s64Cursor, (orxS32)s64CopySize);
+  // No local decompressed data?
+  if(pstZipArchive->pu8Buffer == orxNULL)
+  {
+    // Asks for all the content?
+    if(s64CopySize == pstZipArchive->s64Size)
+    {
+      // Can't extract content to the buffer?
+      if(mz_zip_reader_extract_to_mem(&pstZipArchive->stZip, (mz_uint)pstZipArchive->s32Index, _pu8Buffer, (size_t)s64CopySize, 0) == MZ_FALSE)
+      {
+        // Clears result
+        s64CopySize = 0;
+      }
+    }
+    else
+    {
+      // Allocates a buffer for storing uncompressed content
+      pstZipArchive->pu8Buffer = (orxU8 *)orxMemory_Allocate((orxS32)pstZipArchive->s64Size, orxMEMORY_TYPE_MAIN);
+
+      // Success?
+      if(pstZipArchive->pu8Buffer != orxNULL)
+      {
+        // Can't extract content to the buffer?
+        if(mz_zip_reader_extract_to_mem(&pstZipArchive->stZip, (mz_uint)pstZipArchive->s32Index, pstZipArchive->pu8Buffer, (size_t)pstZipArchive->s64Size, 0) == MZ_FALSE)
+        {
+          // Frees our buffer
+          orxMemory_Free(pstZipArchive->pu8Buffer);
+
+          // Clears result
+          s64CopySize = 0;
+        }
+      }
+      else
+      {
+        // Clears result
+        s64CopySize = 0;
+      }
+    }
+  }
+
+  // Should copy content?
+  if((pstZipArchive->pu8Buffer != orxNULL) && (s64CopySize != 0))
+  {
+    // Copies content
+    orxMemory_Copy(_pu8Buffer, pstZipArchive->pu8Buffer + pstZipArchive->s64Cursor, (orxS32)s64CopySize);
+  }
 
   // Updates cursor
   pstZipArchive->s64Cursor += s64CopySize;
