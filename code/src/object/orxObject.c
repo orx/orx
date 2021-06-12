@@ -2259,6 +2259,59 @@ void orxFASTCALL orxObject_CommandDetach(orxU32 _u32ArgNumber, const orxCOMMAND_
   return;
 }
 
+/** Command: SetIgnoreFlags
+ */
+void orxFASTCALL orxObject_CommandSetIgnoreFlags(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its ignore flags */
+    orxObject_SetLiteralIgnoreFlags(pstObject, _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetIgnoreFlags
+ */
+void orxFASTCALL orxObject_CommandGetIgnoreFlags(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its ignore flags */
+    _pstResult->zValue = orxObject_GetLiteralIgnoreFlags(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: LogParents
  */
 void orxFASTCALL orxObject_CommandLogParents(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3382,6 +3435,11 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: Detach */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Detach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: SetIgnoreFlags */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetIgnoreFlags, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"IgnoreFlags", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetIgnoreFlags */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetIgnoreFlags, "IgnoreFlags", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
   /* Command: LogParents */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, LogParents, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -3579,6 +3637,11 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Attach);
   /* Command: Detach */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Detach);
+
+  /* Command: SetIgnoreFlags */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetIgnoreFlags);
+  /* Command: GetIgnoreFlags */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetIgnoreFlags);
 
   /* Command: LogParents */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, LogParents);
@@ -6436,7 +6499,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECT
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6491,7 +6554,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldPosition(orxOBJECT *_pstObject, const or
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6545,7 +6608,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6599,7 +6662,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldRotation(orxOBJECT *_pstObject, orxFLOAT
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6641,7 +6704,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR 
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6682,7 +6745,7 @@ orxSTATUS orxFASTCALL orxObject_SetWorldScale(orxOBJECT *_pstObject, const orxVE
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -6719,7 +6782,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(const orxOBJECT *_pstObject, orxVEC
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -6756,7 +6819,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(const orxOBJECT *_pstObject, o
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -6791,7 +6854,7 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(const orxOBJECT *_pstObject)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -6826,7 +6889,7 @@ orxFLOAT orxFASTCALL orxObject_GetWorldRotation(const orxOBJECT *_pstObject)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -6839,7 +6902,7 @@ orxFLOAT orxFASTCALL orxObject_GetWorldRotation(const orxOBJECT *_pstObject)
 /** Get object scale. See orxObject_SetScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object scale vector
- * @return      Scale vector
+ * @return      orxVECTOR / orxNULL
  */
 orxVECTOR *orxFASTCALL orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
@@ -6866,7 +6929,7 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Clears vector */
     orxVector_SetAll(_pvScale, orxFLOAT_0);
@@ -6882,7 +6945,7 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR
 /** Gets object world scale. See orxObject_SetWorldScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object world scale
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxVECTOR / orxNULL
  */
 orxVECTOR *orxFASTCALL orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
@@ -6906,7 +6969,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxV
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
 
     /* Clears scale */
     orxVector_Copy(_pvScale, &orxVECTOR_0);
@@ -7430,6 +7493,117 @@ orxSTATUS orxFASTCALL orxObject_Detach(orxOBJECT *_pstObject)
 
   /* Done! */
   return eResult;
+}
+
+/** Sets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _u32IgnoreFlags Ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetIgnoreFlags(orxOBJECT *_pstObject, orxU32 _u32IgnoreFlags)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Sets ignore flags */
+    orxStructure_SetFlags(pstFrame, _u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_ALL);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object's ignore flags using literals.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _zIgnoreFlags   Literals of the ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetLiteralIgnoreFlags(orxOBJECT *_pstObject, const orxSTRING _zIgnoreFlags)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_zIgnoreFlags != orxNULL);
+
+  /* Sets ignore flags */
+  eResult = orxObject_SetIgnoreFlags(_pstObject, orxFrame_GetIgnoreFlagValues(_zIgnoreFlags));
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags
+ */
+orxU32 orxFASTCALL orxObject_GetIgnoreFlags(const orxOBJECT *_pstObject)
+{
+  orxFRAME *pstFrame;
+  orxU32    u32Result;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets ignore flags */
+    u32Result = orxStructure_GetFlags(pstFrame, orxFRAME_KU32_MASK_IGNORE_ALL);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame structure.");
+
+    /* Updates result */
+    u32Result = orxFRAME_KU32_FLAG_IGNORE_NONE;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets object's ignore flags literals. The result will not persist through other calls to this function or to orxFrame_GetIgnoreFlagNames().
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags literals
+ */
+const orxSTRING orxFASTCALL orxObject_GetLiteralIgnoreFlags(const orxOBJECT *_pstObject)
+{
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets ignore flags */
+  zResult = orxFrame_GetIgnoreFlagNames(orxObject_GetIgnoreFlags(_pstObject));
+
+  /* Done! */
+  return zResult;
 }
 
 /** Logs all parents of an object, including their frame data.

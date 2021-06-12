@@ -4440,7 +4440,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
     if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))
     {
       /* Draws it */
-      orxDisplay_GLFW_DrawBitmap(_pstSrc, &mTransform, _stColor,_eSmoothing, _eBlendMode);
+      orxDisplay_GLFW_DrawBitmap(_pstSrc, &mTransform, _stColor, _eSmoothing, _eBlendMode);
     }
     else
     {

@@ -427,14 +427,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetWorldRotation(const orx
 /** Get object scale. See orxObject_SetScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object scale vector
- * @return      Scale vector
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 
 /** Gets object world scale. See orxObject_SetWorldScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object world scale
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 /** @} */
@@ -522,6 +522,34 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Attach(orxOBJECT *_pstObje
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Detach(orxOBJECT *_pstObject);
+
+
+/** Sets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _u32IgnoreFlags Ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetIgnoreFlags(orxOBJECT *_pstObject, orxU32 _u32IgnoreFlags);
+
+/** Sets object's ignore flags using literals.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _zIgnoreFlags   Literals of the ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLiteralIgnoreFlags(orxOBJECT *_pstObject, const orxSTRING _zIgnoreFlags);
+
+/** Gets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetIgnoreFlags(const orxOBJECT *_pstObject);
+
+/** Gets object's ignore flags literals. The result will not persist through other calls to this function or to orxFrame_GetIgnoreFlagNames().
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags literals
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetLiteralIgnoreFlags(const orxOBJECT *_pstObject);
+
 
 /** Logs all parents of an object, including their frame data.
  * @param[in]   _pstObject      Concerned object
