@@ -157,9 +157,10 @@ typedef struct __orxINPUT_STATIC_t
   orxBANK      *pstSetBank;                                       /**< Set bank */
   orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
   orxINPUT_SET *pstDefaultSet;                                    /**< Default set */
-  orxU32        u32Flags;                                         /**< Control flags */
   orxLINKLIST   stSetList;                                        /**< Set list */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
+  orxBOOL       bHasCustomSetList;                                /**< Has custom set list */
+  orxU32        u32Flags;                                         /**< Control flags */
   orxCHAR       acResultBuffer[orxINPUT_KU32_RESULT_BUFFER_SIZE]; /**< Result buffer */
 
 } orxINPUT_STATIC;
@@ -1344,7 +1345,7 @@ orxSTATUS orxFASTCALL orxInput_Init()
           orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY, orxINPUT_KU32_STATIC_FLAG_NONE);
 
           /* Loads from input */
-          orxInput_Load(orxSTRING_EMPTY);
+          orxInput_Load(orxNULL);
 
           /* Registers commands */
           orxInput_RegisterCommands();
@@ -1489,6 +1490,9 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
   if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_SET_LIST) != orxFALSE)
   {
     orxU32 i, u32Count;
+
+    /* Updates status */
+    sstInput.bHasCustomSetList = orxTRUE;
 
     /* For all defined sets */
     for(i = 0, u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_SET_LIST); (i < u32Count) && (eResult != orxSTATUS_FAILURE); i++)
@@ -1660,14 +1664,25 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       }
     }
 
-    /* Pushes input section */
-    orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+    /* Has custom set list? */
+    if(sstInput.bHasCustomSetList != orxFALSE)
+    {
+      /* Skips Input set */
+      if((u32Index > 0) && (orxString_Compare(azSetNameList[0], orxINPUT_KZ_CONFIG_SECTION) == 0))
+      {
+        azSetNameList++;
+        u32Index--;
+      }
 
-    /* Adds set list to config */
-    orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
+      /* Pushes input section */
+      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
-    /* Pops config section */
-    orxConfig_PopSection();
+      /* Adds set list to config */
+      orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
 
     /* Saves file */
     eResult = orxConfig_Save(_zFileName, orxFALSE, orxInput_SaveCallback);

@@ -20,7 +20,7 @@ private:
 
                 orxSTATUS       Bootstrap() const;
 
-                void            Update(const orxCLOCK_INFO &Info);
+                void            Update(const orxCLOCK_INFO &_rstInfo);
 
                 orxSTATUS       Init();
                 orxSTATUS       Run();
