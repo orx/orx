@@ -1959,7 +1959,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           orxGRAPHIC     *pstGraphic;
           const orxSTRING zEventName = orxNULL;
           const orxSTRING zNewFrameParent;
-          orxFLOAT        fEventValue = orxFLOAT_0;
+          orxFLOAT        fEventValue = orxFLOAT_0, fDuration;
           orxS32          s32EventValueCount;
           orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
@@ -2036,6 +2036,13 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Logs message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, acFrameBuffer);
 
+                  /* Has prefix? */
+                  if(*zPrefix != orxCHAR_NULL)
+                  {
+                    /* Clears new parent's parent */
+                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  }
+
                   /* Stops */
                   break;
                 }
@@ -2111,6 +2118,13 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Logs message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
 
+                  /* Has prefix? */
+                  if(*zPrefix != orxCHAR_NULL)
+                  {
+                    /* Clears new parent's parent */
+                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  }
+
                   /* Stops */
                   break;
                 }
@@ -2119,6 +2133,13 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               {
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
+
+                /* Has prefix? */
+                if(*zPrefix != orxCHAR_NULL)
+                {
+                  /* Clears new parent's parent */
+                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                }
 
                 /* Stops */
                 break;
@@ -2141,6 +2162,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               }
               else
               {
+                /* Has prefix? */
+                if(*zPrefix != orxCHAR_NULL)
+                {
+                  /* Clears new parent's parent */
+                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                }
+
+                /* Stops */
                 break;
               }
             }
@@ -2205,6 +2234,9 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             u32EventCount++;
           }
 
+          /* Gets duration */
+          fDuration = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
+
           /* Disables display logs */
           bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
@@ -2215,39 +2247,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Re-enables display logs */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
-          /* Success? */
-          if(pstGraphic != orxNULL)
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
           {
-            orxFRAME_INFO *pstFrameInfo;
-
-            /* Allocates frame info */
-            pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
-            orxASSERT(pstFrameInfo);
-
-            /* Stores info */
-            pstFrameInfo->pstGraphic  = pstGraphic;
-            pstFrameInfo->zEventName  = zEventName;
-            pstFrameInfo->fEventValue = fEventValue;
-            pstFrameInfo->fDuration   = orxConfig_GetFloat(orxANIMSET_KZ_CONFIG_KEY_DURATION);
-
-            /* Has prefix? */
-            if(*zPrefix != orxCHAR_NULL)
-            {
-              /* Clears new parent's parent */
-              orxConfig_SetParent(zNewFrameParent, orxNULL);
-            }
-          }
-          else
-          {
-            /* Has prefix? */
-            if(*zPrefix != orxCHAR_NULL)
-            {
-              /* Clears new parent's parent */
-              orxConfig_SetParent(zNewFrameParent, orxNULL);
-            }
-
-            /* Stops */
-            break;
+            /* Clears new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, orxNULL);
           }
 
           /* Use temp size? */
@@ -2273,6 +2277,27 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
           /* Clears frame's section parent */
           orxConfig_SetParent(acFrameBuffer, orxNULL);
+
+          /* Success? */
+          if(pstGraphic != orxNULL)
+          {
+            orxFRAME_INFO *pstFrameInfo;
+
+            /* Allocates frame info */
+            pstFrameInfo = (orxFRAME_INFO *)orxBank_Allocate(sstAnimSet.pstCreationBank);
+            orxASSERT(pstFrameInfo);
+
+            /* Stores info */
+            pstFrameInfo->pstGraphic  = pstGraphic;
+            pstFrameInfo->zEventName  = zEventName;
+            pstFrameInfo->fEventValue = fEventValue;
+            pstFrameInfo->fDuration   = fDuration;
+          }
+          else
+          {
+            /* Stops */
+            break;
+          }
         }
 
         /* Restores config section */
