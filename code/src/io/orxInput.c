@@ -1667,10 +1667,12 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     /* Has custom set list? */
     if(sstInput.bHasCustomSetList != orxFALSE)
     {
+      const orxSTRING *pzSetNameList = azSetNameList;
+
       /* Skips Input set */
-      if((u32Index > 0) && (orxString_Compare(azSetNameList[0], orxINPUT_KZ_CONFIG_SECTION) == 0))
+      if((u32Index > 0) && (orxString_Compare(*pzSetNameList, orxINPUT_KZ_CONFIG_SECTION) == 0))
       {
-        azSetNameList++;
+        pzSetNameList++;
         u32Index--;
       }
 
@@ -1678,7 +1680,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
       /* Adds set list to config */
-      orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Index);
+      orxConfig_SetListString(orxINPUT_KZ_CONFIG_SET_LIST, pzSetNameList, u32Index);
 
       /* Pops config section */
       orxConfig_PopSection();
