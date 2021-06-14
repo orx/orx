@@ -204,6 +204,17 @@ void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: RemoveSet
+ */
+void orxFASTCALL orxInput_CommandRemoveSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Removes it */
+  _pstResult->bValue = (orxInput_RemoveSet(_astArgList[0].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Command: EnableSet
  */
 void orxFASTCALL orxInput_CommandEnableSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -329,6 +340,8 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+  /* Command: RemoveSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, RemoveSet, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: EnableSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, EnableSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Set", orxCOMMAND_VAR_TYPE_STRING}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
@@ -360,6 +373,8 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SelectSet);
   /* Command: GetCurrentSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetCurrentSet);
+  /* Command: GetRemoveSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetRemoveSet);
 
   /* Command: EnableSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, EnableSet);
@@ -1700,9 +1715,8 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
  */
 orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
 {
-  orxINPUT_EVENT_PAYLOAD  stPayload;
-  orxINPUT_SET           *pstPreviousSet;
-  orxSTATUS               eResult;
+  orxINPUT_SET *pstPreviousSet;
+  orxSTATUS     eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -1732,6 +1746,8 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
     /* New set? */
     if(sstInput.pstCurrentSet != pstPreviousSet)
     {
+      orxINPUT_EVENT_PAYLOAD stPayload;
+
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
       stPayload.zSetName = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
@@ -1769,6 +1785,61 @@ const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
 
   /* Done! */
   return zResult;
+}
+
+/** Removes a set
+ * @param[in] _zSetName         Set name to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_RemoveSet(const orxSTRING _zSetName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSetName != orxNULL);
+
+  /* Valid? */
+  if(*_zSetName != orxCHAR_NULL)
+  {
+    orxINPUT_SET *pstSet;
+
+    /* For all the sets */
+    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+        pstSet != orxNULL;
+        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+    {
+      /* Found? */
+      if(orxString_Compare(_zSetName, pstSet->zName) == 0)
+      {
+        orxINPUT_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
+        stPayload.zSetName = pstSet->zName;
+
+        /* Sends it */
+        orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_REMOVE_SET, orxNULL, orxNULL, &stPayload);
+
+        /* Is currently selected? */
+        if(sstInput.pstCurrentSet == pstSet)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input set [%s]: removing currently selected set, no set will be left selected.", pstSet->zName);
+        }
+
+        /* Removes it */
+        orxInput_DeleteSet(pstSet);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Enables/disables working set (without selecting it)

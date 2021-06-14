@@ -109,6 +109,7 @@ typedef enum __orxINPUT_EVENT_t
   orxINPUT_EVENT_ON = 0,
   orxINPUT_EVENT_OFF,
   orxINPUT_EVENT_SELECT_SET,
+  orxINPUT_EVENT_REMOVE_SET,
 
   orxINPUT_EVENT_NUMBER,
 
@@ -167,6 +168,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxST
  * @return Current selected set
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
+
+/** Removes a set
+ * @param[in] _zSetName         Set name to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_RemoveSet(const orxSTRING _zSetName);
 
 
 /** Enables/disables working set (without selecting it)
