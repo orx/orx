@@ -141,6 +141,7 @@ var searchData=
   ['orxinput_5fevent_5fnumber',['orxINPUT_EVENT_NUMBER',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c',1,'orxInput.h']]],
   ['orxinput_5fevent_5foff',['orxINPUT_EVENT_OFF',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00',1,'orxInput.h']]],
   ['orxinput_5fevent_5fon',['orxINPUT_EVENT_ON',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809',1,'orxInput.h']]],
+  ['orxinput_5fevent_5fremove_5fset',['orxINPUT_EVENT_REMOVE_SET',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070',1,'orxInput.h']]],
   ['orxinput_5fevent_5fselect_5fset',['orxINPUT_EVENT_SELECT_SET',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72',1,'orxInput.h']]],
   ['orxinput_5fmode_5ffull',['orxINPUT_MODE_FULL',['../group__orx_input.html#gga792a36e293073c41ca434b9d6afd30e5a0aca3225091309eca6305ec9448c2c29',1,'orxInput.h']]],
   ['orxinput_5fmode_5fnegative',['orxINPUT_MODE_NEGATIVE',['../group__orx_input.html#gga792a36e293073c41ca434b9d6afd30e5ae3145eb42bacaf2fb3b5310eab3c54ab',1,'orxInput.h']]],

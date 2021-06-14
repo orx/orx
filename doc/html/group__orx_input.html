@@ -154,9 +154,10 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> = 0, 
 <a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
 <a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72">orxINPUT_EVENT_SELECT_SET</a>, 
-<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070">orxINPUT_EVENT_REMOVE_SET</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:gaad778a6cb60c4e8b47e35f8a9216f108"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -230,6 +231,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga353743b746e3bece0070e95850a0cbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb">orxInput_Load</a> (const orxSTRING _zFileName)</td></tr>
 <tr class="separator:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ed1b079e8917dd7ba05990a44158376"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376">orxInput_RemoveSet</a> (const orxSTRING _zSetName)</td></tr>
+<tr class="separator:ga3ed1b079e8917dd7ba05990a44158376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a34aa6090226956398b7b1753760f71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga2a34aa6090226956398b7b1753760f71">orxInput_ResetValue</a> (const orxSTRING _zInputName)</td></tr>
 <tr class="separator:ga2a34aa6090226956398b7b1753760f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacb452866d26f0e8845775a8fe7b414d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0">orxInput_Save</a> (const orxSTRING _zFileName)</td></tr>
@@ -450,6 +453,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00"></a>orxINPUT_EVENT_OFF&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72"></a>orxINPUT_EVENT_SELECT_SET&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070"></a>orxINPUT_EVENT_REMOVE_SET&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c"></a>orxINPUT_EVENT_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
@@ -1218,6 +1223,29 @@ Functions</h2></td></tr>
 <p>Loads inputs from config </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga3ed1b079e8917dd7ba05990a44158376"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_RemoveSet </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSetName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a set </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSetName</td><td>Set name to remove </td></tr>
   </table>
   </dd>
 </dl>

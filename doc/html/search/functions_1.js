@@ -580,6 +580,7 @@ var searchData=
   ['orxinput_5fisincombinemode',['orxInput_IsInCombineMode',['../group__orx_input.html#ga802173143cf6500c21cd543515cbecad',1,'orxInput.h']]],
   ['orxinput_5fissetenabled',['orxInput_IsSetEnabled',['../group__orx_input.html#ga353743b746e3bece0070e95850a0cbe6',1,'orxInput.h']]],
   ['orxinput_5fload',['orxInput_Load',['../group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb',1,'orxInput.h']]],
+  ['orxinput_5fremoveset',['orxInput_RemoveSet',['../group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376',1,'orxInput.h']]],
   ['orxinput_5fresetvalue',['orxInput_ResetValue',['../group__orx_input.html#ga2a34aa6090226956398b7b1753760f71',1,'orxInput.h']]],
   ['orxinput_5fsave',['orxInput_Save',['../group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0',1,'orxInput.h']]],
   ['orxinput_5fselectset',['orxInput_SelectSet',['../group__orx_input.html#gaae225101ab66ae99f8416fb5b12dbd0b',1,'orxInput.h']]],
