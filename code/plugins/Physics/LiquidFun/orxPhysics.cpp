@@ -3498,6 +3498,9 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_Exit()
   /* Was initialized? */
   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters update */
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxPhysics_LiquidFun_Update);
+
     /* Deletes body bank */
     orxBank_Delete(sstPhysics.pstBodyBank);
 

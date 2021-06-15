@@ -1267,7 +1267,19 @@ void orxFASTCALL orxResource_Exit()
     orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
     orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
 
-    /* Don't unregister clock callbacks as the clock module has already exited */
+    /* Is the clock module still present? */
+    if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+    {
+      /* Unregisters request notification callback */
+      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest);
+
+      /* Has watch callback? */
+      if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
+      {
+        /* Registers watch callbacks */
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch);
+      }
+    }
 
     /* Has uncached location? */
     if(sstResource.zLastUncachedLocation != orxNULL)

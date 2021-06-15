@@ -465,6 +465,17 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    /* Is notify callback registered? */
+    if(orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))
+    {
+      /* Is clock module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+      {
+        /* Unregisters it */
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask);
+      }
+    }
+
     /* Updates worker thread stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
     orxMEMORY_BARRIER();
