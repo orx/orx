@@ -695,7 +695,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
         {
           orxFLOAT                    fClockDT;
           orxCLOCK_TIMER_STORAGE     *pstTimerStorage;
-          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage;
+          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage, *pstNextFunctionStorage;
 
           /* Gets clock modified DT */
           fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, pstClock);
@@ -753,9 +753,12 @@ orxSTATUS orxFASTCALL orxClock_Update()
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(pstClock->stFunctionList));
               pstFunctionStorage != orxNULL;
-              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
+              pstFunctionStorage = pstNextFunctionStorage)
           {
-            /* Calls it */
+            /* Gets next function storage */
+            pstNextFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode));
+
+            /* Calls callback */
             pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pContext);
           }
 
