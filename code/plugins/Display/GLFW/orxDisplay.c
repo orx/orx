@@ -5932,6 +5932,9 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Removes VSync fix (to account for rapid exit) */
+    orxClock_RemoveGlobalTimer(orxDisplay_GLFW_VSyncFix, -orxFLOAT_1, orxNULL);
+
     /* Has shader support? */
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
     {
