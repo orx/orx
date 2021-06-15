@@ -374,7 +374,7 @@ static orxINLINE void orxInput_UnregisterCommands()
   /* Command: GetCurrentSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetCurrentSet);
   /* Command: GetRemoveSet */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetRemoveSet);
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, RemoveSet);
 
   /* Command: EnableSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, EnableSet);
