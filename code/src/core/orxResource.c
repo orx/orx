@@ -120,7 +120,7 @@ typedef struct __orxRESOURCE_GROUP_t
 typedef struct __orxRESOURCE_STORAGE_t
 {
   orxLINKLIST_NODE          stNode;                                                   /**< Linklist node */
-  orxSTRINGID               stStorageID;                                              /**< Literal storage ID */
+  orxSTRINGID               stID;                                                     /**< Literal storage ID */
 
 } orxRESOURCE_STORAGE;
 
@@ -440,7 +440,7 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxSTRINGID _stGroup
     if(pstStorage != orxNULL)
     {
       /* Stores its content */
-      pstStorage->stStorageID = orxString_GetID(orxRESOURCE_KZ_DEFAULT_STORAGE);
+      pstStorage->stID = orxString_GetID(orxRESOURCE_KZ_DEFAULT_STORAGE);
 
       /* Clears node */
       orxMemory_Zero(&(pstStorage->stNode), sizeof(orxLINKLIST_NODE));
@@ -1427,7 +1427,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
       if(pstStorage != orxNULL)
       {
         /* Stores its content */
-        pstStorage->stStorageID = orxString_GetID(_zStorage);
+        pstStorage->stID = orxString_GetID(_zStorage);
 
         /* Clears its node */
         orxMemory_Zero(&(pstStorage->stNode), sizeof(orxLINKLIST_NODE));
@@ -1467,44 +1467,35 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
   return eResult;
 }
 
-/** Removes a storage for a given resource group
- * @param[in] _zGroup           Concerned resource group
- * @param[in] _zStorage         Concerned storage
+/** Removes storage(s) for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @param[in] _zStorage         Concerned storage, orxNULL for all storages (except default one)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage)
 {
+  orxRESOURCE_GROUP  *pstGroup;
+  orxSTRINGID         stGroupID, stStorageID;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zGroup != orxNULL);
-  orxASSERT(_zStorage != orxNULL);
   orxASSERT(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0);
 
-  /* Valid? */
-  if(*_zGroup != orxCHAR_NULL)
+  /* Gets group & storage IDs */
+  stGroupID   = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
+  stStorageID = (_zStorage != orxNULL) ? orxString_Hash(_zStorage) : orxSTRINGID_UNDEFINED;
+
+  /* For all groups */
+  for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+      pstGroup != orxNULL;
+      pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
   {
-    orxRESOURCE_GROUP  *pstGroup;
-    orxSTRINGID         stGroupID;
-
-    /* Gets group ID */
-    stGroupID = orxString_Hash(_zGroup);
-
-    /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-    ;
-
-    /* Success? */
-    if(pstGroup != orxNULL)
+    /* Matches? */
+    if((_zGroup == orxNULL)
+    || (pstGroup->stID == stGroupID))
     {
-      orxRESOURCE_STORAGE  *pstStorage;
-      orxSTRINGID           stStorageID;
-
-      /* Gets storage ID */
-      stStorageID = orxString_Hash(_zStorage);
+      orxRESOURCE_STORAGE *pstStorage;
 
       /* For all storages in group */
       for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
@@ -1512,7 +1503,8 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
           pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
       {
         /* Matches? */
-        if(pstStorage->stStorageID == stStorageID)
+        if((_zStorage == orxNULL)
+        || (pstStorage->stID == stStorageID))
         {
           /* Removes it from list */
           orxLinkList_Remove(&(pstStorage->stNode));
@@ -1522,8 +1514,6 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
 
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
-
-          break;
         }
       }
     }
@@ -1618,7 +1608,7 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
         orxASSERT(pstStorage != orxNULL);
 
         /* Updates result */
-        zResult = orxString_GetFromID(pstStorage->stStorageID);
+        zResult = orxString_GetFromID(pstStorage->stID);
       }
     }
   }
@@ -1689,7 +1679,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
               pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
           {
             /* Found? */
-            if(pstStorage->stStorageID == stStorageID)
+            if(pstStorage->stID == stStorageID)
             {
               /* Don't add it */
               bAdd = orxFALSE;
@@ -1799,7 +1789,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstType->stInfo.pfnLocate(orxString_GetFromID(pstStorage->stStorageID), _zName, orxTRUE);
+            zLocation = pstType->stInfo.pfnLocate(orxString_GetFromID(pstStorage->stID), _zName, orxTRUE);
 
             /* Success? */
             if(zLocation != orxNULL)
@@ -1896,10 +1886,10 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
       {
         /* Is the requested storage? */
         if((_zStorage == orxNULL)
-        || (pstStorage->stStorageID == stStorageID))
+        || (pstStorage->stID == stStorageID))
         {
           orxRESOURCE_TYPE *pstType;
-          const orxSTRING   zStorage = orxString_GetFromID(pstStorage->stStorageID);
+          const orxSTRING   zStorage = orxString_GetFromID(pstStorage->stID);
 
           /* For all registered types */
           for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
@@ -2655,10 +2645,11 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
   return zResult;
 }
 
-/** Clears cache
+/** Clears cache for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxResource_ClearCache()
+orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
 {
   orxSTATUS eResult;
 
@@ -2668,28 +2659,37 @@ orxSTATUS orxFASTCALL orxResource_ClearCache()
   /* Doesn't have a registered watch? */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
   {
-    orxRESOURCE_GROUP *pstGroup;
+    orxSTRINGID         stGroupID;
+    orxRESOURCE_GROUP  *pstGroup;
+
+    /* Gets group ID */
+    stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
 
     /* For all groups */
     for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
         pstGroup != orxNULL;
         pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
     {
-      orxHANDLE         hIterator;
-      orxU64            u64Key;
-      orxRESOURCE_INFO *pstResourceInfo;
-
-      /* For all cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
-          hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+      /* Matches? */
+      if((_zGroup == orxNULL)
+      || (pstGroup->stID == stGroupID))
       {
-        /* Deletes its location */
-        orxMemory_Free(pstResourceInfo->zLocation);
-      }
+        orxHANDLE         hIterator;
+        orxU64            u64Key;
+        orxRESOURCE_INFO *pstResourceInfo;
 
-      /* Clears cache table */
-      orxHashTable_Clear(pstGroup->pstCacheTable);
+        /* For all cached resources */
+        for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
+            hIterator != orxHANDLE_UNDEFINED;
+            hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+        {
+          /* Deletes its location */
+          orxMemory_Free(pstResourceInfo->zLocation);
+        }
+
+        /* Clears cache table */
+        orxHashTable_Clear(pstGroup->pstCacheTable);
+      }
     }
 
     /* Clears info bank */

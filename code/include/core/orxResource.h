@@ -149,9 +149,9 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, orxBOOL _bAddFirst);
 
-/** Removes a storage for a given resource group
- * @param[in] _zGroup           Concerned resource group
- * @param[in] _zStorage         Concerned storage
+/** Removes storage(s) for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @param[in] _zStorage         Concerned storage, orxNULL for all storages (except default one)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
@@ -304,10 +304,11 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCou
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetTypeTag(orxU32 _u32Index);
 
 
-/** Clears cache
+/** Clears cache for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache();
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
 
 
 #endif /* _orxRESOURCE_H_ */
