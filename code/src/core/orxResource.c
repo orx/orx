@@ -2797,61 +2797,52 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
  */
 orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
 {
-  orxSTATUS eResult;
+  orxSTRINGID         stGroupID;
+  orxRESOURCE_GROUP  *pstGroup;
+  orxSTATUS           eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
-  /* Doesn't have a registered watch? */
-  if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
+  /* Waits for all pending operations to complete */
+  while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
+
+  /* Gets group ID */
+  stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
+
+  /* For all groups */
+  for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+      pstGroup != orxNULL;
+      pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
   {
-    orxSTRINGID         stGroupID;
-    orxRESOURCE_GROUP  *pstGroup;
-
-    /* Gets group ID */
-    stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
-
-    /* For all groups */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        pstGroup != orxNULL;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+    /* Matches? */
+    if((_zGroup == orxNULL)
+    || (pstGroup->stID == stGroupID))
     {
-      /* Matches? */
-      if((_zGroup == orxNULL)
-      || (pstGroup->stID == stGroupID))
+      orxHANDLE         hIterator;
+      orxU64            u64Key;
+      orxRESOURCE_INFO *pstResourceInfo;
+
+      /* For all cached resources */
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
       {
-        orxHANDLE         hIterator;
-        orxU64            u64Key;
-        orxRESOURCE_INFO *pstResourceInfo;
-
-        /* For all cached resources */
-        for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
-            hIterator != orxHANDLE_UNDEFINED;
-            hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
-        {
-          /* Deletes its location */
-          orxMemory_Free(pstResourceInfo->zLocation);
-        }
-
-        /* Clears cache table */
-        orxHashTable_Clear(pstGroup->pstCacheTable);
+        /* Deletes its location */
+        orxMemory_Free(pstResourceInfo->zLocation);
       }
+
+      /* Clears cache table */
+      orxHashTable_Clear(pstGroup->pstCacheTable);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
-
-    /* Clears info bank */
-    orxBank_Clear(sstResource.pstResourceInfoBank);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
   }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Resource cache can't be cleared: the resource watch feature is currently active.");
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
+  /* Clears info bank */
+  orxBank_Clear(sstResource.pstResourceInfoBank);
 
   /* Done! */
   return eResult;
