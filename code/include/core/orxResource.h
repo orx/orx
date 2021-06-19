@@ -304,6 +304,12 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCou
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetTypeTag(orxU32 _u32Index);
 
 
+/** Syncs all cached resources for specific resource group(s): update, add or remove events will be sent for all resources that are not located in their original storage anymore
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const orxSTRING _zGroup);
+
 /** Clears cache for specific resource group(s)
  * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
