@@ -4563,7 +4563,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Ignore from parent? */
-        if((zIgnoreFromParent = orxConfig_GetString(orxOBJECT_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
+        zIgnoreFromParent = orxConfig_GetString(orxOBJECT_KZ_CONFIG_IGNORE_FROM_PARENT);
+        if(*zIgnoreFromParent != orxCHAR_NULL)
         {
           /* Updates flags */
           u32FrameFlags |= orxFrame_GetIgnoreFlagValues(zIgnoreFromParent);
@@ -4598,7 +4599,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zParentName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
 
         /* Valid? */
-        if((zParentName != orxNULL) && (zParentName != orxSTRING_EMPTY))
+        if((zParentName != orxNULL) && (*zParentName != orxCHAR_NULL))
         {
           orxCAMERA *pstCamera;
 
@@ -4692,7 +4693,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           zUseParentSpace = orxConfig_GetString(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
 
           /* Defined? */
-          if((zUseParentSpace != orxNULL) && (zUseParentSpace != orxSTRING_EMPTY))
+          if((zUseParentSpace != orxNULL) && (*zUseParentSpace != orxCHAR_NULL))
           {
             /* Scale only? */
             if(orxString_ICompare(zUseParentSpace, orxOBJECT_KZ_SCALE) == 0)
@@ -4734,7 +4735,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
 
         /* Valid? */
-        if((zGraphicFileName != orxNULL) && (zGraphicFileName != orxSTRING_EMPTY))
+        if((zGraphicFileName != orxNULL) && (*zGraphicFileName != orxCHAR_NULL))
         {
           orxGRAPHIC *pstGraphic;
 
@@ -4768,7 +4769,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zAnimPointerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME);
 
         /* Valid? */
-        if((zAnimPointerName != orxNULL) && (zAnimPointerName != orxSTRING_EMPTY))
+        if((zAnimPointerName != orxNULL) && (*zAnimPointerName != orxCHAR_NULL))
         {
           orxANIMPOINTER *pstAnimPointer;
 
@@ -5026,7 +5027,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
 
         /* Valid? */
-        if((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY))
+        if((zBodyName != orxNULL) && (*zBodyName != orxCHAR_NULL))
         {
           /* Creates body */
           pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyName);
@@ -5071,7 +5072,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zClockName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_CLOCK);
 
         /* Valid? */
-        if((zClockName != orxNULL) && (zClockName != orxSTRING_EMPTY))
+        if((zClockName != orxNULL) && (*zClockName != orxCHAR_NULL))
         {
           orxCLOCK *pstClock;
 
@@ -5159,7 +5160,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             zChild = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_LIST, i);
 
             /* Valid? */
-            if(zChild != orxSTRING_EMPTY)
+            if(*zChild != orxCHAR_NULL)
             {
               orxOBJECT *pstChild;
 
@@ -5265,7 +5266,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             zFX = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i);
 
             /* Valid? */
-            if(zFX != orxSTRING_EMPTY)
+            if(*zFX != orxCHAR_NULL)
             {
               /* Gets its delay */
               fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
@@ -5294,7 +5295,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         zSpawnerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SPAWNER);
 
         /* Valid? */
-        if((zSpawnerName != orxNULL) && (zSpawnerName != orxSTRING_EMPTY))
+        if((zSpawnerName != orxNULL) && (*zSpawnerName != orxCHAR_NULL))
         {
           orxSPAWNER *pstSpawner;
 
@@ -5341,7 +5342,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
 
             /* Valid? */
-            if(zSound != orxSTRING_EMPTY)
+            if(*zSound != orxCHAR_NULL)
             {
               /* Adds it */
               orxObject_AddSound(pstResult, zSound);
@@ -5365,7 +5366,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             zShader = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i);
 
             /* Valid? */
-            if(zShader != orxSTRING_EMPTY)
+            if(*zShader != orxCHAR_NULL)
             {
               /* Adds it */
               orxObject_AddShader(pstResult, zShader);
@@ -5389,7 +5390,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             zTrack = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRACK_LIST, i);
 
             /* Valid? */
-            if(zTrack != orxSTRING_EMPTY)
+            if(*zTrack != orxCHAR_NULL)
             {
               /* Adds it */
               orxObject_AddTimeLineTrack(pstResult, zTrack);
@@ -8074,7 +8075,7 @@ orxBOOL orxFASTCALL orxObject_IsCurrentAnim(const orxOBJECT *_pstObject, const o
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
+  orxASSERT((_zAnimName != orxNULL) && (*_zAnimName != orxCHAR_NULL));
 
   /* Updates result */
   bResult = (orxString_Compare(orxObject_GetCurrentAnim(_pstObject), _zAnimName) == 0) ? orxTRUE : orxFALSE;
@@ -8095,7 +8096,7 @@ orxBOOL orxFASTCALL orxObject_IsTargetAnim(const orxOBJECT *_pstObject, const or
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
+  orxASSERT((_zAnimName != orxNULL) && (*_zAnimName != orxCHAR_NULL));
 
   /* Updates result */
   bResult = (orxString_Compare(orxObject_GetTargetAnim(_pstObject), _zAnimName) == 0) ? orxTRUE : orxFALSE;
@@ -8713,7 +8714,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
 
   /* Adds FX */
   eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
@@ -8741,7 +8742,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRI
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
 
   /* Adds FX */
   eResult = orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
@@ -8769,7 +8770,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Is object active? */
@@ -8879,7 +8880,7 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Is object active? */
@@ -9094,7 +9095,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zSoundConfigID != orxNULL) && (_zSoundConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != orxCHAR_NULL));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -9323,7 +9324,7 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zShaderConfigID != orxNULL) && (*_zShaderConfigID != orxCHAR_NULL));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -9485,7 +9486,7 @@ orxSTATUS orxFASTCALL orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const or
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zTrackConfigID != orxNULL) && (_zTrackConfigID != orxSTRING_EMPTY));
+  orxASSERT((_zTrackConfigID != orxNULL) && (*_zTrackConfigID != orxCHAR_NULL));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
