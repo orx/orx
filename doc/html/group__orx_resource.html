@@ -229,6 +229,8 @@ Functions</h2></td></tr>
 <tr class="separator:gad92cb4c1520aa40cb2af3332807bbc81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3">orxResource_Setup</a> ()</td></tr>
 <tr class="separator:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga20287ebe556f1d39a20bebca66e4f25c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga20287ebe556f1d39a20bebca66e4f25c">orxResource_Sync</a> (const orxSTRING _zGroup)</td></tr>
+<tr class="separator:ga20287ebe556f1d39a20bebca66e4f25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga727617afed34519f0d94189f252a7de3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga727617afed34519f0d94189f252a7de3">orxResource_Tell</a> (orxHANDLE _hResource)</td></tr>
 <tr class="separator:ga727617afed34519f0d94189f252a7de3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5c3dbe1b13f5f5f8f343c8c0c760fcc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga5c3dbe1b13f5f5f8f343c8c0c760fcc0">orxResource_Write</a> (orxHANDLE _hResource, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, <a class="el" href="group__orx_resource.html#ga52b2c3972e198befc9ea54eb105474f9">orxRESOURCE_OP_FUNCTION</a> _pfnCallback, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
@@ -1187,6 +1189,29 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Resource module setup </p>
+
+</div>
+</div>
+<a class="anchor" id="ga20287ebe556f1d39a20bebca66e4f25c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxResource_Sync </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Syncs all cached resources for specific resource group(s): update, add or remove events will be sent for all resources that are not located in their original storage anymore </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned resource group, orxNULL for all groups </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>
