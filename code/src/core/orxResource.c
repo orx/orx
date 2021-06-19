@@ -943,7 +943,7 @@ void orxFASTCALL orxResource_CommandAddStorage(orxU32 _u32ArgNumber, const orxCO
 void orxFASTCALL orxResource_CommandRemoveStorage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->bValue = (orxResource_RemoveStorage(_astArgList[0].zValue, _astArgList[1].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+  _pstResult->bValue = (orxResource_RemoveStorage((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return;
@@ -1016,7 +1016,7 @@ static orxINLINE void orxResource_RegisterCommands()
   /* Command: AddStorage */
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, AddStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING}, {"First = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveStorage */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, RemoveStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, RemoveStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ReloadStorage */
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, ReloadStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
@@ -1475,16 +1475,17 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
 orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage)
 {
   orxRESOURCE_GROUP  *pstGroup;
-  orxSTRINGID         stGroupID, stStorageID;
+  orxSTRINGID         stGroupID, stStorageID, stDefaultStorageID;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
-  orxASSERT(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0);
+  orxASSERT((_zStorage == orxNULL) || (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0));
 
   /* Gets group & storage IDs */
-  stGroupID   = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
-  stStorageID = (_zStorage != orxNULL) ? orxString_Hash(_zStorage) : orxSTRINGID_UNDEFINED;
+  stGroupID           = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
+  stStorageID         = (_zStorage != orxNULL) ? orxString_Hash(_zStorage) : orxSTRINGID_UNDEFINED;
+  stDefaultStorageID  = orxString_Hash(orxRESOURCE_KZ_DEFAULT_STORAGE);
 
   /* For all groups */
   for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
@@ -1495,15 +1496,19 @@ orxSTATUS orxFASTCALL orxResource_RemoveStorage(const orxSTRING _zGroup, const o
     if((_zGroup == orxNULL)
     || (pstGroup->stID == stGroupID))
     {
-      orxRESOURCE_STORAGE *pstStorage;
+      orxRESOURCE_STORAGE *pstStorage, *pstNextStorage;
 
       /* For all storages in group */
       for(pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetFirst(&(pstGroup->stStorageList));
           pstStorage != orxNULL;
-          pstStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode)))
+          pstStorage = pstNextStorage)
       {
+        /* Gets next storage */
+        pstNextStorage = (orxRESOURCE_STORAGE *)orxLinkList_GetNext(&(pstStorage->stNode));
+
         /* Matches? */
-        if((_zStorage == orxNULL)
+        if(((_zStorage == orxNULL)
+         && (pstStorage->stID != stDefaultStorageID))
         || (pstStorage->stID == stStorageID))
         {
           /* Removes it from list */
