@@ -1009,6 +1009,28 @@ void orxFASTCALL orxResource_CommandGetTotalPendingOpCount(orxU32 _u32ArgNumber,
   return;
 }
 
+/** Command: Sync
+ */
+void orxFASTCALL orxResource_CommandSync(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxResource_Sync((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: ClearCache
+ */
+void orxFASTCALL orxResource_CommandClearCache(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxResource_ClearCache((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the resource commands
  */
 static orxINLINE void orxResource_RegisterCommands()
@@ -1016,7 +1038,7 @@ static orxINLINE void orxResource_RegisterCommands()
   /* Command: AddStorage */
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, AddStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING}, {"First = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveStorage */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, RemoveStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Storage", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, RemoveStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 2, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Storage = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ReloadStorage */
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, ReloadStorage, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
@@ -1028,6 +1050,11 @@ static orxINLINE void orxResource_RegisterCommands()
 
   /* Command: GetTotalPendingOpCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+
+  /* Command: Sync */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, Sync, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: ClearCache */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Resource, ClearCache, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the resource commands
@@ -1049,6 +1076,11 @@ static orxINLINE void orxResource_UnregisterCommands()
 
   /* Command: GetTotalPendingOpCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, GetTotalPendingOpCount);
+
+  /* Command: Sync */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, Sync);
+  /* Command: ClearCache */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Resource, ClearCache);
 }
 
 
