@@ -2794,8 +2794,8 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
           }
         }
 
-        /* Was not found? */
-        if(pstStorage == orxNULL)
+        /* Was not found and not already removed? */
+        if((pstStorage == orxNULL) && (pstResourceInfo->s64Time != 0))
         {
           orxRESOURCE_EVENT_PAYLOAD stPayload;
 
