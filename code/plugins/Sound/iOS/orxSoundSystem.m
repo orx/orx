@@ -648,12 +648,13 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
     /* Has set time? */
     if(_pstSound->stStream.fSetTime != orxFLOAT_0)
     {
+      /* Updates times */
+      _pstSound->stStream.fTime = (_pstSound->fDuration < orxFLOAT_0) ? _pstSound->stStream.fSetTime : orxMIN(_pstSound->fDuration, _pstSound->stStream.fSetTime);
+      orxMEMORY_BARRIER();
+      _pstSound->stStream.fSetTime = orxFLOAT_0;
+
       /* Seeks position */
       orxSoundSystem_iOS_Seek(&(_pstSound->stStream.stData), _pstSound->stStream.fSetTime);
-
-      /* Updates times */
-      _pstSound->stStream.fTime = _pstSound->stStream.fSetTime;
-      _pstSound->stStream.fSetTime = orxFLOAT_0;
     }
 
     /* Not stopped? */
@@ -2445,8 +2446,12 @@ orxFLOAT orxFASTCALL orxSoundSystem_iOS_GetTime(const orxSOUNDSYSTEM_SOUND *_pst
   /* Stream? */
   if(_pstSound->bIsStream != orxFALSE)
   {
-    /* Updates result */
-    fResult = _pstSound->stStream.fTime;
+    /* Updates result (taking into account possible parallel stream fill updates) */
+    fResult = _pstSound->stStream.fSetTime;
+    if(fResult == orxFLOAT_0)
+    {
+      fResult = _pstSound->stStream.fTime;
+    }
   }
   else
   {

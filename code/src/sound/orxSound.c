@@ -145,12 +145,16 @@ struct __orxSOUND_t
   orxLINKLIST_NODE      stBusNode;                      /**< Bus node : 44/56 */
   const orxSTRING       zReference;                     /**< Sound reference : 48/64 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 52/72 */
-  orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 56/80 */
-  orxSTRINGID           stBusID;                        /**< Sound bus ID: 60/84 */
-  orxSOUND_STATUS       eStatus;                        /**< Sound status : 64/88 */
-  orxFLOAT              fVolume;                        /**< Sound volume : 68/92 */
-  orxFLOAT              fPitch;                         /**< Sound pitch : 72/96 */
-  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 76/100 */
+  union
+  {
+    orxSOUND_SAMPLE    *pstSample;                      /**< Sound sample : 56/80 */
+    orxSTRINGID         stStreamID;                     /**< Stream ID : 60/80 */
+  };
+  orxSTRINGID           stBusID;                        /**< Sound bus ID: 64/84 */
+  orxSOUND_STATUS       eStatus;                        /**< Sound status : 68/88 */
+  orxFLOAT              fVolume;                        /**< Sound volume : 72/92 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 76/96 */
+  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 80/100 */
 };
 
 /** Static structure
@@ -353,6 +357,10 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         orxSound_UnloadSample(_pstSound->pstSample);
         _pstSound->pstSample = orxNULL;
       }
+      else
+      {
+        _pstSound->stStreamID = 0;
+      }
 
       /* Inits pitch modifier */
       _pstSound->fPitchModifier = orxFLOAT_1;
@@ -448,12 +456,14 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
           }
 
           /* Creates empty stream */
-          _pstSound->pstData = orxSoundSystem_CreateStream(_pstSound, u32ChannelNumber, u32SampleRate);
+          _pstSound->pstData    = orxSoundSystem_CreateStream(_pstSound, u32ChannelNumber, u32SampleRate);
+          _pstSound->stStreamID = orxSTRINGID_UNDEFINED;
         }
         else
         {
           /* Loads it */
-          _pstSound->pstData = orxSoundSystem_CreateStreamFromFile(_pstSound, zName);
+          _pstSound->pstData    = orxSoundSystem_CreateStreamFromFile(_pstSound, zName);
+          _pstSound->stStreamID = orxString_Hash(zName);
         }
 
         /* Valid? */
@@ -608,15 +618,26 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             if(orxConfig_GetOriginID(pstSound->zReference) == pstPayload->stNameID)
             {
               orxSOUND_STATUS eStatus;
+              orxFLOAT        fTime;
 
               /* Gets current status */
               eStatus = orxSound_GetStatus(pstSound);
+
+              /* Gets current time */
+              fTime = orxSound_GetTime(pstSound);
 
               /* Stops sound */
               orxSound_Stop(pstSound);
 
               /* Re-processes its config data */
               orxSound_ProcessConfigData(pstSound, orxFALSE);
+
+              /* Has stream? */
+              if(orxStructure_TestFlags(pstSound, orxSOUND_KU32_FLAG_HAS_STREAM))
+              {
+                /* Restores time */
+                orxSound_SetTime(pstSound, fTime);
+              }
 
               /* Depending on previous status */
               switch(eStatus)
@@ -799,6 +820,76 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
 
             /* Unloads it */
             orxSound_UnloadSample(pstSample);
+          }
+        }
+        else
+        {
+          orxSOUND *pstSound;
+
+          /* For all sounds */
+          for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+              pstSound != orxNULL;
+              pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+          {
+            /* Has stream? */
+            if(orxStructure_TestFlags(pstSound, orxSOUND_KU32_FLAG_HAS_STREAM))
+            {
+              /* Matches? */
+              if(pstPayload->stNameID == pstSound->stStreamID)
+              {
+                orxSOUND_STATUS eStatus;
+                orxFLOAT        fTime;
+
+                /* Gets current status */
+                eStatus = orxSound_GetStatus(pstSound);
+
+                /* Gets current time */
+                fTime = orxSound_GetTime(pstSound);
+
+                /* Stops sound */
+                orxSound_Stop(pstSound);
+
+                /* Re-processes its config data */
+                orxSound_ProcessConfigData(pstSound, orxFALSE);
+
+                /* Has stream? */
+                if(orxStructure_TestFlags(pstSound, orxSOUND_KU32_FLAG_HAS_STREAM))
+                {
+                  /* Restores time */
+                  orxSound_SetTime(pstSound, fTime);
+                }
+
+                /* Depending on previous status */
+                switch(eStatus)
+                {
+                  case orxSOUND_STATUS_PLAY:
+                  {
+                    /* Updates sound */
+                    orxSound_Play(pstSound);
+
+                    break;
+                  }
+
+                  case orxSOUND_STATUS_PAUSE:
+                  {
+                    /* Updates sound */
+                    orxSound_Play(pstSound);
+                    orxSound_Pause(pstSound);
+
+                    break;
+                  }
+
+                  case orxSOUND_STATUS_STOP:
+                  default:
+                  {
+                    /* Updates sound */
+                    orxSound_Stop(pstSound);
+
+                    break;
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2387,7 +2478,9 @@ orxSTATUS orxFASTCALL orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime)
   if(_pstSound->pstData != orxNULL)
   {
     /* Valid? */
-    if((_fTime >= orxFLOAT_0) && (_fTime < orxSound_GetDuration(_pstSound)))
+    if((_fTime >= orxFLOAT_0)
+    && ((orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_STREAM))
+     || (_fTime < orxSound_GetDuration(_pstSound))))
     {
       /* Sets its time */
       eResult = orxSoundSystem_SetTime(_pstSound->pstData, _fTime);
