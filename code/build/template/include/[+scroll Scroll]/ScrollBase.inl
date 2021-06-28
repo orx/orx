@@ -1201,6 +1201,14 @@ orxSTATUS ScrollBase::BaseInit()
     // Successful?
     if(eResult != orxSTATUS_FAILURE)
     {
+      // Filters events
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_STOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUT) | orxEVENT_GET_FLAG(orxANIM_EVENT_LOOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SHADER, orxNULL, orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) | orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
+
       // Clears object lists
       orxMemory_Zero(&mstObjectList, sizeof(orxLINKLIST));
       orxMemory_Zero(&mstObjectChronoList, sizeof(orxLINKLIST));
