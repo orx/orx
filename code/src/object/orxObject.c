@@ -127,6 +127,7 @@
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
+#define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
@@ -3824,6 +3825,32 @@ static orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject,
   return eResult;
 }
 
+/** Applies a FX recursively
+ */
+void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxOBJECT *pstChild;
+
+  /* Has FXPointer? */
+  if(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+  {
+    /* Applies FX */
+    orxStructure_Update(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, _pstObject, _pstClockInfo);
+  }
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Applies FX to it */
+    orxObject_ApplyFXRecursive(pstChild, _pstClockInfo);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Creates an empty object
  */
 static orxINLINE orxOBJECT *orxObject_CreateInternal()
@@ -5365,7 +5392,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has FX? */
         if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
         {
-          orxS32 i;
+          orxCLOCK_INFO stClockInfo;
+          orxS32        i, s32RecursiveCount;
+          orxBOOL       bRecursive = orxFALSE;
+
+          /* Gets number of recursive FXs */
+          s32RecursiveCount = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST);
 
           /* For all defined FXs */
           for(i = 0; i < s32Count; i++)
@@ -5378,20 +5410,41 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if(*zFX != orxCHAR_NULL)
             {
-              /* Adds it */
-              orxObject_AddFX(pstResult, zFX);
+              /* Is recursive? */
+              if((i < s32RecursiveCount) && (orxConfig_GetListBool(orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST, i) != orxFALSE))
+              {
+                /* Adds it */
+                orxObject_AddFXRecursive(pstResult, zFX, orxFLOAT_0);
+
+                /* Updates status */
+                bRecursive = orxTRUE;
+              }
+              else
+              {
+                /* Adds it */
+                orxObject_AddFX(pstResult, zFX);
+              }
             }
           }
 
-          /* Success? */
-          if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
-          {
-            orxCLOCK_INFO stClockInfo;
+          /* Inits clock info */
+          orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
+          stClockInfo.fDT = orxMATH_KF_EPSILON;
 
-            /* Applies FXs directly to prevent any potential 1-frame visual glitches */
-            orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
-            stClockInfo.fDT = orxMATH_KF_EPSILON;
-            orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+          /* Recursive? */
+          if(bRecursive != orxFALSE)
+          {
+            /* Recursively applies FXs directly to prevent any potential 1-frame visual glitches */
+            orxObject_ApplyFXRecursive(pstResult, &stClockInfo);
+          }
+          else
+          {
+            /* Success? */
+            if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+            {
+              /* Applies FXs directly to prevent any potential 1-frame visual glitches */
+              orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+            }
           }
         }
 
