@@ -4218,10 +4218,10 @@ const orxSTRING orxFASTCALL orxConfig_GetEncryptionKey()
   return zResult;
 }
 
-/** Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded.
- *  The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
+/** Sets config bootstrap function: this function will get called when the config module is initialized, before any config file is loaded.
+ * The only available APIs from within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
  * @param[in] _pfnBootstrap     Bootstrap function that will get called at module init, before loading any config file.
-                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen
+                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will take place
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxConfig_SetBootstrap(const orxCONFIG_BOOTSTRAP_FUNCTION _pfnBootstrap)
