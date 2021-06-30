@@ -373,8 +373,12 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
 
 #ifdef __orxWINDOWS__
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+  #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 4
+#endif /* !ENABLE_VIRTUAL_TERMINAL_PROCESSING */
+
     /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7))
+    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING))
     {
       /* Removes ANSI flag */
       sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
