@@ -196,7 +196,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetFrequency(const 
 extern orxDLLAPI orxSTATUS orxFASTCALL        	orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime);
 
 /** FXPointer frequency set accessor
- * @param[in]   _pstFX Pointer Concerned FXPointer
+ * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _fFrequency    Frequency to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
