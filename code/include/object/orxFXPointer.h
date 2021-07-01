@@ -182,12 +182,25 @@ extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetTime(const orxFX
  */
 extern orxDLLAPI orxU32 orxFASTCALL             orxFXPointer_GetCount(const orxFXPOINTER *_pstFXPointer);
 
+/** FXPointer frequency get accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      FXPointer frequency
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetFrequency(const orxFXPOINTER *_pstFXPointer);
+
 /** FXPointer time set accessor
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _fTime        Time to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        	orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime);
+
+/** FXPointer frequency set accessor
+ * @param[in]   _pstFX Pointer Concerned FXPointer
+ * @param[in]   _fFrequency    Frequency to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_SetFrequency(orxFXPOINTER *_pstFXPointer, orxFLOAT _fFrequency);
 
 #endif /* _orxFXPointer_H_ */
 

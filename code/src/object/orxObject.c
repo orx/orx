@@ -107,6 +107,7 @@
 
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
+#define orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY      "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_CLOCK               "Clock"
 #define orxOBJECT_KZ_CONFIG_SPAWNER             "Spawner"
@@ -128,12 +129,12 @@
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
 #define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
+#define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
 #define orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST    "ChildJointList"
-#define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
 #define orxOBJECT_KZ_CONFIG_REPEAT              "Repeat"
@@ -2794,6 +2795,68 @@ void orxFASTCALL orxObject_CommandRemoveAllFXs(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: SetFXFrequency
+ */
+void orxFASTCALL orxObject_CommandSetFXFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its FX frequency */
+      orxObject_SetFXFrequencyRecursive(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Sets its FX frequency */
+      orxObject_SetFXFrequency(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].fValue : orxFLOAT_1);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetFXFrequency
+ */
+void orxFASTCALL orxObject_CommandGetFXFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxObject_GetFXFrequency(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = -orxFLOAT_1;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddShader
  */
 void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3468,6 +3531,10 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveAllFXs */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveAllFXs, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetFXFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetFXFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetFXFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetFXFrequency, "Frequency", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -3671,6 +3738,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveFX);
   /* Command: RemoveAllFXs */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveAllFXs);
+  /* Command: SetFXFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetFXFrequency);
+  /* Command: GetFXFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetFXFrequency);
 
   /* Command: AddShader */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
@@ -4930,10 +5001,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               orxStructure_SetOwner(pstAnimPointer, pstResult);
 
               /* Has frequency? */
-              if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FREQUENCY) != orxFALSE)
+              if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY) != orxFALSE)
               {
                 /* Updates animation pointer frequency */
-                orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FREQUENCY));
+                orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY));
               }
 
               /* Doesn't have a graphic? */
@@ -5425,6 +5496,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 orxObject_AddFX(pstResult, zFX);
               }
             }
+          }
+
+          /* Has frequency? */
+          if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FX_FREQUENCY) != orxFALSE)
+          {
+            /* Updates FX pointer frequency */
+            orxObject_SetFXFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FX_FREQUENCY));
           }
 
           /* Inits clock info */
@@ -9067,6 +9145,79 @@ orxSTATUS orxFASTCALL orxObject_RemoveAllFXsRecursive(orxOBJECT *_pstObject)
 
   /* Done! */
   return eResult;
+}
+
+/** Sets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetFXFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fFrequency >= orxFLOAT_0);
+
+  /* Gets FX pointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Updates result */
+    eResult = orxFXPointer_SetFrequency(pstFXPointer, _fFrequency);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the relative FX frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetFXFrequency, orxFLOAT);
+
+/** Gets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX frequency / -orxFLOAT_1
+ */
+orxFLOAT orxFASTCALL orxObject_GetFXFrequency(const orxOBJECT *_pstObject)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxFLOAT      fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets FX pointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxFXPointer_GetFrequency(pstFXPointer);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
+
+  /* Done! */
+  return fResult;
 }
 
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).

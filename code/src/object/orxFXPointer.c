@@ -72,6 +72,7 @@
 /** Misc defines
  */
 #define orxFXPOINTER_KU32_BANK_SIZE             1024        /**< Bank size */
+#define orxFXPOINTER_KF_FREQUENCY_DEFAULT       1.0         /**< Default FX frequency */
 
 
 /***************************************************************************
@@ -95,6 +96,7 @@ struct __orxFXPOINTER_t
   orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 32 */
   orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 112 */
   orxFLOAT                fTime;                                  /**< Time stamp : 116 */
+  orxFLOAT                fFrequency;                             /**< Frequency : 120 */
 };
 
 /** Static structure
@@ -181,7 +183,7 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
     fLastTime = pstFXPointer->fTime;
 
     /* Computes its new time cursor */
-    pstFXPointer->fTime += _pstClockInfo->fDT;
+    pstFXPointer->fTime += _pstClockInfo->fDT * pstFXPointer->fFrequency;
 
     /* For all FXs */
     for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -381,6 +383,9 @@ orxFXPOINTER *orxFASTCALL orxFXPointer_Create()
   {
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFXPOINTER_KU32_FLAG_ENABLED, orxFXPOINTER_KU32_MASK_ALL);
+
+    /* Inits value */
+    pstResult->fFrequency = orxFXPOINTER_KF_FREQUENCY_DEFAULT;
 
     /* Increases count */
     orxStructure_IncreaseCount(pstResult);
@@ -1071,6 +1076,20 @@ orxU32 orxFASTCALL orxFXPointer_GetCount(const orxFXPOINTER *_pstFXPointer)
   return u32Result;
 }
 
+/** FXPointer frequency get accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      FXPointer frequency
+ */
+orxFLOAT orxFASTCALL orxFXPointer_GetFrequency(const orxFXPOINTER *_pstFXPointer)
+{
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Gets frequency */
+  return _pstFXPointer->fFrequency;
+}
+
 /** FXPointer time set accessor
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _fTime        Time to set
@@ -1098,6 +1117,27 @@ orxSTATUS orxFASTCALL orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** FXPointer frequency set accessor
+ * @param[in]   _pstFX Pointer Concerned FXPointer
+ * @param[in]   _fFrequency    Frequency to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_SetFrequency(orxFXPOINTER *_pstFXPointer, orxFLOAT _fFrequency)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxASSERT(_fFrequency >= orxFLOAT_0);
+
+  /* Stores frequency */
+  _pstFXPointer->fFrequency = _fFrequency;
 
   /* Done! */
   return eResult;

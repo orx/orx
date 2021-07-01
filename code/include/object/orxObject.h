@@ -840,6 +840,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXs(orxOBJECT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXsRecursive(orxOBJECT *_pstObject);
 
+/** Sets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFXFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Sets the relative FX frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetFXFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Gets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXFrequency(const orxOBJECT *_pstObject);
+
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstModel       Model object on which to synchronize FXs
