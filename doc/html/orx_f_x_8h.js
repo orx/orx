@@ -43,9 +43,11 @@ var orx_f_x_8h =
     [ "orxFX_Exit", "group__orx_f_x.html#ga6ca67fd00535dd66486ab940fed45462", null ],
     [ "orxFX_GetDuration", "group__orx_f_x.html#gab8c45b4c3ebd69db45c3edf7fd12e6f9", null ],
     [ "orxFX_GetName", "group__orx_f_x.html#ga2023118f60de4fab06bb2f491478b1fc", null ],
+    [ "orxFX_GetStagger", "group__orx_f_x.html#gad9c4a336a77f668b9d2197972d1d1e33", null ],
     [ "orxFX_Init", "group__orx_f_x.html#ga0c85c0ff962156d958d021b90e5898cc", null ],
     [ "orxFX_IsEnabled", "group__orx_f_x.html#ga590442b61ec61a35ccffedc561fa2b55", null ],
     [ "orxFX_IsLooping", "group__orx_f_x.html#ga06e7d5c0ff41435db83e7c882036ad65", null ],
     [ "orxFX_Loop", "group__orx_f_x.html#ga63e696218f217101c8bab814529091b2", null ],
+    [ "orxFX_SetStagger", "group__orx_f_x.html#ga0e3aea1dc154fc7e1d4a09fd6329615b", null ],
     [ "orxFX_Setup", "group__orx_f_x.html#ga152589523b1c4aa1ff0ae5766e5c3623", null ]
 ];
