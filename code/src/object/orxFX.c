@@ -2542,6 +2542,14 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     fStartTime  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_TIME);
     fEndTime    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_TIME);
 
+    /* Should stagger? */
+    if(orxConfig_GetBool(orxFX_KZ_CONFIG_STAGGER) != orxFALSE)
+    {
+      /* Updates times */
+      fStartTime += _pstFX->fDuration;
+      fEndTime   += _pstFX->fDuration;
+    }
+
     /* Gets its cycle period */
     fCyclePeriod = orxConfig_GetFloat(orxFX_KZ_CONFIG_PERIOD);
 

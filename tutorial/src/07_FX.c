@@ -86,7 +86,7 @@ typedef struct MyObject
  */
 orxOBJECT *pstSoldier;
 orxOBJECT *pstBox;
-orxSTRING zSelectedFX = "WobbleFX";
+const orxSTRING zSelectedFX = "WobbleFX";
 
 
 /** Event handler
@@ -176,50 +176,34 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
  */
 void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
+  orxS32 i, s32Count;
+
   /* *** FX CONTROLS *** */
 
-  /* Select multiFX? */
-  if(orxInput_IsActive("SelectMultiFX"))
+  /* Pushes main config section */
+  orxConfig_PushSection("Main");
+
+  /* For all inputs/FXs */
+  for(i = 0, s32Count = orxConfig_GetListCount("FXList");
+      i < s32Count;
+      i++)
   {
-    /* Selects wobble FX */
-    zSelectedFX = "MultiFX";
+    const orxSTRING zFX;
+
+    /* Gets its name */
+    zFX = orxConfig_GetListString("FXList", i);
+
+    /* Is active? */
+    if(orxInput_IsActive(zFX))
+    {
+      /* Selects it */
+      zSelectedFX = zFX;
+      break;
+    }
   }
-  /* Select wobble? */
-  if(orxInput_IsActive("SelectWobble"))
-  {
-    /* Selects wobble FX */
-    zSelectedFX = "WobbleFX";
-  }
-  /* Select circle? */
-  if(orxInput_IsActive("SelectCircle"))
-  {
-    /* Selects circle FX */
-    zSelectedFX = "CircleFX";
-  }
-  /* Select fade? */
-  if(orxInput_IsActive("SelectFade"))
-  {
-    /* Selects fade FX */
-    zSelectedFX = "FadeFX";
-  }
-  /* Select flash? */
-  if(orxInput_IsActive("SelectFlash"))
-  {
-    /* Selects flash FX */
-    zSelectedFX = "FlashFX";
-  }
-  /* Select move? */
-  if(orxInput_IsActive("SelectMove"))
-  {
-    /* Selects move FX */
-    zSelectedFX = "MoveFX";
-  }
-  /* Select flip? */
-  if(orxInput_IsActive("SelectFlip"))
-  {
-    /* Selects flip FX */
-    zSelectedFX = "FlipFX";
-  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Soldier not locked? */
   if(!((MyObject *)orxObject_GetUserData(pstSoldier))->bLock)
