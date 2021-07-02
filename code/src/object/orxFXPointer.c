@@ -517,7 +517,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_ps
 /** Adds a delayed FX
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _pstFX        FX to add
- * @param[in]   _fDelay       Delay time, ignored if the FX is staggered
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX, orxFLOAT _fDelay)
@@ -554,22 +554,26 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
     /* Should stagger? */
     if(bStagger != orxFALSE)
     {
-      orxFLOAT  fDuration;
       orxU32    i;
+      orxFLOAT  fDuration;
+      orxBOOL   bEmpty;
 
       /* For all FXs */
-      for(i = 0, fDuration = _pstFXPointer->fTime; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+      for(i = 0, fDuration = _pstFXPointer->fTime, bEmpty = orxTRUE; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
       {
         /* Is defined? */
         if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
         {
           /* Updates duration */
           fDuration = orxMAX(fDuration, _pstFXPointer->astFXList[i].fStartTime + orxFX_GetDuration(_pstFXPointer->astFXList[i].pstFX));
+
+          /* Updates status */
+          bEmpty = orxFALSE;
         }
       }
 
       /* Inits its start time */
-      _pstFXPointer->astFXList[u32Index].fStartTime = fOffset + fDuration;
+      _pstFXPointer->astFXList[u32Index].fStartTime = (bEmpty != orxFALSE) ? fOffset + fDuration + _fDelay : fOffset + fDuration;
     }
     else
     {
@@ -794,7 +798,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddUniqueFXFromConfig(orxFXPOINTER *_pstFXPoi
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
- * @param[in]   _fDelay       Delay time, ignored if the FX is staggered
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
@@ -841,20 +845,24 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
       {
         orxU32    i;
         orxFLOAT  fDuration;
+        orxBOOL   bEmpty;
 
         /* For all FXs */
-        for(i = 0, fDuration = _pstFXPointer->fTime; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+        for(i = 0, fDuration = _pstFXPointer->fTime, bEmpty = orxTRUE; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
         {
           /* Is defined? */
           if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
           {
             /* Updates duration */
             fDuration = orxMAX(fDuration, _pstFXPointer->astFXList[i].fStartTime + orxFX_GetDuration(_pstFXPointer->astFXList[i].pstFX));
+
+            /* Updates status */
+            bEmpty = orxFALSE;
           }
         }
 
         /* Inits its start time */
-        _pstFXPointer->astFXList[u32Index].fStartTime = fOffset + fDuration;
+        _pstFXPointer->astFXList[u32Index].fStartTime = (bEmpty != orxFALSE) ? fOffset + fDuration + _fDelay : fOffset + fDuration;
       }
       else
       {
@@ -917,7 +925,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
 /** Adds a unique delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
- * @param[in]   _fDelay       Delay time, ignored if the FX is staggered
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
