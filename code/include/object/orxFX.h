@@ -363,6 +363,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Loop(orxFX *_pstFX, orxBOO
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsLooping(const orxFX *_pstFX);
 
+/** Sets FX stagger / offset
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _bStagger       If true, this FX will be added after all current FXs
+ * @param[in]   _fOffset        Initial offset, in seconds. Cannot result in a negative start time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_SetStagger(orxFX *_pstFX, orxBOOL _bStagger, orxFLOAT _fOffset);
+
+/** Get FX stagger / offset
+ * @param[in]   _pstFX          Concerned FX
+ * @param[out]  _pfOffset       If non null, will contain the initial offset
+ * @return      orxTRUE if staggered, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_GetStagger(const orxFX *_pstFX, orxFLOAT *_pfOffset);
+
 #endif /* _orxFX_H_ */
 
 /** @} */
