@@ -111,12 +111,12 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
         {
           /* Logs info */
-          orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]));
+          orxLOG("<%s> selected [%s + %s]", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1], pstPayload->aeMode[1]));
         }
         else
         {
           /* Logs info */
-          orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]));
+          orxLOG("<%s> selected [%s]", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]));
         }
       }
     }
@@ -227,54 +227,34 @@ orxSTATUS orxFASTCALL Init()
   orxINPUT_TYPE   eType;
   orxENUM         eID;
   orxINPUT_MODE   eMode;
-  const orxSTRING zInputSelectWobble;
-  const orxSTRING zInputSelectCircle;
-  const orxSTRING zInputSelectFade;
-  const orxSTRING zInputSelectFlash;
-  const orxSTRING zInputSelectMove;
-  const orxSTRING zInputSelectFlip;
-  const orxSTRING zInputSelectMultiFX;
+  orxS32          i, s32Count;
   const orxSTRING zInputApplyFX;
+  orxCHAR         acBuffer[1024], *pc = acBuffer;
 
   /* Gets input binding names */
-  orxInput_GetBinding("SelectWobble", 0, &eType, &eID, &eMode);
-  zInputSelectWobble  = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectCircle", 0, &eType, &eID, &eMode);
-  zInputSelectCircle  = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectFade", 0, &eType, &eID, &eMode);
-  zInputSelectFade    = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectFlash", 0, &eType, &eID, &eMode);
-  zInputSelectFlash   = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectMove", 0, &eType, &eID, &eMode);
-  zInputSelectMove    = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectFlip", 0, &eType, &eID, &eMode);
-  zInputSelectFlip    = orxInput_GetBindingName(eType, eID, eMode);
-
-  orxInput_GetBinding("SelectMultiFX", 0, &eType, &eID, &eMode);
-  zInputSelectMultiFX = orxInput_GetBindingName(eType, eID, eMode);
-
   orxInput_GetBinding("ApplyFX", 0, &eType, &eID, &eMode);
-  zInputApplyFX       = orxInput_GetBindingName(eType, eID, eMode);
+  zInputApplyFX = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
-  orxLOG("\n- To select the FX to apply:"
-         "\n . '%s' => Wobble"
-         "\n . '%s' => Circle"
-         "\n . '%s' => Fade"
-         "\n . '%s' => Flash"
-         "\n . '%s' => Move"
-         "\n . '%s' => Flip"
-         "\n . '%s' => MultiFX that contains the slots of 4 of the above FXs"
-         "\n- '%s' will apply the current selected FX on soldier"
-         "\n* Only once FX will be applied at a time in this tutorial"
-         "\n* However an object can support up to 8 FXs at the same time"
-         "\n* Box has a looping rotating FX applied directly from config, requiring no code",
-         zInputSelectWobble, zInputSelectCircle, zInputSelectFade, zInputSelectFlash, zInputSelectMove, zInputSelectFlip, zInputSelectMultiFX, zInputApplyFX);
+  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1), "\n- To select a FX:");
+  orxConfig_PushSection("Main");
+  for(i = 0, s32Count = orxConfig_GetListCount("FXList");
+      i < s32Count;
+      i++)
+  {
+    const orxSTRING zInput;
+    zInput = orxConfig_GetListString("FXList", i);
+    orxInput_GetBinding(zInput, 0, &eType, &eID, &eMode);
+    pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1), "\n . %-8s => %s", orxInput_GetBindingName(eType, eID, eMode), zInput);
+  }
+  orxConfig_PopSection();
+  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1),
+    "\n- %s will apply the current selected FX on the soldier"
+    "\n* In this tutorial, only a single concurrent FX will be applied on the soldier"
+    "\n* However an object can support up to %u simultaneous FXs"
+    "\n* The box has a looping rotating FX applied directly from config upon its creation, requiring no code",
+    zInputApplyFX, orxFXPOINTER_KU32_FX_NUMBER);
+  orxLOG("%s", acBuffer);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
