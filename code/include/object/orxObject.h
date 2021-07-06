@@ -35,7 +35,7 @@
  *
  * Object module
  * Allows to creates and handle objects
- * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
+ * Objects are structure containers that can be linked to many other structures such as frames, graphics, etc...
  *
  * @{
  */
@@ -245,7 +245,7 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *
 /** @} */
 
 
-/** @name Linked structures
+/** @name Linked Structures
  * @{ */
 /** Links a structure to an object.
  * @param[in]   _pstObject      Concerned object
@@ -648,7 +648,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(const orxOBJE
 /** @} */
 
 
-/** @name Physics / dynamics
+/** @name Physics / Dynamics
  * @{ */
 /** Sets an object speed.
  * @param[in]   _pstObject      Concerned object
@@ -774,7 +774,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *
 /** @} */
 
 
-/** @name Bounding box
+/** @name Bounding Box
  * @{ */
 /** Gets object's bounding box (OBB).
  * @param[in]   _pstObject      Concerned object
@@ -1076,7 +1076,7 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const o
 /** @} */
 
 
-/** @name texture
+/** @name Texture
  * @{ */
 /** Gets object working texture.
  * @param[in]   _pstObject     Concerned object
@@ -1086,7 +1086,7 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const or
 /** @} */
 
 
-/** @name graphic
+/** @name Graphic
  * @{ */
 /** Gets object working graphic.
  * @param[in]   _pstObject     Concerned object
@@ -1192,7 +1192,7 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const 
 /** @} */
 
 
-/** @name Life time / active time
+/** @name Life time / Active time
  * @{ */
 /** Sets object literal lifetime.
  * @param[in]   _pstObject      Concerned object
