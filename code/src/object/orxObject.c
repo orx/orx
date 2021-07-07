@@ -8965,7 +8965,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-void  orxFASTCALL orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay)
+void orxFASTCALL orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay)
 {
   orxFLOAT    fDelay;
   orxOBJECT  *pstChild;
