@@ -112,7 +112,8 @@ solution "orx"
         "../../extern/openal-soft/include",
         "../../extern/libsndfile-1.0.22/include",
         "../../extern/stb_vorbis",
-        "../../extern/libwebp/include"
+        "../../extern/libwebp/include",
+        "../../extern/basisu/include",
     }
 
     excludes
@@ -166,7 +167,8 @@ solution "orx"
             "../../extern/glfw-3/lib/linux",
             "../../extern/libsndfile-1.0.22/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
-            "../../extern/libwebp/lib/linux"
+            "../../extern/libwebp/lib/linux",
+            "../../extern/basisu/lib/linux/32",
         }
         buildoptions
         {
@@ -180,7 +182,8 @@ solution "orx"
             "../../extern/glfw-3/lib/linux64",
             "../../extern/libsndfile-1.0.22/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
-            "../../extern/libwebp/lib/linux64"
+            "../../extern/libwebp/lib/linux64",
+            "../../extern/basisu/lib/linux/64",
         }
         buildoptions
         {
@@ -197,7 +200,8 @@ solution "orx"
             "../../extern/glfw-3/lib/mac",
             "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
-            "../../extern/libwebp/lib/mac"
+            "../../extern/libwebp/lib/mac",
+            "../../extern/basisu/lib/mac",
         }
         buildoptions
         {
@@ -236,7 +240,8 @@ solution "orx"
             "../../extern/openal-soft/lib/vc2015/32",
             "../../extern/libsndfile-1.0.22/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
-            "../../extern/libwebp/lib/vc2015/32"
+            "../../extern/libwebp/lib/vc2015/32",
+            "../../extern/basisu/lib/vc2015/32",
         }
 
     configuration {"vs2015 or vs2017 or vs2019", "x64"}
@@ -246,7 +251,8 @@ solution "orx"
             "../../extern/openal-soft/lib/vc2015/64",
             "../../extern/libsndfile-1.0.22/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
-            "../../extern/libwebp/lib/vc2015/64"
+            "../../extern/libwebp/lib/vc2015/64",
+            "../../extern/basisu/lib/vc2015/64",
         }
 
     configuration {"windows", "gmake or codelite or codeblocks", "x32"}
@@ -256,7 +262,8 @@ solution "orx"
             "../../extern/openal-soft/lib/mingw/32",
             "../../extern/libsndfile-1.0.22/lib/mingw/32",
             "../../extern/LiquidFun-1.1.0/lib/mingw/32",
-            "../../extern/libwebp/lib/mingw/32"
+            "../../extern/libwebp/lib/mingw/32",
+            "../../extern/basisu/lib/mingw/32",
         }
 
     configuration {"windows", "gmake or codelite or codeblocks", "x64"}
@@ -266,7 +273,8 @@ solution "orx"
             "../../extern/openal-soft/lib/mingw/64",
             "../../extern/libsndfile-1.0.22/lib/mingw/64",
             "../../extern/LiquidFun-1.1.0/lib/mingw/64",
-            "../../extern/libwebp/lib/mingw/64"
+            "../../extern/libwebp/lib/mingw/64",
+            "../../extern/basisu/lib/mingw/64",
         }
 
     configuration {"windows", "gmake", "x32"}
@@ -435,11 +443,20 @@ project "orxLIB"
     configuration {"not *Core*"}
         links {"webpdecoder"}
 
-    configuration {"*Debug*", "not *Core*"}
-        links {"liquidfund"}
+    configuration {"not *Core*", "not vs*"}
+        links {"basisu"}
+
+    configuration {"not *Debug*", "not *Core*", "vs*"}
+        links {"basisu"}
+
+    configuration {"*Debug*", "not *Core*", "vs*"}
+        links {"basisud"}
 
     configuration {"not *Debug*", "not *Core*"}
         links {"liquidfun"}
+
+    configuration {"*Debug*", "not *Core*"}
+        links {"liquidfund"}
 
 
 -- Linux
@@ -569,7 +586,7 @@ project "orxLIB"
             "sndfile"
         }
 
-    configuration {"windows", "vs*", "not *Core*"}
+    configuration {"windows", "not *Core*", "vs*"}
         links {"OpenGL32"}
 
     configuration {"windows", "vs*", "*Debug*"}
