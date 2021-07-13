@@ -64,7 +64,9 @@
 #ifdef __orxLLVM__
 
   #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wcomma"
+  #if __has_warning("-Wcomma")
+    #pragma clang diagnostic ignored "-Wcomma"
+  #endif /* -Wcomma */
 
 #endif /* __orxLLVM__ */
 
