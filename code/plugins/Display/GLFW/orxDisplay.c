@@ -1517,6 +1517,8 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   /* Pops config section */
   orxConfig_PopSection();
 
+#undef orxDISPLAY_LOAD_EXTENSION_FUNCTION
+
   /* Done! */
   return;
 }
@@ -1584,7 +1586,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
         }
 
         /* Frees data */
-        stbi_image_free(pstInfo->pu8ImageBuffer);
+        orxMemory_Free(pstInfo->pu8ImageBuffer);
       }
 
       /* Clears loading flag */
@@ -1602,7 +1604,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
         /* Adds icon image */
         sstDisplay.astIconList[sstDisplay.s32IconNumber].width  = (int)(pstInfo->uiWidth);
         sstDisplay.astIconList[sstDisplay.s32IconNumber].height = (int)(pstInfo->uiHeight);
-        sstDisplay.astIconList[sstDisplay.s32IconNumber].pixels = (unsigned char *)pstInfo->pu8ImageSource;
+        sstDisplay.astIconList[sstDisplay.s32IconNumber].pixels = (unsigned char *)pstInfo->pu8ImageBuffer;
         sstDisplay.s32IconNumber++;
       }
 
@@ -1625,7 +1627,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
         for(i = 0; i < sstDisplay.s32IconNumber; i++)
         {
           /* Frees its data */
-          stbi_image_free(sstDisplay.astIconList[i].pixels);
+          orxMemory_Free(sstDisplay.astIconList[i].pixels);
 
           /* Clears it */
           orxMemory_Zero(&(sstDisplay.astIconList[i]), sizeof(GLFWimage));
@@ -1758,14 +1760,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       /* Frees source */
       if(pstInfo->pu8ImageSource != orxNULL)
       {
-        if(pstInfo->bIsBasisU != orxFALSE)
-        {
-          orxMemory_Free(pstInfo->pu8ImageSource);
-        }
-        else
-        {
-          stbi_image_free(pstInfo->pu8ImageSource);
-        }
+        orxMemory_Free(pstInfo->pu8ImageSource);
         pstInfo->pu8ImageSource = orxNULL;
       }
 
@@ -1796,7 +1791,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
     /* Frees source */
     if(pstInfo->pu8ImageSource != orxNULL)
     {
-      stbi_image_free(pstInfo->pu8ImageSource);
+      orxMemory_Free(pstInfo->pu8ImageSource);
       pstInfo->pu8ImageSource = orxNULL;
     }
   }
@@ -1823,39 +1818,36 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
     unsigned char *pu8ImageData = orxNULL;
+    unsigned int uiDataSize;
+    BasisUFormat eFormat;
 
-    /* Isn't an icon or cursor? */
-    if(!orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON))
+    /* Gets format based on image type */
+    eFormat = orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON) ? BasisUFormat_Uncompressed : sstDisplay.eBasisUFormat;
+
+    /* Is Basis Universal texture? */
+    if((uiDataSize = BasisU_GetInfo(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, eFormat, &(pstInfo->uiWidth), &(pstInfo->uiHeight), (unsigned int *)&(pstInfo->u32DataSize))) != 0)
     {
-      unsigned int uiDataSize;
+      /* Allocates image data */
+      pu8ImageData = (orxU8 *)orxMemory_Allocate(uiDataSize, orxMEMORY_TYPE_VIDEO);
 
-      /* Is Basis Universal texture? */
-      if((uiDataSize = BasisU_GetInfo(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, sstDisplay.eBasisUFormat, &(pstInfo->uiWidth), &(pstInfo->uiHeight), (unsigned int *)&(pstInfo->u32DataSize))) != 0)
+      /* Valid? */
+      if(pu8ImageData != orxNULL)
       {
-        /* Allocates image data */
-        pu8ImageData = (orxU8 *)orxMemory_Allocate(uiDataSize, orxMEMORY_TYPE_VIDEO);
-
-        /* Valid? */
-        if(pu8ImageData != orxNULL)
+        /* Transcode it? */
+        if(BasisU_Transcode(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, eFormat, pu8ImageData, uiDataSize) != 0)
         {
-          /* Transcode it? */
-          if(BasisU_Transcode(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, sstDisplay.eBasisUFormat, pu8ImageData, uiDataSize) != 0)
-          {
-            /* Updates its status */
-            pstInfo->bIsBasisU = orxTRUE;
-          }
-          else
-          {
-            /* Frees image data */
-            orxMemory_Free(pu8ImageData);
-            pu8ImageData = orxNULL;
-          }
+          /* Updates its status */
+          pstInfo->bIsBasisU = orxTRUE;
+        }
+        else
+        {
+          /* Frees image data */
+          orxMemory_Free(pu8ImageData);
+          pu8ImageData = orxNULL;
         }
       }
     }
-
-    /* Not decompressed yet? */
-    if(pu8ImageData == orxNULL)
+    else
     {
       GLuint uiBytesPerPixel;
 
@@ -1873,9 +1865,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
     /* Valid? */
     if(pu8ImageData != NULL)
     {
-      /* Has NPOT texture support, is a Basis Universal texture or cursor/icon? */
+      /* Has NPOT texture support, is a Basis Universal compressed texture or cursor/icon? */
       if((orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
-      || (pstInfo->bIsBasisU != orxFALSE)
+      || (eFormat != BasisUFormat_Uncompressed)
       || (orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON)))
       {
         /* Uses image buffer */
@@ -2834,6 +2826,8 @@ static orxINLINE GLenum orxDisplay_GLFW_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE 
     orxDISPLAY_PRIMITIVE_CASE(TRIANGLE_FAN);
     default: eResult = orxDISPLAY_KE_DEFAULT_PRIMITIVE; break;
   }
+
+#undef orxDISPLAY_PRIMITIVE_CASE
 
   /* Done! */
   return eResult;
@@ -5867,6 +5861,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         {
           orxDISPLAY_VIDEO_MODE stVideoMode;
 
+          /* Inits Basis Universal */
+          BasisU_Init();
+
           /* Updates default mode */
           orxDisplay_GLFW_UpdateDefaultMode();
 
@@ -5941,9 +5938,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             if((pstClock != orxNULL) && ((eResult = orxClock_Register(pstClock, orxDisplay_GLFW_Update, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHER)) != orxSTATUS_FAILURE))
             {
               int iWindowX = 0, iWindowY = 0;
-
-              /* Inits Basis Universal */
-              BasisU_Init();
 
               /* Ignores resize event for now */
               sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
