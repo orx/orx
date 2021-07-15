@@ -559,10 +559,10 @@ PFNGLBINDFRAMEBUFFEREXTPROC         glBindFramebufferEXT        = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  glCheckFramebufferStatusEXT = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    glFramebufferTexture2DEXT   = NULL;
 
-PFNGLCOMPRESSEDTEXIMAGE2DPROC       glCompressedTexImage2D      = NULL;
 
     #ifndef __orxLINUX__
 
+PFNGLCOMPRESSEDTEXIMAGE2DPROC       glCompressedTexImage2D      = NULL;
 PFNGLACTIVETEXTUREARBPROC           glActiveTextureARB          = NULL;
 
     #endif /* !__orxLINUX__ */
@@ -1496,12 +1496,14 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       sstDisplay.eBasisUFormat = BasisUFormat_Uncompressed;
     }
 
+#if !defined(__orxDISPLAY_OPENGL_ES__) && !defined(__orxLINUX__) && !defined(__orxMAC__)
     /* Has texture compression support? */
     if(sstDisplay.eBasisUFormat != BasisUFormat_Uncompressed)
     {
       /* Loads related extension function */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCOMPRESSEDTEXIMAGE2DPROC, glCompressedTexImage2D);
     }
+#endif /* !__orxDISPLAY_OPENGL_ES__ && !__orxLINUX__ && !__orxMAC */
 
     /* Updates status flags */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_EXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
