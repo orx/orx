@@ -1477,15 +1477,6 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
     }
 
-#ifdef GL_COMPRESSED_RGBA_ASTC_4x4_KHR
-    /* Has ASTC support? */
-    if(glfwExtensionSupported("GL_KHR_texture_compression_astc_ldr") != GLFW_FALSE)
-    {
-      /* Selects format */
-      sstDisplay.eBasisUFormat = BasisUFormat_ASTC;
-    }
-    else
-#endif /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
 #ifdef GL_COMPRESSED_RGBA_BPTC_UNORM
     /* Has BC7 support? */
     if(glfwExtensionSupported("GL_ARB_texture_compression_bptc") != GLFW_FALSE)
@@ -1495,6 +1486,15 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     }
     else
 #endif /* GL_COMPRESSED_RGBA_BPTC_UNORM */
+#ifdef GL_COMPRESSED_RGBA_ASTC_4x4_KHR
+    /* Has ASTC support? */
+    if(glfwExtensionSupported("GL_KHR_texture_compression_astc_ldr") != GLFW_FALSE)
+    {
+      /* Selects format */
+      sstDisplay.eBasisUFormat = BasisUFormat_ASTC;
+    }
+    else
+#endif /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
     /* Defaults to uncompressed */
     {
       /* Selects format */
