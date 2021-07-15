@@ -1489,12 +1489,6 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       /* Selects format */
       sstDisplay.eBasisUFormat = BasisUFormat_BC7;
     }
-    /* Has BC3 support? */
-    else if(glfwExtensionSupported("GL_EXT_texture_compression_s3tc") != GLFW_FALSE)
-    {
-      /* Selects format */
-      sstDisplay.eBasisUFormat = BasisUFormat_BC3;
-    }
     /* Defaults to uncompressed */
     else
     {
@@ -1701,13 +1695,6 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
           {
             /* Gets internal format */
             eInternalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
-            break;
-          }
-
-          case BasisUFormat_BC3:
-          {
-            /* Gets internal format */
-            eInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             break;
           }
 
