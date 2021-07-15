@@ -118,10 +118,7 @@ solution "Tutorial"
         "StaticRuntime"
     }
 
-    configuration {"not vs2015", "not vs2017", "not vs2019"}
-        flags {"EnableSSE2"}
-
-    configuration {"not x64"}
+    configuration {"x32"}
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
