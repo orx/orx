@@ -1693,24 +1693,26 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
         /* Depending on Basis Universal format */
         switch(sstDisplay.eBasisUFormat)
         {
+#ifdef GL_COMPRESSED_RGBA_ASTC_4x4_KHR
           case BasisUFormat_ASTC:
           {
             /* Gets internal format */
             eInternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
             break;
           }
-
+#endif /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
+#ifdef GL_COMPRESSED_RGBA_BPTC_UNORM
           case BasisUFormat_BC7:
           {
             /* Gets internal format */
             eInternalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
             break;
           }
-
+#endif /* GL_COMPRESSED_RGBA_BPTC_UNORM */
           default:
           {
             /* Logs message */
-            orxASSERT(orxFALSE && "Invalid Basis Universal format [%u].", sstDisplay.eBasisUFormat);
+            orxASSERT(orxFALSE && "Invalid Basis Universal format [%u] for this platform, this should *not* happen.", sstDisplay.eBasisUFormat);
             break;
           }
         }
