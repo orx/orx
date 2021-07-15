@@ -113,6 +113,8 @@
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef STBI_WRITE_NO_STDIO
 
+#include "basisu.h"
+
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__
@@ -356,10 +358,12 @@ typedef struct __orxDISPLAY_LOAD_INFO_t
   orxU8      *pu8ImageSource;
   orxS64      s64Size;
   orxBITMAP  *pstBitmap;
+  orxU32      u32DataSize;
   GLuint      uiWidth;
   GLuint      uiHeight;
   GLuint      uiRealWidth;
   GLuint      uiRealHeight;
+  orxBOOL     bIsBasisU;
 
 } orxDISPLAY_LOAD_INFO;
 
@@ -444,6 +448,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultRefreshRate;
   orxS32                    s32ActiveTextureUnit;
   stbi_io_callbacks         stSTBICallbacks;
+  BasisUFormat              eBasisUFormat;
   GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxBITMAP                *apstDestinationBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
@@ -553,6 +558,8 @@ PFNGLDELETEFRAMEBUFFERSEXTPROC      glDeleteFramebuffersEXT     = NULL;
 PFNGLBINDFRAMEBUFFEREXTPROC         glBindFramebufferEXT        = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC  glCheckFramebufferStatusEXT = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DEXTPROC    glFramebufferTexture2DEXT   = NULL;
+
+PFNGLCOMPRESSEDTEXIMAGE2DPROC       glCompressedTexImage2D      = NULL;
 
     #ifndef __orxLINUX__
 
@@ -1470,6 +1477,38 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
     }
 
+    /* Has ASTC support? */
+    if(glfwExtensionSupported("GL_KHR_texture_compression_astc_ldr") != GLFW_FALSE)
+    {
+      /* Selects format */
+      sstDisplay.eBasisUFormat = BasisUFormat_ASTC;
+    }
+    /* Has BC7 support? */
+    else if(glfwExtensionSupported("GL_ARB_texture_compression_bptc") != GLFW_FALSE)
+    {
+      /* Selects format */
+      sstDisplay.eBasisUFormat = BasisUFormat_BC7;
+    }
+    /* Has BC3 support? */
+    else if(glfwExtensionSupported("GL_EXT_texture_compression_s3tc") != GLFW_FALSE)
+    {
+      /* Selects format */
+      sstDisplay.eBasisUFormat = BasisUFormat_BC3;
+    }
+    /* Defaults to uncompressed */
+    else
+    {
+      /* Selects format */
+      sstDisplay.eBasisUFormat = BasisUFormat_Uncompressed;
+    }
+
+    /* Has texture compression support? */
+    if(sstDisplay.eBasisUFormat != BasisUFormat_Uncompressed)
+    {
+      /* Loads related extension function */
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCOMPRESSEDTEXIMAGE2DPROC, glCompressedTexImage2D);
+    }
+
     /* Updates status flags */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_EXT_READY, orxDISPLAY_KU32_STATIC_FLAG_NONE);
   }
@@ -1622,7 +1661,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       pstInfo->pstBitmap->u32Depth       = 32;
       pstInfo->pstBitmap->fRecRealWidth  = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealWidth);
       pstInfo->pstBitmap->fRecRealHeight = orxFLOAT_1 / orxU2F(pstInfo->pstBitmap->u32RealHeight);
-      pstInfo->pstBitmap->u32DataSize    = pstInfo->pstBitmap->u32RealWidth * pstInfo->pstBitmap->u32RealHeight * 4 * sizeof(orxU8);
+      pstInfo->pstBitmap->u32DataSize    = pstInfo->u32DataSize;
       orxVector_Copy(&(pstInfo->pstBitmap->stClip.vTL), &orxVECTOR_0);
       orxVector_Set(&(pstInfo->pstBitmap->stClip.vBR), pstInfo->pstBitmap->fWidth, pstInfo->pstBitmap->fHeight, orxFLOAT_0);
 
@@ -1634,8 +1673,6 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       glASSERT();
       glBindTexture(GL_TEXTURE_2D, pstInfo->pstBitmap->uiTexture);
       glASSERT();
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (pstInfo->pu8ImageBuffer != orxNULL) ? pstInfo->pu8ImageBuffer : NULL);
-      glASSERT();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glASSERT();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1643,6 +1680,53 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
       glASSERT();
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (pstInfo->pstBitmap->bSmoothing != orxFALSE) ? GL_LINEAR : GL_NEAREST);
+      glASSERT();
+
+      /* Compressed Basis Universal? */
+      if((pstInfo->bIsBasisU != orxFALSE) && (sstDisplay.eBasisUFormat != BasisUFormat_Uncompressed))
+      {
+        GLenum eInternalFormat;
+
+        /* Depending on Basis Universal format */
+        switch(sstDisplay.eBasisUFormat)
+        {
+          case BasisUFormat_ASTC:
+          {
+            /* Gets internal format */
+            eInternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+            break;
+          }
+
+          case BasisUFormat_BC7:
+          {
+            /* Gets internal format */
+            eInternalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
+            break;
+          }
+
+          case BasisUFormat_BC3:
+          {
+            /* Gets internal format */
+            eInternalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            break;
+          }
+
+          default:
+          {
+            /* Logs message */
+            orxASSERT(orxFALSE && "Invalid Basis Universal format [%u].", sstDisplay.eBasisUFormat);
+            break;
+          }
+        }
+
+        /* Loads compressed data */
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, eInternalFormat, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, (GLsizei)pstInfo->pstBitmap->u32DataSize, pstInfo->pu8ImageBuffer);
+      }
+      else
+      {
+        /* Loads data */
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)pstInfo->pstBitmap->u32RealWidth, (GLsizei)pstInfo->pstBitmap->u32RealHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, (pstInfo->pu8ImageBuffer != orxNULL) ? pstInfo->pu8ImageBuffer : NULL);
+      }
       glASSERT();
 
       /* Restores previous texture */
@@ -1687,7 +1771,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       /* Frees source */
       if(pstInfo->pu8ImageSource != orxNULL)
       {
-        stbi_image_free(pstInfo->pu8ImageSource);
+        if(pstInfo->bIsBasisU != orxFALSE)
+        {
+          orxMemory_Free(pstInfo->pu8ImageSource);
+        }
+        else
+        {
+          stbi_image_free(pstInfo->pu8ImageSource);
+        }
         pstInfo->pu8ImageSource = orxNULL;
       }
 
@@ -1744,17 +1835,60 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
   /* Hasn't exited yet? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    unsigned char  *pu8ImageData;
-    GLuint          uiBytesPerPixel;
+    unsigned char *pu8ImageData = orxNULL;
 
-    /* Loads image */
-    pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+    /* Isn't an icon or cursor? */
+    if(!orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON))
+    {
+      unsigned int uiDataSize;
+
+      /* Is Basis Universal texture? */
+      if((uiDataSize = BasisU_GetInfo(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, sstDisplay.eBasisUFormat, &(pstInfo->uiWidth), &(pstInfo->uiHeight), (unsigned int *)&(pstInfo->u32DataSize))) != 0)
+      {
+        /* Allocates image data */
+        pu8ImageData = (orxU8 *)orxMemory_Allocate(uiDataSize, orxMEMORY_TYPE_VIDEO);
+
+        /* Valid? */
+        if(pu8ImageData != orxNULL)
+        {
+          /* Transcode it? */
+          if(BasisU_Transcode(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, sstDisplay.eBasisUFormat, pu8ImageData, uiDataSize) != 0)
+          {
+            /* Updates its status */
+            pstInfo->bIsBasisU = orxTRUE;
+          }
+          else
+          {
+            /* Frees image data */
+            orxMemory_Free(pu8ImageData);
+            pu8ImageData = orxNULL;
+          }
+        }
+      }
+    }
+
+    /* Not decompressed yet? */
+    if(pu8ImageData == orxNULL)
+    {
+      GLuint uiBytesPerPixel;
+
+      /* Loads image */
+      pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+
+      /* Valid? */
+      if(pu8ImageData != orxNULL)
+      {
+        /* Updates info size */
+        pstInfo->u32DataSize = 4 * pstInfo->uiWidth * pstInfo->uiHeight;
+      }
+    }
 
     /* Valid? */
     if(pu8ImageData != NULL)
     {
-      /* Has NPOT texture support or cursor/icon? */
+      /* Has NPOT texture support, is a Basis Universal texture or cursor/icon? */
       if((orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NPOT))
+      || (pstInfo->bIsBasisU != orxFALSE)
       || (orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON)))
       {
         /* Uses image buffer */
@@ -1967,10 +2101,19 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
       /* Asynchronous? */
       if(sstDisplay.pstTempBitmap != orxNULL)
       {
-        int iWidth, iHeight, iComp;
+        orxU8        *pu8Header;
+        unsigned int  uiHeaderSize;
+        int           iWidth, iHeight, iDummy;
+
+        /* Retrieves header for Basis Universal */
+        uiHeaderSize  = BasisU_GetHeaderSize();
+        pu8Header     = (orxU8 *)alloca(uiHeaderSize);
+        orxResource_Read(hResource, uiHeaderSize, pu8Header, orxNULL, orxNULL);
+        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 
         /* Gets its info */
-        if(stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iComp) != 0)
+        if((BasisU_GetInfo(pu8Header, uiHeaderSize, sstDisplay.eBasisUFormat, (unsigned int *)&iWidth, (unsigned int*)&iHeight, (unsigned int*)&iDummy) != 0)
+        || (stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iDummy) != 0))
         {
           /* Resets resource cursor */
           orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
@@ -5812,6 +5955,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             {
               int iWindowX = 0, iWindowY = 0;
 
+              /* Inits Basis Universal */
+              BasisU_Init();
+
               /* Ignores resize event for now */
               sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT;
 
@@ -5932,6 +6078,9 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
+    /* Exits from Basis Universal */
+    BasisU_Exit();
+
     /* Removes VSync fix (to account for rapid exit) */
     orxClock_RemoveGlobalTimer(orxDisplay_GLFW_VSyncFix, -orxFLOAT_1, orxNULL);
 
