@@ -252,6 +252,9 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
     /* Success? */
     if(pstStorage != orxNULL)
     {
+      /* Clears it */
+      orxMemory_Zero(pstStorage, sizeof(orxEVENT_HANDLER_STORAGE));
+
       /* Creates its bank */
       pstStorage->pstBank = orxBank_Create(orxEVENT_KU32_HANDLER_BANK_SIZE, sizeof(orxEVENT_HANDLER_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -293,7 +296,45 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
   /* Valid? */
   if(pstStorage != orxNULL)
   {
-    orxEVENT_HANDLER_INFO *pstInfo;
+    orxEVENT_HANDLER_INFO *pstInfo, *pstNextInfo;
+
+    /* For all handlers */
+    for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
+        pstInfo != orxNULL;
+        pstInfo = pstNextInfo)
+    {
+      /* Gets next info */
+      pstNextInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode));
+
+      /* Marked for deletion? */
+      if(pstInfo->pfnHandler == orxNULL)
+      {
+        /* Removes it from list */
+        orxLinkList_Remove(&(pstInfo->stNode));
+
+        /* For all IDs */
+        for(orxU32 i = 0; i < 32; i++)
+        {
+          orxU32 u32ID;
+
+          /* Gets it */
+          u32ID = (orxU32)(1 << i);
+
+          /* Should be removed? */
+          if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
+          {
+            /* Checks */
+            orxASSERT(pstStorage->au8HandledIDList[i] > 0);
+
+            /* Updates ID tracking */
+            pstStorage->au8HandledIDList[i]--;
+          }
+        }
+
+        /* Frees it */
+        orxBank_Free(pstStorage->pstBank, pstInfo);
+      }
+    }
 
     /* Allocates a new handler info */
     pstInfo = (orxEVENT_HANDLER_INFO *)orxBank_Allocate(pstStorage->pstBank);
@@ -301,8 +342,8 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
     /* Valid? */
     if(pstInfo != orxNULL)
     {
-      /* Clears its node */
-      orxMemory_Zero(&(pstInfo->stNode), sizeof(orxLINKLIST_NODE));
+      /* Clears it */
+      orxMemory_Zero(pstInfo, sizeof(orxEVENT_HANDLER_INFO));
 
       /* Stores its handler */
       pstInfo->pfnHandler = _pfnEventHandler;
@@ -391,30 +432,8 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventTyp
        || (_pContext == _pfnEventHandler)
        || (_pContext == pstInfo->pContext)))
       {
-        /* Removes it from list */
-        orxLinkList_Remove(&(pstInfo->stNode));
-
-        /* Frees it */
-        orxBank_Free(pstStorage->pstBank, pstInfo);
-
-        /* For all IDs */
-        for(orxU32 i = 0; i < 32; i++)
-        {
-          orxU32 u32ID;
-
-          /* Gets it */
-          u32ID = (orxU32)(1 << i);
-
-          /* Should be removed? */
-          if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
-          {
-            /* Checks */
-            orxASSERT(pstStorage->au8HandledIDList[i] > 0);
-
-            /* Updates ID tracking */
-            pstStorage->au8HandledIDList[i]--;
-          }
-        }
+        /* Marks it for deletion */
+        pstInfo->pfnHandler = orxNULL;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -543,7 +562,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
     /* Should handle this ID? */
     if(pstStorage->au8HandledIDList[_pstEvent->eID] != 0)
     {
-      orxEVENT_HANDLER_INFO  *pstInfo;
+      orxEVENT_HANDLER_INFO  *pstInfo, *pstNextInfo;
       orxU32                  u32IDFlag, u32CurrentThread;
 
       /* Get its ID flag */
@@ -562,20 +581,56 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
       /* For all handlers */
       for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
           pstInfo != orxNULL;
-          pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode)))
+          pstInfo = pstNextInfo)
       {
+        /* Gets next info */
+        pstNextInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetNext(&(pstInfo->stNode));
+
         /* Should process? */
         if(orxFLAG_TEST(pstInfo->u32IDFlags, u32IDFlag))
         {
-          /* Stores context */
-          _pstEvent->pContext = pstInfo->pContext;
-
-          /* Calls it */
-          if((pstInfo->pfnHandler)(_pstEvent) == orxSTATUS_FAILURE)
+          /* Not marked for deletion? */
+          if(pstInfo->pfnHandler != orxNULL)
           {
-            /* Updates result */
-            eResult = orxSTATUS_FAILURE;
+            /* Stores context */
+            _pstEvent->pContext = pstInfo->pContext;
 
+            /* Calls it */
+            eResult = (pstInfo->pfnHandler)(_pstEvent);
+          }
+
+          /* Marked for deletion? */
+          if(pstInfo->pfnHandler == orxNULL)
+          {
+            /* Removes it from list */
+            orxLinkList_Remove(&(pstInfo->stNode));
+
+            /* For all IDs */
+            for(orxU32 i = 0; i < 32; i++)
+            {
+              orxU32 u32ID;
+
+              /* Gets it */
+              u32ID = (orxU32)(1 << i);
+
+              /* Should be removed? */
+              if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
+              {
+                /* Checks */
+                orxASSERT(pstStorage->au8HandledIDList[i] > 0);
+
+                /* Updates ID tracking */
+                pstStorage->au8HandledIDList[i]--;
+              }
+            }
+
+            /* Frees it */
+            orxBank_Free(pstStorage->pstBank, pstInfo);
+          }
+
+          /* Should stop? */
+          if(eResult == orxSTATUS_FAILURE)
+          {
             break;
           }
         }
