@@ -196,8 +196,19 @@ void orxFASTCALL orxEvent_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))
   {
+    orxEVENT_HANDLER_STORAGE *pstStorage;
+
     /* Deletes hashtable */
     orxHashTable_Delete(sstEvent.pstHandlerStorageTable);
+
+    /* For all storages */
+    for(pstStorage = (orxEVENT_HANDLER_STORAGE *)orxBank_GetNext(sstEvent.pstHandlerStorageBank, orxNULL);
+        pstStorage != orxNULL;
+        pstStorage = (orxEVENT_HANDLER_STORAGE *)orxBank_GetNext(sstEvent.pstHandlerStorageBank, pstStorage))
+    {
+      /* Deletes its bank */
+      orxBank_Delete(pstStorage->pstBank);
+    }
 
     /* Deletes bank */
     orxBank_Delete(sstEvent.pstHandlerStorageBank);
