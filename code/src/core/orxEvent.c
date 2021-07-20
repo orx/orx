@@ -471,7 +471,7 @@ orxSTATUS orxFASTCALL orxEvent_SetHandlerIDFlags(orxEVENT_HANDLER _pfnEventHandl
       /* Found? */
       if((pstInfo->pfnHandler == _pfnEventHandler)
       && ((_pContext == orxNULL)
-       || (_pContext == _pfnEventHandler)))
+       || (_pContext == pstInfo->pContext)))
       {
         /* For all IDs */
         for(orxU32 i = 0; i < 32; i++)
