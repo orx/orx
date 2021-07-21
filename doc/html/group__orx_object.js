@@ -123,6 +123,7 @@ var group__orx_object =
     [ "orxObject_SetBlendMode", "group__orx_object.html#ga10d807123d929e60b41c2bfd06bab1d8", null ],
     [ "orxObject_SetBlendModeRecursive", "group__orx_object.html#gae09520e95179cb8ac52cfb03365a6b18", null ],
     [ "orxObject_SetClock", "group__orx_object.html#ga541a0d62fdea7637f968066aa568921b", null ],
+    [ "orxObject_SetClockRecursive", "group__orx_object.html#gab9f43898d17137fe65913790a1df6d2e", null ],
     [ "orxObject_SetColor", "group__orx_object.html#gac05ae1a614b249d4f193e70bbb2e588c", null ],
     [ "orxObject_SetColorRecursive", "group__orx_object.html#ga3091254e49a5a74fed6d1d488d4620ad", null ],
     [ "orxObject_SetCurrentAnim", "group__orx_object.html#gadce3e7887f764197d8a03aa9a8eaaae4", null ],

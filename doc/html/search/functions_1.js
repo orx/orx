@@ -809,6 +809,7 @@ var searchData=
   ['orxobject_5fsetblendmode',['orxObject_SetBlendMode',['../group__orx_object.html#ga10d807123d929e60b41c2bfd06bab1d8',1,'orxObject.h']]],
   ['orxobject_5fsetblendmoderecursive',['orxObject_SetBlendModeRecursive',['../group__orx_object.html#gae09520e95179cb8ac52cfb03365a6b18',1,'orxObject.h']]],
   ['orxobject_5fsetclock',['orxObject_SetClock',['../group__orx_object.html#ga541a0d62fdea7637f968066aa568921b',1,'orxObject.h']]],
+  ['orxobject_5fsetclockrecursive',['orxObject_SetClockRecursive',['../group__orx_object.html#gab9f43898d17137fe65913790a1df6d2e',1,'orxObject.h']]],
   ['orxobject_5fsetcolor',['orxObject_SetColor',['../group__orx_object.html#gac05ae1a614b249d4f193e70bbb2e588c',1,'orxObject.h']]],
   ['orxobject_5fsetcolorrecursive',['orxObject_SetColorRecursive',['../group__orx_object.html#ga3091254e49a5a74fed6d1d488d4620ad',1,'orxObject.h']]],
   ['orxobject_5fsetcurrentanim',['orxObject_SetCurrentAnim',['../group__orx_object.html#gadce3e7887f764197d8a03aa9a8eaaae4',1,'orxObject.h']]],
