@@ -117,6 +117,7 @@ typedef struct __orxSOUNDSYSTEM_STREAM_t
 {
   orxLINKLIST_NODE        stNode;
   orxSOUNDSYSTEM_DATA     stData;
+  orxHANDLE               hOwner;
   orxS32                  s32PacketID;
   orxFLOAT                fTime;
   orxFLOAT                fSetTime;
@@ -142,16 +143,10 @@ struct __orxSOUNDSYSTEM_SOUND_t
   union
   {
     /* Sample */
-    struct
-    {
-      orxSOUNDSYSTEM_SAMPLE *pstSample;
-    };
+    orxSOUNDSYSTEM_SAMPLE *pstSample;
 
     /* Stream */
-    struct
-    {
-      orxSOUNDSYSTEM_STREAM stStream;
-    };
+    orxSOUNDSYSTEM_STREAM stStream;
   };
 };
 
@@ -514,7 +509,7 @@ static void orxFASTCALL orxSoundSystem_Android_FillStream(orxSOUNDSYSTEM_SOUND *
           stPayload.stStream.stPacket.bLast           = (u32FrameNumber < u32BufferFrameNumber) ? orxTRUE : orxFALSE;
 
           /* Sends event */
-          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, orxStructure_GetOwner(orxStructure_GetOwner(_pstSound->hUserData)), orxNULL, &stPayload);
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound->stStream.hOwner, orxNULL, &stPayload);
 
           /* Should proceed? */
           if((stPayload.stStream.stPacket.bDiscard == orxFALSE)
@@ -698,6 +693,13 @@ static orxSTATUS orxFASTCALL orxSoundSystem_Android_UpdateStreaming(void *_pCont
     }
     else
     {
+      /* Doesn't have its owner yet? */
+      if(pstSound->stStream.hOwner == orxNULL)
+      {
+        /* Stores it */
+        pstSound->stStream.hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
+      }
+
       /* Fills its stream */
       orxSoundSystem_Android_FillStream(pstSound);
 
