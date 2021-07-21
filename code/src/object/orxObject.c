@@ -460,6 +460,47 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
   return eResult;
 }
 
+/** Sets owned clock for an object
+ */
+orxSTATUS orxFASTCALL orxObject_SetOwnedClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Removes old one */
+  orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_CLOCK);
+
+  /* Has new one? */
+  if(_pstClock != orxNULL)
+  {
+    /* Links it */
+    eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstClock));
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Updates flags */
+      orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_CLOCK].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+      /* Updates count */
+      orxStructure_IncreaseCount(_pstClock);
+
+      /* Updates its owner */
+      orxStructure_SetOwner(_pstClock, _pstObject);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets owned clock for an object and its owned children
+ */
+orxOBJECT_MAKE_RECURSIVE(SetOwnedClock, orxCLOCK *);
+
 /** Command: Create
  */
 void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2515,37 +2556,39 @@ void orxFASTCALL orxObject_CommandSetClock(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Has clock? */
-    if(_u32ArgNumber > 1)
-    {
-      orxCLOCK *pstClock;
+    orxCLOCK *pstClock = orxNULL;
 
+    /* Has clock? */
+    if((_u32ArgNumber > 1) && (*_astArgList[1].zValue != orxCHAR_NULL))
+    {
       /* Creates clock */
       pstClock = orxClock_CreateFromConfig(_astArgList[1].zValue);
+    }
 
-      /* Valid? */
-      if(pstClock != orxNULL)
-      {
-        /* Links it */
-        if(orxObject_LinkStructure(pstObject, orxSTRUCTURE(pstClock)) != orxSTATUS_FAILURE)
-        {
-          /* Updates flags */
-          orxFLAG_SET(pstObject->astStructureList[orxSTRUCTURE_ID_CLOCK].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-
-          /* Updates its owner */
-          orxStructure_SetOwner(pstClock, pstObject);
-        }
-        else
-        {
-          /* Deletes it */
-          orxClock_Delete(pstClock);
-        }
-      }
+    /* Should recurse? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets it */
+      orxObject_SetOwnedClockRecursive(pstObject, pstClock);
     }
     else
     {
-      /* Removes clock */
-      orxObject_SetClock(pstObject, orxNULL);
+      /* Sets it */
+      orxObject_SetOwnedClock(pstObject, pstClock);
+    }
+
+    /* Has clock */
+    if(pstClock != orxNULL)
+    {
+      /* Decreases count */
+      orxStructure_DecreaseCount(pstClock);
+
+      /* Unused clock? */
+      if(orxStructure_GetRefCount(pstClock) == 0)
+      {
+        /* Deletes it */
+        orxClock_Delete(pstClock);
+      }
     }
 
     /* Updates result */
@@ -3453,7 +3496,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedSibling, "Owned Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetClock */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetClock, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Clock = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetClock, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Clock = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetClock */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetClock, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
@@ -6122,6 +6165,13 @@ orxSTATUS orxFASTCALL orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstCl
   /* Done! */
   return eResult;
 }
+
+/** Sets associated clock for an object and its owned children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetClock, orxCLOCK *);
 
 /** Gets object's clock.
  * @param[in]   _pstObject    Concerned object
