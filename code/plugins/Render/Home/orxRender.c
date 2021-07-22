@@ -383,7 +383,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL, orxFALSE);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1163,9 +1163,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
 #endif /* __orxPROFILER__ */
 
-  /* Deletes pixel texture */
-  orxTexture_Delete(pstTexture);
-
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
 
@@ -1213,7 +1210,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   fCharacterWidth   = orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_CreateFromFile(orxTEXTURE_KZ_PIXEL, orxFALSE);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1400,9 +1397,6 @@ static orxINLINE void orxRender_Home_RenderConsole()
     /* Displays it */
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
   }
-
-  /* Deletes pixel texture */
-  orxTexture_Delete(pstTexture);
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
