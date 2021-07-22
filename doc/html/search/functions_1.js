@@ -1295,6 +1295,7 @@ var searchData=
   ['orxtexture_5fcreatefromfile',['orxTexture_CreateFromFile',['../group__orx_texture.html#gad4d4f7570b466c3b053c6f1d55b0448e',1,'orxTexture.h']]],
   ['orxtexture_5fdelete',['orxTexture_Delete',['../group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6',1,'orxTexture.h']]],
   ['orxtexture_5fexit',['orxTexture_Exit',['../group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688',1,'orxTexture.h']]],
+  ['orxtexture_5fget',['orxTexture_Get',['../group__orx_texture.html#gaea1f481e5be1f090f496b0c43ad9023b',1,'orxTexture.h']]],
   ['orxtexture_5fgetbitmap',['orxTexture_GetBitmap',['../group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c',1,'orxTexture.h']]],
   ['orxtexture_5fgetloadcount',['orxTexture_GetLoadCount',['../group__orx_texture.html#gaa5bb1fc43b78535e0dc48b278cf661f5',1,'orxTexture.h']]],
   ['orxtexture_5fgetname',['orxTexture_GetName',['../group__orx_texture.html#ga78eb3dd271806f3dedc5f606fc8e231b',1,'orxTexture.h']]],
