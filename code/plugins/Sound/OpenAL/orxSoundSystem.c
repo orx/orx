@@ -756,6 +756,13 @@ static void orxFASTCALL orxSoundSystem_OpenAL_FillStream(orxSOUNDSYSTEM_SOUND *_
           stPayload.stStream.stPacket.fTime           = _pstSound->stStream.fTime;
           stPayload.stStream.stPacket.bLast           = (u32FrameNumber < u32BufferFrameNumber) ? orxTRUE : orxFALSE;
 
+          /* Doesn't have its owner yet? */
+          if(_pstSound->stStream.hOwner == orxNULL)
+          {
+            /* Stores it */
+            _pstSound->stStream.hOwner = orxStructure_GetOwner(orxStructure_GetOwner(_pstSound->hUserData));
+          }
+
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, _pstSound->stStream.hOwner, orxNULL, &stPayload);
 
@@ -1028,13 +1035,6 @@ static orxSTATUS orxFASTCALL orxSoundSystem_OpenAL_UpdateStreaming(void *_pConte
     }
     else
     {
-      /* Doesn't have its owner yet? */
-      if(pstSound->stStream.hOwner == orxNULL)
-      {
-        /* Stores it */
-        pstSound->stStream.hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
-      }
-
       /* Fills its stream */
       orxSoundSystem_OpenAL_FillStream(pstSound);
 
