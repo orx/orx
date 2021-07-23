@@ -4478,6 +4478,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       orxEVENT      stEvent;
       orxSTRUCTURE *pstParent = orxNULL;
 
+      /* Stores reference */
+      pstResult->zReference = orxConfig_GetCurrentSection();
+
       /* Inits event */
       orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PREPARE, pstResult, orxNULL, &pstParent);
 
@@ -4543,9 +4546,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Sets it */
           orxObject_SetGroupID(pstResult, sstObject.stCurrentGroupID);
         }
-
-        /* Stores reference */
-        pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* *** Frame *** */
 
