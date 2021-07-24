@@ -72,8 +72,6 @@
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
-#define orxCLOCK_KZ_CONFIG_FREQUENCY            "Frequency"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_LIST        "ModifierList"
 
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
