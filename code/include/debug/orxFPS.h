@@ -46,6 +46,9 @@
 #include "orxInclude.h"
 
 
+#define orxFPS_KZ_CLOCK_NAME                      "fps"
+
+
 /** Setups FPS module */
 extern orxDLLAPI void orxFASTCALL                 orxFPS_Setup();
 

@@ -199,6 +199,8 @@ Ownership</h2></td></tr>
 Clock</h2></td></tr>
 <tr class="memitem:ga541a0d62fdea7637f968066aa568921b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga541a0d62fdea7637f968066aa568921b">orxObject_SetClock</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 <tr class="separator:ga541a0d62fdea7637f968066aa568921b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab9f43898d17137fe65913790a1df6d2e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab9f43898d17137fe65913790a1df6d2e">orxObject_SetClockRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
+<tr class="separator:gab9f43898d17137fe65913790a1df6d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad59c5a311d83f40cea6b27dccb4b1048"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad59c5a311d83f40cea6b27dccb4b1048">orxObject_GetClock</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:gad59c5a311d83f40cea6b27dccb4b1048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -3782,6 +3784,40 @@ Picking</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets associated clock for an object. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstClock</td><td>Clock to associate / orxNULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab9f43898d17137fe65913790a1df6d2e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_SetClockRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&#160;</td>
+          <td class="paramname"><em>_pstClock</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets associated clock for an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstClock</td><td>Clock to associate / orxNULL </td></tr>

@@ -237,6 +237,13 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
 
+/** Sets associated clock for an object and its owned children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_SetClockRecursive(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
+
 /** Gets object's clock.
  * @param[in]   _pstObject    Concerned object
  * @return      Associated clock / orxNULL

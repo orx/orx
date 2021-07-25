@@ -3,6 +3,8 @@ var orx_clock_8h =
     [ "orxCLOCK_KU32_CLOCK_BANK_SIZE", "group__orx_clock.html#ga930256bcb28f6e8132eb9e17a37f7068", null ],
     [ "orxCLOCK_KU32_FUNCTION_BANK_SIZE", "group__orx_clock.html#gacf7c640799de113b93a02b540befe4d7", null ],
     [ "orxCLOCK_KU32_TIMER_BANK_SIZE", "group__orx_clock.html#ga02b0d4ee74c3f16cea7c87cb30e73533", null ],
+    [ "orxCLOCK_KZ_CONFIG_FREQUENCY", "group__orx_clock.html#gaca2b37877a10ef4dfc86c6e06ab86995", null ],
+    [ "orxCLOCK_KZ_CONFIG_MODIFIER_LIST", "group__orx_clock.html#ga88644c40b1c22f376ca5cc925dcc0f5b", null ],
     [ "orxCLOCK_KZ_CORE", "group__orx_clock.html#ga99fc912b70965519d362f80263d0f260", null ],
     [ "orxCLOCK", "group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262", null ],
     [ "orxCLOCK_FUNCTION", "group__orx_clock.html#ga27fdca4bcf0b179960879606460314d0", null ],

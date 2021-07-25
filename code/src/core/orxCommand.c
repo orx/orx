@@ -2520,7 +2520,7 @@ void orxFASTCALL orxCommand_CommandLogAllStructures(orxU32 _u32ArgNumber, const 
   orxSTATUS eResult;
 
   /* Logs all structures */
-  eResult = orxStructure_LogAll();
+  eResult = orxStructure_LogAll((_u32ArgNumber > 0) ? _astArgList[0].bValue : orxFALSE);
 
   /* Updates result */
   _pstResult->u32Value = (eResult != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
@@ -2660,7 +2660,7 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetApplicationSaveDirectory, "Result", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"SubPath = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: LogAllStructures */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Private = false", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetClipboard */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetClipboard, "Content", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
