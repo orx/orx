@@ -11,6 +11,7 @@ params: [
   archive     {orxArchive support (resources can be stored inside ZIP files)}         -       []
   c++         {Create a C++ project instead of C}                                     +       []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
+  movie       {Movie (MPEG-1) decoding support}                                       -       [-scroll]
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
   scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
 ]
