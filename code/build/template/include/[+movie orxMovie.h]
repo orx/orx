@@ -12,7 +12,7 @@ extern "C" {
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxArchive_Init();
+orxSTATUS orxFASTCALL orxMovie_Init();
 
 
 //! Implementation
