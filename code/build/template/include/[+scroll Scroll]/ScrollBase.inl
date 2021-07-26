@@ -1588,10 +1588,10 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
 
           // Checks
-          orxASSERT((!poObject) || (poObject->GetOrxObject() == pstObject));
+          orxASSERT((!poObject) || (!poObject->mpstObject) || (poObject->mpstObject == pstObject));
 
-          // Valid?
-          if(poObject)
+          // Valid object (first deletion)?
+          if(poObject && poObject->mpstObject)
           {
             ScrollObjectBinderBase *poBinder;
 
