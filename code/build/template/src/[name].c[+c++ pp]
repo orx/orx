@@ -114,7 +114,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
 [+scroll
     // Create the scene
-    CreateObject("Scene");]
+    CreateObject([+movie "Logo"] [-movie "Scene"]);]
 [-scroll
     // Create the viewport
     orxViewport_CreateFromConfig("MainViewport");
