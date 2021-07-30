@@ -3808,7 +3808,6 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
   {
     const orxSTRING zCommand = orxSTRING_EMPTY;
     orxCOMMAND_VAR  stCommandResult;
-    orxBOOL         bCommandResult;
 
     /* Has delete command? */
     if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND))
@@ -4516,7 +4515,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     {
       const orxSTRING zCommand;
       orxCOMMAND_VAR  stCommandResult;
-      orxBOOL         bCommandResult;
 
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
