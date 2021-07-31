@@ -108,6 +108,7 @@
 
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
+#define orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY      "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_CLOCK               "Clock"
 #define orxOBJECT_KZ_CONFIG_SPAWNER             "Spawner"
@@ -128,13 +129,13 @@
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
-#define orxOBJECT_KZ_CONFIG_FX_DELAY_LIST       "FXDelayList"
+#define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
+#define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
 #define orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST    "ChildJointList"
-#define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
 #define orxOBJECT_KZ_CONFIG_REPEAT              "Repeat"
@@ -2740,12 +2741,12 @@ void orxFASTCALL orxObject_CommandAddFX(orxU32 _u32ArgNumber, const orxCOMMAND_V
       if(_astArgList[2].bValue != orxFALSE)
       {
         /* Adds unique FX */
-        orxObject_AddUniqueFXRecursive(pstObject, _astArgList[1].zValue);
+        orxObject_AddUniqueFXRecursive(pstObject, _astArgList[1].zValue, orxFLOAT_0);
       }
       else
       {
         /* Adds FX */
-        orxObject_AddFXRecursive(pstObject, _astArgList[1].zValue);
+        orxObject_AddFXRecursive(pstObject, _astArgList[1].zValue, orxFLOAT_0);
       }
     }
     else
@@ -2835,6 +2836,68 @@ void orxFASTCALL orxObject_CommandRemoveAllFXs(orxU32 _u32ArgNumber, const orxCO
   {
     /* Updates result */
     _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetFXFrequency
+ */
+void orxFASTCALL orxObject_CommandSetFXFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its FX frequency */
+      orxObject_SetFXFrequencyRecursive(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Sets its FX frequency */
+      orxObject_SetFXFrequency(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].fValue : orxFLOAT_1);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetFXFrequency
+ */
+void orxFASTCALL orxObject_CommandGetFXFrequency(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxObject_GetFXFrequency(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = -orxFLOAT_1;
   }
 
   /* Done! */
@@ -3515,6 +3578,10 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveAllFXs */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveAllFXs, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetFXFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetFXFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetFXFrequency */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetFXFrequency, "Frequency", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -3718,6 +3785,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveFX);
   /* Command: RemoveAllFXs */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveAllFXs);
+  /* Command: SetFXFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetFXFrequency);
+  /* Command: GetFXFrequency */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetFXFrequency);
 
   /* Command: AddShader */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
@@ -3755,6 +3826,147 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
   /* Command: GetPivot */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
+}
+
+/** Adds a delayed FX using its config ID.
+ */
+static orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    orxFXPOINTER *pstFXPointer;
+
+    /* Gets its FXPointer */
+    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+    /* Doesn't exist? */
+    if(pstFXPointer == orxNULL)
+    {
+      /* Creates one */
+      pstFXPointer = orxFXPointer_Create();
+
+      /* Valid? */
+      if(pstFXPointer != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstFXPointer, _pstObject);
+
+          /* Adds FX from config */
+          eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        }
+        else
+        {
+          /* Deletes it */
+          orxFXPointer_Delete(pstFXPointer);
+        }
+      }
+    }
+    else
+    {
+      /* Adds FX from config */
+      eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
+ * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
+ * Note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
+ * FX start (i.e. after the delay).
+ */
+static orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    orxFXPOINTER *pstFXPointer;
+
+    /* Gets its FXPointer */
+    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+    /* Doesn't exist? */
+    if(pstFXPointer == orxNULL)
+    {
+      /* Creates one */
+      pstFXPointer = orxFXPointer_Create();
+
+      /* Valid? */
+      if(pstFXPointer != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstFXPointer, _pstObject);
+
+          /* Adds FX from config */
+          eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        }
+        else
+        {
+          /* Deletes it */
+          orxFXPointer_Delete(pstFXPointer);
+        }
+      }
+    }
+    else
+    {
+      /* Adds FX from config */
+      eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies a FX recursively
+ */
+void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+{
+  orxOBJECT *pstChild;
+
+  /* Has FXPointer? */
+  if(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+  {
+    /* Applies FX */
+    orxStructure_Update(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, _pstObject, _pstClockInfo);
+  }
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Applies FX to it */
+    orxObject_ApplyFXRecursive(pstChild, _pstClockInfo);
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Creates an empty object
@@ -4552,7 +4764,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxOBJECT      *pstPreviousObject;
           orxFLOAT        fAge;
           orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
-          orxS32          s32Number;
+          orxS32          s32Count;
           orxCOLOR        stColor;
           orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
 
@@ -4882,10 +5094,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 orxStructure_SetOwner(pstAnimPointer, pstResult);
 
                 /* Has frequency? */
-                if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FREQUENCY) != orxFALSE)
+                if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY) != orxFALSE)
                 {
                   /* Updates animation pointer frequency */
-                  orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FREQUENCY));
+                  orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY));
                 }
 
                 /* Doesn't have a graphic? */
@@ -5233,7 +5445,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* *** Children *** */
 
           /* Has child list? */
-          if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
+          if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_LIST)) > 0)
           {
             orxS32      i, s32JointNumber;
             orxOBJECT  *pstLastChild;
@@ -5245,7 +5457,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             s32JointNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST);
 
             /* For all defined objects */
-            for(i = 0, pstLastChild = orxNULL; i < s32Number; i++)
+            for(i = 0, pstLastChild = orxNULL; i < s32Count; i++)
             {
               const orxSTRING zChild;
 
@@ -5342,18 +5554,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* *** FX *** */
 
           /* Has FX? */
-          if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
+          if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_LIST)) > 0)
           {
-            orxS32 i, s32DelayNumber;
+            orxCLOCK_INFO stClockInfo;
+            orxS32        i, s32RecursiveCount;
+            orxBOOL       bRecursive = orxFALSE;
 
-            /* Gets number of delays */
-            s32DelayNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST);
+            /* Gets number of recursive FXs */
+            s32RecursiveCount = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST);
 
             /* For all defined FXs */
-            for(i = 0; i < s32Number; i++)
+            for(i = 0; i < s32Count; i++)
             {
               const orxSTRING zFX;
-              orxFLOAT        fDelay;
 
               /* Gets its name */
               zFX = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_FX_LIST, i);
@@ -5361,24 +5574,48 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(*zFX != orxCHAR_NULL)
               {
-                /* Gets its delay */
-                fDelay = (i < s32DelayNumber) ? orxConfig_GetListFloat(orxOBJECT_KZ_CONFIG_FX_DELAY_LIST, i) : orxFLOAT_0;
-                fDelay = orxMAX(fDelay, orxFLOAT_0);
+                /* Is recursive? */
+                if((i < s32RecursiveCount) && (orxConfig_GetListBool(orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST, i) != orxFALSE))
+                {
+                  /* Adds it */
+                  orxObject_AddFXRecursive(pstResult, zFX, orxFLOAT_0);
 
-                /* Adds it */
-                orxObject_AddDelayedFX(pstResult, zFX, fDelay);
+                  /* Updates status */
+                  bRecursive = orxTRUE;
+                }
+                else
+                {
+                  /* Adds it */
+                  orxObject_AddFX(pstResult, zFX);
+                }
               }
             }
 
-            /* Success? */
-            if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+            /* Has frequency? */
+            if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FX_FREQUENCY) != orxFALSE)
             {
-              orxCLOCK_INFO stClockInfo;
+              /* Updates FX pointer frequency */
+              orxObject_SetFXFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FX_FREQUENCY));
+            }
 
-              /* Applies FXs directly to prevent any potential 1-frame visual glitches */
-              orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
-              stClockInfo.fDT = orxMATH_KF_EPSILON;
-              orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+            /* Inits clock info */
+            orxMemory_Zero(&stClockInfo, sizeof(orxCLOCK_INFO));
+            stClockInfo.fDT = orxMATH_KF_EPSILON;
+
+            /* Recursive? */
+            if(bRecursive != orxFALSE)
+            {
+              /* Recursively applies FXs directly to prevent any potential 1-frame visual glitches */
+              orxObject_ApplyFXRecursive(pstResult, &stClockInfo);
+            }
+            else
+            {
+              /* Success? */
+              if(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure != orxNULL)
+              {
+                /* Applies FXs directly to prevent any potential 1-frame visual glitches */
+                orxStructure_Update(pstResult->astStructureList[orxSTRUCTURE_ID_FXPOINTER].pstStructure, pstResult, &stClockInfo);
+              }
             }
           }
 
@@ -5422,12 +5659,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* *** Sound *** */
 
           /* Has sound? */
-          if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+          if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
           {
             orxS32 i;
 
             /* For all defined sounds */
-            for(i = 0; i < s32Number; i++)
+            for(i = 0; i < s32Count; i++)
             {
               const orxSTRING zSound;
 
@@ -5446,12 +5683,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* *** Shader *** */
 
           /* Has shader? */
-          if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
+          if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
           {
             orxS32 i;
 
             /* For all defined shaders */
-            for(i = 0; i < s32Number; i++)
+            for(i = 0; i < s32Count; i++)
             {
               const orxSTRING zShader;
 
@@ -5470,12 +5707,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* *** Timeline *** */
 
           /* Has TimeLine tracks? */
-          if((s32Number = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRACK_LIST)) > 0)
+          if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRACK_LIST)) > 0)
           {
             orxS32 i;
 
             /* For all defined tracks */
-            for(i = 0; i < s32Number; i++)
+            for(i = 0; i < s32Count; i++)
             {
               const orxSTRING zTrack;
 
@@ -8850,11 +9087,42 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
 /** Adds an FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-orxOBJECT_MAKE_RECURSIVE(AddFX, const orxSTRING);
+void orxFASTCALL orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay)
+{
+  orxFLOAT    fDelay;
+  orxOBJECT  *pstChild;
 
-/** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this
- * function is the same as it with the delay argument set to 0.
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
+  orxASSERT(_fPropagationDelay >= orxFLOAT_0);
+
+  /* Sets initial delay */
+  fDelay = _fPropagationDelay;
+
+  /* Updates object */
+  orxObject_AddDelayedFX(_pstObject, _zFXConfigID, fDelay);
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Updates delay */
+    fDelay += _fPropagationDelay;
+
+    /* Updates it */
+    orxObject_AddFXRecursive(pstChild, _zFXConfigID, fDelay);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Adds a unique FX using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -8878,82 +9146,9 @@ orxSTATUS orxFASTCALL orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRI
 /** Adds a unique FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-orxOBJECT_MAKE_RECURSIVE(AddUniqueFX, const orxSTRING);
-
-/** Adds a delayed FX using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
-  orxASSERT(_fDelay >= orxFLOAT_0);
-
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
-  {
-    orxFXPOINTER *pstFXPointer;
-
-    /* Gets its FXPointer */
-    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
-
-    /* Doesn't exist? */
-    if(pstFXPointer == orxNULL)
-    {
-      /* Creates one */
-      pstFXPointer = orxFXPointer_Create();
-
-      /* Valid? */
-      if(pstFXPointer != orxNULL)
-      {
-        /* Links it */
-        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
-
-        /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          /* Updates flags */
-          orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-
-          /* Updates its owner */
-          orxStructure_SetOwner(pstFXPointer, _pstObject);
-
-          /* Adds FX from config */
-          eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
-        }
-        else
-        {
-          /* Deletes it */
-          orxFXPointer_Delete(pstFXPointer);
-        }
-      }
-    }
-    else
-    {
-      /* Adds FX from config */
-      eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Adds a delayed FX to an object and its owned children.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate     Should the delay be incremented with each child application?
- */
-void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate)
+void orxFASTCALL orxObject_AddUniqueFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay)
 {
   orxFLOAT    fDelay;
   orxOBJECT  *pstChild;
@@ -8961,119 +9156,11 @@ void orxFASTCALL orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const or
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Sets initial delay */
-  fDelay = _fDelay;
-
-  /* Updates object */
-  orxObject_AddDelayedFX(_pstObject, _zFXConfigID, fDelay);
-
-  /* For all its owned children */
-  for(pstChild = orxObject_GetOwnedChild(_pstObject);
-      pstChild != orxNULL;
-      pstChild = orxObject_GetOwnedSibling(pstChild))
-  {
-    /* Should propagate? */
-    if(_bPropagate != orxFALSE)
-    {
-      /* Updates delay */
-      fDelay += _fDelay;
-    }
-
-    /* Updates it */
-    orxObject_AddDelayedFXRecursive(pstChild, _zFXConfigID, fDelay, _bPropagate);
-  }
-
-  /* Done! */
-  return;
-}
-
-/** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
- * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
- * note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
- * FX start (i.e. after the delay).
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
-  orxASSERT(_fDelay >= orxFLOAT_0);
-
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
-  {
-    orxFXPOINTER *pstFXPointer;
-
-    /* Gets its FXPointer */
-    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
-
-    /* Doesn't exist? */
-    if(pstFXPointer == orxNULL)
-    {
-      /* Creates one */
-      pstFXPointer = orxFXPointer_Create();
-
-      /* Valid? */
-      if(pstFXPointer != orxNULL)
-      {
-        /* Links it */
-        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
-
-        /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
-        {
-          /* Updates flags */
-          orxFLAG_SET(_pstObject->astStructureList[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-
-          /* Updates its owner */
-          orxStructure_SetOwner(pstFXPointer, _pstObject);
-
-          /* Adds FX from config */
-          eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
-        }
-        else
-        {
-          /* Deletes it */
-          orxFXPointer_Delete(pstFXPointer);
-        }
-      }
-    }
-    else
-    {
-      /* Adds FX from config */
-      eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Adds a unique delayed FX to an object and its owned children.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate    Should the delay be incremented with each child application?
- */
-void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate)
-{
-  orxFLOAT    fDelay;
-  orxOBJECT  *pstChild;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fPropagationDelay >= orxFLOAT_0);
 
   /* Sets initial delay */
-  fDelay = _fDelay;
+  fDelay = _fPropagationDelay;
 
   /* Updates object */
   orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, fDelay);
@@ -9083,15 +9170,11 @@ void orxFASTCALL orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, co
       pstChild != orxNULL;
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
-    /* Should propagate? */
-    if(_bPropagate != orxFALSE)
-    {
-      /* Updates delay */
-      fDelay += _fDelay;
-    }
+    /* Updates delay */
+    fDelay += _fPropagationDelay;
 
     /* Updates it */
-    orxObject_AddUniqueDelayedFXRecursive(pstChild, _zFXConfigID, fDelay, _bPropagate);
+    orxObject_AddUniqueFXRecursive(pstChild, _zFXConfigID, fDelay);
   }
 
   /* Done! */
@@ -9157,6 +9240,108 @@ orxSTATUS orxFASTCALL orxObject_RemoveAllFXs(orxOBJECT *_pstObject)
 
   /* Done! */
   return eResult;
+}
+
+/** Removes all FXs from an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveAllFXsRecursive(orxOBJECT *_pstObject)
+{
+  orxOBJECT  *pstChild;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates object */
+  eResult = orxObject_RemoveAllFXs(_pstObject);
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Updates it */
+    orxObject_RemoveAllFXs(pstChild);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetFXFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fFrequency >= orxFLOAT_0);
+
+  /* Gets FX pointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Updates result */
+    eResult = orxFXPointer_SetFrequency(pstFXPointer, _fFrequency);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the relative FX frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetFXFrequency, orxFLOAT);
+
+/** Gets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX frequency / -orxFLOAT_1
+ */
+orxFLOAT orxFASTCALL orxObject_GetFXFrequency(const orxOBJECT *_pstObject)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxFLOAT      fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets FX pointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxFXPointer_GetFrequency(pstFXPointer);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
+
+  /* Done! */
+  return fResult;
 }
 
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).

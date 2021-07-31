@@ -60,6 +60,7 @@
 #define orxFX_KU32_FLAG_ENABLED                 0x10000000  /**< Enabled flag */
 #define orxFX_KU32_FLAG_LOOP                    0x20000000  /**< Loop flag */
 #define orxFX_KU32_FLAG_CACHED                  0x40000000  /**< Cached flag */
+#define orxFX_KU32_FLAG_STAGGERED               0x80000000  /**< Staggered flag */
 
 #define orxFX_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
@@ -98,6 +99,7 @@
 #define orxFX_KZ_CONFIG_POW                     "Pow"
 #define orxFX_KZ_CONFIG_ABSOLUTE                "Absolute"
 #define orxFX_KZ_CONFIG_LOOP                    "Loop"
+#define orxFX_KZ_CONFIG_STAGGER                 "Stagger"
 #define orxFX_KZ_CONFIG_AMPLIFICATION           "Amplification"
 #define orxFX_KZ_CONFIG_ACCELERATION            "Acceleration"
 #define orxFX_KZ_CONFIG_START_TIME              "StartTime"
@@ -195,7 +197,8 @@ struct __orxFX_t
   orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 32 */
   const orxSTRING zReference;                             /**< FX reference : 20 */
   orxFLOAT        fDuration;                              /**< FX duration : 24 */
-  orxFX_SLOT      astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 472 */
+  orxFLOAT        fOffset;                                /**< FX offset : 28 */
+  orxFX_SLOT      astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 476 */
 };
 
 /** Static structure
@@ -326,6 +329,13 @@ static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
       orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_LOOP, orxFX_KU32_FLAG_NONE);
     }
 
+    /* Has stagger property? */
+    if(orxConfig_HasValue(orxFX_KZ_CONFIG_STAGGER) != orxFALSE)
+    {
+      /* Sets stagger */
+      orxFX_SetStagger(_pstFX, orxConfig_GetListBool(orxFX_KZ_CONFIG_STAGGER, 0), (orxConfig_GetListCount(orxFX_KZ_CONFIG_STAGGER) > 1) ? orxConfig_GetListFloat(orxFX_KZ_CONFIG_STAGGER, 1) : orxFLOAT_0);
+    }
+
     /* Pops config section */
     orxConfig_PopSection();
 
@@ -376,11 +386,12 @@ static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
               orxFLAG_SET(pstFX->astFXSlotList[i].u32Flags, orxFX_SLOT_KU32_FLAG_NONE, orxFX_SLOT_KU32_FLAG_DEFINED);
             }
 
-            /* Resets duration */
-            pstFX->fDuration = orxFLOAT_0;
+            /* Resets duration & offset */
+            pstFX->fDuration  = orxFLOAT_0;
+            pstFX->fOffset    = orxFLOAT_0;
 
             /* Clears status */
-            orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP);
+            orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP | orxFX_KU32_FLAG_STAGGERED);
 
             /* Re-processes its data */
             orxFX_ProcessData(pstFX);
@@ -2531,6 +2542,14 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     fStartTime  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_TIME);
     fEndTime    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_TIME);
 
+    /* Should stagger? */
+    if(orxConfig_GetBool(orxFX_KZ_CONFIG_STAGGER) != orxFALSE)
+    {
+      /* Updates times */
+      fStartTime += _pstFX->fDuration;
+      fEndTime   += _pstFX->fDuration;
+    }
+
     /* Gets its cycle period */
     fCyclePeriod = orxConfig_GetFloat(orxFX_KZ_CONFIG_PERIOD);
 
@@ -2897,6 +2916,66 @@ orxBOOL orxFASTCALL orxFX_IsLooping(const orxFX *_pstFX)
 
   /* Updates result */
   bResult = (orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_LOOP)) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Sets FX stagger / offset
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _bStagger       If true, this FX will be added after all current FXs
+ * @param[in]   _fOffset        Initial offset, in seconds. Cannot result in a negative start time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_SetStagger(orxFX *_pstFX, orxBOOL _bStagger, orxFLOAT _fOffset)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT((_fOffset >= orxFLOAT_0) || (_bStagger != orxFALSE));
+
+  /* Should stagger? */
+  if(_bStagger != orxFALSE)
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_STAGGERED, orxFX_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_STAGGERED);
+  }
+
+  /* Stores offset */
+  _pstFX->fOffset = _fOffset;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Get FX stagger / offset
+ * @param[in]   _pstFX          Concerned FX
+ * @param[out]  _pfOffset       If non null, will contain the initial offset
+ * @return      orxTRUE if staggered, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxFX_GetStagger(const orxFX *_pstFX, orxFLOAT *_pfOffset)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Updates result */
+  bResult = (orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_STAGGERED)) ? orxTRUE : orxFALSE;
+
+  /* Retrieves offset */
+  if(_pfOffset != orxNULL)
+  {
+    *_pfOffset = _pstFX->fOffset;
+  }
 
   /* Done! */
   return bResult;

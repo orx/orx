@@ -35,7 +35,7 @@
  *
  * Object module
  * Allows to creates and handle objects
- * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
+ * Objects are structure containers that can be linked to many other structures such as frames, graphics, etc...
  *
  * @{
  */
@@ -252,7 +252,7 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *
 /** @} */
 
 
-/** @name Linked structures
+/** @name Linked Structures
  * @{ */
 /** Links a structure to an object.
  * @param[in]   _pstObject      Concerned object
@@ -655,7 +655,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(const orxOBJE
 /** @} */
 
 
-/** @name Physics / dynamics
+/** @name Physics / Dynamics
  * @{ */
 /** Sets an object speed.
  * @param[in]   _pstObject      Concerned object
@@ -781,7 +781,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *
 /** @} */
 
 
-/** @name Bounding box
+/** @name Bounding Box
  * @{ */
 /** Gets object's bounding box (OBB).
  * @param[in]   _pstObject      Concerned object
@@ -804,11 +804,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObjec
 /** Adds an FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-extern orxDLLAPI void  orxFASTCALL          orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+extern orxDLLAPI void  orxFASTCALL          orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay);
 
-/** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this
- * function is the same as it with the delay argument set to 0.
+/** Adds a unique FX using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -818,43 +818,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueFX(orxOBJECT *_ps
 /** Adds a unique FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
-
-/** Adds a delayed FX using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
-
-/** Adds a delayed FX to an object and its owned children.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate     Should the delay be incremented with each child application?
- */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate);
-
-/** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
- * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
- * note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
- * FX start (i.e. after the delay).
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
-
-/** Adds a unique delayed FX to an object and its owned children.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @param[in]   _bPropagate    Should the delay be incremented with each child application?
- */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueDelayedFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay, orxBOOL _bPropagate);
+extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay);
 
 /** Removes an FX using its config ID.
  * @param[in]   _pstObject      Concerned object
@@ -874,6 +840,32 @@ extern orxDLLAPI void  orxFASTCALL          orxObject_RemoveFXRecursive(orxOBJEC
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXs(orxOBJECT *_pstObject);
+
+/** Removes all FXs from an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXsRecursive(orxOBJECT *_pstObject);
+
+/** Sets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFXFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Sets the relative FX frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetFXFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Gets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXFrequency(const orxOBJECT *_pstObject);
 
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).
  * @param[in]   _pstObject      Concerned object
@@ -1091,7 +1083,7 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const o
 /** @} */
 
 
-/** @name texture
+/** @name Texture
  * @{ */
 /** Gets object working texture.
  * @param[in]   _pstObject     Concerned object
@@ -1101,7 +1093,7 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const or
 /** @} */
 
 
-/** @name graphic
+/** @name Graphic
  * @{ */
 /** Gets object working graphic.
  * @param[in]   _pstObject     Concerned object
@@ -1207,7 +1199,7 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const 
 /** @} */
 
 
-/** @name Life time / active time
+/** @name Life time / Active time
  * @{ */
 /** Sets object literal lifetime.
  * @param[in]   _pstObject      Concerned object
