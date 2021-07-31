@@ -3915,7 +3915,6 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommandLine != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
   /* Evaluates it */
@@ -3937,11 +3936,10 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const o
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommandLine != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
   /* Valid? */
-  if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
+  if((_zCommandLine != orxNULL) && (*_zCommandLine != orxCHAR_NULL))
   {
     orxS32 s32Offset;
 
