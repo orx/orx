@@ -50,6 +50,7 @@ typedef struct MovieData
   orxOBJECT        *pstObject;
   orxDOUBLE         dTime;
   orxDOUBLE         dLastSystem;
+  orxFLOAT          fDuration;
   volatile orxBOOL  bDelete;
   volatile orxBOOL  bLock;
 
@@ -59,6 +60,40 @@ orxBANK *spstMovieBank = orxNULL;
 
 
 //! Code
+
+void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  // Clears result
+  _pstResult->fValue = -orxFLOAT_1;
+
+  // Gets object
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  // Valid?
+  if(pstObject)
+  {
+    MovieData *pstMovieData;
+
+    // For all movies
+    for(pstMovieData = (MovieData *)orxBank_GetNext(spstMovieBank, orxNULL);
+        pstMovieData;
+        pstMovieData = (MovieData *)orxBank_GetNext(spstMovieBank, pstMovieData))
+    {
+      // Found?
+      if(pstMovieData->pstObject == pstObject)
+      {
+        // Updates result
+        _pstResult->fValue = pstMovieData->fDuration;
+        break;
+      }
+    }
+  }
+
+  // Done!
+  return;
+}
 
 static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
 {
@@ -91,23 +126,35 @@ static orxSTATUS orxFASTCALL orxMovie_DecodeVideo(void *_pContext)
   MovieData *pstMovieData = (MovieData *)_pContext;
 
   // Valid?
-  if(pstMovieData && orxOBJECT(pstMovieData->pstObject))
+  if(pstMovieData)
   {
-    // Not marked for deletion?
-    if(!pstMovieData->bDelete)
-    {
-      orxCLOCK   *pstClock        = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstMovieData->pstObject), CLOCK);
-      orxDOUBLE   dModifier       = pstClock ? (orxDOUBLE)orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY) : 1.0;
-      orxDOUBLE   dCurrent        = orxSystem_GetSystemTime(), dDelta = (dCurrent - pstMovieData->dLastSystem) * (dModifier ? dModifier : 1.0);
-      pstMovieData->dLastSystem   = dCurrent;
-      pstMovieData->dTime        += dDelta;
+    // Gets associated object
+    orxOBJECT *pstObject = orxOBJECT(pstMovieData->pstObject);
 
-      // Should decode frame?
-      while((!pstMovieData->bDelete) && (pstMovieData->dTime >= plm_video_get_time(pstMovieData->pstVideo->video_decoder)))
+    // Valid?
+    if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
+    {
+      // Not marked for deletion?
+      if(!pstMovieData->bDelete)
       {
-        // Decodes it */
-        pstMovieData->pstFrame = plm_decode_video(pstMovieData->pstVideo);
+        orxCLOCK   *pstClock        = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstMovieData->pstObject), CLOCK);
+        orxDOUBLE   dModifier       = pstClock ? (orxDOUBLE)orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY) : 1.0;
+        orxDOUBLE   dCurrent        = orxSystem_GetSystemTime(), dDelta = (dCurrent - pstMovieData->dLastSystem) * (dModifier ? dModifier : 1.0);
+        pstMovieData->dLastSystem   = dCurrent;
+        pstMovieData->dTime        += dDelta;
+
+        // Should decode frame?
+        while((!pstMovieData->bDelete) && (pstMovieData->dTime >= plm_video_get_time(pstMovieData->pstVideo->video_decoder)))
+        {
+          // Decodes it */
+          pstMovieData->pstFrame = plm_decode_video(pstMovieData->pstVideo);
+        }
       }
+    }
+    else
+    {
+      // Updates time tracking
+      pstMovieData->dLastSystem = orxSystem_GetSystemTime();
     }
   }
 
@@ -122,6 +169,7 @@ static orxSTATUS orxFASTCALL orxMovie_UpdateFrame(void *_pContext)
   // Valid?
   if(pstMovieData)
   {
+    // Gets associated object
     orxOBJECT *pstObject = orxOBJECT(pstMovieData->pstObject);
 
     // Valid?
@@ -172,42 +220,55 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
     {
       orxSOUND_EVENT_PAYLOAD *pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      // Not marked for deletion?
-      if(!pstMovieData->bDelete)
+      // Gets associated object
+      orxOBJECT *pstObject = orxOBJECT(pstMovieData->pstObject);
+
+      // Valid?
+      if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
       {
-        // Locks decoders
-        pstMovieData->bLock = orxTRUE;
-        orxMEMORY_BARRIER();
-
-        // Decodes audio
-        plm_samples_t  *samples   = plm_decode_audio(pstMovieData->pstAudio);
-        orxU32          u32Index  = 0;
-
-        // Has samples?
-        if(samples)
+        // Not marked for deletion?
+        if(!pstMovieData->bDelete)
         {
-          // Converts all samples
-          for(orxU32 i = 0; i < 2 * samples->count; i++)
+          // Locks decoders
+          pstMovieData->bLock = orxTRUE;
+          orxMEMORY_BARRIER();
+
+          // Decodes audio
+          plm_samples_t  *samples   = plm_decode_audio(pstMovieData->pstAudio);
+          orxU32          u32Index  = 0;
+
+          // Has samples?
+          if(samples)
           {
-            orxASSERT(u32Index < pstPayload->stStream.stPacket.u32SampleNumber);
-            pstPayload->stStream.stPacket.as16SampleList[u32Index++] = (orxS16)(samples->interleaved[i] * 32767.0f);
+            // Converts all samples
+            for(orxU32 i = 0; i < 2 * samples->count; i++)
+            {
+              orxASSERT(u32Index < pstPayload->stStream.stPacket.u32SampleNumber);
+              pstPayload->stStream.stPacket.as16SampleList[u32Index++] = (orxS16)(samples->interleaved[i] * 32767.0f);
+            }
           }
+
+          // Updates packet
+          pstPayload->stStream.stPacket.u32SampleNumber = u32Index;
+          pstPayload->stStream.stPacket.bDiscard        = (u32Index != 0) ? orxFALSE : orxTRUE;
+          pstPayload->stStream.stPacket.bLast           = plm_has_ended(pstMovieData->pstAudio) ? orxTRUE : orxFALSE;
+
+          // Unlocks decoders
+          orxMEMORY_BARRIER();
+          pstMovieData->bLock = orxFALSE;
         }
-
-        // Updates packet
-        pstPayload->stStream.stPacket.u32SampleNumber = u32Index;
-        pstPayload->stStream.stPacket.bDiscard        = (u32Index != 0) ? orxFALSE : orxTRUE;
-        pstPayload->stStream.stPacket.bLast           = plm_has_ended(pstMovieData->pstAudio) ? orxTRUE : orxFALSE;
-
-        // Unlocks decoders
-        orxMEMORY_BARRIER();
-        pstMovieData->bLock = orxFALSE;
+        else
+        {
+          // Updates packet
+          pstPayload->stStream.stPacket.bDiscard        = orxTRUE;
+          pstPayload->stStream.stPacket.bLast           = orxTRUE;
+        }
       }
       else
       {
         // Updates packet
-        pstPayload->stStream.stPacket.bDiscard        = orxTRUE;
-        pstPayload->stStream.stPacket.bLast           = orxTRUE;
+        pstPayload->stStream.stPacket.bDiscard          = orxTRUE;
+        pstPayload->stStream.stPacket.bLast             = orxFALSE;
       }
     }
     else
@@ -280,15 +341,16 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         plm_buffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
         plm_buffer_set_load_callback(plm_buffer, orxMovie_UpdateBuffer, orxResource_Open(zMovie, orxFALSE));
         pstMovieData->pstAudio = plm_create_with_buffer(plm_buffer, TRUE);
-        plm_set_loop(pstMovieData->pstAudio, orxConfig_GetBool("Loop"));
         plm_set_video_enabled(pstMovieData->pstAudio, FALSE);
+        pstMovieData->fDuration = plm_get_duration(pstMovieData->pstAudio);
+        plm_set_loop(pstMovieData->pstAudio, orxConfig_GetBool("Loop"));
 
         // Creates video decoder
         plm_buffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
         plm_buffer_set_load_callback(plm_buffer, orxMovie_UpdateBuffer, orxResource_Open(zMovie, orxFALSE));
         pstMovieData->pstVideo = plm_create_with_buffer(plm_buffer, TRUE);
-        plm_set_loop(pstMovieData->pstVideo, orxConfig_GetBool("Loop"));
         plm_set_audio_enabled(pstMovieData->pstVideo, FALSE);
+        plm_set_loop(pstMovieData->pstVideo, orxConfig_GetBool("Loop"));
 
         // Inits synchronization
         pstMovieData->dTime = 0.0;
@@ -460,6 +522,9 @@ orxSTATUS orxFASTCALL orxMovie_Init()
     // Creates bank
     spstMovieBank = orxBank_Create(16, sizeof(MovieData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
 
+    // Registers commands
+    orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMovieDuration, "Object", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
     // Registers movie handler
     orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler);
     orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
@@ -476,6 +541,9 @@ void orxFASTCALL orxMovie_Exit()
   {
     // Unregisters movie handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler);
+
+    // Registers commands
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMovieDuration);
 
     // Deletes bank
     orxBank_Delete(spstMovieBank);
