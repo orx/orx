@@ -134,8 +134,8 @@ static orxSTATUS orxFASTCALL orxMovie_DecodeVideo(void *_pContext)
     // Valid?
     if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
     {
-      // Not marked for deletion?
-      if(!pstMovieData->bDelete)
+      // Ready and not marked for deletion?
+      if(pstMovieData->dLastSystem && !pstMovieData->bDelete)
       {
         orxCLOCK   *pstClock        = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstMovieData->pstObject), CLOCK);
         orxDOUBLE   dModifier       = pstClock ? (orxDOUBLE)orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY) : 1.0;
@@ -232,6 +232,13 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
           // Locks decoders
           pstMovieData->bLock = orxTRUE;
           orxMEMORY_BARRIER();
+
+          // First time?
+          if(!pstMovieData->dLastSystem)
+          {
+            // Updates its time tracking
+            pstMovieData->dLastSystem = orxSystem_GetSystemTime();
+          }
 
           // Decodes audio
           plm_samples_t  *samples   = plm_decode_audio(pstMovieData->pstAudio);
@@ -354,7 +361,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
 
         // Inits synchronization
         pstMovieData->dTime = 0.0;
-        pstMovieData->dLastSystem = orxSystem_GetSystemTime();
+        pstMovieData->dLastSystem = 0.0;
 
         // Updates object
         pstMovieData->pstObject = pstObject;
