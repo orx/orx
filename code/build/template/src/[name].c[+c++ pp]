@@ -147,12 +147,16 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
+[+movie
+    // Exit from movie support
+    orxMovie_Exit();
+]
 [+nuklear
-    // Exits from Nuklear
+    // Exit from Nuklear
     orxNuklear_Exit();
 ]
 [+imgui
-    // Exits from Dear ImGui
+    // Exit from Dear ImGui
     orxImGui_Exit();
 ]
     // Let Orx clean all our mess automatically. :)
