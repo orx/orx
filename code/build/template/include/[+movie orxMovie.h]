@@ -352,7 +352,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         plm_buffer_set_load_callback(plm_buffer, orxMovie_UpdateBuffer, orxResource_Open(zMovie, orxFALSE));
         pstMovieData->pstAudio = plm_create_with_buffer(plm_buffer, TRUE);
         plm_set_video_enabled(pstMovieData->pstAudio, FALSE);
-        pstMovieData->fDuration = plm_get_duration(pstMovieData->pstAudio);
+        pstMovieData->fDuration = (orxFLOAT)plm_get_duration(pstMovieData->pstAudio);
         plm_set_loop(pstMovieData->pstAudio, orxConfig_GetBool("Loop"));
 
         // Creates video decoder
