@@ -108,7 +108,10 @@ static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
   orxResource_Close((orxHANDLE)pstMovieData->pstVideo->demux->buffer->load_callback_user_data);
   plm_destroy(pstMovieData->pstAudio);
   plm_destroy(pstMovieData->pstVideo);
-  orxBank_Free(spstMovieBank, pstMovieData);
+  if(spstMovieBank)
+  {
+    orxBank_Free(spstMovieBank, pstMovieData);
+  }
 
   // Deletes object
   orxOBJECT* pstObject = orxOBJECT(pstMovieData->pstObject);
