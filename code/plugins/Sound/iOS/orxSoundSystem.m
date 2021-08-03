@@ -778,8 +778,10 @@ static void orxFASTCALL orxSoundSystem_iOS_FillStream(orxSOUNDSYSTEM_SOUND *_pst
           }
           else
           {
+            orxS16 as16NullSampleList[2] = {0, 0};
+
             /* Clears its data */
-            alBufferData(puiBufferList[i], (_pstSound->stStream.stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, stPayload.stStream.stPacket.as16SampleList, 0, (ALsizei)_pstSound->stStream.stData.stInfo.u32SampleRate);
+            alBufferData(puiBufferList[i], (_pstSound->stStream.stData.stInfo.u32ChannelNumber > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, as16NullSampleList, sizeof(as16NullSampleList), (ALsizei)_pstSound->stStream.stData.stInfo.u32SampleRate);
             alASSERT();
 
             /* Queues it */
