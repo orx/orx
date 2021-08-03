@@ -25,6 +25,11 @@
 #define orxARCHIVE_IMPL
 #include "orxArchive.h"
 #undef orxARCHIVE_IMPL]
+[+movie
+
+#define orxMOVIE_IMPL
+#include "orxMovie.h"
+#undef orxMOVIE_IMPL]
 
 #ifdef __orxMSVC__
 
@@ -89,6 +94,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the executable to see the changes.");
 
+[+movie
+    // Initialize movie support
+    orxMovie_Init();
+]
 [+nuklear
     // Display additional Nuklear hint in console
     orxLOG("\n* This template has support for Nuklear.");
@@ -105,13 +114,17 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
 [+scroll
     // Create the scene
-    CreateObject("Scene");]
+    CreateObject([+movie "Logo"][-movie "Scene"]);]
 [-scroll
     // Create the viewport
     orxViewport_CreateFromConfig("MainViewport");
 
+[-movie
     // Create the scene
-    orxObject_CreateFromConfig("Scene");
+    orxObject_CreateFromConfig("Scene");]
+[+movie
+    // Create the logo
+    orxObject_CreateFromConfig("Logo");]
 
     // Register the Update function to the core clock
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
@@ -134,12 +147,16 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
+[+movie
+    // Exit from movie support
+    orxMovie_Exit();
+]
 [+nuklear
-    // Exits from Nuklear
+    // Exit from Nuklear
     orxNuklear_Exit();
 ]
 [+imgui
-    // Exits from Dear ImGui
+    // Exit from Dear ImGui
     orxImGui_Exit();
 ]
     // Let Orx clean all our mess automatically. :)
