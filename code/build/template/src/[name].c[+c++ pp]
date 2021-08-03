@@ -113,7 +113,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     orxImGui_Init();
 ]
 [+scroll
-    // Create the scene
+    // Create the [-movie scene][+movie logo]
     CreateObject([+movie "Logo"][-movie "Scene"]);]
 [-scroll
     // Create the viewport
