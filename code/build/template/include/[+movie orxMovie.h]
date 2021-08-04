@@ -223,7 +223,10 @@ static orxSTATUS orxFASTCALL orxMovie_UpdateFrame(void *_pContext)
 
 static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
 {
-  MovieData *pstMovieData = (MovieData *)_pstEvent->pContext;
+  MovieData *pstMovieData;
+
+  // Gets movie data
+  pstMovieData = (MovieData *)_pstEvent->pContext;
 
   // Valid?
   if(pstMovieData)
@@ -506,7 +509,10 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
   // Newly enabled?
   else if(_pstEvent->eID == orxOBJECT_EVENT_ENABLE)
   {
-    MovieData *pstMovieData = (MovieData *)_pstEvent->pContext;
+    MovieData *pstMovieData;
+
+    // Gets movie data
+    pstMovieData = (MovieData *)_pstEvent->pContext;
 
     // Valid object?
     if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
@@ -517,7 +523,10 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
   }
   else
   {
-    MovieData *pstMovieData = (MovieData *)_pstEvent->pContext;
+    MovieData *pstMovieData;
+
+    // Gets movie data
+    pstMovieData = (MovieData *)_pstEvent->pContext;
 
     // Valid deleted object?
     if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
