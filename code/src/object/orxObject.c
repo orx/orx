@@ -4008,9 +4008,9 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
 
 /** Deletes an object
  */
-static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
+static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBOOL _bNoCommand)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Decreases count */
   orxStructure_DecreaseCount(_pstObject);
@@ -4018,12 +4018,11 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
   /* Not referenced? */
   if(orxStructure_GetRefCount(_pstObject) == 0)
   {
-    orxEVENT        stEvent;
     orxCOMMAND_VAR  stCommandResult;
     const orxSTRING zCommand = orxSTRING_EMPTY;
 
     /* Has delete command? */
-    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND))
+    if((_bNoCommand == orxFALSE) && (orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND)))
     {
       /* Pushes object's config section */
       orxConfig_PushSection(_pstObject->zReference);
@@ -4035,81 +4034,92 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject)
       orxConfig_PopSection();
     }
 
-    /* Inits event */
-    orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
-
     /* Should continue? */
-    if(((zCommand == orxSTRING_EMPTY)
-     || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
-     || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
-     || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE)))
-     || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
-    && (orxEvent_Send(&stEvent) != orxSTATUS_FAILURE))
+    if((zCommand == orxSTRING_EMPTY)
+    || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
+    || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE)))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
     {
-      orxU32 i;
+      orxEVENT stEvent;
 
-      /* Unlink all structures */
-      for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
+
+      /* Sends event */
+      if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
-        orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
-      }
+        orxU32 i;
 
-      /* Has children? */
-      if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
-      {
-        orxOBJECT *pstChild;
-
-        /* For all children */
-        for(pstChild = _pstObject->pstChild;
-            pstChild != orxNULL;
-            pstChild = _pstObject->pstChild)
+        /* Unlink all structures */
+        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
         {
-          /* Removes its owner */
-          orxObject_SetOwner(pstChild, orxNULL);
-
-          /* Marks it for deletion */
-          orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+          orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
         }
+
+        /* Has children? */
+        if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
+        {
+          orxOBJECT *pstChild;
+
+          /* For all children */
+          for(pstChild = _pstObject->pstChild;
+              pstChild != orxNULL;
+              pstChild = _pstObject->pstChild)
+          {
+            /* Removes its owner */
+            orxObject_SetOwner(pstChild, orxNULL);
+
+            /* Marks it for deletion */
+            orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+          }
+        }
+
+        /* Removes owner */
+        orxObject_SetOwner(_pstObject, orxNULL);
+
+        /* Removes object from its current group */
+        if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+        {
+          orxLinkList_Remove(&(_pstObject->stGroupNode));
+        }
+
+        /* Removes object from the enable lists */
+        if(orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL)
+        {
+          orxLinkList_Remove(&(_pstObject->stEnableNode));
+        }
+        if(orxLinkList_GetList(&(_pstObject->stEnableGroupNode)) != orxNULL)
+        {
+          orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+        }
+
+        /* Deletes structure */
+        orxStructure_Delete(_pstObject);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
-
-      /* Removes owner */
-      orxObject_SetOwner(_pstObject, orxNULL);
-
-      /* Removes object from its current group */
-      if(orxLinkList_GetList(&(_pstObject->stGroupNode)) != orxNULL)
+      else
       {
-        orxLinkList_Remove(&(_pstObject->stGroupNode));
-      }
+        /* Increases count */
+        orxStructure_IncreaseCount(_pstObject);
 
-      /* Removes object from the enable lists */
-      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) != orxNULL)
-      {
-        orxLinkList_Remove(&(_pstObject->stEnableNode));
-      }
-      if(orxLinkList_GetList(&(_pstObject->stEnableGroupNode)) != orxNULL)
-      {
-        orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
-      }
+        /* Resets its active time: going undead */
+        _pstObject->fActiveTime = orxFLOAT_0;
 
-      /* Deletes structure */
-      orxStructure_Delete(_pstObject);
+        /* Disables it */
+        orxObject_Enable(_pstObject, orxFALSE);
+      }
     }
     else
     {
       /* Increases count */
       orxStructure_IncreaseCount(_pstObject);
 
-      /* Resets its active time: going undead */
-      _pstObject->fActiveTime = orxFLOAT_0;
-
-      /* Disables it */
-      orxObject_Enable(_pstObject, orxFALSE);
+      /* Removes delete command */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND);
     }
-  }
-  else
-  {
-    /* Referenced by others */
-    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -4155,7 +4165,7 @@ static orxINLINE void orxObject_DeleteAll()
   while(pstObject != orxNULL)
   {
     /* Deletes object */
-    orxObject_Delete(pstObject);
+    orxObject_DeleteInternal(pstObject, orxTRUE);
 
     /* Gets first object */
     pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
@@ -4662,7 +4672,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   orxASSERT((orxEvent_IsSending() == orxFALSE) && "Calling orxObject_Delete() from inside an event handler is *NOT* safe: please consider calling orxObject_SetLifeTime(orxFLOAT_0) instead.");
 
   /* Deletes it */
-  eResult = orxObject_DeleteInternal(_pstObject);
+  eResult = orxObject_DeleteInternal(_pstObject, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -5862,7 +5872,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       else
       {
         /* Deletes object */
-        orxObject_DeleteInternal(pstResult);
+        orxObject_DeleteInternal(pstResult, orxFALSE);
         pstResult = orxNULL;
       }
     }
