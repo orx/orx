@@ -367,6 +367,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         orxOBJECT    *pstObject;
         orxTEXTURE   *pstTexture;
         orxBITMAP    *pstBitmap;
+        orxHANDLE     hResource;
         orxCHAR       acBuffer[256];
 
         // Gets object
@@ -378,15 +379,19 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
 
         // Creates audio decoder
         pstPLMBuffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
-        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, orxResource_Open(zMovie, orxFALSE));
+        hResource = orxResource_Open(zMovie, orxFALSE);
+        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, hResource);
         pstMovieData->pstAudio = plm_create_with_buffer(pstPLMBuffer, TRUE);
         plm_set_video_enabled(pstMovieData->pstAudio, FALSE);
         pstMovieData->fDuration = (orxFLOAT)plm_get_duration(pstMovieData->pstAudio);
+        plm_rewind(pstMovieData->pstAudio);
+        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
         plm_set_loop(pstMovieData->pstAudio, orxConfig_GetBool("Loop"));
 
         // Creates video decoder
         pstPLMBuffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
-        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, orxResource_Open(zMovie, orxFALSE));
+        hResource = orxResource_Open(zMovie, orxFALSE);
+        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, hResource);
         pstMovieData->pstVideo = plm_create_with_buffer(pstPLMBuffer, TRUE);
         plm_set_audio_enabled(pstMovieData->pstVideo, FALSE);
         plm_set_loop(pstMovieData->pstVideo, orxConfig_GetBool("Loop"));
