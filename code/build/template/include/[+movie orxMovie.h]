@@ -98,7 +98,6 @@ void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const o
 static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
 {
   MovieData *pstMovieData;
-  orxOBJECT *pstObject;
 
   // Gets movie data
   pstMovieData = (MovieData *)_pContext;
@@ -115,13 +114,6 @@ static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
   if(spstMovieBank)
   {
     orxBank_Free(spstMovieBank, pstMovieData);
-  }
-
-  // Deletes object
-  pstObject = orxOBJECT(pstMovieData->pstObject);
-  if(pstObject)
-  {
-    orxObject_Delete(pstObject);
   }
 
   // Done!
@@ -559,9 +551,6 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
 
       // Runs delete task
       orxThread_RunTask(orxNULL, orxMovie_Delete, orxNULL, pstMovieData);
-
-      // Postpones deletion
-      eResult = orxSTATUS_FAILURE;
     }
   }
 
