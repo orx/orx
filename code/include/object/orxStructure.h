@@ -162,16 +162,16 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
  */
 typedef struct __orxSTRUCTURE_t
 {
-  orxU64              u64GUID;        /**< Structure GUID : 8 */
-  orxU64              u64OwnerGUID;   /**< Owner's GUID : 16 */
-  orxU32              u32Flags;       /**< Flags : 20 */
-  orxU32              u32RefCount;    /**< Ref count : 24 */
+  orxU64              u64GUID;        /**< Structure GUID : 8/8 */
+  orxU64              u64OwnerGUID;   /**< Owner's GUID : 16/16 */
+  orxU32              u32Flags;       /**< Flags : 20/20 */
+  orxU32              u32RefCount;    /**< Ref count : 24/24 */
 
   union
   {
     orxLINKLIST_NODE  stLinkListNode; /**< Linklist node : 36/48 */
     orxTREE_NODE      stTreeNode;     /**< Tree node : 44/64 */
-  } stStorage;                        /**< Storage node union : 44/64 */
+  } stStorage;                        /**< Storage node union : 48/64 */
 
 } orxSTRUCTURE;
 

@@ -81,10 +81,9 @@
 #define orxOBJECT_KU32_FLAG_TIMELINE_LIFETIME   0x00020000  /**< Timeline lifetime flag */
 #define orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME   0x00040000  /**< Children lifetime flag */
 #define orxOBJECT_KU32_FLAG_ANIM_LIFETIME       0x00080000  /**< Anim lifetime flag */
-#define orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND  0x00001000  /**< Delete command flag */
 
 #define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x00CF0000  /**< Structure lifetime mask */
-#define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x00000FFF  /**< Linked structure mask */
+#define orxOBJECT_KU32_MASK_LINKED_STRUCTURE    0x0000FFFF  /**< Linked structure mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -207,8 +206,8 @@ void orxFASTCALL orxObject_##FUNCTION##Recursive(orxOBJECT *_pstObject, PARAM_TY
  */
 typedef struct __orxOBJECT_STORAGE_t
 {
-  orxSTRUCTURE *pstStructure;                   /**< Structure pointer : 4 */
-  orxU32        u32Flags;                       /**< Flags : 8 */
+  orxSTRUCTURE *pstStructure;                   /**< Structure pointer : 4 / 8 */
+  orxU32        u32Flags;                       /**< Flags : 8 / 12 (16) */
 
 } orxOBJECT_STORAGE;
 
@@ -216,30 +215,31 @@ typedef struct __orxOBJECT_STORAGE_t
  */
 typedef struct __orxOBJECT_LISTS_t
 {
-  orxLINKLIST       stList;                     /**< List : 12 */
-  orxLINKLIST       stEnableList;               /**< Enable list : 24 */
+  orxLINKLIST       stList;                     /**< List : 12 / 24 */
+  orxLINKLIST       stEnableList;               /**< Enable list : 24 / 48 */
 } orxOBJECT_LISTS;
 
 /** Object structure
  */
 struct __orxOBJECT_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
-  orxOBJECT_STORAGE astStructureList[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 88 */
-  void             *pUserData;                  /**< User data : 92 */
-  const orxSTRING   zReference;                 /**< Config reference : 96 */
-  orxSTRINGID       stGroupID;                  /**< Group ID : 100 */
-  orxFLOAT          fLifeTime;                  /**< Life time : 104 */
-  orxFLOAT          fActiveTime;                /**< Active time : 108 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
-  orxOBJECT        *pstChild;                   /**< Child: 116 */
-  orxOBJECT        *pstSibling;                 /**< Sibling: 120 */
-  orxVECTOR         vSpeed;                     /**< Object speed : 132 */
-  orxVECTOR         vSize;                      /**< Object size : 144 */
-  orxVECTOR         vPivot;                     /**< Object pivot : 156 */
-  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 168 */
-  orxLINKLIST_NODE  stEnableNode;               /**< Enable node: 180 */
-  orxLINKLIST_NODE  stEnableGroupNode;          /**< Enable group node: 192 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 48 / 64 */
+  orxOBJECT_STORAGE astStructureList[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 128 / 224 */
+  void             *pUserData;                  /**< User data : 132 / 232 */
+  const orxSTRING   zReference;                 /**< Config reference : 136 / 240 */
+  orxSTRINGID       stGroupID;                  /**< Group ID : 144 / 248 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 148 / 252 */
+  orxFLOAT          fActiveTime;                /**< Active time : 152 / 256 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 156 / 260 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 168 / 272 */
+  orxVECTOR         vSize;                      /**< Object size : 180 / 284 */
+  orxVECTOR         vPivot;                     /**< Object pivot : 192 / 296 */
+  orxOBJECT        *pstChild;                   /**< Child: 196 / 304 */
+  orxOBJECT        *pstSibling;                 /**< Sibling: 200 / 312 */
+  orxLINKLIST_NODE  stGroupNode;                /**< Group node: 212 / 336 */
+  orxLINKLIST_NODE  stEnableNode;               /**< Enable node: 224 / 360 */
+  orxLINKLIST_NODE  stEnableGroupNode;          /**< Enable group node: 236 / 384 */
+  const orxSTRING   zOnDelete;                  /**< On Delete command : 240 / 392 */
 };
 
 /** Static structure
@@ -664,6 +664,34 @@ void orxFASTCALL orxObject_CommandGetID(orxU32 _u32ArgNumber, const orxCOMMAND_V
   /* Valid? */
   if(pstObject != orxNULL)
   {
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetOnDelete
+ */
+void orxFASTCALL orxObject_CommandSetOnDelete(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates object */
+    pstObject->zOnDelete = ((_u32ArgNumber > 1) && (*_astArgList[1].zValue != orxCHAR_NULL)) ? orxString_Store(_astArgList[1].zValue) : orxNULL;
+
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
   }
@@ -3432,6 +3460,9 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetID, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
+  /* Command: SetOnDelete */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOnDelete, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Command = <empty>", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: SetPosition */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPosition, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR}, {"Global = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetRotation */
@@ -3638,6 +3669,9 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: GetID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetID);
+
+  /* Command: SetOnDelete */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOnDelete);
 
   /* Command: SetPosition */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPosition);
@@ -4019,27 +4053,19 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
   if(orxStructure_GetRefCount(_pstObject) == 0)
   {
     orxCOMMAND_VAR  stCommandResult;
-    const orxSTRING zCommand = orxSTRING_EMPTY;
+    const orxSTRING zCommand;
 
-    /* Has delete command? */
-    if((_bNoCommand == orxFALSE) && (orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND)))
-    {
-      /* Pushes object's config section */
-      orxConfig_PushSection(_pstObject->zReference);
-
-      /* Retrieves on-prepare command */
-      zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_DELETE);
-
-      /* Pops config section */
-      orxConfig_PopSection();
-    }
+    /* Retrieves and clear on-delete command */
+    zCommand = _pstObject->zOnDelete;
+    _pstObject->zOnDelete = orxNULL;
 
     /* Should continue? */
-    if((zCommand == orxSTRING_EMPTY)
+    if((_bNoCommand != orxFALSE)
+    || (zCommand == orxNULL)
     || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
     || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
-    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE)))
-    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE))))
     {
       orxEVENT stEvent;
 
@@ -4116,9 +4142,6 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
     {
       /* Increases count */
       orxStructure_IncreaseCount(_pstObject);
-
-      /* Removes delete command */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND);
     }
   }
 
@@ -4729,7 +4752,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
-      /* Retrieves on-prepare command */
+      /* Gets on-prepare command */
       zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_PREPARE);
 
       /* Inits event */
@@ -5766,17 +5789,20 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* Has on-delete command? */
-        if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ON_DELETE) != orxFALSE)
-        {
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_HAS_DELETE_COMMAND;
-        }
-
         /* Updates flags */
         orxStructure_SetFlags(pstResult, u32Flags, orxOBJECT_KU32_FLAG_NONE);
 
-        /* Retrieves on-create command */
+        /* Gets on-delete command? */
+        zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_DELETE);
+
+        /* Valid? */
+        if(zCommand != orxSTRING_EMPTY)
+        {
+          /* Stores it */
+          pstResult->zOnDelete = orxString_Store(zCommand);
+        }
+
+        /* Gets on-create command */
         zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_CREATE);
 
         /* Valid? */
