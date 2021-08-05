@@ -41,6 +41,7 @@ var orx_debug_8h =
       [ "orxDEBUG_LEVEL_ANIM", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba699428ca415508277a926f8d1df637d7", null ],
       [ "orxDEBUG_LEVEL_CONFIG", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba4d0a63b9dc12f7c6c4a1c1ed6224bae2", null ],
       [ "orxDEBUG_LEVEL_CLOCK", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba2c828ed11fb87e8473dab45e3c3a165b", null ],
+      [ "orxDEBUG_LEVEL_COMMAND", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbaea138a120fde87a13dbd711a7a603f04", null ],
       [ "orxDEBUG_LEVEL_DISPLAY", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba3bdb48bbeffbaa6e907d710c549a421f", null ],
       [ "orxDEBUG_LEVEL_FILE", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba852436f62180f4eb2b7886bcb5daf912", null ],
       [ "orxDEBUG_LEVEL_INPUT", "group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbadef00776a06f59068d31a350933e9f58", null ],

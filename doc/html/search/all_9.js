@@ -633,6 +633,7 @@ var searchData=
   ['orxdebug_5flevel_5fanim',['orxDEBUG_LEVEL_ANIM',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba699428ca415508277a926f8d1df637d7',1,'orxDebug.h']]],
   ['orxdebug_5flevel_5fassert',['orxDEBUG_LEVEL_ASSERT',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbaa311745b210c357e432cecc2d177259f',1,'orxDebug.h']]],
   ['orxdebug_5flevel_5fclock',['orxDEBUG_LEVEL_CLOCK',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba2c828ed11fb87e8473dab45e3c3a165b',1,'orxDebug.h']]],
+  ['orxdebug_5flevel_5fcommand',['orxDEBUG_LEVEL_COMMAND',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bbaea138a120fde87a13dbd711a7a603f04',1,'orxDebug.h']]],
   ['orxdebug_5flevel_5fconfig',['orxDEBUG_LEVEL_CONFIG',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba4d0a63b9dc12f7c6c4a1c1ed6224bae2',1,'orxDebug.h']]],
   ['orxdebug_5flevel_5fdisplay',['orxDEBUG_LEVEL_DISPLAY',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba3bdb48bbeffbaa6e907d710c549a421f',1,'orxDebug.h']]],
   ['orxdebug_5flevel_5ffile',['orxDEBUG_LEVEL_FILE',['../group__orx_debug.html#ggaeb4ae42be59a5cb6239cee52d62e28bba852436f62180f4eb2b7886bcb5daf912',1,'orxDebug.h']]],
