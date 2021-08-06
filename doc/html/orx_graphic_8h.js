@@ -39,6 +39,7 @@ var orx_graphic_8h =
     [ "orxGraphic_CreateFromConfig", "group__orx_graphic.html#gaac8f9dab82e59eae140fdcbdb7a4af5f", null ],
     [ "orxGraphic_Delete", "group__orx_graphic.html#ga190c5eee80c688a1689ae399b73dc77d", null ],
     [ "orxGraphic_Exit", "group__orx_graphic.html#gac0148afeca993ae162b2f4da4e8531f8", null ],
+    [ "orxGraphic_GetAlignFlags", "group__orx_graphic.html#ga9594ba0f94aa4450cbf4b48d8c4f2f6f", null ],
     [ "orxGraphic_GetBlendMode", "group__orx_graphic.html#ga7a7436a180b22a5c6603479e24da5b7b", null ],
     [ "orxGraphic_GetColor", "group__orx_graphic.html#ga4d14fe80ec6bab2d9aede05eb94fd4ac", null ],
     [ "orxGraphic_GetData", "group__orx_graphic.html#gaf2bf0a43dfcd07dc7294e46d29c70894", null ],
