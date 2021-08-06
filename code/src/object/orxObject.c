@@ -308,58 +308,20 @@ static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
  */
 static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, const orxSTRING _zPivot)
 {
-  orxCHAR   acBuffer[128];
-  orxU32    u32AlignFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  const orxSTRING zPivot;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
 
-  /* Gets lower case value */
-  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-  orxString_LowerCase(orxString_NCopy(acBuffer, _zPivot, sizeof(acBuffer) - 1));
+  /* Skips all white spaces */
+  zPivot = orxString_SkipWhiteSpaces(_zPivot);
 
-  /* Left? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_LEFT_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
-  }
-  /* Right? */
-  else if(orxString_SearchString(acBuffer, orxOBJECT_KZ_RIGHT_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
-  }
-
-  /* Top? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_TOP_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
-  }
-  /* Bottom? */
-  else if(orxString_SearchString(acBuffer, orxOBJECT_KZ_BOTTOM_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
-  }
-
-  /* Truncate? */
-  if(orxString_SearchString(acBuffer, orxOBJECT_KZ_TRUNCATE_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
-  }
-  /* Round? */
-  else if(orxString_SearchString(acBuffer, orxOBJECT_KZ_ROUND_PIVOT) != orxNULL)
-  {
-    /* Updates alignment flags */
-    u32AlignFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
-  }
-
-  /* Valid? */
-  if((u32AlignFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
-  || (orxString_SearchString(acBuffer, orxOBJECT_KZ_CENTERED_PIVOT) != orxNULL))
+  /* Valid ? */
+  if(*zPivot != orxCHAR_NULL)
   {
     orxGRAPHIC *pstGraphic;
+    orxU32      u32AlignFlags;
+
+    /* Gets align flags */
+    u32AlignFlags = orxGraphic_GetAlignFlags(zPivot);
 
     /* Gets graphic */
     pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);

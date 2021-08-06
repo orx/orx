@@ -456,6 +456,70 @@ void orxFASTCALL orxGraphic_Exit()
   return;
 }
 
+/** Gets alignment flags from literals
+ * @param[in]   _zAlign         Align literals
+ * @ return Align flags
+ */
+orxU32 orxFASTCALL orxGraphic_GetAlignFlags(const orxSTRING _zAlign)
+{
+  orxCHAR acBuffer[64];
+  orxU32  u32Result = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zAlign != orxNULL);
+
+  /* Gets lower case value */
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  orxString_LowerCase(orxString_NCopy(acBuffer, _zAlign, sizeof(acBuffer) - 1));
+
+  /* Valid? */
+  if(*acBuffer != orxCHAR_NULL)
+  {
+    /* Left? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
+    }
+    /* Right? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_RIGHT_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
+    }
+
+    /* Top? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_TOP_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
+    }
+    /* Bottom? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_BOTTOM_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
+    }
+
+    /* Truncate? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_TRUNCATE_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
+    }
+    /* Round? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Creates an empty graphic
  * @return      Created orxGRAPHIC / orxNULL
  */
@@ -615,8 +679,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       /* Has data? */
       if(pstResult->pstData != orxNULL)
       {
-        orxVECTOR       vPivot;
         const orxSTRING zFlipping;
+        orxVECTOR       vPivot;
         orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
         /* Gets pivot value */
@@ -628,59 +692,16 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has relative pivot point? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_PIVOT) != orxFALSE)
         {
-          orxCHAR   acBuffer[64];
-          orxSTRING zRelativePos;
-          orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
+          const orxSTRING zRelativePivot;
 
-          /* Gets lower case value */
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT), sizeof(acBuffer) - 1));
-
-          /* Left? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
-          }
-          /* Right? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_RIGHT_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
-          }
-
-          /* Top? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_TOP_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
-          }
-          /* Bottom? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_BOTTOM_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
-          }
-
-          /* Truncate? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_TRUNCATE_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
-          }
-          /* Round? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
-          }
+          /* Gets it */
+          zRelativePivot = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT);
 
           /* Valid? */
-          if((u32AlignmentFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
-          || (orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_CENTERED_PIVOT) != orxNULL))
+          if(*zRelativePivot != orxCHAR_NULL)
           {
             /* Applies it */
-            orxGraphic_SetRelativePivot(pstResult, u32AlignmentFlags);
+            orxGraphic_SetRelativePivot(pstResult, orxGraphic_GetAlignFlags(zRelativePivot));
           }
         }
 

@@ -116,6 +116,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Init();
 extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
 
 
+/** Gets alignment flags from literals
+ * @param[in]   _zAlign         Align literals
+ * @ return Align flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxGraphic_GetAlignFlags(const orxSTRING _zAlign);
+
+
 /** Creates an empty graphic
  * @return      Created orxGRAPHIC / orxNULL
  */
