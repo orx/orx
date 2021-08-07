@@ -5014,6 +5014,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 bUseParentScale     = bUseParentSpace;
                 bUseParentPosition  = bUseParentSpace;
               }
+              else
+              {
+                /* Updates status */
+                bUseParentScale     = orxFALSE;
+                bUseParentPosition  = orxFALSE;
+              }
             }
           }
         }
