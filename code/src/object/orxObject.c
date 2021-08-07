@@ -339,12 +339,6 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
       /* Valid size? */
       if(orxObject_GetSize(_pstObject, &vSize) != orxNULL)
       {
-        orxFLOAT fHeight, fWidth;
-
-        /* Gets graphic size */
-        fWidth  = vSize.fX;
-        fHeight = vSize.fY;
-
         /* Pivot left? */
         if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
         {
@@ -355,13 +349,13 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
         else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
         {
           /* Updates x position */
-          _pstObject->vPivot.fX = fWidth;
+          _pstObject->vPivot.fX = vSize.fX;
         }
         /* Align center */
         else
         {
           /* Updates x position */
-          _pstObject->vPivot.fX = orx2F(0.5f) * fWidth;
+          _pstObject->vPivot.fX = orx2F(0.5f) * vSize.fX;
         }
 
         /* Align top? */
@@ -374,13 +368,13 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
         else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
         {
           /* Updates y position */
-          _pstObject->vPivot.fY = fHeight;
+          _pstObject->vPivot.fY = vSize.fY;
         }
         /* Align center */
         else
         {
           /* Updates y position */
-          _pstObject->vPivot.fY = orx2F(0.5f) * fHeight;
+          _pstObject->vPivot.fY = orx2F(0.5f) * vSize.fY;
         }
 
         /* Truncate? */
@@ -4712,7 +4706,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
       && (orxEvent_Send(&stEvent) != orxSTATUS_FAILURE))
       {
-        orxVECTOR       vValue, vParentSize, vColor;
+        orxVECTOR       vValue, vParentSize, vColor, vPosition;
+        orxAABOX        stParentBox;
         const orxSTRING zGraphicFileName;
         const orxSTRING zAnimPointerName;
         const orxSTRING zAutoScrolling;
@@ -4722,6 +4717,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zSpawnerName;
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
+        const orxSTRING zPosition = orxSTRING_EMPTY;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
         orxOBJECT      *pstPreviousObject;
@@ -4730,6 +4726,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxS32          s32Count;
         orxCOLOR        stColor;
         orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
+
+        /* Clears parent box */
+        orxMemory_Zero(&stParentBox, sizeof(orxAABOX));
 
         /* Backups current spawner */
         pstPreviousObject = sstObject.pstCurrentObject;
@@ -4770,6 +4769,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Sets it */
           orxObject_SetGroupID(pstResult, sstObject.stCurrentGroupID);
+        }
+
+        /* Gets position literals */
+        zPosition = orxConfig_GetString(orxOBJECT_KZ_CONFIG_POSITION);
+
+        /* Is cartesian position? */
+        if(orxString_ToVector(zPosition, &vPosition, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates status */
+          bHasPosition  = orxTRUE;
+          zPosition     = orxSTRING_EMPTY;
         }
 
         /* *** Frame *** */
@@ -4877,8 +4887,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Valid? */
           if(pstCamera != orxNULL)
           {
-            orxAABOX stFrustum;
-
             /* No owner? */
             if(orxStructure_GetOwner(pstCamera) == orxNULL)
             {
@@ -4893,10 +4901,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             bUseParentSpace = bUseParentScale = bUseParentPosition = orxTRUE;
 
             /* Gets camera frustum */
-            orxCamera_GetFrustum(pstCamera, &stFrustum);
+            orxCamera_GetFrustum(pstCamera, &stParentBox);
 
             /* Gets parent size */
-            orxVector_Sub(&vParentSize, &(stFrustum.vBR), &(stFrustum.vTL));
+            orxVector_Sub(&vParentSize, &(stParentBox.vBR), &(stParentBox.vTL));
           }
         }
         else
@@ -4907,8 +4915,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Updates parent space status */
             bUseParentSpace = orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
 
-            /* Has parent space? */
-            if(bUseParentSpace != orxFALSE)
+            /* Has parent space or position literals? */
+            if((bUseParentSpace != orxFALSE) || (*zPosition != orxCHAR_NULL))
             {
               /* Depending on parent type */
               switch(orxStructure_GetID(pstParent))
@@ -4938,6 +4946,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Gets its size & name */
                   orxObject_GetSize(orxOBJECT(pstParent), &vParentSize);
                   zParentName = orxObject_GetName(orxOBJECT(pstParent));
+
+                  /* New object has position literals? */
+                  if(*zPosition != orxCHAR_NULL)
+                  {
+                    orxVECTOR vPivot;
+
+                    /* Gets parent pivot */
+                    orxObject_GetPivot(orxOBJECT(pstParent), &vPivot);
+
+                    /* Computes parent AABox */
+                    orxVector_Set(&(stParentBox.vTL), -vPivot.fX, -vPivot.fY, -vPivot.fZ);
+                    orxVector_Add(&(stParentBox.vBR), &(stParentBox.vTL), &vParentSize);
+                  }
                   break;
                 }
 
@@ -5370,22 +5391,100 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Position & rotation */
 
-        /* Has cartesian position? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+        /* Doesn't have cartesian position? */
+        if(bHasPosition == orxFALSE)
         {
-          /* Updates status */
-          bHasPosition = orxTRUE;
-        }
-        /* Has spherical position? */
-        else if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPHERICAL_POSITION, &vValue) != orxNULL)
-        {
-          /* Transforms it */
-          vValue.fTheta *= orxMATH_KF_DEG_TO_RAD;
-          vValue.fPhi   *= orxMATH_KF_DEG_TO_RAD;
-          orxVector_FromSphericalToCartesian(&vValue, &vValue);
+          /* Has literal position? */
+          if(*zPosition != orxCHAR_NULL)
+          {
+            const orxCHAR  *pc;
+            orxU32          u32AlignFlags;
 
-          /* Updates status */
-          bHasPosition = orxTRUE;
+            /* Gets align flags */
+            u32AlignFlags = orxGraphic_GetAlignFlags(zPosition);
+
+            /* Pivot left? */
+            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
+            {
+              /* Updates x position */
+              vPosition.fX = stParentBox.vTL.fX;
+            }
+            /* Align right? */
+            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
+            {
+              /* Updates x position */
+              vPosition.fX = stParentBox.vBR.fX;
+            }
+            /* Align center */
+            else
+            {
+              /* Updates x position */
+              vPosition.fX = orx2F(0.5f) * (stParentBox.vTL.fX + stParentBox.vBR.fX);
+            }
+
+            /* Align top? */
+            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
+            {
+              /* Updates y position */
+              vPosition.fY = stParentBox.vTL.fY;
+            }
+            /* Align bottom? */
+            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
+            {
+              /* Updates y position */
+              vPosition.fY = stParentBox.vBR.fY;
+            }
+            /* Align center */
+            else
+            {
+              /* Updates y position */
+              vPosition.fY = orx2F(0.5f) * (stParentBox.vTL.fY + stParentBox.vBR.fY);
+            }
+
+            /* Truncate? */
+            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+            {
+              /* Updates position */
+              orxVector_Floor(&(vPosition), &(vPosition));
+            }
+            /* Round? */
+            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+            {
+              /* Updates position */
+              orxVector_Round(&(vPosition), &(vPosition));
+            }
+
+            /* Clears Z component */
+            vPosition.fZ = orxFLOAT_0;
+
+            /* Looks for numerical value */
+            for(pc = zPosition; (*pc != orxCHAR_NULL) && ((*pc < '0') || (*pc > '9')) && (*pc != '-') && (*pc != '+') && (*pc != '.'); pc++)
+              ;
+
+            /* Valid? */
+            if(*pc != orxCHAR_NULL)
+            {
+              /* Retrieves Z component */
+              orxString_ToFloat(pc, &vPosition.fZ, orxNULL);
+            }
+
+            /* Ignores parent position */
+            bUseParentPosition = orxFALSE;
+
+            /* Updates status */
+            bHasPosition = orxTRUE;
+          }
+          /* Has spherical position? */
+          else if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPHERICAL_POSITION, &vPosition) != orxNULL)
+          {
+            /* Transforms it */
+            vPosition.fTheta *= orxMATH_KF_DEG_TO_RAD;
+            vPosition.fPhi   *= orxMATH_KF_DEG_TO_RAD;
+            orxVector_FromSphericalToCartesian(&vPosition, &vPosition);
+
+            /* Updates status */
+            bHasPosition = orxTRUE;
+          }
         }
 
         /* Has position? */
@@ -5395,11 +5494,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           if(bUseParentPosition != orxFALSE)
           {
             /* Gets world space values */
-            orxVector_Mul(&vValue, &vValue, &vParentSize);
+            orxVector_Mul(&vPosition, &vPosition, &vParentSize);
           }
 
           /* Updates object position */
-          orxObject_SetPosition(pstResult, &vValue);
+          orxObject_SetPosition(pstResult, &vPosition);
         }
 
         /* Updates object rotation */
