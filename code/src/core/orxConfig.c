@@ -298,6 +298,82 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Converts a string to a vector (with support for stepped/regular randomness)
+ * @param[in]   _zValue           Concerned literal value
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector)
+{
+  const orxSTRING zRemainder;
+  orxVECTOR      *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zValue != orxNULL);
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets value */
+  if(orxString_ToVector(_zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+  {
+    orxS32 s32RandomSeparatorIndex;
+
+    /* Random? */
+    if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+    {
+      orxVECTOR vOtherValue, vStepValue;
+      orxBOOL   bRandom = orxFALSE;
+
+      /* Clears step */
+      orxVector_SetAll(&vStepValue, orxFLOAT_0);
+
+      /* Has another value? */
+      if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        /* Was step? */
+        if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+        {
+          /* Stores it */
+          vStepValue = vOtherValue;
+
+          /* Can get other value? */
+          if((vStepValue.fX >= orxFLOAT_0)
+          && (vStepValue.fY >= orxFLOAT_0)
+          && (vStepValue.fZ >= orxFLOAT_0)
+          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+        else
+        {
+          /* Updates status */
+          bRandom = orxTRUE;
+        }
+      }
+
+      /* Valid? */
+      if(bRandom != orxFALSE)
+      {
+        /* Updates result */
+        pvResult = _pvVector;
+        pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
+        pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
+        pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      pvResult = _pvVector;
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Cleans a value
  * @param[in] _pstValue         Concerned config value
  */

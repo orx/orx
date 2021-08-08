@@ -261,6 +261,10 @@ static orxOBJECT_STATIC sstObject;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
+
 /** Update body scale
  */
 static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
@@ -4742,25 +4746,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
           /* Updates position */
           zPosition = orxString_SkipWhiteSpaces(pcPivotOverrideMarker + orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH);
-
-          /* Is cartesian position? */
-          if(orxString_ToVector(zPosition, &vPosition, orxNULL) != orxSTATUS_FAILURE)
-          {
-            /* Updates status */
-            bHasPosition  = orxTRUE;
-            zPosition     = orxSTRING_EMPTY;
-          }
         }
-        /* Not empty? */
-        else if(zPosition != orxSTRING_EMPTY)
+
+        /* Is cartesian position? */
+        if(orxConfig_ToVector(zPosition, &vPosition) != orxNULL)
         {
-          /* Is cartesian position? */
-          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION , &vPosition) != orxNULL)
-          {
-            /* Updates status */
-            bHasPosition  = orxTRUE;
-            zPosition     = orxSTRING_EMPTY;
-          }
+          /* Updates status */
+          bHasPosition  = orxTRUE;
+          zPosition     = orxSTRING_EMPTY;
         }
 
         /* *** Frame *** */
@@ -5400,7 +5393,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxBOOL bValid = orxFALSE;
 
           /* Is a cartesian vector? */
-          if(orxString_ToVector(zPivotOverride, &vPivotOverride, orxNULL) != orxSTATUS_FAILURE)
+          if(orxConfig_ToVector(zPivotOverride, &vPivotOverride) != orxNULL)
           {
             /* Updates status */
             bValid = orxTRUE;
@@ -5475,7 +5468,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 orxVECTOR vOffset;
 
                 /* Is a vector? */
-                if(orxString_ToVector(pc, &vOffset, orxNULL) != orxSTATUS_FAILURE)
+                if(orxConfig_ToVector(pc, &vOffset) != orxNULL)
                 {
                   /* Uses parent's position? */
                   if(bUseParentPosition != orxFALSE)
