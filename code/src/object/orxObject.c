@@ -4664,7 +4664,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
       && (orxEvent_Send(&stEvent) != orxSTATUS_FAILURE))
       {
-        orxVECTOR       vValue, vParentSize, vColor, vPosition, vPivotOverride;
+        orxVECTOR       vValue, vParentSize, vColor, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
         const orxSTRING zGraphicFileName;
         const orxSTRING zAnimPointerName;
@@ -5135,7 +5135,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SCALE) != orxFALSE)
         {
           /* Is config scale not a vector? */
-          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vValue) == orxNULL)
+          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale) == orxNULL)
           {
             orxFLOAT fScale;
 
@@ -5143,7 +5143,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             fScale = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_SCALE);
 
             /* Updates vector */
-            orxVector_SetAll(&vValue, fScale);
+            orxVector_SetAll(&vScale, fScale);
           }
 
           /* Uses parent's scale? */
@@ -5170,11 +5170,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             }
 
             /* Gets world space values */
-            orxVector_Mul(&vValue, orxVector_Div(&vValue, &vValue, &vSize), &vParentSize);
+            orxVector_Mul(&vScale, orxVector_Div(&vScale, &vScale, &vSize), &vParentSize);
           }
 
           /* Updates object scale */
-          orxObject_SetScale(pstResult, &vValue);
+          orxObject_SetScale(pstResult, &vScale);
+        }
+        else
+        {
+          /* Inits scale */
+          orxVector_SetAll(&vScale, orxFLOAT_1);
         }
 
         /* *** Color *** */
@@ -5419,7 +5424,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxObject_GetPivot(pstResult, &vPivot);
 
             /* Updates override */
-            orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride);
+            orxVector_Mul(&vPivotOverride, orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride), &vScale);
           }
 
           /* Restores override marker */
