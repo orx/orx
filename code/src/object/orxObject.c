@@ -98,6 +98,8 @@
 #define orxOBJECT_KU32_GROUP_BANK_SIZE          64
 #define orxOBJECT_KU32_GROUP_TABLE_SIZE         64
 
+#define orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH   2
+
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY      "AnimationFrequency"
@@ -141,6 +143,7 @@
 #define orxOBJECT_KZ_CONFIG_ON_PREPARE          "OnPrepare"
 #define orxOBJECT_KZ_CONFIG_ON_CREATE           "OnCreate"
 #define orxOBJECT_KZ_CONFIG_ON_DELETE           "OnDelete"
+#define orxOBJECT_KZ_OVERRIDE_MARKER            "->"
 #define orxOBJECT_KZ_CENTERED_PIVOT             "center"
 #define orxOBJECT_KZ_TRUNCATE_PIVOT             "truncate"
 #define orxOBJECT_KZ_ROUND_PIVOT                "round"
@@ -4661,7 +4664,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
       && (orxEvent_Send(&stEvent) != orxSTATUS_FAILURE))
       {
-        orxVECTOR       vValue, vParentSize, vColor, vPosition;
+        orxVECTOR       vValue, vParentSize, vColor, vPosition, vPivotOverride;
         orxAABOX        stParentBox;
         const orxSTRING zGraphicFileName;
         const orxSTRING zAnimPointerName;
@@ -4673,6 +4676,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
         const orxSTRING zPosition = orxSTRING_EMPTY;
+        const orxSTRING zPivotOverride;
+        orxCHAR        *pcPivotOverrideMarker;
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
         orxOBJECT      *pstPreviousObject;
@@ -4681,9 +4686,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxS32          s32Count;
         orxCOLOR        stColor;
         orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
-
-        /* Clears parent box */
-        orxMemory_Zero(&stParentBox, sizeof(orxAABOX));
 
         /* Backups current spawner */
         pstPreviousObject = sstObject.pstCurrentObject;
@@ -4728,6 +4730,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* Gets position literals */
         zPosition = orxConfig_GetString(orxOBJECT_KZ_CONFIG_POSITION);
+
+        /* Has pivot override? */
+        if((pcPivotOverrideMarker = (orxCHAR *)orxString_SearchString(zPosition, orxOBJECT_KZ_OVERRIDE_MARKER)) != orxNULL)
+        {
+          /* Replaces override marker */
+          *pcPivotOverrideMarker = orxCHAR_NULL;
+
+          /* Stores pivot override */
+          zPivotOverride = zPosition;
+
+          /* Updates position */
+          zPosition = orxString_SkipWhiteSpaces(pcPivotOverrideMarker + orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH);
+        }
 
         /* Is cartesian position? */
         if(orxString_ToVector(zPosition, &vPosition, orxNULL) != orxSTATUS_FAILURE)
@@ -4827,6 +4842,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* *** Parent *** */
+
+        /* Clears parent box */
+        orxMemory_Zero(&stParentBox, sizeof(orxAABOX));
 
         /* Gets camera file name */
         zParentName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
@@ -5352,6 +5370,62 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Position & rotation */
 
+        /* Clears pivot override */
+        orxVector_SetAll(&vPivotOverride, orxFLOAT_0);
+
+        /* Has pivot override? */
+        if(pcPivotOverrideMarker != orxNULL)
+        {
+          orxU32  u32AlignFlags;
+          orxBOOL bValid = orxFALSE;
+
+          /* Is a cartesian vector? */
+          if(orxString_ToVector(zPivotOverride, &vPivotOverride, orxNULL) != orxSTATUS_FAILURE)
+          {
+            /* Updates status */
+            bValid = orxTRUE;
+          }
+          else
+          {
+            /* Valid ? */
+            if(*zPivotOverride != orxCHAR_NULL)
+            {
+              orxAABOX stBox;
+
+              /* Gets align flags */
+              u32AlignFlags = orxGraphic_GetAlignFlags(zPivotOverride);
+
+              /* Valid size? */
+              if(orxObject_GetSize(pstResult, &(stBox.vBR)) != orxNULL)
+              {
+                /* Inits box top left corner */
+                orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
+
+                /* Updates pivot override */
+                orxGraphic_AlignVector(u32AlignFlags, &stBox, &vPivotOverride);
+
+                /* Updates status */
+                bValid = orxTRUE;
+              }
+            }
+          }
+
+          /* Valid? */
+          if(bValid != orxFALSE)
+          {
+            orxVECTOR vPivot;
+
+            /* Gets pivot */
+            orxObject_GetPivot(pstResult, &vPivot);
+
+            /* Updates override */
+            orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride);
+          }
+
+          /* Restores override marker */
+          *pcPivotOverrideMarker = *orxOBJECT_KZ_OVERRIDE_MARKER;
+        }
+
         /* Doesn't have cartesian position? */
         if(bHasPosition == orxFALSE)
         {
@@ -5430,6 +5504,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Gets world space values */
             orxVector_Mul(&vPosition, &vPosition, &vParentSize);
           }
+
+          /* Applies pivot override */
+          orxVector_Add(&vPosition, &vPosition, &vPivotOverride);
 
           /* Updates object position */
           orxObject_SetPosition(pstResult, &vPosition);
