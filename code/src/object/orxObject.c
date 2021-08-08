@@ -4742,14 +4742,25 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
           /* Updates position */
           zPosition = orxString_SkipWhiteSpaces(pcPivotOverrideMarker + orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH);
-        }
 
-        /* Is cartesian position? */
-        if(orxString_ToVector(zPosition, &vPosition, orxNULL) != orxSTATUS_FAILURE)
+          /* Is cartesian position? */
+          if(orxString_ToVector(zPosition, &vPosition, orxNULL) != orxSTATUS_FAILURE)
+          {
+            /* Updates status */
+            bHasPosition  = orxTRUE;
+            zPosition     = orxSTRING_EMPTY;
+          }
+        }
+        /* Not empty? */
+        else if(zPosition != orxSTRING_EMPTY)
         {
-          /* Updates status */
-          bHasPosition  = orxTRUE;
-          zPosition     = orxSTRING_EMPTY;
+          /* Is cartesian position? */
+          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION , &vPosition) != orxNULL)
+          {
+            /* Updates status */
+            bHasPosition  = orxTRUE;
+            zPosition     = orxSTRING_EMPTY;
+          }
         }
 
         /* *** Frame *** */
