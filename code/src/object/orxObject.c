@@ -334,61 +334,16 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
     }
     else
     {
-      orxVECTOR vSize;
+      orxAABOX stBox;
 
       /* Valid size? */
-      if(orxObject_GetSize(_pstObject, &vSize) != orxNULL)
+      if(orxObject_GetSize(_pstObject, &(stBox.vBR)) != orxNULL)
       {
-        /* Pivot left? */
-        if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
-        {
-          /* Updates x position */
-          _pstObject->vPivot.fX = orxFLOAT_0;
-        }
-        /* Align right? */
-        else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
-        {
-          /* Updates x position */
-          _pstObject->vPivot.fX = vSize.fX;
-        }
-        /* Align center */
-        else
-        {
-          /* Updates x position */
-          _pstObject->vPivot.fX = orx2F(0.5f) * vSize.fX;
-        }
+        /* Inits box top left corner */
+        orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
 
-        /* Align top? */
-        if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
-        {
-          /* Updates y position */
-          _pstObject->vPivot.fY = orxFLOAT_0;
-        }
-        /* Align bottom? */
-        else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
-        {
-          /* Updates y position */
-          _pstObject->vPivot.fY = vSize.fY;
-        }
-        /* Align center */
-        else
-        {
-          /* Updates y position */
-          _pstObject->vPivot.fY = orx2F(0.5f) * vSize.fY;
-        }
-
-        /* Truncate? */
-        if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
-        {
-          /* Updates position */
-          orxVector_Floor(&(_pstObject->vPivot), &(_pstObject->vPivot));
-        }
-        /* Round? */
-        else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-        {
-          /* Updates position */
-          orxVector_Round(&(_pstObject->vPivot), &(_pstObject->vPivot));
-        }
+        /* Updates pivot */
+        orxGraphic_AlignVector(u32AlignFlags, &stBox, &(_pstObject->vPivot));
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -5409,59 +5364,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Gets align flags */
             u32AlignFlags = orxGraphic_GetAlignFlags(zPosition);
 
-            /* Pivot left? */
-            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
-            {
-              /* Updates x position */
-              vPosition.fX = stParentBox.vTL.fX;
-            }
-            /* Align right? */
-            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
-            {
-              /* Updates x position */
-              vPosition.fX = stParentBox.vBR.fX;
-            }
-            /* Align center */
-            else
-            {
-              /* Updates x position */
-              vPosition.fX = orx2F(0.5f) * (stParentBox.vTL.fX + stParentBox.vBR.fX);
-            }
-
-            /* Align top? */
-            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
-            {
-              /* Updates y position */
-              vPosition.fY = stParentBox.vTL.fY;
-            }
-            /* Align bottom? */
-            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
-            {
-              /* Updates y position */
-              vPosition.fY = stParentBox.vBR.fY;
-            }
-            /* Align center */
-            else
-            {
-              /* Updates y position */
-              vPosition.fY = orx2F(0.5f) * (stParentBox.vTL.fY + stParentBox.vBR.fY);
-            }
-
-            /* Truncate? */
-            if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
-            {
-              /* Updates position */
-              orxVector_Floor(&(vPosition), &(vPosition));
-            }
-            /* Round? */
-            else if(orxFLAG_TEST(u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-            {
-              /* Updates position */
-              orxVector_Round(&(vPosition), &(vPosition));
-            }
-
-            /* Clears Z component */
-            vPosition.fZ = orxFLOAT_0;
+            /* Updates position */
+            orxGraphic_AlignVector(u32AlignFlags, &stParentBox, &vPosition);
 
             /* Looks for numerical value */
             for(pc = zPosition; *pc != orxCHAR_NULL; pc++)

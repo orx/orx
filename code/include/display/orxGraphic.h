@@ -51,6 +51,7 @@
 
 #include "object/orxStructure.h"
 #include "display/orxDisplay.h"
+#include "math/orxAABox.h"
 
 
 /** Graphic flags
@@ -121,6 +122,14 @@ extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
  * @ return Align flags
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxGraphic_GetAlignFlags(const orxSTRING _zAlign);
+
+/** Aligns a vector inside a box using flags
+ * @param[in]   _u32AlignFlags  Align flags
+ * @param[in]   _pstBox         Concerned box
+ * @param[out]  _pvValue        Storage for the resulting aligned vector
+ * @return orxVECTOR
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAABOX *_pstBox, orxVECTOR *_pvValue);
 
 
 /** Creates an empty graphic
