@@ -5464,14 +5464,38 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             vPosition.fZ = orxFLOAT_0;
 
             /* Looks for numerical value */
-            for(pc = zPosition; (*pc != orxCHAR_NULL) && ((*pc < '0') || (*pc > '9')) && (*pc != '-') && (*pc != '+') && (*pc != '.'); pc++)
-              ;
-
-            /* Valid? */
-            if(*pc != orxCHAR_NULL)
+            for(pc = zPosition; *pc != orxCHAR_NULL; pc++)
             {
-              /* Retrieves Z component */
-              orxString_ToFloat(pc, &vPosition.fZ, orxNULL);
+              /* Found? */
+              if(((*pc >= 0) && (*pc <= 9))
+              || (*pc == orxSTRING_KC_VECTOR_START)
+              || (*pc == orxSTRING_KC_VECTOR_START_ALT)
+              || (*pc == '+')
+              || (*pc == '-')
+              || (*pc == '.'))
+              {
+                orxVECTOR vOffset;
+
+                /* Is a vector? */
+                if(orxString_ToVector(pc, &vOffset, orxNULL) != orxSTATUS_FAILURE)
+                {
+                  /* Uses parent's position? */
+                  if(bUseParentPosition != orxFALSE)
+                  {
+                    /* Gets world space values */
+                    orxVector_Mul(&vOffset, &vOffset, &vParentSize);
+                  }
+
+                  /* Updates position */
+                  orxVector_Add(&vPosition, &vPosition, &vOffset);
+                }
+                else
+                {
+                  /* Uses it as Z component */
+                  orxString_ToFloat(pc, &vPosition.fZ, orxNULL);
+                }
+                break;
+              }
             }
 
             /* Ignores parent position */
