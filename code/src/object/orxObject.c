@@ -4681,7 +4681,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxFRAME       *pstFrame;
         orxBODY        *pstBody;
         orxOBJECT      *pstPreviousObject;
-        orxFLOAT        fAge;
+        orxFLOAT        fAge, fRotation;
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Count;
         orxCOLOR        stColor;
@@ -5373,7 +5373,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* *** Position & rotation */
+        /* *** Rotation & position */
+
+        /* Updates object rotation */
+        fRotation = orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION);
+        orxObject_SetRotation(pstResult, fRotation);
 
         /* Clears pivot override */
         orxVector_SetAll(&vPivotOverride, orxFLOAT_0);
@@ -5424,7 +5428,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             orxObject_GetPivot(pstResult, &vPivot);
 
             /* Updates override */
-            orxVector_Mul(&vPivotOverride, orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride), &vScale);
+            orxVector_2DRotate(&vPivotOverride, orxVector_Mul(&vPivotOverride, orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride), &vScale), fRotation);
           }
 
           /* Restores override marker */
@@ -5516,9 +5520,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates object position */
           orxObject_SetPosition(pstResult, &vPosition);
         }
-
-        /* Updates object rotation */
-        orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
 
         /* *** Children *** */
 
