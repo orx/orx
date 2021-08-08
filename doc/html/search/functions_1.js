@@ -519,6 +519,7 @@ var searchData=
   ['orxfxpointer_5fsettime',['orxFXPointer_SetTime',['../group__orx_f_x_pointer.html#ga48be0b91139ca9d1134cc12e02321d03',1,'orxFXPointer.h']]],
   ['orxfxpointer_5fsetup',['orxFXPointer_Setup',['../group__orx_f_x_pointer.html#ga4f1007efd10db77accfe744153c130b5',1,'orxFXPointer.h']]],
   ['orxfxpointer_5fsynchronize',['orxFXPointer_Synchronize',['../group__orx_f_x_pointer.html#gae34de9529ee823b8f5b27ac87c7c4cdf',1,'orxFXPointer.h']]],
+  ['orxgraphic_5falignvector',['orxGraphic_AlignVector',['../group__orx_graphic.html#ga41e49046b3bcbd1ed0f435b55b253dfb',1,'orxGraphic.h']]],
   ['orxgraphic_5fclearblendmode',['orxGraphic_ClearBlendMode',['../group__orx_graphic.html#ga88ab242eaf175c1e1b3b064cc4368add',1,'orxGraphic.h']]],
   ['orxgraphic_5fclearcolor',['orxGraphic_ClearColor',['../group__orx_graphic.html#ga23f4eb005f820bf37f464ea9e21c0f9e',1,'orxGraphic.h']]],
   ['orxgraphic_5fclone',['orxGraphic_Clone',['../group__orx_graphic.html#gae3f420e9b48b4bca2f96c4aae4e83e1d',1,'orxGraphic.h']]],

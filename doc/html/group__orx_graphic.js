@@ -32,6 +32,7 @@ var group__orx_graphic =
     [ "orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN", "group__orx_graphic.html#gaa535f304af68e558cb7d578038357ece", null ],
     [ "orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE", "group__orx_graphic.html#gad20bbafee6054aa89d9fb5dcca9444c5", null ],
     [ "orxGRAPHIC", "group__orx_graphic.html#gaf93b9ab6d42751f73e78536cc47fb4ae", null ],
+    [ "orxGraphic_AlignVector", "group__orx_graphic.html#ga41e49046b3bcbd1ed0f435b55b253dfb", null ],
     [ "orxGraphic_ClearBlendMode", "group__orx_graphic.html#ga88ab242eaf175c1e1b3b064cc4368add", null ],
     [ "orxGraphic_ClearColor", "group__orx_graphic.html#ga23f4eb005f820bf37f464ea9e21c0f9e", null ],
     [ "orxGraphic_Clone", "group__orx_graphic.html#gae3f420e9b48b4bca2f96c4aae4e83e1d", null ],
