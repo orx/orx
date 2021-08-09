@@ -4749,7 +4749,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           zPosition = orxString_SkipWhiteSpaces(pcPivotOverrideMarker + orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH);
         }
 
-        /* Is cartesian position? */
+        /* Is Cartesian position? */
         if(orxConfig_ToVector(zPosition, &vPosition) != orxNULL)
         {
           /* Updates status */
@@ -5395,7 +5395,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxU32  u32AlignFlags;
           orxBOOL bValid = orxFALSE;
 
-          /* Is a cartesian vector? */
+          /* Is a Cartesian vector? */
           if(orxConfig_ToVector(zPivotOverride, &vPivotOverride) != orxNULL)
           {
             /* Updates status */
@@ -5442,7 +5442,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           *pcPivotOverrideMarker = *orxOBJECT_KZ_OVERRIDE_MARKER;
         }
 
-        /* Doesn't have cartesian position? */
+        /* Doesn't have Cartesian position? */
         if(bHasPosition == orxFALSE)
         {
           /* Has literal position? */
