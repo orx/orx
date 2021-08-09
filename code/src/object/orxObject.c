@@ -4680,6 +4680,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
         const orxSTRING zPosition = orxSTRING_EMPTY;
+        const orxSTRING zPivot;
         const orxSTRING zPivotOverride;
         orxCHAR        *pcPivotOverrideMarker;
         orxFRAME       *pstFrame;
@@ -5111,7 +5112,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* *** Pivot/Size *** */
+        /* *** Size/Pivot *** */
 
         /* Has size? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
@@ -5120,17 +5121,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxObject_SetSize(pstResult, &vValue);
         }
 
-        /* Has pivot? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vValue) != orxNULL)
+        /* Gets pivot */
+        zPivot = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT);
+
+        /* Is vector? */
+        if(orxConfig_ToVector(zPivot, &vValue) != orxNULL)
         {
           /* Updates object pivot */
           orxObject_SetPivot(pstResult, &vValue);
         }
-        /* Has relative pivot point? */
-        else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_PIVOT) != orxFALSE)
+        else
         {
           /* Sets relative pivot */
-          orxObject_SetRelativePivot(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT));
+          orxObject_SetRelativePivot(pstResult, zPivot);
         }
 
         /* *** Scale *** */
