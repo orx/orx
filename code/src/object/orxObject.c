@@ -5461,7 +5461,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             for(pc = zPosition; *pc != orxCHAR_NULL; pc++)
             {
               /* Found? */
-              if(((*pc >= 0) && (*pc <= 9))
+              if(((*pc >= '0') && (*pc <= '9'))
               || (*pc == orxSTRING_KC_VECTOR_START)
               || (*pc == orxSTRING_KC_VECTOR_START_ALT)
               || (*pc == '+')
