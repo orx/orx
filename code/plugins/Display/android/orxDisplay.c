@@ -2051,6 +2051,9 @@ static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
+  /* Sets buffer mode */
+  orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE_INDIRECT);
+
   /* Starts no texture shader */
   orxDisplay_Android_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
 

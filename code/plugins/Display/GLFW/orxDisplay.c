@@ -2711,6 +2711,9 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
 
+  /* Sets buffer mode */
+  orxDisplay_GLFW_SetBufferMode(orxDISPLAY_BUFFER_MODE_INDIRECT);
+
   /* Has shader support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER))
   {
