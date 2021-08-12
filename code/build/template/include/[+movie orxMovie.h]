@@ -23,13 +23,27 @@ void orxFASTCALL      orxMovie_Exit();
 #pragma warning(disable:4244)
 #endif // __orxMSVC__
 
-#define malloc(SIZE)            orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_TEMP)
-#define realloc(MEMORY, SIZE)   orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_TEMP)
-#define free(MEMORY)            orxMemory_Free(MEMORY)
+#define FILE                              void
+#define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
+#define fread(BUFFER, SIZE, COUNT, FILE)  orxResource_Read(FILE, SIZE * COUNT, BUFFER, orxNULL, orxNULL)
+#define ftell(FILE)                       orxResource_Tell(FILE)
+#define fseek(FILE, OFFSET, WHENCE)       orxResource_Seek(FILE, OFFSET, (orxSEEK_OFFSET_WHENCE)WHENCE)
+#define fclose(FILE)                      orxResource_Close(FILE)
+
+#define malloc(SIZE)                      orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_TEMP)
+#define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_TEMP)
+#define free(MEMORY)                      orxMemory_Free(MEMORY)
 
 #define PL_MPEG_IMPLEMENTATION
 #include "pl_mpeg/pl_mpeg.h"
 #undef PL_MPEG_IMPLEMENTATION
+
+#undef FILE
+#undef fopen
+#undef fread
+#undef ftell
+#undef fseek
+#undef fclose
 
 #undef malloc
 #undef realloc
@@ -39,6 +53,7 @@ void orxFASTCALL      orxMovie_Exit();
 #pragma warning(pop)
 #endif // __orxMSVC__
 
+#define orxMOVIE_KD_MAX_VIDEO_DELAY       0.2
 
 //! Variables / Structures
 
@@ -56,7 +71,7 @@ typedef struct MovieData
 
 } MovieData;
 
-orxBANK *spstMovieBank = orxNULL;
+static orxBANK *spstMovieBank = orxNULL;
 
 
 //! Code
@@ -107,8 +122,6 @@ static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
     ;
 
   // Deletes decoders
-  orxResource_Close((orxHANDLE)pstMovieData->pstAudio->demux->buffer->load_callback_user_data);
-  orxResource_Close((orxHANDLE)pstMovieData->pstVideo->demux->buffer->load_callback_user_data);
   plm_destroy(pstMovieData->pstAudio);
   plm_destroy(pstMovieData->pstVideo);
   if(spstMovieBank)
@@ -151,6 +164,12 @@ static orxSTATUS orxFASTCALL orxMovie_DecodeVideo(void *_pContext)
         pstMovieData->dTime      += (dCurrent - pstMovieData->dLastSystem) * (dModifier ? dModifier : 1.0);
         pstMovieData->dLastSystem = dCurrent;
 
+        // Should skip ahead?
+        if(pstMovieData->dTime - plm_video_get_time(pstMovieData->pstVideo->video_decoder) > orxMOVIE_KD_MAX_VIDEO_DELAY)
+        {
+          // Seeks current time
+          plm_seek_frame(pstMovieData->pstVideo, pstMovieData->dTime, 0);
+        }
         // Should decode frame?
         while((!pstMovieData->bDelete) && (pstMovieData->dTime >= plm_video_get_time(pstMovieData->pstVideo->video_decoder)))
         {
@@ -318,35 +337,6 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
   return orxSTATUS_SUCCESS;
 }
 
-static void orxMovie_UpdateBuffer(plm_buffer_t *_pstBuffer, void *_pResource)
-{
-  orxU64 u64ReadBytes;
-
-  // Should clean buffer?
-  if(_pstBuffer->discard_read_bytes)
-  {
-    // Cleans it
-    plm_buffer_discard_read_bytes(_pstBuffer);
-  }
-
-  // Fills buffer
-  u64ReadBytes        = orxResource_Read((orxHANDLE)_pResource, _pstBuffer->capacity - _pstBuffer->length, _pstBuffer->bytes + _pstBuffer->length, orxNULL, orxNULL);
-  _pstBuffer->length += u64ReadBytes;
-
-  // Empty?
-  if(u64ReadBytes == 0)
-  {
-    // Marks it as over
-    _pstBuffer->has_ended = TRUE;
-
-    // Rewinds
-    orxResource_Seek((orxHANDLE)_pResource, 0, orxSEEK_OFFSET_WHENCE_START);
-  }
-
-  // Done!
-  return;
-}
-
 static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -363,11 +353,9 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
       if((zMovie = orxResource_Locate("Movie", orxConfig_GetString("Movie"))) != orxNULL)
       {
         MovieData    *pstMovieData;
-        plm_buffer_t *pstPLMBuffer;
         orxOBJECT    *pstObject;
         orxTEXTURE   *pstTexture;
         orxBITMAP    *pstBitmap;
-        orxHANDLE     hResource;
         orxCHAR       acBuffer[256];
 
         // Gets object
@@ -378,21 +366,14 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         orxMemory_Zero(pstMovieData, sizeof(MovieData));
 
         // Creates audio decoder
-        pstPLMBuffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
-        hResource = orxResource_Open(zMovie, orxFALSE);
-        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, hResource);
-        pstMovieData->pstAudio = plm_create_with_buffer(pstPLMBuffer, TRUE);
+        pstMovieData->pstAudio = plm_create_with_filename(zMovie);
         plm_set_video_enabled(pstMovieData->pstAudio, FALSE);
         pstMovieData->fDuration = (orxFLOAT)plm_get_duration(pstMovieData->pstAudio);
         plm_rewind(pstMovieData->pstAudio);
-        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
         plm_set_loop(pstMovieData->pstAudio, orxConfig_GetBool("Loop"));
 
         // Creates video decoder
-        pstPLMBuffer = plm_buffer_create_with_capacity(PLM_BUFFER_DEFAULT_SIZE);
-        hResource = orxResource_Open(zMovie, orxFALSE);
-        plm_buffer_set_load_callback(pstPLMBuffer, orxMovie_UpdateBuffer, hResource);
-        pstMovieData->pstVideo = plm_create_with_buffer(pstPLMBuffer, TRUE);
+        pstMovieData->pstVideo = plm_create_with_filename(zMovie);
         plm_set_audio_enabled(pstMovieData->pstVideo, FALSE);
         plm_set_loop(pstMovieData->pstVideo, orxConfig_GetBool("Loop"));
 
