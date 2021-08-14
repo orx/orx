@@ -1858,38 +1858,32 @@ orxSTATUS orxFASTCALL orxInput_EnableSet(const orxSTRING _zSetName, orxBOOL _bEn
   /* Valid? */
   if(*_zSetName != orxCHAR_NULL)
   {
-    orxINPUT_SET *pstSet;
-    orxSTRINGID   stSetID;
+    orxINPUT_SET *pstPreviousSet;
 
-    /* Gets the set ID */
-    stSetID = orxString_Hash(_zSetName);
+    /* Stores current set */
+    pstPreviousSet = sstInput.pstCurrentSet;
 
-    /* For all the sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-        pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+    /* Selects set */
+    eResult = orxInput_SelectSetInternal(_zSetName, orxFALSE);
+
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Found? */
-      if(pstSet->stID == stSetID)
+      /* Should enable it? */
+      if(_bEnable != orxFALSE)
       {
-        /* Should enable it? */
-        if(_bEnable != orxFALSE)
-        {
-          /* Enables it */
-          orxFLAG_SET(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED, orxINPUT_KU32_SET_FLAG_NONE);
-        }
-        else
-        {
-          /* Disables it */
-          orxFLAG_SET(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_NONE, orxINPUT_KU32_SET_FLAG_ENABLED);
-        }
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-
-        break;
+        /* Enables it */
+        orxFLAG_SET(sstInput.pstCurrentSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED, orxINPUT_KU32_SET_FLAG_NONE);
+      }
+      else
+      {
+        /* Disables it */
+        orxFLAG_SET(sstInput.pstCurrentSet->u32Flags, orxINPUT_KU32_SET_FLAG_NONE, orxINPUT_KU32_SET_FLAG_ENABLED);
       }
     }
+
+    /* Restores previous set */
+    sstInput.pstCurrentSet = pstPreviousSet;
   }
 
   /* Done! */
