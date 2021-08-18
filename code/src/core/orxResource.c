@@ -133,6 +133,7 @@ typedef struct __orxRESOURCE_INFO_t
   orxS64                    s64Time;                                                  /**< Resource modification time */
   orxSTRINGID               stGroupID;                                                /**< Group ID */
   orxSTRINGID               stNameID;                                                 /**< Name ID */
+  orxBOOL                   bPendingWatch;                                            /**< Pending watch */
 
 } orxRESOURCE_INFO;
 
@@ -562,6 +563,9 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
         /* Gets its modification time (cheating for the storage) */
         pstRequest->s64Size = pstResourceInfo->pstTypeInfo->pfnGetTime(pstResourceInfo->zLocation + orxString_GetLength(pstResourceInfo->pstTypeInfo->zTag) + 1);
 
+        /* Updates its status */
+        pstResourceInfo->bPendingWatch = orxFALSE;
+
         break;
       }
 
@@ -815,8 +819,15 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
         /* Does its type support time? */
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
         {
-          /* Adds request */
-          orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_GET_TIME, 0, orxNULL, &orxResource_NotifyChange, pstResourceInfo, orxNULL);
+          /* Not already queued? */
+          if(pstResourceInfo->bPendingWatch == orxFALSE)
+          {
+            /* Updates its status */
+            pstResourceInfo->bPendingWatch = orxTRUE;
+
+            /* Adds request */
+            orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_GET_TIME, 0, orxNULL, &orxResource_NotifyChange, pstResourceInfo, orxNULL);
+          }
 
           /* Updates watch count */
           u32WatchCount++;
