@@ -66,6 +66,8 @@
 #define orxCONSOLE_KZ_INPUT_SCROLL_DOWN               "ScrollDown"                    /**< Log scroll down */
 #define orxCONSOLE_KZ_INPUT_SCROLL_UP                 "ScrollUp"                      /**< Log scroll up */
 
+#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension */
+
 
 /** Console module setup
  */

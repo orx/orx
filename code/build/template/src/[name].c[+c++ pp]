@@ -25,6 +25,11 @@
 #define orxARCHIVE_IMPL
 #include "orxArchive.h"
 #undef orxARCHIVE_IMPL]
+[+remote
+
+#define orxREMOTE_IMPL
+#include "orxRemote.h"
+#undef orxREMOTE_IMPL]
 [+movie
 
 #define orxMOVIE_IMPL
@@ -155,6 +160,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Exit from Dear ImGui
     orxImGui_Exit();
 ]
+[+remote
+    // Exit from remote support
+    orxRemote_Exit();
+]
     // Let Orx clean all our mess automatically. :)
 }
 
@@ -176,10 +185,16 @@ void [!name]::BindObjects()
     // Initialize archive (ZIP) resource type
     orxArchive_Init();
 ]
+[+remote
+    // Initialize remote (HTTP) resource type
+    orxRemote_Init();
+]
     // Add config storage to find the initial config file
 [+archive
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
+[+remote
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "http://localhost/config", orxFALSE);]
 
     // Return orxSTATUS_FAILURE to prevent orx from loading the default config file
     return orxSTATUS_SUCCESS;
