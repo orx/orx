@@ -336,6 +336,15 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
 
               break;
             }
+
+            default:
+            {
+              // Should not happen
+              orxASSERT(orxFALSE);
+              u32Version = 0;
+
+              break;
+            }
           }
 
           // No keep-alive support?
