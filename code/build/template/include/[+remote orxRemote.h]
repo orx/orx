@@ -341,7 +341,7 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
             {
               // Should not happen
               orxASSERT(orxFALSE);
-              u32Version = 0;
+              bClose = orxTRUE;
 
               break;
             }
