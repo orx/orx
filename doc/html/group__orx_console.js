@@ -1,5 +1,6 @@
 var group__orx_console =
 [
+    [ "orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION", "group__orx_console.html#gafb3c581ac3c237f0c353bfbbeaaf2307", null ],
     [ "orxCONSOLE_KZ_INPUT_AUTOCOMPLETE", "group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE", "group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE_AFTER", "group__orx_console.html#ga0d48acf8c6d88562437d4c81a519475d", null ],
