@@ -5567,20 +5567,27 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(pstChild != orxNULL)
               {
-                /* Has last child? */
-                if(pstLastChild != orxNULL)
+                /* Still the child's owner? */
+                if(pstChild->stStructure.u64OwnerGUID == pstResult->stStructure.u64GUID)
                 {
-                  /* Sets its sibling */
-                  pstLastChild->pstSibling = pstChild;
-                }
-                else
-                {
-                  /* Sets first child */
-                  pstResult->pstChild = pstChild;
-                }
+                  /* Has last child? */
+                  if(pstLastChild != orxNULL)
+                  {
+                    /* Sets its sibling */
+                    pstLastChild->pstSibling = pstChild;
+                  }
+                  else
+                  {
+                    /* Sets first child */
+                    pstResult->pstChild = pstChild;
+                  }
 
-                /* Stores last child */
-                pstLastChild = pstChild;
+                  /* Stores last child */
+                  pstLastChild = pstChild;
+
+                  /* Updates flags */
+                  u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
+                }
 
                 /* Doesn't already have a parent? */
                 if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
@@ -5606,9 +5613,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Sets its parent */
                   orxObject_SetParent(pstChild, pstResult);
                 }
-
-                /* Updates flags */
-                u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
               }
             }
           }
