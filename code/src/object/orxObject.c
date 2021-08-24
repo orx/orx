@@ -8077,7 +8077,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
 
   /* Logs header */
   orxLOG("*** BEGIN PARENTS LOG: \"" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "\" [" orxANSI_KZ_COLOR_FG_MAGENTA "0x%016llX" orxANSI_KZ_COLOR_FG_DEFAULT "] ***\n", orxObject_GetName(_pstObject), orxStructure_GetGUID(_pstObject));
-  orxLOG("             NAME                     GUID             [LOCAL]       POSITION            ROTATION               SCALE          =>    [WORLD]       POSITION            ROTATION               SCALE          [IGNORE FLAGS]");
+  orxLOG("             NAME                     GUID             [LOCAL]        POSITION         ROTATION                   SCALE        =>    [WORLD]        POSITION         ROTATION                   SCALE        [IGNORE FLAGS]");
 
   /* For all structures in parent hierarchy */
   for(orxSTRUCTURE *pstParent = orxSTRUCTURE(_pstObject); pstParent != orxNULL;)
