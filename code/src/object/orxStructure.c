@@ -208,7 +208,8 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxBOOL
     static orxCHAR  sacPrefixBuffer[1024];
     static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
     orxSTRUCTURE   *pstStructure;
-    orxTREE_NODE   *pstChild, *pstSibling;
+    orxTREE_NODE   *pstSibling;
+    orxBOOL         bRecursive = orxFALSE;
 
     /* Inits buffer */
     sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = orxCHAR_NULL;
@@ -270,34 +271,46 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxBOOL
         /* Logs it */
         orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_TREE "%s" orxSTRUCTURE_KU32_LOG_COLOR_ID "%-16s" orxSTRUCTURE_KU32_LOG_COLOR_MARKER " %*s[" orxSTRUCTURE_KU32_LOG_COLOR_GUID "%016llX" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]", sacPrefixBuffer, orxStructure_GetIDString(eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - (orxS32)(spcPrefixCurrent - sacPrefixBuffer), orxSTRING_EMPTY, pstStructure->u64GUID);
       }
+
+      /* Updates status */
+      bRecursive = orxTRUE;
     }
     /* Root? */
     else if(_pstNode == orxTree_GetRoot(orxTree_GetTree(_pstNode)))
     {
       /* Logs it */
       orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_MARKER "[" orxSTRUCTURE_KU32_LOG_COLOR_ID "ROOT" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]");
+
+      /* Updates status */
+      bRecursive = orxTRUE;
     }
 
-    /* Gets its child */
-    pstChild = orxTree_GetChild(_pstNode);
-
-    /* Valid? */
-    if(pstChild != orxNULL)
+    /* Should recurse? */
+    if(bRecursive != orxFALSE)
     {
-      /* Updates prefix */
-      *(spcPrefixCurrent - 2) = (pstSibling != orxNULL) ? '|' : ' ';
-      *(spcPrefixCurrent - 1) = ' ';
+      orxTREE_NODE *pstChild;
 
-      /* Logs its */
-      orxStructure_LogNode(pstChild, _bPrivate);
+      /* Gets its child */
+      pstChild = orxTree_GetChild(_pstNode);
 
-      /* For all its siblings */
-      for(pstSibling = orxTree_GetSibling(pstChild);
-          pstSibling != orxNULL;
-          pstSibling = orxTree_GetSibling(pstSibling))
+      /* Valid? */
+      if(pstChild != orxNULL)
       {
-        /* Logs it */
-        orxStructure_LogNode(pstSibling, _bPrivate);
+        /* Updates prefix */
+        *(spcPrefixCurrent - 2) = (pstSibling != orxNULL) ? '|' : ' ';
+        *(spcPrefixCurrent - 1) = ' ';
+
+        /* Logs its */
+        orxStructure_LogNode(pstChild, _bPrivate);
+
+        /* For all its siblings */
+        for(pstSibling = orxTree_GetSibling(pstChild);
+            pstSibling != orxNULL;
+            pstSibling = orxTree_GetSibling(pstSibling))
+        {
+          /* Logs it */
+          orxStructure_LogNode(pstSibling, _bPrivate);
+        }
       }
     }
 
