@@ -4138,6 +4138,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
 {
   orxU32        u32UpdateFlags;
   orxSTRUCTURE *pstStructure;
+  orxBOOL       bDeleted = orxFALSE;
   orxOBJECT    *pstResult = orxNULL;
 
   /* Profiles */
@@ -4154,7 +4155,6 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
     const orxCLOCK_INFO  *pstClockInfo;
-    orxBOOL               bDeleted = orxFALSE;
 
     /* Has clock? */
     if(_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK] != orxNULL)
@@ -4194,18 +4194,6 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     /* Wasn't object deleted? */
     if(bDeleted == orxFALSE)
     {
-      orxLINKLIST_NODE *pstNode;
-
-      /* Gets next enabled object */
-      pstNode = orxLinkList_GetNext(&(_pstObject->stEnableNode));
-
-      /* Valid? */
-      if(pstNode != orxNULL)
-      {
-        /* Updates result */
-        pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
-      }
-
       /* Has DT? */
       if(pstClockInfo->fDT > orxFLOAT_0)
       {
@@ -4323,6 +4311,22 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           }
         }
       }
+    }
+  }
+
+  /* Wasn't object deleted? */
+  if(bDeleted == orxFALSE)
+  {
+    orxLINKLIST_NODE *pstNode;
+
+    /* Gets next enabled object */
+    pstNode = orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+    /* Valid? */
+    if(pstNode != orxNULL)
+    {
+      /* Updates result */
+      pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
     }
   }
 
