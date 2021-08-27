@@ -638,10 +638,11 @@ static orxINLINE void orxFrame_UpdateData(orxFRAME *_pstFrame, const orxFRAME *_
   return;
 }
 
-/** Processes a frame
+/** Internally processes a frame
  * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _pstParent      Parent frame
  */
-static void orxFASTCALL orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
+static void orxFASTCALL orxFrame_ProcessInternal(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
 {
   orxFRAME *pstChild;
 
@@ -653,9 +654,28 @@ static void orxFASTCALL orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_p
       pstChild != orxNULL;
       pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
   {
-    /* Updates it */
-    orxFrame_Process(pstChild, _pstFrame);
+    /* Processes it */
+    orxFrame_ProcessInternal(pstChild, _pstFrame);
   }
+
+  /* Done! */
+  return;
+}
+
+/** Processes a frame
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _pstParent      Parent frame
+ */
+static orxINLINE void orxFrame_Process(orxFRAME *_pstFrame, const orxFRAME *_pstParent)
+{
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxFrame_Process");
+
+  /* Processes frame */
+  orxFrame_ProcessInternal(_pstFrame, _pstParent);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -1154,6 +1174,34 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   /* Not referenced? */
   if(orxStructure_GetRefCount(_pstFrame) == 0)
   {
+    orxFRAME *pstParent;
+
+    /* Gets parent frame */
+    pstParent = orxFRAME(orxStructure_GetParent(_pstFrame));
+
+    /* Valid? */
+    if(pstParent != orxNULL)
+    {
+      orxFRAME *pstChild;
+
+      /* Resets global values to parent's */
+      _pstFrame->stData.vGlobalPos.fX   = pstParent->stData.vGlobalPos.fX;
+      _pstFrame->stData.vGlobalPos.fY   = pstParent->stData.vGlobalPos.fY;
+      _pstFrame->stData.vGlobalPos.fZ   = pstParent->stData.vGlobalPos.fZ;
+      _pstFrame->stData.fGlobalRotation = pstParent->stData.fGlobalRotation;
+      _pstFrame->stData.fGlobalScaleX   = pstParent->stData.fGlobalScaleX;
+      _pstFrame->stData.fGlobalScaleY   = pstParent->stData.fGlobalScaleY;
+
+      /* For all children */
+      for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
+          pstChild != orxNULL;
+          pstChild = orxFRAME(orxStructure_GetSibling(pstChild)))
+      {
+        /* Processes it */
+        orxFrame_Process(pstChild, _pstFrame);
+      }
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstFrame);
   }
@@ -1183,17 +1231,11 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
     /* Is current parent not root? */
     if(orxStructure_GetParent(_pstFrame) != orxSTRUCTURE(sstFrame.pstRoot))
     {
-      /* Root is parent */
+      /* Set root as parent */
       orxStructure_SetParent(_pstFrame, sstFrame.pstRoot);
-
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
 
       /* Processes frame */
       orxFrame_Process(_pstFrame, sstFrame.pstRoot);
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
   }
   else
@@ -1204,14 +1246,8 @@ void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
       /* Sets parent */
       orxStructure_SetParent(_pstFrame, _pstParent);
 
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
       /* Processes frame */
       orxFrame_Process(_pstFrame, _pstParent);
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
   }
 
@@ -1320,14 +1356,8 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Updates coord values */
     if(_orxFrame_SetPosition(_pstFrame, _pvPos, orxFRAME_SPACE_LOCAL) != orxFALSE)
     {
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
       /* Processes frame */
       orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
   }
   else
@@ -1347,9 +1377,6 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Computes & stores local position */
     _orxFrame_SetPosition(_pstFrame, orxFrame_FromGlobalToLocalPosition(pstParent, _pvPos, &vPos, orxStructure_GetFlags(_pstFrame, orxFRAME_KU32_MASK_IGNORE_POSITION)), orxFRAME_SPACE_LOCAL);
 
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
     /* For all children */
     for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
         pstChild != orxNULL;
@@ -1358,9 +1385,6 @@ void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
       /* Processes it */
       orxFrame_Process(pstChild, _pstFrame);
     }
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
   }
 
   /* Done! */
@@ -1384,14 +1408,8 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Updates rotation value */
     if(_orxFrame_SetRotation(_pstFrame, _fRotation, orxFRAME_SPACE_LOCAL) != orxFALSE)
     {
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
       /* Processes frame */
       orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
   }
   else
@@ -1410,9 +1428,6 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
     /* Computes & stores local rotation */
     _orxFrame_SetRotation(_pstFrame, orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_IGNORE_ROTATION) ? _fRotation : orxFrame_FromGlobalToLocalRotation(pstParent, _fRotation), orxFRAME_SPACE_LOCAL);
 
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
     /* For all children */
     for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
         pstChild != orxNULL;
@@ -1421,9 +1436,6 @@ void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpac
       /* Processes it */
       orxFrame_Process(pstChild, _pstFrame);
     }
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
   }
 
   /* Done! */
@@ -1448,14 +1460,8 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
     /* Updates scale value */
     if(_orxFrame_SetScale(_pstFrame, _pvScale, orxFRAME_SPACE_LOCAL) != orxFALSE)
     {
-      /* Profiles */
-      orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
       /* Processes frame */
       orxFrame_Process(_pstFrame, orxFRAME(orxStructure_GetParent(_pstFrame)));
-
-      /* Profiles */
-      orxPROFILER_POP_MARKER();
     }
   }
   else
@@ -1475,9 +1481,6 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
     /* Computes & stores local scale */
     _orxFrame_SetScale(_pstFrame, orxFrame_FromGlobalToLocalScale(pstParent, _pvScale, &vScale, orxStructure_GetFlags(_pstFrame, orxFRAME_KU32_MASK_IGNORE_SCALE)), orxFRAME_SPACE_LOCAL);
 
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxFrame_Process");
-
     /* For all children */
     for(pstChild = orxFRAME(orxStructure_GetChild(_pstFrame));
         pstChild != orxNULL;
@@ -1486,9 +1489,6 @@ void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, 
       /* Processes it */
       orxFrame_Process(pstChild, _pstFrame);
     }
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
   }
 
   /* Done! */

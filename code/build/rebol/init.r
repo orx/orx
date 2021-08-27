@@ -13,6 +13,7 @@ params: [
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
   movie       {Movie (MPEG-1) decoding support}                                       -       []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
+  remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}-       []
   scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
 ]
 platforms:  [

@@ -193,6 +193,13 @@ solution "[name]"
 
 -- Windows
 
+[+remote
+    configuration {"windows"}
+        links
+        {
+            "ws2_32"
+        }
+]
     configuration {"windows", "vs*"}
         buildoptions
         {

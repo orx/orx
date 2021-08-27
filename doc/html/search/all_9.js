@@ -576,6 +576,7 @@ var searchData=
   ['orxconsole_5finit',['orxConsole_Init',['../group__orx_console.html#ga6e843897f872e5d1760fd46ad3536777',1,'orxConsole.h']]],
   ['orxconsole_5fisenabled',['orxConsole_IsEnabled',['../group__orx_console.html#ga325e941005ce33c772edc9f9232340f8',1,'orxConsole.h']]],
   ['orxconsole_5fisinsertmode',['orxConsole_IsInsertMode',['../group__orx_console.html#ga340e1c258504c95b07015483d1d412a3',1,'orxConsole.h']]],
+  ['orxconsole_5fkz_5fconfig_5fhistory_5ffile_5fextension',['orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION',['../group__orx_console.html#gafb3c581ac3c237f0c353bfbbeaaf2307',1,'orxConsole.h']]],
   ['orxconsole_5fkz_5finput_5fautocomplete',['orxCONSOLE_KZ_INPUT_AUTOCOMPLETE',['../group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63',1,'orxConsole.h']]],
   ['orxconsole_5fkz_5finput_5fdelete',['orxCONSOLE_KZ_INPUT_DELETE',['../group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023',1,'orxConsole.h']]],
   ['orxconsole_5fkz_5finput_5fdelete_5fafter',['orxCONSOLE_KZ_INPUT_DELETE_AFTER',['../group__orx_console.html#ga0d48acf8c6d88562437d4c81a519475d',1,'orxConsole.h']]],

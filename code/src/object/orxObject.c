@@ -3944,9 +3944,10 @@ static orxINLINE orxOBJECT *orxObject_CreateInternal()
 
 /** Deletes an object
  */
-static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBOOL _bNoCommand)
+static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBOOL _bNoCommand, orxOBJECT **_ppstNextObject)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxBOOL   bSelectedNext = orxFALSE;
+  orxSTATUS eResult       = orxSTATUS_FAILURE;
 
   /* Decreases count */
   orxStructure_DecreaseCount(_pstObject);
@@ -3979,12 +3980,6 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
       {
         orxU32 i;
 
-        /* Unlink all structures */
-        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
-        {
-          orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
-        }
-
         /* Has children? */
         if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
         {
@@ -3995,12 +3990,34 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
               pstChild != orxNULL;
               pstChild = _pstObject->pstChild)
           {
-            /* Removes its owner */
-            orxObject_SetOwner(pstChild, orxNULL);
-
-            /* Marks it for deletion */
-            orxObject_SetLifeTime(pstChild, orxFLOAT_0);
+            /* Deletes it */
+            orxObject_DeleteInternal(pstChild, _bNoCommand, orxNULL);
           }
+        }
+
+        /* Unlinks all structures, frame last */
+        for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+        {
+          if((i != orxSTRUCTURE_ID_FRAME) && (_pstObject->apstStructureList[i] != orxNULL))
+          {
+            orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
+          }
+        }
+        orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+        /* Requested next object? */
+        if(_ppstNextObject != orxNULL)
+        {
+          orxLINKLIST_NODE *pstNode;
+
+          /* Gets next enabled object */
+          pstNode = orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+          /* Stores it */
+          *_ppstNextObject = (pstNode != orxNULL) ? orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode) : orxNULL;
+
+          /* Updates status */
+          bSelectedNext = orxTRUE;
         }
 
         /* Removes owner */
@@ -4047,6 +4064,18 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
     }
   }
 
+  /* Requested next object and not already selected? */
+  if((_ppstNextObject != orxNULL) && (bSelectedNext == orxFALSE))
+  {
+    orxLINKLIST_NODE *pstNode;
+
+    /* Gets next enabled object */
+    pstNode = orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+    /* Stores it */
+    *_ppstNextObject = (pstNode != orxNULL) ? orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode) : orxNULL;
+  }
+
   /* Done! */
   return eResult;
 }
@@ -4090,7 +4119,7 @@ static orxINLINE void orxObject_DeleteAll()
   while(pstObject != orxNULL)
   {
     /* Deletes object */
-    orxObject_DeleteInternal(pstObject, orxTRUE);
+    orxObject_DeleteInternal(pstObject, orxTRUE, orxNULL);
 
     /* Gets first object */
     pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
@@ -4103,11 +4132,14 @@ static orxINLINE void orxObject_DeleteAll()
 /** Updates an object
  * @param[int] _pstObject         Concerned object
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
+ * @return Next object/orxNULL
  */
-static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
+static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const orxCLOCK_INFO *_pstClockInfo)
 {
   orxU32        u32UpdateFlags;
   orxSTRUCTURE *pstStructure;
+  orxBOOL       bDeleted = orxFALSE;
+  orxOBJECT    *pstResult = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_Update");
@@ -4123,7 +4155,6 @@ static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const or
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
     const orxCLOCK_INFO  *pstClockInfo;
-    orxBOOL               bDeleted = orxFALSE;
 
     /* Has clock? */
     if(_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK] != orxNULL)
@@ -4150,7 +4181,7 @@ static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const or
       if(_pstObject->fLifeTime <= orxFLOAT_0)
       {
         /* Deletes it */
-        orxObject_Delete(_pstObject);
+        orxObject_DeleteInternal(_pstObject, orxFALSE, &pstResult);
 
         /* Marks as deleted */
         bDeleted = orxTRUE;
@@ -4283,11 +4314,27 @@ static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const or
     }
   }
 
+  /* Wasn't object deleted? */
+  if(bDeleted == orxFALSE)
+  {
+    orxLINKLIST_NODE *pstNode;
+
+    /* Gets next enabled object */
+    pstNode = orxLinkList_GetNext(&(_pstObject->stEnableNode));
+
+    /* Valid? */
+    if(pstNode != orxNULL)
+    {
+      /* Updates result */
+      pstResult = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
+    }
+  }
+
   /* Profiles */
   orxPROFILER_POP_MARKER();
 
   /* Done! */
-  return;
+  return pstResult;
 }
 
 /** Updates all the objects
@@ -4296,26 +4343,21 @@ static void orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, const or
  */
 static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxLINKLIST_NODE *pstNode, *pstNextNode;
+  orxLINKLIST_NODE *pstNode;
+  orxOBJECT        *pstObject = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxObject_UpdateAll");
 
-  /* For all enabled nodes */
-  for(pstNode = orxLinkList_GetFirst(&(sstObject.stEnableList));
-      pstNode != orxNULL;
-      pstNode = pstNextNode)
+  /* Gets first enabled object */
+  pstNode   = orxLinkList_GetFirst(&(sstObject.stEnableList));
+  pstObject = (pstNode != orxNULL) ? orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode) : orxNULL;
+
+  /* For all enabled objects */
+  while(pstObject != orxNULL)
   {
-    orxOBJECT *pstObject;
-
-    /* Gets next node */
-    pstNextNode = orxLinkList_GetNext(pstNode);
-
-    /* Gets associated object */
-    pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
-
     /* Updates it */
-    orxObject_UpdateInternal(pstObject, _pstClockInfo);
+    pstObject = orxObject_UpdateInternal(pstObject, _pstClockInfo);
   }
 
   /* Profiles */
@@ -4597,7 +4639,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   orxASSERT((orxEvent_IsSending() == orxFALSE) && "Calling orxObject_Delete() from inside an event handler is *NOT* safe: please consider calling orxObject_SetLifeTime(orxFLOAT_0) instead.");
 
   /* Deletes it */
-  eResult = orxObject_DeleteInternal(_pstObject, orxFALSE);
+  eResult = orxObject_DeleteInternal(_pstObject, orxFALSE, orxNULL);
 
   /* Done! */
   return eResult;
@@ -5567,20 +5609,27 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(pstChild != orxNULL)
               {
-                /* Has last child? */
-                if(pstLastChild != orxNULL)
+                /* Still the child's owner? */
+                if(pstChild->stStructure.u64OwnerGUID == pstResult->stStructure.u64GUID)
                 {
-                  /* Sets its sibling */
-                  pstLastChild->pstSibling = pstChild;
-                }
-                else
-                {
-                  /* Sets first child */
-                  pstResult->pstChild = pstChild;
-                }
+                  /* Has last child? */
+                  if(pstLastChild != orxNULL)
+                  {
+                    /* Sets its sibling */
+                    pstLastChild->pstSibling = pstChild;
+                  }
+                  else
+                  {
+                    /* Sets first child */
+                    pstResult->pstChild = pstChild;
+                  }
 
-                /* Stores last child */
-                pstLastChild = pstChild;
+                  /* Stores last child */
+                  pstLastChild = pstChild;
+
+                  /* Updates flags */
+                  u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
+                }
 
                 /* Doesn't already have a parent? */
                 if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
@@ -5606,9 +5655,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Sets its parent */
                   orxObject_SetParent(pstChild, pstResult);
                 }
-
-                /* Updates flags */
-                u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
               }
             }
           }
@@ -5967,7 +6013,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       else
       {
         /* Deletes object */
-        orxObject_DeleteInternal(pstResult, orxFALSE);
+        orxObject_DeleteInternal(pstResult, orxFALSE, orxNULL);
         pstResult = orxNULL;
       }
     }
@@ -8073,7 +8119,7 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
 
   /* Logs header */
   orxLOG("*** BEGIN PARENTS LOG: \"" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT "\" [" orxANSI_KZ_COLOR_FG_MAGENTA "0x%016llX" orxANSI_KZ_COLOR_FG_DEFAULT "] ***\n", orxObject_GetName(_pstObject), orxStructure_GetGUID(_pstObject));
-  orxLOG("             NAME                     GUID             [LOCAL]       POSITION            ROTATION               SCALE          =>    [WORLD]       POSITION            ROTATION               SCALE          [IGNORE FLAGS]");
+  orxLOG("             NAME                     GUID             [LOCAL]        POSITION         ROTATION                   SCALE        =>    [WORLD]        POSITION         ROTATION                   SCALE        [IGNORE FLAGS]");
 
   /* For all structures in parent hierarchy */
   for(orxSTRUCTURE *pstParent = orxSTRUCTURE(_pstObject); pstParent != orxNULL;)

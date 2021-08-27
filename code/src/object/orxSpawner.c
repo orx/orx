@@ -1397,6 +1397,53 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
       orxHashTable_Delete(_pstSpawner->pstSpawnedTable);
     }
 
+    /* Used self as parent? */
+    if(orxStructure_GetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT | orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE) == orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT)
+    {
+      orxFRAME *pstChildFrame;
+
+      /* Gets frame's child */
+      pstChildFrame = orxFrame_GetChild(_pstSpawner->pstFrame);
+
+      /* Valid? */
+      if(pstChildFrame != orxNULL)
+      {
+        orxSTRUCTURE *pstChild;
+        orxOBJECT    *pstObject, *pstNextObject;
+
+        /* Skips all non-objects */
+        for(pstChild = orxStructure_GetOwner(pstChildFrame);
+            (pstChild == orxNULL) || (orxStructure_GetID(pstChild) != orxSTRUCTURE_ID_OBJECT);
+            pstChild = orxStructure_GetOwner(pstChildFrame))
+        {
+          /* Gets next sibling frame */
+          pstChildFrame = orxFrame_GetSibling(pstChildFrame);
+
+          /* No more siblings? */
+          if(pstChildFrame == orxNULL)
+          {
+            /* Updates child */
+            pstChild = orxNULL;
+
+            /* Stops */
+            break;
+          }
+        }
+
+        /* For all children */
+        for(pstObject = orxOBJECT(pstChild);
+            pstObject != orxNULL;
+            pstObject = pstNextObject)
+        {
+          /* Gets its sibling */
+          pstNextObject = orxObject_GetSibling(pstObject);
+
+          /* Detaches it */
+          orxObject_Detach(pstObject);
+        }
+      }
+    }
+
     /* Removes frame's owner */
     orxStructure_SetOwner(_pstSpawner->pstFrame, orxNULL);
 
