@@ -489,8 +489,8 @@ orxSTATUS orxFASTCALL orxParam_Init()
         stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
         stParams.zShortName = "c";
         stParams.zLongName  = "config";
-        stParams.zShortDesc = "Loads the specified configuration file.";
-        stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
+        stParams.zShortDesc = "Loads the specified configuration file(s).";
+        stParams.zLongDesc  = "Loads the specified configuration file(s) from the current execution folder or the available Config resource storages.";
 
         /* Registers it */
         eResult = orxParam_Register(&stParams);
