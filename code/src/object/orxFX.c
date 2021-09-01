@@ -2660,8 +2660,14 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
-      orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      {
+        orxVector_SetAll(&vStartColor, orxFLOAT_0);
+      }
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      {
+        orxVector_SetAll(&vEndColor, orxFLOAT_0);
+      }
 
       /* Adds RGB slot */
       eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
@@ -2672,8 +2678,14 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
-      orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      {
+        orxVector_SetAll(&vStartColor, orxFLOAT_0);
+      }
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      {
+        orxVector_SetAll(&vEndColor, orxFLOAT_0);
+      }
 
       /* Adds HSL slot */
       eResult = orxFX_AddHSL(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
@@ -2684,8 +2696,14 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
-      orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      {
+        orxVector_SetAll(&vStartColor, orxFLOAT_0);
+      }
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      {
+        orxVector_SetAll(&vEndColor, orxFLOAT_0);
+      }
 
       /* Adds RGB slot */
       eResult = orxFX_AddHSV(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
@@ -2713,7 +2731,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         orxFLOAT fScale;
 
         /* Gets config uniformed scale */
-        fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
+        fScale = (orxConfig_HasValue(orxFX_KZ_CONFIG_START_VALUE) != orxFALSE) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE) : orxFLOAT_1;
 
         /* Updates vector */
         orxVector_SetAll(&vStartScale, fScale);
@@ -2725,7 +2743,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         orxFLOAT fScale;
 
         /* Gets config uniformed scale */
-        fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
+        fScale = (orxConfig_HasValue(orxFX_KZ_CONFIG_END_VALUE) != orxFALSE) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE) : orxFLOAT_1;
 
         /* Updates vector */
         orxVector_SetAll(&vEndScale, fScale);
@@ -2740,9 +2758,15 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartPosition, vEndPosition;
       orxU32    u32LocalFlags;
 
-      /* Gets scalevalues */
-      orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartPosition);
-      orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndPosition);
+      /* Gets position values */
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartPosition) == orxNULL)
+      {
+        orxVector_SetAll(&vStartPosition, orxFLOAT_0);
+      }
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndPosition) == orxNULL)
+      {
+        orxVector_SetAll(&vEndPosition, orxFLOAT_0);
+      }
 
       /* Use rotation? */
       if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
@@ -2772,9 +2796,15 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartSpeed, vEndSpeed;
       orxU32    u32LocalFlags;
 
-      /* Gets scalevalues */
-      orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartSpeed);
-      orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndSpeed);
+      /* Gets speed values */
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartSpeed) == orxNULL)
+      {
+        orxVector_SetAll(&vStartSpeed, orxFLOAT_0);
+      }
+      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndSpeed) == orxNULL)
+      {
+        orxVector_SetAll(&vEndSpeed, orxFLOAT_0);
+      }
 
       /* Use rotation? */
       if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
