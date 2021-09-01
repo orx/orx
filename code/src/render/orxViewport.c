@@ -1691,9 +1691,28 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       {
         orxCOLOR stColor;
 
-        /* Gets color vector */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
+        /* Not a vector value? */
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB)) == orxNULL)
+        {
+          const orxSTRING zColor;
+
+          /* Gets literal color */
+          zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
+
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &(stColor.vRGB));
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+
+        /* Normalizes it */
         orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+
+        /* Gets alpha value */
         stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
 
         /* Applies it */
