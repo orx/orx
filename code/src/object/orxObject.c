@@ -5239,8 +5239,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has color? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
         {
+          const orxSTRING zColor;
+
+          /* Gets color literal */
+          zColor = orxConfig_GetString(orxOBJECT_KZ_CONFIG_COLOR);
+
           /* Is a vector value? */
-          if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
+          if(orxConfig_ToVector(zColor, &vColor) != orxNULL)
           {
             /* Normalizes it */
             orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
@@ -5251,11 +5256,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Color literal */
           else
           {
-            const orxSTRING zColor;
-
-            /* Gets color name */
-            zColor = orxConfig_GetString(orxOBJECT_KZ_CONFIG_COLOR);
-
             /* Pushes color section */
             orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 

@@ -150,6 +150,10 @@ static orxVIEWPORT_STATIC sstViewport;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
+
 /** Command: Create
  */
 void orxFASTCALL orxViewport_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1689,16 +1693,15 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
-        orxCOLOR stColor;
+        orxCOLOR        stColor;
+        const orxSTRING zColor;
+
+        /* Gets literal color */
+        zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
 
         /* Not a vector value? */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB)) == orxNULL)
+        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) == orxNULL)
         {
-          const orxSTRING zColor;
-
-          /* Gets literal color */
-          zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
-
           /* Pushes color section */
           orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 

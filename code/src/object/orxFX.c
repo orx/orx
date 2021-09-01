@@ -224,6 +224,10 @@ static orxFX_STATIC sstFX;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
+
 /** Gets FX slot type
  * @param[in] _pstFXSlot        Concerned FX slot
  * @return orxFX_TYPE
@@ -2590,40 +2594,57 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     /* Color blend? */
     else if(orxString_ICompare(zType, orxFX_KZ_COLOR) == 0)
     {
-      orxVECTOR vStartColor, vEndColor;
+      orxVECTOR       vStartColor, vEndColor;
+      const orxSTRING zColor;
 
-      /* Gets color values */
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      /* Gets start color literal */
+      zColor = orxConfig_GetString(orxFX_KZ_CONFIG_START_VALUE);
+
+      /* Not a vector value? */
+      if(orxConfig_ToVector(zColor, &vStartColor) == orxNULL)
       {
-        const orxSTRING zColor;
+        /* Not empty? */
+        if(zColor != orxSTRING_EMPTY)
+        {
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
-        /* Gets literal color */
-        zColor = orxConfig_GetString(orxFX_KZ_CONFIG_START_VALUE);
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vStartColor);
 
-        /* Pushes color section */
-        orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-        /* Retrieves its value */
-        orxConfig_GetVector(zColor, &vStartColor);
-
-        /* Pops config section */
-        orxConfig_PopSection();
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        else
+        {
+          /* Defaults to black */
+          orxVector_SetAll(&vStartColor, orxFLOAT_0);
+        }
       }
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+
+      /* Gets end color literal */
+      zColor = orxConfig_GetString(orxFX_KZ_CONFIG_END_VALUE);
+
+      /* Not a vector value? */
+      if(orxConfig_ToVector(zColor, &vEndColor) == orxNULL)
       {
-        const orxSTRING zColor;
+        /* Not empty? */
+        if(zColor != orxSTRING_EMPTY)
+        {
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
-        /* Gets literal color */
-        zColor = orxConfig_GetString(orxFX_KZ_CONFIG_END_VALUE);
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &vEndColor);
 
-        /* Pushes color section */
-        orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-        /* Retrieves its value */
-        orxConfig_GetVector(zColor, &vEndColor);
-
-        /* Pops config section */
-        orxConfig_PopSection();
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+        else
+        {
+          /* Defaults to black */
+          orxVector_SetAll(&vEndColor, orxFLOAT_0);
+        }
       }
 
       /* Normalizes them */
