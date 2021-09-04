@@ -6922,13 +6922,6 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   {
     /* Gets its size */
     pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
-
-    /* Invalid Z? */
-    if(pvResult->fZ <= orxFLOAT_0)
-    {
-      /* Defaults to 1 */
-      pvResult->fZ = orxFLOAT_1;
-    }
   }
   else
   {
@@ -6937,6 +6930,13 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
 
     /* Updates result */
     pvResult = _pvSize;
+  }
+
+  /* Invalid Z? */
+  if(pvResult->fZ <= orxFLOAT_0)
+  {
+    /* Defaults to 1 */
+    pvResult->fZ = orxFLOAT_1;
   }
 
   /* Done! */
