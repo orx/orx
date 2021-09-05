@@ -127,6 +127,24 @@ do                                                                              
   orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                    \
 } while(orxFALSE)
 
+#define orxCOMMAND_REGISTER(NAME, FUNCTION, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                                  \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \
+  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{"Dummy", orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \
+  orxSTATUS           eStatus;                                                                                                                                  \
+  stResult.eType    = RESULT_TYPE;                                                                                                                              \
+  stResult.zName    = RESULT_NAME;                                                                                                                              \
+  eStatus           = orxCommand_Register(NAME, &FUNCTION, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult);                                    \
+  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
+} while(orxFALSE)
+
+#define orxCOMMAND_UNREGISTER(NAME)                                                                                                                             \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCommand_Unregister(NAME);                                                                                                                                  \
+} while(orxFALSE)
+
 
 /** Command module setup
  */
