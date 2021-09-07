@@ -1361,8 +1361,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
     else
     {
       /* Stores values */
-      _pstGraphic->fWidth = _pvSize->fX;
-      _pstGraphic->fHeight = _pvSize->fY;
+      _pstGraphic->fWidth   = _pvSize->fX;
+      _pstGraphic->fHeight  = _pvSize->fY;
     }
   }
   else
