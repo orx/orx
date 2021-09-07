@@ -1344,7 +1344,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize);
-  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fY >= orxFLOAT_0));
+  orxASSERT((_pvSize->fX >= orxFLOAT_0) && ((_pvSize->fY >= orxFLOAT_0) || orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)));
 
   /* Has text? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
