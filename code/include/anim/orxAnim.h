@@ -202,12 +202,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastEvent(orxANIM *_
  */
 extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllEvents(orxANIM *_pstAnim);
 
-/** Gets next event after given timestamp
+/** Gets next event
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _pstEvent       Event, orxNULL for first
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, const orxANIM_CUSTOM_EVENT *_pstEvent);
+
+/** Gets event strictly after given timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     Time stamp, excluded
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
+extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetEventAfter(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 
 /** Gets animation's key index from a time stamp

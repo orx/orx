@@ -166,9 +166,9 @@ static orxINLINE void orxAnimPointer_SendCustomEvents(orxANIM *_pstAnim, const o
   stPayload.zAnimName = orxAnim_GetName(_pstAnim);
 
   /* For all events to send */
-  for(pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, _fStartTime);
+  for(pstCustomEvent = orxAnim_GetEventAfter(_pstAnim, _fStartTime);
       (pstCustomEvent != orxNULL) && (pstCustomEvent->fTimeStamp <= _fEndTime);
-      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent->fTimeStamp))
+      pstCustomEvent = orxAnim_GetNextEvent(_pstAnim, pstCustomEvent))
   {
     /* Updates event payload */
     stPayload.stCustom.zName  = pstCustomEvent->zName;
