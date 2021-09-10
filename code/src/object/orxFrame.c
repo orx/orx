@@ -402,7 +402,7 @@ static orxINLINE orxVECTOR *orxFrame_GetCorrectedGlobalPosition(const orxFRAME *
   {
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X:
     {
-      _pvPos->fX = orxFLOAT_1;
+      _pvPos->fX = orxFLOAT_0;
       _pvPos->fY = _pstFrame->stData.vGlobalPos.fY;
       _pvPos->fZ = _pstFrame->stData.vGlobalPos.fZ;
       break;
@@ -410,7 +410,7 @@ static orxINLINE orxVECTOR *orxFrame_GetCorrectedGlobalPosition(const orxFRAME *
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y:
     {
       _pvPos->fX = _pstFrame->stData.vGlobalPos.fX;
-      _pvPos->fY = orxFLOAT_1;
+      _pvPos->fY = orxFLOAT_0;
       _pvPos->fZ = _pstFrame->stData.vGlobalPos.fZ;
       break;
     }
@@ -418,35 +418,35 @@ static orxINLINE orxVECTOR *orxFrame_GetCorrectedGlobalPosition(const orxFRAME *
     {
       _pvPos->fX = _pstFrame->stData.vGlobalPos.fX;
       _pvPos->fY = _pstFrame->stData.vGlobalPos.fY;
-      _pvPos->fZ = orxFLOAT_1;
+      _pvPos->fZ = orxFLOAT_0;
       break;
     }
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X|orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y:
     {
-      _pvPos->fX = orxFLOAT_1;
-      _pvPos->fY = orxFLOAT_1;
+      _pvPos->fX = orxFLOAT_0;
+      _pvPos->fY = orxFLOAT_0;
       _pvPos->fZ = _pstFrame->stData.vGlobalPos.fZ;
       break;
     }
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X|orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Z:
     {
-      _pvPos->fX = orxFLOAT_1;
+      _pvPos->fX = orxFLOAT_0;
       _pvPos->fY = _pstFrame->stData.vGlobalPos.fY;
-      _pvPos->fZ = orxFLOAT_1;
+      _pvPos->fZ = orxFLOAT_0;
       break;
     }
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y|orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Z:
     {
       _pvPos->fX = _pstFrame->stData.vGlobalPos.fX;
-      _pvPos->fY = orxFLOAT_1;
-      _pvPos->fZ = orxFLOAT_1;
+      _pvPos->fY = orxFLOAT_0;
+      _pvPos->fZ = orxFLOAT_0;
       break;
     }
     case orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X|orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y|orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Z:
     {
-      _pvPos->fX = orxFLOAT_1;
-      _pvPos->fY = orxFLOAT_1;
-      _pvPos->fZ = orxFLOAT_1;
+      _pvPos->fX = orxFLOAT_0;
+      _pvPos->fY = orxFLOAT_0;
+      _pvPos->fZ = orxFLOAT_0;
       break;
     }
     default:
