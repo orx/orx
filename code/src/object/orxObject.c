@@ -239,6 +239,7 @@ typedef struct __orxOBJECT_STATIC_t
   orxHASHTABLE     *pstGroupTable;              /**< Group table */
   orxOBJECT_LISTS  *pstCachedGroupLists;        /**< Cached group lists */
   orxOBJECT        *pstCurrentObject;           /**< Current object */
+  orxFRAME         *pstFrame;                   /**< Conversion frame */
   orxLINKLIST       stEnableList;               /**< Enabled objects list */
   orxSTRINGID       stDefaultGroupID;           /**< Default group ID */
   orxSTRINGID       stCurrentGroupID;           /**< Current group ID */
@@ -4455,15 +4456,43 @@ orxSTATUS orxFASTCALL orxObject_Init()
               /* Success? */
               if(sstObject.pstGroupTable != orxNULL)
               {
-                /* Registers commands */
-                orxObject_RegisterCommands();
+                /* Creates conversion frame */
+                sstObject.pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
-                /* Stores default group ID */
-                sstObject.stDefaultGroupID  = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
-                sstObject.stCurrentGroupID  = sstObject.stDefaultGroupID;
+                /* Success? */
+                if(sstObject.pstFrame != orxNULL)
+                {
+                  /* Registers commands */
+                  orxObject_RegisterCommands();
 
-                /* Inits Flags */
-                sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+                  /* Stores default group ID */
+                  sstObject.stDefaultGroupID  = orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP);
+                  sstObject.stCurrentGroupID  = sstObject.stDefaultGroupID;
+
+                  /* Inits Flags */
+                  sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
+                }
+                else
+                {
+                  /* Updates result */
+                  eResult = orxSTATUS_FAILURE;
+
+                  /* Removes event handler */
+                  orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+
+                  /* Deletes banks */
+                  orxBank_Delete(sstObject.pstGroupBank);
+                  orxBank_Delete(sstObject.pstAgeBank);
+
+                  /* Deletes table */
+                  orxHashTable_Delete(sstObject.pstGroupTable);
+
+                  /* Unregisters from clock */
+                  orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+                  /* Unregisters structure type */
+                  orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
+                }
               }
               else
               {
@@ -4587,6 +4616,9 @@ void orxFASTCALL orxObject_Exit()
     /* Deletes banks */
     orxBank_Delete(sstObject.pstGroupBank);
     orxBank_Delete(sstObject.pstAgeBank);
+
+    /* Deletes conversion frame */
+    orxFrame_Delete(sstObject.pstFrame);
 
     /* Updates flags */
     sstObject.u32Flags &= ~orxOBJECT_KU32_STATIC_FLAG_READY;
@@ -4934,6 +4966,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           {
             /* Updates parent space status */
             bUseParentSpace = orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE);
+
+            /* Is parent an object? */
+            if(orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT)
+            {
+              /* Sets it as parent */
+              orxObject_SetParent(pstResult, pstParent);
+            }
 
             /* Has parent space or position literals? */
             if((bUseParentSpace != orxFALSE) || (*zPosition != orxCHAR_NULL))
@@ -5468,20 +5507,54 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             }
           }
 
+          /* Restores override marker */
+          *pcPivotOverrideMarker = *orxOBJECT_KZ_OVERRIDE_MARKER;
+
           /* Valid? */
           if(bValid != orxFALSE)
           {
             orxVECTOR vPivot;
+            orxU32    u32IgnoreFlags;
 
             /* Gets pivot */
             orxObject_GetPivot(pstResult, &vPivot);
 
-            /* Updates override */
-            orxVector_2DRotate(&vPivotOverride, orxVector_Mul(&vPivotOverride, orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride), &vScale), fRotation);
-          }
+            /* Updates pivot override (delta) */
+            orxVector_Sub(&vPivotOverride, &vPivot, &vPivotOverride);
 
-          /* Restores override marker */
-          *pcPivotOverrideMarker = *orxOBJECT_KZ_OVERRIDE_MARKER;
+            /* Has parent and ignore flags? */
+            if((pstParent != orxNULL)
+            && (orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT)
+            && ((u32IgnoreFlags = orxObject_GetIgnoreFlags(pstResult)) != orxFRAME_KU32_FLAG_IGNORE_NONE))
+            {
+              /* Ignoring position components? */
+              if(orxFLAG_TEST(u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_POSITION))
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has both a placement pivot override [" orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT "] and position ignore flags [" orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]: this will likely yield unexpected results.", orxObject_GetName(pstResult), zPivotOverride, orxFrame_GetIgnoreFlagNames(orxFLAG_GET(u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_POSITION)));
+              }
+
+              /* Sets pivot override in parent space */
+              orxFrame_SetParent(sstObject.pstFrame, orxOBJECT_GET_STRUCTURE(pstResult, FRAME));
+              orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPivotOverride);
+
+              /* Retrieves it in global space */
+              orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPivotOverride);
+
+              /* Converts it in object's local space */
+              orxFrame_SetParent(sstObject.pstFrame, orxOBJECT_GET_STRUCTURE(orxOBJECT(pstParent), FRAME));
+              orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPivotOverride);
+              orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPivotOverride);
+
+              /* Removes conversion frame */
+              orxFrame_SetParent(sstObject.pstFrame, orxNULL);
+            }
+            else
+            {
+              /* Applies local rotation and scale to pivot override */
+              orxVector_2DRotate(&vPivotOverride, orxVector_Mul(&vPivotOverride, &vPivotOverride, &vScale), fRotation);
+            }
+          }
         }
 
         /* Doesn't have Cartesian position? */
@@ -5609,6 +5682,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(pstChild != orxNULL)
               {
+                orxBODY *pstChildBody;
+
                 /* Still the child's owner? */
                 if(pstChild->stStructure.u64OwnerGUID == pstResult->stStructure.u64GUID)
                 {
@@ -5631,17 +5706,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   u32Flags |= orxOBJECT_KU32_FLAG_HAS_CHILDREN;
                 }
 
-                /* Doesn't already have a parent? */
-                if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE(pstChild, FRAME)) != orxFALSE)
+                /* Gets child's body */
+                pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
+
+                /* Valid? */
+                if(pstChildBody != orxNULL)
                 {
-                  orxBODY *pstChildBody;
-
-                  /* Gets its body */
-                  pstChildBody = orxOBJECT_GET_STRUCTURE(pstChild, BODY);
-
                   /* Valid joint can be added? */
                   if((pstBody != orxNULL)
-                  && (pstChildBody != orxNULL)
                   && (i < s32JointNumber)
                   && (orxBody_AddJointFromConfig(pstBody, pstChildBody, orxConfig_GetListString(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST, i)) != orxNULL))
                   {
@@ -5651,9 +5723,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                     /* Updates flags */
                     u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
                   }
-
-                  /* Sets its parent */
-                  orxObject_SetParent(pstChild, pstResult);
+                  else
+                  {
+#ifdef __orxDEBUG__
+                    /* Enforces parent to verify body hierarchy */
+                    orxObject_SetParent(pstChild, pstResult);
+#endif /* __orxDEBUG__ */
+                  }
                 }
               }
             }
@@ -7520,7 +7596,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
         && (orxOBJECT_GET_STRUCTURE(orxOBJECT(pstParent), BODY) != orxNULL))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has been set as part of the child hierarchy of object " orxANSI_KZ_COLOR_FG_YELLOW "<%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON orxANSI_KZ_COLOR_FG_RED "this will result in undefined behavior as both have physics bodies.", orxObject_GetName(_pstObject), orxObject_GetName(orxOBJECT(pstParent)));
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has been set as part of the child hierarchy of object " orxANSI_KZ_COLOR_FG_YELLOW "<%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON orxANSI_KZ_COLOR_FG_RED "this might result in undefined behavior as both have physics bodies.", orxObject_GetName(_pstObject), orxObject_GetName(orxOBJECT(pstParent)));
 
           break;
         }
