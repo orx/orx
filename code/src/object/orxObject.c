@@ -100,6 +100,8 @@
 
 #define orxOBJECT_KU32_OVERRIDE_MARKER_LENGTH   2
 
+#define orxOBJECT_KU32_STACK_SIZE               64
+
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY      "AnimationFrequency"
@@ -238,7 +240,7 @@ typedef struct __orxOBJECT_STATIC_t
   orxBANK          *pstAgeBank;                 /**< Age bank */
   orxHASHTABLE     *pstGroupTable;              /**< Group table */
   orxOBJECT_LISTS  *pstCachedGroupLists;        /**< Cached group lists */
-  orxOBJECT        *pstCurrentObject;           /**< Current object */
+  orxOBJECT        *pstCurrentParent;           /**< Current parent */
   orxFRAME         *pstFrame;                   /**< Conversion frame */
   orxLINKLIST       stEnableList;               /**< Enabled objects list */
   orxSTRINGID       stDefaultGroupID;           /**< Default group ID */
@@ -246,6 +248,10 @@ typedef struct __orxOBJECT_STATIC_t
   orxSTRINGID       stCachedGroupID;            /**< Cached group ID */
   orxU32            u32Flags;                   /**< Control flags */
 
+#ifdef __orxDEBUG__
+  orxU32            u32ObjectStackEntry;        /**< Object stack entry */
+  orxOBJECT        *apstObjectStack[orxOBJECT_KU32_STACK_SIZE]; /**< Object stack */
+#endif /* __orxDEBUG__ */
 } orxOBJECT_STATIC;
 
 
@@ -4093,14 +4099,14 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
   orxASSERT(_pstEvent->eID == orxOBJECT_EVENT_PREPARE);
 
-  /* Has current object? */
-  if(sstObject.pstCurrentObject != orxNULL)
+  /* Has current parent? */
+  if(sstObject.pstCurrentParent != orxNULL)
   {
-    /* Stores current object as temporary parent in payload */
-    *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentObject;
+    /* Stores current parent as temporary parent in payload */
+    *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
 
     /* Sets it as owner */
-    orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentObject);
+    orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
   }
 
   /* Done! */
@@ -4728,6 +4734,47 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
+#ifdef __orxDEBUG__
+
+      {
+        orxU32 i;
+
+        /* For all stack entries */
+        for(i = 0; i < sstObject.u32ObjectStackEntry; i++)
+        {
+          /* Already in stack? */
+          if(orxString_Compare(sstObject.apstObjectStack[i]->zReference, pstResult->zReference) == 0)
+          {
+            orxCHAR acBuffer[1024], *pc = acBuffer;
+            orxU32  j;
+
+            /* For all objects in stack */
+            for(j = i; j < sstObject.u32ObjectStackEntry; j++)
+            {
+              /* Adds object to the log */
+              pc += orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer) - 1, orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT " -> ", sstObject.apstObjectStack[j]->zReference);
+            }
+
+            /* Adds current object to the log */
+            pc += orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer) - 1, orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT, pstResult->zReference);
+            *pc = orxCHAR_NULL;
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object is part of the following parent/child cycle: [%s], " orxANSI_KZ_COLOR_BLINK_ON orxANSI_KZ_COLOR_FG_RED "this leads to an infinite creation loop, please fix!" orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_BLINK_OFF, orxObject_GetName(pstResult), acBuffer);
+
+            /* Stops */
+            orxBREAK();
+            break;
+          }
+        }
+
+        /* Adds object to stack */
+        orxASSERT(sstObject.u32ObjectStackEntry < orxOBJECT_KU32_STACK_SIZE);
+        sstObject.apstObjectStack[sstObject.u32ObjectStackEntry++] = pstResult;
+      }
+
+#endif /* __orxDEBUG__ */
+
       /* Gets on-prepare command */
       zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_PREPARE);
 
@@ -4766,11 +4813,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxCOLOR        stColor;
         orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
 
-        /* Backups current spawner */
-        pstPreviousObject = sstObject.pstCurrentObject;
+        /* Backups current parent */
+        pstPreviousObject = sstObject.pstCurrentParent;
 
-        /* Clears current object */
-        sstObject.pstCurrentObject = orxNULL;
+        /* Clears current parent */
+        sstObject.pstCurrentParent = orxNULL;
 
         /* Gets age */
         fAge = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_AGE);
@@ -4790,7 +4837,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             fAge = orxFLOAT_0;
 
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Ignoring age as one of its owner is already aging.", _zConfigID);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Ignoring age as one of its owners is already aging.", _zConfigID);
           }
         }
 
@@ -5651,8 +5698,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           orxS32      i, s32JointNumber;
           orxOBJECT  *pstLastChild;
 
-          /* Stores current object */
-          sstObject.pstCurrentObject = pstResult;
+          /* Stores current parent */
+          sstObject.pstCurrentParent = pstResult;
 
           /* Gets child joint list number */
           s32JointNumber = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST);
@@ -6083,8 +6130,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* Restores previous object */
-        sstObject.pstCurrentObject = pstPreviousObject;
+        /* Restores previous parent */
+        sstObject.pstCurrentParent = pstPreviousObject;
       }
       else
       {
@@ -6092,6 +6139,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxObject_DeleteInternal(pstResult, orxFALSE, orxNULL);
         pstResult = orxNULL;
       }
+
+#ifdef __orxDEBUG__
+
+      /* Removes object from stack */
+      orxASSERT(sstObject.u32ObjectStackEntry > 0);
+      sstObject.apstObjectStack[--sstObject.u32ObjectStackEntry] = orxNULL;
+
+#endif /* __orxDEBUG__ */
     }
 
     /* Pops section */
