@@ -5770,13 +5770,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                     /* Updates flags */
                     u32Flags |= orxOBJECT_KU32_FLAG_HAS_JOINT_CHILDREN;
                   }
+#ifdef __orxDEBUG__
                   else
                   {
-#ifdef __orxDEBUG__
                     /* Enforces parent to verify body hierarchy */
                     orxObject_SetParent(pstChild, pstResult);
-#endif /* __orxDEBUG__ */
                   }
+#endif /* __orxDEBUG__ */
                 }
               }
             }
@@ -6139,7 +6139,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxObject_DeleteInternal(pstResult, orxFALSE, orxNULL);
         pstResult = orxNULL;
       }
-
 #ifdef __orxDEBUG__
 
       /* Removes object from stack */
