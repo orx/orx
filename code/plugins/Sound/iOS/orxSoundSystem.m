@@ -33,7 +33,40 @@
 
 
 #include "orxPluginAPI.h"
+
+#define FILE                              void
+#define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
+#define fread(BUFFER, SIZE, COUNT, FILE)  (orxResource_Read(FILE, SIZE * COUNT, BUFFER, orxNULL, orxNULL) / (SIZE))
+#define fgetc(FILE)                       (orxResource_Read(FILE, 1, &c, orxNULL, orxNULL) <= 0) ? EOF : c & 0xFF // Context-sensitive, single call site in stb_vorbis
+#define ftell(FILE)                       (orxU32)orxResource_Tell(FILE)
+#define fseek(FILE, OFFSET, WHENCE)       (orxResource_Seek(FILE, OFFSET, (orxSEEK_OFFSET_WHENCE)WHENCE) < 0) ? 1 : 0
+#define fclose(FILE)                      orxResource_Close(FILE)
+
+#define malloc(SIZE)                      orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define free(MEMORY)                      orxMemory_Free(MEMORY)
+
+#undef __STDC_WANT_SECURE_LIB__           // Do not use fopen_s on Win32
+
+#ifndef __orxDEBUG__
+#undef NDEBUG
+#define NDEBUG
+#endif /* !__orxDEBUG__ */
+
 #include "stb_vorbis.c"
+
+#undef FILE
+#undef fopen
+#undef fread
+#undef fgetc
+#undef ftell
+#undef fseek
+#undef fclose
+
+#undef malloc
+#undef realloc
+#undef free
+
 #import <AudioToolbox/AudioToolbox.h>
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
