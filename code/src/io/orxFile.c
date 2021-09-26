@@ -1148,7 +1148,6 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
 
     /* Updates result */
     s64Result = orxFile_Tell(_pstFile);
-
   }
   else
   {
