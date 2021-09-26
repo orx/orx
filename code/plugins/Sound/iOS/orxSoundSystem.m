@@ -49,8 +49,8 @@
 #undef __STDC_WANT_SECURE_LIB__           // Do not use fopen_s on Win32
 
 #ifndef __orxDEBUG__
-#undef NDEBUG
-#define NDEBUG
+  #undef NDEBUG
+  #define NDEBUG
 #endif /* !__orxDEBUG__ */
 
 #include "stb_vorbis.c"
