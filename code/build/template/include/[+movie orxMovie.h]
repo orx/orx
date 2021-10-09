@@ -269,7 +269,7 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
         if(!pstMovieData->bDelete)
         {
           plm_samples_t  *pstSamples;
-          orxU32          u32Index;
+          orxU32          u32SampleCount;
 
           // Locks decoders
           pstMovieData->bLock = orxTRUE;
@@ -283,25 +283,20 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
           }
 
           // Decodes audio
-          pstSamples  = plm_decode_audio(pstMovieData->pstAudio);
-          u32Index    = 0;
+          pstSamples      = plm_decode_audio(pstMovieData->pstAudio);
+          u32SampleCount  = 2 * pstSamples->count;
 
           // Has samples?
           if(pstSamples)
           {
-            orxU32 i;
-
-            // Converts all samples
-            for(i = 0; i < 2 * pstSamples->count; i++)
-            {
-              orxASSERT(u32Index < pstPayload->stStream.stPacket.u32SampleNumber);
-              pstPayload->stStream.stPacket.as16SampleList[u32Index++] = (orxS16)(pstSamples->interleaved[i] * 32767.0f);
-            }
+            // Copies all samples
+            orxASSERT(u32SampleCount <= pstPayload->stStream.stPacket.u32SampleNumber);
+            orxMemory_Copy(pstPayload->stStream.stPacket.afSampleList, pstSamples->interleaved, u32SampleCount * sizeof(orxFLOAT));
           }
 
           // Updates packet
-          pstPayload->stStream.stPacket.u32SampleNumber = u32Index;
-          pstPayload->stStream.stPacket.bDiscard        = (u32Index != 0) ? orxFALSE : orxTRUE;
+          pstPayload->stStream.stPacket.u32SampleNumber = u32SampleCount;
+          pstPayload->stStream.stPacket.bDiscard        = (u32SampleCount != 0) ? orxFALSE : orxTRUE;
           pstPayload->stStream.stPacket.bLast           = plm_has_ended(pstMovieData->pstAudio) ? orxTRUE : orxFALSE;
 
           // Unlocks decoders

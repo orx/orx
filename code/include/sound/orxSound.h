@@ -109,9 +109,9 @@ typedef struct __orxSOUND_STREAM_INFO_t
  */
 typedef struct __orxSOUND_STREAM_PACKET_t
 {
-  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 4 */
-  orxS16   *as16SampleList;                   /**< List of samples for this packet : 8 */
-  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 12 */
+  orxFLOAT *afSampleList;                     /**< List of samples for this packet : 4 */
+  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 8 */
+  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp (system time): 12 */
   orxFLOAT  fTime;                            /**< Packet's time (cursor/play position): 16 */
   orxS32    s32ID;                            /**< Packet's ID : 20 */
   orxBOOL   bDiscard;                         /**< Write/play the packet? : 24 */
