@@ -606,21 +606,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSampleInfo(const orxSOUNDSYSTE
   return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_afData, orxU32 _u32SampleNumber)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstSample != orxNULL);
-  orxASSERT(_afData != orxNULL);
-
-  //! TODO
-
-  /* Done! */
-  return eResult;
-}
-
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
@@ -863,13 +848,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPitch(orxSOUNDSYSTEM_SOUND *_p
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetTime(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fTime)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Sets time */
+  eResult = (ma_sound_seek_to_pcm_frame(&(_pstSound->stSound), orxF2U(_fTime * orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine(&(_pstSound->stSound)))))) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
@@ -884,7 +870,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPosition(orxSOUNDSYSTEM_SOUND 
   orxASSERT(_pstSound != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
-  //! TODO
+  /* Updates position */
+  ma_sound_set_position(&(_pstSound->stSound), _pvPosition->fX * sstSoundSystem.fDimensionRatio, _pvPosition->fY * sstSoundSystem.fDimensionRatio, _pvPosition->fZ * sstSoundSystem.fDimensionRatio);
 
   /* Done! */
   return eResult;
@@ -965,13 +952,18 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetPitch(const orxSOUNDSYSTEM_SOUN
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetTime(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  ma_uint64 u64Time;
+  orxFLOAT  fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Gets time */
+  u64Time = ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound));
+
+  /* Updates result */
+  fResult = orxU2F(u64Time) / orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine((ma_sound *)&(_pstSound->stSound))));
 
   /* Done! */
   return fResult;
@@ -979,14 +971,19 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetTime(const orxSOUNDSYSTEM_SOUND
 
 orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
-  orxVECTOR *pvResult = _pvPosition;
+  ma_vec3f    vPosition;
+  orxVECTOR  *pvResult = _pvPosition;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
-  //! TODO
+  /* Gets position */
+  vPosition = ma_sound_get_position(&(_pstSound->stSound));
+
+  /* Updates result */
+  orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
 
   /* Done! */
   return pvResult;
@@ -1037,13 +1034,36 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_IsLooping(const orxSOUNDSYSTEM_SOUN
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  ma_uint64 u64Length;
+  ma_result hResult;
+  orxFLOAT  fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Gets length */
+  hResult = ma_sound_get_length_in_pcm_frames((ma_sound *)&(_pstSound->stSound), &u64Length);
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    /* Updates result */
+    fResult = orxU2F(u64Length) / orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine((ma_sound *)&(_pstSound->stSound))));
+  }
+  /* Not implemented (aka push/vorbis)? */
+  else if(hResult == MA_NOT_IMPLEMENTED)
+  {
+    orxHANDLE hResource;
+
+    /* Checks */
+    orxASSERT(_pstSound->stSound.pResourceManagerDataSource->flags & MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM);
+
+    /* Gets resource */
+    hResource = (orxHANDLE)_pstSound->stSound.pResourceManagerDataSource->backend.stream.decoder.data.vfs.file;
+
+    //! TODO : Find length
+  }
 
   /* Done! */
   return fResult;
