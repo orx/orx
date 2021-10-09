@@ -5781,6 +5781,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               }
             }
           }
+
+          /* Clears current parent */
+          sstObject.pstCurrentParent = orxNULL;
         }
 
         /* *** Speed *** */
