@@ -17,7 +17,6 @@
 		E054558015172B1900917458 /* orxDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = E054557F15172B1900917458 /* orxDisplay.m */; };
 		E054558315172B2500917458 /* orxJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558215172B2500917458 /* orxJoystick.m */; };
 		E054558615172B3000917458 /* orxMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558515172B3000917458 /* orxMouse.m */; };
-		E054558915172B3D00917458 /* orxSoundSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558815172B3D00917458 /* orxSoundSystem.m */; };
 		E054559E15172B9500917458 /* orxTest.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558C15172B9500917458 /* orxTest.ini */; };
 		E05455A015172B9500917458 /* orxTestd.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558E15172B9500917458 /* orxTestd.ini */; };
 		E05455A115172B9500917458 /* orxTestp.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558F15172B9500917458 /* orxTestp.ini */; };
@@ -116,7 +115,6 @@
 		E054557F15172B1900917458 /* orxDisplay.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxDisplay.m; sourceTree = "<group>"; };
 		E054558215172B2500917458 /* orxJoystick.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxJoystick.m; sourceTree = "<group>"; };
 		E054558515172B3000917458 /* orxMouse.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxMouse.m; sourceTree = "<group>"; };
-		E054558815172B3D00917458 /* orxSoundSystem.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxSoundSystem.m; sourceTree = "<group>"; };
 		E054558C15172B9500917458 /* orxTest.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTest.ini; sourceTree = "<group>"; };
 		E054558E15172B9500917458 /* orxTestd.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTestd.ini; sourceTree = "<group>"; };
 		E054558F15172B9500917458 /* orxTestp.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTestp.ini; sourceTree = "<group>"; };
@@ -357,14 +355,6 @@
 			isa = PBXGroup;
 			children = (
 				E054558515172B3000917458 /* orxMouse.m */,
-			);
-			path = iOS;
-			sourceTree = "<group>";
-		};
-		E054558715172B3D00917458 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				E054558815172B3D00917458 /* orxSoundSystem.m */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1012,7 +1002,6 @@
 				E054558015172B1900917458 /* orxDisplay.m in Sources */,
 				E054558315172B2500917458 /* orxJoystick.m in Sources */,
 				E054558615172B3000917458 /* orxMouse.m in Sources */,
-				E054558915172B3D00917458 /* orxSoundSystem.m in Sources */,
 				E059C6381116BC610086879B /* orxAnim.c in Sources */,
 				E059C6391116BC610086879B /* orxAnimPointer.c in Sources */,
 				E059C63A1116BC610086879B /* orxAnimSet.c in Sources */,
