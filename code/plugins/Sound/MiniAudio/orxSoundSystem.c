@@ -35,7 +35,10 @@
 #include "orxPluginAPI.h"
 
 #define STB_VORBIS_HEADER_ONLY
+#define FILE                              void
 #include "stb_vorbis.c"
+#undef FILE
+#undef STB_VORBIS_HEADER_ONLY
 
 #ifdef __APPLE__
   #define MA_NO_RUNTIME_LINKING
@@ -46,10 +49,41 @@
 #define MA_NO_FLAC
 #define MA_NO_GENERATION
 #define MINIAUDIO_IMPLEMENTATION
+
 #include "miniaudio.h"
 
-#undef STB_VORBIS_HEADER_ONLY
+#define FILE                              void
+#define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
+#define fread(BUFFER, SIZE, COUNT, FILE)  (orxResource_Read(FILE, SIZE * COUNT, BUFFER, orxNULL, orxNULL) / (SIZE))
+#define fgetc(FILE)                       (orxResource_Read(FILE, 1, &c, orxNULL, orxNULL) <= 0) ? EOF : c & 0xFF // Context-sensitive, single call site in stb_vorbis
+#define ftell(FILE)                       (orxU32)orxResource_Tell(FILE)
+#define fseek(FILE, OFFSET, WHENCE)       (orxResource_Seek(FILE, OFFSET, (orxSEEK_OFFSET_WHENCE)WHENCE) < 0) ? 1 : 0
+#define fclose(FILE)                      orxResource_Close(FILE)
+
+#define malloc(SIZE)                      orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define free(MEMORY)                      orxMemory_Free(MEMORY)
+
+#undef __STDC_WANT_SECURE_LIB__           // Do not use fopen_s on Win32
+
+#ifndef __orxDEBUG__
+  #undef NDEBUG
+  #define NDEBUG
+#endif /* !__orxDEBUG__ */
+
 #include "stb_vorbis.c"
+
+#undef FILE
+#undef fopen
+#undef fread
+#undef fgetc
+#undef ftell
+#undef fseek
+#undef fclose
+
+#undef malloc
+#undef realloc
+#undef free
 
 
 /** Module flags
@@ -99,13 +133,15 @@ struct __orxSOUNDSYSTEM_SOUND_t
  */
 typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
+  orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
   ma_log                  stLog;              /**< Log */
   ma_log_callback         stLogCallback;      /**< Log callback */
   ma_vfs_callbacks        stCallbacks;        /**< Resource callbacks */
   ma_context              stContext;          /**< Context */
   ma_resource_manager     stResourceManager;  /**< Resource manager */
   ma_engine               stEngine;           /**< Engine */
-  orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
+  ma_decoding_backend_vtable stVorbisVTable;  /**< Vorbis decoding backend VTable */
+  ma_decoding_backend_vtable *apstVTable[1];  /**< Decoding backend VTable */
   orxBANK                *pstSampleBank;      /**< Sound bank */
   orxBANK                *pstSoundBank;       /**< Sound bank */
   orxFLOAT               *afStreamBuffer;     /**< Stream buffer */
@@ -132,6 +168,111 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/*
+ * This function's logic has been lifted straight from 'ma_decoding_backend_init_file__stbvorbis', bypassing the use of the pushdata API.
+ */
+static ma_result SoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_stbvorbis *_pstVorbis)
+{
+  ma_result hResult;
+
+  /* Checks */
+  orxASSERT(_pfnRead != NULL);
+  orxASSERT(_pfnSeek != NULL);
+
+  /* Inits internals */
+  hResult = ma_stbvorbis_init_internal(_pstConfig, _pstVorbis);
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    /* Inits callbacks */
+    _pstVorbis->onRead                = _pfnRead;
+    _pstVorbis->onSeek                = _pfnSeek;
+    _pstVorbis->onTell                = _pfnTell;
+    _pstVorbis->pReadSeekTellUserData = _pReadSeekTellUserData;
+    ma_allocation_callbacks_init_copy(&(_pstVorbis->allocationCallbacks), _pstAllocationCallbacks);
+
+    /* Inits vorbis decoder */
+    _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder*)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
+
+    /* Success? */
+    if(_pstVorbis->stb != NULL)
+    {
+      /* Updates status */
+      _pstVorbis->usingPushMode = MA_FALSE;
+
+      /* Executes post-init */
+      hResult = ma_stbvorbis_post_init(_pstVorbis);
+
+      /* Failure? */
+      if(hResult != MA_SUCCESS)
+      {
+        /* Closes decoder */
+        stb_vorbis_close(_pstVorbis->stb);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      hResult = MA_INVALID_FILE;
+    }
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+/*
+ * This function's logic has been lifted straight from 'ma_decoding_backend_init__stbvorbis', replacing the internal call to 'ma_stbvorbis_init' with 'SoundSystem_MiniAudio_InitVorbis'.
+ */
+static ma_result SoundSystem_MiniAudio_InitVorbisBackend(void *_pUserData, ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_data_source **_ppstBackend)
+{
+  ma_result     hResult;
+  ma_stbvorbis *pstVorbis;
+
+  /* Allocates the decoder backend */
+  pstVorbis = (ma_stbvorbis *)ma_malloc(sizeof(ma_stbvorbis), _pstAllocationCallbacks);
+
+  /* Success? */
+  if(pstVorbis != NULL)
+  {
+    /* Inits decoder backend */
+    hResult = SoundSystem_MiniAudio_InitVorbis(_pfnRead, _pfnSeek, _pfnTell, _pReadSeekTellUserData, _pstConfig, _pstAllocationCallbacks, pstVorbis);
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Stores it */
+      *_ppstBackend = pstVorbis;
+    }
+    else
+    {
+      /* Frees decoder backend */
+      ma_free(pstVorbis, _pstAllocationCallbacks);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_OUT_OF_MEMORY;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static void SoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_data_source *_pstBackend, const ma_allocation_callbacks *_pstAllocationCallbacks)
+{
+  /* Uninits decoder backend */
+  ma_stbvorbis_uninit((ma_stbvorbis *)_pstBackend, _pstAllocationCallbacks);
+
+  /* Frees it */
+  ma_free(_pstBackend, _pstAllocationCallbacks);
+
+  /* Done! */
+  return;
+}
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_ProcessTask(void *_pContext)
 {
@@ -291,14 +432,19 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
+    /* Inits vorbis decoding backend VTable */
+    sstSoundSystem.stVorbisVTable.onInit                  = &SoundSystem_MiniAudio_InitVorbisBackend;
+    sstSoundSystem.stVorbisVTable.onUninit                = &SoundSystem_MiniAudio_UninitVorbisBackend;
+    sstSoundSystem.apstVTable[0]                          = &(sstSoundSystem.stVorbisVTable);
+
     /* Inits resource callbacks */
-    sstSoundSystem.stCallbacks.onOpen   = &SoundSystem_MiniAudio_Open;
-    sstSoundSystem.stCallbacks.onClose  = &SoundSystem_MiniAudio_Close;
-    sstSoundSystem.stCallbacks.onRead   = &SoundSystem_MiniAudio_Read;
-    sstSoundSystem.stCallbacks.onWrite  = &SoundSystem_MiniAudio_Write;
-    sstSoundSystem.stCallbacks.onSeek   = &SoundSystem_MiniAudio_Seek;
-    sstSoundSystem.stCallbacks.onTell   = &SoundSystem_MiniAudio_Tell;
-    sstSoundSystem.stCallbacks.onInfo   = &SoundSystem_MiniAudio_Info;
+    sstSoundSystem.stCallbacks.onOpen                     = &SoundSystem_MiniAudio_Open;
+    sstSoundSystem.stCallbacks.onClose                    = &SoundSystem_MiniAudio_Close;
+    sstSoundSystem.stCallbacks.onRead                     = &SoundSystem_MiniAudio_Read;
+    sstSoundSystem.stCallbacks.onWrite                    = &SoundSystem_MiniAudio_Write;
+    sstSoundSystem.stCallbacks.onSeek                     = &SoundSystem_MiniAudio_Seek;
+    sstSoundSystem.stCallbacks.onTell                     = &SoundSystem_MiniAudio_Tell;
+    sstSoundSystem.stCallbacks.onInfo                     = &SoundSystem_MiniAudio_Info;
 
     /* Inits resource manager configuration */
     stResourceManagerConfig                               = ma_resource_manager_config_init();
@@ -306,6 +452,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     stResourceManagerConfig.decodedSampleRate             = orxSOUNDSYSTEM_KS32_DEFAULT_FREQUENCY;
     stResourceManagerConfig.jobThreadCount                = 0;
     stResourceManagerConfig.flags                         = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING;
+    stResourceManagerConfig.ppCustomDecodingBackendVTables= sstSoundSystem.apstVTable;
+    stResourceManagerConfig.customDecodingBackendCount    = orxARRAY_GET_ITEM_COUNT(sstSoundSystem.apstVTable);
     stResourceManagerConfig.pVFS                          = &(sstSoundSystem.stCallbacks);
     stResourceManagerConfig.allocationCallbacks.onMalloc  = &orxSoundSystem_MiniAudio_Allocate;
     stResourceManagerConfig.allocationCallbacks.onRealloc = &orxSoundSystem_MiniAudio_Reallocate;
