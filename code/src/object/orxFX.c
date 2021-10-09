@@ -788,6 +788,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     /* Clears values */
     orxMemory_Zero(astValueList, orxFX_TYPE_NUMBER * sizeof(struct __orxFX_VALUE_t));
     orxVector_SetAll(&(astValueList[orxFX_TYPE_SCALE].vValue), orxFLOAT_1);
+    astValueList[orxFX_TYPE_PITCH].fValue = orxFLOAT_1;
 
     /* Has object color? */
     if(orxObject_HasColor(_pstObject) != orxFALSE)
@@ -1160,7 +1161,6 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
               case orxFX_TYPE_ALPHA:
               case orxFX_TYPE_ROTATION:
               case orxFX_TYPE_VOLUME:
-              case orxFX_TYPE_PITCH:
               {
                 /* Absolute ? */
                 if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
@@ -1192,6 +1192,58 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
 
                   /* Updates global value */
                   astValueList[eFXType].fValue += fEndValue - fStartValue;
+                }
+
+                /* Updates status */
+                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
+
+                break;
+              }
+
+              case orxFX_TYPE_PITCH:
+              {
+                /* Absolute ? */
+                if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+                {
+                  /* Overrides value */
+                  astValueList[eFXType].fValue = orxLERP(pstFXSlot->fStartValue, pstFXSlot->fEndValue, fEndCoef);
+                  if(astValueList[eFXType].fValue == orxFLOAT_0)
+                  {
+                    astValueList[eFXType].fValue = orx2F(0.000001f);
+                  }
+
+                  /* Locks it */
+                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
+                }
+                else
+                {
+                  orxFLOAT fStartValue, fEndValue;
+
+                  /* First call? */
+                  if(bFirstCall != orxFALSE)
+                  {
+                    /* Gets start value */
+                    fStartValue = orxFLOAT_1;
+                  }
+                  else
+                  {
+                    /* Gets start value */
+                    fStartValue = orxLERP(pstFXSlot->fStartValue, pstFXSlot->fEndValue, fStartCoef);
+                    if(fStartValue == orxFLOAT_0)
+                    {
+                      fStartValue = orx2F(0.000001f);
+                    }
+                  }
+
+                  /* Gets end value */
+                  fEndValue = orxLERP(pstFXSlot->fStartValue, pstFXSlot->fEndValue, fEndCoef);
+                  if(fEndValue == orxFLOAT_0)
+                  {
+                    fEndValue = orx2F(0.000001f);
+                  }
+
+                  /* Updates global value */
+                  astValueList[eFXType].fValue *= fEndValue / fStartValue;
                 }
 
                 /* Updates status */
@@ -1623,7 +1675,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         if(pstSound != orxNULL)
         {
           /* Updates pitch with previous one */
-          astValueList[orxFX_TYPE_PITCH].fValue += orxSound_GetPitch(pstSound);
+          astValueList[orxFX_TYPE_PITCH].fValue *= orxSound_GetPitch(pstSound);
         }
       }
 
@@ -2846,8 +2898,8 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxFLOAT fStartPitch, fEndPitch;
 
       /* Gets volume values */
-      fStartPitch = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
-      fEndPitch   = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
+      fStartPitch = (orxConfig_HasValue(orxFX_KZ_CONFIG_START_VALUE) != orxFALSE) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE) : orxFLOAT_1;
+      fEndPitch   = (orxConfig_HasValue(orxFX_KZ_CONFIG_END_VALUE) != orxFALSE) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE) : orxFLOAT_1;
 
       /* Adds pitch slot */
       eResult = orxFX_AddPitch(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, fStartPitch, fEndPitch, eCurve, fPow, u32Flags);
