@@ -833,13 +833,14 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_HasRecordingSupport()
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Sets volume */
+  eResult = (ma_sound_set_volume(&(_pstSound->stSound), _fVolume) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
@@ -853,7 +854,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPitch(orxSOUNDSYSTEM_SOUND *_p
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Sets pitch */
+  ma_sound_set_pitch(&(_pstSound->stSound), _fPitch);
 
   /* Done! */
   return eResult;
@@ -924,7 +926,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Loop(orxSOUNDSYSTEM_SOUND *_pstSo
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Updates status */
+  ma_sound_set_looping(&(_pstSound->stSound), (_bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
 
   /* Done! */
   return eResult;
@@ -932,13 +935,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Loop(orxSOUNDSYSTEM_SOUND *_pstSo
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Updates result */
+  fResult = ma_node_get_output_bus_volume((ma_node *)&(_pstSound->stSound), 0);
 
   /* Done! */
   return fResult;
@@ -946,13 +950,14 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetVolume(const orxSOUNDSYSTEM_SOU
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  //! TODO
+  /* Updates result */
+  fResult = _pstSound->stSound.engineNode.pitch;
 
   /* Done! */
   return fResult;
@@ -1017,14 +1022,14 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetReferenceDistance(const orxSOUN
 
 orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxBOOL bResult = orxFALSE;
+  orxBOOL bResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-
-  //! TODO
+  /* Updates result */
+  bResult = (ma_sound_is_looping(&(_pstSound->stSound)) != MA_FALSE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -1065,20 +1070,19 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_MiniAudio_GetStatus(const orxSO
     eResult = ((ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound)) == 0) || (ma_sound_at_end(&(_pstSound->stSound)) != MA_FALSE)) ? orxSOUNDSYSTEM_STATUS_STOP : orxSOUNDSYSTEM_STATUS_PAUSE;
   }
 
-  //! TODO
-
   /* Done! */
   return eResult;
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetGlobalVolume(orxFLOAT _fVolume)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Sets volume */
+  eResult = (ma_engine_set_volume(&(sstSoundSystem.stEngine), _fVolume) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
@@ -1086,12 +1090,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetGlobalVolume(orxFLOAT _fVolume
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetGlobalVolume()
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Updates result */
+  fResult = ma_node_get_output_bus_volume(ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
 
   /* Done! */
   return fResult;
