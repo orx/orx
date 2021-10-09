@@ -44,7 +44,7 @@
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
+#include "../plugins/Sound/Dummy/orxSoundSystem.c"
 
 #pragma GCC visibility pop
 
