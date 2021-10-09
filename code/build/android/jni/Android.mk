@@ -56,16 +56,15 @@ ORX_SRC_FILES := \
 	debug/orxFPS.c            \
 	debug/orxDebug.c          \
 	debug/orxProfiler.c       \
-        plugin/orxPlugin_EmbeddedList.cpp \
+  plugin/orxPlugin_EmbeddedList.cpp \
 	main/orxAndroidSupport.cpp
 
 ORX_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/rpmalloc/rpmalloc \
                     $(LOCAL_PATH)/../../extern/xxHash \
+                    $(LOCAL_PATH)/../../extern/miniaudio \
                     $(LOCAL_PATH)/../../extern/stb_image \
                     $(LOCAL_PATH)/../../extern/LiquidFun-1.1.0/include \
-                    $(LOCAL_PATH)/../../extern/openal-soft/include \
-                    $(LOCAL_PATH)/../../extern/Tremolo \
                     $(LOCAL_PATH)/../../extern/libwebp/include
 
 ORX_CFLAGS := -DNO_MALLINFO=1 -DTARGET_OS_ANDROID
