@@ -2341,7 +2341,7 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
  */
 orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
 {
-  orxS64 s64Result = 0;
+  orxS64 s64Result = -1;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
