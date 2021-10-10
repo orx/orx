@@ -350,6 +350,7 @@ project "orx"
             "Foundation.framework",
             "CoreFoundation.framework",
             "CoreAudio.framework",
+            "AudioToolbox.framework",
             "AudioUnit.framework",
             "IOKit.framework"
         }
@@ -360,6 +361,7 @@ project "orx"
             "-framework Foundation",
             "-framework CoreFoundation",
             "-framework CoreAudio",
+            "-framework AudioToolbox",
             "-framework AudioUnit",
             "-framework IOKit"
         }

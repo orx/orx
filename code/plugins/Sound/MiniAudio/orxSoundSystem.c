@@ -64,7 +64,7 @@
 #define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
 #define free(MEMORY)                      orxMemory_Free(MEMORY)
 
-#undef __STDC_WANT_SECURE_LIB__           // Do not use fopen_s on Win32
+#undef __STDC_WANT_SECURE_LIB__           /* Do not use fopen_s on Win32 */
 
 #ifndef __orxDEBUG__
   #undef NDEBUG
@@ -170,7 +170,7 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  ***************************************************************************/
 
 /*
- * This function's logic has been lifted straight from 'ma_decoding_backend_init_file__stbvorbis', bypassing the use of the pushdata API.
+ * This function's logic has been lifted straight from 'ma_stbvorbis_init_file', bypassing the use of the pushdata API.
  */
 static ma_result SoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_stbvorbis *_pstVorbis)
 {
