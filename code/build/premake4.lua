@@ -348,10 +348,6 @@ project "orx"
         links
         {
             "Foundation.framework",
-            "CoreFoundation.framework",
-            "CoreAudio.framework",
-            "AudioToolbox.framework",
-            "AudioUnit.framework",
             "IOKit.framework"
         }
 
@@ -359,10 +355,6 @@ project "orx"
         linkoptions
         {
             "-framework Foundation",
-            "-framework CoreFoundation",
-            "-framework CoreAudio",
-            "-framework AudioToolbox",
-            "-framework AudioUnit",
             "-framework IOKit"
         }
 
@@ -502,6 +494,9 @@ project "orxLIB"
         links
         {
             "Foundation.framework",
+            "CoreFoundation.framework",
+            "CoreAudio.framework",
+            "AudioUnit.framework",
             "IOKit.framework",
             "AppKit.framework",
             "CoreVideo.framework",
@@ -512,6 +507,9 @@ project "orxLIB"
         linkoptions
         {
             "-framework Foundation",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioUnit",
             "-framework IOKit",
             "-framework AppKit",
             "-framework CoreVideo",
