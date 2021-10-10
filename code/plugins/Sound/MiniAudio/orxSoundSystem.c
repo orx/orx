@@ -46,13 +46,19 @@
 #ifdef APIENTRY
   #undef APIENTRY
 #endif /* APIENTRY */
-#define MA_NO_FLAC
-#define MA_NO_GENERATION
+
+extern "C" {
+  void rpmalloc_thread_initialize();
+  void rpmalloc_thread_finalize(int);
+}
 #define MA_ON_THREAD_ENTRY                rpmalloc_thread_initialize();
 #define MA_ON_THREAD_EXIT                 rpmalloc_thread_finalize(1);
+
+#define MA_NO_FLAC
+#define MA_NO_GENERATION
+
 #define MINIAUDIO_IMPLEMENTATION
 
-#include "rpmalloc.h"
 #include "miniaudio.h"
 
 #undef MA_NO_RUNTIME_LINKING
