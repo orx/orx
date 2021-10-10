@@ -137,13 +137,23 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
 {
 };
 
+/** Internal node structure
+ */
+typedef struct __orxSOUNDSYSTEM_NODE_t
+{
+  ma_engine_node          stNode;
+  orxSOUNDSYSTEM_SOUND   *pstSound;
+
+} orxSOUNDSYSTEM_NODE;
+
 /** Internal sound structure
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
   orxHANDLE               hUserData;
   ma_sound                stSound;
-  ma_node_base            stStreamNode;
+  orxSOUNDSYSTEM_NODE     stStreamNode;
+  const orxSTRING         zName;
   ma_uint32               u32InputChannelCount;
   ma_uint32               u32OutputChannelCount;
 };
@@ -194,6 +204,7 @@ static void orxSoundSystem_MiniAudio_ProcessStream(ma_node* pNode, const float**
     // Do some processing of ppFramesIn (one stream of audio data per input bus)
     const float* pFramesIn_0 = ppFramesIn[0]; // Input bus @ index 0.
     float* pFramesOut_0 = ppFramesOut[0];     // Output bus @ index 0.
+    orxSOUNDSYSTEM_NODE *pstNode = (orxSOUNDSYSTEM_NODE *)pNode;
 
     // Do some processing. On input, `pFrameCountIn` will be the number of input frames in each
     // buffer in `ppFramesIn` and `pFrameCountOut` will be the capacity of each of the buffers
@@ -823,7 +834,49 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT((_hUserData != orxNULL) && (_hUserData != orxHANDLE_UNDEFINED));
 
-  //! TODO
+  /* Valid parameters? */
+  if((_u32ChannelNumber >= 1) && (_u32ChannelNumber <= 2) && (_u32SampleRate > 0))
+  {
+    /* Allocates sound */
+    pstResult = (orxSOUNDSYSTEM_SOUND *)orxBank_Allocate(sstSoundSystem.pstSoundBank);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      // ma_node_config  stNodeConfig;
+      // ma_result       hResult;
+
+      // /* Clears it */
+      // orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
+
+      // /* Stores user data */
+      // pstResult->hUserData            = _hUserData;
+
+      // /* Clears name */
+      // pstResult->zName                = orxSTRING_EMPTY;
+
+      // /* Inits stream node's config */
+      // stNodeConfig                    = ma_node_config_init();
+      // pstResult->u32InputChannelCount = _u32ChannelNumber;
+      // pstResult->u32OutputChannelCount= ma_engine_get_channels(&(sstSoundSystem.stEngine));
+      // stNodeConfig.pInputChannels     = &(pstResult->u32InputChannelCount);
+      // stNodeConfig.pOutputChannels    = &(pstResult->u32OutputChannelCount);
+      // stNodeConfig.vtable             = &(sstSoundSystem.stStreamNodeVTable);
+
+      // /* Creates stream node */
+      // hResult = ma_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stNodeConfig, &(sstSoundSystem.stEngine.allocationCallbacks), &(pstResult->stStreamNode));
+      // orxASSERT(hResult == MA_SUCCESS);
+
+      // /* Chains it */
+      // hResult = ma_node_attach_output_bus(&(pstResult->stStreamNode), 0, ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
+      // orxASSERT(hResult == MA_SUCCESS);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load create stream: can't allocate sound structure.");
+    }
+  }
 
   /* Done! */
   return pstResult;
@@ -870,26 +923,36 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
       /* Success? */
       if(hResult == MA_SUCCESS)
       {
-        ma_node_config stNodeConfig;
+        ma_engine_node_config stNodeConfig;
 
         /* Inits stream node's config */
-        stNodeConfig                    = ma_node_config_init();
-        hResult                         = ma_sound_get_data_format(&(pstResult->stSound), NULL, &(pstResult->u32InputChannelCount), NULL, NULL, 0);
-        pstResult->u32OutputChannelCount= ma_engine_get_channels(&(sstSoundSystem.stEngine));
-        stNodeConfig.pInputChannels     = &(pstResult->u32InputChannelCount);
-        stNodeConfig.pOutputChannels    = &(pstResult->u32OutputChannelCount);
-        stNodeConfig.vtable             = &(sstSoundSystem.stStreamNodeVTable);
+        stNodeConfig                    = ma_engine_node_config_init(&(sstSoundSystem.stEngine), ma_engine_node_type_group, MA_SOUND_FLAG_NO_SPATIALIZATION);
+        hResult                         = ma_sound_get_data_format(&(pstResult->stSound), NULL, &(stNodeConfig.channelsIn), &(stNodeConfig.sampleRate), NULL, 0);
+        stNodeConfig.channelsOut        = ma_engine_get_channels(&(sstSoundSystem.stEngine));
         orxASSERT(hResult == MA_SUCCESS);
 
         /* Creates stream node */
-        hResult = ma_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stNodeConfig, &(sstSoundSystem.stEngine.allocationCallbacks), &(pstResult->stStreamNode));
+        hResult = ma_engine_node_init(&stNodeConfig, &(sstSoundSystem.stEngine.allocationCallbacks), &(pstResult->stStreamNode.stNode));
         orxASSERT(hResult == MA_SUCCESS);
 
+        /* Customizes it */
+        pstResult->stStreamNode.stNode.baseNode.vtable = &(sstSoundSystem.stStreamNodeVTable);
+        ma_node_set_state(&(pstResult->stStreamNode.stNode), ma_node_state_started);
+
         /* Chains them */
-        hResult = ma_node_attach_output_bus(&(pstResult->stStreamNode), 0, ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
+        hResult = ma_node_attach_output_bus(&(pstResult->stStreamNode.stNode), 0, ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
         orxASSERT(hResult == MA_SUCCESS);
-        hResult = ma_node_attach_output_bus(&(pstResult->stSound), 0, &(pstResult->stStreamNode), 0);
+        hResult = ma_node_attach_output_bus(&(pstResult->stSound), 0, &(pstResult->stStreamNode.stNode), 0);
         orxASSERT(hResult == MA_SUCCESS);
+
+        /* Stores sound */
+        pstResult->stStreamNode.pstSound = pstResult;
+
+        /* Stores user data */
+        pstResult->hUserData = _hUserData;
+
+        /* Stores name */
+        pstResult->zName = orxString_Store(_zFilename);
       }
       else
       {
@@ -932,6 +995,12 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
+
+  /* Has stream node? */
+  if(_pstSound->stStreamNode.stNode.pEngine != NULL)
+  {
+    ma_engine_node_uninit(&(_pstSound->stStreamNode.stNode), &(sstSoundSystem.stEngine.allocationCallbacks));
+  }
 
   /* Uninits sound */
   ma_sound_uninit(&(_pstSound->stSound));
