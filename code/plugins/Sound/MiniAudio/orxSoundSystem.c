@@ -135,40 +135,43 @@ extern "C" {
  */
 struct __orxSOUNDSYSTEM_SAMPLE_t
 {
+  ma_resource_manager_data_source stDataSource;
+  orxSTRING                       zLocation;
+  const orxSTRING                 zName;
 };
 
 /** Internal sound structure
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
-  orxHANDLE               hUserData;
-  ma_sound                stSound;
-  const orxSTRING         zName;
+  orxHANDLE                       hUserData;
+  ma_sound                        stSound;
+  const orxSTRING                 zName;
 };
 
 /** Static structure
  */
 typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
-  orxSOUND_EVENT_PAYLOAD  stRecordingPayload; /**< Recording payload */
-  ma_log                  stLog;              /**< Log */
-  ma_log_callback         stLogCallback;      /**< Log callback */
-  ma_vfs_callbacks        stCallbacks;        /**< Resource callbacks */
-  ma_context              stContext;          /**< Context */
-  ma_resource_manager     stResourceManager;  /**< Resource manager */
-  ma_engine               stEngine;           /**< Engine */
-  ma_decoding_backend_vtable stVorbisVTable;  /**< Vorbis decoding backend VTable */
-  ma_decoding_backend_vtable *apstVTable[1];  /**< Decoding backend VTable */
-  orxBANK                *pstSampleBank;      /**< Sound bank */
-  orxBANK                *pstSoundBank;       /**< Sound bank */
-  orxFLOAT               *afStreamBuffer;     /**< Stream buffer */
-  orxFLOAT               *afRecordingBuffer;  /**< Recording buffer */
-  orxFLOAT                fDimensionRatio;    /**< Dimension ration */
-  orxFLOAT                fRecDimensionRatio; /**< Reciprocal dimension ratio */
-  orxS32                  s32StreamBufferSize;/**< Stream buffer size */
-  orxS32                  s32StreamBufferCount;/**< Stream buffer number */
-  orxU32                  u32WorkerThread;    /**< Worker thread */
-  orxU32                  u32Flags;           /**< Status flags */
+  orxSOUND_EVENT_PAYLOAD         stRecordingPayload;    /**< Recording payload */
+  ma_log                         stLog;                 /**< Log */
+  ma_log_callback                stLogCallback;         /**< Log callback */
+  ma_vfs_callbacks               stCallbacks;           /**< Resource callbacks */
+  ma_context                     stContext;             /**< Context */
+  ma_resource_manager            stResourceManager;     /**< Resource manager */
+  ma_engine                      stEngine;              /**< Engine */
+  ma_decoding_backend_vtable     stVorbisVTable;        /**< Vorbis decoding backend VTable */
+  ma_decoding_backend_vtable    *apstVTable[1];         /**< Decoding backend VTable */
+  orxBANK                       *pstSampleBank;         /**< Sound bank */
+  orxBANK                       *pstSoundBank;          /**< Sound bank */
+  orxFLOAT                      *afStreamBuffer;        /**< Stream buffer */
+  orxFLOAT                      *afRecordingBuffer;     /**< Recording buffer */
+  orxFLOAT                       fDimensionRatio;       /**< Dimension ration */
+  orxFLOAT                       fRecDimensionRatio;    /**< Reciprocal dimension ratio */
+  orxS32                         s32StreamBufferSize;   /**< Stream buffer size */
+  orxS32                         s32StreamBufferCount;  /**< Stream buffer number */
+  orxU32                         u32WorkerThread;       /**< Worker thread */
+  orxU32                         u32Flags;              /**< Status flags */
 
 } orxSOUNDSYSTEM_STATIC;
 
@@ -200,6 +203,8 @@ static ma_result SoundSystem_MiniAudio_DataSource_Read(ma_data_source* pDataSour
 
     /* Retrieves associated sound */
     pstSound = (orxSOUNDSYSTEM_SOUND *)(((ma_resource_manager_data_source *)pDataSource)->backend.stream.decoder.pUserData);
+
+    //! TODO: Send event + forward/cache result if needed
   }
 
   /* Done! */
@@ -764,13 +769,67 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_CreateSample(orxU32 
 
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orxSTRING _zFilename)
 {
-  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+  orxSOUNDSYSTEM_SAMPLE *pstResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
-  //! TODO
+  /* Allocates sample */
+  pstResult = (orxSOUNDSYSTEM_SAMPLE *)orxBank_Allocate(sstSoundSystem.pstSampleBank);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    const orxSTRING zResourceLocation;
+
+    /* Clears data */
+    orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SAMPLE));
+
+    /* Locates resource */
+    zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
+
+    /* Success? */
+    if(zResourceLocation != orxNULL)
+    {
+      ma_result hResult;
+
+      /* Inits data source */
+      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_DECODE | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION, NULL, &(pstResult->stDataSource));
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
+        /* Stores name */
+        pstResult->zName = orxString_Store(_zFilename);
+
+        /* Stores location */
+        pstResult->zLocation = orxString_Duplicate(zResourceLocation);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't process resource [%s].", _zFilename, zResourceLocation);
+
+        /* Frees sample */
+        orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't locate resource.", _zFilename);
+
+      /* Frees sample */
+      orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
 
   /* Done! */
   return pstResult;
@@ -778,18 +837,31 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSample != orxNULL);
 
-  //! TODO
+  /* Uninits data source */
+  ma_resource_manager_data_source_uninit(&(_pstSample->stDataSource));
+
+  /* Deletes location */
+  orxString_Delete(_pstSample->zLocation);
+
+  /* Deletes sample */
+  orxBank_Free(sstSoundSystem.pstSampleBank, _pstSample);
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSampleInfo(const orxSOUNDSYSTEM_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
 {
+  ma_result hResult;
+  ma_uint32 u32Channels, u32SampleRate;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSample != orxNULL);
@@ -797,10 +869,32 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSampleInfo(const orxSOUNDSYSTE
   orxASSERT(_pu32FrameNumber != orxNULL);
   orxASSERT(_pu32SampleRate != orxNULL);
 
-  //! TODO
+  /* Retrieves format */
+  hResult = ma_resource_manager_data_source_get_data_format((ma_resource_manager_data_source *)&(_pstSample->stDataSource), NULL, &u32Channels, &u32SampleRate, NULL, 0);
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    ma_uint64 u64Length;
+
+    /* Gets length */
+    hResult = ma_resource_manager_data_source_get_length_in_pcm_frames((ma_resource_manager_data_source *)&(_pstSample->stDataSource), &u64Length);
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Stores info */
+      *_pu32ChannelNumber = (orxU32)u32Channels;
+      *_pu32FrameNumber   = (orxU32)u64Length;
+      *_pu32SampleRate    = (orxU32)u32SampleRate;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample)
@@ -812,7 +906,50 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
   orxASSERT((_hUserData != orxNULL) && (_hUserData != orxHANDLE_UNDEFINED));
   orxASSERT(_pstSample != orxNULL);
 
-  //! TODO
+  /* Allocates sound */
+  pstResult = (orxSOUNDSYSTEM_SOUND *)orxBank_Allocate(sstSoundSystem.pstSoundBank);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    ma_sound_config stSoundConfig;
+    ma_result       hResult;
+
+    /* Inits sound's config */
+    stSoundConfig             = ma_sound_config_init();
+    stSoundConfig.pFilePath   = _pstSample->zLocation;
+    stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
+    stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION;
+
+    /* Creates sound */
+    hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Stores user data */
+      pstResult->hUserData = _hUserData;
+
+      /* Stores name */
+      pstResult->zName = _pstSample->zName;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound from sample [%s].", _pstSample->zName);
+
+      /* Deletes sound */
+      orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+      /* Updates result */
+      pstResult = orxNULL;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't allocate memory for creating sound.");
+  }
 
   /* Done! */
   return pstResult;
@@ -881,7 +1018,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
       stSoundConfig             = ma_sound_config_init();
       stSoundConfig.pFilePath   = zResourceLocation;
       stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-      stSoundConfig.flags       = MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION;
+      stSoundConfig.flags       = MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION;
 
       /* Creates sound */
       hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
