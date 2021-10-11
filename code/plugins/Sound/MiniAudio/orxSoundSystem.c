@@ -71,7 +71,7 @@ extern "C" {
 #define FILE                              void
 #define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
 #define fread(BUFFER, SIZE, COUNT, FILE)  (orxResource_Read(FILE, SIZE * COUNT, BUFFER, orxNULL, orxNULL) / (SIZE))
-#define fgetc(FILE)                       (orxResource_Read(FILE, 1, &c, orxNULL, orxNULL) <= 0) ? EOF : c & 0xFF // Context-sensitive, single call site in stb_vorbis
+#define fgetc(FILE)                       (orxResource_Read(FILE, 1, &c, orxNULL, orxNULL) <= 0) ? EOF : c & 0xFF /* Context-sensitive, single call site in stb_vorbis */
 #define ftell(FILE)                       (orxU32)orxResource_Tell(FILE)
 #define fseek(FILE, OFFSET, WHENCE)       (orxResource_Seek(FILE, OFFSET, (orxSEEK_OFFSET_WHENCE)WHENCE) < 0) ? 1 : 0
 #define fclose(FILE)                      orxResource_Close(FILE)
@@ -231,43 +231,52 @@ static ma_result SoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek
   orxASSERT(_pfnRead != NULL);
   orxASSERT(_pfnSeek != NULL);
 
-  /* Inits internals */
-  hResult = ma_stbvorbis_init_internal(_pstConfig, _pstVorbis);
-
-  /* Success? */
-  if(hResult == MA_SUCCESS)
+  /* VFS? */
+  if(((ma_decoder *)_pReadSeekTellUserData)->onRead == &ma_decoder__on_read_vfs)
   {
-    /* Inits callbacks */
-    _pstVorbis->onRead                = _pfnRead;
-    _pstVorbis->onSeek                = _pfnSeek;
-    _pstVorbis->onTell                = _pfnTell;
-    _pstVorbis->pReadSeekTellUserData = _pReadSeekTellUserData;
-    ma_allocation_callbacks_init_copy(&(_pstVorbis->allocationCallbacks), _pstAllocationCallbacks);
-
-    /* Inits vorbis decoder */
-    _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder*)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
+    /* Inits internals */
+    hResult = ma_stbvorbis_init_internal(_pstConfig, _pstVorbis);
 
     /* Success? */
-    if(_pstVorbis->stb != NULL)
+    if(hResult == MA_SUCCESS)
     {
-      /* Updates status */
-      _pstVorbis->usingPushMode = MA_FALSE;
+      /* Inits callbacks */
+      _pstVorbis->onRead                = _pfnRead;
+      _pstVorbis->onSeek                = _pfnSeek;
+      _pstVorbis->onTell                = _pfnTell;
+      _pstVorbis->pReadSeekTellUserData = _pReadSeekTellUserData;
+      ma_allocation_callbacks_init_copy(&(_pstVorbis->allocationCallbacks), _pstAllocationCallbacks);
 
-      /* Executes post-init */
-      hResult = ma_stbvorbis_post_init(_pstVorbis);
+      /* Inits vorbis decoder */
+      _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder*)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
 
-      /* Failure? */
-      if(hResult != MA_SUCCESS)
+      /* Success? */
+      if(_pstVorbis->stb != NULL)
       {
-        /* Closes decoder */
-        stb_vorbis_close(_pstVorbis->stb);
+        /* Updates status */
+        _pstVorbis->usingPushMode = MA_FALSE;
+
+        /* Executes post-init */
+        hResult = ma_stbvorbis_post_init(_pstVorbis);
+
+        /* Failure? */
+        if(hResult != MA_SUCCESS)
+        {
+          /* Closes decoder */
+          stb_vorbis_close(_pstVorbis->stb);
+        }
+      }
+      else
+      {
+        /* Updates result */
+        hResult = MA_INVALID_FILE;
       }
     }
-    else
-    {
-      /* Updates result */
-      hResult = MA_INVALID_FILE;
-    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_ERROR;
   }
 
   /* Done! */
