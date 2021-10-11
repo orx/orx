@@ -137,25 +137,13 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
 {
 };
 
-/** Internal node structure
- */
-typedef struct __orxSOUNDSYSTEM_NODE_t
-{
-  ma_engine_node          stNode;
-  orxSOUNDSYSTEM_SOUND   *pstSound;
-
-} orxSOUNDSYSTEM_NODE;
-
 /** Internal sound structure
  */
 struct __orxSOUNDSYSTEM_SOUND_t
 {
   orxHANDLE               hUserData;
   ma_sound                stSound;
-  orxSOUNDSYSTEM_NODE     stStreamNode;
   const orxSTRING         zName;
-  ma_uint32               u32InputChannelCount;
-  ma_uint32               u32OutputChannelCount;
 };
 
 /** Static structure
@@ -169,7 +157,6 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_context              stContext;          /**< Context */
   ma_resource_manager     stResourceManager;  /**< Resource manager */
   ma_engine               stEngine;           /**< Engine */
-  ma_node_vtable          stStreamNodeVTable; /**< Stream node VTable */
   ma_decoding_backend_vtable stVorbisVTable;  /**< Vorbis decoding backend VTable */
   ma_decoding_backend_vtable *apstVTable[1];  /**< Decoding backend VTable */
   orxBANK                *pstSampleBank;      /**< Sound bank */
@@ -199,25 +186,24 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
-static void orxSoundSystem_MiniAudio_ProcessStream(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
+static ma_result SoundSystem_MiniAudio_DataSource_Read(ma_data_source* pDataSource, void* pFramesOut, ma_uint64 frameCount, ma_uint64* pFramesRead)
 {
-    // Do some processing of ppFramesIn (one stream of audio data per input bus)
-    const float* pFramesIn_0 = ppFramesIn[0]; // Input bus @ index 0.
-    float* pFramesOut_0 = ppFramesOut[0];     // Output bus @ index 0.
-    orxSOUNDSYSTEM_NODE *pstNode = (orxSOUNDSYSTEM_NODE *)pNode;
+  ma_result hResult;
 
-    // Do some processing. On input, `pFrameCountIn` will be the number of input frames in each
-    // buffer in `ppFramesIn` and `pFrameCountOut` will be the capacity of each of the buffers
-    // in `ppFramesOut`. On output, `pFrameCountIn` should be set to the number of input frames
-    // your node consumed and `pFrameCountOut` should be set the number of output frames that
-    // were produced.
-    //
-    // You should process as many frames as you can. If your effect consumes input frames at the
-    // same rate as output frames (always the case, unless you're doing resampling), you need
-    // only look at `ppFramesOut` and process that exact number of frames. If you're doing
-    // resampling, you'll need to be sure to set both `pFrameCountIn` and `pFrameCountOut`
-    // properly.
-    ma_channel_map_apply_f32(ppFramesOut[0], NULL, ma_engine_get_channels(&(sstSoundSystem.stEngine)), ppFramesIn[0], NULL, ma_node_get_input_channels(pNode, 0), *pFrameCountIn, ma_channel_mix_mode_simple);
+  /* Fetches audio content */
+  hResult = ma_resource_manager_data_stream_cb__read_pcm_frames(pDataSource, pFramesOut, frameCount, pFramesRead);
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    orxSOUNDSYSTEM_SOUND *pstSound;
+
+    /* Retrieves associated sound */
+    pstSound = (orxSOUNDSYSTEM_SOUND *)(((ma_resource_manager_data_source *)pDataSource)->backend.stream.decoder.pUserData);
+  }
+
+  /* Done! */
+  return hResult;
 }
 
 /*
@@ -497,11 +483,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.stVorbisVTable.onUninit                = &SoundSystem_MiniAudio_UninitVorbisBackend;
     sstSoundSystem.apstVTable[0]                          = &(sstSoundSystem.stVorbisVTable);
 
-    /* Inits stream node VTable */
-    sstSoundSystem.stStreamNodeVTable.onProcess           = &orxSoundSystem_MiniAudio_ProcessStream;
-    sstSoundSystem.stStreamNodeVTable.inputBusCount       = 1;
-    sstSoundSystem.stStreamNodeVTable.outputBusCount      = 1;
-    sstSoundSystem.stStreamNodeVTable.flags               = MA_NODE_FLAG_CONTINUOUS_PROCESSING | MA_NODE_FLAG_DIFFERENT_PROCESSING_RATES;
+    /* Updates data stream VTable */
+    g_ma_resource_manager_data_stream_vtable.onRead       = &SoundSystem_MiniAudio_DataSource_Read;
 
     /* Inits resource callbacks */
     sstSoundSystem.stCallbacks.onOpen                     = &SoundSystem_MiniAudio_Open;
@@ -852,33 +835,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      // ma_node_config  stNodeConfig;
-      // ma_result       hResult;
-
-      // /* Clears it */
-      // orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
-
-      // /* Stores user data */
-      // pstResult->hUserData            = _hUserData;
-
-      // /* Clears name */
-      // pstResult->zName                = orxSTRING_EMPTY;
-
-      // /* Inits stream node's config */
-      // stNodeConfig                    = ma_node_config_init();
-      // pstResult->u32InputChannelCount = _u32ChannelNumber;
-      // pstResult->u32OutputChannelCount= ma_engine_get_channels(&(sstSoundSystem.stEngine));
-      // stNodeConfig.pInputChannels     = &(pstResult->u32InputChannelCount);
-      // stNodeConfig.pOutputChannels    = &(pstResult->u32OutputChannelCount);
-      // stNodeConfig.vtable             = &(sstSoundSystem.stStreamNodeVTable);
-
-      // /* Creates stream node */
-      // hResult = ma_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stNodeConfig, &(sstSoundSystem.stEngine.allocationCallbacks), &(pstResult->stStreamNode));
-      // orxASSERT(hResult == MA_SUCCESS);
-
-      // /* Chains it */
-      // hResult = ma_node_attach_output_bus(&(pstResult->stStreamNode), 0, ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
-      // orxASSERT(hResult == MA_SUCCESS);
+      //! TODO
     }
     else
     {
@@ -917,14 +874,14 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
     /* Success? */
     if(zResourceLocation != orxNULL)
     {
-      ma_result       hResult;
       ma_sound_config stSoundConfig;
+      ma_result       hResult;
 
       /* Inits sound's config */
       stSoundConfig             = ma_sound_config_init();
       stSoundConfig.pFilePath   = zResourceLocation;
-      stSoundConfig.channelsOut = MA_SOUND_SOURCE_CHANNEL_COUNT;
-      stSoundConfig.flags       = MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION | MA_SOUND_FLAG_NO_DEFAULT_ATTACHMENT;
+      stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
+      stSoundConfig.flags       = MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION;
 
       /* Creates sound */
       hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
@@ -932,30 +889,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
       /* Success? */
       if(hResult == MA_SUCCESS)
       {
-        ma_engine_node_config stNodeConfig;
-
-        /* Inits stream node's config */
-        stNodeConfig                    = ma_engine_node_config_init(&(sstSoundSystem.stEngine), ma_engine_node_type_group, MA_SOUND_FLAG_NO_SPATIALIZATION);
-        hResult                         = ma_sound_get_data_format(&(pstResult->stSound), NULL, &(stNodeConfig.channelsIn), &(stNodeConfig.sampleRate), NULL, 0);
-        stNodeConfig.channelsOut        = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-        orxASSERT(hResult == MA_SUCCESS);
-
-        /* Creates stream node */
-        hResult = ma_engine_node_init(&stNodeConfig, &(sstSoundSystem.stEngine.allocationCallbacks), &(pstResult->stStreamNode.stNode));
-        orxASSERT(hResult == MA_SUCCESS);
-
-        /* Customizes it */
-        pstResult->stStreamNode.stNode.baseNode.vtable = &(sstSoundSystem.stStreamNodeVTable);
-        ma_node_set_state(&(pstResult->stStreamNode.stNode), ma_node_state_started);
-
-        /* Chains them */
-        hResult = ma_node_attach_output_bus(&(pstResult->stStreamNode.stNode), 0, ma_engine_get_endpoint(&(sstSoundSystem.stEngine)), 0);
-        orxASSERT(hResult == MA_SUCCESS);
-        hResult = ma_node_attach_output_bus(&(pstResult->stSound), 0, &(pstResult->stStreamNode.stNode), 0);
-        orxASSERT(hResult == MA_SUCCESS);
-
-        /* Stores sound */
-        pstResult->stStreamNode.pstSound = pstResult;
+        /* Updates it */
+        pstResult->stSound.pResourceManagerDataSource->backend.stream.decoder.pUserData = (void *)pstResult;
 
         /* Stores user data */
         pstResult->hUserData = _hUserData;
@@ -1004,12 +939,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
-
-  /* Has stream node? */
-  if(_pstSound->stStreamNode.stNode.pEngine != NULL)
-  {
-    ma_engine_node_uninit(&(_pstSound->stStreamNode.stNode), &(sstSoundSystem.stEngine.allocationCallbacks));
-  }
 
   /* Uninits sound */
   ma_sound_uninit(&(_pstSound->stSound));
