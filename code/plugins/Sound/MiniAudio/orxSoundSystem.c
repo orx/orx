@@ -136,7 +136,6 @@ extern "C" {
 struct __orxSOUNDSYSTEM_SAMPLE_t
 {
   ma_resource_manager_data_source stDataSource;
-  orxSTRING                       zLocation;
   const orxSTRING                 zName;
 };
 
@@ -802,9 +801,6 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
       {
         /* Stores name */
         pstResult->zName = orxString_Store(_zFilename);
-
-        /* Stores location */
-        pstResult->zLocation = orxString_Duplicate(zResourceLocation);
       }
       else
       {
@@ -845,9 +841,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteSample(orxSOUNDSYSTEM_SAMPL
 
   /* Uninits data source */
   ma_resource_manager_data_source_uninit(&(_pstSample->stDataSource));
-
-  /* Deletes location */
-  orxString_Delete(_pstSample->zLocation);
 
   /* Deletes sample */
   orxBank_Free(sstSoundSystem.pstSampleBank, _pstSample);
@@ -917,7 +910,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
 
     /* Inits sound's config */
     stSoundConfig             = ma_sound_config_init();
-    stSoundConfig.pFilePath   = _pstSample->zLocation;
+    stSoundConfig.pDataSource = (ma_data_source *)&(_pstSample->stDataSource);
     stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
     stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION;
 
