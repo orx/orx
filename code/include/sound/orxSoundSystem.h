@@ -179,7 +179,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Stop(orxSOU
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file
  * @param[in]   _bWriteToFile                         Should write to file?
- * @param[in]   _u32SampleRate                        Sample rate, 0 for default rate (44100Hz)
+ * @param[in]   _u32SampleRate                        Sample rate, 0 for default rate (48000Hz)
  * @param[in]   _u32ChannelNumber                     Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

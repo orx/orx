@@ -89,7 +89,7 @@
 #define orxSOUND_KU32_BANK_SIZE                         64          /**< Bank size */
 
 #define orxSOUND_KU32_STREAM_DEFAULT_CHANNEL_NUMBER     1
-#define orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE        44100
+#define orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE        48000
 
 #define orxSOUND_KU32_BUS_BANK_SIZE                     64
 #define orxSOUND_KU32_BUS_TABLE_SIZE                    64
@@ -2309,7 +2309,7 @@ orxSTATUS orxFASTCALL orxSound_Stop(orxSOUND *_pstSound)
 /** Starts recording
  * @param[in] _zName             Name for the recorded sound/file
  * @param[in] _bWriteToFile      Should write to file?
- * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (48000Hz)
  * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
