@@ -195,13 +195,31 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 static ma_result SoundSystem_MiniAudio_DataSource_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
-  ma_result             hResult;
+  ma_result             hResult = MA_SUCCESS;
 
   /* Retrieves associated sound */
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
-  /* Fetches audio content */
-  hResult = ma_data_source_read_pcm_frames(&(pstSound->stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, MA_FALSE);
+  /* Has resource data source? */
+  if(pstSound->stDataSource.flags != 0)
+  {
+    /* Fetches audio content */
+    hResult = ma_data_source_read_pcm_frames(&(pstSound->stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, MA_FALSE);
+  }
+  else
+  {
+    ma_format eFormat;
+    ma_uint32 u32Channels;
+
+    /* Retrieves format */
+    ma_data_source_get_data_format(&(pstSound->stDataSource), &eFormat, &u32Channels, NULL, NULL, 0);
+
+    /* Silences audio content */
+    ma_silence_pcm_frames(_pFramesOut, _u64FrameCount, eFormat, u32Channels);
+
+    /* Updates status */
+    *_pu64FramesRead = _u64FrameCount;
+  }
 
   /* Success? */
   if(hResult == MA_SUCCESS)
