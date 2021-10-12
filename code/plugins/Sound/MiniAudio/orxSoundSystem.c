@@ -204,7 +204,7 @@ static ma_result SoundSystem_MiniAudio_DataSource_Read(ma_data_source *_pstDataS
   if(pstSound->stDataSource.flags != 0)
   {
     /* Fetches audio content */
-    hResult = ma_data_source_read_pcm_frames(&(pstSound->stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, MA_FALSE);
+    hResult = ma_data_source_read_pcm_frames(&(pstSound->stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, ma_sound_is_looping(&(pstSound->stSound)));
   }
   else
   {
@@ -1436,8 +1436,16 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Loop(orxSOUNDSYSTEM_SOUND *_pstSo
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates status */
+  /* Has resource data source? */
+  if(_pstSound->stDataSource.flags != 0)
+  {
+    /* Updates its status */
+    ma_resource_manager_data_source_set_looping(&(_pstSound->stDataSource), (_bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
+  }
+
+  /* Updates sound's status */
   ma_sound_set_looping(&(_pstSound->stSound), (_bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
+
 
   /* Done! */
   return eResult;
