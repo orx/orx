@@ -155,6 +155,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
     {
       ma_resource_manager_data_source stDataSource;
       orxHANDLE                   hOwner;
+      orxFLOAT                   *afPendingSampleList;
+      orxU32                      u32PendingSampleNumber;
       orxU32                      u32ChannelNumber;
       orxU32                      u32SampleRate;
       orxS32                      s32PacketID;
@@ -210,6 +212,7 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
+  orxU32                u32CopySampleNumber = 0;
   ma_result             hResult = MA_SUCCESS;
 
   /* Retrieves associated sound */
@@ -218,85 +221,149 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
   /* Checks */
   orxASSERT(pstSound->bIsStream != orxFALSE);
 
-  /* Has data source? */
-  if(pstSound->stStream.stDataSource.flags != 0)
+  /* Has pending samples? */
+  if(pstSound->stStream.u32PendingSampleNumber > 0)
   {
-    /* Fetches audio content */
-    hResult = ma_data_source_read_pcm_frames(&(pstSound->stStream.stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, ma_sound_is_looping(&(pstSound->stSound)));
-  }
-  else
-  {
-    /* Silences audio content */
-    ma_silence_pcm_frames(_pFramesOut, _u64FrameCount, orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, pstSound->stStream.u32ChannelNumber);
+    /* Gets number of samples to copy */
+    u32CopySampleNumber = orxMIN(pstSound->stStream.u32PendingSampleNumber, (orxU32)_u64FrameCount * pstSound->stStream.u32ChannelNumber);
 
-    /* Updates status */
-    *_pu64FramesRead = _u64FrameCount;
-  }
+    /* Copies them */
+    orxMemory_Copy(_pFramesOut, pstSound->stStream.afPendingSampleList, u32CopySampleNumber);
 
-  /* Success? */
-  if((hResult == MA_SUCCESS) || (hResult == MA_AT_END))
-  {
-    orxSOUND_EVENT_PAYLOAD stPayload;
+    /* Updates pending sample numbers */
+    pstSound->stStream.u32PendingSampleNumber -= u32CopySampleNumber;
 
-    /* Clears payload */
-    orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+    /* Updates output data */
+    _pFramesOut     = (void *)(((orxFLOAT *)_pFramesOut) + u32CopySampleNumber);
+    _u64FrameCount -= (ma_uint64)u32CopySampleNumber;
 
-    /* Stores sound */
-    stPayload.pstSound                          = orxSOUND(pstSound->hUserData);
-
-    /* Stores stream info */
-    stPayload.stStream.stInfo.u32SampleRate     = pstSound->stStream.u32SampleRate;
-    stPayload.stStream.stInfo.u32ChannelNumber  = pstSound->stStream.u32ChannelNumber;
-    stPayload.stStream.stInfo.zName             = pstSound->zName;
-
-    /* Inits packet */
-    stPayload.stStream.stPacket.afSampleList    = (orxFLOAT *)_pFramesOut;
-    stPayload.stStream.stPacket.u32SampleNumber = ((orxU32)*_pu64FramesRead) * pstSound->stStream.u32ChannelNumber;
-    stPayload.stStream.stPacket.fTimeStamp      = (orxFLOAT)orxSystem_GetTime();
-    stPayload.stStream.stPacket.fTime           = orxSoundSystem_GetTime(pstSound);;
-    stPayload.stStream.stPacket.s32ID           = pstSound->stStream.s32PacketID++;
-    stPayload.stStream.stPacket.bDiscard        = orxFALSE;
-    stPayload.stStream.stPacket.bLast           = (hResult == MA_AT_END) ? orxTRUE : orxFALSE;
-
-    /* Doesn't have its owner yet? */
-    if(pstSound->stStream.hOwner == orxNULL)
+    /* Empty? */
+    if(pstSound->stStream.u32PendingSampleNumber == 0)
     {
-      /* Stores it */
-      pstSound->stStream.hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
-    }
-
-    /* Sends event */
-    orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, pstSound->stStream.hOwner, orxNULL, &stPayload);
-
-    /* Should proceed? */
-    if((stPayload.stStream.stPacket.bDiscard == orxFALSE)
-    && (stPayload.stStream.stPacket.u32SampleNumber > 0))
-    {
-      //! TODO
+      /* Removes pending sample list */
+      pstSound->stStream.afPendingSampleList = orxNULL;
     }
     else
     {
-      /* Silences a single frame */
-      ma_silence_pcm_frames(_pFramesOut, 1, orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, pstSound->stStream.u32ChannelNumber);
+      /* Updates sample list */
+      pstSound->stStream.afPendingSampleList += u32CopySampleNumber;
+    }
+  }
+
+  /* Need new data? */
+  if(_u64FrameCount > 0)
+  {
+    /* Has data source? */
+    if(pstSound->stStream.stDataSource.flags != 0)
+    {
+      /* Fetches audio content */
+      hResult = ma_data_source_read_pcm_frames(&(pstSound->stStream.stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, ma_sound_is_looping(&(pstSound->stSound)));
+    }
+    else
+    {
+      /* Silences audio content */
+      ma_silence_pcm_frames(_pFramesOut, _u64FrameCount, orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, pstSound->stStream.u32ChannelNumber);
 
       /* Updates status */
-      *_pu64FramesRead = 1;
+      *_pu64FramesRead = _u64FrameCount;
     }
 
-    /* Updates result */
-    hResult = MA_SUCCESS;
-
-    /* Ends of file? */
-    if(stPayload.stStream.stPacket.bLast != orxFALSE)
+    /* Success? */
+    if((hResult == MA_SUCCESS) || (hResult == MA_AT_END))
     {
-      /* Resets time */
-      orxSoundSystem_SetTime(pstSound, orxFLOAT_0);
+      orxSOUND_EVENT_PAYLOAD stPayload;
 
-      /* Not looping? */
-      if(orxSoundSystem_IsLooping(pstSound) == orxFALSE)
+      /* Clears payload */
+      orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+
+      /* Stores sound */
+      stPayload.pstSound                          = orxSOUND(pstSound->hUserData);
+
+      /* Stores stream info */
+      stPayload.stStream.stInfo.u32SampleRate     = pstSound->stStream.u32SampleRate;
+      stPayload.stStream.stInfo.u32ChannelNumber  = pstSound->stStream.u32ChannelNumber;
+      stPayload.stStream.stInfo.zName             = pstSound->zName;
+
+      /* Inits packet */
+      stPayload.stStream.stPacket.afSampleList    = (orxFLOAT *)_pFramesOut;
+      stPayload.stStream.stPacket.u32SampleNumber = ((orxU32)*_pu64FramesRead) * pstSound->stStream.u32ChannelNumber;
+      stPayload.stStream.stPacket.fTimeStamp      = (orxFLOAT)orxSystem_GetTime();
+      stPayload.stStream.stPacket.fTime           = orxSoundSystem_GetTime(pstSound);;
+      stPayload.stStream.stPacket.s32ID           = pstSound->stStream.s32PacketID++;
+      stPayload.stStream.stPacket.bDiscard        = orxFALSE;
+      stPayload.stStream.stPacket.bLast           = (hResult == MA_AT_END) ? orxTRUE : orxFALSE;
+
+      /* Doesn't have its owner yet? */
+      if(pstSound->stStream.hOwner == orxNULL)
       {
-        /* Updates result */
-        hResult = MA_AT_END;
+        /* Stores it */
+        pstSound->stStream.hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
+      }
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_PACKET, pstSound->stStream.hOwner, orxNULL, &stPayload);
+
+      /* Should proceed? */
+      if((stPayload.stStream.stPacket.bDiscard == orxFALSE)
+      && (stPayload.stStream.stPacket.u32SampleNumber > 0))
+      {
+        /* Should copy? */
+        if(stPayload.stStream.stPacket.afSampleList != _pFramesOut)
+        {
+          orxU32 u32SampleNumber;
+
+          /* Gets number of samples to send */
+          u32SampleNumber = orxMIN(stPayload.stStream.stPacket.u32SampleNumber, (orxU32)*_pu64FramesRead * pstSound->stStream.u32ChannelNumber);
+
+          /* Copies them */
+          orxMemory_Copy(_pFramesOut, pstSound->stStream.afPendingSampleList, u32SampleNumber);
+
+          /* Updates sample numbers */
+          pstSound->stStream.u32PendingSampleNumber = stPayload.stStream.stPacket.u32SampleNumber - u32SampleNumber;
+
+          /* Has pending samples? */
+          if(pstSound->stStream.u32PendingSampleNumber > 0)
+          {
+            /* Stores pending samples */
+            pstSound->stStream.afPendingSampleList = stPayload.stStream.stPacket.afSampleList + u32SampleNumber;
+          }
+        }
+        else
+        {
+          /* Checks */
+          orxASSERT(stPayload.stStream.stPacket.u32SampleNumber <= (orxU32)*_pu64FramesRead * pstSound->stStream.u32ChannelNumber);
+
+          /* Updates status */
+          *_pu64FramesRead = (ma_uint64)stPayload.stStream.stPacket.u32SampleNumber / pstSound->stStream.u32ChannelNumber;
+        }
+      }
+      else
+      {
+        /* Silences a single frame */
+        ma_silence_pcm_frames(_pFramesOut, 1, orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, pstSound->stStream.u32ChannelNumber);
+
+        /* Updates status */
+        *_pu64FramesRead = 1;
+      }
+
+      /* Adjusts available samples number */
+      *_pu64FramesRead += (ma_uint64)u32CopySampleNumber;
+
+      /* Updates result */
+      hResult = MA_SUCCESS;
+
+      /* Ends of file? */
+      if(stPayload.stStream.stPacket.bLast != orxFALSE)
+      {
+        /* Resets time */
+        orxSoundSystem_SetTime(pstSound, orxFLOAT_0);
+
+        /* Not looping? */
+        if(orxSoundSystem_IsLooping(pstSound) == orxFALSE)
+        {
+          /* Updates result */
+          hResult = MA_AT_END;
+        }
       }
     }
   }
