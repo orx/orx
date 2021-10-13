@@ -221,6 +221,9 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
   /* Checks */
   orxASSERT(pstSound->bIsStream != orxFALSE);
 
+  /* Inits frames count */
+  *_pu64FramesRead = 0;
+
   /* Has pending samples? */
   if(pstSound->stStream.u32PendingSampleNumber > 0)
   {
@@ -228,14 +231,14 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
     u32CopySampleNumber = orxMIN(pstSound->stStream.u32PendingSampleNumber, (orxU32)_u64FrameCount * pstSound->stStream.u32ChannelNumber);
 
     /* Copies them */
-    orxMemory_Copy(_pFramesOut, pstSound->stStream.afPendingSampleList, u32CopySampleNumber);
+    orxMemory_Copy(_pFramesOut, pstSound->stStream.afPendingSampleList, u32CopySampleNumber * sizeof(orxFLOAT));
 
     /* Updates pending sample numbers */
     pstSound->stStream.u32PendingSampleNumber -= u32CopySampleNumber;
 
     /* Updates output data */
     _pFramesOut     = (void *)(((orxFLOAT *)_pFramesOut) + u32CopySampleNumber);
-    _u64FrameCount -= (ma_uint64)u32CopySampleNumber;
+    _u64FrameCount -= (ma_uint64)u32CopySampleNumber / (ma_uint64)pstSound->stStream.u32ChannelNumber;
 
     /* Empty? */
     if(pstSound->stStream.u32PendingSampleNumber == 0)
@@ -316,7 +319,7 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
           u32SampleNumber = orxMIN(stPayload.stStream.stPacket.u32SampleNumber, (orxU32)*_pu64FramesRead * pstSound->stStream.u32ChannelNumber);
 
           /* Copies them */
-          orxMemory_Copy(_pFramesOut, pstSound->stStream.afPendingSampleList, u32SampleNumber);
+          orxMemory_Copy(_pFramesOut, stPayload.stStream.stPacket.afSampleList, u32SampleNumber * sizeof(orxFLOAT));
 
           /* Updates sample numbers */
           pstSound->stStream.u32PendingSampleNumber = stPayload.stStream.stPacket.u32SampleNumber - u32SampleNumber;
@@ -346,9 +349,6 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
         *_pu64FramesRead = 1;
       }
 
-      /* Adjusts available samples number */
-      *_pu64FramesRead += (ma_uint64)u32CopySampleNumber;
-
       /* Updates result */
       hResult = MA_SUCCESS;
 
@@ -367,6 +367,9 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
       }
     }
   }
+
+  /* Adjusts available samples number */
+  *_pu64FramesRead += (ma_uint64)u32CopySampleNumber / pstSound->stStream.u32ChannelNumber;
 
   /* Done! */
   return hResult;
