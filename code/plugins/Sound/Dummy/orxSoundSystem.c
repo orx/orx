@@ -74,6 +74,12 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_GetSampleInfo(const orxSOUNDSYSTEM_SA
   return orxSTATUS_FAILURE;
 }
 
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxFLOAT *_afData, orxU32 _u32SampleNumber)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   /* Done! */
@@ -265,6 +271,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateSample, SOUNDSYSTEM,
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_DeleteSample, SOUNDSYSTEM, DELETE_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetSampleInfo, SOUNDSYSTEM, GET_SAMPLE_INFO);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
