@@ -341,6 +341,30 @@ static ma_result SoundSystem_MiniAudio_DataSource_GetLength(ma_data_source *_pst
   return hResult;
 }
 
+static ma_result SoundSystem_MiniAudio_DataSource_SetLooping(ma_data_source* _pstDataSource, ma_bool32 _bIsLooping)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  ma_result             hResult;
+
+  /* Retrieves associated sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
+
+  /* Has resource data source? */
+  if(pstSound->stDataSource.flags != 0)
+  {
+    /* Updates result */
+    hResult = ma_data_source_set_looping(&(pstSound->stDataSource), _bIsLooping);
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_NOT_IMPLEMENTED;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
 /*
  * This function's logic has been lifted straight from 'ma_stbvorbis_init_file', replacing the internal call to `stb_vorbis_open_filename` with `stb_vorbis_open_file`, bypassing the use of the pushdata API.
  */
@@ -624,6 +648,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.stDataSourceVTable.onGetDataFormat     = &SoundSystem_MiniAudio_DataSource_GetDataFormat;
     sstSoundSystem.stDataSourceVTable.onGetCursor         = &SoundSystem_MiniAudio_DataSource_GetCursor;
     sstSoundSystem.stDataSourceVTable.onGetLength         = &SoundSystem_MiniAudio_DataSource_GetLength;
+    sstSoundSystem.stDataSourceVTable.onSetLooping        = &SoundSystem_MiniAudio_DataSource_SetLooping;
 
     /* Inits resource callbacks */
     sstSoundSystem.stCallbacks.onOpen                     = &SoundSystem_MiniAudio_Open;
@@ -929,7 +954,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
       ma_result hResult;
 
       /* Inits data source */
-      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_DECODE | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION, NULL, &(pstResult->stDataSource));
+      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_DECODE | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION, 0, NULL, &(pstResult->stDataSource));
 
       /* Success? */
       if(hResult == MA_SUCCESS)
@@ -1212,7 +1237,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
       orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
       /* Inits resource data source */
-      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION, NULL, &(pstResult->stDataSource));
+      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_SOUND_FLAG_STREAM | MA_SOUND_FLAG_NO_SPATIALIZATION, 0, NULL, &(pstResult->stDataSource));
 
       /* Success? */
       if(hResult == MA_SUCCESS)
