@@ -313,6 +313,9 @@ static orxINLINE void orxSound_UnloadAllSample()
   /* Non empty? */
   while(pstSample != orxNULL)
   {
+    /* Forces its deletion */
+    orxFLAG_SET(pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL, orxSOUND_SAMPLE_KU32_FLAG_NONE);
+
     /* Deletes it */
     orxSound_UnloadSample(pstSample);
 
