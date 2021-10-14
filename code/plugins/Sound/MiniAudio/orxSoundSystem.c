@@ -290,7 +290,7 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
     if(pstSound->stStream.stDataSource.flags != 0)
     {
       /* Fetches audio content */
-      hResult = ma_data_source_read_pcm_frames(&(pstSound->stStream.stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead, ma_sound_is_looping(&(pstSound->stSound)));
+      hResult = ma_data_source_read_pcm_frames(&(pstSound->stStream.stDataSource), _pFramesOut, _u64FrameCount, _pu64FramesRead);
     }
     else
     {
@@ -1347,7 +1347,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     if(_pstSample->bIsBuffer != orxFALSE)
     {
       /* Updates sound's config*/
-      stSoundConfig.flags       = MA_SOUND_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION;
+      stSoundConfig.flags       = MA_SOUND_FLAG_NO_SPATIALIZATION;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
       /* Creates buffer data source */
