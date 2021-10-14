@@ -108,6 +108,7 @@ extern "C" {
 
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY             0x00000001 /**< Ready flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING         0x00000002 /**< Recording flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING    0x00000004 /**< Stop recording flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -199,6 +200,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_log                          stLog;                /**< Log */
   ma_log_callback                 stLogCallback;        /**< Log callback */
   ma_vfs_callbacks                stCallbacks;          /**< Resource callbacks */
+  ma_encoder                      stEncoder;            /**< Encoder */
   ma_context                      stContext;            /**< Context */
   ma_resource_manager             stResourceManager;    /**< Resource manager */
   ma_engine                       stEngine;             /**< Engine */
@@ -211,6 +213,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxBANK                        *pstSoundBank;         /**< Sound bank */
   orxFLOAT                       *afStreamBuffer;       /**< Stream buffer */
   orxFLOAT                       *afRecordingBuffer;    /**< Recording buffer */
+  volatile orxHANDLE              hRecordingResource;   /**< Recording resource */
   orxFLOAT                        fDimensionRatio;      /**< Dimension ration */
   orxFLOAT                        fRecDimensionRatio;   /**< Reciprocal dimension ratio */
   orxS32                          s32StreamBufferSize;  /**< Stream buffer size */
@@ -234,9 +237,164 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
-static void orxSoundSystem_MiniAudio_Record(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
+size_t orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const void *_pBufferIn, size_t _sBytesToWrite)
 {
-  //! TODO
+  size_t sResult;
+
+  /* Writes data */
+  sResult = (size_t)orxResource_Write((orxHANDLE)_pstEncoder->pUserData, _sBytesToWrite, _pBufferIn, orxNULL, orxNULL);
+
+  /* Done! */
+  return sResult;
+}
+
+ma_bool32 orxSoundSystem_MiniAudio_Recording_Seek(ma_encoder *_pstEncoder, int _iByteOffset, ma_seek_origin _eOrigin)
+{
+  /* Seeks */
+  return (orxResource_Seek((orxHANDLE)_pstEncoder->pUserData, (orxS64)_iByteOffset, (orxSEEK_OFFSET_WHENCE)_eOrigin) >= 0) ? MA_TRUE : MA_FALSE;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_OpenRecordingFile()
+{
+  const orxSTRING zResourceLocation;
+  orxHANDLE       hResource;
+  orxSTATUS       eResult;
+
+  /* Valid file to open? */
+  if(((zResourceLocation = orxResource_LocateInStorage(orxSOUND_KZ_RESOURCE_GROUP, orxNULL, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName)) != orxNULL)
+  && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
+  {
+    ma_encoder_config stEncoderConfig;
+
+    /* Inits encoder config */
+    stEncoderConfig = ma_encoder_config_init(ma_encoding_format_wav, orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber, sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate);
+
+    /* Inits encoder */
+    if(ma_encoder_init(&orxSoundSystem_MiniAudio_Recording_Write, &orxSoundSystem_MiniAudio_Recording_Seek, hResource, &stEncoderConfig, &(sstSoundSystem.stEncoder)) == MA_SUCCESS)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't write to file <%s> to record audio data.", sstSoundSystem.stRecordingPayload.stStream.stInfo.zName);
+
+      /* Closes resource */
+      orxResource_Close(hResource);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't open file <%s> to write recorded audio data.", sstSoundSystem.stRecordingPayload.stStream.stInfo.zName);
+  }
+
+  /* Updates recording handle */
+  orxMEMORY_BARRIER();
+  sstSoundSystem.hRecordingResource = (eResult != orxSTATUS_FAILURE) ? hResource : orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_OpenRecordingFileTask(void *_pContext)
+{
+  /* Opens file */
+  return orxSoundSystem_MiniAudio_OpenRecordingFile();
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecordingTask(void *_pContext)
+{
+  /* Stops recording */
+  orxSoundSystem_StopRecording();
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
+}
+
+static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
+{
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateRecording");
+
+  /* Recording? */
+  if(orxFLAG_GET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING)
+  {
+    /* Is engine still running? (As this is called by a non-orx thread, we need to make sure orx's still running) */
+    if(orxModule_IsInitialized(orxMODULE_ID_MAIN) != orxFALSE)
+    {
+      orxFLOAT fDT;
+
+      /* Inits packet */
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber = _u32FrameCount * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.afSampleList    = (orxFLOAT *)_pInput;
+
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_PACKET, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+
+      /* Should write the packet? */
+      if(sstSoundSystem.stRecordingPayload.stStream.stPacket.bDiscard == orxFALSE)
+      {
+        /* No recording resource yet? */
+        if(sstSoundSystem.hRecordingResource == orxNULL)
+        {
+          /* Inits it */
+          sstSoundSystem.hRecordingResource = orxHANDLE_UNDEFINED;
+          orxMEMORY_BARRIER();
+
+          /* Asks for its opening on main thread */
+          orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_OpenRecordingFileTask, orxNULL, orxNULL);
+
+          /* Waits for outcome */
+          while(sstSoundSystem.hRecordingResource == orxHANDLE_UNDEFINED)
+            ;
+        }
+
+        /* Has a valid recording resource? */
+        if(sstSoundSystem.hRecordingResource != orxNULL)
+        {
+          ma_uint64 u64FrameCount, u64WrittenFrameNumber;
+          ma_result hResult;
+
+          /* Computes frame count */
+          u64FrameCount = (ma_uint64)(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber / sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+
+          /* Writes data */
+          hResult = ma_encoder_write_pcm_frames(&(sstSoundSystem.stEncoder), _pInput, u64FrameCount, &u64WrittenFrameNumber);
+          orxASSERT((hResult == MA_SUCCESS) && (u64WrittenFrameNumber == u64FrameCount));
+        }
+      }
+
+      /* Updates time and timestamp */
+      fDT = orxU2F(sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber) / orxU2F(sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber);
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTime      += fDT;
+      sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp  = (orxFLOAT)orxSystem_GetTime();
+
+      /* Was last? */
+      if(sstSoundSystem.stRecordingPayload.stStream.stPacket.bLast != orxFALSE)
+      {
+        /* Updates status */
+        orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
+        /* Postpones recording stop on main thread */
+        orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
+      }
+    }
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
 }
 
 static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
@@ -1339,14 +1497,14 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     ma_sound_config stSoundConfig;
     ma_result       hResult = MA_SUCCESS;
 
-    /* Inits sound's config */
+    /* Inits sound config */
     stSoundConfig             = ma_sound_config_init();
     stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
 
     /* Is buffer? */
     if(_pstSample->bIsBuffer != orxFALSE)
     {
-      /* Updates sound's config*/
+      /* Updates sound config*/
       stSoundConfig.flags       = MA_SOUND_FLAG_NO_SPATIALIZATION;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
@@ -1355,7 +1513,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     }
     else
     {
-      /* Updates sound's config*/
+      /* Updates sound config*/
       stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | MA_SOUND_FLAG_NO_SPATIALIZATION;
       stSoundConfig.pFilePath = _pstSample->stResource.zLocation;
     }
@@ -1435,7 +1593,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
       /* Clears it */
       orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
-      /* Inits base data source's config */
+      /* Inits base data source config */
       stBaseConfig        = ma_data_source_config_init();
       stBaseConfig.vtable = &(sstSoundSystem.stStreamVTable);
 
@@ -1447,7 +1605,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
       {
         ma_sound_config stSoundConfig;
 
-        /* Inits sound's config */
+        /* Inits sound config */
         stSoundConfig             = ma_sound_config_init();
         stSoundConfig.pDataSource = &(pstResult->stBase);
         stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
@@ -1545,7 +1703,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
       {
         ma_data_source_config stBaseConfig;
 
-        /* Inits base data source's config */
+        /* Inits base data source config */
         stBaseConfig        = ma_data_source_config_init();
         stBaseConfig.vtable = &(sstSoundSystem.stStreamVTable);
 
@@ -1557,7 +1715,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
         {
           ma_sound_config stSoundConfig;
 
-          /* Inits sound's config */
+          /* Inits sound config */
           stSoundConfig             = ma_sound_config_init();
           stSoundConfig.pDataSource = &(pstResult->stBase);
           stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
@@ -1791,7 +1949,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _z
       stDeviceConfig.sampleRate       = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate;
       stDeviceConfig.capture.channels = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
       stDeviceConfig.capture.format   = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
-      stDeviceConfig.dataCallback     = &orxSoundSystem_MiniAudio_Record;
+      stDeviceConfig.dataCallback     = &orxSoundSystem_MiniAudio_UpdateRecording;
 
       /* Inits capture device */
       hResult = ma_device_init(&(sstSoundSystem.stCaptureContext), &stDeviceConfig, &(sstSoundSystem.stCaptureDevice));
@@ -1805,13 +1963,16 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _z
         /* Success? */
         if(hResult == MA_SUCCESS)
         {
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
-
           /* Should record? */
           if(_bWriteToFile != orxFALSE)
           {
-            //! TODO
+            /* Opens file for recording */
+            eResult = orxSoundSystem_MiniAudio_OpenRecordingFile();
+          }
+          else
+          {
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
           }
 
           /* Success? */
@@ -1904,11 +2065,17 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecording()
   /* Is recording? */
   if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
   {
-    // /* Has a recording file? */
-    // if(sstSoundSystem.pstRecordingFile != orxNULL)
-    // {
-    //   //! TODO
-    // }
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING);
+    orxMEMORY_BARRIER();
+
+    /* Has a recording file? */
+    if(sstSoundSystem.hRecordingResource != orxNULL)
+    {
+      /* Closes it */
+      orxResource_Close(sstSoundSystem.hRecordingResource);
+      sstSoundSystem.hRecordingResource = orxNULL;
+    }
 
     /* Stops capture device */
     ma_device_stop(&(sstSoundSystem.stCaptureDevice));
@@ -1923,9 +2090,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecording()
     sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber = 0;
     sstSoundSystem.stRecordingPayload.stStream.stPacket.afSampleList    = orxNULL;
 
-    /* Updates status */
-    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING);
-
     /* Sends event */
     orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_STOP, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
 
@@ -1938,6 +2102,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecording()
   }
   else
   {
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING);
+
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
