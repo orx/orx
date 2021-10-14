@@ -202,6 +202,8 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_context                      stContext;            /**< Context */
   ma_resource_manager             stResourceManager;    /**< Resource manager */
   ma_engine                       stEngine;             /**< Engine */
+  ma_context                      stCaptureContext;     /**< Context */
+  ma_device                       stCaptureDevice;      /**< Caoture device */
   ma_data_source_vtable           stStreamVTable;       /**< Stream VTable */
   ma_decoding_backend_vtable      stVorbisVTable;       /**< Vorbis decoding backend VTable */
   ma_decoding_backend_vtable     *apstVTable[1];        /**< Decoding backend VTable */
@@ -231,6 +233,11 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static void orxSoundSystem_MiniAudio_Record(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
+{
+  //! TODO
+}
 
 static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
 {
@@ -1743,13 +1750,145 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Stop(orxSOUNDSYSTEM_SOUND *_pstSo
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
 
-  //! TODO
+  /* Not already recording? */
+  if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
+  {
+    ma_context_config stContextConfig;
+    ma_result         hResult;
+
+    /* Clears recording payload */
+    orxMemory_Zero(&(sstSoundSystem.stRecordingPayload), sizeof(orxSOUND_EVENT_PAYLOAD));
+
+    /* Stores recording name */
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.zName             = orxString_Duplicate(_zName);
+
+    /* Stores stream info */
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate     = (_u32SampleRate > 0)      ? _u32SampleRate    : orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY;
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber  = (_u32ChannelNumber != 0)  ? _u32ChannelNumber : orxSOUNDSYSTEM_KS32_DEFAULT_CHANNEL_NUMBER;
+
+    /* Stores status */
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.bDiscard        = (_bWriteToFile != orxFALSE) ? orxFALSE : orxTRUE;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.bLast           = orxFALSE;
+
+    /* Inits context */
+    stContextConfig       = ma_context_config_init();
+    stContextConfig.pLog  = &(sstSoundSystem.stLog);
+    hResult               = ma_context_init(NULL, 0, &stContextConfig, &(sstSoundSystem.stCaptureContext));
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      ma_device_config stDeviceConfig;
+
+      /* Inits device config */
+      stDeviceConfig                  = ma_device_config_init(ma_device_type_capture);
+      stDeviceConfig.sampleRate       = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate;
+      stDeviceConfig.capture.channels = sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
+      stDeviceConfig.capture.format   = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
+      stDeviceConfig.dataCallback     = &orxSoundSystem_MiniAudio_Record;
+
+      /* Inits capture device */
+      hResult = ma_device_init(&(sstSoundSystem.stCaptureContext), &stDeviceConfig, &(sstSoundSystem.stCaptureDevice));
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
+        /* Starts capture device */
+        hResult = ma_device_start(&(sstSoundSystem.stCaptureDevice));
+
+        /* Success? */
+        if(hResult == MA_SUCCESS)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+
+          /* Should record? */
+          if(_bWriteToFile != orxFALSE)
+          {
+            //! TODO
+          }
+
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates packet's timestamp and time */
+            sstSoundSystem.stRecordingPayload.stStream.stPacket.fTimeStamp  = (orxFLOAT)orxSystem_GetTime();
+            sstSoundSystem.stRecordingPayload.stStream.stPacket.fTime       = orxFLOAT_0;
+
+            /* Updates status */
+            orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_START, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+          }
+          else
+          {
+            /* Stops capture device */
+            ma_device_stop(&(sstSoundSystem.stCaptureDevice));
+
+            /* Uninits capture device */
+            ma_device_uninit(&(sstSoundSystem.stCaptureDevice));
+
+            /* Uninits capture context */
+            ma_context_uninit(&(sstSoundSystem.stCaptureContext));
+
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: can't start capture device.", _zName);
+
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+          }
+        }
+        else
+        {
+          /* Uninits capture device */
+          ma_device_uninit(&(sstSoundSystem.stCaptureDevice));
+
+          /* Uninits capture context */
+          ma_context_uninit(&(sstSoundSystem.stCaptureContext));
+
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: can't start capture device.", _zName);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+      else
+      {
+        /* Uninits capture context */
+        ma_context_uninit(&(sstSoundSystem.stCaptureContext));
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: can't init capture device.", _zName);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s>: can't init capture context.", _zName);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't start recording <%s> as the recording of <%s> is still in progress.", _zName, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -1762,7 +1901,46 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecording()
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Is recording? */
+  if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING))
+  {
+    // /* Has a recording file? */
+    // if(sstSoundSystem.pstRecordingFile != orxNULL)
+    // {
+    //   //! TODO
+    // }
+
+    /* Stops capture device */
+    ma_device_stop(&(sstSoundSystem.stCaptureDevice));
+
+    /* Uninits capture device */
+    ma_device_uninit(&(sstSoundSystem.stCaptureDevice));
+
+    /* Uninits capture context */
+    ma_context_uninit(&(sstSoundSystem.stCaptureContext));
+
+    /* Resets the packet */
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber = 0;
+    sstSoundSystem.stRecordingPayload.stStream.stPacket.afSampleList    = orxNULL;
+
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING);
+
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_RECORDING_STOP, orxNULL, orxNULL, &(sstSoundSystem.stRecordingPayload));
+
+    /* Deletes name */
+    orxString_Delete((orxSTRING)sstSoundSystem.stRecordingPayload.stStream.stInfo.zName);
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.zName = orxNULL;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -1770,12 +1948,28 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecording()
 
 orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_HasRecordingSupport()
 {
-  orxBOOL bResult = orxFALSE;
+  ma_context  stContext;
+  orxBOOL     bResult = orxFALSE;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
-  //! TODO
+  /* Inits context */
+  if(ma_context_init(NULL, 0, NULL, &stContext) == MA_SUCCESS)
+  {
+    ma_device_info *apstCaptureDeviceList;
+    ma_uint32       u32CaptureDeviceNumber;
+
+    /* Gets available capture devices */
+    if(ma_context_get_devices(&stContext, NULL, NULL, &apstCaptureDeviceList, &u32CaptureDeviceNumber) == MA_SUCCESS)
+    {
+      /* Updates result */
+      bResult = (u32CaptureDeviceNumber != 0) ? orxTRUE : orxFALSE;
+    }
+
+    /* Uninits context */
+    ma_context_uninit(&stContext);
+  }
 
   /* Done! */
   return bResult;
