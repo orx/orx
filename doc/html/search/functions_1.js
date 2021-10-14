@@ -1146,7 +1146,7 @@ var searchData=
   ['orxsoundsystem_5fsetpitch',['orxSoundSystem_SetPitch',['../group__orx_sound_system.html#ga3151ee6bf5521c207dc429cb06a0ab6c',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fsetposition',['orxSoundSystem_SetPosition',['../group__orx_sound_system.html#ga54aa1629179fc7f236d8cdb2fc5502c6',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fsetreferencedistance',['orxSoundSystem_SetReferenceDistance',['../group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f',1,'orxSoundSystem.h']]],
-  ['orxsoundsystem_5fsetsampledata',['orxSoundSystem_SetSampleData',['../group__orx_sound_system.html#ga9225eda0edac2c6ad0e0e8b37142ee2e',1,'orxSoundSystem.h']]],
+  ['orxsoundsystem_5fsetsampledata',['orxSoundSystem_SetSampleData',['../group__orx_sound_system.html#ga46e9e568f5eaa79c7eac62eafafd9321',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fsettime',['orxSoundSystem_SetTime',['../group__orx_sound_system.html#ga6232785c646506ef30aa87da1df0d894',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fsetup',['orxSoundSystem_Setup',['../group__orx_sound_system.html#ga4fe88ac284a248e180404ee43dbf8eed',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fsetvolume',['orxSoundSystem_SetVolume',['../group__orx_sound_system.html#gad87e9057a6687f1b1fe1e54caf3a26a9',1,'orxSoundSystem.h']]],

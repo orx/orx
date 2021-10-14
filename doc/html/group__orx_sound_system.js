@@ -44,7 +44,7 @@ var group__orx_sound_system =
     [ "orxSoundSystem_SetPitch", "group__orx_sound_system.html#ga3151ee6bf5521c207dc429cb06a0ab6c", null ],
     [ "orxSoundSystem_SetPosition", "group__orx_sound_system.html#ga54aa1629179fc7f236d8cdb2fc5502c6", null ],
     [ "orxSoundSystem_SetReferenceDistance", "group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f", null ],
-    [ "orxSoundSystem_SetSampleData", "group__orx_sound_system.html#ga9225eda0edac2c6ad0e0e8b37142ee2e", null ],
+    [ "orxSoundSystem_SetSampleData", "group__orx_sound_system.html#ga46e9e568f5eaa79c7eac62eafafd9321", null ],
     [ "orxSoundSystem_SetTime", "group__orx_sound_system.html#ga6232785c646506ef30aa87da1df0d894", null ],
     [ "orxSoundSystem_Setup", "group__orx_sound_system.html#ga4fe88ac284a248e180404ee43dbf8eed", null ],
     [ "orxSoundSystem_SetVolume", "group__orx_sound_system.html#gad87e9057a6687f1b1fe1e54caf3a26a9", null ],
