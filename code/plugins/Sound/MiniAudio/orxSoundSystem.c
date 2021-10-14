@@ -879,6 +879,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pResourceManager = &(sstSoundSystem.stResourceManager);
         stEngineConfig.sampleRate       = orxSOUNDSYSTEM_KS32_DEFAULT_FREQUENCY;
         stEngineConfig.channels         = orxSOUNDSYSTEM_KS32_DEFAULT_CHANNEL_NUMBER;
+        stEngineConfig.listenerCount    = 1;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(stResourceManagerConfig.allocationCallbacks));
         hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
 
@@ -2102,7 +2103,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetListenerPosition(const orxVECT
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
 
-  //! TODO
+  /* Sets listener position */
+  ma_engine_listener_set_position(&(sstSoundSystem.stEngine), 0, sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
 
   /* Done! */
   return eResult;
@@ -2110,13 +2112,18 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetListenerPosition(const orxVECT
 
 orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetListenerPosition(orxVECTOR *_pvPosition)
 {
-  orxVECTOR *pvResult = orxNULL;
+  ma_vec3f    vPosition;
+  orxVECTOR  *pvResult = _pvPosition;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
 
-  //! TODO
+  /* Gets listener position */
+  vPosition = ma_engine_listener_get_position(&(sstSoundSystem.stEngine), 0);
+
+  /* Updates result */
+  orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
 
   /* Done! */
   return pvResult;
