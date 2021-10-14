@@ -432,7 +432,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
     /* Starts recording with default settings */
-    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
+    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 1);
 
     /* Updates status */
     sbRecord = orxTRUE;
