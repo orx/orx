@@ -82,6 +82,13 @@
 #undef STBI_WRITE_NO_STDIO
 
 
+#ifdef __orx64__
+  #define orxDISPLAY_CAST_HELPER                (orxU64)
+#else /* __orx64__ */
+  #define orxDISPLAY_CAST_HELPER
+#endif /* __orx64__ */
+
+
 /** Module flags
  */
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000  /**< No flags */
