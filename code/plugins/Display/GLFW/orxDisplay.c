@@ -6680,7 +6680,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
         pstShader->bUseCustomParam = orxTRUE;
 
         /* Outputs log */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%d] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", (orxU32)pstShader->hProgram, _zParam);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%d] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", (orxU32) orxDISPLAY_CAST_HELPER pstShader->hProgram, _zParam);
       }
     }
   }
