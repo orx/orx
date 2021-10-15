@@ -4833,6 +4833,23 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
+
+    /* Not using custom param? */
+    if(pstShader->bUseCustomParam == orxFALSE)
+    {
+      /* Has any texture edge location? */
+      if((pstInfo->iLocationTop >= 0)
+      || (pstInfo->iLocationLeft >= 0)
+      || (pstInfo->iLocationBottom >= 0)
+      || (pstInfo->iLocationRight >= 0))
+      {
+        /* Updates status */
+        pstShader->bUseCustomParam = orxTRUE;
+
+        /* Outputs log */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%d] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", (orxU32)pstShader->hProgram, _zParam);
+      }
+    }
   }
   else
   {
