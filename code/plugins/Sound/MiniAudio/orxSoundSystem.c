@@ -116,11 +116,9 @@ extern "C" {
 /** Misc defines
  */
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE                     128
-#define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER  4
-#define orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE    4096
-#define orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY   48000
-#define orxSOUNDSYSTEM_KS32_DEFAULT_FREQUENCY             48000
-#define orxSOUNDSYSTEM_KS32_DEFAULT_CHANNEL_NUMBER        2
+#define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_SAMPLE_RATE 48000
+#define orxSOUNDSYSTEM_KU32_DEFAULT_SAMPLE_RATE           48000
+#define orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER        2
 #define orxSOUNDSYSTEM_KE_DEFAULT_LOG_LEVEL               MA_LOG_LEVEL_WARNING
 #define orxSOUNDSYSTEM_KE_DEFAULT_FORMAT                  ma_format_f32
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
@@ -211,13 +209,10 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_decoding_backend_vtable     *apstVTable[1];        /**< Decoding backend VTable */
   orxBANK                        *pstSampleBank;        /**< Sound bank */
   orxBANK                        *pstSoundBank;         /**< Sound bank */
-  orxFLOAT                       *afStreamBuffer;       /**< Stream buffer */
-  orxFLOAT                       *afRecordingBuffer;    /**< Recording buffer */
   volatile orxHANDLE              hRecordingResource;   /**< Recording resource */
   orxFLOAT                        fDimensionRatio;      /**< Dimension ration */
   orxFLOAT                        fRecDimensionRatio;   /**< Reciprocal dimension ratio */
-  orxS32                          s32StreamBufferSize;  /**< Stream buffer size */
-  orxS32                          s32StreamBufferCount; /**< Stream buffer number */
+  orxU32                          u32SampleRate;        /**< Sample rate */
   orxU32                          u32WorkerThread;      /**< Worker thread */
   orxU32                          u32Flags;             /**< Status flags */
 
@@ -972,9 +967,31 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
   {
     ma_resource_manager_config  stResourceManagerConfig;
     ma_result                   hResult;
+    orxFLOAT                    fRatio;
+    orxU32                      u32SampleRate;
 
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+
+    /* Retrieves dimension ratio */
+    fRatio                          = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
+    sstSoundSystem.fDimensionRatio  = (fRatio > orxFLOAT_0) ? fRatio : orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+
+    /* Stores it */
+    orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
+
+    /* Retrieves sample rate */
+    u32SampleRate                 = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_SAMPLE_RATE);
+    sstSoundSystem.u32SampleRate  = (u32SampleRate > orxFLOAT_0) ? u32SampleRate : orxSOUNDSYSTEM_KU32_DEFAULT_SAMPLE_RATE;
+
+    /* Stores it */
+    orxConfig_SetU32(orxSOUNDSYSTEM_KZ_CONFIG_SAMPLE_RATE, sstSoundSystem.u32SampleRate);
+
+    /* Gets reciprocal dimension ratio */
+    sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
     /* Inits vorbis decoding backend VTable */
     sstSoundSystem.stVorbisVTable.onInit                  = &SoundSystem_MiniAudio_InitVorbisBackend;
@@ -1001,7 +1018,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     /* Inits resource manager configuration */
     stResourceManagerConfig                               = ma_resource_manager_config_init();
     stResourceManagerConfig.decodedFormat                 = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
-    stResourceManagerConfig.decodedSampleRate             = orxSOUNDSYSTEM_KS32_DEFAULT_FREQUENCY;
+    stResourceManagerConfig.decodedSampleRate             = sstSoundSystem.u32SampleRate;
     stResourceManagerConfig.jobThreadCount                = 0;
     stResourceManagerConfig.flags                         = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING;
     stResourceManagerConfig.ppCustomDecodingBackendVTables= sstSoundSystem.apstVTable;
@@ -1042,8 +1059,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pContext         = &(sstSoundSystem.stContext);
         stEngineConfig.pLog             = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager = &(sstSoundSystem.stResourceManager);
-        stEngineConfig.sampleRate       = orxSOUNDSYSTEM_KS32_DEFAULT_FREQUENCY;
-        stEngineConfig.channels         = orxSOUNDSYSTEM_KS32_DEFAULT_CHANNEL_NUMBER;
+        stEngineConfig.sampleRate       = sstSoundSystem.u32SampleRate;
+        stEngineConfig.channels         = orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER;
         stEngineConfig.listenerCount    = 1;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(stResourceManagerConfig.allocationCallbacks));
         hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
@@ -1051,33 +1068,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         /* Success? */
         if(hResult == MA_SUCCESS)
         {
-          /* Pushes config section */
-          orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
-
-          /* Has stream buffer size? */
-          if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) != orxFALSE)
-          {
-            /* Stores it */
-            sstSoundSystem.s32StreamBufferSize = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE) & 0xFFFFFFFC;
-          }
-          else
-          {
-            /* Uses default one */
-            sstSoundSystem.s32StreamBufferSize = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_SIZE;
-          }
-
-          /* Has stream buffer number? */
-          if(orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER) != orxFALSE)
-          {
-            /* Gets stream number */
-            sstSoundSystem.s32StreamBufferCount = orxMAX(2, orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER));
-          }
-          else
-          {
-            /* Uses default one */
-            sstSoundSystem.s32StreamBufferCount = orxSOUNDSYSTEM_KS32_DEFAULT_STREAM_BUFFER_NUMBER;
-          }
-
           /* Creates banks */
           sstSoundSystem.pstSampleBank  = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SAMPLE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
           sstSoundSystem.pstSoundBank   = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_AUDIO);
@@ -1085,63 +1075,17 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
           /* Valid? */
           if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank != orxNULL))
           {
-            orxFLOAT fRatio;
-
-            /* Allocates stream buffers */
-            sstSoundSystem.afStreamBuffer     = (orxFLOAT *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxFLOAT), orxMEMORY_TYPE_AUDIO);
-            sstSoundSystem.afRecordingBuffer  = (orxFLOAT *)orxMemory_Allocate(sstSoundSystem.s32StreamBufferSize * sizeof(orxFLOAT), orxMEMORY_TYPE_AUDIO);
+            /* Adds job thread */
+            sstSoundSystem.u32WorkerThread = orxThread_Start(&orxSoundSystem_MiniAudio_ProcessTask, orxSOUNDSYSTEM_KZ_THREAD_NAME, &(sstSoundSystem.stResourceManager));
 
             /* Valid? */
-            if((sstSoundSystem.afStreamBuffer != orxNULL) && (sstSoundSystem.afRecordingBuffer != orxNULL))
+            if(sstSoundSystem.u32WorkerThread != orxU32_UNDEFINED)
             {
-              /* Adds job thread */
-              sstSoundSystem.u32WorkerThread = orxThread_Start(&orxSoundSystem_MiniAudio_ProcessTask, orxSOUNDSYSTEM_KZ_THREAD_NAME, &(sstSoundSystem.stResourceManager));
+              /* Updates status */
+              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
-              /* Valid? */
-              if(sstSoundSystem.u32WorkerThread != orxU32_UNDEFINED)
-              {
-                /* Retrieves dimension ratio */
-                fRatio                          = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
-                sstSoundSystem.fDimensionRatio  = (fRatio > orxFLOAT_0) ? fRatio : orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
-
-                /* Stores ratio */
-                orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
-
-                /* Gets reciprocal dimension ratio */
-                sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
-
-                /* Updates status */
-                orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
-
-                /* Updates result */
-                eResult = orxSTATUS_SUCCESS;
-              }
-              else
-              {
-                /* Deletes buffers */
-                orxMemory_Free(sstSoundSystem.afStreamBuffer);
-                orxMemory_Free(sstSoundSystem.afRecordingBuffer);
-                sstSoundSystem.afStreamBuffer   = orxNULL;
-                sstSoundSystem.afRecordingBuffer= orxNULL;
-
-                /* Deletes banks */
-                orxBank_Delete(sstSoundSystem.pstSampleBank);
-                orxBank_Delete(sstSoundSystem.pstSoundBank);
-                sstSoundSystem.pstSampleBank  = orxNULL;
-                sstSoundSystem.pstSoundBank   = orxNULL;
-
-                /* Uninits engine */
-                ma_engine_uninit(&(sstSoundSystem.stEngine));
-
-                /* Uninits context */
-                ma_context_uninit(&(sstSoundSystem.stContext));
-
-                /* Uninits resource manager */
-                ma_resource_manager_uninit(&(sstSoundSystem.stResourceManager));
-
-                /* Uninits log */
-                ma_log_uninit(&(sstSoundSystem.stLog));
-              }
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
             }
             else
             {
@@ -1178,9 +1122,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
             /* Uninits log */
             ma_log_uninit(&(sstSoundSystem.stLog));
           }
-
-          /* Pops config section */
-          orxConfig_PopSection();
         }
         else
         {
@@ -1208,6 +1149,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
       /* Uninits log */
       ma_log_uninit(&(sstSoundSystem.stLog));
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -1236,10 +1180,6 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
 
     /* Uninits log */
     ma_log_uninit(&(sstSoundSystem.stLog));
-
-    /* Deletes buffers */
-    orxMemory_Free(sstSoundSystem.afStreamBuffer);
-    orxMemory_Free(sstSoundSystem.afRecordingBuffer);
 
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
@@ -1927,8 +1867,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _z
     sstSoundSystem.stRecordingPayload.stStream.stInfo.zName             = orxString_Duplicate(_zName);
 
     /* Stores stream info */
-    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate     = (_u32SampleRate > 0)      ? _u32SampleRate    : orxSOUNDSYSTEM_KS32_DEFAULT_RECORDING_FREQUENCY;
-    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber  = (_u32ChannelNumber != 0)  ? _u32ChannelNumber : orxSOUNDSYSTEM_KS32_DEFAULT_CHANNEL_NUMBER;
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate     = (_u32SampleRate > 0)      ? _u32SampleRate    : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_SAMPLE_RATE;
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber  = (_u32ChannelNumber != 0)  ? _u32ChannelNumber : orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER;
 
     /* Stores status */
     sstSoundSystem.stRecordingPayload.stStream.stPacket.bDiscard        = (_bWriteToFile != orxFALSE) ? orxFALSE : orxTRUE;
