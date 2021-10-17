@@ -20,6 +20,7 @@ var group__orx_sound =
       [ "s32ID", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#acd885d48fd72357b40c0d19a48ef03f0", null ],
       [ "u32SampleNumber", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a5cce9ecad10aa6fa8390885373f43d8b", null ]
     ] ],
+    [ "orxSOUND_KZ_LOCALE_GROUP", "group__orx_sound.html#ga38890e45b7d07775d58bdb6b87948eb6", null ],
     [ "orxSOUND_KZ_MASTER_BUS", "group__orx_sound.html#ga79e0cdeceafd1a11fefaad8c2404569e", null ],
     [ "orxSOUND_KZ_RESOURCE_GROUP", "group__orx_sound.html#gabe95e9dd9341847d9dbfc11c2fd09b60", null ],
     [ "orxSOUND", "group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87", null ],
