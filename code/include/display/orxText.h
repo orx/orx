@@ -48,6 +48,11 @@
 #include "display/orxFont.h"
 
 
+/** Defines
+ */
+#define orxTEXT_KZ_LOCALE_GROUP           "Text"
+
+
 /** Internal text structure */
 typedef struct __orxTEXT_t                orxTEXT;
 

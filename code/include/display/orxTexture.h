@@ -52,6 +52,7 @@
 /** Defines
  */
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
+#define orxTEXTURE_KZ_LOCALE_GROUP        "Texture"
 
 #define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"

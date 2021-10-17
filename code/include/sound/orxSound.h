@@ -52,6 +52,7 @@
 /** Misc defines
  */
 #define orxSOUND_KZ_RESOURCE_GROUP            "Sound"
+#define orxSOUND_KZ_LOCALE_GROUP              "Sound"
 
 #define orxSOUND_KZ_MASTER_BUS                "master"
 

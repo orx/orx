@@ -166,7 +166,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zName == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Gets its locale value */
-    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxTEXT_KZ_LOCALE_GROUP);
   }
 
   /* Valid? */
@@ -220,7 +220,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zString == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Stores its locale value */
-    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1));
+    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1, orxTEXT_KZ_LOCALE_GROUP));
   }
   else
   {
@@ -267,7 +267,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           const orxSTRING zText;
 
           /* Gets its localized value */
-          zText = orxLocale_GetString(zLocaleKey);
+          zText = orxLocale_GetString(zLocaleKey, orxTEXT_KZ_LOCALE_GROUP);
 
           /* Valid? */
           if(*zText != orxCHAR_NULL)
@@ -286,7 +286,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           orxFONT *pstFont;
 
           /* Creates font */
-          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey));
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey, orxTEXT_KZ_LOCALE_GROUP));
 
           /* Valid? */
           if(pstFont != orxNULL)
