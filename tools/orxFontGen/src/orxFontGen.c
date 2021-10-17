@@ -32,6 +32,12 @@
 
 #include "orx.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_MAIN)
 #define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_MAIN)
@@ -1137,3 +1143,9 @@ int main(int argc, char **argv)
   #pragma GCC diagnostic pop
 
 #endif /* __orxGCC__ */
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */
