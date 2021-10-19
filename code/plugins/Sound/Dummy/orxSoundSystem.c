@@ -230,13 +230,13 @@ orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetGlobalVolume()
   return orxFLOAT_0;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetListenerPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetListenerPosition(orxU32 _u32Index, const orxVECTOR *_pvPosition)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
 }
 
-orxVECTOR *orxFASTCALL orxSoundSystem_Dummy_GetListenerPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_Dummy_GetListenerPosition(orxU32 _u32Index, orxVECTOR *_pvPosition)
 {
   /* Done! */
   return orxNULL;

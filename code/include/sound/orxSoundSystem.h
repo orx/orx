@@ -76,7 +76,7 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
  */
 #define orxSOUNDSYSTEM_KZ_CONFIG_SECTION              "SoundSystem"
 #define orxSOUNDSYSTEM_KZ_CONFIG_RATIO                "DimensionRatio"
-#define orxSOUNDSYSTEM_KZ_CONFIG_SAMPLE_RATE          "SampleRate"
+#define orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS            "Listeners"
 
 
 /***************************************************************************
@@ -318,16 +318,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetGlobalVo
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetGlobalVolume();
 
 /** Sets listener position
+ * @param[in] _u32Index                               Listener index, 0-based
  * @param[in] _pvPosition                             Desired position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetListenerPosition(const orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetListenerPosition(orxU32 _u32Index, const orxVECTOR *_pvPosition);
 
 /** Gets listener position
+ * @param[in] _u32Index                               Listener index, 0-based
  * @param[out] _pvPosition                            Listener's position
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetListenerPosition(orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetListenerPosition(orxU32 _u32Index, orxVECTOR *_pvPosition);
 
 #endif /* _orxSOUNDSYSTEM_H_ */
 
