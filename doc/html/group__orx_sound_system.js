@@ -1,9 +1,8 @@
 var group__orx_sound_system =
 [
+    [ "orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS", "group__orx_sound_system.html#gaacbbd7bbf29183bb2bea0be00c48b12a", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_RATIO", "group__orx_sound_system.html#ga41370e9556fefbd90a4626bcf3489468", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_SECTION", "group__orx_sound_system.html#ga180120f04cd8b042cdfa0bdff3f3f9d8", null ],
-    [ "orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER", "group__orx_sound_system.html#gad6e6b5ff6c1d6fa0b1c92af250b8fbb6", null ],
-    [ "orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE", "group__orx_sound_system.html#ga7059cc50ddacfcaa496aa6440abc8b3b", null ],
     [ "orxSOUNDSYSTEM_SAMPLE", "group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8", null ],
     [ "orxSOUNDSYSTEM_SOUND", "group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f", null ],
     [ "orxSOUNDSYSTEM_STATUS", "group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a", [
@@ -23,7 +22,7 @@ var group__orx_sound_system =
     [ "orxSoundSystem_GetAttenuation", "group__orx_sound_system.html#gab4b9b6aee2d873bccbbf8ec4f0417431", null ],
     [ "orxSoundSystem_GetDuration", "group__orx_sound_system.html#ga622f45b5bf3775333818ecb64b4f692c", null ],
     [ "orxSoundSystem_GetGlobalVolume", "group__orx_sound_system.html#ga55c14770f424a4bf0b309281d2614d00", null ],
-    [ "orxSoundSystem_GetListenerPosition", "group__orx_sound_system.html#ga11134e4d9c3265044687376b25783de4", null ],
+    [ "orxSoundSystem_GetListenerPosition", "group__orx_sound_system.html#ga6aff86a445071adf6d87e2445ec76dc2", null ],
     [ "orxSoundSystem_GetPitch", "group__orx_sound_system.html#gace36ffc69fdbfc1279917dba80539d75", null ],
     [ "orxSoundSystem_GetPosition", "group__orx_sound_system.html#gadd97302898567e6fe2eeccb017eb5e92", null ],
     [ "orxSoundSystem_GetReferenceDistance", "group__orx_sound_system.html#gaa441cc26998c5c66733bcc8e3312470d", null ],
@@ -40,7 +39,7 @@ var group__orx_sound_system =
     [ "orxSoundSystem_Play", "group__orx_sound_system.html#ga154d7b737aa631df934f552ad57b4399", null ],
     [ "orxSoundSystem_SetAttenuation", "group__orx_sound_system.html#gae87bf80bc9de267624a5493c09293762", null ],
     [ "orxSoundSystem_SetGlobalVolume", "group__orx_sound_system.html#gae516f86e8e395ea873ad95163099d840", null ],
-    [ "orxSoundSystem_SetListenerPosition", "group__orx_sound_system.html#gaee7f1d34bd9eabf90fcd9c52a4e284b7", null ],
+    [ "orxSoundSystem_SetListenerPosition", "group__orx_sound_system.html#gaff030af421c8ea9345e7e4631d994e07", null ],
     [ "orxSoundSystem_SetPitch", "group__orx_sound_system.html#ga3151ee6bf5521c207dc429cb06a0ab6c", null ],
     [ "orxSoundSystem_SetPosition", "group__orx_sound_system.html#ga54aa1629179fc7f236d8cdb2fc5502c6", null ],
     [ "orxSoundSystem_SetReferenceDistance", "group__orx_sound_system.html#gaf21743d266c30c7133b96c4809533f7f", null ],
