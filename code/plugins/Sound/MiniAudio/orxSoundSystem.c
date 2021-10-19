@@ -119,7 +119,7 @@ extern "C" {
 #define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_SAMPLE_RATE 48000
 #define orxSOUNDSYSTEM_KU32_DEFAULT_SAMPLE_RATE           48000
 #define orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER        2
-#define orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER       1
+#define orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER       0
 #define orxSOUNDSYSTEM_KE_DEFAULT_LOG_LEVEL               MA_LOG_LEVEL_WARNING
 #define orxSOUNDSYSTEM_KE_DEFAULT_FORMAT                  ma_format_f32
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
@@ -969,7 +969,6 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     ma_resource_manager_config  stResourceManagerConfig;
     ma_result                   hResult;
     orxFLOAT                    fRatio;
-    orxU32                      u32ListenerNumber;
 
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
@@ -985,8 +984,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
 
     /* Retrieves listener count */
-    u32ListenerNumber               = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS);
-    sstSoundSystem.u32ListenerNumber= (u32ListenerNumber >= 0) ? u32ListenerNumber : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
+    sstSoundSystem.u32ListenerNumber= (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
 
     /* Should clamp? */
     if(sstSoundSystem.u32ListenerNumber > MA_ENGINE_MAX_LISTENERS)
