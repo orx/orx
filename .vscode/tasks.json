@@ -23,6 +23,18 @@
             }
         },
         {
+            "label": "Build orx (debug, profile, release)",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build orx (debug)",
+                "Build orx (profile)",
+                "Build orx (release)"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
             "label": "Build orx (debug)",
             "group": {
                 "kind": "build",
@@ -43,6 +55,70 @@
             },
             "windows": {
                 "command": "mingw32-make.exe",
+                "options": {
+                    "cwd": "code/build/windows/gmake/",
+                    "shell": {
+                        "executable": "cmd.exe",
+                        "args": [
+                            "/d",
+                            "/c"
+                        ]
+                    }
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build orx (profile)",
+            "group": "build",
+            "type": "shell",
+            "command": "make config=profile64",
+            "linux": {
+                "options": {
+                    "cwd": "code/build/linux/gmake/"
+                }
+            },
+            "osx": {
+                "options": {
+                    "cwd": "code/build/mac/gmake/"
+                }
+            },
+            "windows": {
+                "command": "mingw32-make.exe config=profile64",
+                "options": {
+                    "cwd": "code/build/windows/gmake/",
+                    "shell": {
+                        "executable": "cmd.exe",
+                        "args": [
+                            "/d",
+                            "/c"
+                        ]
+                    }
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build orx (release)",
+            "group": "build",
+            "type": "shell",
+            "command": "make config=release64",
+            "linux": {
+                "options": {
+                    "cwd": "code/build/linux/gmake/"
+                }
+            },
+            "osx": {
+                "options": {
+                    "cwd": "code/build/mac/gmake/"
+                }
+            },
+            "windows": {
+                "command": "mingw32-make.exe config=release64",
                 "options": {
                     "cwd": "code/build/windows/gmake/",
                     "shell": {
