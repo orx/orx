@@ -155,7 +155,7 @@ void Game::SelectNextLanguage()
   u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCount() - 1) ? 0 : u32LanguageIndex + 1;
 
   // Selects it
-  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex));
+  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex), orxTEXT_KZ_LOCALE_GROUP);
 }
 
 // Init game function

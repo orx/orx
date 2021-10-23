@@ -296,7 +296,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
                 orxTEXTURE *pstTexture;
 
                 /* Creates texture */
-                pstTexture = orxTexture_CreateFromFile(orxLocale_GetString(zName + 1), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+                pstTexture = orxTexture_CreateFromFile(orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
                 /* Updates data */
                 orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
@@ -664,7 +664,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         if(*zName == orxGRAPHIC_KC_LOCALE_MARKER)
         {
           /* Gets its locale value */
-          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP);
         }
 
         /* Creates texture */
