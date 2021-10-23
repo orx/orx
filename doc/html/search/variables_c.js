@@ -7,6 +7,7 @@ var searchData=
   ['zfunctionargs',['zFunctionArgs',['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#a30691d79169267aa2f18ca6091197a47',1,'orxPLUGIN_USER_FUNCTION_INFO']]],
   ['zfunctionname',['zFunctionName',['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#abeecc4d94570afbb4583dc46a6d44b21',1,'orxPLUGIN_USER_FUNCTION_INFO']]],
   ['zfxname',['zFXName',['../structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html#aa3c1bc570b695781bc7485a4e3fcf742',1,'orxFX_EVENT_PAYLOAD']]],
+  ['zgroup',['zGroup',['../structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html#abe568c58fd12bc9973b6e413a2538a2c',1,'orxLOCALE_EVENT_PAYLOAD']]],
   ['zinputname',['zInputName',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a08e6a0ce11c5a30a3ff68e18cefec922',1,'orxINPUT_EVENT_PAYLOAD']]],
   ['zlanguage',['zLanguage',['../structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a2cab91ef5f11b24ec11821841093ed51',1,'orxLOCALE_EVENT_PAYLOAD']]],
   ['zlocation',['zLocation',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a820a5364548a39a718d68679bfe3e02a',1,'orxRESOURCE_EVENT_PAYLOAD::zLocation()'],['../structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html#a273120fb1d064409d010dffa6747ae9f',1,'orxDISPLAY_EVENT_PAYLOAD::zLocation()']]],
