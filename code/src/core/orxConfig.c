@@ -3440,7 +3440,7 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
   /* Inits parent buffer */
-  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@%s.", orxCOLOR_KZ_CONFIG_SECTION);
+  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@.");
 
   /* For all colors */
   for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
