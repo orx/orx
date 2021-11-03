@@ -47,7 +47,7 @@ var NAVTREEINDEX =
 "group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3dae92918877d588322291f6a445bfb3a64",
 "group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa3c4b5fa73db60d80e7711cc503fbf4b2",
 "group__orx_resource.html#ga21060f626cc481e82b4a627b5ddd90e5",
-"group__orx_sound.html#ga7c6386386ecbfafe691f5da65a1ee30b",
+"group__orx_sound.html#ga79e0cdeceafd1a11fefaad8c2404569e",
 "group__orx_spawner.html#ga110c05c9c035dd0e1eef3684656315fb",
 "group__orx_structure.html#ga2b40aa65539bbb29538314b3db3fdfbb",
 "group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3",
