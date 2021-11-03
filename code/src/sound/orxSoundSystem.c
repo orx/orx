@@ -76,15 +76,15 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetVolume, orxSTATUS, orxSOUNDSYST
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetPitch, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetTime, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetPosition, orxSTATUS, orxSOUNDSYSTEM_SOUND *, const orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetAttenuation, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetReferenceDistance, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetSpatialization, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT, orxFLOAT, orxFLOAT, orxFLOAT, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetPanning, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxFLOAT, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Loop, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetVolume, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetPitch, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetTime, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetPosition, orxVECTOR *, const orxSOUNDSYSTEM_SOUND *, orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetAttenuation, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetReferenceDistance, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetSpatialization, orxSTATUS, const orxSOUNDSYSTEM_SOUND *, orxFLOAT *, orxFLOAT *, orxFLOAT *, orxFLOAT *, orxFLOAT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetPanning, orxSTATUS, const orxSOUNDSYSTEM_SOUND *, orxFLOAT *, orxBOOL *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_IsLooping, orxBOOL, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetDuration, orxFLOAT, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetStatus, orxSOUNDSYSTEM_STATUS, const orxSOUNDSYSTEM_SOUND *);
@@ -119,15 +119,15 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_VOLUME, orxSoundSystem_SetVol
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_PITCH, orxSoundSystem_SetPitch)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_TIME, orxSoundSystem_SetTime)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_POSITION, orxSoundSystem_SetPosition)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_ATTENUATION, orxSoundSystem_SetAttenuation)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_REFERENCE_DISTANCE, orxSoundSystem_SetReferenceDistance)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_SPATIALIZATION, orxSoundSystem_SetSpatialization)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_PANNING, orxSoundSystem_SetPanning)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, LOOP, orxSoundSystem_Loop)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_VOLUME, orxSoundSystem_GetVolume)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_PITCH, orxSoundSystem_GetPitch)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_TIME, orxSoundSystem_GetTime)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_POSITION, orxSoundSystem_GetPosition)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_ATTENUATION, orxSoundSystem_GetAttenuation)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_REFERENCE_DISTANCE, orxSoundSystem_GetReferenceDistance)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_SPATIALIZATION, orxSoundSystem_GetSpatialization)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_PANNING, orxSoundSystem_GetPanning)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, IS_LOOPING, orxSoundSystem_IsLooping)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_DURATION, orxSoundSystem_GetDuration)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_STATUS, orxSoundSystem_GetStatus)
@@ -246,14 +246,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetPosition)(_pstSound, _pvPosition);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetAttenuation)(_pstSound, _fAttenuation);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetSpatialization)(_pstSound, _fInnerDistance, _fOuterDistance, _fInnerVolume, _fOuterVolume, _fRollOff);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSoundSystem_SetPanning(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetReferenceDistance)(_pstSound, _fDistance);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetPanning)(_pstSound, _fPanning, _bMix);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
@@ -281,14 +281,14 @@ orxVECTOR *orxFASTCALL orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_p
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetPosition)(_pstSound, _pvPosition);
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetAttenuation)(_pstSound);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetSpatialization)(_pstSound, _pfInnerDistance, _pfOuterDistance, _pfInnerVolume, _pfOuterVolume, _pfRollOff);
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_GetPanning(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetReferenceDistance)(_pstSound);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetPanning)(_pstSound, _pfPanning, _pbMix);
 }
 
 orxBOOL orxFASTCALL orxSoundSystem_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)

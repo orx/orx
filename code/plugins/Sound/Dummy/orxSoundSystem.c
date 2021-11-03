@@ -146,13 +146,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetPosition(orxSOUNDSYSTEM_SOUND *_ps
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetPanning(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
@@ -188,16 +188,16 @@ orxVECTOR *orxFASTCALL orxSoundSystem_Dummy_GetPosition(const orxSOUNDSYSTEM_SOU
   return orxNULL;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff)
 {
   /* Done! */
-  return orxFLOAT_0;
+  return orxSTATUS_FAILURE;
 }
 
-orxFLOAT orxFASTCALL orxSoundSystem_Dummy_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_GetPanning(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix)
 {
   /* Done! */
-  return orxFLOAT_0;
+  return orxSTATUS_FAILURE;
 }
 
 orxBOOL orxFASTCALL orxSoundSystem_Dummy_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
@@ -283,15 +283,15 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetVolume, SOUNDSYSTEM, SE
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetPitch, SOUNDSYSTEM, SET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetTime, SOUNDSYSTEM, SET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetPosition, SOUNDSYSTEM, SET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetSpatialization, SOUNDSYSTEM, SET_SPATIALIZATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetPanning, SOUNDSYSTEM, SET_PANNING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetPitch, SOUNDSYSTEM, GET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetTime, SOUNDSYSTEM, GET_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetPosition, SOUNDSYSTEM, GET_POSITION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetSpatialization, SOUNDSYSTEM, GET_SPATIALIZATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetPanning, SOUNDSYSTEM, GET_PANNING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_IsLooping, SOUNDSYSTEM, IS_LOOPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetDuration, SOUNDSYSTEM, GET_DURATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetStatus, SOUNDSYSTEM, GET_STATUS);
