@@ -553,7 +553,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
       else
       {
         /* Deactivates spatialization */
-        orxSound_SetSpatialization(_pstSound, -orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1, orxFLOAT_1);
+        orxSound_SetSpatialization(_pstSound, -orxFLOAT_1, -orxFLOAT_1, orxFLOAT_1, orxFLOAT_1, orxFLOAT_1);
       }
 
       /* Updates panning */
