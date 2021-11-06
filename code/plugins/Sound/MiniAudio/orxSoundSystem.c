@@ -2169,8 +2169,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
   orxASSERT(_fOuterDistance >= _fInnerDistance);
-  orxASSERT(_fInnerVolume >= orxFLOAT_0);
-  orxASSERT(_fOuterVolume >= orxFLOAT_0);
+  orxASSERT((_fInnerVolume >= orxFLOAT_0) && (_fInnerVolume <= orxFLOAT_1));
+  orxASSERT((_fOuterVolume >= orxFLOAT_0) && (_fOuterVolume <= orxFLOAT_1));
   orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Is spatialization enabled? */

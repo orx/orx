@@ -2530,8 +2530,8 @@ orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR 
  * @param[in] _pstSound                               Concerned Sound
  * @param[in] _fInnerDistance                         Inner distance, inside of which the inner volume will be heard, strictly negative value to disable spatialization entirely
  * @param[in] _fOuterDistance                         Outer distance, outside of which the outer volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fInnerVolume                           Inner volume, used inside the inner distance
- * @param[in] _fOuterVolume                           Outer volume, used outside the outer distance
+ * @param[in] _fInnerVolume                           Inner volume in [0.0f - 1.0f], used inside the inner distance
+ * @param[in] _fOuterVolume                           Outer volume in [0.0f - 1.0f], used outside the outer distance
  * @param[in] _fRollOff                               RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -2543,8 +2543,8 @@ orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
   orxASSERT(_fOuterDistance >= _fInnerDistance);
-  orxASSERT(_fInnerVolume >= orxFLOAT_0);
-  orxASSERT(_fOuterVolume >= orxFLOAT_0);
+  orxASSERT((_fInnerVolume >= orxFLOAT_0) && (_fInnerVolume <= orxFLOAT_1));
+  orxASSERT((_fOuterVolume >= orxFLOAT_0) && (_fOuterVolume <= orxFLOAT_1));
   orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Has sound? */

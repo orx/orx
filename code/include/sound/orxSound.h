@@ -293,8 +293,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPosition(orxSOUND *_ps
  * @param[in] _pstSound                               Concerned Sound
  * @param[in] _fInnerDistance                         Inner distance, inside of which the inner volume will be heard, strictly negative value to disable spatialization entirely
  * @param[in] _fOuterDistance                         Outer distance, outside of which the outer volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fInnerVolume                           Inner volume, used inside the inner distance
- * @param[in] _fOuterVolume                           Outer volume, used outside the outer distance
+ * @param[in] _fInnerVolume                           Inner volume in [0.0f - 1.0f], used inside the inner distance
+ * @param[in] _fOuterVolume                           Outer volume in [0.0f - 1.0f], used outside the outer distance
  * @param[in] _fRollOff                               RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
