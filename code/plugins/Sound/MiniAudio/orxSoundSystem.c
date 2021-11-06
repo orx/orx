@@ -1319,7 +1319,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
         pstResult->stResource.zLocation = orxString_Duplicate(zResourceLocation);
 
         /* Retrieves channel number & sample rate */
-        hResult = ma_resource_manager_data_source_get_data_format((ma_resource_manager_data_source *)&(pstResult->stResource.stDataSource), &(eFormat), &(pstResult->u32ChannelNumber), &(pstResult->u32SampleRate), NULL, 0);
+        hResult = ma_resource_manager_data_source_get_data_format((ma_resource_manager_data_source *)&(pstResult->stResource.stDataSource), &(eFormat), (ma_uint32 *)&(pstResult->u32ChannelNumber), (ma_uint32 *)&(pstResult->u32SampleRate), NULL, 0);
         orxASSERT(hResult == MA_SUCCESS);
 
         /* Gets length */
@@ -1681,7 +1681,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
           stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
 
           /* Stores info */
-          hResult = ma_data_source_get_data_format(&(pstResult->stStream.stDataSource), NULL, &(pstResult->stStream.u32ChannelNumber), &(pstResult->stStream.u32SampleRate), NULL, 0);
+          hResult = ma_data_source_get_data_format(&(pstResult->stStream.stDataSource), NULL, (ma_uint32 *)&(pstResult->stStream.u32ChannelNumber), (ma_uint32 *)&(pstResult->stStream.u32SampleRate), NULL, 0);
           orxASSERT(hResult == MA_SUCCESS);
 
           /* Updates status */
