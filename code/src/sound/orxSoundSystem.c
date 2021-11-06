@@ -246,9 +246,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetPosition)(_pstSound, _pvPosition);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetSpatialization)(_pstSound, _fInnerDistance, _fOuterDistance, _fInnerVolume, _fOuterVolume, _fRollOff);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetSpatialization)(_pstSound, _fInnerDistance, _fOuterDistance, _fMinGain, _fMaxGain, _fRollOff);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_SetPanning(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix)
@@ -281,9 +281,9 @@ orxVECTOR *orxFASTCALL orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_p
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetPosition)(_pstSound, _pvPosition);
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetSpatialization)(_pstSound, _pfInnerDistance, _pfOuterDistance, _pfInnerVolume, _pfOuterVolume, _pfRollOff);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetSpatialization)(_pstSound, _pfInnerDistance, _pfOuterDistance, _pfMinGain, _pfMaxGain, _pfRollOff);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_GetPanning(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix)

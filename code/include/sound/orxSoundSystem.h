@@ -232,14 +232,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetPosition
 
 /** Sets a sound spatialization, with volume decreasing between the inner distance and outer distance when enabled
  * @param[in] _pstSound                               Concerned Sound
- * @param[in] _fInnerDistance                         Inner distance, inside of which the inner volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fOuterDistance                         Outer distance, outside of which the outer volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fInnerVolume                           Inner volume in [0.0f - 1.0f], used inside the inner distance
- * @param[in] _fOuterVolume                           Outer volume in [0.0f - 1.0f], used outside the outer distance
- * @param[in] _fRollOff                               RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
+ * @param[in] _fInnerDistance                         Inner distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fOuterDistance                         Outer distance, outside which the min gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f], used outside the outer distance
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f], used inside the inner distance
+ * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff);
 
 /** Sets a sound panning
  * @param[in] _pstSound panning
@@ -283,14 +283,14 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetPosition
 
 /** Gets a sound spatialization information
  * @param[in] _pstSound                               Concerned Sound
- * @param[out] _pfInnerDistance                       Inner distance, inside of which the inner volume will be heard, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfOuterDistance                       Outer distance, outside of which the outer volume will be heard, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfInnerVolume                         Inner volume, used inside the inner distance, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfOuterVolume                         Outer volume, used outside the outer distance, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfRollOff                             RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
+ * @param[out] _pfInnerDistance                       Inner distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfOuterDistance                       Outer distance, outside which the min gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain, used outside the outer distance
+ * @param[out] _pfMaxGain                             Max gain, used inside the inner distance
+ * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff);
 
 /** Gets a sound panning
  * @param[in] _pstSound                               Concerned Sound

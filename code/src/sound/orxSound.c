@@ -101,7 +101,7 @@
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
 #define orxSOUND_KZ_CONFIG_EMPTY_STREAM                 "empty"
 #define orxSOUND_KZ_CONFIG_DISTANCE_LIST                "DistanceList"
-#define orxSOUND_KZ_CONFIG_VOLUME_LIST                  "VolumeList"
+#define orxSOUND_KZ_CONFIG_GAIN_LIST                    "GainList"
 #define orxSOUND_KZ_CONFIG_ROLL_OFF                     "RollOff"
 #define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
 #define orxSOUND_KZ_CONFIG_PANNING                      "Panning"
@@ -929,7 +929,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             orxSTRINGID     stBusID;
             orxFLOAT        fVolume, fPitch,
                             fInnerDistance = -orxFLOAT_1, fOuterDistance = -orxFLOAT_1,
-                            fInnerVolume = -orxFLOAT_1, fOuterVolume = -orxFLOAT_1,
+                            fMinGain = -orxFLOAT_1, fMaxGain = -orxFLOAT_1,
                             fRollOff = orxFLOAT_1,
                             fPanning = orxFLOAT_0;
             orxBOOL         bMix = orxFALSE;
@@ -942,7 +942,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             fVolume       = orxSound_GetVolume(pstSound);
             fPitch        = orxSound_GetPitch(pstSound);
             stBusID       = orxSound_GetBusID(pstSound);
-            orxSound_GetSpatialization(pstSound, &fInnerDistance, &fOuterDistance, &fInnerVolume, &fOuterVolume, &fRollOff);
+            orxSound_GetSpatialization(pstSound, &fInnerDistance, &fOuterDistance, &fMinGain, &fMaxGain, &fRollOff);
             orxSound_GetPanning(pstSound, &fPanning, &bMix);
             orxSound_GetPosition(pstSound, &vPosition);
 
@@ -956,7 +956,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             orxSound_SetVolume(pstSound, fVolume);
             orxSound_SetPitch(pstSound, fPitch);
             orxSound_SetBusID(pstSound, stBusID);
-            orxSound_SetSpatialization(pstSound, fInnerDistance, fOuterDistance, fInnerVolume, fOuterVolume, fRollOff);
+            orxSound_SetSpatialization(pstSound, fInnerDistance, fOuterDistance, fMinGain, fMaxGain, fRollOff);
             orxSound_SetPanning(pstSound, fPanning, bMix);
             orxSound_SetPosition(pstSound, &vPosition);
 
@@ -2526,16 +2526,16 @@ orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR 
   return eResult;
 }
 
-/** Sets a sound spatialization, with volume decreasing between the inner distance and outer distance when enabled
+/** Sets a sound spatialization, with gain decreasing between the inner distance and outer distance when enabled
  * @param[in] _pstSound                               Concerned Sound
- * @param[in] _fInnerDistance                         Inner distance, inside of which the inner volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fOuterDistance                         Outer distance, outside of which the outer volume will be heard, strictly negative value to disable spatialization entirely
- * @param[in] _fInnerVolume                           Inner volume in [0.0f - 1.0f], used inside the inner distance
- * @param[in] _fOuterVolume                           Outer volume in [0.0f - 1.0f], used outside the outer distance
- * @param[in] _fRollOff                               RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
+ * @param[in] _fInnerDistance                         Inner distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fOuterDistance                         Outer distance, outside which the min gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f], used outside the outer distance
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f], used inside the inner distance
+ * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff)
+orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
   orxSTATUS eResult;
 
@@ -2543,15 +2543,15 @@ orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
   orxASSERT(_fOuterDistance >= _fInnerDistance);
-  orxASSERT((_fInnerVolume >= orxFLOAT_0) && (_fInnerVolume <= orxFLOAT_1));
-  orxASSERT((_fOuterVolume >= orxFLOAT_0) && (_fOuterVolume <= orxFLOAT_1));
+  orxASSERT((_fMinGain >= orxFLOAT_0) && (_fMinGain <= orxFLOAT_1));
+  orxASSERT((_fMaxGain >= orxFLOAT_0) && (_fMaxGain <= orxFLOAT_1));
   orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
     /* Sets its position */
-    eResult = orxSoundSystem_SetSpatialization(_pstSound->pstData, _fInnerDistance, _fOuterDistance, _fInnerVolume, _fOuterVolume, _fRollOff);
+    eResult = orxSoundSystem_SetSpatialization(_pstSound->pstData, _fInnerDistance, _fOuterDistance, _fMinGain, _fMaxGain, _fRollOff);
   }
   else
   {
@@ -2738,14 +2738,14 @@ orxVECTOR *orxFASTCALL orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR
 
 /** Gets a sound spatialization information
  * @param[in] _pstSound                               Concerned Sound
- * @param[out] _pfInnerDistance                       Inner distance, inside of which the inner volume will be heard, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfOuterDistance                       Outer distance, outside of which the outer volume will be heard, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfInnerVolume                         Inner volume, used inside the inner distance, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfOuterVolume                         Outer volume, used outside the outer distance, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfRollOff                             RollOff factor applied when interpolating the volume between inner and outer distances, defaults to 1.0f
+ * @param[out] _pfInnerDistance                       Inner distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfOuterDistance                       Outer distance, outside which the min gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain, used outside the outer distance
+ * @param[out] _pfMaxGain                             Max gain, used inside the inner distance
+ * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff)
+orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
   orxSTATUS eResult;
 
@@ -2754,15 +2754,15 @@ orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxF
   orxSTRUCTURE_ASSERT(_pstSound);
   orxASSERT(_pfInnerDistance != orxNULL);
   orxASSERT(_pfOuterDistance != orxNULL);
-  orxASSERT(_pfInnerVolume != orxNULL);
-  orxASSERT(_pfOuterVolume != orxNULL);
+  orxASSERT(_pfMinGain != orxNULL);
+  orxASSERT(_pfMaxGain != orxNULL);
   orxASSERT(_pfRollOff != orxNULL);
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    eResult = orxSoundSystem_GetSpatialization(_pstSound->pstData, _pfInnerDistance, _pfOuterDistance, _pfInnerVolume, _pfOuterVolume, _pfRollOff);
+    eResult = orxSoundSystem_GetSpatialization(_pstSound->pstData, _pfInnerDistance, _pfOuterDistance, _pfMinGain, _pfMaxGain, _pfRollOff);
   }
   else
   {

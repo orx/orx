@@ -146,7 +146,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetPosition(orxSOUNDSYSTEM_SOUND *_ps
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fInnerVolume, orxFLOAT _fOuterVolume, orxFLOAT _fRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
@@ -188,7 +188,7 @@ orxVECTOR *orxFASTCALL orxSoundSystem_Dummy_GetPosition(const orxSOUNDSYSTEM_SOU
   return orxNULL;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_Dummy_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfInnerVolume, orxFLOAT *_pfOuterVolume, orxFLOAT *_pfRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
