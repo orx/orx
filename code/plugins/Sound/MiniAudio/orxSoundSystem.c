@@ -1093,6 +1093,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
               for(i = 0; i < sstSoundSystem.u32ListenerNumber; i++)
               {
                 /* Inits it */
+                ma_engine_listener_set_position(&(sstSoundSystem.stEngine), i, 0.0f, 0.0f, 0.0f);
                 ma_engine_listener_set_direction(&(sstSoundSystem.stEngine), i, 0.0f, 0.0f, 1.0f);
                 ma_engine_listener_set_velocity(&(sstSoundSystem.stEngine), i, 0.0f, 0.0f, 0.0f);
                 ma_engine_listener_set_world_up(&(sstSoundSystem.stEngine), i, 0.0f, -1.0f, 0.0f);
@@ -2173,14 +2174,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPosition(orxSOUNDSYSTEM_SOUND 
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fMinDistance, orxFLOAT _fMaxDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
-  orxASSERT(_fOuterDistance >= _fInnerDistance);
+  orxASSERT(_fMaxDistance >= _fMinDistance);
   orxASSERT((_fMinGain >= orxFLOAT_0) && (_fMinGain <= orxFLOAT_1));
   orxASSERT((_fMaxGain >= orxFLOAT_0) && (_fMaxGain <= orxFLOAT_1));
   orxASSERT(_fRollOff >= orxFLOAT_0);
@@ -2189,14 +2190,14 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
   if(sstSoundSystem.u32ListenerNumber > 0)
   {
     /* Enable? */
-    if((_fInnerDistance >= orxFLOAT_0) && (_fOuterDistance >= orxFLOAT_0))
+    if((_fMinDistance >= orxFLOAT_0) && (_fMaxDistance >= orxFLOAT_0))
     {
       /* Updates status */
       ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxTRUE);
 
       /* Updates properties */
-      ma_sound_set_min_distance(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _fInnerDistance);
-      ma_sound_set_max_distance(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _fOuterDistance);
+      ma_sound_set_min_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMinDistance, orxFLOAT_1));
+      ma_sound_set_max_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMaxDistance, orxFLOAT_1));
       ma_sound_set_min_gain(&(_pstSound->stSound), _fMinGain);
       ma_sound_set_max_gain(&(_pstSound->stSound), _fMaxGain);
       ma_sound_set_rolloff(&(_pstSound->stSound), _fRollOff);
@@ -2320,15 +2321,15 @@ orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetPosition(const orxSOUNDSYSTEM
   return pvResult;
 }
 
-orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfMinDistance, orxFLOAT *_pfMaxDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
-  orxASSERT(_pfInnerDistance != orxNULL);
-  orxASSERT(_pfOuterDistance != orxNULL);
+  orxASSERT(_pfMinDistance != orxNULL);
+  orxASSERT(_pfMaxDistance != orxNULL);
   orxASSERT(_pfMinGain != orxNULL);
   orxASSERT(_pfMaxGain != orxNULL);
   orxASSERT(_pfRollOff != orxNULL);
@@ -2340,8 +2341,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
     if(_pstSound->stSound.engineNode.isSpatializationDisabled == MA_FALSE)
     {
       /* Updates values */
-      *_pfInnerDistance = sstSoundSystem.fRecDimensionRatio * ma_sound_get_min_distance(&(_pstSound->stSound));
-      *_pfOuterDistance = sstSoundSystem.fRecDimensionRatio * ma_sound_get_max_distance(&(_pstSound->stSound));
+      *_pfMinDistance   = sstSoundSystem.fRecDimensionRatio * ma_sound_get_min_distance(&(_pstSound->stSound));
+      *_pfMaxDistance   = sstSoundSystem.fRecDimensionRatio * ma_sound_get_max_distance(&(_pstSound->stSound));
       *_pfMinGain       = ma_sound_get_min_gain(&(_pstSound->stSound));
       *_pfMaxGain       = ma_sound_get_max_gain(&(_pstSound->stSound));
       *_pfRollOff       = ma_sound_get_rolloff(&(_pstSound->stSound));
@@ -2349,7 +2350,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
     else
     {
       /* Updates values */
-      *_pfInnerDistance = *_pfOuterDistance = -orxFLOAT_1;
+      *_pfMinDistance   = *_pfMaxDistance = -orxFLOAT_1;
       *_pfMinGain       = orxFLOAT_0;
       *_pfMaxGain       = orxFLOAT_1;
       *_pfRollOff       = orxFLOAT_1;
@@ -2361,7 +2362,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
   else
   {
     /* Updates values */
-    *_pfInnerDistance = *_pfOuterDistance = -orxFLOAT_1;
+    *_pfMinDistance   = *_pfMaxDistance = -orxFLOAT_1;
     *_pfMinGain       = orxFLOAT_0;
     *_pfMaxGain       = orxFLOAT_1;
     *_pfRollOff       = orxFLOAT_1;

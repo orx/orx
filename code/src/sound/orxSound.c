@@ -601,7 +601,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         fRollOff = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ROLL_OFF) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ROLL_OFF) : orxFLOAT_1;
 
         /* Updates spatialization */
-        orxSound_SetSpatialization(_pstSound, (afDistanceList[0] >= orxFLOAT_0) ? orxMAX(afDistanceList[0], orxFLOAT_1) : -orxFLOAT_1, (afDistanceList[1] >= orxFLOAT_0) ? orxMAX(afDistanceList[1], orxFLOAT_1) : -orxFLOAT_1, afGainList[0], afGainList[1], fRollOff);
+        orxSound_SetSpatialization(_pstSound, afDistanceList[0], afDistanceList[1], afGainList[0], afGainList[1], fRollOff);
       }
       else
       {
@@ -981,7 +981,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             orxVECTOR       vPosition;
             orxSTRINGID     stBusID;
             orxFLOAT        fVolume, fPitch,
-                            fInnerDistance = -orxFLOAT_1, fOuterDistance = -orxFLOAT_1,
+                            fMinDistance = -orxFLOAT_1, fMaxDistance = -orxFLOAT_1,
                             fMinGain = -orxFLOAT_1, fMaxGain = -orxFLOAT_1,
                             fRollOff = orxFLOAT_1,
                             fPanning = orxFLOAT_0;
@@ -995,7 +995,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             fVolume       = orxSound_GetVolume(pstSound);
             fPitch        = orxSound_GetPitch(pstSound);
             stBusID       = orxSound_GetBusID(pstSound);
-            orxSound_GetSpatialization(pstSound, &fInnerDistance, &fOuterDistance, &fMinGain, &fMaxGain, &fRollOff);
+            orxSound_GetSpatialization(pstSound, &fMinDistance, &fMaxDistance, &fMinGain, &fMaxGain, &fRollOff);
             orxSound_GetPanning(pstSound, &fPanning, &bMix);
             orxSound_GetPosition(pstSound, &vPosition);
 
@@ -1009,7 +1009,7 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             orxSound_SetVolume(pstSound, fVolume);
             orxSound_SetPitch(pstSound, fPitch);
             orxSound_SetBusID(pstSound, stBusID);
-            orxSound_SetSpatialization(pstSound, fInnerDistance, fOuterDistance, fMinGain, fMaxGain, fRollOff);
+            orxSound_SetSpatialization(pstSound, fMinDistance, fMaxDistance, fMinGain, fMaxGain, fRollOff);
             orxSound_SetPanning(pstSound, fPanning, bMix);
             orxSound_SetPosition(pstSound, &vPosition);
 
@@ -2579,23 +2579,23 @@ orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR 
   return eResult;
 }
 
-/** Sets a sound spatialization, with gain decreasing between the inner distance and outer distance when enabled
+/** Sets a sound spatialization, with gain decreasing between the minimum and maximum distances, when enabled
  * @param[in] _pstSound                               Concerned Sound
- * @param[in] _fInnerDistance                         Inner distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
- * @param[in] _fOuterDistance                         Outer distance, outside which the min gain will be used, strictly negative value to disable spatialization entirely
- * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f], used outside the outer distance
- * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f], used inside the inner distance
+ * @param[in] _fMinDistance                           Min distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMaxDistance                           Max distance, outside which the gain will stop decreasing, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f]
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f]
  * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fInnerDistance, orxFLOAT _fOuterDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
+orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fMinDistance, orxFLOAT _fMaxDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT(_fOuterDistance >= _fInnerDistance);
+  orxASSERT(_fMaxDistance >= _fMinDistance);
   orxASSERT((_fMinGain >= orxFLOAT_0) && (_fMinGain <= orxFLOAT_1));
   orxASSERT((_fMaxGain >= orxFLOAT_0) && (_fMaxGain <= orxFLOAT_1));
   orxASSERT(_fRollOff >= orxFLOAT_0);
@@ -2604,7 +2604,7 @@ orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _
   if(_pstSound->pstData != orxNULL)
   {
     /* Sets its position */
-    eResult = orxSoundSystem_SetSpatialization(_pstSound->pstData, _fInnerDistance, _fOuterDistance, _fMinGain, _fMaxGain, _fRollOff);
+    eResult = orxSoundSystem_SetSpatialization(_pstSound->pstData, _fMinDistance, _fMaxDistance, _fMinGain, _fMaxGain, _fRollOff);
   }
   else
   {
@@ -2791,22 +2791,22 @@ orxVECTOR *orxFASTCALL orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR
 
 /** Gets a sound spatialization information
  * @param[in] _pstSound                               Concerned Sound
- * @param[out] _pfInnerDistance                       Inner distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfOuterDistance                       Outer distance, outside which the min gain will be used, will be strictly negative if the sound isn't spatialized
- * @param[out] _pfMinGain                             Min gain, used outside the outer distance
- * @param[out] _pfMaxGain                             Max gain, used inside the inner distance
+ * @param[out] _pfMinDistance                         Min distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMaxDistance                         Max distance, outside which the gain will stop decreasing, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain in [0.0f - 1.0f]
+ * @param[out] _pfMaxGain                             Max gain in [0.0f - 1.0f]
  * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfInnerDistance, orxFLOAT *_pfOuterDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
+orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfMinDistance, orxFLOAT *_pfMaxDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT(_pfInnerDistance != orxNULL);
-  orxASSERT(_pfOuterDistance != orxNULL);
+  orxASSERT(_pfMinDistance != orxNULL);
+  orxASSERT(_pfMaxDistance != orxNULL);
   orxASSERT(_pfMinGain != orxNULL);
   orxASSERT(_pfMaxGain != orxNULL);
   orxASSERT(_pfRollOff != orxNULL);
@@ -2815,7 +2815,7 @@ orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxF
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    eResult = orxSoundSystem_GetSpatialization(_pstSound->pstData, _pfInnerDistance, _pfOuterDistance, _pfMinGain, _pfMaxGain, _pfRollOff);
+    eResult = orxSoundSystem_GetSpatialization(_pstSound->pstData, _pfMinDistance, _pfMaxDistance, _pfMinGain, _pfMaxGain, _pfRollOff);
   }
   else
   {
