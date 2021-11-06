@@ -545,15 +545,68 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         orxSound_SetPitch(_pstSound, orxFLOAT_1);
       }
 
-      /* Has spatialization? */
+      /* Has distance list? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_DISTANCE_LIST) != orxFALSE)
       {
-        //! TODO
+        orxFLOAT afDistanceList[2], afGainList[2];
+        orxFLOAT fRollOff;
+
+        /* Gets distances */
+        afDistanceList[0] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 0);
+        if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_DISTANCE_LIST) > 1)
+        {
+          afDistanceList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 1);
+          if(afDistanceList[1] < afDistanceList[0])
+          {
+            orxFLOAT fTemp;
+            fTemp             = afDistanceList[0];
+            afDistanceList[0] = afDistanceList[1];
+            afDistanceList[1] = fTemp;
+          }
+        }
+        else
+        {
+          afDistanceList[1] = orxMATH_KF_MAX;
+        }
+
+        /* Has gain list? */
+        if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_GAIN_LIST) != orxFALSE)
+        {
+          /* Gets gains */
+          afGainList[0] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_GAIN_LIST, 0);
+          if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_GAIN_LIST) > 1)
+          {
+            afGainList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_GAIN_LIST, 1);
+            if(afGainList[1] < afGainList[0])
+            {
+              orxFLOAT fTemp;
+              fTemp         = afGainList[0];
+              afGainList[0] = afGainList[1];
+              afGainList[1] = fTemp;
+            }
+          }
+          else
+          {
+            afGainList[1] = orxFLOAT_1;
+          }
+        }
+        else
+        {
+          /* Clears gains */
+          afGainList[0] = orxFLOAT_0;
+          afGainList[1] = orxFLOAT_1;
+        }
+
+        /* Gets roll off */
+        fRollOff = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ROLL_OFF) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ROLL_OFF) : orxFLOAT_1;
+
+        /* Updates spatialization */
+        orxSound_SetSpatialization(_pstSound, (afDistanceList[0] >= orxFLOAT_0) ? orxMAX(afDistanceList[0], orxFLOAT_1) : -orxFLOAT_1, (afDistanceList[1] >= orxFLOAT_0) ? orxMAX(afDistanceList[1], orxFLOAT_1) : -orxFLOAT_1, afGainList[0], afGainList[1], fRollOff);
       }
       else
       {
         /* Deactivates spatialization */
-        orxSound_SetSpatialization(_pstSound, -orxFLOAT_1, -orxFLOAT_1, orxFLOAT_1, orxFLOAT_1, orxFLOAT_1);
+        orxSound_SetSpatialization(_pstSound, -orxFLOAT_1, -orxFLOAT_1, orxFLOAT_0, orxFLOAT_1, orxFLOAT_1);
       }
 
       /* Updates panning */
