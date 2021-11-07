@@ -30,7 +30,6 @@
 		E05455AB15172B9500917458 /* orxIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559A15172B9500917458 /* orxIcon.png */; };
 		E05455AC15172B9500917458 /* wall.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559B15172B9500917458 /* wall.png */; };
 		E05455AE15172B9500917458 /* orxTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = E054559D15172B9500917458 /* orxTest.mm */; };
-		E0562E5A11361B13003EEFAE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0562E5911361B13003EEFAE /* AudioToolbox.framework */; };
 		E059C6361116BC430086879B /* liborxd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E059C62D1116BB240086879B /* liborxd.a */; };
 		E059C6381116BC610086879B /* orxAnim.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C4F31116B8E70086879B /* orxAnim.c */; };
 		E059C6391116BC610086879B /* orxAnimPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C4F41116B8E70086879B /* orxAnimPointer.c */; };
@@ -132,7 +131,6 @@
 		E054559A15172B9500917458 /* orxIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orxIcon.png; sourceTree = "<group>"; };
 		E054559B15172B9500917458 /* wall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wall.png; sourceTree = "<group>"; };
 		E054559D15172B9500917458 /* orxTest.mm */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.objcpp; path = orxTest.mm; sourceTree = "<group>"; };
-		E0562E5911361B13003EEFAE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E059C4F31116B8E70086879B /* orxAnim.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnim.c; sourceTree = "<group>"; };
 		E059C4F41116B8E70086879B /* orxAnimPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnimPointer.c; sourceTree = "<group>"; };
 		E059C4F51116B8E70086879B /* orxAnimSet.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnimSet.c; sourceTree = "<group>"; };
@@ -280,7 +278,6 @@
 				E0ECC67D111FB3AB0057CD72 /* OpenGLES.framework in Frameworks */,
 				E0ECC6E511237E650057CD72 /* QuartzCore.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				E0562E5A11361B13003EEFAE /* AudioToolbox.framework in Frameworks */,
 				E02F77C82737F4D300C2B002 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,7 +330,6 @@
 				E0FCA0781A77473D007BB701 /* libwebpdecoder.a */,
 				152BA7911C6D00650002F9F6 /* libliquidfun.a */,
 				E02F77C72737F4D300C2B002 /* AudioUnit.framework */,
-				E0562E5911361B13003EEFAE /* AudioToolbox.framework */,
 				E02F77C52737F44E00C2B002 /* CoreAudio.framework */,
 				E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
