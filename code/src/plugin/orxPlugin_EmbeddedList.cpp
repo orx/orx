@@ -40,11 +40,10 @@
 
 #pragma GCC visibility push(hidden)
 
-/* Display, joystick & mouse system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
+/* Display, joystick, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/Dummy/orxSoundSystem.c"
 
 #pragma GCC visibility pop
 
