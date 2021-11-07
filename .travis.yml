@@ -56,17 +56,17 @@ matrix:
       script: ./code/build/travis/ios.sh
       name: iOS / XCode 11
 
-    - os: osx
-      compiler: clang
-      osx_image: xcode12.5
-      script: ./code/build/travis/ios.sh
-      name: iOS / XCode 12
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode12.5
+    #   script: ./code/build/travis/ios.sh
+    #   name: iOS / XCode 12
 
-    - os: osx
-      compiler: clang
-      osx_image: xcode13.1
-      script: ./code/build/travis/ios.sh
-      name: iOS / XCode 13
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode13.1
+    #   script: ./code/build/travis/ios.sh
+    #   name: iOS / XCode 13
 
     - language: android
       jdk: openjdk8
