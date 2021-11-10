@@ -200,27 +200,28 @@ struct __orxSOUNDSYSTEM_SOUND_t
  */
 typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
-  orxSOUND_EVENT_PAYLOAD          stRecordingPayload;   /**< Recording payload */
-  ma_log                          stLog;                /**< Log */
-  ma_log_callback                 stLogCallback;        /**< Log callback */
-  ma_vfs_callbacks                stCallbacks;          /**< Resource callbacks */
-  ma_encoder                      stEncoder;            /**< Encoder */
-  ma_context                      stContext;            /**< Context */
-  ma_resource_manager             stResourceManager;    /**< Resource manager */
-  ma_engine                       stEngine;             /**< Engine */
-  ma_context                      stCaptureContext;     /**< Context */
-  ma_device                       stCaptureDevice;      /**< Caoture device */
-  ma_data_source_vtable           stStreamVTable;       /**< Stream VTable */
-  ma_decoding_backend_vtable      stVorbisVTable;       /**< Vorbis decoding backend VTable */
-  ma_decoding_backend_vtable     *apstVTable[1];        /**< Decoding backend VTable */
-  orxBANK                        *pstSampleBank;        /**< Sound bank */
-  orxBANK                        *pstSoundBank;         /**< Sound bank */
-  volatile orxHANDLE              hRecordingResource;   /**< Recording resource */
-  orxFLOAT                        fDimensionRatio;      /**< Dimension ration */
-  orxFLOAT                        fRecDimensionRatio;   /**< Reciprocal dimension ratio */
-  orxU32                          u32ListenerNumber;    /**< Listener number */
-  orxU32                          u32WorkerThread;      /**< Worker thread */
-  orxU32                          u32Flags;             /**< Status flags */
+  orxSOUND_EVENT_PAYLOAD          stRecordingPayload;     /**< Recording payload */
+  ma_log                          stLog;                  /**< Log */
+  ma_log_callback                 stLogCallback;          /**< Log callback */
+  ma_vfs_callbacks                stCallbacks;            /**< Resource callbacks */
+  ma_encoder                      stEncoder;              /**< Encoder */
+  ma_context                      stContext;              /**< Context */
+  ma_resource_manager_config      stResourceManagerConfig;/** < Resource manager config */
+  ma_resource_manager             stResourceManager;      /**< Resource manager */
+  ma_engine                       stEngine;               /**< Engine */
+  ma_context                      stCaptureContext;       /**< Context */
+  ma_device                       stCaptureDevice;        /**< Caoture device */
+  ma_data_source_vtable           stStreamVTable;         /**< Stream VTable */
+  ma_decoding_backend_vtable      stVorbisVTable;         /**< Vorbis decoding backend VTable */
+  ma_decoding_backend_vtable     *apstVTable[1];          /**< Decoding backend VTable */
+  orxBANK                        *pstSampleBank;          /**< Sound bank */
+  orxBANK                        *pstSoundBank;           /**< Sound bank */
+  volatile orxHANDLE              hRecordingResource;     /**< Recording resource */
+  orxFLOAT                        fDimensionRatio;        /**< Dimension ration */
+  orxFLOAT                        fRecDimensionRatio;     /**< Reciprocal dimension ratio */
+  orxU32                          u32ListenerNumber;      /**< Listener number */
+  orxU32                          u32WorkerThread;        /**< Worker thread */
+  orxU32                          u32Flags;               /**< Status flags */
 
 } orxSOUNDSYSTEM_STATIC;
 
@@ -971,9 +972,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
   /* Was already initialized? */
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
-    ma_resource_manager_config  stResourceManagerConfig;
-    ma_result                   hResult;
-    orxFLOAT                    fRatio;
+    ma_result hResult;
+    orxFLOAT  fRatio;
 
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
@@ -1008,49 +1008,49 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
     /* Inits vorbis decoding backend VTable */
-    sstSoundSystem.stVorbisVTable.onInit                  = &SoundSystem_MiniAudio_InitVorbisBackend;
-    sstSoundSystem.stVorbisVTable.onUninit                = &SoundSystem_MiniAudio_UninitVorbisBackend;
-    sstSoundSystem.apstVTable[0]                          = &(sstSoundSystem.stVorbisVTable);
+    sstSoundSystem.stVorbisVTable.onInit                                  = &SoundSystem_MiniAudio_InitVorbisBackend;
+    sstSoundSystem.stVorbisVTable.onUninit                                = &SoundSystem_MiniAudio_UninitVorbisBackend;
+    sstSoundSystem.apstVTable[0]                                          = &(sstSoundSystem.stVorbisVTable);
 
     /* Inits data source VTable */
-    sstSoundSystem.stStreamVTable.onRead                  = &SoundSystem_MiniAudio_Stream_Read;
-    sstSoundSystem.stStreamVTable.onSeek                  = &SoundSystem_MiniAudio_Stream_Seek;
-    sstSoundSystem.stStreamVTable.onGetDataFormat         = &SoundSystem_MiniAudio_Stream_GetDataFormat;
-    sstSoundSystem.stStreamVTable.onGetCursor             = &SoundSystem_MiniAudio_Stream_GetCursor;
-    sstSoundSystem.stStreamVTable.onGetLength             = &SoundSystem_MiniAudio_Stream_GetLength;
-    sstSoundSystem.stStreamVTable.onSetLooping            = &SoundSystem_MiniAudio_Stream_SetLooping;
+    sstSoundSystem.stStreamVTable.onRead                                  = &SoundSystem_MiniAudio_Stream_Read;
+    sstSoundSystem.stStreamVTable.onSeek                                  = &SoundSystem_MiniAudio_Stream_Seek;
+    sstSoundSystem.stStreamVTable.onGetDataFormat                         = &SoundSystem_MiniAudio_Stream_GetDataFormat;
+    sstSoundSystem.stStreamVTable.onGetCursor                             = &SoundSystem_MiniAudio_Stream_GetCursor;
+    sstSoundSystem.stStreamVTable.onGetLength                             = &SoundSystem_MiniAudio_Stream_GetLength;
+    sstSoundSystem.stStreamVTable.onSetLooping                            = &SoundSystem_MiniAudio_Stream_SetLooping;
 
     /* Inits resource callbacks */
-    sstSoundSystem.stCallbacks.onOpen                     = &SoundSystem_MiniAudio_Open;
-    sstSoundSystem.stCallbacks.onClose                    = &SoundSystem_MiniAudio_Close;
-    sstSoundSystem.stCallbacks.onRead                     = &SoundSystem_MiniAudio_Read;
-    sstSoundSystem.stCallbacks.onWrite                    = &SoundSystem_MiniAudio_Write;
-    sstSoundSystem.stCallbacks.onSeek                     = &SoundSystem_MiniAudio_Seek;
-    sstSoundSystem.stCallbacks.onTell                     = &SoundSystem_MiniAudio_Tell;
-    sstSoundSystem.stCallbacks.onInfo                     = &SoundSystem_MiniAudio_Info;
+    sstSoundSystem.stCallbacks.onOpen                                     = &SoundSystem_MiniAudio_Open;
+    sstSoundSystem.stCallbacks.onClose                                    = &SoundSystem_MiniAudio_Close;
+    sstSoundSystem.stCallbacks.onRead                                     = &SoundSystem_MiniAudio_Read;
+    sstSoundSystem.stCallbacks.onWrite                                    = &SoundSystem_MiniAudio_Write;
+    sstSoundSystem.stCallbacks.onSeek                                     = &SoundSystem_MiniAudio_Seek;
+    sstSoundSystem.stCallbacks.onTell                                     = &SoundSystem_MiniAudio_Tell;
+    sstSoundSystem.stCallbacks.onInfo                                     = &SoundSystem_MiniAudio_Info;
 
     /* Inits resource manager configuration */
-    stResourceManagerConfig                               = ma_resource_manager_config_init();
-    stResourceManagerConfig.decodedFormat                 = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
-    stResourceManagerConfig.jobThreadCount                = 0;
-    stResourceManagerConfig.flags                         = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING;
-    stResourceManagerConfig.ppCustomDecodingBackendVTables= sstSoundSystem.apstVTable;
-    stResourceManagerConfig.customDecodingBackendCount    = orxARRAY_GET_ITEM_COUNT(sstSoundSystem.apstVTable);
-    stResourceManagerConfig.pVFS                          = &(sstSoundSystem.stCallbacks);
-    stResourceManagerConfig.allocationCallbacks.onMalloc  = &orxSoundSystem_MiniAudio_Allocate;
-    stResourceManagerConfig.allocationCallbacks.onRealloc = &orxSoundSystem_MiniAudio_Reallocate;
-    stResourceManagerConfig.allocationCallbacks.onFree    = &orxSoundSystem_MiniAudio_Free;
+    sstSoundSystem.stResourceManagerConfig                                = ma_resource_manager_config_init();
+    sstSoundSystem.stResourceManagerConfig.decodedFormat                  = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
+    sstSoundSystem.stResourceManagerConfig.jobThreadCount                 = 0;
+    sstSoundSystem.stResourceManagerConfig.flags                          = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING;
+    sstSoundSystem.stResourceManagerConfig.ppCustomDecodingBackendVTables = sstSoundSystem.apstVTable;
+    sstSoundSystem.stResourceManagerConfig.customDecodingBackendCount     = orxARRAY_GET_ITEM_COUNT(sstSoundSystem.apstVTable);
+    sstSoundSystem.stResourceManagerConfig.pVFS                           = &(sstSoundSystem.stCallbacks);
+    sstSoundSystem.stResourceManagerConfig.allocationCallbacks.onMalloc   = &orxSoundSystem_MiniAudio_Allocate;
+    sstSoundSystem.stResourceManagerConfig.allocationCallbacks.onRealloc  = &orxSoundSystem_MiniAudio_Reallocate;
+    sstSoundSystem.stResourceManagerConfig.allocationCallbacks.onFree     = &orxSoundSystem_MiniAudio_Free;
 
     /* Inits log system */
-    hResult                                               = ma_log_init(&(stResourceManagerConfig.allocationCallbacks), &(sstSoundSystem.stLog));
+    hResult                                                               = ma_log_init(&(sstSoundSystem.stResourceManagerConfig.allocationCallbacks), &(sstSoundSystem.stLog));
     orxASSERT(hResult == MA_SUCCESS);
-    sstSoundSystem.stLogCallback                          = ma_log_callback_init(&orxSoundSystem_MiniAudio_Log, NULL);
-    hResult                                               = ma_log_register_callback(&(sstSoundSystem.stLog), sstSoundSystem.stLogCallback);
+    sstSoundSystem.stLogCallback                                          = ma_log_callback_init(&orxSoundSystem_MiniAudio_Log, NULL);
+    hResult                                                               = ma_log_register_callback(&(sstSoundSystem.stLog), sstSoundSystem.stLogCallback);
     orxASSERT(hResult == MA_SUCCESS);
-    stResourceManagerConfig.pLog                          = &(sstSoundSystem.stLog);
+    sstSoundSystem.stResourceManagerConfig.pLog                           = &(sstSoundSystem.stLog);
 
     /* Inits resource manager */
-    hResult = ma_resource_manager_init(&stResourceManagerConfig, &(sstSoundSystem.stResourceManager));
+    hResult = ma_resource_manager_init(&(sstSoundSystem.stResourceManagerConfig), &(sstSoundSystem.stResourceManager));
 
     /* Success? */
     if(hResult == MA_SUCCESS)
@@ -1073,7 +1073,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pLog             = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager = &(sstSoundSystem.stResourceManager);
         stEngineConfig.listenerCount    = sstSoundSystem.u32ListenerNumber;
-        ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(stResourceManagerConfig.allocationCallbacks));
+        ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
 
         /* Success? */
