@@ -14,7 +14,6 @@
 		E022D39314CC47BD00B81F6B /* orxFX.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39114CC47BD00B81F6B /* orxFX.c */; };
 		E022D39414CC47BD00B81F6B /* orxFXPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39214CC47BD00B81F6B /* orxFXPointer.c */; };
 		E02F77C62737F44E00C2B002 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C52737F44E00C2B002 /* CoreAudio.framework */; };
-		E02F77C82737F4D300C2B002 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C72737F4D300C2B002 /* AudioUnit.framework */; };
 		E02F77CA2737F4DE00C2B002 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */; };
 		E04694DF154E9BCF00719172 /* orxCommand.c in Sources */ = {isa = PBXBuildFile; fileRef = E04694DE154E9BCF00719172 /* orxCommand.c */; };
 		E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E04DA16D2737FAD40074735B /* orxSoundSystem.m */; };
@@ -112,7 +111,6 @@
 		E022D39114CC47BD00B81F6B /* orxFX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFX.c; sourceTree = "<group>"; };
 		E022D39214CC47BD00B81F6B /* orxFXPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFXPointer.c; sourceTree = "<group>"; };
 		E02F77C52737F44E00C2B002 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		E02F77C72737F4D300C2B002 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		E03AB12C12F11F9A0077528A /* orxDefaultFont.inc */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.pascal; path = orxDefaultFont.inc; sourceTree = "<group>"; };
 		E04694DD154E9BC000719172 /* orxCommand.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxCommand.h; sourceTree = "<group>"; };
@@ -278,7 +276,6 @@
 				E0ECC67D111FB3AB0057CD72 /* OpenGLES.framework in Frameworks */,
 				E0ECC6E511237E650057CD72 /* QuartzCore.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				E02F77C82737F4D300C2B002 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,7 +326,6 @@
 			children = (
 				E0FCA0781A77473D007BB701 /* libwebpdecoder.a */,
 				152BA7911C6D00650002F9F6 /* libliquidfun.a */,
-				E02F77C72737F4D300C2B002 /* AudioUnit.framework */,
 				E02F77C52737F44E00C2B002 /* CoreAudio.framework */,
 				E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
