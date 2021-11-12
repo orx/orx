@@ -1,6 +1,7 @@
 var group__orx_sound_system =
 [
     [ "orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS", "group__orx_sound_system.html#gaacbbd7bbf29183bb2bea0be00c48b12a", null ],
+    [ "orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND", "group__orx_sound_system.html#ga06003dcf3a2762717a4d579eb106cf8f", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_RATIO", "group__orx_sound_system.html#ga41370e9556fefbd90a4626bcf3489468", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_SECTION", "group__orx_sound_system.html#ga180120f04cd8b042cdfa0bdff3f3f9d8", null ],
     [ "orxSOUNDSYSTEM_SAMPLE", "group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8", null ],
