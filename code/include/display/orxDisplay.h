@@ -475,7 +475,7 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
   fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
 
   /* Updates result */
-  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
+  stResult = orx2RGBA(orxF2U(orxMath_Round(vColor.fR)), orxF2U(orxMath_Round(vColor.fG)), orxF2U(orxMath_Round(vColor.fB)), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
 
   /* Done! */
   return stResult;
