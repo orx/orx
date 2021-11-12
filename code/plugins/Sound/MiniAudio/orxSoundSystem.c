@@ -114,6 +114,7 @@ extern "C" {
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY             0x00000001 /**< Ready flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING         0x00000002 /**< Recording flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING    0x00000004 /**< Stop recording flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED  0x00000008 /**< Background muted flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -219,6 +220,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   volatile orxHANDLE              hRecordingResource;     /**< Recording resource */
   orxFLOAT                        fDimensionRatio;        /**< Dimension ration */
   orxFLOAT                        fRecDimensionRatio;     /**< Reciprocal dimension ratio */
+  orxFLOAT                        fForegroundVolume;      /**< Foreground volume */
   orxU32                          u32ListenerNumber;      /**< Listener number */
   orxU32                          u32WorkerThread;        /**< Worker thread */
   orxU32                          u32Flags;               /**< Status flags */
@@ -239,7 +241,51 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
-size_t orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const void *_pBufferIn, size_t _sBytesToWrite)
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Entering background? */
+  if(_pstEvent->eID == orxSYSTEM_EVENT_BACKGROUND)
+  {
+    /* Pushes config section */
+    orxConfig_PushSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+
+    /* Should mute? */
+    if((orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND) == orxFALSE)
+    || (orxConfig_GetBool(orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND) != orxFALSE))
+    {
+      /* Backups foreground volume */
+      sstSoundSystem.fForegroundVolume = orxSoundSystem_GetGlobalVolume();
+
+      /* Updates volume */
+      orxSoundSystem_SetGlobalVolume(orxFLOAT_0);
+
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Was muted? */
+    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED))
+    {
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED);
+
+      /* Restores foreground volume */
+      orxSoundSystem_SetGlobalVolume(sstSoundSystem.fForegroundVolume);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static size_t orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const void *_pBufferIn, size_t _sBytesToWrite)
 {
   size_t sResult;
 
@@ -250,7 +296,7 @@ size_t orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const v
   return sResult;
 }
 
-ma_bool32 orxSoundSystem_MiniAudio_Recording_Seek(ma_encoder *_pstEncoder, int _iByteOffset, ma_seek_origin _eOrigin)
+static ma_bool32 orxSoundSystem_MiniAudio_Recording_Seek(ma_encoder *_pstEncoder, int _iByteOffset, ma_seek_origin _eOrigin)
 {
   /* Seeks */
   return (orxResource_Seek((orxHANDLE)_pstEncoder->pUserData, (orxS64)_iByteOffset, (orxSEEK_OFFSET_WHENCE)_eOrigin) >= 0) ? MA_TRUE : MA_FALSE;
@@ -1094,6 +1140,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
             {
               orxU32 i;
 
+              /* Adds event handler */
+              eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
+              orxASSERT(eResult != orxSTATUS_FAILURE);
+
+              /* Filters relevant event IDs */
+              orxEvent_SetHandlerIDFlags(orxSoundSystem_MiniAudio_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_BACKGROUND) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOREGROUND), orxEVENT_KU32_MASK_ID_ALL);
+
               /* For all listeners */
               for(i = 0; i < sstSoundSystem.u32ListenerNumber; i++)
               {
@@ -1187,6 +1240,9 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
+
     /* Stops any recording */
     orxSoundSystem_StopRecording();
 
@@ -2478,8 +2534,20 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetGlobalVolume(orxFLOAT _fVolume
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
-  /* Sets volume */
-  eResult = (ma_engine_set_volume(&(sstSoundSystem.stEngine), _fVolume) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  /* Is background muted? */
+  if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED))
+  {
+    /* Stores volume */
+    sstSoundSystem.fForegroundVolume = _fVolume;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Sets volume */
+    eResult = (ma_engine_set_volume(&(sstSoundSystem.stEngine), _fVolume) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;

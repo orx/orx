@@ -76,6 +76,7 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
  */
 #define orxSOUNDSYSTEM_KZ_CONFIG_SECTION              "SoundSystem"
 #define orxSOUNDSYSTEM_KZ_CONFIG_RATIO                "DimensionRatio"
+#define orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND   "MuteInBackground"
 #define orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS            "Listeners"
 
 
