@@ -330,6 +330,23 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetGlobalVo
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetGlobalVolume();
 
+/** Gets listener count
+ * @return      Listener count
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxSoundSystem_GetListenerCount();
+
+/** Enables/disables a listener
+ * @param[in]   _u32ListenerIndex                     Concerned listener index
+ * @param[in]   _bEnable                              Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL                     orxSoundSystem_EnableListener(orxU32 _u32ListenerIndex, orxBOOL _bEnable);
+
+/** Is listener enabled?
+ * @param[in]   _u32ListenerIndex                     Concerned listener index
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxSoundSystem_IsListenerEnabled(orxU32 _u32ListenerIndex);
+
 /** Sets listener position
  * @param[in] _u32Index                               Listener index, 0-based
  * @param[in] _pvPosition                             Desired position

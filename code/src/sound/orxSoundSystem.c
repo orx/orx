@@ -90,6 +90,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetDuration, orxFLOAT, const orxSO
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetStatus, orxSOUNDSYSTEM_STATUS, const orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetGlobalVolume, orxSTATUS, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetGlobalVolume, orxFLOAT, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetListenerCount, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_EnableListener, void, orxU32, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_IsListenerEnabled, orxBOOL, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetListenerPosition, orxSTATUS, orxU32, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetListenerPosition, orxVECTOR *, orxU32, orxVECTOR *);
 
@@ -133,6 +136,9 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_DURATION, orxSoundSystem_GetD
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_STATUS, orxSoundSystem_GetStatus)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_GLOBAL_VOLUME, orxSoundSystem_SetGlobalVolume)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_GLOBAL_VOLUME, orxSoundSystem_GetGlobalVolume)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_LISTENER_COUNT, orxSoundSystem_GetListenerCount)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, ENABLE_LISTENER, orxSoundSystem_EnableListener)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, IS_LISTENER_ENABLED, orxSoundSystem_IsListenerEnabled)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_LISTENER_POSITION, orxSoundSystem_SetListenerPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_LISTENER_POSITION, orxSoundSystem_GetListenerPosition)
 
@@ -314,6 +320,21 @@ orxSTATUS orxFASTCALL orxSoundSystem_SetGlobalVolume(orxFLOAT _fVolume)
 orxFLOAT orxFASTCALL orxSoundSystem_GetGlobalVolume()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetGlobalVolume)();
+}
+
+orxU32 orxFASTCALL orxSoundSystem_GetListenerCount()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetListenerCount)();
+}
+
+void orxFASTCALL orxSoundSystem_EnableListener(orxU32 _u32ListenerIndex, orxBOOL _bEnable)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_EnableListener)(_u32ListenerIndex, _bEnable);
+}
+
+orxBOOL orxFASTCALL orxSoundSystem_IsListenerEnabled(orxU32 _u32ListenerIndex)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_IsListenerEnabled)(_u32ListenerIndex);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_SetListenerPosition(orxU32 _u32Index, const orxVECTOR *_pvPosition)
