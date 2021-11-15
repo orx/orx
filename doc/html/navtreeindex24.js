@@ -1,5 +1,17 @@
 var NAVTREEINDEX24 =
 {
+"orx_anim_set_8h_source.html":[3,0,0,0,2],
+"orx_bank_8h.html":[3,0,0,8,0],
+"orx_bank_8h_source.html":[3,0,0,8,0],
+"orx_body_8h.html":[3,0,0,10,0],
+"orx_body_8h_source.html":[3,0,0,10,0],
+"orx_camera_8h.html":[3,0,0,12,0],
+"orx_camera_8h_source.html":[3,0,0,12,0],
+"orx_clock_8h.html":[3,0,0,2,0],
+"orx_clock_8h_source.html":[3,0,0,2,0],
+"orx_color_list_8inc.html":[3,0,0,4,0],
+"orx_color_list_8inc_source.html":[3,0,0,4,0],
+"orx_command_8h.html":[3,0,0,2,1],
 "orx_command_8h_source.html":[3,0,0,2,1],
 "orx_config_8h.html":[3,0,0,2,2],
 "orx_config_8h_source.html":[3,0,0,2,2],
@@ -237,17 +249,5 @@ var NAVTREEINDEX24 =
 "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a5503db73765d80e97102fbca516e0728":[1,37,2,9],
 "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a66f606bf936468f2a55fabb67a601b97":[1,37,2,6],
 "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a685d2f42193399fc7ae715689a777f44":[1,37,2,20],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e":[1,37,2,22],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a70c93bdc970ce55b5809adde881597e0":[1,37,2,18],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a7c9d1ccc9354fa4a4705519898f82e96":[1,37,2,8],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a9a1d8a8d397d2a62be3106b02d439dbb":[1,37,2,13],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a9d3f7f070e56f2db8d94eb231be2d00e":[1,37,2,4],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#aac514621c48e50eac5a497a99b896329":[1,37,2,5],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#ab07f7d7014398e1b395f1facaad7ee7f":[1,37,2,2],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#ab820671d1b65058a520cad0eba97f3ef":[1,37,2,1],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#abb7ec467f1deb2954cfa0f31d12ac67c":[1,37,2,17],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#abddb465f943f559220235dd2cf45ef3d":[1,37,2,11],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#acd38735e3510a913eb0a80e3ec249b23":[1,37,2,21],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#ad1c342b13017fdef8dd7b48f12e83e8c":[1,37,2,10],
-"structorx_b_o_d_y___p_a_r_t___d_e_f.html#adc5836790791c559495209f647d14b88":[1,37,2,7]
+"structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e":[1,37,2,22]
 };
