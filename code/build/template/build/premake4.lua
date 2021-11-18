@@ -106,11 +106,11 @@ solution "[name]"
 
     configuration {"not xcode*"}
         includedirs {"$(ORX)/include"}
-        libdirs {"$(ORX)/lib/dynamic"}
+        libdirs {"$(ORX)/lib/static"}
 
     configuration {"xcode*"}
         includedirs {"[code-path]/include"}
-        libdirs {"[code-path]/lib/dynamic"}
+        libdirs {"[code-path]/lib/static"}
 
     configuration {"x32"}
         flags {"EnableSSE2"}
@@ -136,17 +136,62 @@ solution "[name]"
     configuration {"windows", "*Release*"}
         kind ("WindowedApp")
 
+    configuration {}
+        links {"webpdecoder"}
+
+    configuration {"not vs*"}
+        links {"basisu"}
+
+    configuration {"not *Debug*", "vs*"}
+        links {"basisu"}
+
+    configuration {"*Debug*", "vs*"}
+        links {"basisud"}
+
+    configuration {"not *Debug*"}
+        links {"liquidfun"}
+
+    configuration {"*Debug*"}
+        links {"liquidfund"}
+
 
 -- Linux
 
     configuration {"linux"}
         buildoptions {"-Wno-unused-function"}
-        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread",
+            "glfw3",
+            "X11",
+            "Xrandr",
+            "gcc"
+        }
+        if _OPTIONS["gles"] then
+            links {"GLESv3"}
+        else
+            links {"GL"}
+        end
+
+    configuration {"linux", "x32"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/linux",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/linux",
+            "$(ORX)/../extern/libwebp/lib/linux",
+            "$(ORX)/../extern/basisu/lib/linux/32",
+        }
+
+    configuration {"linux", "x64"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/linux64",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/linux64",
+            "$(ORX)/../extern/libwebp/lib/linux64",
+            "$(ORX)/../extern/basisu/lib/linux/64",
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
@@ -169,6 +214,30 @@ solution "[name]"
             "-stdlib=libc++",
             "-dead_strip"
         }
+        links
+        {
+            "m",
+            "pthread",
+            "glfw3"
+        }
+
+    configuration {"macosx", "not xcode*"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/mac",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/mac",
+            "$(ORX)/../extern/libwebp/lib/mac",
+            "$(ORX)/../extern/basisu/lib/mac",
+        }
+
+    configuration {"macosx", "xcode*"}
+        libdirs
+        {
+            "[code-path]/../extern/glfw-3/lib/mac",
+            "[code-path]/../extern/LiquidFun-1.1.0/lib/mac",
+            "[code-path]/../extern/libwebp/lib/mac",
+            "[code-path]/../extern/basisu/lib/mac",
+        }
 
     configuration {"macosx", "not codelite", "not codeblocks"}
         links
@@ -182,6 +251,36 @@ solution "[name]"
         {
             "-framework Foundation",
             "-framework AppKit"
+        }
+
+    configuration {"xcode* or macosx", "gmake"}
+        links
+        {
+            "Foundation.framework",
+            "AppKit.framework",
+            "Foundation.framework",
+            "CoreFoundation.framework",
+            "CoreAudio.framework",
+            "AudioUnit.framework",
+            "IOKit.framework",
+            "AppKit.framework",
+            "CoreVideo.framework",
+            "OpenGL.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework AppKit",
+            "-framework Foundation",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioUnit",
+            "-framework IOKit",
+            "-framework AppKit",
+            "-framework CoreVideo",
+            "-framework OpenGL"
         }
 
     configuration {"macosx", "x32"}
@@ -200,11 +299,59 @@ solution "[name]"
             "ws2_32"
         }
 ]
+    configuration {"windows"}
+        links
+        {
+            "winmm",
+            "glfw3"
+        }
+
     configuration {"windows", "vs*"}
+        links {"OpenGL32"}
         buildoptions
         {
             "/MP",
             "/EHsc"
+        }
+
+    configuration {"windows", "vs*", "*Debug*", "not *Core*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
+
+
+    configuration {"vs2015 or vs2017 or vs2019", "x32"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/vc2015/32",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/vc2015/32",
+            "$(ORX)/../extern/libwebp/lib/vc2015/32",
+            "$(ORX)/../extern/basisu/lib/vc2015/32",
+        }
+
+    configuration {"vs2015 or vs2017 or vs2019", "x64"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/vc2015/64",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/vc2015/64",
+            "$(ORX)/../extern/libwebp/lib/vc2015/64",
+            "$(ORX)/../extern/basisu/lib/vc2015/64",
+        }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/mingw/32",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/mingw/32",
+            "$(ORX)/../extern/libwebp/lib/mingw/32",
+            "$(ORX)/../extern/basisu/lib/mingw/32",
+        }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
+        libdirs
+        {
+            "$(ORX)/../extern/glfw-3/lib/mingw/64",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/mingw/64",
+            "$(ORX)/../extern/libwebp/lib/mingw/64",
+            "$(ORX)/../extern/basisu/lib/mingw/64",
         }
 
     configuration {"windows", "gmake", "x32"}
@@ -277,24 +424,3 @@ project "[name]"
         ["inline"] = {"**.inl"},]
         ["config"] = {"**.ini"}
     }
-
-
--- Linux
-
-    configuration {"linux"}
-        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
-
-
--- Mac OS X
-
-    configuration {"macosx", "xcode*"}
-        postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-
-    configuration {"macosx", "not xcode*"}
-        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-
-
--- Windows
-
-    configuration {"windows"}
-        postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}

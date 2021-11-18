@@ -340,7 +340,7 @@
       #define __orxEMBEDDED__
 
       /* Always use static on iOS and Android */
-      #define __orxSTATIC__
+      #undef __orxDYNAMIC__
 
     #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
 
@@ -365,15 +365,15 @@
 /* External include? */
 #elif defined(__orxEXTERN__)
 
-  #ifdef __orxSTATIC__
-
-    #define orxDLLAPI orxIMPORT /* Linking executable against orx static library */
-
-  #else /* __orxSTATIC__ */
+  #if defined(__orxDYNAMIC__)
 
     #define orxDLLAPI orxIMPORT orxDLLIMPORT /* Linking executable against orx dynamic library */
 
-  #endif /* __orxSTATIC__ */
+  #else /* __orxDYNAMIC__ */
+
+    #define orxDLLAPI orxIMPORT /* Linking executable against orx static library */
+
+  #endif /* __orxDYNAMIC__ */
 
 /* Internal (library) include */
 #else

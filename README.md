@@ -197,8 +197,8 @@ Here's a quick list of the available compile preprocessor flags:
                     NB: You can define it in your projects even when using regular release builds,
                     but you won't be able to see orx's internal profiling markers!
 
-- `__orxSTATIC__`   : used to compile and link against the static versions of orx library.  
-                    NB: If you want to link against the static versions of orx library, you need
+- `__orxDYNAMIC__`  : used to compile and link against the dynamic versions of orx library.  
+                    NB: If you want to link against the dynamic versions of orx library, you need
                     to specify it to your compiler!
 
 - `__orxEMBEDDED__` : used to compile the embedded versions of orx library.  

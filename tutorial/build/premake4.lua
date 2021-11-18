@@ -98,8 +98,8 @@ solution "Tutorial"
     libdirs
     {
         "../lib",
-        "../../code/lib/dynamic",
-        "$(ORX)/lib/dynamic"
+        "../../code/lib/static",
+        "$(ORX)/lib/static"
     }
 
     targetdir ("../bin")
@@ -137,17 +137,67 @@ solution "Tutorial"
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
 
+    configuration {}
+        links {"webpdecoder"}
+
+    configuration {"not vs*"}
+        links {"basisu"}
+
+    configuration {"not *Debug*", "vs*"}
+        links {"basisu"}
+
+    configuration {"*Debug*", "vs*"}
+        links {"basisud"}
+
+    configuration {"not *Debug*"}
+        links {"liquidfun"}
+
+    configuration {"*Debug*"}
+        links {"liquidfund"}
+
 
 -- Linux
 
     configuration {"linux"}
         buildoptions {"-Wno-unused-function"}
-        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
+        linkoptions
+        {
+            "-lc++",
+            "-dead_strip"
+        }
         links
         {
             "dl",
             "m",
-            "rt"
+            "rt",
+            "pthread",
+            "glfw3",
+            "X11",
+            "Xrandr",
+            "gcc"
+        }
+        if _OPTIONS["gles"] then
+            links {"GLESv3"}
+        else
+            links {"GL"}
+        end
+
+    configuration {"linux", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/linux",
+            "../../extern/LiquidFun-1.1.0/lib/linux",
+            "../../extern/libwebp/lib/linux",
+            "../../extern/basisu/lib/linux/32",
+        }
+
+    configuration {"linux", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/linux64",
+            "../../extern/LiquidFun-1.1.0/lib/linux64",
+            "../../extern/libwebp/lib/linux64",
+            "../../extern/basisu/lib/linux/64",
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
@@ -158,6 +208,13 @@ solution "Tutorial"
 -- Mac OS X
 
     configuration {"macosx"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mac",
+            "../../extern/LiquidFun-1.1.0/lib/mac",
+            "../../extern/libwebp/lib/mac",
+            "../../extern/basisu/lib/mac",
+        }
         buildoptions
         {
             "-stdlib=libc++",
@@ -168,21 +225,44 @@ solution "Tutorial"
         linkoptions
         {
             "-stdlib=libc++",
+            "-lc++",
             "-dead_strip"
         }
+        links
+        {
+            "glfw3",
+            "m",
+            "pthread"
+        }
 
-    configuration {"macosx", "not codelite", "not codeblocks"}
+    configuration {"xcode* or macosx", "gmake"}
         links
         {
             "Foundation.framework",
-            "AppKit.framework"
+            "AppKit.framework",
+            "Foundation.framework",
+            "CoreFoundation.framework",
+            "CoreAudio.framework",
+            "AudioUnit.framework",
+            "IOKit.framework",
+            "AppKit.framework",
+            "CoreVideo.framework",
+            "OpenGL.framework"
         }
 
     configuration {"macosx", "codelite or codeblocks"}
         linkoptions
         {
             "-framework Foundation",
-            "-framework AppKit"
+            "-framework AppKit",
+            "-framework Foundation",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioUnit",
+            "-framework IOKit",
+            "-framework AppKit",
+            "-framework CoreVideo",
+            "-framework OpenGL"
         }
 
     configuration {"macosx", "x32"}
@@ -194,10 +274,58 @@ solution "Tutorial"
 
 -- Windows
 
+    configuration {"windows"}
+        links
+        {
+            "winmm",
+            "glfw3"
+        }
+
     configuration {"windows", "vs*"}
+        links {"OpenGL32"}
         buildoptions
         {
             "/MP"
+        }
+
+    configuration {"windows", "vs*", "*Debug*", "not *Core*"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
+
+
+    configuration {"vs2015 or vs2017 or vs2019", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/vc2015/32",
+            "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
+            "../../extern/libwebp/lib/vc2015/32",
+            "../../extern/basisu/lib/vc2015/32",
+        }
+
+    configuration {"vs2015 or vs2017 or vs2019", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/vc2015/64",
+            "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
+            "../../extern/libwebp/lib/vc2015/64",
+            "../../extern/basisu/lib/vc2015/64",
+        }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mingw/32",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/32",
+            "../../extern/libwebp/lib/mingw/32",
+            "../../extern/basisu/lib/mingw/32",
+        }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mingw/64",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/64",
+            "../../extern/libwebp/lib/mingw/64",
+            "../../extern/basisu/lib/mingw/64",
         }
 
     configuration {"windows", "gmake", "x32"}
@@ -240,24 +368,6 @@ solution "Tutorial"
 project "01_Object"
 
     files {"../src/01_Object.c"}
-
-
--- Linux
-
-    configuration {"linux"}
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.so ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
-
-
--- Mac OS X
-
-    configuration {"macosx"}
-        postbuildcommands {"[ -f " .. copybase .. "/../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
-
-
--- Windows
-
-    configuration {"windows"}
-        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
 --
