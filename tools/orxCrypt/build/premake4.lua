@@ -144,6 +144,9 @@ solution "orxCrypt"
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
 
+    configuration {}
+        defines {"__orxSTATIC__"}
+
 
 -- Linux
 

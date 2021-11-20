@@ -14,7 +14,7 @@ function initconfigurations ()
         "Release",
         "Core Debug",
         "Core Profile",
-        "Core Release",
+        "Core Release"
     }
 end
 
@@ -107,12 +107,12 @@ solution "orx"
         "../../extern/rpmalloc/rpmalloc",
         "../../extern/xxHash",
         "../../extern/glfw-3/include",
+        "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
+        "../../extern/miniaudio",
+        "../../extern/stb_vorbis",
         "../../extern/libwebp/include",
         "../../extern/basisu/include",
-        "../../extern/stb_vorbis",
-        "../../extern/miniaudio",
-        "../../extern/LiquidFun-1.1.0/include"
     }
 
     excludes
@@ -318,6 +318,113 @@ project "orx"
 
     links {"orxLIB"}
 
+    configuration {"not xcode*", "*Core*"}
+        defines {"__orxSTATIC__"}
+
+
+-- Linux
+
+    configuration {"linux"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
+        links
+        {
+            "dl",
+            "m",
+            "rt"
+        }
+
+    configuration {"linux", "*Core*"}
+        linkoptions {"-Wl,--no-whole-archive"}
+        links {"pthread"}
+
+    -- This prevents an optimization bug from happening with some versions of gcc on linux
+    configuration {"linux", "not *Debug*"}
+        buildoptions {"-fschedule-insns"}
+
+
+-- Mac OS X
+
+    configuration {"macosx", "gmake", "*Core*"}
+        links
+        {
+            "Foundation.framework",
+            "IOKit.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks", "*Core*"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework IOKit"
+        }
+
+
+-- Windows
+
+    configuration {"windows", "*Core*"}
+        implibdir ("../lib/static")
+        implibname ("imporx")
+        implibextension (".lib")
+        links
+        {
+            "winmm"
+        }
+
+
+--
+-- Project: orxLIB
+--
+
+project "orxLIB"
+
+    files
+    {
+        "../src/**.cpp",
+        "../src/**.c",
+        "../include/**.h",
+        "../include/**.inc"
+    }
+
+    excludes {"../src/main/orxMain.c"}
+
+    targetname ("orx")
+
+    configuration {"not *Core*"}
+        defines
+        {
+            "__orxEMBEDDED__",
+            "AL_LIBTYPE_STATIC"
+        }
+
+    -- Work around for codelite "default" configuration
+    configuration {"codelite"}
+        kind ("StaticLib")
+
+    configuration {}
+        targetdir ("../lib/dynamic")
+        kind ("SharedLib")
+        buildoptions {"$(ORXFLAGS)"}
+
+    configuration {"not xcode*", "*Core*"}
+        targetdir ("../lib/static")
+        kind ("StaticLib")
+
+    if _OPTIONS["split-platforms"] then
+        configuration {"x32"}
+        targetdir ("../lib/dynamic/x32")
+
+        configuration {"not xcode*", "*Core*", "x32"}
+            targetdir ("../lib/static/x32")
+
+        configuration {"x64"}
+        targetdir ("../lib/dynamic/x64")
+
+        configuration {"not xcode*", "*Core*", "x64"}
+            targetdir ("../lib/static/x64")
+
+        configuration {}
+    end
+
     configuration {"not *Core*"}
         links {"webpdecoder"}
 
@@ -336,17 +443,11 @@ project "orx"
     configuration {"*Debug*", "not *Core*"}
         links {"liquidfund"}
 
+
 -- Linux
 
     configuration {"linux"}
-        linkoptions {"-Wl,--export-dynamic", "-Wl,--no-whole-archive"}
-        links
-        {
-            "dl",
-            "m",
-            "rt",
-            "pthread"
-        }
+        defines {"_GNU_SOURCE"}
 
     configuration {"linux", "not *Core*"}
         links
@@ -354,47 +455,42 @@ project "orx"
             "glfw3",
             "X11",
             "Xrandr",
+            "dl",
+            "m",
+            "rt",
+            "pthread",
             "gcc"
         }
         if _OPTIONS["gles"] then
+            defines {"__orxDISPLAY_OPENGL_ES__"}
             links {"GLESv3"}
         else
             links {"GL"}
         end
 
-    -- This prevents an optimization bug from happening with some versions of gcc on linux
-    configuration {"linux", "not *Debug*"}
-        buildoptions {"-fschedule-insns"}
+    configuration {"linux", "*Core*"}
+        buildoptions {"-fPIC"}
+
+    if _OPTIONS["split-platforms"] then
+        configuration {"linux", "not *Core*", "x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.so " .. copybase .. "/bin/x32"}
+
+        configuration {"linux", "not *Core*", "x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.so " .. copybase .. "/bin/x64"}
+
+        configuration {"linux", "not *Core*", "not x32", "not x64"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
+
+        configuration {}
+    else
+        configuration {"linux", "not *Core*"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
+    end
 
 
 -- Mac OS X
 
-    configuration {"macosx"}
-        linkoptions {"-Wl,--export-dynamic"}
-
-    configuration {"macosx", "not *Core*"}
-        links
-        {
-            "glfw3",
-            "m",
-            "pthread"
-        }
-
-    configuration {"xcode* or macosx", "gmake"}
-        links
-        {
-            "Foundation.framework",
-            "IOKit.framework"
-        }
-
-    configuration {"macosx", "codelite or codeblocks"}
-        linkoptions
-        {
-            "-framework Foundation",
-            "-framework IOKit"
-        }
-
-    configuration {"xcode* or macosx", "not *Core*", "gmake"}
+    configuration {"macosx", "not *Core*", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
@@ -420,98 +516,75 @@ project "orx"
             "-framework OpenGL"
         }
 
-
--- Windows
-
-    configuration {"windows"}
-        implibdir ("../lib/static")
-        implibname ("imporx")
-        implibextension (".lib")
+    configuration {"macosx", "not *Core*"}
         links
         {
-            "winmm"
+            "glfw3",
+            "m",
+            "pthread"
         }
+
+    configuration{"macosx"}
+        buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
+
+    configuration {"macosx", "*Debug*"}
+        linkoptions {"-install_name @executable_path/liborxd.dylib"}
+
+    configuration {"macosx", "*Profile*"}
+        linkoptions {"-install_name @executable_path/liborxp.dylib"}
+
+    configuration {"macosx", "*Release*"}
+        linkoptions {"-install_name @executable_path/liborx.dylib"}
+
+    if _OPTIONS["split-platforms"] then
+        configuration {"macosx", "xcode*", "x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
+
+        configuration {"macosx", "not xcode*", "not *Core*", "x32"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x32 ; cp -f " .. copybase .. "/lib/dynamic/x32/liborx*.dylib " .. copybase .. "/bin/x32"}
+
+        configuration {"macosx", "xcode*", "x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.dylib " .. copybase .. "/bin/x64"}
+
+        configuration {"macosx", "not xcode*", "not *Core*", "x64"}
+            postbuildcommands {"mkdir " .. copybase .. "/bin/x64 ; cp -f " .. copybase .. "/lib/dynamic/x64/liborx*.dylib " .. copybase .. "/bin/x64"}
+
+        configuration {"macosx", "xcode*", "not x32", "not x64"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+
+        configuration {"macosx", "not xcode*", "not *Core*", "not x32", "not x64"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+
+        configuration {}
+    else
+        configuration {"macosx", "not *Core*"}
+            postbuildcommands {"cp -f " .. copybase .. "/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+    end
+
+
+-- Windows
 
     configuration {"windows", "not *Core*"}
         links
         {
-            "glfw3"
+            "glfw3",
+            "winmm"
         }
 
     configuration {"windows", "not *Core*", "vs*"}
         links {"OpenGL32"}
 
-    configuration {"windows", "vs*", "*Debug*", "not *Core*"}
+    configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
-
-
---
--- Project: orxLIB
---
-
-project "orxLIB"
-
-    files
-    {
-        "../src/**.cpp",
-        "../src/**.c",
-        "../include/**.h",
-        "../include/**.inc"
-    }
-
-    excludes {"../src/main/orxMain.c"}
-
-    targetname ("orx")
-
-    configuration {"not *Core*"}
-        defines
-        {
-            "__orxEMBEDDED__"
-        }
-
-    -- Work around for codelite "default" configuration
-    configuration {"codelite"}
-        kind ("StaticLib")
-
-    configuration {}
-        targetdir ("../lib/static")
-        kind ("StaticLib")
-        buildoptions {"$(ORXFLAGS)"}
-
-    if _OPTIONS["split-platforms"] then
-        configuration {"x32"}
-            targetdir ("../lib/static/x32")
-
-        configuration {"x64"}
-            targetdir ("../lib/static/x64")
-
-        configuration {}
-    end
-
-
--- Linux
-
-    configuration {"linux"}
-        defines {"_GNU_SOURCE"}
-        buildoptions {"-fPIC"}
-        if _OPTIONS["gles"] then
-            defines {"__orxDISPLAY_OPENGL_ES__"}
-        end
-
-
--- Mac OS X
-
-    configuration{"macosx"}
-        buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
-
-
--- Windows
 
     configuration {"windows", "vs*"}
         buildoptions {"/wd\"4577\""}
 
     configuration {"windows", "not vs*"}
         defines {"_WIN32_WINNT=_WIN32_WINNT_VISTA"}
+
+    configuration {"windows", "not *Core*"}
+        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
 
 
 --
@@ -559,12 +632,12 @@ project "Bounce"
 
 -- Windows
 
-    configuration {"windows"}
+    configuration {"windows", "*Core*"}
         libdirs {"../lib/static"}
 
-    configuration {"windows", "*Debug*"}
+    configuration {"windows", "*Core*", "*Debug*"}
         links {"imporxd"}
-    configuration {"windows", "*Profile*"}
+    configuration {"windows", "*Core*", "*Profile*"}
         links {"imporxp"}
-    configuration {"windows", "*Release*"}
+    configuration {"windows", "*Core*", "*Release*"}
         links {"imporx"}
