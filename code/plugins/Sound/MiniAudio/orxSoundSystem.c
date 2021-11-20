@@ -85,7 +85,7 @@ extern "C" {
 #define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
 #define free(MEMORY)                      orxMemory_Free(MEMORY)
 
-#undef __STDC_WANT_SECURE_LIB__           /* Do not use fopen_s on Win32 */
+#define fopen_s(PTR, FILE, MODE)          fopen(FILE, MODE)
 
 #ifndef __orxDEBUG__
   #undef NDEBUG
@@ -105,6 +105,8 @@ extern "C" {
 #undef malloc
 #undef realloc
 #undef free
+
+#undef fopen_s
 
 
 /** Module flags
