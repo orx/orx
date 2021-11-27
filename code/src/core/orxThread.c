@@ -359,7 +359,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Success? */
     if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
     {
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread      = GetCurrentThread();
@@ -380,7 +380,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
-  #if defined(__orxLINUX__)
+  #ifdef __orxLINUX__
 
       {
         cpu_set_t stSet;

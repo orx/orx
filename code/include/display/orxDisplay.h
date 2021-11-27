@@ -1186,8 +1186,8 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCou
  */
 extern orxDLLAPI orxDISPLAY_VIDEO_MODE *orxFASTCALL   orxDisplay_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode);
 
-/** Gets an available video mode
- * @param[in]  _pstVideoMode                          Video mode to set
+/** Sets a video mode
+ * @param[in]  _pstVideoMode                          Video mode to set, if width, height, depth or refresh rate are 0, the monitor's default values will be used instead
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
