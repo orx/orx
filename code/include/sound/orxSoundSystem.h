@@ -76,8 +76,8 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
  */
 #define orxSOUNDSYSTEM_KZ_CONFIG_SECTION              "SoundSystem"
 #define orxSOUNDSYSTEM_KZ_CONFIG_RATIO                "DimensionRatio"
-#define orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_SIZE   "StreamBufferSize"
-#define orxSOUNDSYSTEM_KZ_CONFIG_STREAM_BUFFER_NUMBER "StreamBufferNumber"
+#define orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND   "MuteInBackground"
+#define orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS            "Listeners"
 
 
 /***************************************************************************
@@ -133,11 +133,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSampleIn
 
 /** Sets sample data
  * @param[in]   _pstSample                            Concerned sample
- * @param[in]   _as16Data                             Data to set
+ * @param[in]   _afData                               Data to set (samples are expected to be signed/normalized)
  * @param[in]   _u32SampleNumber                      Number of samples in the data array
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxS16 *_as16Data, orxU32 _u32SampleNumber);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleData(orxSOUNDSYSTEM_SAMPLE *_pstSample, const orxFLOAT *_afData, orxU32 _u32SampleNumber);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _hUserData                            User data to associate with this sound
@@ -168,26 +168,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Delete(orxS
 
 /** Plays a sound
  * @param[in]   _pstSound                             Concerned sound
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Play(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Pauses a sound
  * @param[in]   _pstSound                             Concerned sound
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Pause(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Stops a sound
  * @param[in]   _pstSound                             Concerned sound
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file
  * @param[in]   _bWriteToFile                         Should write to file?
- * @param[in]   _u32SampleRate                        Sample rate, 0 for default rate (44100Hz)
+ * @param[in]   _u32SampleRate                        Sample rate, 0 for default rate (48000Hz)
  * @param[in]   _u32ChannelNumber                     Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -206,49 +206,54 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxSoundSystem_HasRecordin
 /** Sets a sound volume
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _fVolume                              Volume to set [0, 1]
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume);
 
 /** Sets a sound pitch
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _fPitch                               Pitch to set
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch);
 
 /** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _fTime                                Time, in seconds
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetTime(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fTime);
 
 /** Sets a sound position
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _pvPosition                           Position to set
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition);
 
-/** Sets a sound attenuation
+/** Sets a sound spatialization, with gain decreasing between the minimum and maximum distances, when enabled
  * @param[in] _pstSound                               Concerned Sound
- * @param[in] _fAttenuation                           Desired attenuation
+ * @param[in] _fMinDistance                           Min distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMaxDistance                           Max distance, outside which the gain will stop decreasing, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f]
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f]
+ * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSpatialization(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fMinDistance, orxFLOAT _fMaxDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff);
 
-/** Sets a sound reference distance
- * @param[in] _pstSound                               Concerned Sound
- * @param[in] _fDistance                              Within this distance, sound is perceived at its maximum volume
+/** Sets a sound panning
+ * @param[in] _pstSound panning
+ * @param[in] _fPanning                               Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                                   Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetPanning(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix);
 
 /** Loops a sound
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _bLoop                                Loop / no loop
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop);
 
@@ -277,17 +282,24 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetTime(con
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition);
 
-/** Gets a sound attenuation
+/** Gets a sound spatialization information
  * @param[in] _pstSound                               Concerned Sound
- * @return Sound's attenuation
+ * @param[out] _pfMinDistance                         Min distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMaxDistance                         Max distance, outside which the gain will stop decreasing, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain in [0.0f - 1.0f]
+ * @param[out] _pfMaxGain                             Max gain in [0.0f - 1.0f]
+ * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetSpatialization(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfMinDistance, orxFLOAT *_pfMaxDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff);
 
-/** Gets a sound reference distance
+/** Gets a sound panning
  * @param[in] _pstSound                               Concerned Sound
- * @return Sound's reference distance
+ * @param[out] _pfPanning                             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[out] _pbMix                                 Left/Right channels are be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_GetPanning(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix);
 
 /** Is sound looping?
  * @param[in]   _pstSound                             Concerned sound
@@ -318,17 +330,36 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetGlobalVo
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL                 orxSoundSystem_GetGlobalVolume();
 
+/** Gets listener count
+ * @return      Listener count
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxSoundSystem_GetListenerCount();
+
+/** Enables/disables a listener
+ * @param[in]   _u32ListenerIndex                     Concerned listener index
+ * @param[in]   _bEnable                              Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL                     orxSoundSystem_EnableListener(orxU32 _u32ListenerIndex, orxBOOL _bEnable);
+
+/** Is listener enabled?
+ * @param[in]   _u32ListenerIndex                     Concerned listener index
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxSoundSystem_IsListenerEnabled(orxU32 _u32ListenerIndex);
+
 /** Sets listener position
+ * @param[in] _u32Index                               Listener index, 0-based
  * @param[in] _pvPosition                             Desired position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetListenerPosition(const orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetListenerPosition(orxU32 _u32Index, const orxVECTOR *_pvPosition);
 
 /** Gets listener position
+ * @param[in] _u32Index                               Listener index, 0-based
  * @param[out] _pvPosition                            Listener's position
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetListenerPosition(orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL               orxSoundSystem_GetListenerPosition(orxU32 _u32Index, orxVECTOR *_pvPosition);
 
 #endif /* _orxSOUNDSYSTEM_H_ */
 

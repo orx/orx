@@ -7,6 +7,7 @@ var orx_math_8h =
     [ "orxMATH_KF_2_PI", "group__orx_math.html#gabe67e9a02ee83aeb7d6dd6891468ea74", null ],
     [ "orxMATH_KF_DEG_TO_RAD", "group__orx_math.html#gaffa08e56ae64571cf13e5b57ecd38cf3", null ],
     [ "orxMATH_KF_EPSILON", "group__orx_math.html#ga64408608eb30bc6e18c476f7719ee5f7", null ],
+    [ "orxMATH_KF_MAX", "group__orx_math.html#gacd14d2e1ba49040f2ebb625ad24f7da4", null ],
     [ "orxMATH_KF_PI", "group__orx_math.html#gaebc0034bd52ec9a0cd34031da1a9b7bb", null ],
     [ "orxMATH_KF_PI_BY_2", "group__orx_math.html#ga20d0a29890c82c14b315e161c033e732", null ],
     [ "orxMATH_KF_PI_BY_4", "group__orx_math.html#gadb3724102bbe0407d67b8b309c9ffb1f", null ],

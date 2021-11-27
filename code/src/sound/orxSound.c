@@ -89,7 +89,7 @@
 #define orxSOUND_KU32_BANK_SIZE                         64          /**< Bank size */
 
 #define orxSOUND_KU32_STREAM_DEFAULT_CHANNEL_NUMBER     1
-#define orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE        44100
+#define orxSOUND_KU32_STREAM_DEFAULT_SAMPLE_RATE        48000
 
 #define orxSOUND_KU32_BUS_BANK_SIZE                     64
 #define orxSOUND_KU32_BUS_TABLE_SIZE                    64
@@ -100,9 +100,12 @@
 #define orxSOUND_KZ_CONFIG_PITCH                        "Pitch"
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
 #define orxSOUND_KZ_CONFIG_EMPTY_STREAM                 "empty"
-#define orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE           "RefDistance"
-#define orxSOUND_KZ_CONFIG_ATTENUATION                  "Attenuation"
+#define orxSOUND_KZ_CONFIG_DISTANCE_LIST                "DistanceList"
+#define orxSOUND_KZ_CONFIG_GAIN_LIST                    "GainList"
+#define orxSOUND_KZ_CONFIG_ROLL_OFF                     "RollOff"
 #define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
+#define orxSOUND_KZ_CONFIG_PANNING                      "Panning"
+#define orxSOUND_KZ_CONFIG_MIX                          "Mix"
 #define orxSOUND_KZ_CONFIG_BUS                          "Bus"
 
 #define orxSOUND_KC_LOCALE_MARKER                       '$'
@@ -313,6 +316,9 @@ static orxINLINE void orxSound_UnloadAllSample()
   /* Non empty? */
   while(pstSample != orxNULL)
   {
+    /* Forces its deletion */
+    orxFLAG_SET(pstSample->u32Flags, orxSOUND_SAMPLE_KU32_FLAG_INTERNAL, orxSOUND_SAMPLE_KU32_FLAG_NONE);
+
     /* Deletes it */
     orxSound_UnloadSample(pstSample);
 
@@ -512,17 +518,8 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         orxSound_SetBusID(_pstSound, sstSound.stMasterBusID);
       }
 
-      /* Should loop? */
-      if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_LOOP) != orxFALSE)
-      {
-        /* Updates looping status */
-        orxSoundSystem_Loop(_pstSound->pstData, orxTRUE);
-      }
-      else
-      {
-        /* Updates looping status */
-        orxSoundSystem_Loop(_pstSound->pstData, orxFALSE);
-      }
+      /* Updates looping status */
+      orxSoundSystem_Loop(_pstSound->pstData, orxConfig_GetBool(orxSOUND_KZ_CONFIG_LOOP));
 
       /* Has volume? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_VOLUME) != orxFALSE)
@@ -548,29 +545,72 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         orxSound_SetPitch(_pstSound, orxFLOAT_1);
       }
 
-      /* Has attenuation? */
-      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_ATTENUATION) != orxFALSE)
+      /* Has distance list? */
+      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_DISTANCE_LIST) != orxFALSE)
       {
-        /* Updates attenuation */
-        orxSoundSystem_SetAttenuation(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ATTENUATION));
+        orxFLOAT afDistanceList[2], afGainList[2];
+        orxFLOAT fRollOff;
+
+        /* Gets distances */
+        afDistanceList[0] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 0);
+        if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_DISTANCE_LIST) > 1)
+        {
+          afDistanceList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 1);
+          if(afDistanceList[1] < afDistanceList[0])
+          {
+            orxFLOAT fTemp;
+            fTemp             = afDistanceList[0];
+            afDistanceList[0] = afDistanceList[1];
+            afDistanceList[1] = fTemp;
+          }
+        }
+        else
+        {
+          afDistanceList[1] = orxMATH_KF_MAX;
+        }
+
+        /* Has gain list? */
+        if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_GAIN_LIST) != orxFALSE)
+        {
+          /* Gets gains */
+          afGainList[0] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_GAIN_LIST, 0);
+          if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_GAIN_LIST) > 1)
+          {
+            afGainList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_GAIN_LIST, 1);
+            if(afGainList[1] < afGainList[0])
+            {
+              orxFLOAT fTemp;
+              fTemp         = afGainList[0];
+              afGainList[0] = afGainList[1];
+              afGainList[1] = fTemp;
+            }
+          }
+          else
+          {
+            afGainList[1] = orxFLOAT_1;
+          }
+        }
+        else
+        {
+          /* Clears gains */
+          afGainList[0] = orxFLOAT_0;
+          afGainList[1] = orxFLOAT_1;
+        }
+
+        /* Gets roll off */
+        fRollOff = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ROLL_OFF) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ROLL_OFF) : orxFLOAT_1;
+
+        /* Updates spatialization */
+        orxSound_SetSpatialization(_pstSound, afDistanceList[0], afDistanceList[1], afGainList[0], afGainList[1], fRollOff);
       }
       else
       {
-        /* Updates attenuation */
-        orxSoundSystem_SetAttenuation(_pstSound->pstData, orxFLOAT_1);
+        /* Deactivates spatialization */
+        orxSound_SetSpatialization(_pstSound, -orxFLOAT_1, -orxFLOAT_1, orxFLOAT_0, orxFLOAT_1, orxFLOAT_1);
       }
 
-      /* Has reference distance? */
-      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE) != orxFALSE)
-      {
-        /* Updates distance */
-        orxSoundSystem_SetReferenceDistance(_pstSound->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE));
-      }
-      else
-      {
-        /* Updates distance */
-        orxSoundSystem_SetReferenceDistance(_pstSound->pstData, orxFLOAT_1);
-      }
+      /* Updates panning */
+      orxSound_SetPanning(_pstSound, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_PANNING), orxConfig_GetBool(orxSOUND_KZ_CONFIG_MIX));
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -939,8 +979,13 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
           if(bUseLocale != orxFALSE)
           {
             orxVECTOR       vPosition;
-            orxFLOAT        fVolume, fPitch, fAttenuation, fDistance;
             orxSTRINGID     stBusID;
+            orxFLOAT        fVolume, fPitch,
+                            fMinDistance = -orxFLOAT_1, fMaxDistance = -orxFLOAT_1,
+                            fMinGain = -orxFLOAT_1, fMaxGain = -orxFLOAT_1,
+                            fRollOff = orxFLOAT_1,
+                            fPanning = orxFLOAT_0;
+            orxBOOL         bMix = orxFALSE;
             orxSOUND_STATUS eStatus;
 
             /* Gets current status */
@@ -950,8 +995,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             fVolume       = orxSound_GetVolume(pstSound);
             fPitch        = orxSound_GetPitch(pstSound);
             stBusID       = orxSound_GetBusID(pstSound);
-            fAttenuation  = orxSound_GetAttenuation(pstSound);
-            fDistance     = orxSound_GetReferenceDistance(pstSound);
+            orxSound_GetSpatialization(pstSound, &fMinDistance, &fMaxDistance, &fMinGain, &fMaxGain, &fRollOff);
+            orxSound_GetPanning(pstSound, &fPanning, &bMix);
             orxSound_GetPosition(pstSound, &vPosition);
 
             /* Stops sound */
@@ -964,8 +1009,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
             orxSound_SetVolume(pstSound, fVolume);
             orxSound_SetPitch(pstSound, fPitch);
             orxSound_SetBusID(pstSound, stBusID);
-            orxSound_SetAttenuation(pstSound, fAttenuation);
-            orxSound_SetReferenceDistance(pstSound, fDistance);
+            orxSound_SetSpatialization(pstSound, fMinDistance, fMaxDistance, fMinGain, fMaxGain, fRollOff);
+            orxSound_SetPanning(pstSound, fPanning, bMix);
             orxSound_SetPosition(pstSound, &vPosition);
 
             /* Depending on previous status */
@@ -2309,7 +2354,7 @@ orxSTATUS orxFASTCALL orxSound_Stop(orxSOUND *_pstSound)
 /** Starts recording
  * @param[in] _zName             Name for the recorded sound/file
  * @param[in] _bWriteToFile      Should write to file?
- * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (48000Hz)
  * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -2464,7 +2509,7 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
 /** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _fTime                                Time, in seconds
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime)
 {
@@ -2534,24 +2579,32 @@ orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR 
   return eResult;
 }
 
-/** Sets sound attenuation
- * @param[in] _pstSound       Concerned Sound
- * @param[in] _fAttenuation   Desired attenuation
+/** Sets a sound spatialization, with gain decreasing between the minimum and maximum distances, when enabled
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[in] _fMinDistance                           Min distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMaxDistance                           Max distance, outside which the gain will stop decreasing, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f]
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f]
+ * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetAttenuation(orxSOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fMinDistance, orxFLOAT _fMaxDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT(_fMaxDistance >= _fMinDistance);
+  orxASSERT((_fMinGain >= orxFLOAT_0) && (_fMinGain <= orxFLOAT_1));
+  orxASSERT((_fMaxGain >= orxFLOAT_0) && (_fMaxGain <= orxFLOAT_1));
+  orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
     /* Sets its position */
-    eResult = orxSoundSystem_SetAttenuation(_pstSound->pstData, _fAttenuation);
+    eResult = orxSoundSystem_SetSpatialization(_pstSound->pstData, _fMinDistance, _fMaxDistance, _fMinGain, _fMaxGain, _fRollOff);
   }
   else
   {
@@ -2563,12 +2616,13 @@ orxSTATUS orxFASTCALL orxSound_SetAttenuation(orxSOUND *_pstSound, orxFLOAT _fAt
   return eResult;
 }
 
-/** Sets sound reference distance
- * @param[in] _pstSound       Concerned Sound
- * @param[in] _fDistance      Within this distance, sound is perceived at its maximum volume
+/** Sets a sound panning
+ * @param[in] _pstSound panning
+ * @param[in] _fPanning                               Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                                   Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetReferenceDistance(orxSOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSound_SetPanning(orxSOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix)
 {
   orxSTATUS eResult;
 
@@ -2580,7 +2634,7 @@ orxSTATUS orxFASTCALL orxSound_SetReferenceDistance(orxSOUND *_pstSound, orxFLOA
   if(_pstSound->pstData != orxNULL)
   {
     /* Sets its position */
-    eResult = orxSoundSystem_SetReferenceDistance(_pstSound->pstData, _fDistance);
+    eResult = orxSoundSystem_SetPanning(_pstSound->pstData, _fPanning, _bMix);
   }
   else
   {
@@ -2735,60 +2789,74 @@ orxVECTOR *orxFASTCALL orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR
   return pvResult;
 }
 
-/** Gets sound attenuation
- * @param[in] _pstSound       Concerned Sound
- * @return orxFLOAT
+/** Gets a sound spatialization information
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[out] _pfMinDistance                         Min distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMaxDistance                         Max distance, outside which the gain will stop decreasing, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain in [0.0f - 1.0f]
+ * @param[out] _pfMaxGain                             Max gain in [0.0f - 1.0f]
+ * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxSound_GetAttenuation(const orxSOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfMinDistance, orxFLOAT *_pfMaxDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff)
 {
-  orxFLOAT fResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT(_pfMinDistance != orxNULL);
+  orxASSERT(_pfMaxDistance != orxNULL);
+  orxASSERT(_pfMinGain != orxNULL);
+  orxASSERT(_pfMaxGain != orxNULL);
+  orxASSERT(_pfRollOff != orxNULL);
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    fResult = orxSoundSystem_GetAttenuation(_pstSound->pstData);
+    eResult = orxSoundSystem_GetSpatialization(_pstSound->pstData, _pfMinDistance, _pfMaxDistance, _pfMinGain, _pfMaxGain, _pfRollOff);
   }
   else
   {
     /* Updates result */
-    fResult = orxFLOAT_0;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return fResult;
+  return eResult;
 }
 
-/** Gets sound reference distance
- * @param[in] _pstSound       Concerned Sound
- * @return orxFLOAT
+/** Gets a sound panning
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[out] _pfPanning                             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[out] _pbMix                                 Left/Right channels are be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxSound_GetReferenceDistance(const orxSOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSound_GetPanning(const orxSOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix)
 {
-  orxFLOAT fResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT(_pfPanning != orxNULL);
+  orxASSERT(_pbMix != orxNULL);
 
   /* Has sound? */
   if(_pstSound->pstData != orxNULL)
   {
     /* Updates result */
-    fResult = orxSoundSystem_GetReferenceDistance(_pstSound->pstData);
+    eResult = orxSoundSystem_GetPanning(_pstSound->pstData, _pfPanning, _pbMix);
   }
   else
   {
     /* Updates result */
-    fResult = orxFLOAT_0;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return fResult;
+  return eResult;
 }
 
 /** Is sound looping?

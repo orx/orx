@@ -1,6 +1,6 @@
 var structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t =
 [
-    [ "as16SampleList", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a658158c820d64531fda54286dbff2ba6", null ],
+    [ "afSampleList", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#ada7ef12de1ee89cb4dab1faf122d84e1", null ],
     [ "bDiscard", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a9837eb0a997a38c058993930766f79f2", null ],
     [ "bLast", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#acc58ae40445146c2e126193661ed3e03", null ],
     [ "fTime", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html#a4fd28f3ef67bdc1ab755b030121b9407", null ],
