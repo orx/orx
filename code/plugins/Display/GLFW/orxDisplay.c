@@ -591,8 +591,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_RenderInhibitor(const orxEVENT *_ps
   /* Render stop? */
   if(_pstEvent->eID == orxRENDER_EVENT_STOP)
   {
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("PollEvents");
+
     /* Polls events */
     glfwPollEvents();
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
 
   /* Done! */
@@ -3054,8 +3060,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_EventHandler(const orxEVENT *_pstEv
         /* Draws remaining items */
         orxDisplay_GLFW_DrawArrays();
 
+        /* Profiles */
+        orxPROFILER_PUSH_MARKER("PollEvents");
+
         /* Polls events */
         glfwPollEvents();
+
+        /* Profiles */
+        orxPROFILER_POP_MARKER();
       }
       break;
     }
