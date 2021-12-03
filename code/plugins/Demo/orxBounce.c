@@ -517,7 +517,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if(orxInput_IsActive("Spawn"))
   {
     /* Spawns one ball */
-    orxSpawner_Spawn(spoBallSpawner, 1);
+    orxSpawner_Spawn(spoBallSpawner, orxU32_UNDEFINED);
   }
   /* Picking? */
   else if(orxInput_IsActive("Pick"))
