@@ -184,6 +184,8 @@
 
 #define orxDISPLAY_KU32_MAX_ICON_NUMBER         16
 
+#define orxDISPLAY_KU32_MAX_SHADER_VERSION      410
+
 
 /**  Misc defines
  */
@@ -6179,6 +6181,16 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           /* Valid? */
           if(u32ShaderVersion != 0)
           {
+            /* Is shader version too high? */
+            if(u32ShaderVersion > orxDISPLAY_KU32_MAX_SHADER_VERSION)
+            {
+              /* Updates it */
+              u32ShaderVersion = orxDISPLAY_KU32_MAX_SHADER_VERSION;
+
+              /* Enforces it */
+              orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_SHADER_VERSION, u32ShaderVersion);
+            }
+
 #ifdef __orxDISPLAY_OPENGL_ES__
 
             /* Prints shader version */
