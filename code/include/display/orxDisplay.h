@@ -229,6 +229,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
 #define orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER            "TextureUnitNumber"
 #define orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER             "DrawBufferNumber"
+#define orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE               "MaxTextureSize"
 
 #define orxCOLOR_KZ_CONFIG_SECTION                          "Color"
 

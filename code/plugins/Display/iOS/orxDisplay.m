@@ -365,6 +365,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLuint                    uiIndexBuffer;
   GLint                     iTextureUnitNumber;
+  GLint                     iMaxTextureSize;
   orxS32                    s32BufferIndex;
   orxS32                    s32ElementNumber;
   orxDOUBLE                 dTouchTimeCorrection;
@@ -4263,6 +4264,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
         sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
+        /* Gets max texture size */
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &(sstDisplay.iMaxTextureSize));
+        glASSERT();
+
         static const orxSTRING szFragmentShaderSource =
         "precision mediump float;"
         "varying vec2 ___TexCoord___;"
@@ -4295,9 +4300,10 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         /* Pushes config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-        /* Stores texture unit and draw buffer numbers */
+        /* Stores texture units, draw buffer numbers & max texture size */
         orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
         orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, 1);
+        orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE, (orxU32)sstDisplay.iMaxTextureSize);
 
         /* Pops config section */
         orxConfig_PopSection();

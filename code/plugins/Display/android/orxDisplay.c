@@ -306,6 +306,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
+  GLint                     iMaxTextureSize;
   orxU32                    u32DestinationBitmapCount;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
@@ -4189,6 +4190,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       glASSERT();
       sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
+      /* Gets max texture size */
+      glGetIntegerv(GL_MAX_TEXTURE_SIZE, &(sstDisplay.iMaxTextureSize));
+      glASSERT();
+
       if(orxString_SearchString(zGlVersion, "OpenGL ES 3.") && gl3stubInit())
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "OpenGL ES 3 inited!");
@@ -4223,9 +4228,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       /* Pushes config section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-      /* Stores texture unit and draw buffer numbers */
+      /* Stores texture units, draw buffer numbers & max texture size */
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, (orxU32)sstDisplay.iDrawBufferNumber);
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE, (orxU32)sstDisplay.iMaxTextureSize);
 
       /* Pops config section */
       orxConfig_PopSection();

@@ -434,6 +434,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxFLOAT                  fClockTickSize;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
+  GLint                     iMaxTextureSize;
   orxU32                    u32DestinationBitmapCount;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
@@ -1259,6 +1260,10 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
 
+    /* Gets max texture size */
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &(sstDisplay.iMaxTextureSize));
+    glASSERT();
+
 #ifdef __orxDISPLAY_OPENGL_ES__
 
     /* Gets number of available draw buffers */
@@ -1525,9 +1530,10 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
   /* Pushes config section */
   orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-  /* Stores texture unit and draw buffer numbers */
+  /* Stores texture units, draw buffer numbers & max texture size */
   orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
   orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, (orxU32)sstDisplay.iDrawBufferNumber);
+  orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE, (orxU32)sstDisplay.iMaxTextureSize);
 
   /* Pops config section */
   orxConfig_PopSection();
