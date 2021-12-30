@@ -63,82 +63,87 @@ static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
 
 static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
 {
-  ModData                *pstModData;
-  orxSOUND_EVENT_PAYLOAD *pstPayload;
-  orxOBJECT              *pstObject;
+  ModData *pstModData;
 
   // Gets movie data
   pstModData = (ModData *)_pstEvent->pContext;
 
-  // Gets payload
-  pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-  // Gets associated object
-  pstObject = orxOBJECT(pstModData->pstObject);
-
-  // Valid?
-  if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
+  // Matching object?
+  if(pstModData->pstObject == (orxOBJECT *)_pstEvent->hSender)
   {
-    int       iSize, iLoopCount;
-    orxCHAR  *pBuffer;
+    orxSOUND_EVENT_PAYLOAD *pstPayload;
+    orxOBJECT              *pstObject;
 
-    // Locks decoders
-    pstModData->bLock = orxTRUE;
-    orxMEMORY_BARRIER();
+    // Gets payload
+    pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    // Not first packet?
-    if(!pstModData->bFirst)
+    // Gets associated object
+    pstObject = orxOBJECT(pstModData->pstObject);
+
+    // Valid?
+    if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
     {
-      // Has restarted?
-      if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
+      int       iSize, iLoopCount;
+      orxCHAR  *pBuffer;
+
+      // Locks decoders
+      pstModData->bLock = orxTRUE;
+      orxMEMORY_BARRIER();
+
+      // Not first packet?
+      if(!pstModData->bFirst)
       {
-        int iResult;
+        // Has restarted?
+        if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
+        {
+          int iResult;
 
-        // Reinits context
-        iResult = pocketmod_init(&(pstModData->stContext), pstModData->pBuffer, (int)pstModData->s64Size, orxMOD_KU32_SAMPLE_RATE);
-        orxASSERT(iResult);
+          // Reinits context
+          iResult = pocketmod_init(&(pstModData->stContext), pstModData->pBuffer, (int)pstModData->s64Size, orxMOD_KU32_SAMPLE_RATE);
+          orxASSERT(iResult);
 
-        // Updates status
-        pstModData->bFirst = orxTRUE;
+          // Updates status
+          pstModData->bFirst = orxTRUE;
+        }
       }
+      else
+      {
+        // Updates status
+        pstModData->bFirst = orxFALSE;
+      }
+
+      // Gets buffer info
+      iSize   = (int)(pstPayload->stStream.stPacket.u32SampleNumber * sizeof(orxFLOAT));
+      pBuffer = (orxCHAR *)pstPayload->stStream.stPacket.afSampleList;
+
+      // Fills it
+      while(iSize > 0)
+      {
+        int iWritten;
+        iWritten  = pocketmod_render(&(pstModData->stContext), pBuffer, iSize);
+        iSize    -= iWritten;
+        pBuffer  += iWritten;
+      }
+      orxASSERT(iSize == 0);
+
+      // Looped?
+      if((iLoopCount = pocketmod_loop_count(&(pstModData->stContext))) != pstModData->iLoopCount)
+      {
+        pstPayload->stStream.stPacket.bLast = orxTRUE;
+        pstModData->iLoopCount              = iLoopCount;
+        pstModData->bFirst                  = orxTRUE;
+      }
+
+      // Unlocks decoders
+      orxMEMORY_BARRIER();
+      pstModData->bLock = orxFALSE;
     }
     else
     {
-      // Updates status
-      pstModData->bFirst = orxFALSE;
+      // Updates packet
+      pstPayload->stStream.stPacket.bDiscard  = orxTRUE;
+      pstPayload->stStream.stPacket.bLast     = orxFALSE;
     }
-
-    // Gets buffer info
-    iSize   = (int)(pstPayload->stStream.stPacket.u32SampleNumber * sizeof(orxFLOAT));
-    pBuffer = (orxCHAR *)pstPayload->stStream.stPacket.afSampleList;
-
-    // Fills it
-    while(iSize > 0)
-    {
-      int iWritten;
-      iWritten  = pocketmod_render(&(pstModData->stContext), pBuffer, iSize);
-      iSize    -= iWritten;
-      pBuffer  += iWritten;
-    }
-    orxASSERT(iSize == 0);
-
-    // Looped?
-    if((iLoopCount = pocketmod_loop_count(&(pstModData->stContext))) != pstModData->iLoopCount)
-    {
-      pstPayload->stStream.stPacket.bLast = orxTRUE;
-      pstModData->iLoopCount              = iLoopCount;
-      pstModData->bFirst                  = orxTRUE;
-    }
-
-    // Unlocks decoders
-    orxMEMORY_BARRIER();
-    pstModData->bLock = orxFALSE;
-  }
-  else
-  {
-    // Updates packet
-    pstPayload->stStream.stPacket.bDiscard  = orxTRUE;
-    pstPayload->stStream.stPacket.bLast     = orxFALSE;
   }
 
   // Done!
