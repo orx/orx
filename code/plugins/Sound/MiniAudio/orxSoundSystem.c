@@ -124,7 +124,6 @@ extern "C" {
 /** Misc defines
  */
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE                     128
-#define orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_SAMPLE_RATE 48000
 #define orxSOUNDSYSTEM_KU32_DEFAULT_SAMPLE_RATE           48000
 #define orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER        2
 #define orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER       0
@@ -1949,7 +1948,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _z
     sstSoundSystem.stRecordingPayload.stStream.stInfo.zName             = orxString_Duplicate(_zName);
 
     /* Stores stream info */
-    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate     = (_u32SampleRate > 0)      ? _u32SampleRate    : orxSOUNDSYSTEM_KU32_DEFAULT_RECORDING_SAMPLE_RATE;
+    sstSoundSystem.stRecordingPayload.stStream.stInfo.u32SampleRate     = (_u32SampleRate > 0)      ? _u32SampleRate    : orxSOUNDSYSTEM_KU32_DEFAULT_SAMPLE_RATE;
     sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber  = (_u32ChannelNumber != 0)  ? _u32ChannelNumber : orxSOUNDSYSTEM_KU32_DEFAULT_CHANNEL_NUMBER;
 
     /* Stores status */
