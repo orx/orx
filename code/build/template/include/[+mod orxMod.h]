@@ -1,0 +1,244 @@
+//! Includes
+
+#ifndef _orxMOD_H_
+#define _orxMOD_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL orxMod_Init();
+void orxFASTCALL      orxMod_Exit();
+
+
+//! Implementation
+
+#ifdef orxMOD_IMPL
+
+// #define POCKETMOD_NO_INTERPOLATION // Uncomment this define if you want to deactivate interpolation
+#define POCKETMOD_IMPLEMENTATION
+#include "pocketmod/pocketmod.h"
+#undef POCKETMOD_IMPLEMENTATION
+#undef POCKETMOD_NO_INTERPOLATION
+
+#define orxMOD_KU32_SAMPLE_RATE           48000
+
+
+//! Variables / Structures
+
+typedef struct ModData
+{
+  pocketmod_context stContext;
+  orxOBJECT        *pstObject;
+  void             *pBuffer;
+  volatile orxBOOL  bLock;
+
+} ModData;
+
+static orxBANK *spstModBank = orxNULL;
+
+
+//! Code
+
+static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
+{
+  // Wait for locked decoder
+  while(_pstModData->bLock)
+    ;
+
+  // Deletes it
+  orxMemory_Free(_pstModData->pBuffer);
+  if(spstModBank)
+  {
+    orxBank_Free(spstModBank, _pstModData);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
+{
+  ModData                *pstModData;
+  orxSOUND_EVENT_PAYLOAD *pstPayload;
+  orxOBJECT              *pstObject;
+
+  // Gets movie data
+  pstModData = (ModData *)_pstEvent->pContext;
+
+  // Gets payload
+  pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  // Gets associated object
+  pstObject = orxOBJECT(pstModData->pstObject);
+
+  // Valid?
+  if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
+  {
+    int       iSize;
+    orxCHAR  *pBuffer;
+
+    // Locks decoders
+    pstModData->bLock = orxTRUE;
+    orxMEMORY_BARRIER();
+
+    // Gets buffer info
+    iSize   = (int)(pstPayload->stStream.stPacket.u32SampleNumber * sizeof(orxFLOAT));
+    pBuffer = (orxCHAR *)pstPayload->stStream.stPacket.afSampleList;
+
+    // Fills it
+    while(iSize > 0)
+    {
+        int iWritten = pocketmod_render(&(pstModData->stContext), pBuffer, iSize);
+        iSize       -= iWritten;
+        pBuffer     += iWritten;
+    }
+    orxASSERT(iSize == 0);
+
+    // Unlocks decoders
+    orxMEMORY_BARRIER();
+    pstModData->bLock = orxFALSE;
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // New object?
+  if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
+  {
+    // Is a movie?
+    if(orxConfig_HasValue("Mod"))
+    {
+      const orxSTRING zMod;
+      orxHANDLE       hResource;
+
+      // Has valid resource?
+      if(((zMod = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, orxConfig_GetString("Mod"))) != orxNULL)
+      && ((hResource = orxResource_Open(zMod, orxFALSE)) != orxHANDLE_UNDEFINED))
+      {
+        orxS64  s64Size;
+        void   *pBuffer;
+
+        // Gets its size
+        s64Size = orxResource_GetSize(hResource);
+        orxASSERT(s64Size != 0);
+
+        // Loads its content
+        pBuffer = orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_AUDIO);
+        orxASSERT(pBuffer != orxNULL);
+        if(orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL) == s64Size)
+        {
+          ModData    *pstModData;
+          orxOBJECT  *pstObject;
+          orxCHAR     acBuffer[256];
+
+          // Gets object
+          pstObject = orxOBJECT(_pstEvent->hSender);
+
+          // Creates decoder data
+          pstModData = (ModData *)orxBank_Allocate(spstModBank);
+          orxASSERT(pstModData != orxNULL);
+          orxMemory_Zero(pstModData, sizeof(ModData));
+
+          // Inits decoder
+          pstModData->pBuffer = pBuffer;
+          if(pocketmod_init(&(pstModData->stContext), pBuffer, (int)s64Size, orxMOD_KU32_SAMPLE_RATE) != 0)
+          {
+            // Updates object
+            pstModData->pstObject = pstObject;
+            orxConfig_SetParent(orxConfig_GetCurrentSection(), "Mod");
+
+            // Adds event handlers
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, pstModData);
+            orxEvent_SetHandlerIDFlags(orxMod_Decode, orxEVENT_TYPE_SOUND, pstModData, orxEVENT_GET_FLAG(orxSOUND_EVENT_PACKET), orxEVENT_KU32_MASK_ID_ALL);
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMod_EventHandler, pstModData);
+            orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, pstModData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
+
+            // Creates music stream
+            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
+            orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
+            orxConfig_SetString("Music", acBuffer);
+          }
+          else
+          {
+            // Frees buffer
+            orxMemory_Free(pBuffer);
+          }
+        }
+        else
+        {
+          // Frees buffer
+          orxMemory_Free(pBuffer);
+        }
+      }
+    }
+  }
+  else
+  {
+    ModData *pstModData;
+
+    // Gets movie data
+    pstModData = (ModData *)_pstEvent->pContext;
+
+    // Valid deleted object?
+    if(pstModData->pstObject == orxOBJECT(_pstEvent->hSender))
+    {
+      // Stops music
+      orxObject_Stop(orxOBJECT(pstModData->pstObject));
+
+      // Removes event handlers
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, _pstEvent->pContext);
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMod_EventHandler, _pstEvent->pContext);
+
+      // Deletes it
+      orxMod_Delete(pstModData);
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMod_Init()
+{
+  // Not initialized?
+  if(!spstModBank)
+  {
+    // Creates bank
+    spstModBank = orxBank_Create(16, sizeof(ModData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+
+    // Registers movie handler
+    orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxMod_Exit()
+{
+  // Was initialized?
+  if(spstModBank)
+  {
+    // Unregisters movie handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
+
+    // Deletes bank
+    orxBank_Delete(spstModBank);
+    spstModBank = orxNULL;
+  }
+
+  // Done!
+  return;
+}
+
+#endif // orxMOD_IMPL
+
+#endif // _orxMOD_H_
