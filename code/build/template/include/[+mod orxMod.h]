@@ -69,19 +69,15 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
   pstModData = (ModData *)_pstEvent->pContext;
 
   // Matching object?
-  if(pstModData->pstObject == (orxOBJECT *)_pstEvent->hSender)
+  if(pstModData->pstObject && pstModData->pstObject == orxOBJECT(_pstEvent->hSender))
   {
     orxSOUND_EVENT_PAYLOAD *pstPayload;
-    orxOBJECT              *pstObject;
 
     // Gets payload
     pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    // Gets associated object
-    pstObject = orxOBJECT(pstModData->pstObject);
-
     // Valid?
-    if(pstObject && orxObject_IsEnabled(pstObject) && !orxObject_IsPaused(pstObject))
+    if(orxObject_IsEnabled(pstModData->pstObject) && !orxObject_IsPaused(pstModData->pstObject))
     {
       int       iSize, iLoopCount;
       orxCHAR  *pBuffer;
@@ -199,7 +195,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
             pstModData->s64Size   = s64Size;
             pstModData->pBuffer   = pBuffer;
             pstModData->bFirst    = orxTRUE;
-            orxConfig_SetParent(orxConfig_GetCurrentSection(), "Mod");
+            orxConfig_SetParent(orxObject_GetName(pstObject), "Mod");
 
             // Adds event handlers
             orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, pstModData);
@@ -240,7 +236,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
     if(pstModData->pstObject == orxOBJECT(_pstEvent->hSender))
     {
       // Stops music
-      orxObject_Stop(orxOBJECT(pstModData->pstObject));
+      orxObject_Stop(pstModData->pstObject);
 
       // Removes event handlers
       orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, _pstEvent->pContext);
