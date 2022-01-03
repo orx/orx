@@ -803,6 +803,7 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
   return;
 }
 
+#ifndef __orxMAC__
 static void GLAPIENTRY orxDisplay_GLFW_MessageCallback(GLenum _eSource, GLenum _eType, GLuint _uID, GLenum _eSeverity, GLsizei _iLength, const GLchar *_zMessage, const void *_pContext)
 {
   /* Relevant type? */
@@ -831,6 +832,7 @@ static void GLAPIENTRY orxDisplay_GLFW_MessageCallback(GLenum _eSource, GLenum _
   /* Done! */
   return;
 }
+#endif /* __orxMAC__ */
 
 static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, int _iHeight)
 {
@@ -1492,20 +1494,18 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
     }
 
+#ifndef __orxMAC__
     /* Has debug output support? */
     if(glfwExtensionSupported("GL_ARB_debug_output") != GLFW_FALSE)
     {
-#ifndef __orxMAC__
-
       /* Loads it */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDEBUGMESSAGECALLBACKARBPROC, glDebugMessageCallback);
-
-#endif /* __orxMAC__ */
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
     else
+#endif /* __orxMAC__ */
     {
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT);
@@ -5768,6 +5768,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
     }
 
+#ifndef __orxMAC__
     /* Is OpenGL debug output requested? */
     if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEBUG_OUTPUT) != orxFALSE)
     {
@@ -5804,6 +5805,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
       glASSERT();
     }
+#endif /* __orxMAC__ */
 
 #endif /* !__orxDISPLAY_OPENGL_ES__ */
 
