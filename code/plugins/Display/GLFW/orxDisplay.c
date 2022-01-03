@@ -152,6 +152,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR 0x00008000 /**< Swap control tear support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00010000 /**< Debug output support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
@@ -548,6 +549,7 @@ PFNGLUNIFORM1FARBPROC               glUniform1fARB              = NULL;
 PFNGLUNIFORM3FARBPROC               glUniform3fARB              = NULL;
 PFNGLUNIFORM1IARBPROC               glUniform1iARB              = NULL;
 PFNGLUNIFORMMATRIX4FVARBPROC        glUniformMatrix4fvARB       = NULL;
+PFNGLDEBUGMESSAGECALLBACKARBPROC    glDebugMessageCallback      = NULL;
 
 PFNGLGENBUFFERSARBPROC              glGenBuffersARB             = NULL;
 PFNGLDELETEBUFFERSARBPROC           glDeleteBuffersARB          = NULL;
@@ -795,6 +797,35 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
         break;
       }
     }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void GLAPIENTRY orxDisplay_GLFW_MessageCallback(GLenum _eSource, GLenum _eType, GLuint _uID, GLenum _eSeverity, GLsizei _iLength, const GLchar *_zMessage, const void *_pContext)
+{
+  /* Relevant type? */
+  if(_eType != GL_DEBUG_TYPE_OTHER)
+  {
+    const orxSTRING zType;
+
+    /* Gets type literal */
+    switch(_eType)
+    {
+      case GL_DEBUG_TYPE_ERROR:               zType = "ERROR";        break;
+      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: zType = "DEPRECATED";   break;
+      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  zType = "UNDEFINED";    break;
+      case GL_DEBUG_TYPE_PORTABILITY:         zType = "PORTABILITY";  break;
+      case GL_DEBUG_TYPE_PERFORMANCE:         zType = "PERFORMANCE";  break;
+      case GL_DEBUG_TYPE_MARKER:              zType = "MARKER";       break;
+      case GL_DEBUG_TYPE_PUSH_GROUP:          zType = "PUSH";         break;
+      case GL_DEBUG_TYPE_POP_GROUP:           zType = "POP";          break;
+      default:                                zType = "UNKNOWN";      break;
+    }
+
+    /* Logs it */
+    orxLOG("[GL %s] %s", zType, _zMessage);
   }
 
   /* Done! */
@@ -1459,6 +1490,25 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
 
       /* Updates status flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_SHADER);
+    }
+
+    /* Has debug output support? */
+    if(glfwExtensionSupported("GL_ARB_debug_output") != GLFW_FALSE)
+    {
+#ifndef __orxMAC__
+
+      /* Loads it */
+      orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLDEBUGMESSAGECALLBACKARBPROC, glDebugMessageCallback);
+
+#endif /* __orxMAC__ */
+
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates status flags */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT);
     }
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
@@ -5715,6 +5765,43 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glTexCoordPointer(2, GL_FLOAT, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, fU) : &(sstDisplay.astVertexList[0].fU));
       glASSERT();
       glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(orxDISPLAY_VERTEX), orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VBO) ? (GLvoid *)offsetof(orxDISPLAY_GLFW_VERTEX, stRGBA) : &(sstDisplay.astVertexList[0].stRGBA));
+      glASSERT();
+    }
+
+    /* Is OpenGL debug output requested? */
+    if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DEBUG_OUTPUT) != orxFALSE)
+    {
+      /* Is OpenGL debug output available? */
+      if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT))
+      {
+        /* Enables OpenGL debug output */
+        glEnable(GL_DEBUG_OUTPUT);
+        glASSERT();
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glASSERT();
+
+        /* Sets debug message callback */
+        glDebugMessageCallback(orxDisplay_GLFW_MessageCallback, NULL);
+        glASSERT();
+      }
+      else
+      {
+        /* Disables OpenGL debug output */
+        glDisable(GL_DEBUG_OUTPUT);
+        glASSERT();
+        glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glASSERT();
+
+        /* Updates status */
+        orxConfig_SetBool(orxDISPLAY_KZ_CONFIG_DEBUG_OUTPUT, orxFALSE);
+      }
+    }
+    else
+    {
+      /* Disables OpenGL debug output */
+      glDisable(GL_DEBUG_OUTPUT);
+      glASSERT();
+      glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
       glASSERT();
     }
 
