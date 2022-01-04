@@ -2193,14 +2193,14 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_HasRecordingSupport()
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
   /* Sets volume */
-  eResult = (ma_sound_set_volume(&(_pstSound->stSound), _fVolume) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  ma_sound_set_volume(&(_pstSound->stSound), _fVolume);
 
   /* Done! */
   return eResult;
