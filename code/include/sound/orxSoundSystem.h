@@ -112,21 +112,21 @@ typedef struct __orxSOUND_FILTER_DATA_t
 
     struct
     {
-      orxFLOAT  fCutOff;
+      orxFLOAT  fFrequency;
       orxU32    u32Order;
 
     } stLowPass;
 
     struct
     {
-      orxFLOAT  fCutOff;
+      orxFLOAT  fFrequency;
       orxU32    u32Order;
 
     } stHighPass;
 
     struct
     {
-      orxFLOAT  fCutOff;
+      orxFLOAT  fFrequency;
       orxU32    u32Order;
 
     } stBandPass;
