@@ -1896,6 +1896,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   /* Uninits sound */
   ma_sound_uninit(&(_pstSound->stSound));
 
+  /* Removes all filters */
+  orxSoundSystem_RemoveAllFilters(_pstSound);
+
   /* Has base data source? */
   if(_pstSound->stBase.vtable != NULL)
   {
