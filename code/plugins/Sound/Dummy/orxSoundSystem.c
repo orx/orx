@@ -122,6 +122,24 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
   return orxSTATUS_FAILURE;
 }
 
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_AddFilter(orxSOUNDSYSTEM_SOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_RemoveLastFilter(orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
   /* Done! */
@@ -297,6 +315,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Delete, SOUNDSYSTEM, DELET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Play, SOUNDSYSTEM, PLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Pause, SOUNDSYSTEM, PAUSE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Stop, SOUNDSYSTEM, STOP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_AddFilter, SOUNDSYSTEM, ADD_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveLastFilter, SOUNDSYSTEM, REMOVE_LAST_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveAllFilters, SOUNDSYSTEM, REMOVE_ALL_FILTERS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetPitch, SOUNDSYSTEM, SET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetTime, SOUNDSYSTEM, SET_TIME);
