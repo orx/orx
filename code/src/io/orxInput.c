@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -815,8 +815,8 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
           {
             /* Updates payload */
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
-            stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
+            stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.afValue[i]  = orxInput_ScaleValue(pstEntry->astBindingList[i].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);
           }
 

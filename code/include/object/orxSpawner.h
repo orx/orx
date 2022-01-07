@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -206,7 +206,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetNextWaveDelay(orxSPAWN
 
 /** Gets spawner wave size
  * @param[in]   _pstSpawner     Concerned spawner
- * @return      Number of objects spawned in a wave / 0 if not in wave mode
+ * @return      Number of objects spawned in a wave
  */
 extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetWaveSize(const orxSPAWNER *_pstSpawner);
 
@@ -240,9 +240,9 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetObjectSpeed(const orxS
 
 /** Spawns items
  * @param[in]   _pstSpawner     Concerned spawner
- * @param[in]   _u32Number      Number of items to spawn
-* @return      Number of spawned items
-  */
+ * @param[in]   _u32Number      Number of items to spawn, if orxU32_UNDEFINED, the spawner's wave size will be used instead
+ * @return      Number of spawned items
+ */
 extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number);
 
 

@@ -12,7 +12,7 @@ hosts:          [["http://orx-project.org/extern/" tag ".zip"] ["https://codeloa
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
-premake-root:   dirize extern/premake/bin
+premake-root:   dirize %extern/premake/bin
 builds:         [code %code/build tutorial %tutorial/build orxfontgen %tools/orxFontGen/build orxcrypt %tools/orxCrypt/build]
 hg:             %.hg/
 hg-hook:        "update.orx"

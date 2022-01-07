@@ -11,6 +11,7 @@ params: [
   archive     {orxArchive support (resources can be stored inside ZIP files)}         -       []
   c++         {Create a C++ project instead of C}                                     +       []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
+  mod         {MOD (ProTracker) decoding support}                                     -       []
   movie       {Movie (MPEG-1) decoding support}                                       -       []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
   remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}-       []

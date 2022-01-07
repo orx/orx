@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -517,7 +517,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if(orxInput_IsActive("Spawn"))
   {
     /* Spawns one ball */
-    orxSpawner_Spawn(spoBallSpawner, 1);
+    orxSpawner_Spawn(spoBallSpawner, orxU32_UNDEFINED);
   }
   /* Picking? */
   else if(orxInput_IsActive("Pick"))
