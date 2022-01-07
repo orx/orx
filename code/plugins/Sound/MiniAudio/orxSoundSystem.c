@@ -1038,6 +1038,107 @@ static ma_result SoundSystem_MiniAudio_Info(ma_vfs *_pstVFS, ma_vfs_file _stFile
   return MA_SUCCESS;
 }
 
+static void orxSoundSystem_MiniAudio_DeleteFilter(orxSOUNDSYSTEM_FILTER *_pstFilter)
+{
+  /* Depending on its type */
+  switch(_pstFilter->stData.eType)
+  {
+    /* Biquad */
+    case orxSOUND_FILTER_TYPE_BIQUAD:
+    {
+      /* Uninits its node */
+      ma_biquad_node_uninit(&(_pstFilter->stNode.stBiquadNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Low Pass */
+    case orxSOUND_FILTER_TYPE_LOW_PASS:
+    {
+      /* Uninits its node */
+      ma_lpf_node_uninit(&(_pstFilter->stNode.stLowPassNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* High Pass */
+    case orxSOUND_FILTER_TYPE_HIGH_PASS:
+    {
+      /* Uninits its node */
+      ma_hpf_node_uninit(&(_pstFilter->stNode.stHighPassNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Band Pass */
+    case orxSOUND_FILTER_TYPE_BAND_PASS:
+    {
+      /* Uninits its node */
+      ma_bpf_node_uninit(&(_pstFilter->stNode.stBandPassNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Low Shelf */
+    case orxSOUND_FILTER_TYPE_LOW_SHELF:
+    {
+      /* Uninits its node */
+      ma_loshelf_node_uninit(&(_pstFilter->stNode.stLowShelfNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* High Shelf */
+    case orxSOUND_FILTER_TYPE_HIGH_SHELF:
+    {
+      /* Uninits its node */
+      ma_hishelf_node_uninit(&(_pstFilter->stNode.stHighShelfNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Notch */
+    case orxSOUND_FILTER_TYPE_NOTCH:
+    {
+      /* Uninits its node */
+      ma_notch_node_uninit(&(_pstFilter->stNode.stNotchNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Peaking */
+    case orxSOUND_FILTER_TYPE_PEAKING:
+    {
+      /* Uninits its node */
+      ma_peak_node_uninit(&(_pstFilter->stNode.stPeakingNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    /* Delay */
+    case orxSOUND_FILTER_TYPE_DELAY:
+    {
+      /* Uninits its node */
+      ma_delay_node_uninit(&(_pstFilter->stNode.stDelayNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
+    default:
+    {
+      /* Should not happen! */
+      orxASSERT(orxFALSE);
+      break;
+    }
+  }
+
+  /* Deletes it */
+  orxBank_Free(sstSoundSystem.pstFilterBank, _pstFilter);
+
+  /* Done! */
+  return;
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1062,7 +1163,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
 
     /* Retrieves listener count */
-    sstSoundSystem.u32ListenerNumber= (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
+    sstSoundSystem.u32ListenerNumber = (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
 
     /* Should clamp? */
     if(sstSoundSystem.u32ListenerNumber > MA_ENGINE_MAX_LISTENERS)
@@ -1702,6 +1803,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
         /* Success? */
         if(hResult == MA_SUCCESS)
         {
+          /* Stores filter node */
+          pstResult->pstFilterNode = (ma_node_base *)&(pstResult->stSound.engineNode);
+
           /* Stores user data */
           pstResult->hUserData = _hUserData;
 
@@ -1812,6 +1916,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
           /* Success? */
           if(hResult == MA_SUCCESS)
           {
+            /* Stores filter node */
+            pstResult->pstFilterNode = (ma_node_base *)&(pstResult->stSound.engineNode);
+
             /* Stores user data */
             pstResult->hUserData = _hUserData;
 
@@ -1893,11 +2000,11 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Uninits sound */
-  ma_sound_uninit(&(_pstSound->stSound));
-
   /* Removes all filters */
   orxSoundSystem_RemoveAllFilters(_pstSound);
+
+  /* Uninits sound */
+  ma_sound_uninit(&(_pstSound->stSound));
 
   /* Has base data source? */
   if(_pstSound->stBase.vtable != NULL)
@@ -2228,7 +2335,35 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilter(orxSOUNDSYSTEM_S
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  //! TODO
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Has filter(s)? */
+  if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
+  {
+    ma_node  *pstInputNode, *pstOutputNode;
+    ma_result hResult;
+
+    /* Retrieves input & output nodes */
+    orxASSERT(_pstSound->pstFilterNode->inputBusCount > 0);
+    orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
+    pstInputNode  = _pstSound->pstFilterNode->pInputBuses[0].head.pNext->pNode;
+    pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
+
+    /* Deletes its filter (miniaudio will handle the detaching of the node) */
+    orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, _pstSound->pstFilterNode));
+
+    /* Attaches them together */
+    hResult = ma_node_attach_output_bus(pstInputNode, 0, pstOutputNode, 0);
+    orxASSERT(hResult == MA_SUCCESS);
+
+    /* Updates filter node */
+    _pstSound->pstFilterNode = (ma_node_base *)pstInputNode;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
   /* Done! */
   return eResult;
@@ -2236,9 +2371,46 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilter(orxSOUNDSYSTEM_S
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  //! TODO
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Has filter(s)? */
+  if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
+  {
+    ma_node_base *pstFilterNode;
+    ma_node      *pstOutputNode;
+    ma_result     hResult;
+
+    /* Retrieves last output node */
+    orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
+    pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
+
+    /* For all filter nodes */
+    for(pstFilterNode = _pstSound->pstFilterNode; pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode);)
+    {
+      ma_node *pstInputNode;
+
+      /* Retrieves its input node */
+      orxASSERT(pstFilterNode->inputBusCount > 0);
+      pstInputNode = pstFilterNode->pInputBuses[0].head.pNext->pNode;
+
+      /* Deletes its filter (miniaudio will handle the detaching of the node) */
+      orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode));
+
+      /* Updates it */
+      pstFilterNode = (ma_node_base *)pstInputNode;
+    }
+
+    /* Updates filter node */
+    _pstSound->pstFilterNode = (ma_node_base *)&(_pstSound->stSound.engineNode);
+
+    /* Reattaches sound node */
+    hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, pstOutputNode, 0);
+    orxASSERT(hResult == MA_SUCCESS);
+  }
 
   /* Done! */
   return eResult;
