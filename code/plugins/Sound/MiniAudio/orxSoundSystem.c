@@ -366,7 +366,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
         /* Changed? */
         if(orxMemory_Compare(&(pstFilter->stData), &(stPayload.stFilter.stData), sizeof(orxSOUND_FILTER_DATA)) != 0)
         {
-          ma_result hResult;
+          ma_result hResult = MA_ERROR;
 
           /* Depending on its type */
           switch(pstFilter->stData.eType)
@@ -374,13 +374,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Biquad */
             case orxSOUND_FILTER_TYPE_BIQUAD:
             {
-              ma_biquad_node_config stConfig;
+              ma_biquad_config stConfig;
 
               /* Inits its config */
-              stConfig = ma_biquad_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), stPayload.stFilter.stData.stBiquad.fB0, stPayload.stFilter.stData.stBiquad.fB1, stPayload.stFilter.stData.stBiquad.fB2, stPayload.stFilter.stData.stBiquad.fA0, stPayload.stFilter.stData.stBiquad.fA1, stPayload.stFilter.stData.stBiquad.fA2);
+              stConfig = ma_biquad_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), stPayload.stFilter.stData.stBiquad.fB0, stPayload.stFilter.stData.stBiquad.fB1, stPayload.stFilter.stData.stBiquad.fB2, stPayload.stFilter.stData.stBiquad.fA0, stPayload.stFilter.stData.stBiquad.fA1, stPayload.stFilter.stData.stBiquad.fA2);
 
               /* Reinits it */
-              hResult = ma_biquad_node_reinit(&(stConfig.biquad), &(pstFilter->stNode.stBiquadNode));
+              hResult = ma_biquad_node_reinit(&stConfig, &(pstFilter->stNode.stBiquadNode));
 
               break;
             }
@@ -388,13 +388,22 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Low Pass */
             case orxSOUND_FILTER_TYPE_LOW_PASS:
             {
-              ma_lpf_node_config stConfig;
+              /* Has order changed? */
+              if(pstFilter->stData.stLowPass.u32Order != stPayload.stFilter.stData.stLowPass.u32Order)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stLowPass.u32Order, stPayload.stFilter.stData.stLowPass.u32Order);
+              }
+              else
+              {
+                ma_lpf_config stConfig;
 
-              /* Inits its config */
-              stConfig = ma_lpf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stLowPass.fFrequency, stPayload.stFilter.stData.stLowPass.u32Order);
+                /* Inits its config */
+                stConfig = ma_lpf_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stLowPass.fFrequency, stPayload.stFilter.stData.stLowPass.u32Order);
 
-              /* Reinits it */
-              hResult = ma_lpf_node_reinit(&(stConfig.lpf), &(pstFilter->stNode.stLowPassNode));
+                /* Reinits it */
+                hResult = ma_lpf_node_reinit(&stConfig, &(pstFilter->stNode.stLowPassNode));
+              }
 
               break;
             }
@@ -402,13 +411,22 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* High Pass */
             case orxSOUND_FILTER_TYPE_HIGH_PASS:
             {
-              ma_hpf_node_config stConfig;
+              /* Has order changed? */
+              if(pstFilter->stData.stHighPass.u32Order != stPayload.stFilter.stData.stHighPass.u32Order)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stHighPass.u32Order, stPayload.stFilter.stData.stHighPass.u32Order);
+              }
+              else
+              {
+                ma_hpf_config stConfig;
 
-              /* Inits its config */
-              stConfig = ma_hpf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stHighPass.fFrequency, stPayload.stFilter.stData.stHighPass.u32Order);
+                /* Inits its config */
+                stConfig = ma_hpf_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stHighPass.fFrequency, stPayload.stFilter.stData.stHighPass.u32Order);
 
-              /* Reinits it */
-              hResult = ma_hpf_node_reinit(&(stConfig.hpf), &(pstFilter->stNode.stHighPassNode));
+                /* Reinits it */
+                hResult = ma_hpf_node_reinit(&stConfig, &(pstFilter->stNode.stHighPassNode));
+              }
 
               break;
             }
@@ -416,13 +434,22 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Band Pass */
             case orxSOUND_FILTER_TYPE_BAND_PASS:
             {
-              ma_bpf_node_config stConfig;
+              /* Has order changed? */
+              if(pstFilter->stData.stBandPass.u32Order != stPayload.stFilter.stData.stBandPass.u32Order)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stBandPass.u32Order, stPayload.stFilter.stData.stBandPass.u32Order);
+              }
+              else
+              {
+                ma_bpf_config stConfig;
 
-              /* Inits its config */
-              stConfig = ma_bpf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stBandPass.fFrequency, stPayload.stFilter.stData.stBandPass.u32Order);
+                /* Inits its config */
+                stConfig = ma_bpf_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stBandPass.fFrequency, stPayload.stFilter.stData.stBandPass.u32Order);
 
-              /* Reinits it */
-              hResult = ma_bpf_node_reinit(&(stConfig.bpf), &(pstFilter->stNode.stBandPassNode));
+                /* Reinits it */
+                hResult = ma_bpf_node_reinit(&stConfig, &(pstFilter->stNode.stBandPassNode));
+              }
 
               break;
             }
@@ -430,13 +457,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Low Shelf */
             case orxSOUND_FILTER_TYPE_LOW_SHELF:
             {
-              ma_loshelf_node_config stConfig;
+              ma_loshelf_config stConfig;
 
               /* Inits its config */
-              stConfig = ma_loshelf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stLowShelf.fGain, stPayload.stFilter.stData.stLowShelf.fQ, stPayload.stFilter.stData.stLowShelf.fFrequency);
+              stConfig = ma_loshelf2_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stLowShelf.fGain, stPayload.stFilter.stData.stLowShelf.fQ, stPayload.stFilter.stData.stLowShelf.fFrequency);
 
               /* Reinits it */
-              hResult = ma_loshelf_node_reinit(&(stConfig.loshelf), &(pstFilter->stNode.stLowShelfNode));
+              hResult = ma_loshelf_node_reinit(&stConfig, &(pstFilter->stNode.stLowShelfNode));
 
               break;
             }
@@ -444,13 +471,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* High Shelf */
             case orxSOUND_FILTER_TYPE_HIGH_SHELF:
             {
-              ma_hishelf_node_config stConfig;
+              ma_hishelf_config stConfig;
 
               /* Inits its config */
-              stConfig = ma_hishelf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stHighShelf.fGain, stPayload.stFilter.stData.stHighShelf.fQ, stPayload.stFilter.stData.stHighShelf.fFrequency);
+              stConfig = ma_hishelf2_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stHighShelf.fGain, stPayload.stFilter.stData.stHighShelf.fQ, stPayload.stFilter.stData.stHighShelf.fFrequency);
 
               /* Reinits it */
-              hResult = ma_hishelf_node_reinit(&(stConfig.hishelf), &(pstFilter->stNode.stHighShelfNode));
+              hResult = ma_hishelf_node_reinit(&stConfig, &(pstFilter->stNode.stHighShelfNode));
 
               break;
             }
@@ -458,13 +485,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Notch */
             case orxSOUND_FILTER_TYPE_NOTCH:
             {
-              ma_notch_node_config stConfig;
+              ma_notch_config stConfig;
 
               /* Inits its config */
-              stConfig = ma_notch_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stNotch.fQ, stPayload.stFilter.stData.stNotch.fFrequency);
+              stConfig = ma_notch2_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stNotch.fQ, stPayload.stFilter.stData.stNotch.fFrequency);
 
               /* Reinits it */
-              hResult = ma_notch_node_reinit(&(stConfig.notch), &(pstFilter->stNode.stNotchNode));
+              hResult = ma_notch_node_reinit(&stConfig, &(pstFilter->stNode.stNotchNode));
 
               break;
             }
@@ -472,13 +499,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
             /* Peaking */
             case orxSOUND_FILTER_TYPE_PEAKING:
             {
-              ma_peak_node_config stConfig;
+              ma_peak_config stConfig;
 
               /* Inits its config */
-              stConfig = ma_peak_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stPeaking.fGain, stPayload.stFilter.stData.stPeaking.fQ, stPayload.stFilter.stData.stPeaking.fFrequency);
+              stConfig = ma_peak2_config_init(ma_format_f32, ma_engine_get_channels(&(sstSoundSystem.stEngine)), pstFilter->pstSound->u32SampleRate, stPayload.stFilter.stData.stPeaking.fGain, stPayload.stFilter.stData.stPeaking.fQ, stPayload.stFilter.stData.stPeaking.fFrequency);
 
               /* Reinits it */
-              hResult = ma_peak_node_reinit(&(stConfig.peak), &(pstFilter->stNode.stPeakingNode));
+              hResult = ma_peak_node_reinit(&stConfig, &(pstFilter->stNode.stPeakingNode));
 
               break;
             }
@@ -490,7 +517,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               if(pstFilter->stData.stDelay.fDelay != stPayload.stFilter.stData.stDelay.fDelay)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't updated filter's delay value at runtime (%g -> %g), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stDelay.fDelay, stPayload.stFilter.stData.stDelay.fDelay);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's delay value at runtime (%g -> %g), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stDelay.fDelay, stPayload.stFilter.stData.stDelay.fDelay);
               }
 
               /* Updates its decay */
@@ -504,9 +531,6 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
 
             default:
             {
-              /* Updates result */
-              hResult = MA_ERROR;
-
               break;
             }
           }
