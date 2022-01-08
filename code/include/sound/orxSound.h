@@ -45,8 +45,8 @@
 
 
 #include "orxInclude.h"
-#include "sound/orxSoundSystem.h"
 #include "math/orxVector.h"
+#include "sound/orxSoundSystem.h"
 
 
 /** Misc defines
@@ -239,6 +239,33 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Pause(orxSOUND *_pstSound
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Stop(orxSOUND *_pstSound);
+
+/** Adds a filter to a sound (cascading)
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddFilter(orxSOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveLastFilter(orxSOUND *_pstSound);
+
+/** Removes all filters from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveAllFilters(orxSOUND *_pstSound);
+
+/** Adds a filter to a sound (cascading) from config
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddFilterFromConfig(orxSOUND *_pstSound, const orxSTRING _zFilterConfigID);
 
 
 /** Starts recording
