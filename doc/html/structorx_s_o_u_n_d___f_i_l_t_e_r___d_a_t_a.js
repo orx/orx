@@ -19,6 +19,7 @@ var structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a =
     [ "stHighShelf", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#ad940fae448a050789dacb4750f8b391a", null ],
     [ "stLowPass", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a950d4e50b85d8709aa4b475214e50075", null ],
     [ "stLowShelf", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a40eadb0fefa07c869c352022dd4cef36", null ],
+    [ "stNameID", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a8f52dc9f44a7a94dd229f58e1de6bf4a", null ],
     [ "stNotch", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#aff568091f8d27adb48e2d97960286f45", null ],
     [ "stPeaking", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a68ee2538b1aec00a87441b9d4f4ff88d", null ],
     [ "u32Order", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a084a7f4bef84ce36027e77bbef45e98c", null ]

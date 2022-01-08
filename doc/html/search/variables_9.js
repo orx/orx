@@ -36,7 +36,7 @@ var searchData=
   ['stlowpass',['stLowPass',['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a950d4e50b85d8709aa4b475214e50075',1,'orxSOUND_FILTER_DATA']]],
   ['stlowshelf',['stLowShelf',['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a40eadb0fefa07c869c352022dd4cef36',1,'orxSOUND_FILTER_DATA']]],
   ['stmesh',['stMesh',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#a9a1d8a8d397d2a62be3106b02d439dbb',1,'orxBODY_PART_DEF']]],
-  ['stnameid',['stNameID',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a1bebcd4a1c934b38d3da0faa63ce6e38',1,'orxRESOURCE_EVENT_PAYLOAD']]],
+  ['stnameid',['stNameID',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#a1bebcd4a1c934b38d3da0faa63ce6e38',1,'orxRESOURCE_EVENT_PAYLOAD::stNameID()'],['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a8f52dc9f44a7a94dd229f58e1de6bf4a',1,'orxSOUND_FILTER_DATA::stNameID()']]],
   ['stnode',['stNode',['../structorx_s_h_a_d_e_r___p_a_r_a_m.html#ad3e5f392a86515038d53d4f6faea6b8d',1,'orxSHADER_PARAM']]],
   ['stnotch',['stNotch',['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#aff568091f8d27adb48e2d97960286f45',1,'orxSOUND_FILTER_DATA']]],
   ['stobject',['stObject',['../structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#af8090204463866991f7a3551e618ef4d',1,'orxRENDER_EVENT_PAYLOAD']]],
