@@ -95,7 +95,8 @@ typedef enum __orxSOUND_FILTE_TYPE_t
  */
 typedef struct __orxSOUND_FILTER_DATA_t
 {
-  orxSOUND_FILTER_TYPE eType;
+  orxSOUND_FILTER_TYPE  eType;
+  orxSTRINGID           stNameID;
 
   union
   {

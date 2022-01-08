@@ -392,7 +392,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               if(pstFilter->stData.stLowPass.u32Order != stPayload.stFilter.stData.stLowPass.u32Order)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stLowPass.u32Order, stPayload.stFilter.stData.stLowPass.u32Order);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s] Can't update parameter \"order\" for filter <%s> at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, orxString_GetFromID(pstFilter->stData.stNameID), pstFilter->stData.stLowPass.u32Order, stPayload.stFilter.stData.stLowPass.u32Order);
               }
               else
               {
@@ -415,7 +415,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               if(pstFilter->stData.stHighPass.u32Order != stPayload.stFilter.stData.stHighPass.u32Order)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stHighPass.u32Order, stPayload.stFilter.stData.stHighPass.u32Order);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s] Can't update parameter \"order\" for filter <%s> at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, orxString_GetFromID(pstFilter->stData.stNameID), pstFilter->stData.stHighPass.u32Order, stPayload.stFilter.stData.stHighPass.u32Order);
               }
               else
               {
@@ -438,7 +438,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               if(pstFilter->stData.stBandPass.u32Order != stPayload.stFilter.stData.stBandPass.u32Order)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's order value at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stBandPass.u32Order, stPayload.stFilter.stData.stBandPass.u32Order);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s] Can't update parameter \"order\" for filter <%s> at runtime (%u -> %u), aborting.", pstFilter->pstSound->zName, orxString_GetFromID(pstFilter->stData.stNameID), pstFilter->stData.stBandPass.u32Order, stPayload.stFilter.stData.stBandPass.u32Order);
               }
               else
               {
@@ -517,7 +517,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               if(pstFilter->stData.stDelay.fDelay != stPayload.stFilter.stData.stDelay.fDelay)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s]: Can't update filter's delay value at runtime (%g -> %g), aborting.", pstFilter->pstSound->zName, pstFilter->stData.stDelay.fDelay, stPayload.stFilter.stData.stDelay.fDelay);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "[%s] Can't update parameter \"delay\" for filter <%s> at runtime (%g -> %g), aborting.", pstFilter->pstSound->zName, orxString_GetFromID(pstFilter->stData.stNameID), pstFilter->stData.stDelay.fDelay, stPayload.stFilter.stData.stDelay.fDelay);
               }
 
               /* Updates its decay */

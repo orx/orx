@@ -2611,6 +2611,9 @@ orxSTATUS orxFASTCALL orxSound_AddFilterFromConfig(orxSOUND *_pstSound, const or
       /* Valid? */
       if(stData.eType != orxSOUND_FILTER_TYPE_NONE)
       {
+        /* Stores its name ID */
+        stData.stNameID = orxString_Hash(orxConfig_GetCurrentSection());
+
         /* Adds filter */
         eResult = orxSoundSystem_AddFilter(_pstSound->pstData, &stData, orxConfig_GetBool(orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM));
       }
