@@ -41,6 +41,7 @@ var annotated_dup =
     [ "orxSHADER_EVENT_PAYLOAD", "structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxSHADER_PARAM", "structorx_s_h_a_d_e_r___p_a_r_a_m.html", "structorx_s_h_a_d_e_r___p_a_r_a_m" ],
     [ "orxSOUND_EVENT_PAYLOAD", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d" ],
+    [ "orxSOUND_FILTER_DATA", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a" ],
     [ "orxSOUND_STREAM_INFO", "structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html", "structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o" ],
     [ "orxSOUND_STREAM_PACKET", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t" ],
     [ "orxSTRUCTURE", "structorx_s_t_r_u_c_t_u_r_e.html", "structorx_s_t_r_u_c_t_u_r_e" ],

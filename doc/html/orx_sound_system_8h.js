@@ -6,6 +6,19 @@ var orx_sound_system_8h =
     [ "orxSOUNDSYSTEM_KZ_CONFIG_SECTION", "group__orx_sound_system.html#ga180120f04cd8b042cdfa0bdff3f3f9d8", null ],
     [ "orxSOUNDSYSTEM_SAMPLE", "group__orx_sound_system.html#ga538302084499f65dee3d0228cb9cc0d8", null ],
     [ "orxSOUNDSYSTEM_SOUND", "group__orx_sound_system.html#gade9338d9aa0f7ccc1ac5b147d3ff589f", null ],
+    [ "orxSOUND_FILTER_TYPE", "group__orx_sound_system.html#ga50b11cf49412fd3ac08513f418528c36", [
+      [ "orxSOUND_FILTER_TYPE_BIQUAD", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a7fded0391c39932e2746063d3423f728", null ],
+      [ "orxSOUND_FILTER_TYPE_LOW_PASS", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a1bd9354880f95d27c576cf9466b05063", null ],
+      [ "orxSOUND_FILTER_TYPE_HIGH_PASS", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a316f9231b1aad1abcc69a214b6371365", null ],
+      [ "orxSOUND_FILTER_TYPE_BAND_PASS", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a01a29024f53635ef82e4fe29b891900e", null ],
+      [ "orxSOUND_FILTER_TYPE_LOW_SHELF", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36ad92168b2f027ce207960a92e45e2e0a2", null ],
+      [ "orxSOUND_FILTER_TYPE_HIGH_SHELF", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a281d8f114569773b5b8135d07ac7a607", null ],
+      [ "orxSOUND_FILTER_TYPE_NOTCH", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36afac67323222807ca01c55da6ef2af703", null ],
+      [ "orxSOUND_FILTER_TYPE_PEAKING", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a86381965d71c74e860c8d9089e9ff78c", null ],
+      [ "orxSOUND_FILTER_TYPE_DELAY", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36abdbd77e2e75cd2e75f8ea49eb2de177e", null ],
+      [ "orxSOUND_FILTER_TYPE_NUMBER", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36acfde0985682ae50e195931fd2d9a1660", null ],
+      [ "orxSOUND_FILTER_TYPE_NONE", "group__orx_sound_system.html#gga50b11cf49412fd3ac08513f418528c36a26ffb7bfbf20d3b6ddf5f66057d761d9", null ]
+    ] ],
     [ "orxSOUNDSYSTEM_STATUS", "group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a", [
       [ "orxSOUNDSYSTEM_STATUS_PLAY", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aaa1be2be897b47eda12a2a0cddb438263", null ],
       [ "orxSOUNDSYSTEM_STATUS_PAUSE", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aa3683d8ba5639d419dff81365e6311ff3", null ],
@@ -13,6 +26,7 @@ var orx_sound_system_8h =
       [ "orxSOUNDSYSTEM_STATUS_NUMBER", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aafa35b7d509158f5ef6bdd363ffc3f27b", null ],
       [ "orxSOUNDSYSTEM_STATUS_NONE", "group__orx_sound_system.html#gga0692dc88e102ae57833baa65f98af81aadec474cdc54c1936077541fb4cdefb58", null ]
     ] ],
+    [ "orxSoundSystem_AddFilter", "group__orx_sound_system.html#ga36b508d95270ba9dfe1f3f3c6f0cf658", null ],
     [ "orxSoundSystem_CreateFromSample", "group__orx_sound_system.html#ga7b42a811e4521547b70152b8830fc960", null ],
     [ "orxSoundSystem_CreateSample", "group__orx_sound_system.html#gaa7f5fb69ce624beb3d84305602ebd383", null ],
     [ "orxSoundSystem_CreateStream", "group__orx_sound_system.html#ga94da0c4bedae98e3739f29458823b2d6", null ],
@@ -41,6 +55,8 @@ var orx_sound_system_8h =
     [ "orxSoundSystem_Loop", "group__orx_sound_system.html#gafcfcb27e9d2a521cca4c2ec1d97b41fc", null ],
     [ "orxSoundSystem_Pause", "group__orx_sound_system.html#ga6aeda66b1c403c7724c55af1d10ebd46", null ],
     [ "orxSoundSystem_Play", "group__orx_sound_system.html#ga154d7b737aa631df934f552ad57b4399", null ],
+    [ "orxSoundSystem_RemoveAllFilters", "group__orx_sound_system.html#ga6c92248910fd4ccc158983991d10f582", null ],
+    [ "orxSoundSystem_RemoveLastFilter", "group__orx_sound_system.html#gad3359a64f6bd9e94747e8dd1461423e7", null ],
     [ "orxSoundSystem_SetGlobalVolume", "group__orx_sound_system.html#gae516f86e8e395ea873ad95163099d840", null ],
     [ "orxSoundSystem_SetListenerPosition", "group__orx_sound_system.html#gaff030af421c8ea9345e7e4631d994e07", null ],
     [ "orxSoundSystem_SetPanning", "group__orx_sound_system.html#ga52dc5bac1cb5b6fc98cee725c71fd797", null ],
