@@ -64,6 +64,7 @@ typedef enum __orxSOUND_STATUS_t
   orxSOUND_STATUS_PLAY = 0,
   orxSOUND_STATUS_PAUSE,
   orxSOUND_STATUS_STOP,
+  orxSOUND_EVENT_SET_PARAM,
 
   orxSOUND_STATUS_NUMBER,
 
@@ -128,9 +129,16 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
 
   struct
   {
-    orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
-    orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 36 */
+    orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 16 */
+    orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
+
   } stStream;
+
+  struct
+  {
+    orxSOUND_FILTER_DATA      stData;       /**< Filter data : 32 */
+
+  } stFilter;
 
 } orxSOUND_EVENT_PAYLOAD;
 
