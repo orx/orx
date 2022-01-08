@@ -530,8 +530,6 @@ static orxINLINE void orxInput_LoadCurrentSet()
   /* Pushes its section */
   orxConfig_PushSection(sstInput.pstCurrentSet->zName);
 
-  //! TODO: use default's set
-
   /* Gets set's default threshold */
   sstInput.pstCurrentSet->fDefaultThreshold = (orxConfig_HasValue(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD) != orxFALSE)
                                               ? orxConfig_GetFloat(orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD)
