@@ -2383,7 +2383,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
   /* Success? */
   if(pstFilter != orxNULL)
   {
-    ma_result hResult;
+    ma_result hResult = MA_ERROR;
 
     /* Depending on filter type */
     switch(_pstFilterData->eType)
@@ -2434,6 +2434,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
       case orxSOUND_FILTER_TYPE_BAND_PASS:
       {
         ma_bpf_node_config stConfig;
+
+        /* Clamps order */
+        ((orxSOUND_FILTER_DATA *)_pstFilterData)->stBandPass.u32Order = orxMAX(_pstFilterData->stBandPass.u32Order, 2);
 
         /* Inits its config */
         stConfig = ma_bpf_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), _pstSound->u32SampleRate, _pstFilterData->stBandPass.fFrequency, _pstFilterData->stBandPass.u32Order);
@@ -2503,22 +2506,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
       /* Delay */
       case orxSOUND_FILTER_TYPE_DELAY:
       {
-        ma_delay_node_config stConfig;
+        /* Valid delay? */
+        if(_pstFilterData->stDelay.fDelay > orxFLOAT_0)
+        {
+          ma_delay_node_config stConfig;
 
-        /* Inits its config */
-        stConfig = ma_delay_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), _pstSound->u32SampleRate, orxF2U(orxU2F(_pstSound->u32SampleRate) * _pstFilterData->stDelay.fDelay), _pstFilterData->stDelay.fDecay);
+          /* Inits its config */
+          stConfig = ma_delay_node_config_init(ma_engine_get_channels(&(sstSoundSystem.stEngine)), _pstSound->u32SampleRate, orxF2U(orxU2F(_pstSound->u32SampleRate) * _pstFilterData->stDelay.fDelay), _pstFilterData->stDelay.fDecay);
 
-        /* Inits it */
-        hResult = ma_delay_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stConfig, &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks), &(pstFilter->stNode.stDelayNode));
+          /* Inits it */
+          hResult = ma_delay_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stConfig, &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks), &(pstFilter->stNode.stDelayNode));
+        }
 
         break;
       }
 
       default:
       {
-        /* Updates result */
-        hResult = MA_ERROR;
-
         break;
       }
     }
