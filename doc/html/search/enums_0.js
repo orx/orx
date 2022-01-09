@@ -43,6 +43,7 @@ var searchData=
   ['orxshader_5fevent',['orxSHADER_EVENT',['../group__orx_shader.html#ga90de18f99b8a163957f646599ffeeaca',1,'orxShader.h']]],
   ['orxshader_5fparam_5ftype',['orxSHADER_PARAM_TYPE',['../group__orx_shader.html#ga94512a95acea8de509b7346199eab3a1',1,'orxShader.h']]],
   ['orxsound_5fevent',['orxSOUND_EVENT',['../group__orx_sound.html#gae4874020c9c68ac319642a5eb6d49775',1,'orxSound.h']]],
+  ['orxsound_5ffilter_5ftype',['orxSOUND_FILTER_TYPE',['../group__orx_sound_system.html#ga50b11cf49412fd3ac08513f418528c36',1,'orxSoundSystem.h']]],
   ['orxsound_5fstatus',['orxSOUND_STATUS',['../group__orx_sound.html#ga7e5aec8c210684f5fc8920bd2c13a474',1,'orxSound.h']]],
   ['orxsoundsystem_5fstatus',['orxSOUNDSYSTEM_STATUS',['../group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a',1,'orxSoundSystem.h']]],
   ['orxspawner_5fevent',['orxSPAWNER_EVENT',['../group__orx_spawner.html#ga757d724e3601950fccbb85d625991400',1,'orxSpawner.h']]],

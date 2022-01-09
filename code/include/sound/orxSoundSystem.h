@@ -71,6 +71,108 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 } orxSOUNDSYSTEM_STATUS;
 
+/** Sound filter type enum
+ */
+typedef enum __orxSOUND_FILTE_TYPE_t
+{
+  orxSOUND_FILTER_TYPE_BIQUAD = 0,
+  orxSOUND_FILTER_TYPE_LOW_PASS,
+  orxSOUND_FILTER_TYPE_HIGH_PASS,
+  orxSOUND_FILTER_TYPE_BAND_PASS,
+  orxSOUND_FILTER_TYPE_LOW_SHELF,
+  orxSOUND_FILTER_TYPE_HIGH_SHELF,
+  orxSOUND_FILTER_TYPE_NOTCH,
+  orxSOUND_FILTER_TYPE_PEAKING,
+  orxSOUND_FILTER_TYPE_DELAY,
+
+  orxSOUND_FILTER_TYPE_NUMBER,
+
+  orxSOUND_FILTER_TYPE_NONE = orxENUM_NONE
+
+} orxSOUND_FILTER_TYPE;
+
+/** Sound filter data
+ */
+typedef struct __orxSOUND_FILTER_DATA_t
+{
+  orxSOUND_FILTER_TYPE  eType;
+  orxSTRINGID           stNameID;
+
+  union
+  {
+    struct
+    {
+      orxFLOAT  fA0;
+      orxFLOAT  fA1;
+      orxFLOAT  fA2;
+      orxFLOAT  fB0;
+      orxFLOAT  fB1;
+      orxFLOAT  fB2;
+
+    } stBiquad;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxU32    u32Order;
+
+    } stLowPass;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxU32    u32Order;
+
+    } stHighPass;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxU32    u32Order;
+
+    } stBandPass;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxFLOAT  fQ;
+      orxFLOAT  fGain;
+
+    } stLowShelf;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxFLOAT  fQ;
+      orxFLOAT  fGain;
+
+    } stHighShelf;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxFLOAT  fQ;
+
+    } stNotch;
+
+    struct
+    {
+      orxFLOAT  fFrequency;
+      orxFLOAT  fQ;
+      orxFLOAT  fGain;
+
+    } stPeaking;
+
+    struct
+    {
+      orxFLOAT  fDelay;
+      orxFLOAT  fDecay;
+
+    } stDelay;
+
+  };
+
+} orxSOUND_FILTER_DATA;
 
 /** Config defines
  */
@@ -183,6 +285,26 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Pause(orxSO
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Adds a filter to a sound (cascading)
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _pstFilterData                        Concerned filter data
+ * @param[in]   _bUseCustomParam                      Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_AddFilter(orxSOUNDSYSTEM_SOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a sound
+ * @param[in]   _pstSound                             Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveLastFilter(orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Removes all filters from a sound
+ * @param[in]   _pstSound                             Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file

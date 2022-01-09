@@ -69,6 +69,9 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Delete, orxSTATUS, orxSOUNDSYSTEM_
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Play, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Pause, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Stop, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_AddFilter, orxSTATUS, orxSOUNDSYSTEM_SOUND *, const orxSOUND_FILTER_DATA *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveLastFilter, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveAllFilters, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StartRecording, orxSTATUS, const orxSTRING, orxBOOL, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StopRecording, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_HasRecordingSupport, orxBOOL, void);
@@ -115,6 +118,9 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, DELETE, orxSoundSystem_Delete)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, PLAY, orxSoundSystem_Play)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, PAUSE, orxSoundSystem_Pause)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, STOP, orxSoundSystem_Stop)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, ADD_FILTER, orxSoundSystem_AddFilter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_LAST_FILTER, orxSoundSystem_RemoveLastFilter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_ALL_FILTERS, orxSoundSystem_RemoveAllFilters)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, START_RECORDING, orxSoundSystem_StartRecording)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, STOP_RECORDING, orxSoundSystem_StopRecording)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, HAS_RECORDING_SUPPORT, orxSoundSystem_HasRecordingSupport)
@@ -215,6 +221,21 @@ orxSTATUS orxFASTCALL orxSoundSystem_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
 orxSTATUS orxFASTCALL orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Stop)(_pstSound);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_AddFilter(orxSOUNDSYSTEM_SOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_AddFilter)(_pstSound, _pstFilterData, _bUseCustomParam);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_RemoveLastFilter(orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_RemoveLastFilter)(_pstSound);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_RemoveAllFilters)(_pstSound);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)

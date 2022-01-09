@@ -123,8 +123,8 @@ $(document).ready(function(){initNavTree('orx_sound_8h.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="orx_include_8h_source.html">orxInclude.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="orx_sound_system_8h_source.html">sound/orxSoundSystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="orx_vector_8h_source.html">math/orxVector.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="orx_sound_system_8h_source.html">sound/orxSoundSystem.h</a>&quot;</code><br />
 </div>
 <p><a href="orx_sound_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -173,15 +173,20 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474abd46bd305984386e8023c8edd59eb0e9">orxSOUND_STATUS_PLAY</a> = 0, 
 <a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a0f404e4aef9f1a59f06b72c28f4d1ec9">orxSOUND_STATUS_PAUSE</a>, 
 <a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a6500288990fd06501fe41f8b43a84776">orxSOUND_STATUS_STOP</a>, 
-<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a47648bdb7d91bddfa8710c3a4aeec28a">orxSOUND_STATUS_NUMBER</a>, 
+<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ae9392bac4e6764a1df40d7a4de6ccc78">orxSOUND_EVENT_SET_PARAM</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ad01926e465f3d064b66da415799b3354">orxSOUND_STATUS_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a47648bdb7d91bddfa8710c3a4aeec28a">orxSOUND_STATUS_NUMBER</a>, 
+<a class="el" href="group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ad01926e465f3d064b66da415799b3354">orxSOUND_STATUS_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:ga7e5aec8c210684f5fc8920bd2c13a474"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gafff623494c90baf3c1e5b87311c597b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gafff623494c90baf3c1e5b87311c597b9">orxSound_AddFilter</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound, const <a class="el" href="structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html">orxSOUND_FILTER_DATA</a> *_pstFilterData, orxBOOL _bUseCustomParam)</td></tr>
+<tr class="separator:gafff623494c90baf3c1e5b87311c597b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga63003aee791340c66f6336285a408883"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga63003aee791340c66f6336285a408883">orxSound_AddFilterFromConfig</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound, const orxSTRING _zFilterConfigID)</td></tr>
+<tr class="separator:ga63003aee791340c66f6336285a408883"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad21be0dc930d112b4205b3bdefa30ec4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gad21be0dc930d112b4205b3bdefa30ec4">orxSound_ClearCache</a> ()</td></tr>
 <tr class="separator:gad21be0dc930d112b4205b3bdefa30ec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8a65a26127320ce61e7e37703080e1b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga8a65a26127320ce61e7e37703080e1b7">orxSound_Create</a> ()</td></tr>
@@ -254,6 +259,10 @@ Functions</h2></td></tr>
 <tr class="separator:ga54cce1f0fa0a1bcb82834c3617ebdfe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7303779b3586e321870c97ddb54d2107"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga7303779b3586e321870c97ddb54d2107">orxSound_Play</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
 <tr class="separator:ga7303779b3586e321870c97ddb54d2107"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga313a2ffd500104774d80921aeb993255"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga313a2ffd500104774d80921aeb993255">orxSound_RemoveAllFilters</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
+<tr class="separator:ga313a2ffd500104774d80921aeb993255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0705731bfa90021771dee533fc01e597"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga0705731bfa90021771dee533fc01e597">orxSound_RemoveLastFilter</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound)</td></tr>
+<tr class="separator:ga0705731bfa90021771dee533fc01e597"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad0234717890222a4938f6f65b5937fb2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#gad0234717890222a4938f6f65b5937fb2">orxSound_SetBusID</a> (<a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *_pstSound, orxSTRINGID _stBusID)</td></tr>
 <tr class="separator:gad0234717890222a4938f6f65b5937fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0cb4d48333b6bb7482380dc97b319207"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_sound.html#ga0cb4d48333b6bb7482380dc97b319207">orxSound_SetBusParent</a> (orxSTRINGID _stBusID, orxSTRINGID _stParentBusID)</td></tr>

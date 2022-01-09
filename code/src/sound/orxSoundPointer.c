@@ -1232,6 +1232,158 @@ orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_
   return pstResult;
 }
 
+/** Adds a filter to all related sounds (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _pstFilterData      Concerned filter data
+ * @param[in]   _bUseCustomParam    Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddFilter(orxSOUNDPOINTER *_pstSoundPointer, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxASSERT(_pstFilterData != orxNULL);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Adds filter to it */
+      if(orxSound_AddFilter(pstSound, _pstFilterData, _bUseCustomParam) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes last added filter from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveLastFilter(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Removes last filter from it */
+      if(orxSound_RemoveLastFilter(pstSound) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes all filters from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllFilters(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Removes all filters from it */
+      if(orxSound_RemoveAllFilters(pstSound) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a filter to all related sounds from config (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _zFilterConfigID    Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddFilterFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zFilterConfigID)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Adds filter to it */
+      if(orxSound_AddFilterFromConfig(pstSound, _zFilterConfigID) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets how many sounds are currently in use
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxU32

@@ -99,7 +99,6 @@
 #define orxSOUND_KZ_CONFIG_LOOP                         "Loop"
 #define orxSOUND_KZ_CONFIG_PITCH                        "Pitch"
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
-#define orxSOUND_KZ_CONFIG_EMPTY_STREAM                 "empty"
 #define orxSOUND_KZ_CONFIG_DISTANCE_LIST                "DistanceList"
 #define orxSOUND_KZ_CONFIG_GAIN_LIST                    "GainList"
 #define orxSOUND_KZ_CONFIG_ROLL_OFF                     "RollOff"
@@ -107,6 +106,32 @@
 #define orxSOUND_KZ_CONFIG_PANNING                      "Panning"
 #define orxSOUND_KZ_CONFIG_MIX                          "Mix"
 #define orxSOUND_KZ_CONFIG_BUS                          "Bus"
+#define orxSOUND_KZ_CONFIG_FILTER_LIST                  "FilterList"
+#define orxSOUND_KZ_CONFIG_TYPE                         "Type"
+#define orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM             "UseCustomParam"
+#define orxSOUND_KZ_CONFIG_FREQUENCY                    "Frequency"
+#define orxSOUND_KZ_CONFIG_ORDER                        "Order"
+#define orxSOUND_KZ_CONFIG_Q                            "Q"
+#define orxSOUND_KZ_CONFIG_GAIN                         "Gain"
+#define orxSOUND_KZ_CONFIG_DELAY                        "Delay"
+#define orxSOUND_KZ_CONFIG_DECAY                        "Decay"
+#define orxSOUND_KZ_CONFIG_A0                           "A0"
+#define orxSOUND_KZ_CONFIG_A1                           "A1"
+#define orxSOUND_KZ_CONFIG_A2                           "A2"
+#define orxSOUND_KZ_CONFIG_B0                           "B0"
+#define orxSOUND_KZ_CONFIG_B1                           "B1"
+#define orxSOUND_KZ_CONFIG_B2                           "B2"
+
+#define orxSOUND_KZ_EMPTY_STREAM                        "empty"
+#define orxSOUND_KZ_TYPE_BIQUAD                         "biquad"
+#define orxSOUND_KZ_TYPE_LOW_PASS                       "lowpass"
+#define orxSOUND_KZ_TYPE_HIGH_PASS                      "highpass"
+#define orxSOUND_KZ_TYPE_BAND_PASS                      "bandpass"
+#define orxSOUND_KZ_TYPE_LOW_SHELF                      "lowshelf"
+#define orxSOUND_KZ_TYPE_HIGH_SHELF                     "highshelf"
+#define orxSOUND_KZ_TYPE_NOTCH                          "notch"
+#define orxSOUND_KZ_TYPE_PEAKING                        "peaking"
+#define orxSOUND_KZ_TYPE_DELAY                          "delay"
 
 #define orxSOUND_KC_LOCALE_MARKER                       '$'
 
@@ -434,7 +459,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         }
 
         /* Is empty stream ? */
-        if(orxString_NICompare(zName, orxSOUND_KZ_CONFIG_EMPTY_STREAM, orxString_GetLength(orxSOUND_KZ_CONFIG_EMPTY_STREAM)) == 0)
+        if(orxString_NICompare(zName, orxSOUND_KZ_EMPTY_STREAM, orxString_GetLength(orxSOUND_KZ_EMPTY_STREAM)) == 0)
         {
           const orxSTRING zStream;
           orxU32          u32Value, u32SampleRate, u32ChannelNumber;
@@ -444,7 +469,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
           u32ChannelNumber  = orxSOUND_KU32_STREAM_DEFAULT_CHANNEL_NUMBER;
 
           /* Gets stream specifications */
-          zStream = zName + orxString_GetLength(orxSOUND_KZ_CONFIG_EMPTY_STREAM);
+          zStream = zName + orxString_GetLength(orxSOUND_KZ_EMPTY_STREAM);
 
           /* For all specifications */
           while(orxString_ToU32(orxString_SkipWhiteSpaces(zStream), &u32Value, &zStream) != orxSTATUS_FAILURE)
@@ -492,6 +517,19 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
     /* Valid content? */
     if(_pstSound->pstData != orxNULL)
     {
+      /* Has filter list? */
+      if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_FILTER_LIST) != orxFALSE)
+      {
+        orxS32 i, iCount;
+
+        /* For all filters */
+        for(i = 0, iCount = orxConfig_GetListCount(orxSOUND_KZ_CONFIG_FILTER_LIST); i < iCount; i++)
+        {
+          /* Adds it */
+          orxSound_AddFilterFromConfig(_pstSound, orxConfig_GetListString(orxSOUND_KZ_CONFIG_FILTER_LIST, i));
+        }
+      }
+
       /* Has bus? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_BUS) != orxFALSE)
       {
@@ -1899,6 +1937,9 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
     /* Stops it */
     orxSound_Stop(_pstSound);
 
+    /* Removes all its filters */
+    orxSound_RemoveAllFilters(_pstSound);
+
     /* Has data? */
     if(_pstSound->pstData != orxNULL)
     {
@@ -2345,6 +2386,246 @@ orxSTATUS orxFASTCALL orxSound_Stop(orxSOUND *_pstSound)
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a filter to a sound (cascading)
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_AddFilter(orxSOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT(_pstFilterData != orxNULL);
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Adds filter to it */
+    eResult = orxSoundSystem_AddFilter(_pstSound->pstData, _pstFilterData, _bUseCustomParam);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes last added filter from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_RemoveLastFilter(orxSOUND *_pstSound)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Removes last filter from it */
+    eResult = orxSoundSystem_RemoveLastFilter(_pstSound->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes all filters from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_RemoveAllFilters(orxSOUND *_pstSound)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Removes all filters from it */
+    eResult = orxSoundSystem_RemoveAllFilters(_pstSound->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a filter to a sound (cascading) from config
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_AddFilterFromConfig(orxSOUND *_pstSound, const orxSTRING _zFilterConfigID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+  orxASSERT((_zFilterConfigID != orxNULL) && (_zFilterConfigID != orxSTRING_EMPTY));
+
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
+  {
+    /* Pushes section */
+    if((orxConfig_HasSection(_zFilterConfigID) != orxFALSE)
+    && (orxConfig_PushSection(_zFilterConfigID) != orxSTATUS_FAILURE))
+    {
+      orxSOUND_FILTER_DATA  stData;
+      const orxSTRING       zType;
+
+      /* Clears data */
+      orxMemory_Zero(&stData, sizeof(orxSOUND_FILTER_DATA));
+      stData.eType = orxSOUND_FILTER_TYPE_NONE;
+
+      /* Gets its type */
+      zType = orxConfig_GetString(orxSOUND_KZ_CONFIG_TYPE);
+
+      /* Biquad? */
+      if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BIQUAD) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_BIQUAD;
+
+        /* Updates filter data */
+        stData.stBiquad.fA0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A0);
+        stData.stBiquad.fA1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A1);
+        stData.stBiquad.fA2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A2);
+        stData.stBiquad.fB0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B0);
+        stData.stBiquad.fB1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B1);
+        stData.stBiquad.fB2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B2);
+      }
+      /* Low pass? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_PASS) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_LOW_PASS;
+
+        /* Updates filter data */
+        stData.stLowPass.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stLowPass.u32Order   = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+      }
+      /* High pass? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_PASS) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_HIGH_PASS;
+
+        /* Updates filter data */
+        stData.stHighPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stHighPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+      }
+      /* Band pass? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BAND_PASS) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_BAND_PASS;
+
+        /* Updates filter data */
+        stData.stBandPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stBandPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+      }
+      /* Low shelf? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_SHELF) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_LOW_SHELF;
+
+        /* Updates filter data */
+        stData.stLowShelf.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stLowShelf.fQ          = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+        stData.stLowShelf.fGain       = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+      }
+      /* High shelf? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_SHELF) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_HIGH_SHELF;
+
+        /* Updates filter data */
+        stData.stHighShelf.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stHighShelf.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+        stData.stHighShelf.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+      }
+      /* Notch? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_NOTCH) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_NOTCH;
+
+        /* Updates filter data */
+        stData.stNotch.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stNotch.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+      }
+      /* Peaking? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_PEAKING) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_PEAKING;
+
+        /* Updates filter data */
+        stData.stPeaking.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+        stData.stPeaking.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+        stData.stPeaking.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+      }
+      /* Delay? */
+      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_DELAY) == 0)
+      {
+        /* Updates filter type */
+        stData.eType = orxSOUND_FILTER_TYPE_DELAY;
+
+        /* Updates filter data */
+        stData.stDelay.fDelay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DELAY);
+        stData.stDelay.fDecay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DECAY);
+      }
+
+      /* Valid? */
+      if(stData.eType != orxSOUND_FILTER_TYPE_NONE)
+      {
+        /* Stores its name ID */
+        stData.stNameID = orxString_Hash(orxConfig_GetCurrentSection());
+
+        /* Adds filter */
+        eResult = orxSoundSystem_AddFilter(_pstSound->pstData, &stData, orxConfig_GetBool(orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM));
+      }
+
+      /* Pops previous section */
+      orxConfig_PopSection();
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Couldn't find filter section (%s) in config.", _zFilterConfigID);
+    }
   }
 
   /* Done! */
