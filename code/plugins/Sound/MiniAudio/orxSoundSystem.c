@@ -863,9 +863,6 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
         /* Not looping? */
         if(orxSoundSystem_IsLooping(pstSound) == orxFALSE)
         {
-          /* Since 0.11.3+, miniaudio doesn't accept data when MA_AT_END is reached */
-          *_pu64FramesRead = 0;
-
           /* Updates result */
           hResult = MA_AT_END;
         }
@@ -873,8 +870,8 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
     }
   }
 
-  /* Adjusts available samples number */
-  *_pu64FramesRead += (ma_uint64)u32CopySampleNumber / pstSound->u32ChannelNumber;
+  /* Adjusts available samples number (Since 0.11.3+, miniaudio doesn't accept data when MA_AT_END is reached) */
+  *_pu64FramesRead = (hResult == MA_AT_END) ? 0 : *_pu64FramesRead + (ma_uint64)u32CopySampleNumber / pstSound->u32ChannelNumber;
 
   /* Done! */
   return hResult;
