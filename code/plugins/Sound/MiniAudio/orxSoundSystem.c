@@ -553,21 +553,19 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
   return;
 }
 
-static size_t orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const void *_pBufferIn, size_t _sBytesToWrite)
+static ma_result orxSoundSystem_MiniAudio_Recording_Write(ma_encoder *_pstEncoder, const void *_pBufferIn, size_t _sBytesToWrite, size_t *_psBytesWritten)
 {
-  size_t sResult;
-
   /* Writes data */
-  sResult = (size_t)orxResource_Write((orxHANDLE)_pstEncoder->pUserData, _sBytesToWrite, _pBufferIn, orxNULL, orxNULL);
+  *_psBytesWritten = (size_t)orxResource_Write((orxHANDLE)_pstEncoder->pUserData, _sBytesToWrite, _pBufferIn, orxNULL, orxNULL);
 
   /* Done! */
-  return sResult;
+  return (*_psBytesWritten == _sBytesToWrite) ? MA_SUCCESS : MA_ERROR;
 }
 
-static ma_bool32 orxSoundSystem_MiniAudio_Recording_Seek(ma_encoder *_pstEncoder, int _iByteOffset, ma_seek_origin _eOrigin)
+static ma_result orxSoundSystem_MiniAudio_Recording_Seek(ma_encoder *_pstEncoder, ma_int64 _s64ByteOffset, ma_seek_origin _eOrigin)
 {
   /* Seeks */
-  return (orxResource_Seek((orxHANDLE)_pstEncoder->pUserData, (orxS64)_iByteOffset, (orxSEEK_OFFSET_WHENCE)_eOrigin) >= 0) ? MA_TRUE : MA_FALSE;
+  return (orxResource_Seek((orxHANDLE)_pstEncoder->pUserData, (orxS64)_s64ByteOffset, (orxSEEK_OFFSET_WHENCE)_eOrigin) >= 0) ? MA_SUCCESS : MA_ERROR;
 }
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_OpenRecordingFile()
@@ -865,6 +863,9 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
         /* Not looping? */
         if(orxSoundSystem_IsLooping(pstSound) == orxFALSE)
         {
+          /* Since 0.11.3+, miniaudio doesn't accept data when MA_AT_END is reached */
+          *_pu64FramesRead = 0;
+
           /* Updates result */
           hResult = MA_AT_END;
         }
