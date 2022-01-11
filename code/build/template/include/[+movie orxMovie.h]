@@ -404,7 +404,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
           orxEvent_AddHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler, pstMovieData);
           orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_OBJECT, pstMovieData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE), orxEVENT_KU32_MASK_ID_ALL);
           orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_EventHandler, pstMovieData);
-          orxEvent_SetHandlerIDFlags(orxMovie_Decode, orxEVENT_TYPE_SOUND, pstMovieData, orxEVENT_GET_FLAG(orxSOUND_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_SOUND, pstMovieData, orxEVENT_GET_FLAG(orxSOUND_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
           // Creates music stream
           orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "empty 2 %u", plm_get_samplerate(pstMovieData->pstAudio));
