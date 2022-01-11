@@ -728,7 +728,7 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
   *_pu64FramesRead = 0;
 
   /* Not stopping? */
-  if((pstSound->bStopping == orxFALSE))
+  if(pstSound->bStopping == orxFALSE)
   {
     /* Has pending samples? */
     if(pstSound->stStream.u32PendingSampleNumber > 0)
