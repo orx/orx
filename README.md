@@ -71,7 +71,7 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86/x86-64 with vs2015, vs2017 & vs2019, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)
+- Windows (x86/x86-64 with vs2017 & vs2019, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)
 - MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
@@ -130,8 +130,6 @@ Here is a list with a small description for each package.
 - `orx-dev-mac-1.12.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
 - `orx-dev-mingw-32-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
 - `orx-dev-mingw-64-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2015-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86), release/profile/debug + tools.
-- `orx-dev-vs2015-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2015, x86-64), release/profile/debug + tools.
 - `orx-dev-vs2017-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
 - `orx-dev-vs2017-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
 - `orx-dev-vs2019-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
@@ -144,8 +142,6 @@ Here is a list with a small description for each package.
 - `orx-tutorial-mac-1.12.zip`         : tutorials for MacOS X (x86/x86-64)
 - `orx-tutorial-mingw-32-1.12.zip`    : tutorials for Windows (mingw/x86)
 - `orx-tutorial-mingw-64-1.12.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2015-32-1.12.zip`   : tutorials for Windows (Visual Studio 2015, x86)
-- `orx-tutorial-vs2015-64-1.12.zip`   : tutorials for Windows (Visual Studio 2015, x86-64)
 - `orx-tutorial-vs2017-32-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86)
 - `orx-tutorial-vs2017-64-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
 - `orx-tutorial-vs2019-32-1.12.zip`   : tutorials for Windows (Visual Studio 2019, x86)

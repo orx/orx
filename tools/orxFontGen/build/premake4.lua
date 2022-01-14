@@ -216,14 +216,14 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
-    configuration {"vs2015 or vs2017 or vs2019", "x32"}
+    configuration {"vs2017 or vs2019", "x32"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/32",
             "$(ORX)/../extern/freetype/lib/vc2015/32"
         }
 
-    configuration {"vs2015 or vs2017 or vs2019", "x64"}
+    configuration {"vs2017 or vs2019", "x64"}
         libdirs
         {
             "../../../extern/freetype/lib/vc2015/64",

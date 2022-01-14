@@ -13,10 +13,6 @@ platformlist = [
     'tutovs2010',
     'vs2012',
     'tutovs2012',
-    'vs2015-32',
-    'tutovs2015-32',
-    'vs2015-64',
-    'tutovs2015-64',
     'vs2017-32',
     'tutovs2017-32',
     'vs2017-64',
@@ -320,38 +316,6 @@ platforminfolist = {
     'tutovs2012': {
         'foldername':       'tutorial-vs2012',
         'filename':         'tutorial-vs2012',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'vs2015-32': {
-        'foldername':       'dev-vs2015-32',
-        'filename':         'dev-vs2015-32',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'vs2015-64': {
-        'foldername':       'dev-vs2015-64',
-        'filename':         'dev-vs2015-64',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'tutovs2015-32': {
-        'foldername':       'tutorial-vs2015-32',
-        'filename':         'tutorial-vs2015-32',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'tutovs2015-64': {
-        'foldername':       'tutorial-vs2015-64',
-        'filename':         'tutorial-vs2015-64',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
