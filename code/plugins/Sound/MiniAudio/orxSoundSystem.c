@@ -2694,6 +2694,76 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
   return eResult;
 }
 
+orxHANDLE orxFASTCALL orxSoundSystem_MiniAudio_CreateBus(orxSTRINGID _stBusID)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  //! TODO
+
+  /* Done! */
+  return hResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteBus(orxHANDLE _hBus)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBus(orxSOUNDSYSTEM_SOUND *_pstSound, orxHANDLE _hBus)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBusParent(orxHANDLE _hBus, orxHANDLE _hParentBus)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddBusFilter(orxHANDLE _hBus, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastBusFilter(orxHANDLE _hBus)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllBusFilters(orxHANDLE _hBus)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  //! TODO
+
+  /* Done! */
+  return eResult;
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
 {
   orxSTATUS eResult;
@@ -3460,6 +3530,13 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_Stop, SOUNDSYSTEM, STO
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_AddFilter, SOUNDSYSTEM, ADD_FILTER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_RemoveLastFilter, SOUNDSYSTEM, REMOVE_LAST_FILTER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_RemoveAllFilters, SOUNDSYSTEM, REMOVE_ALL_FILTERS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_CreateBus, SOUNDSYSTEM, CREATE_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_DeleteBus, SOUNDSYSTEM, DELETE_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_SetBus, SOUNDSYSTEM, SET_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_SetBusParent, SOUNDSYSTEM, SET_BUS_PARENT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_AddBusFilter, SOUNDSYSTEM, ADD_BUS_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_RemoveLastBusFilter, SOUNDSYSTEM, REMOVE_LAST_BUS_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_RemoveAllBusFilters, SOUNDSYSTEM, REMOVE_ALL_BUS_FILTERS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_StartRecording, SOUNDSYSTEM, START_RECORDING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_StopRecording, SOUNDSYSTEM, STOP_RECORDING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_HasRecordingSupport, SOUNDSYSTEM, HAS_RECORDING_SUPPORT);

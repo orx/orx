@@ -265,6 +265,7 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStrea
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
 
@@ -305,6 +306,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveLastF
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Creates a bus
+ * @param[in]   _stBusID                              Concerned bus ID
+ * @return orxHANDLE / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxSoundSystem_CreateBus(orxSTRINGID _stBusID);
+
+/** Deletes a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_DeleteBus(orxHANDLE _hBus);
+
+/** Sets a sound's bus
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetBus(orxSOUNDSYSTEM_SOUND *_pstSound, orxHANDLE _hBus);
+
+/** Sets a bus's parent
+ * @param[in]   _hBus                                 Concerned bus
+ * @param[in]   _hParentBus                           Handle of the bus to use as parent
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetBusParent(orxHANDLE _hBus, orxHANDLE _hParentBus);
+
+/** Adds a filter to a bus (cascading)
+ * @param[in]   _hBus                                 Concerned bus
+ * @param[in]   _pstFilterData                        Concerned filter data
+ * @param[in]   _bUseCustomParam                      Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_AddBusFilter(orxHANDLE _hBus, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveLastBusFilter(orxHANDLE _hBus);
+
+/** Removes all filters from a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveAllBusFilters(orxHANDLE _hBus);
 
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file

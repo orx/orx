@@ -72,6 +72,13 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Stop, orxSTATUS, orxSOUNDSYSTEM_SO
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_AddFilter, orxSTATUS, orxSOUNDSYSTEM_SOUND *, const orxSOUND_FILTER_DATA *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveLastFilter, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveAllFilters, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_CreateBus, orxHANDLE, orxSTRINGID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_DeleteBus, orxSTATUS, orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetBus, orxSTATUS, orxSOUNDSYSTEM_SOUND *, orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetBusParent, orxSTATUS, orxHANDLE, orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_AddBusFilter, orxSTATUS, orxHANDLE, const orxSOUND_FILTER_DATA *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveLastBusFilter, orxSTATUS, orxHANDLE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_RemoveAllBusFilters, orxSTATUS, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StartRecording, orxSTATUS, const orxSTRING, orxBOOL, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_StopRecording, orxSTATUS, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_HasRecordingSupport, orxBOOL, void);
@@ -121,6 +128,13 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, STOP, orxSoundSystem_Stop)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, ADD_FILTER, orxSoundSystem_AddFilter)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_LAST_FILTER, orxSoundSystem_RemoveLastFilter)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_ALL_FILTERS, orxSoundSystem_RemoveAllFilters)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, CREATE_BUS, orxSoundSystem_CreateBus)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, DELETE_BUS, orxSoundSystem_DeleteBus)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_BUS, orxSoundSystem_SetBus)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_BUS_PARENT, orxSoundSystem_SetBusParent)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, ADD_BUS_FILTER, orxSoundSystem_AddBusFilter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_LAST_BUS_FILTER, orxSoundSystem_RemoveLastBusFilter)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, REMOVE_ALL_BUS_FILTERS, orxSoundSystem_RemoveAllBusFilters)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, START_RECORDING, orxSoundSystem_StartRecording)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, STOP_RECORDING, orxSoundSystem_StopRecording)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, HAS_RECORDING_SUPPORT, orxSoundSystem_HasRecordingSupport)
@@ -236,6 +250,41 @@ orxSTATUS orxFASTCALL orxSoundSystem_RemoveLastFilter(orxSOUNDSYSTEM_SOUND *_pst
 orxSTATUS orxFASTCALL orxSoundSystem_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_RemoveAllFilters)(_pstSound);
+}
+
+orxHANDLE orxFASTCALL orxSoundSystem_CreateBus(orxSTRINGID _stBusID)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateBus)(_stBusID);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_DeleteBus(orxHANDLE _hBus)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_DeleteBus)(_hBus);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_SetBus(orxSOUNDSYSTEM_SOUND *_pstSound, orxHANDLE _hBus)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetBus)(_pstSound, _hBus);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_SetBusParent(orxHANDLE _hBus, orxHANDLE _hParentBus)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetBusParent)(_hBus, _hParentBus);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_AddBusFilter(orxHANDLE _hBus, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_AddBusFilter)(_hBus, _pstFilterData, _bUseCustomParam);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_RemoveLastBusFilter(orxHANDLE _hBus)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_RemoveLastBusFilter)(_hBus);
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_RemoveAllBusFilters(orxHANDLE _hBus)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_RemoveAllBusFilters)(_hBus);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_StartRecording(const orxSTRING _zName, orxBOOL _bWriteToFile, orxU32 _u32SampleRate, orxU32 _u32ChannelNumber)
