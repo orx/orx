@@ -1101,7 +1101,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not find object named '%s' in config.", _zSoundConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not find sound named '%s' in config.", _zSoundConfigID);
 
       /* Clears last added sound index */
       _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
