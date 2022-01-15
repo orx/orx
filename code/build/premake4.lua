@@ -48,7 +48,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2019")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -226,7 +226,7 @@ solution "orx"
             "/MP"
         }
 
-    configuration {"vs2017 or vs2019", "x32"}
+    configuration {"vs2017 or vs2019 or vs2022", "x32"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/32",
@@ -235,7 +235,7 @@ solution "orx"
             "../../extern/basisu/lib/vc2015/32",
         }
 
-    configuration {"vs2017 or vs2019", "x64"}
+    configuration {"vs2017 or vs2019 or vs2022", "x64"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/64",

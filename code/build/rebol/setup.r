@@ -22,7 +22,7 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code
 platform-data:  compose/deep [
-  "windows"   [premake "windows"                                                              config ["gmake" "codelite" "codeblocks" "vs2017" "vs2019"         ]                                                                               env-msg "Please restart your favorite IDE before using orx."]
+  "windows"   [premake "windows"                                                              config ["gmake" "codelite" "codeblocks" "vs2017" "vs2019" "vs2022"]                                                                               env-msg "Please restart your favorite IDE before using orx."]
   "mac"       [premake "mac"                                                                  config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                               env-msg "Please logout/login to refresh your environment if you're using an IDE."]
   "linux"     [premake (either find to-text system/platform/2 "x64" ["linux64"] ["linux32"])  config ["gmake" "codelite" "codeblocks"                           ]   deps ["libgl1-mesa-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
 ]

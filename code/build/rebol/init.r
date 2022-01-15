@@ -18,7 +18,7 @@ params: [
   scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
 ]
 platforms:  [
-  {windows}   [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019}         ]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
+  {windows}   [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
   {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
   {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
 ]
