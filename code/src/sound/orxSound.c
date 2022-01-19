@@ -147,10 +147,11 @@ typedef struct __orxSOUND_BUS_t
   orxTREE_NODE            stNode;                       /**< Tree node : 8/12 */
   orxLINKLIST             stList;                       /**< Sound list : 20/32 */
   orxSTRINGID             stID;                         /**< ID : 24/36 */
-  orxFLOAT                fGlobalVolume;                /**< Global volume : 28/40 */
-  orxFLOAT                fGlobalPitch;                 /**< Global pitch : 32/44 */
-  orxFLOAT                fLocalVolume;                 /**< Local volume : 36/48 */
-  orxFLOAT                fLocalPitch;                  /**< Local pitch : 40/52 */
+  orxHANDLE               hData;                        /**< Bus data : 28/44 */
+  orxFLOAT                fGlobalVolume;                /**< Global volume : 32/48 */
+  orxFLOAT                fGlobalPitch;                 /**< Global pitch : 36/52 */
+  orxFLOAT                fLocalVolume;                 /**< Local volume : 40/56 */
+  orxFLOAT                fLocalPitch;                  /**< Local pitch : 44/60 */
 
 } orxSOUND_BUS;
 
@@ -1116,6 +1117,29 @@ static orxINLINE void orxSound_DeleteAll()
   return;
 }
 
+/** Deletes all the buses
+ */
+static orxINLINE void orxSound_DeleteAllBuses()
+{
+  orxSOUND_BUS *pstBus;
+
+  /* For all buses */
+  for(pstBus = (orxSOUND_BUS *)orxBank_GetNext(sstSound.pstBusBank, orxNULL);
+      pstBus != orxNULL;
+      pstBus = (orxSOUND_BUS *)orxBank_GetNext(sstSound.pstBusBank, pstBus))
+  {
+    /* Has data */
+    if(pstBus->hData != orxHANDLE_UNDEFINED)
+    {
+      /* Deletes it */
+      orxSoundSystem_DeleteBus(pstBus->hData);
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Updates the SoundPointer (Callback for generic structure update calling)
  * @param[in]   _pstStructure                 Generic Structure or the concerned Body
  * @param[in]   _pstCaller                    Structure of the caller
@@ -1263,6 +1287,7 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
       pstResult->fGlobalPitch   =
       pstResult->fLocalVolume   =
       pstResult->fLocalPitch    = orxFLOAT_1;
+      pstResult->hData          = orxSoundSystem_CreateBus(_stBusID);
 
       /* Master? */
       if(orxTree_GetRoot(&(sstSound.stBusTree)) == orxNULL)
@@ -1392,7 +1417,7 @@ void orxFASTCALL orxSound_CommandSetBusParent(orxU32 _u32ArgNumber, const orxCOM
   /* Gets parent ID */
   stParentID = ((_u32ArgNumber > 1) && (*_astArgList[1].zValue != orxCHAR_NULL)) ? orxString_GetID(_astArgList[1].zValue) : orxSound_GetMasterBusID();
 
-  /* Set bus parent */
+  /* Sets bus parent */
   orxSound_SetBusParent(stBusID, stParentID);
 
   /* Updates result */
@@ -1761,6 +1786,9 @@ void orxFASTCALL orxSound_Exit()
 
     /* Deletes sample bank */
     orxBank_Delete(sstSound.pstSampleBank);
+
+    /* Deletes all buses */
+    orxSound_DeleteAllBuses();
 
     /* Deletes bus table */
     orxHashTable_Delete(sstSound.pstBusTable);
@@ -3335,6 +3363,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, or
   /* Stores bus ID */
   _pstSound->stBusID = _stBusID;
 
+  /* Sets its internal bus */
+  orxSoundSystem_SetBus(_pstSound->pstData, pstBus->hData);
+
   /* Done! */
   return eResult;
 }
@@ -3530,6 +3561,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusParent(orxSTRINGID _stBusI
   /* Sets its parent */
   if(orxTree_MoveAsChild(&(pstParentBus->stNode), &(pstBus->stNode)) != orxSTATUS_FAILURE)
   {
+    /* Sets its internal parent */
+    orxSoundSystem_SetBusParent(pstBus->hData, pstParentBus->hData);
+
     /* Updates it */
     eResult = orxSound_UpdateBus(pstBus);
   }
