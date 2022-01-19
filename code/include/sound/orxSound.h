@@ -137,6 +137,7 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
   struct
   {
     orxSOUND_FILTER_DATA      stData;       /**< Filter data : 32 */
+    orxSTRINGID               stBusID;      /**< Bus ID : 40 */
 
   } stFilter;
 
