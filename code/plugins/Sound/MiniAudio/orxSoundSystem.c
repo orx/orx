@@ -324,7 +324,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
   orxPROFILER_PUSH_MARKER("orxSoundSystem_Update");
 
   /* Inits event */
-  orxEVENT_INIT(stEvent, orxEVENT_TYPE_SOUND, orxSOUND_EVENT_SET_PARAM, orxNULL, orxNULL, &stPayload);
+  orxEVENT_INIT(stEvent, orxEVENT_TYPE_SOUND, orxSOUND_EVENT_SET_FILTER_PARAM, orxNULL, orxNULL, &stPayload);
 
   /* Clears payload */
   orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));

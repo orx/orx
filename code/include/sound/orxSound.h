@@ -64,7 +64,6 @@ typedef enum __orxSOUND_STATUS_t
   orxSOUND_STATUS_PLAY = 0,
   orxSOUND_STATUS_PAUSE,
   orxSOUND_STATUS_STOP,
-  orxSOUND_EVENT_SET_PARAM,
 
   orxSOUND_STATUS_NUMBER,
 
@@ -90,6 +89,7 @@ typedef enum __orxSOUND_EVENT_t
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
   orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
+  orxSOUND_EVENT_SET_FILTER_PARAM,            /**< Event sent when setting a filter's parameter */
 
   orxSOUND_EVENT_NUMBER,
 
