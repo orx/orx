@@ -84,10 +84,10 @@ apply-template: function [
   extension-rule: [
     begin-extension:
     remove [
-      {[} (erase: no)
+      {[} (erase: yes)
       some [
-        [ [ {+} -extension | {-} +extension] (erase: yes)
-        | [ {+} +extension | {-} -extension]
+        [ [ {+} -extension | {-} +extension]
+        | [ {+} +extension | {-} -extension] (erase: no)
         ]
         [{ } | {^M^/} | {^/}]
       ]
@@ -98,7 +98,8 @@ apply-template: function [
     | remove {]} end-extension: break
     | skip
     ]
-    if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension) :begin-extension
+    opt [if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension)]
+    :begin-extension
   ]
   parse content [
     (full-line: yes)
