@@ -1,8 +1,8 @@
 REBOL [
-  title: {Init}
-  author: {iarwain@orx-project.org}
-  date: 15-Aug-2017
-  file: %init.r
+  title:      {Init}
+  author:     {iarwain@orx-project.org}
+  date:       15-Aug-2017
+  file:       %init.r
 ]
 
 ; Variables
@@ -136,7 +136,7 @@ usage: func [
     print {}
   ]
 
-  prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
+  prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. {/} platform-info/script]]
 
   for-each [param desc default deps] params [
     prin rejoin [
