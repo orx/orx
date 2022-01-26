@@ -33,7 +33,7 @@ begin: now/time
 new-env: skip-env: skip-hook: false
 
 switch platform: to-string system/build/os [
-  "macintosh" [platform: "mac"]
+  "macos" [platform: "mac"]
 ]
 platform-info: platform-data/:platform
 
