@@ -109,7 +109,7 @@ either req-ver = cur-ver [
       print [{== Copying [} premake {] to [} folder {]}]
       write folder/:premake premake-file
       unless platform = {windows} [
-        call/shell form reduce [{chmod +x} folder/:premake]
+        call/shell/console form reduce [{chmod +x} folder/:premake]
       ]
     ]
   ]
@@ -164,7 +164,7 @@ foreach config platform-info/config [
         either platform = {windows} [
           call/output command none
         ] [
-          call/shell/output command none
+          call/shell/console command
         ]
       ]
     ]
@@ -233,7 +233,7 @@ if exists? git [
         print [{== Installing git hook [} hook {]}]
         write/append hook-path hook-file
         unless platform = {windows} [
-          call/shell form reduce [{chmod +x} hook-path]
+          call/shell/console form reduce [{chmod +x} hook-path]
         ]
       ] [
         print [{== Git hook [} hook {] already installed}]
