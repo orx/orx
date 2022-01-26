@@ -22,9 +22,9 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   "ORX"
 env-path:       %code
 platform-data:  compose/deep [
-  "windows"   [premake "windows"                                                  config ["gmake" "codelite" "codeblocks" "vs2017" "vs2019" "vs2022"]                                                                               env-msg "Please restart your favorite IDE before using orx."]
-  "mac"       [premake "mac"                                                      config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                               env-msg "Please logout/login to refresh your environment if you're using an IDE."]
-  "linux"     [premake (pick ["linux64" "linux32"] system/build/arch = 'x64)      config ["gmake" "codelite" "codeblocks"                           ]   deps ["libgl1-mesa-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
+  "windows"   [premake "windows"                                              config ["gmake" "codelite" "codeblocks" "vs2017" "vs2019" "vs2022"]                                                                               env-msg "Please restart your favorite IDE before using orx."]
+  "mac"       [premake "mac"                                                  config ["gmake" "codelite" "codeblocks" "xcode4"                  ]                                                                               env-msg "Please logout/login to refresh your environment if you're using an IDE."]
+  "linux"     [premake (pick ["linux64" "linux32"] system/build/arch = 'x64)  config ["gmake" "codelite" "codeblocks"                           ]   deps ["libgl1-mesa-dev" "libsndfile1-dev" "libopenal-dev" "libxrandr-dev"]  env-msg "Please logout/login to refresh your environment if you're using an IDE."]
 ]
 
 
@@ -51,8 +51,8 @@ unless empty? system/options/args [
 ; Checks version
 req-file: %.extern
 cur-file: extern/.version
-req-ver: load req-file
-cur-ver: if exists? cur-file [load cur-file]
+req-ver: trim/all read/string req-file
+cur-ver: if exists? cur-file [trim/all read/string cur-file]
 print ["== Checking version: [" extern "]"]
 either req-ver = cur-ver [
   print ["== [" cur-ver "] already installed, skipping!"]
@@ -98,6 +98,7 @@ either req-ver = cur-ver [
   until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
   delete-dir temp
   print ["== [" req-ver "] installed!"]
+
 
   ; Installs premake
   premake-path: dirize rejoin [premake-root platform-info/premake]
@@ -192,6 +193,7 @@ if exists? hg [
     ]
   ]
 
+
   ; Creates build file
   build-version: copy ""
   call/shell/output {hg log -l 1 --template "{rev}"} build-version
@@ -239,6 +241,7 @@ if exists? git [
     ]
   ]
 
+
   ; Creates build file
   build-version: copy ""
   call/shell/output "git rev-list --count HEAD" build-version
@@ -247,10 +250,11 @@ if exists? git [
   ]
 ]
 
+
 ; Done!
 if find platform-info 'deps [
   print newline
-  print ["==^(1b)[31m IMPORTANT - Make sure the following libraries are installed on your system^(1b)[39m:"]
+  print ["==^(1b)[31m IMPORTANT - Make sure the following libraries (or equivalent) are installed on your system^(1b)[39m:"]
   foreach lib platform-info/deps [print ["==[^(1b)[33m" lib "^(1b)[39m]"]]
 ]
 if all [
