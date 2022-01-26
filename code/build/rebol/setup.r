@@ -109,7 +109,7 @@ either req-ver = cur-ver [
       print [{== Copying [} premake {] to [} folder {]}]
       write folder/:premake premake-file
       unless platform = {windows} [
-        call/shell/console form reduce [{chmod +x} folder/:premake]
+        call/wait/shell/console form reduce [{chmod +x} folder/:premake]
       ]
     ]
   ]
@@ -128,7 +128,7 @@ either skip-env [
   print [{== Setting environment: [} env-variable {=} env-path {]}]
   set-env env-variable env-path
   either platform = {windows} [
-    call/shell/output form reduce [{setx} env-variable env-path] none
+    call/wait/shell/output form reduce [{setx} env-variable env-path] none
   ] [
     env-home: to-rebol-file dirize get-env {HOME}
     foreach [env-file env-prefix mandatory] reduce [
@@ -162,9 +162,9 @@ foreach config platform-info/config [
       in-dir rejoin [root folder] [
         command: rejoin [{./} premake { } config]
         either platform = {windows} [
-          call/output command none
+          call/wait/output command none
         ] [
-          call/shell/console command
+          call/wait/shell/console command
         ]
       ]
     ]
@@ -196,7 +196,7 @@ if exists? hg [
 
   ; Creates build file
   build-version: copy {}
-  call/shell/output {hg log -l 1 --template "{rev}"} build-version
+  call/wait/shell/output {hg log -l 1 --template "{rev}"} build-version
   unless empty? build-version [
     attempt [write build-file form reduce [{#define __orxVERSION_BUILD__} build-version]]
   ]
@@ -233,7 +233,7 @@ if exists? git [
         print [{== Installing git hook [} hook {]}]
         write/append hook-path hook-file
         unless platform = {windows} [
-          call/shell/console form reduce [{chmod +x} hook-path]
+          call/wait/shell/console form reduce [{chmod +x} hook-path]
         ]
       ] [
         print [{== Git hook [} hook {] already installed}]
@@ -244,7 +244,7 @@ if exists? git [
 
   ; Creates build file
   build-version: copy {}
-  call/shell/output {git rev-list --count HEAD} build-version
+  call/wait/shell/output {git rev-list --count HEAD} build-version
   unless empty? trim/all build-version [
     attempt [write build-file form reduce [{#define __orxVERSION_BUILD__} build-version]]
   ]
