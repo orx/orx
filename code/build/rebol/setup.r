@@ -5,7 +5,6 @@ REBOL [
   file:         %setup.r
 ]
 
-
 ; Default settings
 tag:            <version>
 hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag]]
@@ -27,7 +26,6 @@ platform-data:  compose/deep [
   {linux}     [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libsndfile1-dev} {libopenal-dev} {libxrandr-dev}]  env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
 ]
 
-
 ; Inits
 begin: now/time
 new-env: skip-env: skip-hook: false
@@ -40,13 +38,11 @@ platform-info: platform-data/:platform
 change-dir root: system/options/path
 attempt [write build-file {}]
 
-
 ; Should override cache?
 unless empty? system/options/args [
   print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file system/options/args/1 {]}]
   skip-env: false skip-hook: true
 ]
-
 
 ; Checks version
 req-file: %.extern
@@ -58,7 +54,6 @@ either req-ver = cur-ver [
   print [{== [} cur-ver {] already installed, skipping!}]
 ] [
   print [{== [} req-ver {] needed, current [} cur-ver {]}]
-
 
   ; Updates cache
   either exists? local: rejoin [cache req-ver %.zip] [
@@ -76,13 +71,11 @@ either req-ver = cur-ver [
     print [{== [} req-ver {] cached!}]
   ]
 
-
   ; Clears current version
   if exists? extern [
     print [{== Deleting [} extern {]}]
     until [wait 0.5 delete-dir extern not exists? extern]
   ]
-
 
   ; Decompresses
   delete-dir temp
@@ -99,7 +92,6 @@ either req-ver = cur-ver [
   delete-dir temp
   print [{== [} req-ver {] installed!}]
 
-
   ; Installs premake
   premake-path: dirize rejoin [premake-root platform-info/premake]
   premake: first read premake-path
@@ -114,11 +106,9 @@ either req-ver = cur-ver [
     ]
   ]
 
-
   ; Stores version
   write cur-file req-ver
 ]
-
 
 ; Sets environment variable
 either skip-env [
@@ -150,7 +140,6 @@ either skip-env [
   ]
 ]
 
-
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: first read premake-path
@@ -173,7 +162,6 @@ foreach config platform-info/config [
 print [{== You can now build orx in [} builds/code/:platform {]}]
 print [{== For more details, please refer to [ https://orx-project.org/wiki/ ]}]
 
-
 ; Mercurial hook
 if exists? hg [
   either skip-hook [
@@ -193,7 +181,6 @@ if exists? hg [
     ]
   ]
 
-
   ; Creates build file
   build-version: copy {}
   call/wait/shell/output {hg log -l 1 --template "{rev}"} build-version
@@ -201,7 +188,6 @@ if exists? hg [
     attempt [write build-file form reduce [{#define __orxVERSION_BUILD__} build-version]]
   ]
 ]
-
 
 ; Git hooks
 if exists? git [
@@ -241,7 +227,6 @@ if exists? git [
     ]
   ]
 
-
   ; Creates build file
   build-version: copy {}
   call/wait/shell/output {git rev-list --count HEAD} build-version
@@ -249,7 +234,6 @@ if exists? git [
     attempt [write build-file form reduce [{#define __orxVERSION_BUILD__} build-version]]
   ]
 ]
-
 
 ; Done!
 if find platform-info 'deps [
