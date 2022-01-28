@@ -152,7 +152,7 @@ foreach config platform-info/config [
         either platform = 'windows [
           call/wait/output command none
         ] [
-          call/wait/shell command
+          call/wait/shell/output command none
         ]
       ]
     ]
