@@ -18,9 +18,9 @@ params: compose/deep [
   scroll      {C++ convenience layer with config-object binding}                              -         [+c++]
 ]
 platforms:  [
-  {windows}   [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
-  {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
-  {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+  windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
+  mac         [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+  linux       [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]
 source-path: %../template/
 extern: %../../../extern/
@@ -31,7 +31,7 @@ log: func [
   /only
   /no-break
 ] [
-  if not only [
+  unless only [
     prin [{[} now/time {] }]
   ]
   either no-break [prin message] [print message]
@@ -98,8 +98,8 @@ apply-template: function [
 change-dir root: system/options/path
 code-path: {..}
 date: to-string now/date
-switch platform: to-string system/build/os [
-  {macos} [platform: {mac} code-path: to-local-file root/code]
+switch platform: system/build/os [
+  macos [platform: 'mac code-path: to-local-file root/code]
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
@@ -217,7 +217,7 @@ either all [
           ]
         ]
       ]
-      if not tail? args [
+      unless tail? args [
         usage/message reform [{Too many arguments:} mold system/options/args]
       ]
     ]
@@ -229,7 +229,7 @@ either all [
           foreach dep fourth find params param [
             extension-group: either #"+" = first to-string dep [+extensions] [-extensions]
             extension: to-word next to-string dep
-            if not find extension-group extension [
+            unless find extension-group extension [
               append extension-group extension
               log reform [{== [} param {] triggers [} dep {]}]
             ]
@@ -256,7 +256,7 @@ either all [
 source-path: clean-path rejoin [first split-path system/options/script source-path]
 
 ; Runs setup if premake isn't found
-if not exists? source-path/:premake-source [
+unless exists? source-path/:premake-source [
   log {New orx installation found, running setup!}
   delete-dir source-path/:extern
   in-dir source-path/../../.. [
@@ -285,7 +285,7 @@ log reform [
   do [
     use [extensions] [
       remove-each template extensions: copy templates [any [not extension? template not get template]]
-      if not empty? extensions [form extensions]
+      unless empty? extensions [form extensions]
     ]
   ]
   {]}
@@ -323,7 +323,7 @@ do copy-files: function [
 if build [
   in-dir build [
     write platform-info/premake read source-path/:premake-source
-    if not platform = {windows} [
+    unless platform = 'windows [
       call/wait/shell form reduce [{chmod +x} platform-info/premake]
     ]
     log reform [{Generating build files for [} platform {]:}]

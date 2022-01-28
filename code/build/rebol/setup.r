@@ -21,17 +21,16 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   {ORX}
 env-path:       %code
 platform-data:  compose/deep [
-  {windows}   [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                                                               env-msg {Please restart your favorite IDE before using orx.}]
-  {mac}       [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                                                               env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
-  {linux}     [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libsndfile1-dev} {libopenal-dev} {libxrandr-dev}]  env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                                                               env-msg {Please restart your favorite IDE before using orx.}]
+  mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                                                               env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libsndfile1-dev} {libopenal-dev} {libxrandr-dev}]  env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
 ]
 
 ; Inits
 begin: now/time
 new-env: skip-env: skip-hook: false
-
-switch platform: to-string system/build/os [
-  {macos} [platform: {mac}]
+switch platform: system/build/os [
+  macos [platform: 'mac]
 ]
 platform-info: platform-data/:platform
 
@@ -100,7 +99,7 @@ either req-ver = cur-ver [
     if exists? folder [
       print [{== Copying [} premake {] to [} folder {]}]
       write folder/:premake premake-file
-      unless platform = {windows} [
+      unless platform = 'windows [
         call/wait/shell form reduce [{chmod +x} folder/:premake]
       ]
     ]
@@ -117,7 +116,7 @@ either skip-env [
   new-env: (get-env env-variable) != env-path: to-string to-local-file clean-path root/:env-path
   print [{== Setting environment: [} env-variable {=} env-path {]}]
   set-env env-variable env-path
-  either platform = {windows} [
+  either platform = 'windows [
     call/wait/shell/output form reduce [{setx} env-variable env-path] none
   ] [
     env-home: to-rebol-file dirize get-env {HOME}
@@ -150,7 +149,7 @@ foreach config platform-info/config [
     if exists? folder [
       in-dir rejoin [root folder] [
         command: rejoin [{./} premake { } config]
-        either platform = {windows} [
+        either platform = 'windows [
           call/wait/output command none
         ] [
           call/wait/shell command
@@ -218,7 +217,7 @@ if exists? git [
         attempt [make-dir/deep first split-path hook-path]
         print [{== Installing git hook [} hook {]}]
         write/append hook-path hook-file
-        unless platform = {windows} [
+        unless platform = 'windows [
           call/wait/shell form reduce [{chmod +x} hook-path]
         ]
       ] [
