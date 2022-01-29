@@ -113,6 +113,7 @@ solution "orx"
         "../../extern/stb_vorbis",
         "../../extern/libwebp/include",
         "../../extern/basisu/include",
+        "../../extern/qoi"
     }
 
     excludes
