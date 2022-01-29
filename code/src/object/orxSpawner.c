@@ -811,7 +811,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
                 case orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT:
                 {
                   /* Applies relative speed (object) */
-                  orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(pstSpawner->vSpeed), fRotation), &vScale);
+                  orxVector_2DRotate(&vSpeed, orxVector_Mul(&vSpeed, &(pstSpawner->vSpeed), &vScale), fRotation);
                   orxObject_SetSpeed(pstObject, &vSpeed);
                   break;
                 }
@@ -819,7 +819,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
                 case orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER:
                 {
                   /* Applies relative speed (spawner) */
-                  orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(pstSpawner->vSpeed), pstSpawner->fPendingRotation), pstSpawner->pvPendingScale);
+                  orxVector_2DRotate(&vSpeed, orxVector_Mul(&vSpeed, &(pstSpawner->vSpeed), pstSpawner->pvPendingScale), pstSpawner->fPendingRotation);
                   orxObject_SetSpeed(pstObject, &vSpeed);
                   break;
                 }
@@ -827,7 +827,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
                 case orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED:
                 {
                   /* Applies relative speed (both) */
-                  orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, &(pstSpawner->vSpeed), fCombinedRotation), &vCombinedScale);
+                  orxVector_2DRotate(&vSpeed, orxVector_Mul(&vSpeed, &(pstSpawner->vSpeed), &vCombinedScale), fCombinedRotation);
                   orxObject_SetSpeed(pstObject, &vSpeed);
                   break;
                 }
