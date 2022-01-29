@@ -87,6 +87,19 @@
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef STBI_WRITE_NO_STDIO
 
+#define QOI_NO_STDIO
+#define QOI_IMPLEMENTATION
+#define QOI_MALLOC(sz)          orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)
+#define QOI_FREE(p)             orxMemory_Free(p)
+#define QOI_ZEROARR(a)          orxMemory_Zero(a, sizeof(a))
+#include "qoi.h"
+#undef QOI_ZEROARR
+#undef QOI_FREE
+#undef QOI_MALLOC
+#undef QOI_IMPLEMENTATION
+#undef QOI_NO_STDIO
+
+
 #ifdef __orxLLVM__
   #pragma clang diagnostic pop
 #endif /* __orxLLVM__ */
@@ -1735,21 +1748,39 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
     }
     else
     {
-      unsigned char *pu8ImageData;
-      GLuint         uiBytesPerPixel;
+      unsigned char  *pu8ImageData = orxNULL;
+      int             iIndex = 0;
 
       /* Updates its status */
       pstInfo->bIsPVRTC = orxFALSE;
 
-      /* Loads image */
-      pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+      /* Is QOI? */
+      if((qoi_read_32(pstInfo->pu8ImageSource, &iIndex) == QOI_MAGIC))
+      {
+        qoi_desc stDesc;
+
+        /* Decodes it */
+        pu8ImageData = (unsigned char *)qoi_decode(pstInfo->pu8ImageSource, (int)pstInfo->s64Size, &stDesc, 4);
+
+        /* Valid? */
+        if(pu8ImageData != NULL)
+        {
+          /* Updates info */
+          pstInfo->uiWidth  = stDesc.width;
+          pstInfo->uiHeight = stDesc.height;
+        }
+      }
+      else
+      {
+        GLuint uiBytesPerPixel;
+
+        /* Loads image */
+        pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+      }
 
       /* Valid? */
       if(pu8ImageData != NULL)
       {
-        /* Checks */
-        orxASSERT((uiBytesPerPixel == 3) || (uiBytesPerPixel == 4));
-
         /* Uses image buffer */
         pstInfo->pu8ImageBuffer = pu8ImageData;
 
@@ -1764,9 +1795,9 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
         pstInfo->pu8ImageSource = pu8ImageData;
 
         /* Updates info */
-        pstInfo->u32DataSize      = (orxU32)(pstInfo->uiRealWidth * pstInfo->uiRealHeight * uiBytesPerPixel);
-        pstInfo->uiDepth          = uiBytesPerPixel * 8;
-        pstInfo->eInternalFormat  = (uiBytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+        pstInfo->u32DataSize      = 4 * pstInfo->uiRealWidth * pstInfo->uiRealHeight;
+        pstInfo->uiDepth          = 32;
+        pstInfo->eInternalFormat  = GL_RGBA;
         pstInfo->eTextureType     = GL_UNSIGNED_BYTE;
         pstInfo->bCompressed      = orxFALSE;
       }
@@ -1872,8 +1903,39 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmapData(void *_pContext)
     /* Saves image to disk */
     eResult = stbi_write_png_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
+  /* QOI? */
+  else if(orxString_ICompare(zExtension, "qoi") == 0)
+  {
+    qoi_desc  stDesc;
+    int       iSize;
+    void     *pBuffer;
+
+    /* Inits descriptor */
+    orxMemory_Zero(&stDesc, sizeof(qoi_desc));
+    stDesc.width      = pstInfo->u32Width;
+    stDesc.height     = pstInfo->u32Height;
+    stDesc.channels   = 4;
+    stDesc.colorspace = 1;
+
+    /* Encodes it */
+    pBuffer = qoi_encode(pstInfo->pu8ImageData, &stDesc, &iSize);
+
+    /* Success? */
+    if(pBuffer != NULL)
+    {
+      /* Saves image to disk */
+      if(orxResource_Write(pstInfo->hResource, (orxS64)iSize, pBuffer, orxNULL, orxNULL) == (orxS64)iSize)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      /* Deletes buffer */
+      orxMemory_Free(pBuffer);
+    }
+  }
   /* JPG? */
-  if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
+  else if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
   {
     /* Saves image to disk */
     eResult = stbi_write_jpg_to_func(&orxDisplay_iOS_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -1933,11 +1995,23 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_LoadBitmapData(orxBITMAP *_pstBitmap
       /* Asynchronous? */
       if(sstDisplay.pstTempBitmap != orxNULL)
       {
-        int iWidth, iHeight, iComponent;
+        orxU8  *pu8Header;
+        int     iWidth, iHeight, iDummy = 0;
+
+        /* Retrieves header for QOI */
+        pu8Header     = (orxU8 *)alloca(QOI_HEADER_SIZE);
+        orxResource_Read(hResource, QOI_HEADER_SIZE, pu8Header, orxNULL, orxNULL);
+        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 
         /* Gets its info */
-        if((orxDisplay_iOS_GetPVRTCInfo(hResource, &iWidth, &iHeight) != orxSTATUS_FAILURE)
-        || (stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iComponent) != 0))
+        if(((qoi_read_32(pu8Header, &iDummy) == QOI_MAGIC)
+         && (iWidth   = qoi_read_32(pu8Header, &iDummy),
+             iHeight  = qoi_read_32(pu8Header, &iDummy),
+             iDummy   = (int)pu8Header[iDummy],
+             (iDummy == 3)
+          || (iDummy == 4)))
+        || (orxDisplay_iOS_GetPVRTCInfo(hResource, &iWidth, &iHeight) != orxSTATUS_FAILURE)
+        || (stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iDummy) != 0))
         {
           /* Resets resource cursor */
           orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);

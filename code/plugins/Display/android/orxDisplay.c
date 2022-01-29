@@ -1421,7 +1421,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_LoadBitmapData(orxBITMAP *_pstBi
         orxU8  *pu8Header;
         int     iWidth, iHeight, iDummy = 0;
 
-        /* Retrieves header for Basis Universal */
+        /* Retrieves header for QOI */
         pu8Header     = (orxU8 *)alloca(QOI_HEADER_SIZE);
         orxResource_Read(hResource, QOI_HEADER_SIZE, pu8Header, orxNULL, orxNULL);
         orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
