@@ -1,0 +1,113 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  windows-build-vs:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        vsversion:
+          - 2017
+          - 2019
+        vsconfig:
+          - Debug
+          - Profile
+          - Release
+        vsplatform:
+          - x64
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: orx setup
+        run: ./setup.bat
+
+      - uses: microsoft/setup-msbuild@v1.1
+
+      - name: orx build (msbuild)
+        run: msbuild code/build/windows/vs${{ matrix.vsversion }}/orx.sln /p:Platform=${{ matrix.vsplatform }} /p:Configuration=${{ matrix.vsconfig }}
+
+  windows-build-gmake:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        gmakeconfig:
+          - debug
+          - profile
+          - release
+        gmakeplatform:
+          - 64
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: orx setup
+        run: ./setup.bat
+
+      - name: orx build (gmake)
+        working-directory: code/build/windows/gmake
+        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
+
+  ubuntu-build-gmake:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        gmakeconfig:
+          - debug
+          - profile
+          - release
+        gmakeplatform:
+          - 64
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update apt repo
+        run: sudo apt-get -qq update
+
+      - name: Install extra OS deps
+        run: sudo apt-get -y install freeglut3-dev libxrandr-dev
+
+      - name: orx setup
+        run: ./setup.sh
+
+      - name: orx build (gmake)
+        working-directory: code/build/linux/gmake
+        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
+
+  macos-build-gmake:
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        gmakeconfig:
+          - debug
+          - profile
+          - release
+        gmakeplatform:
+          - 64
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: orx setup
+        run: ./setup.sh
+
+      - name: orx build (gmake)
+        working-directory: code/build/mac/gmake
+        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
