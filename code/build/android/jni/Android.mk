@@ -64,6 +64,7 @@ ORX_INCLUDES := $(LOCAL_PATH)/../include \
                     $(LOCAL_PATH)/../../extern/xxHash \
                     $(LOCAL_PATH)/../../extern/miniaudio \
                     $(LOCAL_PATH)/../../extern/stb_image \
+                    $(LOCAL_PATH)/../../extern/qoi \
                     $(LOCAL_PATH)/../../extern/stb_vorbis \
                     $(LOCAL_PATH)/../../extern/LiquidFun-1.1.0/include \
                     $(LOCAL_PATH)/../../extern/libwebp/include
