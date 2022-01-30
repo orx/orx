@@ -61,13 +61,18 @@ either req-ver = cur-ver [
     attempt [make-dir/deep cache]
     print [{== [} req-ver {] not in cache}]
     system/schemes/http/spec/timeout: system/schemes/https/spec/timeout: 60
-    foreach host hosts [
+    either foreach host hosts [
       either attempt [
-        print [{== Fetching [} remote: replace rejoin host tag req-ver {]} newline {== Please wait!}]
-        write root/:local read to-url remote
-      ] [break] [print [{== Not found!}]]
+        print [{== Fetching [} remote: to-url replace rejoin host tag req-ver {]} newline {== Please wait!}]
+        write root/:local read remote
+      ] [break/return true] [print [{== Not found!}]]
+      false
+    ] [
+      print [{== [} req-ver {] cached!}]
+    ] [
+      print [{== [} req-ver {] not found, aborting!}]
+      quit
     ]
-    print [{== [} req-ver {] cached!}]
   ]
 
   ; Clears current version
