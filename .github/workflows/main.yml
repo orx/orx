@@ -14,7 +14,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  windows-build-vs:
+  # Visual Studio build - Windows only
+  build-vs:
     runs-on: windows-latest
 
     strategy:
@@ -40,11 +41,14 @@ jobs:
       - name: orx build (msbuild)
         run: msbuild code/build/windows/vs${{ matrix.vsversion }}/orx.sln /p:Platform=${{ matrix.vsplatform }} /p:Configuration=${{ matrix.vsconfig }}
 
-  windows-build-gmake:
-    runs-on: windows-latest
-
+  # gmake build - All OSs
+  build-gmake:
     strategy:
       matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
         gmakeconfig:
           - debug
           - profile
@@ -52,62 +56,38 @@ jobs:
         gmakeplatform:
           - 64
 
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: orx setup
-        run: ./setup.bat
-
-      - name: orx build (gmake)
-        working-directory: code/build/windows/gmake
-        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
-
-  ubuntu-build-gmake:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        gmakeconfig:
-          - debug
-          - profile
-          - release
-        gmakeplatform:
-          - 64
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Update apt repo
         run: sudo apt-get -qq update
+        if: matrix.os == 'ubuntu-latest'
 
-      - name: Install extra OS deps
+      - name: Install extra OS deps for orx
         run: sudo apt-get -y install freeglut3-dev libxrandr-dev
+        if: matrix.os == 'ubuntu-latest'
 
       - name: orx setup
         run: ./setup.sh
+        if: matrix.os != 'windows-latest'
+
+      - name: orx setup
+        run: ./setup.bat
+        if: matrix.os == 'windows-latest'
 
       - name: orx build (gmake)
         working-directory: code/build/linux/gmake
         run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
-
-  macos-build-gmake:
-    runs-on: macos-latest
-
-    strategy:
-      matrix:
-        gmakeconfig:
-          - debug
-          - profile
-          - release
-        gmakeplatform:
-          - 64
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: orx setup
-        run: ./setup.sh
+        if: matrix.os == 'ubuntu-latest'
 
       - name: orx build (gmake)
         working-directory: code/build/mac/gmake
         run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
+        if: matrix.os == 'macos-latest'
+
+      - name: orx build (gmake)
+        working-directory: code/build/windows/gmake
+        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
+        if: matrix.os == 'windows-latest'
