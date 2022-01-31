@@ -2849,7 +2849,29 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBus(orxSOUNDSYSTEM_SOUND *_pst
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  //! TODO
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Valid? */
+  if((_hBus != 0) && (_hBus != orxHANDLE_UNDEFINED))
+  {
+    orxSOUNDSYSTEM_BUS *pstBus;
+    ma_result           hResult;
+
+    /* Gets bus */
+    pstBus = (orxSOUNDSYSTEM_BUS *)_hBus;
+
+    /* Attaches sound to bus input */
+    hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, &(pstBus->stGroup.engineNode), 0);
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
 
   /* Done! */
   return eResult;
