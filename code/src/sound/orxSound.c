@@ -1274,6 +1274,8 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
     /* Not found and should create? */
     if((*ppstBucket == orxNULL) && (_bCreate != orxFALSE))
     {
+      orxTREE_NODE *pstRoot;
+
       /* Allocates it */
       pstResult = (orxSOUND_BUS *)orxBank_Allocate(sstSound.pstBusBank);
 
@@ -1289,8 +1291,11 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
       pstResult->fLocalPitch    = orxFLOAT_1;
       pstResult->hData          = orxSoundSystem_CreateBus(_stBusID);
 
+      /* Gets root */
+      pstRoot = orxTree_GetRoot(&(sstSound.stBusTree));
+
       /* Master? */
-      if(orxTree_GetRoot(&(sstSound.stBusTree)) == orxNULL)
+      if(pstRoot == orxNULL)
       {
         /* Adds it as root */
         orxTree_AddRoot(&(sstSound.stBusTree), &(pstResult->stNode));
@@ -1298,7 +1303,10 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
       else
       {
         /* Adds it to root */
-        orxTree_AddChild(orxTree_GetRoot(&(sstSound.stBusTree)), &(pstResult->stNode));
+        orxTree_AddChild(pstRoot, &(pstResult->stNode));
+
+        /* Updates its parent */
+        orxSoundSystem_SetBusParent(pstResult->hData, orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstRoot)->hData);
       }
 
       /* Stores it */
