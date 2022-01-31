@@ -2824,12 +2824,30 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteBus(orxHANDLE _hBus)
   if((_hBus != 0) && (_hBus != orxHANDLE_UNDEFINED))
   {
     orxSOUNDSYSTEM_BUS *pstBus;
+    ma_node_output_bus *pstInput;
+    ma_node            *pstOutputNode;
+    ma_result           hResult;
 
     /* Gets it */
     pstBus = (orxSOUNDSYSTEM_BUS *)_hBus;
 
     /* Removes all filters */
     orxSoundSystem_RemoveAllBusFilters(_hBus);
+
+    /* Retrieves output node */
+    orxASSERT(pstBus->pstFilterNode->outputBusCount > 0);
+    pstOutputNode = pstBus->pstFilterNode->pOutputBuses[0].pInputNode;
+
+    /* For all inputs */
+    orxASSERT(pstBus->pstFilterNode->inputBusCount > 0);
+    for(pstInput = pstBus->pstFilterNode->pInputBuses[0].head.pNext;
+        pstInput != NULL;
+        pstInput = pstBus->pstFilterNode->pInputBuses[0].head.pNext)
+    {
+      /* Attaches it to output */
+      hResult = ma_node_attach_output_bus(pstInput->pNode, 0, pstOutputNode, 0);
+      orxASSERT(hResult == MA_SUCCESS);
+    }
 
     /* Uninits sound group */
     ma_sound_group_uninit(&(pstBus->stGroup));
@@ -2881,7 +2899,30 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBusParent(orxHANDLE _hBus, orx
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  //! TODO
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if((_hBus != 0) && (_hBus != orxHANDLE_UNDEFINED)
+  && (_hParentBus != 0) && (_hParentBus != orxHANDLE_UNDEFINED))
+  {
+    orxSOUNDSYSTEM_BUS *pstBus, *pstParentBus;
+    ma_result           hResult;
+
+    /* Gets buses */
+    pstBus        = (orxSOUNDSYSTEM_BUS *)_hBus;
+    pstParentBus  = (orxSOUNDSYSTEM_BUS *)_hParentBus;
+
+    /* Attaches sound to bus input */
+    hResult = ma_node_attach_output_bus(pstBus->pstFilterNode, 0, &(pstParentBus->stGroup.engineNode), 0);
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
 
   /* Done! */
   return eResult;
