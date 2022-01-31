@@ -1831,9 +1831,6 @@ orxSOUND *orxFASTCALL orxSound_Create()
     /* Increases count */
     orxStructure_IncreaseCount(pstResult);
 
-    /* Sets master bus ID */
-    orxSound_SetBusID(pstResult, sstSound.stMasterBusID);
-
     /* Clears its status */
     pstResult->eStatus = orxSOUND_STATUS_NONE;
   }
@@ -1873,11 +1870,29 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
       /* Creates empty stream */
       pstResult->pstData = orxSoundSystem_CreateStream(pstResult, _u32ChannelNumber, _u32SampleRate);
 
-      /* Stores its reference */
-      pstResult->zReference = orxString_Store(_zName);
+      /* Valid? */
+      if(pstResult->pstData != orxNULL)
+      {
+        /* Sets master bus ID */
+        orxSound_SetBusID(pstResult, sstSound.stMasterBusID);
 
-      /* Updates its status */
-      orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_FLAG_NONE);
+        /* Stores its reference */
+        pstResult->zReference = orxString_Store(_zName);
+
+        /* Updates its status */
+        orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound <%s>: invalid stream parameters [%u channels, %u sample rate].", _zName, _u32ChannelNumber, _u32SampleRate);
+
+        /* Deletes it */
+        orxSound_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
     }
   }
 
@@ -2239,6 +2254,13 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
       {
         /* Stores its reference */
         _pstSound->zReference = orxString_Store(_zSampleName);
+
+        /* Doesn't have a bus yet? */
+        if(_pstSound->stBusID == 0)
+        {
+          /* Sets master bus ID */
+          orxSound_SetBusID(_pstSound, sstSound.stMasterBusID);
+        }
 
         /* Updates its status */
         orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE, orxSOUND_KU32_FLAG_NONE);
