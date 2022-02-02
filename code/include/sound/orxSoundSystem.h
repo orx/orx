@@ -84,6 +84,7 @@ typedef enum __orxSOUND_FILTE_TYPE_t
   orxSOUND_FILTER_TYPE_NOTCH,
   orxSOUND_FILTER_TYPE_PEAKING,
   orxSOUND_FILTER_TYPE_DELAY,
+  orxSOUND_FILTER_TYPE_CUSTOM,
 
   orxSOUND_FILTER_TYPE_NUMBER,
 
@@ -91,84 +92,95 @@ typedef enum __orxSOUND_FILTE_TYPE_t
 
 } orxSOUND_FILTER_TYPE;
 
+/** Filter callback function type to use with custom filters
+ */
+typedef void (orxFASTCALL *orxSOUND_FILTER_FUNCTION)(orxFLOAT *_afSampleListOut, const orxFLOAT *_afSampleListIn, orxU32 _u32SampleCount, orxU32 _u32ChannelCount, orxU32 _u32SampleRate, orxSTRINGID _stNameID, void *_pContext);
+
 /** Sound filter data
  */
 typedef struct __orxSOUND_FILTER_DATA_t
 {
-  orxSOUND_FILTER_TYPE  eType;
-  orxSTRINGID           stNameID;
+  orxSOUND_FILTER_TYPE          eType;
+  orxSTRINGID                   stNameID;
 
   union
   {
     struct
     {
-      orxFLOAT  fA0;
-      orxFLOAT  fA1;
-      orxFLOAT  fA2;
-      orxFLOAT  fB0;
-      orxFLOAT  fB1;
-      orxFLOAT  fB2;
+      orxFLOAT                  fA0;
+      orxFLOAT                  fA1;
+      orxFLOAT                  fA2;
+      orxFLOAT                  fB0;
+      orxFLOAT                  fB1;
+      orxFLOAT                  fB2;
 
     } stBiquad;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stLowPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stHighPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stBandPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stLowShelf;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stHighShelf;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
 
     } stNotch;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stPeaking;
 
     struct
     {
-      orxFLOAT  fDelay;
-      orxFLOAT  fDecay;
+      orxFLOAT                  fDelay;
+      orxFLOAT                  fDecay;
 
     } stDelay;
+
+    struct
+    {
+      orxSOUND_FILTER_FUNCTION  pfnCallback;
+      void                     *pContext;
+
+    } stCustom;
 
   };
 

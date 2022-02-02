@@ -211,6 +211,19 @@ typedef struct __orxSOUNDSYSTEM_BUS_t
 
 } orxSOUNDSYSTEM_BUS;
 
+/** Internal custom node structure
+ */
+typedef struct __orxSOUNDSYSTEM_CUSTOM_NODE_t
+{
+  ma_node_base                    stNode;
+  orxSOUND_FILTER_FUNCTION        pfnCallback;
+  void                           *pContext;
+  orxSTRINGID                     stNameID;
+  orxU32                          u32ChannelNumber;
+  orxU32                          u32SampleRate;
+
+} orxSOUNDSYSTEM_CUSTOM_NODE;
+
 /** Internal filter structure
  */
 typedef struct __orxSOUNDSYSTEM_FILTER_t
@@ -226,6 +239,7 @@ typedef struct __orxSOUNDSYSTEM_FILTER_t
     ma_notch_node                 stNotchNode;
     ma_peak_node                  stPeakingNode;
     ma_delay_node                 stDelayNode;
+    orxSOUNDSYSTEM_CUSTOM_NODE    stCustomNode;
 
   } stNode;
 
@@ -254,6 +268,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_data_source_vtable           stStreamVTable;         /**< Stream VTable */
   ma_decoding_backend_vtable      stVorbisVTable;         /**< Vorbis decoding backend VTable */
   ma_decoding_backend_vtable     *apstVTable[1];          /**< Decoding backend VTable */
+  ma_node_vtable                  stCustomNodeVTable;     /**< Custom node VTable */
   orxBANK                        *pstSampleBank;          /**< Sample bank */
   orxBANK                        *pstSoundBank;           /**< Sound bank */
   orxBANK                        *pstBusBank;             /**< Bus bank */
@@ -281,6 +296,22 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static void orxSoundSystem_MiniAudio_ProcessCustomNode(ma_node *_pstNode, const float **_aafFramesIn, ma_uint32 *_pu32FrameCountIn, float **_aafFramesOut, ma_uint32 *_pu32FrameCountOut)
+{
+  orxSOUNDSYSTEM_CUSTOM_NODE *pstNode;
+
+  /* Gets custom node */
+  pstNode = (orxSOUNDSYSTEM_CUSTOM_NODE *)_pstNode;
+
+  /* Calls callback */
+  pstNode->pfnCallback(_aafFramesOut[0], _aafFramesIn[0], *_pu32FrameCountOut * pstNode->u32ChannelNumber, pstNode->u32ChannelNumber, pstNode->u32SampleRate, pstNode->stNameID, pstNode->pContext);
+
+  /* Done! */
+  return;
+
+  //ma_delay_process_pcm_frames(&pDelayNode->delay, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
+}
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVENT *_pstEvent)
 {
@@ -567,6 +598,15 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
               ma_delay_node_set_decay(&(pstFilter->stNode.stDelayNode), stPayload.stFilter.stData.stDelay.fDecay);
 
               /* Updates result */
+              hResult = MA_SUCCESS;
+
+              break;
+            }
+
+            /* Custom */
+            case orxSOUND_FILTER_TYPE_CUSTOM:
+            {
+              /* Nothing to do */
               hResult = MA_SUCCESS;
 
               break;
@@ -1487,6 +1527,34 @@ static ma_result orxSoundSystem_MiniAudio_InitFilter(orxSOUNDSYSTEM_FILTER *_pst
       break;
     }
 
+    /* Custom */
+    case orxSOUND_FILTER_TYPE_CUSTOM:
+    {
+      /* Valid callback? */
+      if(_pstFilterData->stCustom.pfnCallback != orxNULL)
+      {
+        ma_node_config stConfig;
+
+        /* Stores info */
+        _pstFilter->stNode.stCustomNode.pfnCallback       = _pstFilterData->stCustom.pfnCallback;
+        _pstFilter->stNode.stCustomNode.pContext          = _pstFilterData->stCustom.pContext;
+        _pstFilter->stNode.stCustomNode.stNameID          = _pstFilterData->stNameID;
+        _pstFilter->stNode.stCustomNode.u32ChannelNumber  = ma_engine_get_channels(&(sstSoundSystem.stEngine));
+        _pstFilter->stNode.stCustomNode.u32SampleRate     = _pstEngineNode->sampleRate;
+
+        /* Inits its config */
+        stConfig                  = ma_node_config_init();
+        stConfig.vtable           = &(sstSoundSystem.stCustomNodeVTable);
+        stConfig.pInputChannels   =
+        stConfig.pOutputChannels  = (ma_uint32 *)&(_pstFilter->stNode.stCustomNode.u32ChannelNumber);
+
+        /* Inits it */
+        hResult = ma_node_init(ma_engine_get_node_graph(&(sstSoundSystem.stEngine)), &stConfig, &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks), &(_pstFilter->stNode.stCustomNode.stNode));
+      }
+
+      break;
+    }
+
     default:
     {
       break;
@@ -1583,6 +1651,15 @@ static void orxSoundSystem_MiniAudio_DeleteFilter(orxSOUNDSYSTEM_FILTER *_pstFil
       break;
     }
 
+    /* Custom */
+    case orxSOUND_FILTER_TYPE_CUSTOM:
+    {
+      /* Uninits its node */
+      ma_node_uninit(&(_pstFilter->stNode.stCustomNode.stNode), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+      break;
+    }
+
     default:
     {
       /* Should not happen! */
@@ -1653,6 +1730,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.stStreamVTable.onGetCursor                             = &orxSoundSystem_MiniAudio_Stream_GetCursor;
     sstSoundSystem.stStreamVTable.onGetLength                             = &orxSoundSystem_MiniAudio_Stream_GetLength;
     sstSoundSystem.stStreamVTable.onSetLooping                            = &orxSoundSystem_MiniAudio_Stream_SetLooping;
+
+    /* Inits custom node VTable */
+    sstSoundSystem.stCustomNodeVTable.onProcess                           = &orxSoundSystem_MiniAudio_ProcessCustomNode;
+    sstSoundSystem.stCustomNodeVTable.onGetRequiredInputFrameCount        = NULL;
+    sstSoundSystem.stCustomNodeVTable.inputBusCount                       = 1;
+    sstSoundSystem.stCustomNodeVTable.outputBusCount                      = 1;
+    sstSoundSystem.stCustomNodeVTable.flags                               = MA_NODE_FLAG_CONTINUOUS_PROCESSING;
 
     /* Inits resource callbacks */
     sstSoundSystem.stCallbacks.onOpen                                     = &orxSoundSystem_MiniAudio_Open;
