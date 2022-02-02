@@ -754,7 +754,7 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
   return;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
+static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   orxU32                u32CopySampleNumber = 0;
@@ -944,7 +944,7 @@ static ma_result SoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSourc
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_Seek(ma_data_source *_pstDataSource, ma_uint64 _u64FrameIndex)
+static ma_result orxSoundSystem_MiniAudio_Stream_Seek(ma_data_source *_pstDataSource, ma_uint64 _u64FrameIndex)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   ma_result             hResult;
@@ -971,7 +971,7 @@ static ma_result SoundSystem_MiniAudio_Stream_Seek(ma_data_source *_pstDataSourc
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_GetDataFormat(ma_data_source *_pstDataSource, ma_format *_peFormat, ma_uint32 *_pu32Channels, ma_uint32* _pu32SampleRate, ma_channel *_peChannelMap, size_t _sChannelMapCap)
+static ma_result orxSoundSystem_MiniAudio_Stream_GetDataFormat(ma_data_source *_pstDataSource, ma_format *_peFormat, ma_uint32 *_pu32Channels, ma_uint32* _pu32SampleRate, ma_channel *_peChannelMap, size_t _sChannelMapCap)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   ma_result             hResult = MA_SUCCESS;
@@ -1004,7 +1004,7 @@ static ma_result SoundSystem_MiniAudio_Stream_GetDataFormat(ma_data_source *_pst
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_GetCursor(ma_data_source *_pstDataSource, ma_uint64 *_pu64Cursor)
+static ma_result orxSoundSystem_MiniAudio_Stream_GetCursor(ma_data_source *_pstDataSource, ma_uint64 *_pu64Cursor)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   ma_result             hResult;
@@ -1031,7 +1031,7 @@ static ma_result SoundSystem_MiniAudio_Stream_GetCursor(ma_data_source *_pstData
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_GetLength(ma_data_source *_pstDataSource, ma_uint64 *_pu64Length)
+static ma_result orxSoundSystem_MiniAudio_Stream_GetLength(ma_data_source *_pstDataSource, ma_uint64 *_pu64Length)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   ma_result             hResult;
@@ -1058,7 +1058,7 @@ static ma_result SoundSystem_MiniAudio_Stream_GetLength(ma_data_source *_pstData
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pstDataSource, ma_bool32 _bIsLooping)
+static ma_result orxSoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pstDataSource, ma_bool32 _bIsLooping)
 {
   orxSOUNDSYSTEM_SOUND *pstSound;
   ma_result             hResult;
@@ -1088,7 +1088,7 @@ static ma_result SoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pstDat
 /*
  * This function's logic has been lifted straight from 'ma_stbvorbis_init_file', replacing the internal call to `stb_vorbis_open_filename` with `stb_vorbis_open_file`, bypassing the use of the pushdata API.
  */
-static ma_result SoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_stbvorbis *_pstVorbis)
+static ma_result orxSoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_stbvorbis *_pstVorbis)
 {
   ma_result hResult;
 
@@ -1151,7 +1151,7 @@ static ma_result SoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_seek
 /*
  * This function's logic has been lifted straight from 'ma_decoding_backend_init__stbvorbis', replacing the internal call to 'ma_stbvorbis_init' with 'SoundSystem_MiniAudio_InitVorbis'.
  */
-static ma_result SoundSystem_MiniAudio_InitVorbisBackend(void *_pUserData, ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_data_source **_ppstBackend)
+static ma_result orxSoundSystem_MiniAudio_InitVorbisBackend(void *_pUserData, ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_data_source **_ppstBackend)
 {
   ma_result     hResult;
   ma_stbvorbis *pstVorbis;
@@ -1163,7 +1163,7 @@ static ma_result SoundSystem_MiniAudio_InitVorbisBackend(void *_pUserData, ma_re
   if(pstVorbis != NULL)
   {
     /* Inits decoder backend */
-    hResult = SoundSystem_MiniAudio_InitVorbis(_pfnRead, _pfnSeek, _pfnTell, _pReadSeekTellUserData, _pstConfig, _pstAllocationCallbacks, pstVorbis);
+    hResult = orxSoundSystem_MiniAudio_InitVorbis(_pfnRead, _pfnSeek, _pfnTell, _pReadSeekTellUserData, _pstConfig, _pstAllocationCallbacks, pstVorbis);
 
     /* Success? */
     if(hResult == MA_SUCCESS)
@@ -1187,7 +1187,7 @@ static ma_result SoundSystem_MiniAudio_InitVorbisBackend(void *_pUserData, ma_re
   return hResult;
 }
 
-static void SoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_data_source *_pstBackend, const ma_allocation_callbacks *_pstAllocationCallbacks)
+static void orxSoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_data_source *_pstBackend, const ma_allocation_callbacks *_pstAllocationCallbacks)
 {
   /* Uninits decoder backend */
   ma_stbvorbis_uninit((ma_stbvorbis *)_pstBackend, _pstAllocationCallbacks);
@@ -1243,7 +1243,7 @@ static void orxSoundSystem_MiniAudio_Free(void *p, void *_pContext)
   orxMemory_Free(p);
 }
 
-static ma_result SoundSystem_MiniAudio_Open(ma_vfs *_pstVFS, const char *_zFilename, ma_uint32 _u32OpenMode, ma_vfs_file *_pstFile)
+static ma_result orxSoundSystem_MiniAudio_Open(ma_vfs *_pstVFS, const char *_zFilename, ma_uint32 _u32OpenMode, ma_vfs_file *_pstFile)
 {
     orxHANDLE hResource;
     ma_result hResult;
@@ -1270,7 +1270,7 @@ static ma_result SoundSystem_MiniAudio_Open(ma_vfs *_pstVFS, const char *_zFilen
     return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Close(ma_vfs *_pstVFS, ma_vfs_file _stFile)
+static ma_result orxSoundSystem_MiniAudio_Close(ma_vfs *_pstVFS, ma_vfs_file _stFile)
 {
   /* Closes resource */
   orxResource_Close((orxHANDLE)_stFile);
@@ -1279,7 +1279,7 @@ static ma_result SoundSystem_MiniAudio_Close(ma_vfs *_pstVFS, ma_vfs_file _stFil
   return MA_SUCCESS;
 }
 
-static ma_result SoundSystem_MiniAudio_Read(ma_vfs *_pstVFS, ma_vfs_file _stFile, void *_pDst, size_t _sSizeInBytes, size_t *_psBytesRead)
+static ma_result orxSoundSystem_MiniAudio_Read(ma_vfs *_pstVFS, ma_vfs_file _stFile, void *_pDst, size_t _sSizeInBytes, size_t *_psBytesRead)
 {
   /* Reads data */
   *_psBytesRead = (size_t)orxResource_Read((orxHANDLE)_stFile, (orxS64)_sSizeInBytes, _pDst, orxNULL, orxNULL);
@@ -1288,7 +1288,7 @@ static ma_result SoundSystem_MiniAudio_Read(ma_vfs *_pstVFS, ma_vfs_file _stFile
   return (*_psBytesRead == 0) ? MA_AT_END : MA_SUCCESS;
 }
 
-static ma_result SoundSystem_MiniAudio_Write(ma_vfs *_pstVFS, ma_vfs_file _stFile, const void *_pSrc, size_t _sSizeInBytes, size_t *_psBytesWritten)
+static ma_result orxSoundSystem_MiniAudio_Write(ma_vfs *_pstVFS, ma_vfs_file _stFile, const void *_pSrc, size_t _sSizeInBytes, size_t *_psBytesWritten)
 {
   /* Writes data */
   *_psBytesWritten = (size_t)orxResource_Write((orxHANDLE)_stFile, _sSizeInBytes, _pSrc, orxNULL, orxNULL);
@@ -1297,7 +1297,7 @@ static ma_result SoundSystem_MiniAudio_Write(ma_vfs *_pstVFS, ma_vfs_file _stFil
   return (*_psBytesWritten != _sSizeInBytes) ? MA_ACCESS_DENIED : MA_SUCCESS;
 }
 
-static ma_result SoundSystem_MiniAudio_Seek(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_int64 _s64Offset, ma_seek_origin _eOrigin)
+static ma_result orxSoundSystem_MiniAudio_Seek(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_int64 _s64Offset, ma_seek_origin _eOrigin)
 {
   ma_result hResult;
 
@@ -1308,7 +1308,7 @@ static ma_result SoundSystem_MiniAudio_Seek(ma_vfs *_pstVFS, ma_vfs_file _stFile
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Tell(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_int64 *_ps64Cursor)
+static ma_result orxSoundSystem_MiniAudio_Tell(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_int64 *_ps64Cursor)
 {
   orxS64    s64Cursor;
   ma_result hResult;
@@ -1335,7 +1335,7 @@ static ma_result SoundSystem_MiniAudio_Tell(ma_vfs *_pstVFS, ma_vfs_file _stFile
   return hResult;
 }
 
-static ma_result SoundSystem_MiniAudio_Info(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_file_info *_pstInfo)
+static ma_result orxSoundSystem_MiniAudio_Info(ma_vfs *_pstVFS, ma_vfs_file _stFile, ma_file_info *_pstInfo)
 {
   /* Gets size */
   _pstInfo->sizeInBytes = (ma_uint64)orxResource_GetSize((orxHANDLE)_stFile);
@@ -1642,26 +1642,26 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
     /* Inits vorbis decoding backend VTable */
-    sstSoundSystem.stVorbisVTable.onInit                                  = &SoundSystem_MiniAudio_InitVorbisBackend;
-    sstSoundSystem.stVorbisVTable.onUninit                                = &SoundSystem_MiniAudio_UninitVorbisBackend;
+    sstSoundSystem.stVorbisVTable.onInit                                  = &orxSoundSystem_MiniAudio_InitVorbisBackend;
+    sstSoundSystem.stVorbisVTable.onUninit                                = &orxSoundSystem_MiniAudio_UninitVorbisBackend;
     sstSoundSystem.apstVTable[0]                                          = &(sstSoundSystem.stVorbisVTable);
 
     /* Inits data source VTable */
-    sstSoundSystem.stStreamVTable.onRead                                  = &SoundSystem_MiniAudio_Stream_Read;
-    sstSoundSystem.stStreamVTable.onSeek                                  = &SoundSystem_MiniAudio_Stream_Seek;
-    sstSoundSystem.stStreamVTable.onGetDataFormat                         = &SoundSystem_MiniAudio_Stream_GetDataFormat;
-    sstSoundSystem.stStreamVTable.onGetCursor                             = &SoundSystem_MiniAudio_Stream_GetCursor;
-    sstSoundSystem.stStreamVTable.onGetLength                             = &SoundSystem_MiniAudio_Stream_GetLength;
-    sstSoundSystem.stStreamVTable.onSetLooping                            = &SoundSystem_MiniAudio_Stream_SetLooping;
+    sstSoundSystem.stStreamVTable.onRead                                  = &orxSoundSystem_MiniAudio_Stream_Read;
+    sstSoundSystem.stStreamVTable.onSeek                                  = &orxSoundSystem_MiniAudio_Stream_Seek;
+    sstSoundSystem.stStreamVTable.onGetDataFormat                         = &orxSoundSystem_MiniAudio_Stream_GetDataFormat;
+    sstSoundSystem.stStreamVTable.onGetCursor                             = &orxSoundSystem_MiniAudio_Stream_GetCursor;
+    sstSoundSystem.stStreamVTable.onGetLength                             = &orxSoundSystem_MiniAudio_Stream_GetLength;
+    sstSoundSystem.stStreamVTable.onSetLooping                            = &orxSoundSystem_MiniAudio_Stream_SetLooping;
 
     /* Inits resource callbacks */
-    sstSoundSystem.stCallbacks.onOpen                                     = &SoundSystem_MiniAudio_Open;
-    sstSoundSystem.stCallbacks.onClose                                    = &SoundSystem_MiniAudio_Close;
-    sstSoundSystem.stCallbacks.onRead                                     = &SoundSystem_MiniAudio_Read;
-    sstSoundSystem.stCallbacks.onWrite                                    = &SoundSystem_MiniAudio_Write;
-    sstSoundSystem.stCallbacks.onSeek                                     = &SoundSystem_MiniAudio_Seek;
-    sstSoundSystem.stCallbacks.onTell                                     = &SoundSystem_MiniAudio_Tell;
-    sstSoundSystem.stCallbacks.onInfo                                     = &SoundSystem_MiniAudio_Info;
+    sstSoundSystem.stCallbacks.onOpen                                     = &orxSoundSystem_MiniAudio_Open;
+    sstSoundSystem.stCallbacks.onClose                                    = &orxSoundSystem_MiniAudio_Close;
+    sstSoundSystem.stCallbacks.onRead                                     = &orxSoundSystem_MiniAudio_Read;
+    sstSoundSystem.stCallbacks.onWrite                                    = &orxSoundSystem_MiniAudio_Write;
+    sstSoundSystem.stCallbacks.onSeek                                     = &orxSoundSystem_MiniAudio_Seek;
+    sstSoundSystem.stCallbacks.onTell                                     = &orxSoundSystem_MiniAudio_Tell;
+    sstSoundSystem.stCallbacks.onInfo                                     = &orxSoundSystem_MiniAudio_Info;
 
     /* Inits resource manager configuration */
     sstSoundSystem.stResourceManagerConfig                                = ma_resource_manager_config_init();
