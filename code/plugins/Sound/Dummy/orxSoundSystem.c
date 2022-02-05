@@ -140,6 +140,48 @@ orxSTATUS orxFASTCALL orxSoundSystem_Dummy_RemoveAllFilters(orxSOUNDSYSTEM_SOUND
   return orxSTATUS_FAILURE;
 }
 
+orxHANDLE orxFASTCALL orxSoundSystem_Dummy_CreateBus(orxSTRINGID _stBusID)
+{
+  /* Done! */
+  return orxHANDLE_UNDEFINED;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_DeleteBus(orxHANDLE _hBus)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetBus(orxSOUNDSYSTEM_SOUND *_pstSound, orxHANDLE _hBus)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetBusParent(orxHANDLE _hBus, orxHANDLE _hParentBus)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_AddBusFilter(orxHANDLE _hBus, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_RemoveLastBusFilter(orxHANDLE _hBus)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxSTATUS orxFASTCALL orxSoundSystem_Dummy_RemoveAllBusFilters(orxHANDLE _hBus)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
 orxSTATUS orxFASTCALL orxSoundSystem_Dummy_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
   /* Done! */
@@ -318,6 +360,13 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Stop, SOUNDSYSTEM, STOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_AddFilter, SOUNDSYSTEM, ADD_FILTER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveLastFilter, SOUNDSYSTEM, REMOVE_LAST_FILTER);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveAllFilters, SOUNDSYSTEM, REMOVE_ALL_FILTERS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateBus, SOUNDSYSTEM, CREATE_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_DeleteBus, SOUNDSYSTEM, DELETE_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetBus, SOUNDSYSTEM, SET_BUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetBusParent, SOUNDSYSTEM, SET_BUS_PARENT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_AddBusFilter, SOUNDSYSTEM, ADD_BUS_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveLastBusFilter, SOUNDSYSTEM, REMOVE_LAST_BUS_FILTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_RemoveAllBusFilters, SOUNDSYSTEM, REMOVE_ALL_BUS_FILTERS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetPitch, SOUNDSYSTEM, SET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetTime, SOUNDSYSTEM, SET_TIME);

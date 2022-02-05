@@ -84,6 +84,7 @@ typedef enum __orxSOUND_FILTE_TYPE_t
   orxSOUND_FILTER_TYPE_NOTCH,
   orxSOUND_FILTER_TYPE_PEAKING,
   orxSOUND_FILTER_TYPE_DELAY,
+  orxSOUND_FILTER_TYPE_CUSTOM,
 
   orxSOUND_FILTER_TYPE_NUMBER,
 
@@ -91,84 +92,95 @@ typedef enum __orxSOUND_FILTE_TYPE_t
 
 } orxSOUND_FILTER_TYPE;
 
+/** Filter callback function type to use with custom filters
+ */
+typedef void (orxFASTCALL *orxSOUND_FILTER_FUNCTION)(orxFLOAT *_afSampleListOut, const orxFLOAT *_afSampleListIn, orxU32 _u32SampleCount, orxU32 _u32ChannelCount, orxU32 _u32SampleRate, orxSTRINGID _stNameID, void *_pContext);
+
 /** Sound filter data
  */
 typedef struct __orxSOUND_FILTER_DATA_t
 {
-  orxSOUND_FILTER_TYPE  eType;
-  orxSTRINGID           stNameID;
+  orxSOUND_FILTER_TYPE          eType;
+  orxSTRINGID                   stNameID;
 
   union
   {
     struct
     {
-      orxFLOAT  fA0;
-      orxFLOAT  fA1;
-      orxFLOAT  fA2;
-      orxFLOAT  fB0;
-      orxFLOAT  fB1;
-      orxFLOAT  fB2;
+      orxFLOAT                  fA0;
+      orxFLOAT                  fA1;
+      orxFLOAT                  fA2;
+      orxFLOAT                  fB0;
+      orxFLOAT                  fB1;
+      orxFLOAT                  fB2;
 
     } stBiquad;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stLowPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stHighPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxU32    u32Order;
+      orxFLOAT                  fFrequency;
+      orxU32                    u32Order;
 
     } stBandPass;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stLowShelf;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stHighShelf;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
 
     } stNotch;
 
     struct
     {
-      orxFLOAT  fFrequency;
-      orxFLOAT  fQ;
-      orxFLOAT  fGain;
+      orxFLOAT                  fFrequency;
+      orxFLOAT                  fQ;
+      orxFLOAT                  fGain;
 
     } stPeaking;
 
     struct
     {
-      orxFLOAT  fDelay;
-      orxFLOAT  fDecay;
+      orxFLOAT                  fDelay;
+      orxFLOAT                  fDecay;
 
     } stDelay;
+
+    struct
+    {
+      orxSOUND_FILTER_FUNCTION  pfnCallback;
+      void                     *pContext;
+
+    } stCustom;
 
   };
 
@@ -265,6 +277,7 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStrea
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
 
@@ -305,6 +318,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveLastF
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveAllFilters(orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Creates a bus
+ * @param[in]   _stBusID                              Concerned bus ID
+ * @return orxHANDLE / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxSoundSystem_CreateBus(orxSTRINGID _stBusID);
+
+/** Deletes a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_DeleteBus(orxHANDLE _hBus);
+
+/** Sets a sound's bus
+ * @param[in]   _pstSound                             Concerned sound
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetBus(orxSOUNDSYSTEM_SOUND *_pstSound, orxHANDLE _hBus);
+
+/** Sets a bus's parent
+ * @param[in]   _hBus                                 Concerned bus
+ * @param[in]   _hParentBus                           Handle of the bus to use as parent
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetBusParent(orxHANDLE _hBus, orxHANDLE _hParentBus);
+
+/** Adds a filter to a bus (cascading)
+ * @param[in]   _hBus                                 Concerned bus
+ * @param[in]   _pstFilterData                        Concerned filter data
+ * @param[in]   _bUseCustomParam                      Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_AddBusFilter(orxHANDLE _hBus, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveLastBusFilter(orxHANDLE _hBus);
+
+/** Removes all filters from a bus
+ * @param[in]   _hBus                                 Concerned bus
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_RemoveAllBusFilters(orxHANDLE _hBus);
 
 /** Starts recording
  * @param[in]   _zName                                Name for the recorded sound/file

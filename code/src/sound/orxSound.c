@@ -147,10 +147,11 @@ typedef struct __orxSOUND_BUS_t
   orxTREE_NODE            stNode;                       /**< Tree node : 8/12 */
   orxLINKLIST             stList;                       /**< Sound list : 20/32 */
   orxSTRINGID             stID;                         /**< ID : 24/36 */
-  orxFLOAT                fGlobalVolume;                /**< Global volume : 28/40 */
-  orxFLOAT                fGlobalPitch;                 /**< Global pitch : 32/44 */
-  orxFLOAT                fLocalVolume;                 /**< Local volume : 36/48 */
-  orxFLOAT                fLocalPitch;                  /**< Local pitch : 40/52 */
+  orxHANDLE               hData;                        /**< Bus data : 28/44 */
+  orxFLOAT                fGlobalVolume;                /**< Global volume : 32/48 */
+  orxFLOAT                fGlobalPitch;                 /**< Global pitch : 36/52 */
+  orxFLOAT                fLocalVolume;                 /**< Local volume : 40/56 */
+  orxFLOAT                fLocalPitch;                  /**< Local pitch : 44/60 */
 
 } orxSOUND_BUS;
 
@@ -662,6 +663,130 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL orxSound_ProcessFilterConfigData(orxSOUND_FILTER_DATA *_pstData)
+{
+  const orxSTRING zType;
+  orxSTATUS       eResult = orxSTATUS_FAILURE;
+
+  /* Clears data */
+  orxMemory_Zero(_pstData, sizeof(orxSOUND_FILTER_DATA));
+  _pstData->eType = orxSOUND_FILTER_TYPE_NONE;
+
+  /* Gets its type */
+  zType = orxConfig_GetString(orxSOUND_KZ_CONFIG_TYPE);
+
+  /* Biquad? */
+  if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BIQUAD) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_BIQUAD;
+
+    /* Updates filter data */
+    _pstData->stBiquad.fA0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A0);
+    _pstData->stBiquad.fA1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A1);
+    _pstData->stBiquad.fA2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A2);
+    _pstData->stBiquad.fB0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B0);
+    _pstData->stBiquad.fB1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B1);
+    _pstData->stBiquad.fB2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B2);
+  }
+  /* Low pass? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_PASS) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_LOW_PASS;
+
+    /* Updates filter data */
+    _pstData->stLowPass.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stLowPass.u32Order   = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+  }
+  /* High pass? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_PASS) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_HIGH_PASS;
+
+    /* Updates filter data */
+    _pstData->stHighPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stHighPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+  }
+  /* Band pass? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BAND_PASS) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_BAND_PASS;
+
+    /* Updates filter data */
+    _pstData->stBandPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stBandPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
+  }
+  /* Low shelf? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_SHELF) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_LOW_SHELF;
+
+    /* Updates filter data */
+    _pstData->stLowShelf.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stLowShelf.fQ          = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+    _pstData->stLowShelf.fGain       = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+  }
+  /* High shelf? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_SHELF) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_HIGH_SHELF;
+
+    /* Updates filter data */
+    _pstData->stHighShelf.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stHighShelf.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+    _pstData->stHighShelf.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+  }
+  /* Notch? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_NOTCH) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_NOTCH;
+
+    /* Updates filter data */
+    _pstData->stNotch.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stNotch.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+  }
+  /* Peaking? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_PEAKING) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_PEAKING;
+
+    /* Updates filter data */
+    _pstData->stPeaking.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
+    _pstData->stPeaking.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
+    _pstData->stPeaking.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
+  }
+  /* Delay? */
+  else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_DELAY) == 0)
+  {
+    /* Updates filter type */
+    _pstData->eType = orxSOUND_FILTER_TYPE_DELAY;
+
+    /* Updates filter data */
+    _pstData->stDelay.fDelay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DELAY);
+    _pstData->stDelay.fDecay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DECAY);
+  }
+
+  /* Valid? */
+  if(_pstData->eType != orxSOUND_FILTER_TYPE_NONE)
+  {
+    /* Stores its name ID */
+    _pstData->stNameID = orxString_Hash(orxConfig_GetCurrentSection());
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
@@ -1116,6 +1241,29 @@ static orxINLINE void orxSound_DeleteAll()
   return;
 }
 
+/** Deletes all the buses
+ */
+static orxINLINE void orxSound_DeleteAllBuses()
+{
+  orxSOUND_BUS *pstBus;
+
+  /* For all buses */
+  for(pstBus = (orxSOUND_BUS *)orxBank_GetNext(sstSound.pstBusBank, orxNULL);
+      pstBus != orxNULL;
+      pstBus = (orxSOUND_BUS *)orxBank_GetNext(sstSound.pstBusBank, pstBus))
+  {
+    /* Has data */
+    if(pstBus->hData != orxHANDLE_UNDEFINED)
+    {
+      /* Deletes it */
+      orxSoundSystem_DeleteBus(pstBus->hData);
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Updates the SoundPointer (Callback for generic structure update calling)
  * @param[in]   _pstStructure                 Generic Structure or the concerned Body
  * @param[in]   _pstCaller                    Structure of the caller
@@ -1250,6 +1398,8 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
     /* Not found and should create? */
     if((*ppstBucket == orxNULL) && (_bCreate != orxFALSE))
     {
+      orxTREE_NODE *pstRoot;
+
       /* Allocates it */
       pstResult = (orxSOUND_BUS *)orxBank_Allocate(sstSound.pstBusBank);
 
@@ -1263,9 +1413,13 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
       pstResult->fGlobalPitch   =
       pstResult->fLocalVolume   =
       pstResult->fLocalPitch    = orxFLOAT_1;
+      pstResult->hData          = orxSoundSystem_CreateBus(_stBusID);
+
+      /* Gets root */
+      pstRoot = orxTree_GetRoot(&(sstSound.stBusTree));
 
       /* Master? */
-      if(orxTree_GetRoot(&(sstSound.stBusTree)) == orxNULL)
+      if(pstRoot == orxNULL)
       {
         /* Adds it as root */
         orxTree_AddRoot(&(sstSound.stBusTree), &(pstResult->stNode));
@@ -1273,7 +1427,10 @@ static orxSOUND_BUS *orxFASTCALL orxSound_GetBus(orxSTRINGID _stBusID, orxBOOL _
       else
       {
         /* Adds it to root */
-        orxTree_AddChild(orxTree_GetRoot(&(sstSound.stBusTree)), &(pstResult->stNode));
+        orxTree_AddChild(pstRoot, &(pstResult->stNode));
+
+        /* Updates its parent */
+        orxSoundSystem_SetBusParent(pstResult->hData, orxSTRUCT_GET_FROM_FIELD(orxSOUND_BUS, stNode, pstRoot)->hData);
       }
 
       /* Stores it */
@@ -1392,7 +1549,7 @@ void orxFASTCALL orxSound_CommandSetBusParent(orxU32 _u32ArgNumber, const orxCOM
   /* Gets parent ID */
   stParentID = ((_u32ArgNumber > 1) && (*_astArgList[1].zValue != orxCHAR_NULL)) ? orxString_GetID(_astArgList[1].zValue) : orxSound_GetMasterBusID();
 
-  /* Set bus parent */
+  /* Sets bus parent */
   orxSound_SetBusParent(stBusID, stParentID);
 
   /* Updates result */
@@ -1529,6 +1686,63 @@ void orxFASTCALL orxSound_CommandGetBusPitch(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/** Command: AddBusFilter
+ */
+void orxFASTCALL orxSound_CommandAddBusFilter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTRINGID stBusID;
+
+  /* Gets bus ID */
+  stBusID = orxString_Hash(_astArgList[0].zValue);
+
+  /* Adds filter */
+  orxSound_AddBusFilterFromConfig(stBusID, _astArgList[1].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveLastBusFilter
+ */
+void orxFASTCALL orxSound_CommandRemoveLastBusFilter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTRINGID stBusID;
+
+  /* Gets bus ID */
+  stBusID = orxString_Hash(_astArgList[0].zValue);
+
+  /* Removes its last filter */
+  orxSound_RemoveLastBusFilter(stBusID);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveAllBusFilters
+ */
+void orxFASTCALL orxSound_CommandRemoveAllBusFilters(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTRINGID stBusID;
+
+  /* Gets bus ID */
+  stBusID = orxString_Hash(_astArgList[0].zValue);
+
+  /* Removes all its filter */
+  orxSound_RemoveAllBusFilters(stBusID);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[0].zValue;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the sound commands
  */
 static orxINLINE void orxSound_RegisterCommands()
@@ -1550,6 +1764,13 @@ static orxINLINE void orxSound_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusVolume, "Volume", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetBusPitch */
   orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetBusPitch, "Pitch", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: AddBusFilter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, AddBusFilter, "Bus", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING}, {"Filter", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveLastBusFilter */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, RemoveLastBusFilter, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveAllBusFilters */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, RemoveAllBusFilters, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the sound commands
@@ -1573,6 +1794,13 @@ static orxINLINE void orxSound_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusVolume);
   /* Command: GetBusPitch */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetBusPitch);
+
+  /* Command: AddBusFilter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, AddBusFilter);
+  /* Command: RemoveLastBusFilter */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, RemoveLastBusFilter);
+  /* Command: RemoveAllBusFilters */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, RemoveAllBusFilters);
 }
 
 
@@ -1762,6 +1990,9 @@ void orxFASTCALL orxSound_Exit()
     /* Deletes sample bank */
     orxBank_Delete(sstSound.pstSampleBank);
 
+    /* Deletes all buses */
+    orxSound_DeleteAllBuses();
+
     /* Deletes bus table */
     orxHashTable_Delete(sstSound.pstBusTable);
 
@@ -1803,9 +2034,6 @@ orxSOUND *orxFASTCALL orxSound_Create()
     /* Increases count */
     orxStructure_IncreaseCount(pstResult);
 
-    /* Sets master bus ID */
-    orxSound_SetBusID(pstResult, sstSound.stMasterBusID);
-
     /* Clears its status */
     pstResult->eStatus = orxSOUND_STATUS_NONE;
   }
@@ -1845,11 +2073,29 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
       /* Creates empty stream */
       pstResult->pstData = orxSoundSystem_CreateStream(pstResult, _u32ChannelNumber, _u32SampleRate);
 
-      /* Stores its reference */
-      pstResult->zReference = orxString_Store(_zName);
+      /* Valid? */
+      if(pstResult->pstData != orxNULL)
+      {
+        /* Sets master bus ID */
+        orxSound_SetBusID(pstResult, sstSound.stMasterBusID);
 
-      /* Updates its status */
-      orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_FLAG_NONE);
+        /* Stores its reference */
+        pstResult->zReference = orxString_Store(_zName);
+
+        /* Updates its status */
+        orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_HAS_STREAM, orxSOUND_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound <%s>: invalid stream parameters [%u channels, %u sample rate].", _zName, _u32ChannelNumber, _u32SampleRate);
+
+        /* Deletes it */
+        orxSound_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
     }
   }
 
@@ -2212,6 +2458,13 @@ orxSTATUS orxFASTCALL orxSound_LinkSample(orxSOUND *_pstSound, const orxSTRING _
         /* Stores its reference */
         _pstSound->zReference = orxString_Store(_zSampleName);
 
+        /* Doesn't have a bus yet? */
+        if(_pstSound->stBusID == 0)
+        {
+          /* Sets master bus ID */
+          orxSound_SetBusID(_pstSound, sstSound.stMasterBusID);
+        }
+
         /* Updates its status */
         orxStructure_SetFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE, orxSOUND_KU32_FLAG_NONE);
 
@@ -2500,120 +2753,11 @@ orxSTATUS orxFASTCALL orxSound_AddFilterFromConfig(orxSOUND *_pstSound, const or
     if((orxConfig_HasSection(_zFilterConfigID) != orxFALSE)
     && (orxConfig_PushSection(_zFilterConfigID) != orxSTATUS_FAILURE))
     {
-      orxSOUND_FILTER_DATA  stData;
-      const orxSTRING       zType;
+      orxSOUND_FILTER_DATA stData;
 
-      /* Clears data */
-      orxMemory_Zero(&stData, sizeof(orxSOUND_FILTER_DATA));
-      stData.eType = orxSOUND_FILTER_TYPE_NONE;
-
-      /* Gets its type */
-      zType = orxConfig_GetString(orxSOUND_KZ_CONFIG_TYPE);
-
-      /* Biquad? */
-      if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BIQUAD) == 0)
+      /* Processes filter config data */
+      if(orxSound_ProcessFilterConfigData(&stData) != orxSTATUS_FAILURE)
       {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_BIQUAD;
-
-        /* Updates filter data */
-        stData.stBiquad.fA0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A0);
-        stData.stBiquad.fA1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A1);
-        stData.stBiquad.fA2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_A2);
-        stData.stBiquad.fB0 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B0);
-        stData.stBiquad.fB1 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B1);
-        stData.stBiquad.fB2 = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_B2);
-      }
-      /* Low pass? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_PASS) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_LOW_PASS;
-
-        /* Updates filter data */
-        stData.stLowPass.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stLowPass.u32Order   = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
-      }
-      /* High pass? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_PASS) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_HIGH_PASS;
-
-        /* Updates filter data */
-        stData.stHighPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stHighPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
-      }
-      /* Band pass? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_BAND_PASS) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_BAND_PASS;
-
-        /* Updates filter data */
-        stData.stBandPass.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stBandPass.u32Order    = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_ORDER) != orxFALSE) ? orxConfig_GetU32(orxSOUND_KZ_CONFIG_ORDER) : 2;
-      }
-      /* Low shelf? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_LOW_SHELF) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_LOW_SHELF;
-
-        /* Updates filter data */
-        stData.stLowShelf.fFrequency  = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stLowShelf.fQ          = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
-        stData.stLowShelf.fGain       = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
-      }
-      /* High shelf? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_HIGH_SHELF) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_HIGH_SHELF;
-
-        /* Updates filter data */
-        stData.stHighShelf.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stHighShelf.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
-        stData.stHighShelf.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
-      }
-      /* Notch? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_NOTCH) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_NOTCH;
-
-        /* Updates filter data */
-        stData.stNotch.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stNotch.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
-      }
-      /* Peaking? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_PEAKING) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_PEAKING;
-
-        /* Updates filter data */
-        stData.stPeaking.fFrequency = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_FREQUENCY);
-        stData.stPeaking.fQ         = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_Q) != orxFALSE) ? orxConfig_GetFloat(orxSOUND_KZ_CONFIG_Q) : orxFLOAT_1 / orxMATH_KF_SQRT_2;
-        stData.stPeaking.fGain      = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_GAIN);
-      }
-      /* Delay? */
-      else if(orxString_ICompare(zType, orxSOUND_KZ_TYPE_DELAY) == 0)
-      {
-        /* Updates filter type */
-        stData.eType = orxSOUND_FILTER_TYPE_DELAY;
-
-        /* Updates filter data */
-        stData.stDelay.fDelay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DELAY);
-        stData.stDelay.fDecay = orxConfig_GetFloat(orxSOUND_KZ_CONFIG_DECAY);
-      }
-
-      /* Valid? */
-      if(stData.eType != orxSOUND_FILTER_TYPE_NONE)
-      {
-        /* Stores its name ID */
-        stData.stNameID = orxString_Hash(orxConfig_GetCurrentSection());
-
         /* Adds filter */
         eResult = orxSoundSystem_AddFilter(_pstSound->pstData, &stData, orxConfig_GetBool(orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM));
       }
@@ -3335,6 +3479,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, or
   /* Stores bus ID */
   _pstSound->stBusID = _stBusID;
 
+  /* Sets its internal bus */
+  orxSoundSystem_SetBus(_pstSound->pstData, pstBus->hData);
+
   /* Done! */
   return eResult;
 }
@@ -3530,6 +3677,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusParent(orxSTRINGID _stBusI
   /* Sets its parent */
   if(orxTree_MoveAsChild(&(pstParentBus->stNode), &(pstBus->stNode)) != orxSTATUS_FAILURE)
   {
+    /* Sets its internal parent */
+    orxSoundSystem_SetBusParent(pstBus->hData, pstParentBus->hData);
+
     /* Updates it */
     eResult = orxSound_UpdateBus(pstBus);
   }
@@ -3716,4 +3866,151 @@ extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalPitch(orxSTRINGID _st
 
   /* Done! */
   return fResult;
+}
+
+/** Adds a filter to a bus (cascading)
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_AddBusFilter(orxSTRINGID _stBusID, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_stBusID != 0) && (_stBusID != orxSTRINGID_UNDEFINED));
+  orxASSERT(_pstFilterData != orxNULL);
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_stBusID, orxTRUE);
+
+  /* Valid? */
+  if(pstBus != orxNULL)
+  {
+    /* Adds filter to it */
+    eResult = orxSoundSystem_AddBusFilter(pstBus->hData, _pstFilterData, _bUseCustomParam);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes last added filter from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_RemoveLastBusFilter(orxSTRINGID _stBusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_stBusID != 0) && (_stBusID != orxSTRINGID_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_stBusID, orxFALSE);
+
+  /* Valid? */
+  if(pstBus != orxNULL)
+  {
+    /* Removes last filter from it */
+    eResult = orxSoundSystem_RemoveLastBusFilter(pstBus->hData);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes all filters from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_RemoveAllBusFilters(orxSTRINGID _stBusID)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_stBusID != 0) && (_stBusID != orxSTRINGID_UNDEFINED));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_stBusID, orxFALSE);
+
+  /* Valid? */
+  if(pstBus != orxNULL)
+  {
+    /* Removes all filters from it */
+    eResult = orxSoundSystem_RemoveAllBusFilters(pstBus->hData);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a filter to a bus (cascading) from config
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_AddBusFilterFromConfig(orxSTRINGID _stBusID, const orxSTRING _zFilterConfigID)
+{
+  orxSOUND_BUS *pstBus;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT((_stBusID != 0) && (_stBusID != orxSTRINGID_UNDEFINED));
+  orxASSERT((_zFilterConfigID != orxNULL) && (_zFilterConfigID != orxSTRING_EMPTY));
+
+  /* Gets bus */
+  pstBus = orxSound_GetBus(_stBusID, orxTRUE);
+
+  /* Valid? */
+  if(pstBus != orxNULL)
+  {
+    /* Pushes section */
+    if((orxConfig_HasSection(_zFilterConfigID) != orxFALSE)
+    && (orxConfig_PushSection(_zFilterConfigID) != orxSTATUS_FAILURE))
+    {
+      orxSOUND_FILTER_DATA stData;
+
+      /* Processes filter config data */
+      if(orxSound_ProcessFilterConfigData(&stData) != orxSTATUS_FAILURE)
+      {
+        /* Adds filter */
+        eResult = orxSoundSystem_AddBusFilter(pstBus->hData, &stData, orxConfig_GetBool(orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM));
+      }
+
+      /* Pops previous section */
+      orxConfig_PopSection();
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Couldn't find filter section (%s) in config.", _zFilterConfigID);
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }

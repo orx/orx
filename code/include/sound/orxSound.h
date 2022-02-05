@@ -64,7 +64,6 @@ typedef enum __orxSOUND_STATUS_t
   orxSOUND_STATUS_PLAY = 0,
   orxSOUND_STATUS_PAUSE,
   orxSOUND_STATUS_STOP,
-  orxSOUND_EVENT_SET_PARAM,
 
   orxSOUND_STATUS_NUMBER,
 
@@ -90,6 +89,7 @@ typedef enum __orxSOUND_EVENT_t
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
   orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
+  orxSOUND_EVENT_SET_FILTER_PARAM,            /**< Event sent when setting a filter's parameter */
 
   orxSOUND_EVENT_NUMBER,
 
@@ -137,6 +137,7 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
   struct
   {
     orxSOUND_FILTER_DATA      stData;       /**< Filter data : 32 */
+    orxSTRINGID               stBusID;      /**< Bus ID : 40 */
 
   } stFilter;
 
@@ -507,6 +508,33 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalVolume(orxSTR
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalPitch(orxSTRINGID _stBusID);
+
+/** Adds a filter to a bus (cascading)
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddBusFilter(orxSTRINGID _stBusID, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveLastBusFilter(orxSTRINGID _stBusID);
+
+/** Removes all filters from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveAllBusFilters(orxSTRINGID _stBusID);
+
+/** Adds a filter to a bus (cascading) from config
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddBusFilterFromConfig(orxSTRINGID _stBusID, const orxSTRING _zFilterConfigID);
 
 #endif /*_orxSOUND_H_*/
 

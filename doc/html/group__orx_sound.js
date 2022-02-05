@@ -2,6 +2,7 @@ var group__orx_sound =
 [
     [ "orxSOUND_EVENT_PAYLOAD", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html", [
       [ "pstSound", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a4d5dfe7a57f3ddcf6be0c804e3d0f023", null ],
+      [ "stBusID", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#abf910f5420bb132874a6fb8976d4ed34", null ],
       [ "stData", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ae2f83c4ebd1a4d7abda97945efe2a083", null ],
       [ "stFilter", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#af75c8c8872a130f298b5d8f70f313ddb", null ],
       [ "stInfo", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad09d9ed476407093979ce0038a3db767", null ],
@@ -35,6 +36,7 @@ var group__orx_sound =
       [ "orxSOUND_EVENT_RECORDING_START", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a9ee84d9204873f1ea1528741edc5c2ef", null ],
       [ "orxSOUND_EVENT_RECORDING_STOP", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775aae948e6d5a56ecef8d50a7589de5fbf4", null ],
       [ "orxSOUND_EVENT_RECORDING_PACKET", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a4c032b3f3712a1188ecd040bd366e472", null ],
+      [ "orxSOUND_EVENT_SET_FILTER_PARAM", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775a47ff8b724d739eae100f02d9f7bf49c1", null ],
       [ "orxSOUND_EVENT_NUMBER", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775ab5940bee79c88ccb166f6f72bedad3d1", null ],
       [ "orxSOUND_EVENT_NONE", "group__orx_sound.html#ggae4874020c9c68ac319642a5eb6d49775af572d77ad9843a4be67512b335fc32d9", null ]
     ] ],
@@ -42,10 +44,11 @@ var group__orx_sound =
       [ "orxSOUND_STATUS_PLAY", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474abd46bd305984386e8023c8edd59eb0e9", null ],
       [ "orxSOUND_STATUS_PAUSE", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a0f404e4aef9f1a59f06b72c28f4d1ec9", null ],
       [ "orxSOUND_STATUS_STOP", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a6500288990fd06501fe41f8b43a84776", null ],
-      [ "orxSOUND_EVENT_SET_PARAM", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ae9392bac4e6764a1df40d7a4de6ccc78", null ],
       [ "orxSOUND_STATUS_NUMBER", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474a47648bdb7d91bddfa8710c3a4aeec28a", null ],
       [ "orxSOUND_STATUS_NONE", "group__orx_sound.html#gga7e5aec8c210684f5fc8920bd2c13a474ad01926e465f3d064b66da415799b3354", null ]
     ] ],
+    [ "orxSound_AddBusFilter", "group__orx_sound.html#gab4e4098feb9f5078ceb35aa54793cfc8", null ],
+    [ "orxSound_AddBusFilterFromConfig", "group__orx_sound.html#ga2cfbffcbac76f2fdec6efc2882b956de", null ],
     [ "orxSound_AddFilter", "group__orx_sound.html#gafff623494c90baf3c1e5b87311c597b9", null ],
     [ "orxSound_AddFilterFromConfig", "group__orx_sound.html#ga63003aee791340c66f6336285a408883", null ],
     [ "orxSound_ClearCache", "group__orx_sound.html#gad21be0dc930d112b4205b3bdefa30ec4", null ],
@@ -84,7 +87,9 @@ var group__orx_sound =
     [ "orxSound_Loop", "group__orx_sound.html#ga0466c87d987fc8c5729a3ac82bfb1a29", null ],
     [ "orxSound_Pause", "group__orx_sound.html#ga54cce1f0fa0a1bcb82834c3617ebdfe1", null ],
     [ "orxSound_Play", "group__orx_sound.html#ga7303779b3586e321870c97ddb54d2107", null ],
+    [ "orxSound_RemoveAllBusFilters", "group__orx_sound.html#ga5d2a7ac99633184c3a94c65b63498c1f", null ],
     [ "orxSound_RemoveAllFilters", "group__orx_sound.html#ga313a2ffd500104774d80921aeb993255", null ],
+    [ "orxSound_RemoveLastBusFilter", "group__orx_sound.html#gab53b86fb748ba1d7727a2b771d631ac5", null ],
     [ "orxSound_RemoveLastFilter", "group__orx_sound.html#ga0705731bfa90021771dee533fc01e597", null ],
     [ "orxSound_SetBusID", "group__orx_sound.html#gad0234717890222a4938f6f65b5937fb2", null ],
     [ "orxSound_SetBusParent", "group__orx_sound.html#ga0cb4d48333b6bb7482380dc97b319207", null ],
