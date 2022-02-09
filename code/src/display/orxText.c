@@ -1253,8 +1253,8 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
     /* Has current font? */
     if(_pstText->pstFont != orxNULL)
     {
-      /* Updates structure reference count */
-      orxStructure_DecreaseCount(_pstText->pstFont);
+      /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+      orxFont_Delete(_pstText->pstFont);
 
       /* Internally handled? */
       if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
