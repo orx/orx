@@ -128,8 +128,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
   }
   if(rstIO.WantSetMousePos)
   {
-    orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
-    orxMouse_SetPosition(&vMousePos);
+    orxMouse_SetPosition(orxVector_Set(&vMousePos, rstIO.MousePos.x, rstIO.MousePos.y, orxFLOAT_0));
   }
   if(rstIO.WantCaptureMouse)
   {
