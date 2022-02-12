@@ -3366,6 +3366,19 @@ static orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectio
   return bResult;
 }
 
+/** Origin clear callback
+ */
+static orxBOOL orxFASTCALL orxConfig_OriginClearCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = (orxConfig_GetOriginID(_zSectionName) != orxSTRINGID_UNDEFINED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /** Transforms a string to Pascal case
  */
 static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING _zSrc)
@@ -4714,7 +4727,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
     /* Clears all data */
-    orxConfig_Clear(orxNULL);
+    orxConfig_Clear(orxConfig_OriginClearCallback);
 
     /* For all entries in history */
     for(pstHistoryEntry = (orxSTRINGID *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -5782,7 +5795,8 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
 orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
   orxCONFIG_SECTION  *pstLastSection, *pstNewSection;
-  orxBOOL             bStop;
+  orxBOOL             bPending;
+  orxU32              u32ClearCount;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -5791,7 +5805,8 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
   do
   {
     /* Inits status */
-    bStop = orxTRUE;
+    bPending      = orxFALSE;
+    u32ClearCount = 0;
 
     /* For all sections */
     for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
@@ -5809,10 +5824,15 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
         pstLastSection = pstNewSection;
 
         /* Updates status */
-        bStop = orxFALSE;
+        bPending = orxTRUE;
+      }
+      else
+      {
+        /* Updates clear count */
+        u32ClearCount++;
       }
     }
-  } while(bStop == orxFALSE);
+  } while((bPending != orxFALSE) && (u32ClearCount != 0));
 
   /* Done! */
   return orxSTATUS_SUCCESS;
