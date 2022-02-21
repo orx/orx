@@ -177,7 +177,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Exit from remote support
     orxRemote_Exit();
 ]
-    // Let Orx clean all our mess automatically. :)
+    // Let orx clean all our mess automatically. :)
 }
 
 [+scroll
