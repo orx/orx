@@ -912,6 +912,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
 
+/** Sets panning of all sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fPanning       Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in]   _bMix           Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPanning(orxOBJECT *_pstObject, orxFLOAT _fPanning, orxBOOL _bMix);
+
 /** Plays all the sounds of an object.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

@@ -110,6 +110,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetVolume(orxSOU
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch);
 
+/** Sets panning of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPanning             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                 Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetPanning(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPanning, orxBOOL _bMix);
+
 
 /** Plays all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer

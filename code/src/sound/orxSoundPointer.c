@@ -597,6 +597,41 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer
   return eResult;
 }
 
+/** Sets panning of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPanning             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                 Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_SetPanning(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPanning, orxBOOL _bMix)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets it */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Sets its panning */
+      orxSound_SetPanning(pstSound, _fPanning, _bMix);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Plays all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

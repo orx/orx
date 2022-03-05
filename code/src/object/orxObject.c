@@ -3027,6 +3027,34 @@ void orxFASTCALL orxObject_CommandSetPitch(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: SetPanning
+ */
+void orxFASTCALL orxObject_CommandSetPanning(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Sets its panning */
+    orxObject_SetPanning(pstObject, _astArgList[1].fValue, (_u32ArgNumber > 2) ? _astArgList[2].bValue : orxFALSE);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddFilter
  */
 void orxFASTCALL orxObject_CommandAddFilter(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3621,6 +3649,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetVolume, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Volume", orxCOMMAND_VAR_TYPE_FLOAT});
   /* Command: SetPitch */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPitch, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pitch", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: SetPanning */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPanning, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Panning", orxCOMMAND_VAR_TYPE_FLOAT}, {"Mix = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddFilter */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFilter, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
@@ -3845,6 +3875,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetVolume);
   /* Command: SetPitch */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPitch);
+  /* Command: SetPanning */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPanning);
 
   /* Command: SetAnim */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnim);
@@ -9916,6 +9948,35 @@ orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch
   {
     /* Set pitch to all sounds */
     eResult = orxSoundPointer_SetPitch(pstSoundPointer, _fPitch);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets panning of all sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fPanning       Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in]   _bMix           Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetPanning(orxOBJECT *_pstObject, orxFLOAT _fPanning, orxBOOL _bMix)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Set panning to all sounds */
+    eResult = orxSoundPointer_SetPanning(pstSoundPointer, _fPanning, _bMix);
   }
 
   /* Done! */
