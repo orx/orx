@@ -14,7 +14,7 @@ orx 1.13
 * IMPORTANT: Added support for the QOI image format to all plugins/platforms
 * IMPORTANT: Added orxMod (ProTracker MOD) init extension, based on the pocketmod library, that adds config-driven MOD support to objects
 * IMPORTANT: The OpenAL, Android & iOS SoundSystem plugins and their external dependencies (OpenAL/OpenAL-Soft, Tremolo & linsndfile) have been removed
-* IMPORTANT: Added a new SoundSystem plugin based on MiniAudio that covers all target platforms: all platforms now support loading OGG, WAV & MP3 files as well as writing WAV files, on Windows the audio backend will now update on-the-flyto the one selected by the user
+* IMPORTANT: Added a new SoundSystem plugin based on MiniAudio that covers all target platforms: all platforms now support loading OGG, WAV & MP3 files as well as writing WAV files, on Windows the audio backend will now update on-the-fly to the one selected by the user
 * IMPORTANT: Removed orxSoundSystem_SetSampleData() and replace stream packet payload's as16SampleList with afSampleList (samples are now 32bit floats)
 * IMPORTANT: Added support for config-driven filters for both sounds and buses, including commands: supports internal filters (biquad, low|high|band pass, low|high shelf, notch, peaking & delay) and user-defined custom filters (code only) + orxSOUND_EVENT_SET_PARAM event
 * IMPORTANT: Added support for multiple sound listeners (none by default, deactivating sound spatialization globally)

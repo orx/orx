@@ -83,6 +83,7 @@ docfileinfolist = basefileinfolist
 srcfileinfolist = basefileinfolist + [
     {'src': 'bin/*.ini',                                                'dst': None},
     {'src': 'build/premake4.lua',                                       'dst': None},
+    {'src': 'build/orx.*',                                              'dst': None},
     {'src': '../.extern',                                               'dst': None},
     {'src': '../setup*',                                                'dst': None},
     {'src': '../init*',                                                 'dst': None}
@@ -233,7 +234,7 @@ androidfolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None}
+    {'src': 'plugins/Sound/MiniAudio',                                  'dst': None}
 ]
 
 androidnativefolderinfolist = devfolderinfolist + [
@@ -251,24 +252,20 @@ androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None}
+    {'src': 'plugins/Sound/MiniAudio',                                  'dst': None}
 ]
 
 srcfolderinfolist = [
     {'src': '../tools',                                                 'dst': None},
     {'src': 'bin/data',                                                 'dst': None},
     {'src': 'bin/plugins',                                              'dst': None},
+    {'src': 'build/android',                                            'dst': None},
+    {'src': 'build/android-native',                                     'dst': None},
+    {'src': 'build/ios',                                                'dst': None},
     {'src': 'build/rebol',                                              'dst': None},
     {'src': 'build/template',                                           'dst': None},
     {'src': 'include',                                                  'dst': None},
-    {'src': 'plugins/Demo',                                             'dst': None},
-    {'src': 'plugins/Display/GLFW',                                     'dst': None},
-    {'src': 'plugins/Joystick/GLFW',                                    'dst': None},
-    {'src': 'plugins/Keyboard/GLFW',                                    'dst': None},
-    {'src': 'plugins/Mouse/GLFW',                                       'dst': None},
-    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
-    {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/OpenAL',                                     'dst': None},
+    {'src': 'plugins',                                                  'dst': None},
     {'src': 'src',                                                      'dst': None}
 ]
 
