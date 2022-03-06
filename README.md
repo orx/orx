@@ -2,7 +2,7 @@
 [![Travis build](https://api.travis-ci.com/orx/orx.svg?branch=master)](https://app.travis-ci.com/github/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
 
-Orx - Portable Game Engine (Version 1.12)
+Orx - Portable Game Engine (Version 1.13)
 ========================================
 
 
@@ -21,20 +21,20 @@ Summary
 [Orx](https://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.12. If you find any bugs,
+This is a release candidate for orx v1.13. If you find any bugs,
 please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
 Some notable features of the engine are:
 
+- powerful config system that makes orx data-driven and provides an easy to use load/save system
 - hardware-accelerated rendering that provides: translation, anisotropic scale, rotation,
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
-- advanced rendering features such as MRT (Multiple Render Targets) support and easy compositing
-- powerful config system that makes orx data-driven and provides an easy to use load/save system
-- powerful resource management allowing for easy multi-platform data support and patching
-- automatic hotloading of resources upon modification on disk shortens drastically iteration times
+- advanced rendering features such as MRT (Multiple Render Targets), offscreen rendering, flexible pipeline & easy compositing
+- advanced resource management allowing for easy multi-platform data support and patching
+- automatic hotloading of resources upon modification on disk drastically shortens iteration times
 - timelines and commands modules allow for config-driven scripting-like features
-- interactive console can execute commands at runtime (very useful for tweaking/debug purposes)
+- interactive console can execute commands at runtime (very useful for tweaking/debugging purposes)
 - advanced animation engine (including a chaining graph & custom animation events for synchronization)
 - fragment (pixel) shader support
 - visual FXs based on curve combinations
@@ -42,17 +42,17 @@ Some notable features of the engine are:
 - collision handling and rigid body physics
 - camera/viewport scheme allowing multiple views displayed with camera translation, zoom and rotation
 - generic input system that abstracts keyboard, mouse, joystick, touch and accelerometer inputs
-- powerful localization module
+- powerful localization module (for localized texts, audio, graphics, etc.)
 - spawners (provides an easy way to create particles or projectiles)
 - 3D positioning using "scene nodes"
 - custom bitmap font support
 - automatic differential scrolling and depth scaling upon request
-- music and spatialized sound support
+- fully featured and extensible sound system (WAV/MP3/OGG support, streams, hierarchical buses, filters, spatialization, etc.)
 - clock system that provides time consistency and allows time stretching + high precision timers
 - event manager
 - unicode support with UTF-8 encoding
 - plugin system
-- screenshot capture tool (supports bmp, png, jpg, tga and dds)
+- screenshot capture tool (supports bmp, png, jpg, qoi, tga and dds)
 
 See [orx's wiki](https://orx-project.org/wiki) for detailed information, including:
 - initial setup
@@ -123,33 +123,33 @@ Packages
 You can download all the packages from [sourceforge](https://sf.net/projects/orx) or [github](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.12.zip`                  : orx's API doxygen documentation
-- `orx-src-1.12.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.12.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.12.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.12.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-32-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
-- `orx-dev-mingw-64-1.12.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2019-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
-- `orx-dev-vs2019-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2022-32-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
-- `orx-dev-vs2022-64-1.12.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.12.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.12.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.12.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.12.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.12.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.12.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-32-1.12.zip`    : tutorials for Windows (mingw/x86)
-- `orx-tutorial-mingw-64-1.12.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2017-32-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.12.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
-- `orx-tutorial-vs2019-32-1.12.zip`   : tutorials for Windows (Visual Studio 2019, x86)
-- `orx-tutorial-vs2019-64-1.12.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
-- `orx-tutorial-vs2022-32-1.12.zip`   : tutorials for Windows (Visual Studio 2022, x86)
-- `orx-tutorial-vs2022-64-1.12.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
+- `orx-doc-1.13.zip`                  : orx's API doxygen documentation
+- `orx-src-1.13.zip`                  : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.13.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.13.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.13.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.13.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.13.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2022-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
+- `orx-dev-vs2022-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.13.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.13.zip`          : static embedded binaries for Android, release/profile/debug (device).
+- `orx-dev-android-native-1.13.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
+- `orx-tutorial-linux32-1.13.tar.bz2` : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.13.tar.bz2` : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.13.zip`         : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-32-1.13.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.13.zip`    : tutorials for Windows (mingw/x86-64)
+- `orx-tutorial-vs2017-32-1.13.zip`   : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.13.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.13.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.13.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
+- `orx-tutorial-vs2022-32-1.13.zip`   : tutorials for Windows (Visual Studio 2022, x86)
+- `orx-tutorial-vs2022-64-1.13.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
 
 All the `*-dev-*` packages above include:
 
