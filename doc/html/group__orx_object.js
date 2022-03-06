@@ -141,6 +141,7 @@ var group__orx_object =
     [ "orxObject_SetLiteralLifeTime", "group__orx_object.html#ga76e1175b731037d2d0b3e4678dfd352c", null ],
     [ "orxObject_SetOrigin", "group__orx_object.html#gaba6395e153b0e580949380fc06112acc", null ],
     [ "orxObject_SetOwner", "group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833", null ],
+    [ "orxObject_SetPanning", "group__orx_object.html#ga183ebcfdd059dce1aa4b932e499802ba", null ],
     [ "orxObject_SetParent", "group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5", null ],
     [ "orxObject_SetPitch", "group__orx_object.html#gae9a59f0011aedb77199a58260dc332d3", null ],
     [ "orxObject_SetPivot", "group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3", null ],

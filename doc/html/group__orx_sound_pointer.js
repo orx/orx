@@ -21,6 +21,7 @@ var group__orx_sound_pointer =
     [ "orxSoundPointer_RemoveLastFilter", "group__orx_sound_pointer.html#ga5f5265df2e6354dfa1839a896e7ef10e", null ],
     [ "orxSoundPointer_RemoveSound", "group__orx_sound_pointer.html#ga55cd4ee84dfbcdbcc332e91e2eaf4004", null ],
     [ "orxSoundPointer_RemoveSoundFromConfig", "group__orx_sound_pointer.html#gae77c081cf849a36173c704a35a34a98f", null ],
+    [ "orxSoundPointer_SetPanning", "group__orx_sound_pointer.html#gacdbe751ec1adb3314c8296fe038d676e", null ],
     [ "orxSoundPointer_SetPitch", "group__orx_sound_pointer.html#ga08bd8779d5da76309b30b05427afc611", null ],
     [ "orxSoundPointer_Setup", "group__orx_sound_pointer.html#ga149fe786057b3fb427e1622a52631289", null ],
     [ "orxSoundPointer_SetVolume", "group__orx_sound_pointer.html#ga0a74d593ed91c023eea945e8219011de", null ],
