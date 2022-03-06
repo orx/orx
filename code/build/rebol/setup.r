@@ -40,7 +40,7 @@ attempt [write build-file {}]
 ; Should override cache?
 unless empty? system/options/args [
   print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file system/options/args/1 {]}]
-  skip-env: false skip-hook: true
+  skip-env: skip-hook: true
 ]
 
 ; Checks version
@@ -245,10 +245,9 @@ if find platform-info 'deps [
   print [{==^(1b)[31m IMPORTANT - Make sure the following libraries (or equivalent) are installed on your system^(1b)[39m:}]
   foreach lib platform-info/deps [print [{==[^(1b)[33m} lib {^(1b)[39m]}]]
 ]
-if all [
+all [
   new-env
   find platform-info 'env-msg
-] [
   print [newline {== IMPORTANT - New environment detected:} platform-info/env-msg newline]
 ]
 end: now/time
