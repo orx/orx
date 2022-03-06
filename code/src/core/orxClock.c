@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -72,8 +72,6 @@
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
-#define orxCLOCK_KZ_CONFIG_FREQUENCY            "Frequency"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_LIST        "ModifierList"
 
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
@@ -694,8 +692,8 @@ orxSTATUS orxFASTCALL orxClock_Update()
         if(pstClock->fPartialDT >= pstClock->stClockInfo.fTickSize)
         {
           orxFLOAT                    fClockDT;
-          orxCLOCK_TIMER_STORAGE     *pstTimerStorage;
-          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage;
+          orxCLOCK_TIMER_STORAGE     *pstTimerStorage, *pstNextTimerStorage;
+          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage, *pstNextFunctionStorage;
 
           /* Gets clock modified DT */
           fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, pstClock);
@@ -707,8 +705,13 @@ orxSTATUS orxFASTCALL orxClock_Update()
           pstClock->stClockInfo.fTime += fClockDT;
 
           /* For all timers */
-          for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(pstClock->stTimerList)); pstTimerStorage != orxNULL;)
+          for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(pstClock->stTimerList));
+              pstTimerStorage != orxNULL;
+              pstTimerStorage = pstNextTimerStorage)
           {
+            /* Gets the next timer */
+            pstNextTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
+
             /* Should call it? */
             if((pstTimerStorage->fTimeStamp <= pstClock->stClockInfo.fTime) && (pstTimerStorage->s32Repetition != 0))
             {
@@ -726,37 +729,41 @@ orxSTATUS orxFASTCALL orxClock_Update()
               }
             }
 
-            /* Should delete it */
+            /* Should delete it? */
             if(pstTimerStorage->s32Repetition == 0)
             {
-              orxCLOCK_TIMER_STORAGE *pstDelete;
-
-              /* Gets timer to delete */
-              pstDelete = pstTimerStorage;
-
-              /* Gets the next timer */
-              pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
-
               /* Removes current timer */
-              orxLinkList_Remove(&(pstDelete->stNode));
+              orxLinkList_Remove(&(pstTimerStorage->stNode));
 
               /* Deletes it */
-              orxBank_Free(sstClock.pstTimerBank, pstDelete);
-            }
-            else
-            {
-              /* Gets the next timer */
-              pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
+              orxBank_Free(sstClock.pstTimerBank, pstTimerStorage);
             }
           }
 
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(pstClock->stFunctionList));
               pstFunctionStorage != orxNULL;
-              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
+              pstFunctionStorage = pstNextFunctionStorage)
           {
-            /* Calls it */
-            pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pContext);
+            /* Gets next function storage */
+            pstNextFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode));
+
+            /* Not marked for deletion? */
+            if(pstFunctionStorage->pfnCallback != orxNULL)
+            {
+              /* Calls callback */
+              pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pContext);
+            }
+
+            /* Should delete it? */
+            if(pstFunctionStorage->pfnCallback == orxNULL)
+            {
+              /* Removes it from list */
+              orxLinkList_Remove(&(pstFunctionStorage->stNode));
+
+              /* Removes it from bank */
+              orxBank_Free(pstClock->pstFunctionBank, pstFunctionStorage);
+            }
           }
 
           /* Updates partial DT */
@@ -1478,11 +1485,8 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FU
   /* Found? */
   if(pstFunctionStorage != orxNULL)
   {
-    /* Removes it from list */
-    orxLinkList_Remove(&(pstFunctionStorage->stNode));
-
-    /* Removes it from bank */
-    orxBank_Free(_pstClock->pstFunctionBank, pstFunctionStorage);
+    /* Marks it for deletion */
+    pstFunctionStorage->pfnCallback = orxNULL;
   }
   else
   {

@@ -1840,9 +1840,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded. The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Sets config bootstrap function: this function will get called when the config module is initialized, before any config file is loaded. The only available APIs from within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnBootstrap</td><td>Bootstrap function that will get called at module init, before loading any config file. If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnBootstrap</td><td>Bootstrap function that will get called at module init, before loading any config file. If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will take place </td></tr>
   </table>
   </dd>
 </dl>

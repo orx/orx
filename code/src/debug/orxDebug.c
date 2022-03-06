@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -373,14 +373,36 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
 
 #ifdef __orxWINDOWS__
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+  #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 4
+#endif /* !ENABLE_VIRTUAL_TERMINAL_PROCESSING */
+
     /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7))
+    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING))
     {
       /* Removes ANSI flag */
       sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
     }
 
 #endif /* __orxWINDOWS__ */
+
+#ifdef __orxMAC__
+
+    {
+      const char *zTerminal;
+
+      /* Gets TERM environment variable */
+      zTerminal = getenv("TERM");
+
+      /* No valid ANSI terminal found? */
+      if((zTerminal == orxNULL) || (orxString_SearchString(zTerminal, "color") == orxNULL))
+      {
+        /* Removes ANSI flag */
+        sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
+      }
+    }
+
+#endif /* __orxMAC__ */
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;

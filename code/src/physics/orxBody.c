@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,6 @@
 #include "physics/orxPhysics.h"
 #include "core/orxConfig.h"
 #include "object/orxObject.h"
-#include "object/orxFrame.h"
 #include "utils/orxString.h"
 
 #include "debug/orxDebug.h"
@@ -308,7 +307,6 @@ void orxFASTCALL orxBody_Setup()
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
-  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_CONFIG);
 
   return;

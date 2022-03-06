@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -400,7 +400,7 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     if(eResult != orxSTATUS_FAILURE)
     {
       /* For all modules */
-      for (u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
+      for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
       {
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;

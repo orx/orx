@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,8 +45,8 @@
 
 
 #include "orxInclude.h"
-#include "sound/orxSound.h"
 #include "object/orxStructure.h"
+#include "sound/orxSound.h"
 
 
 /** Misc defines
@@ -110,6 +110,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetVolume(orxSOU
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch);
 
+/** Sets panning of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPanning             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                 Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_SetPanning(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPanning, orxBOOL _bMix);
+
 
 /** Plays all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
@@ -169,6 +177,33 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSoundFromC
  * @return      orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL          orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Adds a filter to all related sounds (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _pstFilterData      Concerned filter data
+ * @param[in]   _bUseCustomParam    Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddFilter(orxSOUNDPOINTER *_pstSoundPointer, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveLastFilter(orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Removes all filters from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveAllFilters(orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Adds a filter to all related sounds from config (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _zFilterConfigID    Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddFilterFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zFilterConfigID);
 
 /** Gets how many sounds are currently in use
  * @param[in]   _pstSoundPointer    Concerned SoundPointer

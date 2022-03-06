@@ -1,5 +1,6 @@
 var group__orx_texture =
 [
+    [ "orxTEXTURE_KZ_LOCALE_GROUP", "group__orx_texture.html#ga963f3fdd43a8734049fd0a10153ed510", null ],
     [ "orxTEXTURE_KZ_PIXEL", "group__orx_texture.html#gacdebed04aa465b92f1d753497687f551", null ],
     [ "orxTEXTURE_KZ_RESOURCE_GROUP", "group__orx_texture.html#gaca0712d36a90486d46a2d4c159e2444d", null ],
     [ "orxTEXTURE_KZ_SCREEN", "group__orx_texture.html#gad4dc28990d43e356a822a9b79ab02725", null ],
@@ -16,6 +17,7 @@ var group__orx_texture =
     [ "orxTexture_CreateFromFile", "group__orx_texture.html#gad4d4f7570b466c3b053c6f1d55b0448e", null ],
     [ "orxTexture_Delete", "group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6", null ],
     [ "orxTexture_Exit", "group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688", null ],
+    [ "orxTexture_Get", "group__orx_texture.html#gaea1f481e5be1f090f496b0c43ad9023b", null ],
     [ "orxTexture_GetBitmap", "group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c", null ],
     [ "orxTexture_GetLoadCount", "group__orx_texture.html#gaa5bb1fc43b78535e0dc48b278cf661f5", null ],
     [ "orxTexture_GetName", "group__orx_texture.html#ga78eb3dd271806f3dedc5f606fc8e231b", null ],

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -166,7 +166,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zName == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Gets its locale value */
-    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxTEXT_KZ_LOCALE_GROUP);
   }
 
   /* Valid? */
@@ -220,7 +220,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   if(*zString == orxTEXT_KC_LOCALE_MARKER)
   {
     /* Stores its locale value */
-    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1));
+    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1, orxTEXT_KZ_LOCALE_GROUP));
   }
   else
   {
@@ -267,7 +267,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           const orxSTRING zText;
 
           /* Gets its localized value */
-          zText = orxLocale_GetString(zLocaleKey);
+          zText = orxLocale_GetString(zLocaleKey, orxTEXT_KZ_LOCALE_GROUP);
 
           /* Valid? */
           if(*zText != orxCHAR_NULL)
@@ -286,7 +286,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           orxFONT *pstFont;
 
           /* Creates font */
-          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey));
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey, orxTEXT_KZ_LOCALE_GROUP));
 
           /* Valid? */
           if(pstFont != orxNULL)
@@ -334,11 +334,15 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             pstText != orxNULL;
             pstText = orxTEXT(orxStructure_GetNext(pstText)))
         {
-          /* Match origin? */
-          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
+          /* Has reference? */
+          if((pstText->zReference != orxNULL) && (pstText->zReference != orxSTRING_EMPTY))
           {
-            /* Re-processes its config data */
-            orxText_ProcessConfigData(pstText);
+            /* Match origin? */
+            if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
+            {
+              /* Re-processes its config data */
+              orxText_ProcessConfigData(pstText);
+            }
           }
         }
       }
@@ -495,7 +499,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
           default:
           {
             /* Finds end of word */
-            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
             {
               fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
             }
@@ -1249,8 +1253,8 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
     /* Has current font? */
     if(_pstText->pstFont != orxNULL)
     {
-      /* Updates structure reference count */
-      orxStructure_DecreaseCount(_pstText->pstFont);
+      /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+      orxFont_Delete(_pstText->pstFont);
 
       /* Internally handled? */
       if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)

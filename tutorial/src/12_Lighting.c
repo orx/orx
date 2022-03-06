@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -323,7 +323,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
       else if(!orxString_Compare(pstPayload->zParamName, "NormalMap"))
       {
         /* Gets associated normal map */
-        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_ToCRC(orxTexture_GetName(pstPayload->pstValue)));
+        pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_Hash(orxTexture_GetName(pstPayload->pstValue)));
       }
     }
   }

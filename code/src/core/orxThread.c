@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -359,7 +359,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Success? */
     if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
     {
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread      = GetCurrentThread();
@@ -380,7 +380,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
-  #if defined(__orxLINUX__)
+  #ifdef __orxLINUX__
 
       {
         cpu_set_t stSet;
@@ -465,6 +465,17 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    /* Is notify callback registered? */
+    if(orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))
+    {
+      /* Is clock module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+      {
+        /* Unregisters it */
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask);
+      }
+    }
+
     /* Updates worker thread stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
     orxMEMORY_BARRIER();

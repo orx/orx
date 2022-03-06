@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -229,6 +229,8 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
 #define orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER            "TextureUnitNumber"
 #define orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER             "DrawBufferNumber"
+#define orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE               "MaxTextureSize"
+#define orxDISPLAY_KZ_CONFIG_DEBUG_OUTPUT                   "DebugOutput"
 
 #define orxCOLOR_KZ_CONFIG_SECTION                          "Color"
 
@@ -475,7 +477,7 @@ static orxINLINE orxRGBA          orxColor_ToRGBA(const orxCOLOR *_pstColor)
   fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
 
   /* Updates result */
-  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
+  stResult = orx2RGBA(orxF2U(orxMath_Round(vColor.fR)), orxF2U(orxMath_Round(vColor.fG)), orxF2U(orxMath_Round(vColor.fB)), orxF2U(orxCOLOR_DENORMALIZER * fAlpha));
 
   /* Done! */
   return stResult;
@@ -1186,8 +1188,8 @@ extern orxDLLAPI orxU32 orxFASTCALL                   orxDisplay_GetVideoModeCou
  */
 extern orxDLLAPI orxDISPLAY_VIDEO_MODE *orxFASTCALL   orxDisplay_GetVideoMode(orxU32 _u32Index, orxDISPLAY_VIDEO_MODE *_pstVideoMode);
 
-/** Gets an available video mode
- * @param[in]  _pstVideoMode                          Video mode to set
+/** Sets a video mode
+ * @param[in]  _pstVideoMode                          Video mode to set, if width, height, depth or refresh rate are 0, the monitor's default values will be used instead
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);

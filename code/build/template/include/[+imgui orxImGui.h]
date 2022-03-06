@@ -128,8 +128,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
   }
   if(rstIO.WantSetMousePos)
   {
-    orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
-    orxMouse_SetPosition(&vMousePos);
+    orxMouse_SetPosition(orxVector_Set(&vMousePos, rstIO.MousePos.x, rstIO.MousePos.y, orxFLOAT_0));
   }
   if(rstIO.WantCaptureMouse)
   {
@@ -304,8 +303,14 @@ orxSTATUS orxFASTCALL orxImGui_Init()
 
 void orxFASTCALL orxImGui_Exit()
 {
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxImGui_BeginFrame);
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxImGui_EndFrame);
   orxDisplay_DeleteBitmap((orxBITMAP *)ImGui::GetIO().Fonts->TexID);
   ImGui::DestroyContext();
+  if(sstImGui.apstFonts != orxNULL)
+  {
+    orxMemory_Free(sstImGui.apstFonts);
+  }
 }
 
 #endif // orxIMGUI_IMPL

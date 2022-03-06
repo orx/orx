@@ -1,5 +1,5 @@
 /**
- * @file [name].cpp
+ * @file [name].c[+c++ pp]
  * @date [date]
  */
 
@@ -25,14 +25,29 @@
 #define orxARCHIVE_IMPL
 #include "orxArchive.h"
 #undef orxARCHIVE_IMPL]
+[+remote
 
-#ifdef __orxWINDOWS__
+#define orxREMOTE_IMPL
+#include "orxRemote.h"
+#undef orxREMOTE_IMPL]
+[+movie
+
+#define orxMOVIE_IMPL
+#include "orxMovie.h"
+#undef orxMOVIE_IMPL]
+[+mod
+
+#define orxMOD_IMPL
+#include "orxMod.h"
+#undef orxMOD_IMPL]
+
+#ifdef __orxMSVC__
 
 /* Requesting high performance dedicated GPU on hybrid laptops */
 __declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
 __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
-#endif // __orxWINDOWS__
+#endif // __orxMSVC__
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
@@ -89,6 +104,14 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     "\n* You can play with the config parameters in ../data/config/[name].ini"
     "\n* After changing them, relaunch the executable to see the changes.");
 
+[+movie
+    // Initialize movie support
+    orxMovie_Init();
+]
+[+mod
+    // Initialize MOD support
+    orxMod_Init();
+]
 [+nuklear
     // Display additional Nuklear hint in console
     orxLOG("\n* This template has support for Nuklear.");
@@ -103,19 +126,15 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Initialize Dear ImGui
     orxImGui_Init();
 ]
-[+archive
-    // Initialize archive (ZIP) resource type
-    orxArchive_Init();
-]
 [+scroll
-    // Create the scene
-    CreateObject("Scene");]
+    // Create the [-movie scene][+movie logo]
+    CreateObject("[-movie Scene][+movie Logo]");]
 [-scroll
     // Create the viewport
     orxViewport_CreateFromConfig("MainViewport");
 
-    // Create the scene
-    orxObject_CreateFromConfig("Scene");
+    // Create the [-movie scene][+movie logo]
+    orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
 
     // Register the Update function to the core clock
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
@@ -138,15 +157,27 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
+[+movie
+    // Exit from movie support
+    orxMovie_Exit();
+]
+[+mod
+    // Exit from MOD support
+    orxMod_Exit();
+]
 [+nuklear
-    // Exits from Nuklear
+    // Exit from Nuklear
     orxNuklear_Exit();
 ]
 [+imgui
-    // Exits from Dear ImGui
+    // Exit from Dear ImGui
     orxImGui_Exit();
 ]
-    // Let Orx clean all our mess automatically. :)
+[+remote
+    // Exit from remote support
+    orxRemote_Exit();
+]
+    // Let orx clean all our mess automatically. :)
 }
 
 [+scroll
@@ -163,8 +194,20 @@ void [!name]::BindObjects()
 [+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
-    // Add a config storage to find the initial config file
+[+archive
+    // Initialize archive (ZIP) resource type
+    orxArchive_Init();
+]
+[+remote
+    // Initialize remote (HTTP) resource type
+    orxRemote_Init();
+]
+    // Add config storage to find the initial config file
+[+archive
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
+[+remote
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "http://localhost/config", orxFALSE);]
 
     // Return orxSTATUS_FAILURE to prevent orx from loading the default config file
     return orxSTATUS_SUCCESS;

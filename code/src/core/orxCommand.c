@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -200,7 +200,7 @@ static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _e
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "No name defined for command var type #%d.", _eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "No name defined for command var type #%d.", _eType);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;
@@ -234,7 +234,7 @@ static orxINLINE orxCOMMAND_VAR *orxCommand_Run(const orxCOMMAND *_pstCommand, o
         if(_astArgList[i].eType != _pstCommand->astParamList[i].eType)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command [%s]: invalid type for argument #%d (%s).", orxString_GetFromID(_pstCommand->stNameID), i + 1, orxString_GetFromID(_pstCommand->astParamList[i].stNameID));
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't execute command [%s]: invalid type for argument #%d (%s).", orxString_GetFromID(_pstCommand->stNameID), i + 1, orxString_GetFromID(_pstCommand->astParamList[i].stNameID));
 
           /* Stops */
           break;
@@ -670,7 +670,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               else
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't pop stacked argument for command line [%s]: stack is empty.", _zCommandLine);
 
                 /* Replaces marker with stack error */
                 orxString_NCopy(pcDst, orxCOMMAND_KZ_STACK_ERROR_VALUE, orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acProcessBuffer));
@@ -1061,12 +1061,12 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         if(eStatus == orxSTATUS_FAILURE)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], invalid argument #%d for command [%s].", _zCommandLine, u32ArgNumber, orxString_GetFromID(pstCommand->stNameID));
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't evaluate command line [%s], invalid argument #%d for command [%s].", _zCommandLine, u32ArgNumber, orxString_GetFromID(pstCommand->stNameID));
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s], expected %d[+%d] arguments for command [%s], found %d.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, orxString_GetFromID(pstCommand->stNameID), u32ArgNumber);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't evaluate command line [%s], expected %d[+%d] arguments for command [%s], found %d.", _zCommandLine, (orxU32)pstCommand->u16RequiredParamNumber, (orxU32)pstCommand->u16OptionalParamNumber, orxString_GetFromID(pstCommand->stNameID), u32ArgNumber);
         }
       }
       else
@@ -1084,7 +1084,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       if(_bSilent == orxFALSE)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
       }
 
       /* Stops */
@@ -1138,7 +1138,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
   if(bProcessed == orxFALSE)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't evaluate command line [%s]: [%s] is not a registered command.", _zCommandLine, zCommand);
   }
 
   /* Profiles */
@@ -2520,7 +2520,7 @@ void orxFASTCALL orxCommand_CommandLogAllStructures(orxU32 _u32ArgNumber, const 
   orxSTATUS eResult;
 
   /* Logs all structures */
-  eResult = orxStructure_LogAll();
+  eResult = orxStructure_LogAll((_u32ArgNumber > 0) ? _astArgList[0].bValue : orxFALSE);
 
   /* Updates result */
   _pstResult->u32Value = (eResult != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
@@ -2660,7 +2660,7 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetApplicationSaveDirectory, "Result", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"SubPath = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: LogAllStructures */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LogAllStructures, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Private = false", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetClipboard */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetClipboard, "Content", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
@@ -3208,7 +3208,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           orxBank_Delete(sstCommand.pstResultBank);
 
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command trie.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to create command trie.");
         }
       }
       else
@@ -3232,7 +3232,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
         orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create command banks.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to create command banks.");
       }
     }
     else
@@ -3242,13 +3242,13 @@ orxSTATUS orxFASTCALL orxCommand_Init()
       orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to register event handler.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to register event handler.");
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize command module when it was already initialized.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Tried to initialize command module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -3359,13 +3359,13 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't allocate memory for command [%s], aborting.", _zCommand);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't allocate memory for command [%s], aborting.", _zCommand);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't register command: [%s] is already registered.", _zCommand);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't register command: [%s] is already registered.", _zCommand);
     }
   }
 
@@ -3411,7 +3411,7 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't unregister command: [%s] is not registered.", _zCommand);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't unregister command: [%s] is not registered.", _zCommand);
     }
   }
 
@@ -3524,7 +3524,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't allocate memory for alias [%s], aborting.", zAlias);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't allocate memory for alias [%s], aborting.", zAlias);
 
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -3533,7 +3533,7 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Updating alias [%s]: now pointing to [%s], previously [%s].", zAlias, _zCommand, pstAliasNode->pstCommand->zAliasedCommandName);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Updating alias [%s]: now pointing to [%s], previously [%s].", zAlias, _zCommand, pstAliasNode->pstCommand->zAliasedCommandName);
 
             /* Delete old aliased name */
             orxString_Delete(pstAliasNode->pstCommand->zAliasedCommandName);
@@ -3557,19 +3557,19 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't add/modify alias [%s] -> [%s] as it's creating a loop, aborting.", zAlias, _zCommand);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't add/modify alias [%s] -> [%s] as it's creating a loop, aborting.", zAlias, _zCommand);
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias: [%s] is already registered as a command.", zAlias);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to add alias: [%s] is already registered as a command.", zAlias);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to add alias [%s]: couldn't insert it in trie.", zAlias);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to add alias [%s]: couldn't insert it in trie.", zAlias);
     }
   }
 
@@ -3624,13 +3624,13 @@ orxSTATUS orxFASTCALL orxCommand_RemoveAlias(const orxSTRING _zAlias)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to remove alias: [%s] is a command, not an alias.", _zAlias);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to remove alias: [%s] is a command, not an alias.", _zAlias);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to remove alias: [%s] alias not found.", _zAlias);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to remove alias: [%s] alias not found.", _zAlias);
     }
   }
 
@@ -3800,7 +3800,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
           if(pstParent == orxNULL)
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid base of command [%s]: ignoring previous command parameter.", _zBase, _zPrevious);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "[%s] is not a valid base of command [%s]: ignoring previous command parameter.", _zBase, _zPrevious);
 
             /* Resets previous command node */
             pstPreviousNode = orxNULL;
@@ -3810,7 +3810,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s] is not a valid previous command: ignoring previous command parameter.", _zPrevious);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "[%s] is not a valid previous command: ignoring previous command parameter.", _zPrevious);
       }
     }
     else
@@ -3897,7 +3897,7 @@ const orxSTRING orxFASTCALL orxCommand_GetNext(const orxSTRING _zBase, const orx
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get next command using base [%s]: base not found.", _zBase);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Failed to get next command using base [%s]: base not found.", _zBase);
   }
 
   /* Done! */
@@ -3915,7 +3915,6 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommandLine != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
   /* Evaluates it */
@@ -3937,11 +3936,10 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const o
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommandLine != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
   /* Valid? */
-  if((_zCommandLine != orxNULL) && (_zCommandLine != orxSTRING_EMPTY))
+  if((_zCommandLine != orxNULL) && (*_zCommandLine != orxCHAR_NULL))
   {
     orxS32 s32Offset;
 
@@ -3999,13 +3997,13 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command: [%s] is an alias, not a command.", _zCommand);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't execute command: [%s] is an alias, not a command.", _zCommand);
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't execute command: [%s] is not registered.", _zCommand);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_COMMAND, "Can't execute command: [%s] is not registered.", _zCommand);
     }
   }
 

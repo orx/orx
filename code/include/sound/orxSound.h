@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -45,13 +45,14 @@
 
 
 #include "orxInclude.h"
-#include "sound/orxSoundSystem.h"
 #include "math/orxVector.h"
+#include "sound/orxSoundSystem.h"
 
 
 /** Misc defines
  */
 #define orxSOUND_KZ_RESOURCE_GROUP            "Sound"
+#define orxSOUND_KZ_LOCALE_GROUP              "Sound"
 
 #define orxSOUND_KZ_MASTER_BUS                "master"
 
@@ -88,6 +89,7 @@ typedef enum __orxSOUND_EVENT_t
   orxSOUND_EVENT_RECORDING_START,             /**< Event sent when recording starts */
   orxSOUND_EVENT_RECORDING_STOP,              /**< Event sent when recording stops */
   orxSOUND_EVENT_RECORDING_PACKET,            /**< Event sent when a packet has been recorded */
+  orxSOUND_EVENT_SET_FILTER_PARAM,            /**< Event sent when setting a filter's parameter */
 
   orxSOUND_EVENT_NUMBER,
 
@@ -99,8 +101,9 @@ typedef enum __orxSOUND_EVENT_t
  */
 typedef struct __orxSOUND_STREAM_INFO_t
 {
-  orxU32    u32SampleRate;                    /**< The sample rate, e.g. 44100 Hertz : 4 */
-  orxU32    u32ChannelNumber;                 /**< Number of channels, either mono (1) or stereo (2) : 8 */
+  const orxSTRING zName;                      /**< Stream name : 4 */
+  orxU32          u32SampleRate;              /**< The sample rate, e.g. 44100 Hertz : 8 */
+  orxU32          u32ChannelNumber;           /**< Number of channels, either mono (1) or stereo (2) : 12 */
 
 } orxSOUND_STREAM_INFO;
 
@@ -108,12 +111,13 @@ typedef struct __orxSOUND_STREAM_INFO_t
  */
 typedef struct __orxSOUND_STREAM_PACKET_t
 {
-  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 4 */
-  orxS16   *as16SampleList;                   /**< List of samples for this packet : 8 */
-  orxBOOL   bDiscard;                         /**< Write/play the packet? : 12 */
-  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp : 16 */
+  orxFLOAT *afSampleList;                     /**< List of samples for this packet : 4 */
+  orxU32    u32SampleNumber;                  /**< Number of samples contained in this packet : 8 */
+  orxFLOAT  fTimeStamp;                       /**< Packet's timestamp (system time): 12 */
+  orxFLOAT  fTime;                            /**< Packet's time (cursor/play position): 16 */
   orxS32    s32ID;                            /**< Packet's ID : 20 */
-  orxFLOAT  fTime;                            /**< Packet's time (cursor/play position): 24 */
+  orxBOOL   bDiscard;                         /**< Write/play the packet? : 24 */
+  orxBOOL   bLast;                            /**< Last packet before end of stream? : 28 */
 
 } orxSOUND_STREAM_PACKET;
 
@@ -121,17 +125,21 @@ typedef struct __orxSOUND_STREAM_PACKET_t
  */
 typedef struct __orxSOUND_EVENT_PAYLOAD_t
 {
-  union
-  {
-    orxSOUND                   *pstSound;     /**< Sound reference : 4 */
+  orxSOUND                   *pstSound;     /**< Sound reference : 4 */
 
-    struct
-    {
-      const orxSTRING           zSoundName;   /**< Sound name : 4 */
-      orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 12 */
-      orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
-    } stStream;
-  };                                          /**< Stream : 32 */
+  struct
+  {
+    orxSOUND_STREAM_INFO      stInfo;       /**< Sound record info : 16 */
+    orxSOUND_STREAM_PACKET    stPacket;     /**< Sound record packet : 32 */
+
+  } stStream;
+
+  struct
+  {
+    orxSOUND_FILTER_DATA      stData;       /**< Filter data : 32 */
+    orxSTRINGID               stBusID;      /**< Bus ID : 40 */
+
+  } stFilter;
 
 } orxSOUND_EVENT_PAYLOAD;
 
@@ -241,11 +249,38 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Pause(orxSOUND *_pstSound
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Stop(orxSOUND *_pstSound);
 
+/** Adds a filter to a sound (cascading)
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddFilter(orxSOUND *_pstSound, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveLastFilter(orxSOUND *_pstSound);
+
+/** Removes all filters from a sound
+ * @param[in]   _pstSound     Concerned sound
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveAllFilters(orxSOUND *_pstSound);
+
+/** Adds a filter to a sound (cascading) from config
+ * @param[in]   _pstSound         Concerned sound
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddFilterFromConfig(orxSOUND *_pstSound, const orxSTRING _zFilterConfigID);
+
 
 /** Starts recording
  * @param[in] _zName             Name for the recorded sound/file
  * @param[in] _bWriteToFile      Should write to file?
- * @param[in] _u32SampleRate     Sample rate, 0 for default rate (44100Hz)
+ * @param[in] _u32SampleRate     Sample rate, 0 for default rate (48000Hz)
  * @param[in] _u32ChannelNumber  Channel number, 0 for default mono channel
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -279,7 +314,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSo
 /** Sets a sound time (ie. cursor/play position from beginning)
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _fTime                                Time, in seconds
- * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetTime(orxSOUND *_pstSound, orxFLOAT _fTime);
 
@@ -290,19 +325,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetTime(orxSOUND *_pstSou
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR *_pvPosition);
 
-/** Sets sound attenuation
- * @param[in] _pstSound       Concerned Sound
- * @param[in] _fAttenuation   Desired attenuation
+/** Sets a sound spatialization, with gain decreasing between the minimum and maximum distances, when enabled
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[in] _fMinDistance                           Min distance, inside which the max gain will be used, strictly negative value to disable spatialization entirely
+ * @param[in] _fMaxDistance                           Max distance, outside which the gain will stop decreasing, strictly negative value to disable spatialization entirely
+ * @param[in] _fMinGain                               Min gain in [0.0f - 1.0f]
+ * @param[in] _fMaxGain                               Max gain in [0.0f - 1.0f]
+ * @param[in] _fRollOff                               RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetAttenuation(orxSOUND *_pstSound, orxFLOAT _fAttenuation);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetSpatialization(orxSOUND *_pstSound, orxFLOAT _fMinDistance, orxFLOAT _fMaxDistance, orxFLOAT _fMinGain, orxFLOAT _fMaxGain, orxFLOAT _fRollOff);
 
-/** Sets sound reference distance
- * @param[in] _pstSound       Concerned Sound
- * @param[in] _fDistance      Within this distance, sound is perceived at its maximum volume
+/** Sets a sound panning
+ * @param[in] _pstSound panning
+ * @param[in] _fPanning                               Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                                   Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetReferenceDistance(orxSOUND *_pstSound, orxFLOAT _fDistance);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPanning(orxSOUND *_pstSound, orxFLOAT _fPanning, orxBOOL _bMix);
 
 /** Loops sound
  * @param[in] _pstSound       Concerned Sound
@@ -337,17 +377,24 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetTime(const orxSOUND *_
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR *_pvPosition);
 
-/** Gets sound attenuation
- * @param[in] _pstSound       Concerned Sound
- * @return orxFLOAT
+/** Gets a sound spatialization information
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[out] _pfMinDistance                         Min distance, inside which the max gain will be used, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMaxDistance                         Max distance, outside which the gain will stop decreasing, will be strictly negative if the sound isn't spatialized
+ * @param[out] _pfMinGain                             Min gain in [0.0f - 1.0f]
+ * @param[out] _pfMaxGain                             Max gain in [0.0f - 1.0f]
+ * @param[out] _pfRollOff                             RollOff factor applied when interpolating the gain between inner and outer distances, defaults to 1.0f
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetAttenuation(const orxSOUND *_pstSound);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_GetSpatialization(const orxSOUND *_pstSound, orxFLOAT *_pfMinDistance, orxFLOAT *_pfMaxDistance, orxFLOAT *_pfMinGain, orxFLOAT *_pfMaxGain, orxFLOAT *_pfRollOff);
 
-/** Gets sound reference distance
- * @param[in] _pstSound       Concerned Sound
- * @return orxFLOAT
+/** Gets a sound panning
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[out] _pfPanning                             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[out] _pbMix                                 Left/Right channels are be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetReferenceDistance(const orxSOUND *_pstSound);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_GetPanning(const orxSOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix);
 
 /** Is sound looping?
  * @param[in] _pstSound       Concerned Sound
@@ -461,6 +508,33 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalVolume(orxSTR
  * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetBusGlobalPitch(orxSTRINGID _stBusID);
+
+/** Adds a filter to a bus (cascading)
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _pstFilterData    Concerned filter data
+ * @param[in]   _bUseCustomParam  Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddBusFilter(orxSTRINGID _stBusID, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam);
+
+/** Removes last added filter from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveLastBusFilter(orxSTRINGID _stBusID);
+
+/** Removes all filters from a bus
+ * @param[in]   _stBusID      Concerned bus ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_RemoveAllBusFilters(orxSTRINGID _stBusID);
+
+/** Adds a filter to a bus (cascading) from config
+ * @param[in]   _stBusID          Concerned bus ID
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_AddBusFilterFromConfig(orxSTRINGID _stBusID, const orxSTRING _zFilterConfigID);
 
 #endif /*_orxSOUND_H_*/
 

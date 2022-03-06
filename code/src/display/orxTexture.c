@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -287,21 +287,6 @@ static orxINLINE void orxTexture_DeleteAll()
   return;
 }
 
-/** Finds a texture by name
- * @param[in]   _wDataName    Name of the texture to find
- * @return      orxTEXTURE / orxNULL
- */
-static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
-{
-  orxTEXTURE *pstTexture;
-
-  /* Gets texture from hash table */
-  pstTexture = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_Hash(_zDataName));
-
-  /* Done! */
-  return pstTexture;
-}
-
 /** Command: Create
  */
 void orxFASTCALL orxTexture_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -398,7 +383,7 @@ void orxFASTCALL orxTexture_CommandFind(orxU32 _u32ArgNumber, const orxCOMMAND_V
   orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pstTexture = orxTexture_FindByName(_astArgList[0].zValue);
+  pstTexture = orxTexture_Get(_astArgList[0].zValue);
 
   /* Updates result */
   _pstResult->u64Value = (pstTexture != orxNULL) ? orxStructure_GetGUID(pstTexture) : orxU64_UNDEFINED;
@@ -456,7 +441,7 @@ void orxFASTCALL orxTexture_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_V
   orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pstTexture = orxTexture_FindByName(_astArgList[0].zValue);
+  pstTexture = orxTexture_Get(_astArgList[0].zValue);
 
   /* Not found? */
   if(pstTexture == orxNULL)
@@ -857,7 +842,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
   orxASSERT(_zFileName != orxNULL);
 
   /* Search for a texture using this bitmap */
-  pstResult = orxTexture_FindByName(_zFileName);
+  pstResult = orxTexture_Get(_zFileName);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -1211,6 +1196,34 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT
 
   /* Done! */
   return eResult;
+}
+
+/** Gets texture given its name
+ * @param[in]   _zName          Texture name
+ * @return      orxTEXTURE / orxNULL
+ */
+orxTEXTURE *orxFASTCALL orxTexture_Get(const orxSTRING _zName)
+{
+  orxTEXTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid name? */
+  if(_zName != orxSTRING_EMPTY)
+  {
+    /* Updates result */
+    pstResult = (orxTEXTURE *)orxHashTable_Get(sstTexture.pstTable, orxString_Hash(_zName));
+  }
+  else
+  {
+    /* Clears result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets texture name

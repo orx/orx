@@ -145,8 +145,6 @@ Macros</h2></td></tr>
 <tr class="separator:gaa09530193cf0f7c3acf1f28f47345a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac8e1119e7d86bc7238e6e9d646f7a028"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gac8e1119e7d86bc7238e6e9d646f7a028">orxINPUT_KZ_CONFIG_SECTION</a>&#160;&#160;&#160;&quot;Input&quot;</td></tr>
 <tr class="separator:gac8e1119e7d86bc7238e6e9d646f7a028"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga81743020199c66daff943fc0a95398e9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga81743020199c66daff943fc0a95398e9">orxINPUT_KZ_CONFIG_SET_LIST</a>&#160;&#160;&#160;&quot;SetList&quot;</td></tr>
-<tr class="separator:ga81743020199c66daff943fc0a95398e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga00689c4a50a06b01425fd2eb80d36a32"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32">orxINPUT_KZ_INTERNAL_SET_PREFIX</a>&#160;&#160;&#160;&quot;-=&quot;</td></tr>
 <tr class="separator:ga00689c4a50a06b01425fd2eb80d36a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -156,9 +154,10 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> = 0, 
 <a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
 <a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72">orxINPUT_EVENT_SELECT_SET</a>, 
-<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070">orxINPUT_EVENT_REMOVE_SET</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82">orxINPUT_EVENT_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:gaad778a6cb60c4e8b47e35f8a9216f108"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -232,6 +231,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga353743b746e3bece0070e95850a0cbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb">orxInput_Load</a> (const orxSTRING _zFileName)</td></tr>
 <tr class="separator:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ed1b079e8917dd7ba05990a44158376"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376">orxInput_RemoveSet</a> (const orxSTRING _zSetName)</td></tr>
+<tr class="separator:ga3ed1b079e8917dd7ba05990a44158376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a34aa6090226956398b7b1753760f71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga2a34aa6090226956398b7b1753760f71">orxInput_ResetValue</a> (const orxSTRING _zInputName)</td></tr>
 <tr class="separator:ga2a34aa6090226956398b7b1753760f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacb452866d26f0e8845775a8fe7b414d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0">orxInput_Save</a> (const orxSTRING _zFileName)</td></tr>
@@ -272,7 +273,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00070">70</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00069">69</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +287,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00068">68</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00067">67</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -300,7 +301,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00067">67</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00066">66</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -314,7 +315,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00063">63</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00062">62</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -328,7 +329,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00071">71</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00070">70</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -342,7 +343,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00072">72</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00071">71</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -357,7 +358,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Combine input list </p>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00060">60</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00059">59</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -372,7 +373,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Input default multiplier </p>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00059">59</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00058">58</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -387,7 +388,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Input default threshold </p>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00058">58</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00057">57</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -402,7 +403,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Joystick ID list </p>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00061">61</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00060">60</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -421,21 +422,6 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga81743020199c66daff943fc0a95398e9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxINPUT_KZ_CONFIG_SET_LIST&#160;&#160;&#160;&quot;SetList&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Input set list </p>
-
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00057">57</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="ga00689c4a50a06b01425fd2eb80d36a32"></a>
 <div class="memitem">
 <div class="memproto">
@@ -446,7 +432,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00065">65</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00064">64</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -468,13 +454,15 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72"></a>orxINPUT_EVENT_SELECT_SET&#160;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070"></a>orxINPUT_EVENT_REMOVE_SET&#160;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c"></a>orxINPUT_EVENT_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82"></a>orxINPUT_EVENT_NONE&#160;</td><td class="fielddoc">
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00108">108</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00107">107</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -501,7 +489,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00094">94</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00093">93</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -534,7 +522,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00077">77</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_input_8h_source.html#l00076">76</a> of file <a class="el" href="orx_input_8h_source.html">orxInput.h</a>.</p>
 
 </div>
 </div>
@@ -1235,6 +1223,29 @@ Functions</h2></td></tr>
 <p>Loads inputs from config </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga3ed1b079e8917dd7ba05990a44158376"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_RemoveSet </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSetName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a set </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSetName</td><td>Set name to remove </td></tr>
   </table>
   </dd>
 </dl>

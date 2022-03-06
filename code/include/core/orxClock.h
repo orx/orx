@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,6 +52,9 @@
 #define orxCLOCK_KU32_TIMER_BANK_SIZE                 32          /**< Timer bank size */
 
 #define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
+
+#define orxCLOCK_KZ_CONFIG_FREQUENCY                  "Frequency"
+#define orxCLOCK_KZ_CONFIG_MODIFIER_LIST              "ModifierList"
 
 #define orxCLOCK_KZ_CORE                              "core"
 

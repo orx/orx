@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -358,33 +358,18 @@ void ScrollObject::SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent, orxBOOL _b
   }
 }
 
-void ScrollObject::AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive)
+void ScrollObject::AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive, orxFLOAT _fPropagationDelay)
 {
   // Recursive?
   if(_bRecursive)
   {
     // Adds FX to object
-    orxObject_AddFXRecursive(mpstObject, _zFXName);
+    orxObject_AddFXRecursive(mpstObject, _zFXName, _fPropagationDelay);
   }
   else
   {
     // Adds FX to object
     orxObject_AddFX(mpstObject, _zFXName);
-  }
-}
-
-void ScrollObject::AddFX(const orxSTRING _zFXName, orxFLOAT _fDelay, orxBOOL _bRecursive, orxBOOL _bPropagate)
-{
-  // Recursive?
-  if(_bRecursive)
-  {
-    // Adds FX to object
-    orxObject_AddDelayedFXRecursive(mpstObject, _zFXName, _fDelay, _bPropagate);
-  }
-  else
-  {
-    // Adds FX to object
-    orxObject_AddDelayedFX(mpstObject, _zFXName, _fDelay);
   }
 }
 

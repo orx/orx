@@ -1,5 +1,6 @@
 var group__orx_f_p_s =
 [
+    [ "orxFPS_KZ_CLOCK_NAME", "group__orx_f_p_s.html#ga33367ad8608fcc0fc06c1448687f95b4", null ],
     [ "orxFPS_Exit", "group__orx_f_p_s.html#gabc0ec662fa54530014855d390674c522", null ],
     [ "orxFPS_GetFPS", "group__orx_f_p_s.html#ga9d14b4ad090d138c1466575edcbf9dc8", null ],
     [ "orxFPS_IncreaseFrameCount", "group__orx_f_p_s.html#ga467a9e33861c66ec5e00d2571dc5026c", null ],

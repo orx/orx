@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -40,6 +40,8 @@
 #define XXH_INLINE_ALL
 #include "xxhash.h"
 #undef XXH_INLINE_ALL
+
+#include <locale.h>
 
 
 /** Module flags
@@ -121,6 +123,9 @@ orxSTATUS orxFASTCALL orxString_Init()
     /* Success? */
     if(sstString.pstIDTable != orxNULL)
     {
+      /* Resets default locale in case it was modified by an external component, such as GTK */
+      setlocale(LC_ALL, "C");
+
       /* Inits Flags */
       sstString.u32Flags = orxSTRING_KU32_STATIC_FLAG_READY;
     }

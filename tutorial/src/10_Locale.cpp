@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -155,7 +155,7 @@ void Game::SelectNextLanguage()
   u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCount() - 1) ? 0 : u32LanguageIndex + 1;
 
   // Selects it
-  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex));
+  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex), orxTEXT_KZ_LOCALE_GROUP);
 }
 
 // Init game function

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -297,6 +297,82 @@ static struct __orxCONFIG_BOM_DEFINITION_t
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Converts a string to a vector (with support for stepped/regular randomness)
+ * @param[in]   _zValue           Concerned literal value
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector)
+{
+  const orxSTRING zRemainder;
+  orxVECTOR      *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zValue != orxNULL);
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets value */
+  if(orxString_ToVector(_zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+  {
+    orxS32 s32RandomSeparatorIndex;
+
+    /* Random? */
+    if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+    {
+      orxVECTOR vOtherValue, vStepValue;
+      orxBOOL   bRandom = orxFALSE;
+
+      /* Clears step */
+      orxVector_SetAll(&vStepValue, orxFLOAT_0);
+
+      /* Has another value? */
+      if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        /* Was step? */
+        if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+        {
+          /* Stores it */
+          vStepValue = vOtherValue;
+
+          /* Can get other value? */
+          if((vStepValue.fX >= orxFLOAT_0)
+          && (vStepValue.fY >= orxFLOAT_0)
+          && (vStepValue.fZ >= orxFLOAT_0)
+          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+        else
+        {
+          /* Updates status */
+          bRandom = orxTRUE;
+        }
+      }
+
+      /* Valid? */
+      if(bRandom != orxFALSE)
+      {
+        /* Updates result */
+        pvResult = _pvVector;
+        pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
+        pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
+        pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      pvResult = _pvVector;
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
 
 /** Cleans a value
  * @param[in] _pstValue         Concerned config value
@@ -2740,7 +2816,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
       while((pc < _acBuffer + _u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
       {
         /* Updates pointers */
-        pcLineStart++, pc++;
+        pcLineStart++; pc++;
       }
 
       /* Depending on first character */
@@ -3290,6 +3366,19 @@ static orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectio
   return bResult;
 }
 
+/** Origin clear callback
+ */
+static orxBOOL orxFASTCALL orxConfig_OriginClearCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = (orxConfig_GetOriginID(_zSectionName) != orxSTRINGID_UNDEFINED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /** Transforms a string to Pascal case
  */
 static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING _zSrc)
@@ -3364,7 +3453,7 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
   /* Inits parent buffer */
-  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@%s.", orxCOLOR_KZ_CONFIG_SECTION);
+  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@.");
 
   /* For all colors */
   for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
@@ -3487,6 +3576,20 @@ void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMM
 {
   /* Updates result */
   _pstResult->bValue = (orxConfig_HasSection(_astArgList[0].zValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: RenameSection
+ */
+void orxFASTCALL orxConfig_CommandRenameSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Renames section */
+   orxConfig_RenameSection(_astArgList[0].zValue, _astArgList[1].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[1].zValue;
 
   /* Done! */
   return;
@@ -3849,6 +3952,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RenameSection */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, RenameSection, "NewSection", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"NewSection", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ClearSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSection */
@@ -3925,6 +4030,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
+  /* Command: RenameSection */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, RenameSection);
   /* Command: ClearSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, ClearSection);
   /* Command: GetCurrentSection */
@@ -4218,10 +4325,10 @@ const orxSTRING orxFASTCALL orxConfig_GetEncryptionKey()
   return zResult;
 }
 
-/** Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded.
- *  The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
+/** Sets config bootstrap function: this function will get called when the config module is initialized, before any config file is loaded.
+ * The only available APIs from within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
  * @param[in] _pfnBootstrap     Bootstrap function that will get called at module init, before loading any config file.
-                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen
+                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will take place
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxConfig_SetBootstrap(const orxCONFIG_BOOTSTRAP_FUNCTION _pfnBootstrap)
@@ -4638,7 +4745,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
     /* Clears all data */
-    orxConfig_Clear(orxNULL);
+    orxConfig_Clear(orxConfig_OriginClearCallback);
 
     /* For all entries in history */
     for(pstHistoryEntry = (orxSTRINGID *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -5706,7 +5813,8 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
 orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
   orxCONFIG_SECTION  *pstLastSection, *pstNewSection;
-  orxBOOL             bStop;
+  orxBOOL             bPending;
+  orxU32              u32ClearCount;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -5715,7 +5823,8 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
   do
   {
     /* Inits status */
-    bStop = orxTRUE;
+    bPending      = orxFALSE;
+    u32ClearCount = 0;
 
     /* For all sections */
     for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
@@ -5733,10 +5842,15 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
         pstLastSection = pstNewSection;
 
         /* Updates status */
-        bStop = orxFALSE;
+        bPending = orxTRUE;
+      }
+      else
+      {
+        /* Updates clear count */
+        u32ClearCount++;
       }
     }
-  } while(bStop == orxFALSE);
+  } while((bPending != orxFALSE) && (u32ClearCount != 0));
 
   /* Done! */
   return orxSTATUS_SUCCESS;

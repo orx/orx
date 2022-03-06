@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxClock.h"
+#include "core/orxConfig.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
 
@@ -49,7 +50,7 @@
 
 /** Misc defines
  */
-#define orxFPS_KU32_CLOCK_TICKSIZE          orxFLOAT_1
+#define orxFPS_KU32_CLOCK_FREQUENCY         orxFLOAT_1
 
 
 /***************************************************************************
@@ -117,6 +118,7 @@ void orxFASTCALL orxFPS_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_CONFIG);
 
   return;
 }
@@ -135,7 +137,10 @@ orxSTATUS orxFASTCALL orxFPS_Init()
     orxMemory_Zero(&sstFPS, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
-    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE);
+    orxConfig_PushSection(orxFPS_KZ_CLOCK_NAME);
+    orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, orxFPS_KU32_CLOCK_FREQUENCY);
+    orxConfig_PopSection();
+    sstFPS.pstClock = orxClock_CreateFromConfig(orxFPS_KZ_CLOCK_NAME);
 
     /* Valid? */
     if(sstFPS.pstClock != orxNULL)

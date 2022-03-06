@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -80,6 +80,18 @@
 #undef STBIW_MALLOC
 #undef STB_IMAGE_WRITE_IMPLEMENTATION
 #undef STBI_WRITE_NO_STDIO
+
+#define QOI_NO_STDIO
+#define QOI_IMPLEMENTATION
+#define QOI_MALLOC(sz)          orxMemory_Allocate(sz, orxMEMORY_TYPE_VIDEO)
+#define QOI_FREE(p)             orxMemory_Free(p)
+#define QOI_ZEROARR(a)          orxMemory_Zero(a, sizeof(a))
+#include "qoi.h"
+#undef QOI_ZEROARR
+#undef QOI_FREE
+#undef QOI_MALLOC
+#undef QOI_IMPLEMENTATION
+#undef QOI_NO_STDIO
 
 
 /** Module flags
@@ -306,6 +318,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_SHADER        *pstNoTextureShader;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
+  GLint                     iMaxTextureSize;
   orxU32                    u32DestinationBitmapCount;
   GLuint                    uiFrameBuffer;
   GLuint                    uiLastFrameBuffer;
@@ -1142,11 +1155,32 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_DecompressBitmap(void *_pContext
   /* Hasn't exited yet? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    orxU8  *pu8ImageData;
-    GLuint  uiBytesPerPixel;
+    unsigned char  *pu8ImageData = orxNULL;
+    int             iIndex = 0;
 
-    /* Loads image */
-    pu8ImageData = stbi_load_from_memory((orxU8 *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+    /* Is QOI? */
+    if((qoi_read_32(pstInfo->pu8ImageSource, &iIndex) == QOI_MAGIC))
+    {
+      qoi_desc stDesc;
+
+      /* Decodes it */
+      pu8ImageData = (unsigned char *)qoi_decode(pstInfo->pu8ImageSource, (int)pstInfo->s64Size, &stDesc, 4);
+
+      /* Valid? */
+      if(pu8ImageData != NULL)
+      {
+        /* Updates info */
+        pstInfo->uiWidth  = stDesc.width;
+        pstInfo->uiHeight = stDesc.height;
+      }
+    }
+    else
+    {
+      GLuint uiBytesPerPixel;
+
+      /* Loads image */
+      pu8ImageData = stbi_load_from_memory((unsigned char *)pstInfo->pu8ImageSource, (int)pstInfo->s64Size, (int *)&(pstInfo->uiWidth), (int *)&(pstInfo->uiHeight), (int *)&uiBytesPerPixel, STBI_rgb_alpha);
+    }
 
     /* Valid? */
     if(pu8ImageData != NULL)
@@ -1384,10 +1418,22 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_LoadBitmapData(orxBITMAP *_pstBi
       /* Asynchronous? */
       if(sstDisplay.pstTempBitmap != orxNULL)
       {
-        int iWidth, iHeight, iComp;
+        orxU8  *pu8Header;
+        int     iWidth, iHeight, iDummy = 0;
+
+        /* Retrieves header for QOI */
+        pu8Header     = (orxU8 *)alloca(QOI_HEADER_SIZE);
+        orxResource_Read(hResource, QOI_HEADER_SIZE, pu8Header, orxNULL, orxNULL);
+        orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 
         /* Gets its info */
-        if(stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iComp) != 0)
+        if(((qoi_read_32(pu8Header, &iDummy) == QOI_MAGIC)
+         && (iWidth   = qoi_read_32(pu8Header, &iDummy),
+             iHeight  = qoi_read_32(pu8Header, &iDummy),
+             iDummy   = (int)pu8Header[iDummy],
+             (iDummy == 3)
+          || (iDummy == 4)))
+        || (stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iDummy) != 0))
         {
           /* Resets resource cursor */
           orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
@@ -1522,8 +1568,39 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmapData(void *_pContext)
     /* Saves image to disk */
     eResult = stbi_write_png_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
+  /* QOI? */
+  else if(orxString_ICompare(zExtension, "qoi") == 0)
+  {
+    qoi_desc  stDesc;
+    int       iSize;
+    void     *pBuffer;
+
+    /* Inits descriptor */
+    orxMemory_Zero(&stDesc, sizeof(qoi_desc));
+    stDesc.width      = pstInfo->u32Width;
+    stDesc.height     = pstInfo->u32Height;
+    stDesc.channels   = 4;
+    stDesc.colorspace = 1;
+
+    /* Encodes it */
+    pBuffer = qoi_encode(pstInfo->pu8ImageData, &stDesc, &iSize);
+
+    /* Success? */
+    if(pBuffer != NULL)
+    {
+      /* Saves image to disk */
+      if(orxResource_Write(pstInfo->hResource, (orxS64)iSize, pBuffer, orxNULL, orxNULL) == (orxS64)iSize)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      /* Deletes buffer */
+      orxMemory_Free(pBuffer);
+    }
+  }
   /* JPG? */
-  if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
+  else if((orxString_ICompare(zExtension, "jpg") == 0) || (orxString_ICompare(zExtension, "jpeg") == 0))
   {
     /* Saves image to disk */
     eResult = stbi_write_jpg_to_func(&orxDisplay_Android_WriteResourceCallback, pstInfo->hResource, pstInfo->u32Width, pstInfo->u32Height, 4, pstInfo->pu8ImageData, 0) != 0 ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -2050,6 +2127,9 @@ static void orxFASTCALL orxDisplay_Android_DrawPrimitive(orxU32 _u32VertexNumber
 {
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxDisplay_DrawPrimitive");
+
+  /* Sets buffer mode */
+  orxDisplay_Android_SetBufferMode(orxDISPLAY_BUFFER_MODE_INDIRECT);
 
   /* Starts no texture shader */
   orxDisplay_Android_StartShader((orxHANDLE)sstDisplay.pstNoTextureShader);
@@ -2840,7 +2920,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_GetBitmapData(const orxBITMAP *_pstBitm
       /* Sets new destination bitmap */
       if((eResult = orxDisplay_Android_SetDestinationBitmaps((orxBITMAP **)&_pstBitmap, 1)) != orxSTATUS_FAILURE)
       {
-        orxU8  *pu8ImageBuffer;
+        orxU8 *pu8ImageBuffer;
 
         /* Allocates buffer */
         pu8ImageBuffer = (_pstBitmap != sstDisplay.pstScreen) ? _au8Data : (orxU8 *)orxMemory_Allocate(_pstBitmap->u32RealWidth * _pstBitmap->u32RealHeight * 4 * sizeof(orxU8), orxMEMORY_TYPE_VIDEO);
@@ -4186,6 +4266,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       glASSERT();
       sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
 
+      /* Gets max texture size */
+      glGetIntegerv(GL_MAX_TEXTURE_SIZE, &(sstDisplay.iMaxTextureSize));
+      glASSERT();
+
       if(orxString_SearchString(zGlVersion, "OpenGL ES 3.") && gl3stubInit())
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "OpenGL ES 3 inited!");
@@ -4220,9 +4304,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       /* Pushes config section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-      /* Stores texture unit and draw buffer numbers */
+      /* Stores texture units, draw buffer numbers & max texture size */
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER, (orxU32)sstDisplay.iTextureUnitNumber);
       orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER, (orxU32)sstDisplay.iDrawBufferNumber);
+      orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE, (orxU32)sstDisplay.iMaxTextureSize);
 
       /* Pops config section */
       orxConfig_PopSection();
@@ -4706,9 +4791,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_StopShader(orxHANDLE _hShader)
         /* Updates count */
         sstDisplay.s32PendingShaderCount++;
       }
-
-      /* Updates projection matrix */
-      glUNIFORM(Matrix4fv, sstDisplay.pstDefaultShader->iProjectionMatrixLocation, 1, GL_FALSE, (GLfloat *)&(sstDisplay.mProjectionMatrix.aafValueList[0][0]));
     }
     else
     {
@@ -4824,6 +4906,23 @@ orxS32 orxFASTCALL orxDisplay_Android_GetParameterID(const orxHANDLE _hShader, c
       orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const char *)acBuffer);
       glASSERT();
+    }
+
+    /* Not using custom param? */
+    if(pstShader->bUseCustomParam == orxFALSE)
+    {
+      /* Has any texture edge location? */
+      if((pstInfo->iLocationTop >= 0)
+      || (pstInfo->iLocationLeft >= 0)
+      || (pstInfo->iLocationBottom >= 0)
+      || (pstInfo->iLocationRight >= 0))
+      {
+        /* Updates status */
+        pstShader->bUseCustomParam = orxTRUE;
+
+        /* Outputs log */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%u] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", pstShader->uiProgram, _zParam);
+      }
     }
   }
   else

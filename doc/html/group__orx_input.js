@@ -19,12 +19,12 @@ var group__orx_input =
     [ "orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD", "group__orx_input.html#ga7948bfb78497b11dd9dc28cfcaf0c6d7", null ],
     [ "orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST", "group__orx_input.html#gaa09530193cf0f7c3acf1f28f47345a75", null ],
     [ "orxINPUT_KZ_CONFIG_SECTION", "group__orx_input.html#gac8e1119e7d86bc7238e6e9d646f7a028", null ],
-    [ "orxINPUT_KZ_CONFIG_SET_LIST", "group__orx_input.html#ga81743020199c66daff943fc0a95398e9", null ],
     [ "orxINPUT_KZ_INTERNAL_SET_PREFIX", "group__orx_input.html#ga00689c4a50a06b01425fd2eb80d36a32", null ],
     [ "orxINPUT_EVENT", "group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108", [
       [ "orxINPUT_EVENT_ON", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a8cb7b8201dda5e9ca9835777d4cf2809", null ],
       [ "orxINPUT_EVENT_OFF", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a70508c91cba710144ab50155162a2a00", null ],
       [ "orxINPUT_EVENT_SELECT_SET", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a35947b8fcd0be39787084b190ef8ea72", null ],
+      [ "orxINPUT_EVENT_REMOVE_SET", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a3022c346ec0e83b2358e6b53ac41a070", null ],
       [ "orxINPUT_EVENT_NUMBER", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108a9d294be8d355490533764b4579b8c13c", null ],
       [ "orxINPUT_EVENT_NONE", "group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82", null ]
     ] ],
@@ -67,6 +67,7 @@ var group__orx_input =
     [ "orxInput_IsInCombineMode", "group__orx_input.html#ga802173143cf6500c21cd543515cbecad", null ],
     [ "orxInput_IsSetEnabled", "group__orx_input.html#ga353743b746e3bece0070e95850a0cbe6", null ],
     [ "orxInput_Load", "group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb", null ],
+    [ "orxInput_RemoveSet", "group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376", null ],
     [ "orxInput_ResetValue", "group__orx_input.html#ga2a34aa6090226956398b7b1753760f71", null ],
     [ "orxInput_Save", "group__orx_input.html#gacb452866d26f0e8845775a8fe7b414d0", null ],
     [ "orxInput_SelectSet", "group__orx_input.html#gaae225101ab66ae99f8416fb5b12dbd0b", null ],

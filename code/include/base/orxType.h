@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -231,15 +231,15 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
 #define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS   '\\'
 #define orxCHAR_DIRECTORY_SEPARATOR_LINUX     '/'
 
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '\\'
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#else /* __orxWINDOWS__ */
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '/'
 
-#endif
+#endif /* __orxWINDOWS__ */
 
 
 /* *** Status defines *** */

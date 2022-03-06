@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,15 +57,14 @@
 #define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
 #define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_BACKGROUND_COLOR  0x00000004  /**< Has background color flag */
-#define orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE   0x00000008  /**< Uses screen size flag */
-#define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000010  /**< Auto-resize flag */
-#define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000020  /**< Fixed ratio flag */
-#define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000040  /**< Referenced flag */
+#define orxVIEWPORT_KU32_FLAG_AUTO_RESIZE       0x00000008  /**< Auto-resize flag */
+#define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000010  /**< Fixed ratio flag */
+#define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000020  /**< Referenced flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x00100000  /**< Internal texture handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x00200000  /**< Internal shader pointer handling flag  */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00400000  /**< Internal camera handling flag  */
 
-#define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000009  /**< Default flags */
+#define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000001  /**< Default flags */
 
 #define orxVIEWPORT_KU32_MASK_ALIGN             0xF0000000  /**< Alignment mask */
 
@@ -150,6 +149,10 @@ static orxVIEWPORT_STATIC sstViewport;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
 
 /** Command: Create
  */
@@ -747,6 +750,31 @@ void orxFASTCALL orxViewport_CommandIsShaderEnabled(orxU32 _u32ArgNumber, const 
   return;
 }
 
+/** Command: GetCorrectionRatio
+ */
+void orxFASTCALL orxViewport_CommandGetCorrectionRatio(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxViewport_GetCorrectionRatio(pstViewport);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the viewports commands
  */
 static orxINLINE void orxViewport_RegisterCommands()
@@ -800,6 +828,9 @@ static orxINLINE void orxViewport_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, EnableShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsShaderEnabled */
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, IsShaderEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: GetCorrectionRatio */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetCorrectionRatio, "Ratio", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
 }
 
 /** Unregisters all the viewports commands
@@ -855,6 +886,9 @@ static orxINLINE void orxViewport_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, EnableShader);
   /* Command: IsShaderEnabled */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, IsShaderEnabled);
+
+  /* Command: GetCorrectionRatio */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetCorrectionRatio);
 }
 
 /** Event handler
@@ -1187,6 +1221,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      orxVECTOR       vSize;
       const orxSTRING zCameraName;
       orxS32          s32Number;
       orxBOOL         bFixedSize = orxFALSE, bFixedPosition = orxFALSE;
@@ -1196,6 +1231,24 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       {
         /* Updates flags */
         orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
+      }
+
+      /* Has plain size */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      {
+        /* Gets it */
+        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        {
+          /* Don't use relative size? */
+          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) == orxFALSE)
+          {
+            /* Applies it */
+            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+          }
+
+          /* Updates status */
+          bFixedSize = orxTRUE;
+        }
       }
 
       /* *** Textures *** */
@@ -1508,44 +1561,15 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         }
       }
 
-      /* Has plain size */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      /* Has fixed size? */
+      if(bFixedSize != orxFALSE)
       {
-        orxVECTOR vSize;
-
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        /* Use relative size? */
+        if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
         {
-          /* Use relative size? */
-          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
-          {
-            /* Applies it */
-            orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
-          }
-          else
-          {
-            /* Applies it */
-            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
-          }
-
-          /* Updates status */
-          bFixedSize = orxTRUE;
+          /* Applies it */
+          orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
         }
-      }
-
-      /* No fixed size? */
-      if(bFixedSize == orxFALSE)
-      {
-        orxFLOAT fWidth, fHeight;
-
-        /* Defaults to screen size */
-        orxDisplay_GetScreenSize(&fWidth, &fHeight);
-
-        /* Applies it */
-        orxViewport_SetSize(pstResult, fWidth, fHeight);
-
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_USE_SCREEN_SIZE, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
       /* Has relative size? */
@@ -1700,11 +1724,29 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
-        orxCOLOR stColor;
+        orxCOLOR        stColor;
+        const orxSTRING zColor;
 
-        /* Gets color vector */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, &(stColor.vRGB));
+        /* Gets literal color */
+        zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
+
+        /* Not a vector value? */
+        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) == orxNULL)
+        {
+          /* Pushes color section */
+          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+          /* Retrieves its value */
+          orxConfig_GetVector(zColor, &(stColor.vRGB));
+
+          /* Pops config section */
+          orxConfig_PopSection();
+        }
+
+        /* Normalizes it */
         orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+
+        /* Gets alpha value */
         stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
 
         /* Applies it */

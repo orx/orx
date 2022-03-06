@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -71,6 +71,15 @@ typedef struct __orxMAIN_STATIC_t
 /** Static data
  */
 static orxMAIN_STATIC sstMain;
+
+
+#ifdef __orxMSVC__
+
+/* Requesting high performance dedicated GPU on hybrid laptops */
+__declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif // __orxMSVC__
 
 
 /***************************************************************************

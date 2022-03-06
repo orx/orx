@@ -1,5 +1,6 @@
 var orx_text_8h =
 [
+    [ "orxTEXT_KZ_LOCALE_GROUP", "group__orx_text.html#ga006284d85d423a4e02dc992fbbce983d", null ],
     [ "orxTEXT", "group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d", null ],
     [ "orxText_Create", "group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3", null ],
     [ "orxText_CreateFromConfig", "group__orx_text.html#gaf62ab8f65f6396ac5bfabe84dc2f0f0b", null ],

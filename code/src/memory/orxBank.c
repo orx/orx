@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -889,7 +889,7 @@ orxU32 orxFASTCALL orxBank_GetIndex(const orxBANK *_pstBank, const void *_pCell)
 void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
 {
   orxU32  u32SegmentIndex, u32CellIndex, u32MapSize;
-  void   *pResult;
+  void   *pResult = orxNULL;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxBank_GetAtIndex");
@@ -897,27 +897,24 @@ void *orxFASTCALL orxBank_GetAtIndex(const orxBANK *_pstBank, orxU32 _u32Index)
   /* Checks */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBank != orxNULL);
-  orxASSERT(_u32Index < _pstBank->u32SegmentCount * _pstBank->u32SegmentSize);
   orxASSERT(_pstBank->au32SegmentFree[_u32Index / _pstBank->u32SegmentSize] <= _pstBank->u32SegmentSize);
-  orxASSERT(_pstBank->u32CellCount != 0);
 
-  /* Gets segment map size */
-  u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
-
-  /* Gets indices */
-  u32SegmentIndex = _u32Index / _pstBank->u32SegmentSize;
-  u32CellIndex    = _u32Index % _pstBank->u32SegmentSize;
-
-  /* Is cell allocated? */
-  if(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))))
+  /* Is within segment boundaries? */
+  if(_u32Index < _pstBank->u32SegmentCount * _pstBank->u32SegmentSize)
   {
-    /* Updates result */
-    pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
-  }
-  else
-  {
-    /* Updates result */
-    pResult = orxNULL;
+    /* Gets segment map size */
+    u32MapSize = (orxU32)orxALIGN(_pstBank->u32SegmentSize, 32) >> 5;
+
+    /* Gets indices */
+    u32SegmentIndex = _u32Index / _pstBank->u32SegmentSize;
+    u32CellIndex    = _u32Index % _pstBank->u32SegmentSize;
+
+    /* Is cell allocated? */
+    if(!(_pstBank->au32CellMap[u32SegmentIndex * u32MapSize + (u32CellIndex >> 5)] & (1 << (u32CellIndex & 31))))
+    {
+      /* Updates result */
+      pResult = (void *)((orxU8 *)orxALIGN(_pstBank->apstSegmentData[u32SegmentIndex], sstBank.u32CacheLineSize) + u32CellIndex * _pstBank->u32CellSize + orxBANK_KU32_TAG_SIZE);
+    }
   }
 
   /* Profiles */

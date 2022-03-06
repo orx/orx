@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -576,6 +576,12 @@ static orxINLINE orxVECTOR *                  orxVector_2DRotate(orxVECTOR *_pvR
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp != orxNULL);
 
+  /* 0? */
+  if(_fAngle == orxFLOAT_0)
+  {
+    /* Updates result */
+    orxVector_Copy(_pvRes, _pvOp);
+  }
   /* PI/2? */
   if(_fAngle == orxMATH_KF_PI_BY_2)
   {
@@ -587,6 +593,11 @@ static orxINLINE orxVECTOR *                  orxVector_2DRotate(orxVECTOR *_pvR
   {
     /* Updates result */
     orxVector_Set(_pvRes, _pvOp->fY, -_pvOp->fX, _pvOp->fZ);
+  }
+  else if(_fAngle == orxMATH_KF_PI)
+  {
+    /* Updates result */
+    orxVector_Set(_pvRes, -_pvOp->fX, -_pvOp->fY, _pvOp->fZ);
   }
   /* Any other angle */
   else

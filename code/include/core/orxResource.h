@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -149,9 +149,9 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, orxBOOL _bAddFirst);
 
-/** Removes a storage for a given resource group
- * @param[in] _zGroup           Concerned resource group
- * @param[in] _zStorage         Concerned storage
+/** Removes storage(s) for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @param[in] _zStorage         Concerned storage, orxNULL for all storages (except default one)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
@@ -237,7 +237,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetSize(or
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Offset        Number of bytes to offset from 'origin'
  * @param[in] _eWhence          Starting point for the offset computation (start, current position or end)
- * @return Absolute cursor position
+ * @return Absolute cursor position if successful, -1 otherwise
  */
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 
@@ -304,10 +304,17 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCou
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetTypeTag(orxU32 _u32Index);
 
 
-/** Clears cache
+/** Syncs all cached resources for specific resource group(s): update, add or remove events will be sent for all resources that are not located in their original storage anymore
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache();
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const orxSTRING _zGroup);
+
+/** Clears cache for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
 
 
 #endif /* _orxRESOURCE_H_ */

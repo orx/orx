@@ -3,8 +3,8 @@
  * @date [date]
  */
 
-#ifndef __[!NAME]_H__
-#define __[!NAME]_H__
+#ifndef __[!name]_H__
+#define __[!name]_H__
 
 #define __NO_SCROLLED__
 #include "Scroll.h"
@@ -20,7 +20,7 @@ private:
 
                 orxSTATUS       Bootstrap() const;
 
-                void            Update(const orxCLOCK_INFO &Info);
+                void            Update(const orxCLOCK_INFO &_rstInfo);
 
                 orxSTATUS       Init();
                 orxSTATUS       Run();
@@ -31,4 +31,4 @@ private:
 private:
 };
 
-#endif // __[!NAME]_H__
+#endif // __[!name]_H__

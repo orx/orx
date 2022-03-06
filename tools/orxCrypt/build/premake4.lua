@@ -45,7 +45,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2019")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -125,10 +125,7 @@ solution "orxCrypt"
         "StaticRuntime"
     }
 
-    configuration {"not vs2015", "not vs2017", "not vs2019"}
-        flags {"EnableSSE2"}
-
-    configuration {"not x64"}
+    configuration {"x32"}
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
@@ -166,14 +163,13 @@ solution "orxCrypt"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++",
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.9",
             "-stdlib=libc++",
             "-dead_strip"
         }

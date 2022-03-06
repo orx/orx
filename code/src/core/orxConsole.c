@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -70,8 +70,6 @@
 #define orxCONSOLE_KZ_CONFIG_TOGGLE_KEY               "ToggleKey"                     /**< Toggle key */
 #define orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST       "InputHistoryList"              /**< Input history list */
 #define orxCONSOLE_KZ_CONFIG_SCROLL_SIZE              "ScrollSize"                    /**< Scroll size */
-
-#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension */
 
 #define orxCONSOLE_KE_DEFAULT_KEY_TOGGLE              orxKEYBOARD_KEY_BACKQUOTE       /**< Default toggle key */
 

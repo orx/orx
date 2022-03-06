@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,6 +51,7 @@
 
 #include "object/orxStructure.h"
 #include "display/orxDisplay.h"
+#include "math/orxAABox.h"
 
 
 /** Graphic flags
@@ -114,6 +115,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Init();
 /** Exits from the Graphic module
  */
 extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
+
+
+/** Gets alignment flags from literals
+ * @param[in]   _zAlign         Align literals
+ * @ return Align flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxGraphic_GetAlignFlags(const orxSTRING _zAlign);
+
+/** Aligns a vector inside a box using flags
+ * @param[in]   _u32AlignFlags  Align flags
+ * @param[in]   _pstBox         Concerned box
+ * @param[out]  _pvValue        Storage for the resulting aligned vector
+ * @return orxVECTOR
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAABOX *_pstBox, orxVECTOR *_pvValue);
 
 
 /** Creates an empty graphic

@@ -9,7 +9,11 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := orxTest
 
 LOCAL_SRC_FILES := $(SRC_PATH)/orxTest.cpp
-LOCAL_STATIC_LIBRARIES := android_orx
+ifeq ($(APP_OPTIM),debug)
+  LOCAL_STATIC_LIBRARIES := android_orxd
+else
+  LOCAL_STATIC_LIBRARIES := android_orx
+endif
 LOCAL_ARM_MODE := arm
 
 include $(BUILD_SHARED_LIBRARY)

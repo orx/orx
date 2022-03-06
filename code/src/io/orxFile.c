@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -41,7 +41,9 @@
 
 #ifdef __orxWINDOWS__
 
-  #include <io.h>
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
   #include <Shlobj.h>
 
   #ifdef __orxMSVC__
@@ -140,7 +142,7 @@ static orxFILE_STATIC sstFile;
 
 #ifdef __orxWINDOWS__
 
-static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData, orxFILE_INFO *_pstFileInfo)
+static orxINLINE void orxFile_GetInfoFromData(const WIN32_FIND_DATAA *_pstData, orxFILE_INFO *_pstFileInfo)
 {
   orxU32 u32PathLength;
   /* Checks */
@@ -148,18 +150,18 @@ static orxINLINE void orxFile_GetInfoFromData(const struct _finddata_t *_pstData
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Stores info */
-  _pstFileInfo->s64Size       = (orxS64)_pstData->size;
-  _pstFileInfo->s64TimeStamp  = (orxS64)_pstData->time_write;
-  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, sizeof(_pstFileInfo->zName) - 1);
+  _pstFileInfo->s64Size       = ((orxS64)_pstData->nFileSizeHigh << 32) + _pstData->nFileSizeLow;
+  _pstFileInfo->s64TimeStamp  = ((orxS64)_pstData->ftLastWriteTime.dwHighDateTime << 32) + _pstData->ftLastWriteTime.dwLowDateTime;
+  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->cFileName, sizeof(_pstFileInfo->zName) - 1);
   _pstFileInfo->zName[sizeof(_pstFileInfo->zName) - 1] = orxCHAR_NULL;
   u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
   orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
   _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
-  _pstFileInfo->u32Flags      = ((_pstData->attrib & (_A_RDONLY|_A_HIDDEN|_A_SUBDIR)) == 0)
+  _pstFileInfo->u32Flags      = ((_pstData->dwFileAttributes & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_DIRECTORY)) == 0)
                                 ? orxFILE_KU32_FLAG_INFO_NORMAL
-                                : ((_pstData->attrib & _A_RDONLY) ? orxFILE_KU32_FLAG_INFO_READONLY : 0)
-                                | ((_pstData->attrib & _A_HIDDEN) ? orxFILE_KU32_FLAG_INFO_HIDDEN : 0)
-                                | ((_pstData->attrib & _A_SUBDIR) ? orxFILE_KU32_FLAG_INFO_DIRECTORY : 0);
+                                : ((_pstData->dwFileAttributes & FILE_ATTRIBUTE_READONLY) ? orxFILE_KU32_FLAG_INFO_READONLY : 0)
+                                | ((_pstData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ? orxFILE_KU32_FLAG_INFO_HIDDEN : 0)
+                                | ((_pstData->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? orxFILE_KU32_FLAG_INFO_DIRECTORY : 0);
 
   /* Done! */
   return;
@@ -532,7 +534,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
 
 #ifdef __orxWINDOWS__
 
-  struct _finddata_t  stData;
+  WIN32_FIND_DATAA    stData;
   orxHANDLE           hHandle;
 
   /* Checks */
@@ -541,7 +543,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Opens the search */
-  hHandle = (orxHANDLE)_findfirst(_zSearchPattern, &stData);
+  hHandle = (orxHANDLE)FindFirstFile(_zSearchPattern, &stData);
 
   /* Valid? */
   if(orxFILE_CAST_HELPER hHandle > 0)
@@ -674,7 +676,7 @@ orxSTATUS orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
 
 #ifdef __orxWINDOWS__
 
-  struct _finddata_t  stData;
+  WIN32_FIND_DATAA    stData;
   orxS32              s32FindResult;
 
   /* Checks */
@@ -682,7 +684,7 @@ orxSTATUS orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Opens the search */
-  s32FindResult = _findnext(orxFILE_CAST_HELPER _pstFileInfo->hInternal, &stData);
+  s32FindResult = FindNextFile((HANDLE)_pstFileInfo->hInternal, &stData);
 
   /* Valid? */
   if(s32FindResult == 0)
@@ -740,7 +742,7 @@ void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
   if(orxFILE_CAST_HELPER _pstFileInfo->hInternal > 0)
   {
     /* Closes the search */
-    _findclose(orxFILE_CAST_HELPER _pstFileInfo->hInternal);
+    FindClose((HANDLE)_pstFileInfo->hInternal);
   }
 
 #else /* __orxWINDOWS__ */
@@ -1146,7 +1148,6 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
 
     /* Updates result */
     s64Result = orxFile_Tell(_pstFile);
-
   }
   else
   {

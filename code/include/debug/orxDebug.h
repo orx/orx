@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -83,6 +83,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_ANIM = 0,                    /**< Anim Debug */
   orxDEBUG_LEVEL_CONFIG,                      /**< Config Debug */
   orxDEBUG_LEVEL_CLOCK,                       /**< Clock Debug */
+  orxDEBUG_LEVEL_COMMAND,                     /**< Command Debug */
   orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
   orxDEBUG_LEVEL_FILE,                        /**< File Debug */
   orxDEBUG_LEVEL_INPUT,                       /**< Input Debug */

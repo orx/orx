@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -49,13 +49,17 @@
 #ifdef __orxGCC__
 
 #if (__GNUC__ != 8) || (__GNUC_MINOR__ != 1)
+
   #warning The customized LiquidFun library shipping with orx was compiled with MinGW-w64 8.1.0, using any other version might result in compiling and/or linking errors! Please either upgrade to MinGW-w64 8.1.0 or recompile extern/LiquidFun-1.1.0 and ignore this warning
+
 #endif /* (__GNUC__ != 8) || (__GNUC_MINOR != 1) */
 
 #endif /* __orxGCC__ */
 
 #ifndef alloca
+
   #define alloca(x) __builtin_alloca((x))
+
 #endif
 
 #endif /* __orxWINDOWS__ && !__orxMSVC__ */
@@ -441,10 +445,7 @@ void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
 
 void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
 {
-  orxVIEWPORT  *pstViewport;
-  orxCOLOR      stColor;
-  orxS32        i;
-  orxVECTOR    *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -463,9 +464,12 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
       /* Valid? */
       if(pstCamera != orxNULL)
       {
-        orxAABOX  stFrustum;
-        orxVECTOR vCameraPosition;
-        orxFLOAT  fZ;
+        orxAABOX    stFrustum;
+        orxVECTOR   vCameraPosition;
+        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxCOLOR    stColor;
+        orxFLOAT    fZ;
+        orxS32      i;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -504,10 +508,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
 
 void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
 {
-  orxVIEWPORT  *pstViewport;
-  orxCOLOR      stColor;
-  orxS32        i;
-  orxVECTOR    *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -526,9 +527,12 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
       /* Valid? */
       if(pstCamera != orxNULL)
       {
-        orxAABOX  stFrustum;
-        orxVECTOR vCameraPosition;
-        orxFLOAT  fZ;
+        orxAABOX    stFrustum;
+        orxVECTOR   vCameraPosition;
+        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxCOLOR    stColor;
+        orxFLOAT    fZ;
+        orxS32      i;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -571,9 +575,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
 
 void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor)
 {
-  orxVIEWPORT  *pstViewport;
-  orxCOLOR      stColor;
-  orxVECTOR     vCenter, vTemp;
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -593,8 +595,9 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
       if(pstCamera != orxNULL)
       {
         orxAABOX  stFrustum;
-        orxVECTOR vCameraPosition;
-        orxFLOAT  fZ;
+        orxVECTOR vCameraPosition, vCenter, vTemp;
+        orxCOLOR  stColor;
+        orxFLOAT  fRadius, fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -618,8 +621,11 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
         stColor.fAlpha = orxFLOAT_1;
 
+        /* Retrieves transformed radius */
+        fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
         /* Draws circle */
-        orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxFALSE);
+        orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxFALSE);
       }
     }
   }
@@ -630,9 +636,7 @@ void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, 
 
 void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor)
 {
-  orxVIEWPORT  *pstViewport;
-  orxCOLOR      stColor;
-  orxVECTOR     vCenter, vTemp;
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -652,8 +656,9 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
       if(pstCamera != orxNULL)
       {
         orxAABOX  stFrustum;
-        orxVECTOR vCameraPosition;
-        orxFLOAT  fZ;
+        orxVECTOR vCameraPosition, vCenter, vTemp;
+        orxCOLOR  stColor;
+        orxFLOAT  fRadius, fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -673,16 +678,19 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
         orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
         orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
 
+        /* Retrieves transformed radius */
+        fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
         /* Sets color */
         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
 
         /* Draws circle inside */
         stColor.fAlpha = orx2F(0.5f);
-        orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxTRUE);
+        orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxTRUE);
 
         /* Draws circle outside */
         stColor.fAlpha = orxFLOAT_1;
-        orxDisplay_DrawCircle(&vCenter, vTemp.fX - vCenter.fX, orxColor_ToRGBA(&stColor), orxFALSE);
+        orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxFALSE);
       }
     }
   }
@@ -693,9 +701,7 @@ void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRad
 
 void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor)
 {
-  orxVIEWPORT  *pstViewport;
-  orxCOLOR      stColor;
-  orxVECTOR     vBegin, vEnd;
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -715,7 +721,8 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
       if(pstCamera != orxNULL)
       {
         orxAABOX  stFrustum;
-        orxVECTOR vCameraPosition;
+        orxVECTOR vCameraPosition, vBegin, vEnd;
+        orxCOLOR  stColor;
         orxFLOAT  fZ;
 
         /* Gets camera position */
@@ -751,22 +758,7 @@ void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, 
 
 void orxPhysicsDebugDraw::DrawParticles(const b2Vec2 *_avCenterList, float32 _fRadius, const b2ParticleColor *_astColorList, int32 _s32Count)
 {
-  b2Color color(1, 1, 1);
-
-  for(orxS32 i = 0; i < _s32Count; i++)
-  {
-    DrawCircle(_avCenterList[i], _fRadius, color);
-  }
-
-  /* Done! */
-  return;
-}
-
-void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
-{
-  orxVIEWPORT    *pstViewport;
-  orxVECTOR       vBegin, vEndX, vEndY;
-  const orxFLOAT  fScale = orx2F(0.4f);
+  orxVIEWPORT *pstViewport;
 
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
@@ -788,6 +780,75 @@ void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
         orxAABOX  stFrustum;
         orxVECTOR vCameraPosition;
         orxFLOAT  fZ;
+        orxS32    i;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* For all particles */
+        for(i = 0; i < _s32Count; i++)
+        {
+          orxVECTOR vCenter, vTemp;
+          orxCOLOR  stColor;
+          orxFLOAT  fRadius;
+
+          /* Inits center & temp vectors */
+          orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_avCenterList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avCenterList[i].y), fZ);
+          orxVector_Copy(&vTemp, &vCenter);
+          vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fRadius);
+
+          /* Gets its screen position */
+          orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
+          orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
+
+          /* Sets color */
+          orxVector_Set(&(stColor.vRGB), orx2F(_astColorList[i].r), orx2F(_astColorList[i].g), orx2F(_astColorList[i].b));
+          stColor.fAlpha = orxFLOAT_1;
+
+          /* Retrieves transformed radius */
+          fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
+          /* Draws circle */
+          orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxFALSE);
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vBegin, vEndX, vEndY;
+        orxFLOAT  fZ;
 
         /* Gets camera position */
         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
@@ -799,9 +860,11 @@ void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
 
         /* Inits points */
+#define orxPHYSICS_KF_SCALE orx2F(0.5f)
         orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.y), fZ);
-        orxVector_Set(&vEndX, vBegin.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), vBegin.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.s), fZ);
-        orxVector_Set(&vEndY, vBegin.fX + sstPhysics.fRecDimensionRatio * fScale * orx2F(-_rstTransform.q.s), vBegin.fY + sstPhysics.fRecDimensionRatio * fScale * orx2F(_rstTransform.q.c), fZ);
+        orxVector_Set(&vEndX, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.c), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.s), fZ);
+        orxVector_Set(&vEndY, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(-_rstTransform.q.s), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.c), fZ);
+#undef orxPHYSICS_KF_SCALE
 
         /* Gets their screen positions */
         orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
@@ -3498,6 +3561,9 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_Exit()
   /* Was initialized? */
   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
   {
+    /* Unregisters update */
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxPhysics_LiquidFun_Update);
+
     /* Deletes body bank */
     orxBank_Delete(sstPhysics.pstBodyBank);
 
