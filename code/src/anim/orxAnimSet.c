@@ -56,16 +56,6 @@
 
 #endif /* __orxGCC__ */
 
-#ifdef __orx64__
-
-  #define orxANIMSET_CAST_HELPER   (orxU64)
-
-#else /* __orx64__ */
-
-  #define orxANIMSET_CAST_HELPER
-
-#endif /* __orx64__ */
-
 
 /** Module flags
  */
@@ -1368,7 +1358,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
           orxStructure_SetOwner(pstAnim, pstResult);
 
           /* Adds it to ID table */
-          orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+          orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(orxAnim_GetName(pstAnim)), (void *)(orxUPTR)(u32AnimID + 1));
         }
       }
     }
@@ -1400,8 +1390,8 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
         zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
 
         /* Gets source & destination anim IDs */
-        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zSrcAnim)) - 1);
-        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDstAnim)) - 1);
+        u32SrcAnim = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zSrcAnim)) - 1);
+        u32DstAnim = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDstAnim)) - 1);
 
         /* Valid? */
         if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
@@ -2483,7 +2473,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxStructure_SetOwner(pstAnim, pstResult);
 
         /* Adds it to ID table */
-        orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(zStartAnim), (void *)(orxUPTR)(u32AnimID + 1));
       }
 
       /* For all animations */
@@ -2509,7 +2499,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
             orxStructure_SetOwner(pstAnim, pstResult);
 
             /* Adds it to ID table */
-            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *)(orxUPTR)(u32AnimID + 1));
           }
         }
       }
@@ -2529,7 +2519,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
 
         /* Gets self anim ID */
-        u32AnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
+        u32AnimID = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
 
         /* Valid? */
         if(u32AnimID != orxU32_UNDEFINED)
@@ -2570,7 +2560,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
                   ;
 
                 /* Gets its anim ID */
-                u32DestAnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDestAnim)) - 1);
+                u32DestAnimID = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDestAnim)) - 1);
 
                 /* Valid? */
                 if(u32DestAnimID != orxU32_UNDEFINED)
@@ -3811,7 +3801,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding ID */
-    u32Result = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_Hash(_zAnimName)) - 1);
+    u32Result = ((orxU32)(orxUPTR)orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_Hash(_zAnimName)) - 1);
   }
 
   /* Done! */

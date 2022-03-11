@@ -33,15 +33,11 @@ void orxFASTCALL      orxRemote_Exit();
 
 #endif // __orxWINDOWS__
 
+
 //! Defines
 
 #define orxREMOTE_DEFAULT_HOST    "localhost"
 #define orxREMOVE_DEFAULT_PORT    80
-#ifdef __orxX86_64__
-#define orxREMOTE_CAST_HELPER     (orxU64)
-#else // __orxX86_64__
-#define orxREMOTE_CAST_HELPER
-#endif // __orxX86_64__
 
 
 //! Variables / Structures
@@ -99,7 +95,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
   stKey = orxRemote_GetHash(_zHost, _u32Port);
 
   // Not found?
-  if((stResult = (Socket) orxREMOTE_CAST_HELPER orxHashTable_Get(spstTable, stKey)) == 0)
+  if((stResult = (Socket)(orxUPTR)orxHashTable_Get(spstTable, stKey)) == 0)
   {
     struct hostent *pstHost;
 
@@ -135,7 +131,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
           if(stResult != 0)
           {
             // Stores socket
-            orxHashTable_Set(spstTable, stKey, (void *) orxREMOTE_CAST_HELPER stResult);
+            orxHashTable_Set(spstTable, stKey, (void *)(orxUPTR)stResult);
           }
         }
         else

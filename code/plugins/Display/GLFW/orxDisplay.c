@@ -137,13 +137,6 @@
 #endif /* __orxEMBEDDED__ */
 
 
-#ifdef __orx64__
-  #define orxDISPLAY_CAST_HELPER                (orxU64)
-#else /* __orx64__ */
-  #define orxDISPLAY_CAST_HELPER
-#endif /* __orx64__ */
-
-
 /** Module flags
  */
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000  /**< No flags */
@@ -6866,7 +6859,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
         pstShader->bUseCustomParam = orxTRUE;
 
         /* Outputs log */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%u] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", (orxU32) orxDISPLAY_CAST_HELPER pstShader->hProgram, _zParam);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Shader [%u] with \"UseCustomParam = false\" is using edge parameter for texture [%s]: forcing UseCustomParam to true.", (orxU32)(orxUPTR)pstShader->hProgram, _zParam);
       }
     }
   }
@@ -7057,7 +7050,7 @@ orxU32 orxFASTCALL orxDisplay_GLFW_GetShaderID(const orxHANDLE _hShader)
   pstShader = (orxDISPLAY_SHADER *)_hShader;
 
   /* Updates result */
-  u32Result = (orxU32) orxDISPLAY_CAST_HELPER pstShader->hProgram;
+  u32Result = (orxU32)(orxUPTR)pstShader->hProgram;
 
   /* Done! */
   return u32Result;

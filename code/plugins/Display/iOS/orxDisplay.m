@@ -147,12 +147,6 @@
  */
 #define orxDISPLAY_KU32_PVR_TEXTURE_MASK_TYPE   0xFF
 
-#ifdef __orx64__
-  #define orxDISPLAY_CAST_HELPER                (orxU64)
-#else /* __orx64__ */
-  #define orxDISPLAY_CAST_HELPER
-#endif /* __orx64__ */
-
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
 
 #ifdef __orxDEBUG__
@@ -4601,7 +4595,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
 
       /* Inits shader */
       orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
-      pstShader->uiProgram              = (GLuint) orxDISPLAY_CAST_HELPER orxHANDLE_UNDEFINED;
+      pstShader->uiProgram              = (GLuint)(orxUPTR)orxHANDLE_UNDEFINED;
       pstShader->iTextureCount          = 0;
       pstShader->s32ParamCount          = 0;
       pstShader->bPending               = orxFALSE;

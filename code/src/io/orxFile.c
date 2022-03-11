@@ -79,13 +79,6 @@
 #define orxFILE_KU32_STATIC_FLAG_NONE           0x00000000  /**< No flags have been set */
 #define orxFILE_KU32_STATIC_FLAG_READY          0x00000001  /**< The module has been initialized */
 
-#ifdef __orxWINDOWS__
-#ifdef __orxX86_64__
-  #define orxFILE_CAST_HELPER                   (orxS64)
-#else /* __orxX86_64__ */
-  #define orxFILE_CAST_HELPER                   (orxS32)
-#endif /* __orxX86_64__ */
-#endif /* __orxWINDOWS__ */
 
 /** Misc
  */
@@ -546,7 +539,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
   hHandle = (orxHANDLE)FindFirstFile(_zSearchPattern, &stData);
 
   /* Valid? */
-  if(orxFILE_CAST_HELPER hHandle > 0)
+  if((orxSPTR)hHandle > 0)
   {
     const orxSTRING zFileName;
 
@@ -739,7 +732,7 @@ void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
 #ifdef __orxWINDOWS__
 
   /* Has valid handle? */
-  if(orxFILE_CAST_HELPER _pstFileInfo->hInternal > 0)
+  if((orxSPTR)_pstFileInfo->hInternal > 0)
   {
     /* Closes the search */
     FindClose((HANDLE)_pstFileInfo->hInternal);
