@@ -66,8 +66,6 @@
 
 #endif /* TARGET_OS_ANDROID_NATIVE */
 
-#include <stddef.h>
-
 
 /* *** Platform dependent base declarations */
 
@@ -384,11 +382,12 @@
 
 
 /** Memory alignment macros */
-#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) & (~((size_t)(BLOCK_SIZE) - 1)))
+#define orxALIGN(VALUE, BLOCK_SIZE)     (((orxUPTR)(VALUE) + ((orxUPTR)(BLOCK_SIZE) - 1)) & (~((orxUPTR)(BLOCK_SIZE) - 1)))
 
-#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
-#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)
-#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
+#define orxALIGN8(VALUE)                orxALIGN(VALUE, 8)
+#define orxALIGN16(VALUE)               orxALIGN(VALUE, 16)
+#define orxALIGN32(VALUE)               orxALIGN(VALUE, 32)
+#define orxALIGN64(VALUE)               orxALIGN(VALUE, 64)
 
 
 /** Structure macros */
