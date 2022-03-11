@@ -66,6 +66,8 @@
 
 #endif /* TARGET_OS_ANDROID_NATIVE */
 
+#include <stddef.h>
+
 
 /* *** Platform dependent base declarations */
 
