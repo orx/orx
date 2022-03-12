@@ -76,7 +76,6 @@ orx 1.13
 * Added Viewport.GetCorrectionRatio command
 * Default stream sample rate if now 48kHz (previously 44.1kHz)
 * Fixed NvOptimus/AmdPowerExpress exports in init template for non-MSVC Windows builds
-
 * Better support for multiple partial init/exit of orx (ie. only specific modules) during a single life cycle of the application
 * Misc fixes, optimizations and additions
 
