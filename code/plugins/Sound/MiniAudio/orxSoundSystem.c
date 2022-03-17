@@ -1783,6 +1783,26 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
       /* Success? */
       if(hResult == MA_SUCCESS)
       {
+        ma_device_info *apstDeviceList;
+        ma_uint32       u32DeviceNumber;
+
+        /* No available playback devices? */
+        if((ma_context_get_devices(&(sstSoundSystem.stContext), NULL, NULL, &apstDeviceList, &u32DeviceNumber) != MA_SUCCESS)
+        || (u32DeviceNumber == 0))
+        {
+          ma_backend eNullBackend = ma_backend_null;
+
+          /* Uninits context */
+          ma_context_uninit(&(sstSoundSystem.stContext));
+
+          /* Re-inits it with the null backend */
+          hResult = ma_context_init(&eNullBackend, 1, &stContextConfig, &(sstSoundSystem.stContext));
+        }
+      }
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
         ma_engine_config stEngineConfig;
 
         /* Inits engine */
