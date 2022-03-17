@@ -1787,7 +1787,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         ma_uint32       u32DeviceNumber;
 
         /* No available playback devices? */
-        if((ma_context_get_devices(&(sstSoundSystem.stContext), NULL, NULL, &apstDeviceList, &u32DeviceNumber) != MA_SUCCESS)
+        if((ma_context_get_devices(&(sstSoundSystem.stContext), &apstDeviceList, &u32DeviceNumber, NULL, NULL) != MA_SUCCESS)
         || (u32DeviceNumber == 0))
         {
           ma_backend eNullBackend = ma_backend_null;
