@@ -1241,8 +1241,19 @@ static void orxSoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_da
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_ProcessTask(void *_pContext)
 {
+  ma_result hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_ProcessTask");
+
   /* Processes next job */
-  if(ma_resource_manager_process_next_job((ma_resource_manager *)_pContext) == MA_NO_DATA_AVAILABLE)
+  hResult = ma_resource_manager_process_next_job((ma_resource_manager *)_pContext);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* No job left? */
+  if(hResult == MA_NO_DATA_AVAILABLE)
   {
     /* Sleeps */
     orxSystem_Delay(orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME);
@@ -2256,7 +2267,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     /* Is buffer? */
     if(_pstSample->bIsBuffer != orxFALSE)
     {
-      /* Updates sound config*/
+      /* Updates sound config */
       stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
@@ -2265,7 +2276,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     }
     else
     {
-      /* Updates sound config*/
+      /* Updates sound config */
       stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
       stSoundConfig.pFilePath = _pstSample->stResource.zLocation;
     }
