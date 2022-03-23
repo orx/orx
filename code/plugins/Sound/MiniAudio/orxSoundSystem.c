@@ -1823,6 +1823,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadSampleTask(void *_pCon
   orxSTATUS                   eResult = orxSTATUS_FAILURE;
   ma_result                   hResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadSampleTask");
+
   /* Gets task param */
   pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
 
@@ -1866,6 +1869,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadSampleTask(void *_pCon
   orxMEMORY_BARRIER();
   pstTaskParam->pstSample = orxNULL;
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -1876,6 +1882,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
   ma_sound_config       stSoundConfig;
   orxSTATUS             eResult = orxSTATUS_FAILURE;
   ma_result             hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LinkSampleTask");
 
   /* Gets sound */
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
@@ -1912,6 +1921,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound from sample [%s].", pstSound->zName);
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -1922,6 +1934,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
   orxSOUNDSYSTEM_SOUND       *pstSound;
   orxSTATUS                   eResult = orxSTATUS_FAILURE;
   ma_result                   hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_CreateStreamTask");
 
   /* Gets task param */
   pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
@@ -2005,6 +2020,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
   /* Updates task param */
   orxMEMORY_BARRIER();
   pstTaskParam->pstSound = orxNULL;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
