@@ -494,7 +494,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         else
         {
           /* Loads it */
-          _pstSound->pstData    = orxSoundSystem_CreateStreamFromFile(_pstSound, zName);
+          _pstSound->pstData    = orxSoundSystem_LoadStream(_pstSound, zName);
           _pstSound->stStreamID = orxString_Hash(zName);
         }
 
