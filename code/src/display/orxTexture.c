@@ -148,7 +148,7 @@ static orxSTATUS orxFASTCALL orxTexture_EventHandler(const orxEVENT *_pstEvent)
           orxU32          i;
 
           /* Profiles */
-          orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+          orxPROFILER_PUSH_MARKER("orxTexture_Load (Watch)");
 
           /* Stores status */
           bInternal = orxStructure_TestFlags(pstTexture, orxTEXTURE_KU32_FLAG_INTERNAL);
@@ -337,8 +337,8 @@ void orxFASTCALL orxTexture_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND
   }
   else
   {
-    /* Creates it */
-    pstTexture = orxTexture_CreateFromFile(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].bValue : orxFALSE);
+    /* Loads it */
+    pstTexture = orxTexture_Load(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].bValue : orxFALSE);
 
     /* Updates result */
     _pstResult->u64Value = (pstTexture != orxNULL) ? orxStructure_GetGUID(pstTexture) : orxU64_UNDEFINED;
@@ -828,12 +828,12 @@ orxTEXTURE *orxFASTCALL orxTexture_Create()
   return pstResult;
 }
 
-/** Creates a texture from a bitmap file
+/** Loads a texture from a bitmap file
  * @param[in]   _zFileName  Name of the bitmap
  * @param[in]   _bKeepInCache     Should be kept in cache after no more references exist?
  * @return      orxTEXTURE / orxNULL
  */
-orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, orxBOOL _bKeepInCache)
+orxTEXTURE *orxFASTCALL orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKeepInCache)
 {
   orxTEXTURE *pstResult;
 
@@ -853,7 +853,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zFileName, or
   else
   {
     /* Profiles */
-    orxPROFILER_PUSH_MARKER("orxTexture_CreateFromFile");
+    orxPROFILER_PUSH_MARKER("orxTexture_Load");
 
     /* Creates an empty texture */
     pstResult = orxTexture_CreateInternal();
