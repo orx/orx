@@ -3199,6 +3199,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
       /* Creates buffer data source */
       hResult = ma_audio_buffer_ref_init(orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, _pstSample->u32ChannelNumber, _pstSample->stBuffer.afSampleList, (ma_uint64)_pstSample->u32FrameNumber, &(pstResult->stSample.stDataSource));
 
+      /* Enforces its sample rate */
+      pstResult->stSample.stDataSource.sampleRate = _pstSample->u32SampleRate;
+
       /* Checks */
       orxASSERT(_pstSample->bReady != orxFALSE);
     }
