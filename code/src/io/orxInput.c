@@ -544,25 +544,34 @@ static orxINLINE void orxInput_LoadCurrentSet()
                                                 ? sstInput.pstDefaultSet->fDefaultMultiplier
                                                 : orxINPUT_KF_DEFAULT_MULTIPLIER;
 
-  /* For all defined joystick IDs */
-  for(u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST), i = 0; i < u32Count; i++)
+  /* Has joystick ID list? */
+  if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST) != orxFALSE)
   {
-    orxU32 u32JoyID;
-
-    /* Gets it */
-    u32JoyID = orxConfig_GetListU32(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST, i);
-
-    /* Valid? */
-    if((u32JoyID >= orxJOYSTICK_KU32_MIN_ID) && (u32JoyID <= orxJOYSTICK_KU32_MAX_ID))
+    /* For all defined joystick IDs */
+    for(u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST), i = 0; i < u32Count; i++)
     {
-      /* Updates joystick IDs */
-      u64JoyIDs |= ((orxU64)1) << (u32JoyID - 1);
+      orxU32 u32JoyID;
+
+      /* Gets it */
+      u32JoyID = orxConfig_GetListU32(orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST, i);
+
+      /* Valid? */
+      if((u32JoyID >= orxJOYSTICK_KU32_MIN_ID) && (u32JoyID <= orxJOYSTICK_KU32_MAX_ID))
+      {
+        /* Updates joystick IDs */
+        u64JoyIDs |= ((orxU64)1) << (u32JoyID - 1);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "[%s]: Invalid value <%d> in input set's JoyIDList, valid range is [%u - %u], skipping.", sstInput.pstCurrentSet->zName, u32JoyID, orxJOYSTICK_KU32_MIN_ID, orxJOYSTICK_KU32_MAX_ID);
+      }
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "[%s]: Invalid value <%d> in input set's JoyIDList, valid range is [%u - %u], skipping.", sstInput.pstCurrentSet->zName, u32JoyID, orxJOYSTICK_KU32_MIN_ID, orxJOYSTICK_KU32_MAX_ID);
-    }
+  }
+  else
+  {
+    /* Uses all available joystick IDs */
+    u64JoyIDs = (orxU64)(-1);
   }
 
   /* For all input types */
