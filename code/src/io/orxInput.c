@@ -570,8 +570,8 @@ static orxINLINE void orxInput_LoadCurrentSet()
   }
   else
   {
-    /* Uses all available joystick IDs */
-    u64JoyIDs = (orxU64)(-1);
+    /* Uses first four joystick IDs */
+    u64JoyIDs = (orxU64)0x000F;
   }
 
   /* For all input types */
