@@ -38,9 +38,27 @@ change-dir root: system/options/path
 attempt [write build-file {}]
 
 ; Should override cache?
-unless empty? system/options/args [
-  print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file system/options/args/1 {]}]
-  skip-env: skip-hook: true
+unless empty? args: system/options/args [
+  wrap [
+    digits: charset [#"0" - #"9"]
+    foreach arg args [
+      either arg/1 = #"-" [
+        case [
+          parse next arg [(level: 1) [{debug} | {dbg} | {d}] opt [{:} copy level some digits (level: min 5 load level)]] [
+            print [{== Setting debug level [} level {]}]
+            system/options/quiet: false
+            foreach [sub _] system/options/log [system/options/log/:sub: level]
+          ]
+          true [
+            print [{== Ignoring unknown argument [} arg {]}]
+          ]
+        ]
+      ] [
+        print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file arg {]}]
+        skip-env: skip-hook: true
+      ]
+    ]
+  ]
 ]
 
 ; Checks version
