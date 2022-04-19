@@ -56,6 +56,7 @@
 
 #define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"
+#define orxTEXTURE_KZ_TRANSPARENT         "transparent"
 
 
 /** Event enum
