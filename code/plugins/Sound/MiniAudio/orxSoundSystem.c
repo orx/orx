@@ -442,8 +442,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
         /* Doesn't have its owner yet? */
         if(pstFilter->pstSound->hOwner == orxNULL)
         {
+          orxSTRUCTURE *pOwner;
+
           /* Stores it */
-          ((orxSOUNDSYSTEM_SOUND *)pstFilter->pstSound)->hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstFilter->pstSound->hUserData));
+          if((pOwner = orxStructure_GetOwner(pstFilter->pstSound->hUserData)) != orxNULL)
+          {
+            ((orxSOUNDSYSTEM_SOUND *)pstFilter->pstSound)->hOwner = orxStructure_GetOwner(pOwner);
+          }
         }
 
         /* Updates event */
@@ -930,8 +935,13 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSo
         /* Doesn't have its owner yet? */
         if(pstSound->hOwner == orxNULL)
         {
+          orxSTRUCTURE *pOwner;
+
           /* Stores it */
-          pstSound->hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
+          if((pOwner = orxStructure_GetOwner(pstSound->hUserData)) != orxNULL)
+          {
+            pstSound->hOwner = orxStructure_GetOwner(pOwner);
+          }
         }
 
         /* Sends event */
