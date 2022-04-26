@@ -2936,12 +2936,12 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
-    /* Updates status */
-    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
-
     /* Waits for all pending operations */
     while(orxThread_GetTaskCount() != 0)
       ;
+
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
@@ -3490,17 +3490,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Is sound module shutting down? */
-  if(orxModule_IsInitialized(orxMODULE_ID_SOUND) == orxFALSE)
-  {
-    /* Deletes sound */
-    eResult = orxSoundSystem_MiniAudio_DeleteTask(_pstSound);
-  }
-  else
-  {
-    /* Runs delete task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteTask, &orxSoundSystem_MiniAudio_FreeSound, &orxSoundSystem_MiniAudio_FreeSound, _pstSound);
-  }
+  /* Runs delete task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteTask, &orxSoundSystem_MiniAudio_FreeSound, &orxSoundSystem_MiniAudio_FreeSound, _pstSound);
 
   /* Done! */
   return eResult;
