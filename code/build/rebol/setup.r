@@ -266,7 +266,7 @@ if find platform-info 'deps [
 all [
   new-env
   find platform-info 'env-msg
-  print [newline {==^(1b)[32m IMPORTANT - New environment detected:} platform-info/env-msg {^(1b)[39m} newline]
+  print [newline {==^(1b)[32m IMPORTANT - New environment detected^(1b)[39m:} platform-info/env-msg newline]
 ]
 end: now/time
 print [{== [} (end - begin) {] Setup successful!}]
