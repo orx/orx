@@ -1764,7 +1764,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
 /** Gets the location of an *existing* resource for a given group, location gets cached if found
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _zName            Name of the resource to locate
- * @return Location string if found, orxSTRING_EMPTY otherwise
+ * @return Location string if found, orxNULL otherwise
  */
 const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const orxSTRING _zName)
 {

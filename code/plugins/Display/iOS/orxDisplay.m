@@ -140,7 +140,7 @@
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
-#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLE_STRIP
+#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLES
 
 
 /**  Misc defines
@@ -4244,11 +4244,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       {
         /* Computes them */
         sstDisplay.au16IndexList[i]     = u16Index;
-        sstDisplay.au16IndexList[i + 1] = u16Index;
-        sstDisplay.au16IndexList[i + 2] = u16Index + 1;
-        sstDisplay.au16IndexList[i + 3] = u16Index + 2;
+        sstDisplay.au16IndexList[i + 1] = u16Index + 1;
+        sstDisplay.au16IndexList[i + 2] = u16Index + 2;
+        sstDisplay.au16IndexList[i + 3] = u16Index + 1;
         sstDisplay.au16IndexList[i + 4] = u16Index + 3;
-        sstDisplay.au16IndexList[i + 5] = u16Index + 3;
+        sstDisplay.au16IndexList[i + 5] = u16Index + 2;
       }
 
       /* Creates banks */

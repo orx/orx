@@ -743,7 +743,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDAT
     /* Computes base index */
     u32BaseIndex = _u32Index * (orxU32)(pstLinkTable->u16TableSize);
 
-    /* For all found links */
+    /* For all possible links */
     for(i = 0; i < (orxU32)(pstLinkTable->u16TableSize); i++)
     {
       /* Link found? */

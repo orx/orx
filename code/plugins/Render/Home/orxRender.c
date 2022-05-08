@@ -1077,14 +1077,15 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Draws memory stats */
   {
     static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
-    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
-    orxU32                  u32TotalCount = 0, u32TotalPeakCount = 0, u32TotalSize = 0, u32TotalPeakSize = 0, u32TotalOperationCount = 0, u32UnitIndex;
+    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB", "TB"};
+    orxU64                  u64TotalCount = 0, u64TotalPeakCount = 0, u64TotalSize = 0, u64TotalPeakSize = 0, u64TotalOperationCount = 0;
+    orxU32                  u32UnitIndex;
 
     /* For all memory types, including total */
     for(i = 0; i <= orxMEMORY_TYPE_NUMBER; i++)
     {
       const orxSTRING zType;
-      orxU32          u32Count, u32PeakCount, u32Size, u32PeakSize, u32OperationCount;
+      orxU64          u64Count, u64PeakCount, u64Size, u64PeakSize, u64OperationCount;
       orxFLOAT        fSize, fPeakSize;
 
       /* Updates position */
@@ -1101,32 +1102,32 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(i == orxMEMORY_TYPE_NUMBER)
       {
         /* Gets values */
-        u32Count             = u32TotalCount;
-        u32PeakCount         = u32TotalPeakCount;
-        u32Size              = u32TotalSize;
-        u32PeakSize          = u32TotalPeakSize;
-        u32OperationCount    = u32TotalOperationCount;
+        u64Count             = u64TotalCount;
+        u64PeakCount         = u64TotalPeakCount;
+        u64Size              = u64TotalSize;
+        u64PeakSize          = u64TotalPeakSize;
+        u64OperationCount    = u64TotalOperationCount;
       }
       else
       {
         /* Gets its usage info */
-        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u32Count, &u32PeakCount, &u32Size, &u32PeakSize, &u32OperationCount);
+        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u64Count, &u64PeakCount, &u64Size, &u64PeakSize, &u64OperationCount);
 
         /* Updates totals */
-        u32TotalCount            += u32Count;
-        u32TotalPeakCount        += u32PeakCount;
-        u32TotalSize             += u32Size;
-        u32TotalPeakSize         += u32PeakSize;
-        u32TotalOperationCount   += u32OperationCount;
+        u64TotalCount            += u64Count;
+        u64TotalPeakCount        += u64PeakCount;
+        u64TotalSize             += u64Size;
+        u64TotalPeakSize         += u64PeakSize;
+        u64TotalOperationCount   += u64OperationCount;
       }
 
       /* Finds best unit */
-      for(u32UnitIndex = 0, fSize = orxU2F(u32Size), fPeakSize = orxU2F(u32PeakSize);
+      for(u32UnitIndex = 0, fSize = orxU2F(u64Size), fPeakSize = orxU2F(u64PeakSize);
           (u32UnitIndex < orxARRAY_GET_ITEM_COUNT(azUnitList) - 1) && (fPeakSize > orx2F(1024.0f));
           u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
 
       /* Is used? */
-      if(u32Count > 0)
+      if(u64Count > 0)
       {
         /* Inits display color */
         orxColor_SetRGBA(&stColor, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -1139,7 +1140,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates color */
       orxColor_FromRGBToHSV(&stColor, &stColor);
-      stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u32Size) * sfSaturationThreshold);
+      stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u64Size) * sfSaturationThreshold);
       stColor.vHSV.fS = orx2F(0.8f);
       orxColor_FromHSVToRGB(&stColor, &stColor);
 
@@ -1156,7 +1157,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u32Count, u32PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
