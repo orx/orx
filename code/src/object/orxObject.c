@@ -377,7 +377,7 @@ static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, con
 
 /** Sets owned clock for an object
  */
-orxSTATUS orxFASTCALL orxObject_SetOwnedClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
+static orxINLINE orxSTATUS orxObject_SetOwnedClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
