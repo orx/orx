@@ -157,14 +157,14 @@ typedef struct __orxSOUND_BUS_t
 
 /** Sound sample structure
  */
-typedef struct __orxSOUND_SAMPLE_t
+struct __orxSOUND_SAMPLE_t
 {
   orxSOUNDSYSTEM_SAMPLE  *pstData;                      /**< Sound data : 4 */
   orxSTRINGID             stID;                         /**< Sample ID : 8 */
   orxU32                  u32Count;                     /**< Reference count : 12 */
   orxU32                  u32Flags;                     /**< Flags : 16 */
 
-} orxSOUND_SAMPLE;
+};
 
 /** Sound structure
  */
@@ -2051,7 +2051,7 @@ orxSOUND *orxFASTCALL orxSound_Create()
  * @param[in] _u32ChannelNumber Number of channels of the stream
  * @param[in] _u32SampleRate    Sampling rate of the stream (ie. number of frames per second)
  * @param[in] _zName            Name to associate with this sound
- * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ * @return orxSOUND / orxNULL
  */
 orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, orxU32 _u32SampleRate, const orxSTRING _zName)
 {
@@ -2258,11 +2258,11 @@ orxSTATUS orxFASTCALL orxSound_ClearCache()
  * @param[in] _u32FrameNumber   Number of frame of the sample (number of "samples" = number of frames * number of channels)
  * @param[in] _u32SampleRate    Sampling rate of the sample (ie. number of frames per second)
  * @param[in] _zName            Name to associate with the sample
- * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
+ * @return orxSOUND_SAMPLE / orxNULL
  */
-orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate, const orxSTRING _zName)
+orxSOUND_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumber, orxU32 _u32FrameNumber, orxU32 _u32SampleRate, const orxSTRING _zName)
 {
-  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
+  orxSOUND_SAMPLE *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
@@ -2305,7 +2305,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
           orxHashTable_Add(sstSound.pstSampleTable, stID, pstSoundSample);
 
           /* Updates result */
-          pstResult = pstSample;
+          pstResult = (orxSOUND_SAMPLE *)pstSoundSample;
         }
         else
         {
@@ -2320,43 +2320,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_CreateSample(orxU32 _u32ChannelNumbe
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample [%s]: a sample with the same name is already present.", _zName);
-    }
-  }
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Gets a sample
- * @param[in] _zName            Sample's name
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName)
-{
-  orxSOUNDSYSTEM_SAMPLE *pstResult = orxNULL;
-
-  /* Checks */
-  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zName != orxNULL);
-
-  /* Valid name? */
-  if(_zName != orxSTRING_EMPTY)
-  {
-    orxSOUND_SAMPLE  *pstSoundSample;
-    orxSTRINGID       stID;
-
-    /* Gets its ID */
-    stID = orxString_Hash(_zName);
-
-    /* Gets associated sound sample from table */
-    pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstSampleTable, stID);
-
-    /* Success? */
-    if(pstSoundSample != orxNULL)
-    {
-      /* Updates result */
-      pstResult = pstSoundSample->pstData;
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sample [%s]: a sample with the same name already exists.", _zName);
     }
   }
 
@@ -2365,54 +2329,84 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSound_GetSample(const orxSTRING _zName)
 }
 
 /** Deletes a sample
- * @param[in] _zName            Sample's name
+ * @param[in] _pstSample        Concerned sample
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_DeleteSample(const orxSTRING _zName)
+orxSTATUS orxFASTCALL orxSound_DeleteSample(orxSOUND_SAMPLE *_pstSample)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zName != orxNULL);
+  orxASSERT(_pstSample != orxNULL);
 
-  /* Valid name? */
-  if(_zName != orxSTRING_EMPTY)
+  /* Not referenced anymore? */
+  if(_pstSample->u32Count == 0)
   {
-    orxSOUND_SAMPLE  *pstSoundSample;
-    orxSTRINGID       stID;
+    /* Deletes its data */
+    orxSoundSystem_DeleteSample(_pstSample->pstData);
 
-    /* Gets its ID */
-    stID = orxString_Hash(_zName);
+    /* Removes it from sample table */
+    orxHashTable_Remove(sstSound.pstSampleTable, _pstSample->stID);
 
-    /* Gets associated sound sample from table */
-    pstSoundSample = (orxSOUND_SAMPLE *)orxHashTable_Get(sstSound.pstSampleTable, stID);
+    /* Deletes it */
+    orxBank_Free(sstSound.pstSampleBank, _pstSample);
 
-    /* Success? */
-    if(pstSoundSample != orxNULL)
-    {
-      /* Not referenced anymore? */
-      if(pstSoundSample->u32Count == 0)
-      {
-        /* Deletes its data */
-        orxSoundSystem_DeleteSample(pstSoundSample->pstData);
-
-        /* Removes it from sample table */
-        orxHashTable_Remove(sstSound.pstSampleTable, pstSoundSample->stID);
-
-        /* Deletes it */
-        orxBank_Free(sstSound.pstSampleBank, pstSoundSample);
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't delete sample [%s]: sample is still in use by at least a sound.", _zName);
-      }
-    }
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't delete sample [%s]: it is still referenced by <%u> sound(s).", orxString_GetFromID(_pstSample->stID), _pstSample->u32Count);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets sample info
+ * @param[in]   _pstSample                    Concerned sample
+ * @param[in]   _pu32ChannelNumber            Number of channels of the sample
+ * @param[in]   _pu32FrameNumber              Number of frame of the sample (number of "samples" = number of frames * number of channels)
+ * @param[in]   _pu32SampleRate               Sampling rate of the sample (ie. number of frames per second)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_GetSampleInfo(const orxSOUND_SAMPLE *_pstSample, orxU32 *_pu32ChannelNumber, orxU32 *_pu32FrameNumber, orxU32 *_pu32SampleRate)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSample != orxNULL);
+  orxASSERT(_pu32ChannelNumber != orxNULL);
+  orxASSERT(_pu32FrameNumber != orxNULL);
+  orxASSERT(_pu32SampleRate != orxNULL);
+
+  /* Gets sample's info */
+  eResult = orxSoundSystem_GetSampleInfo(_pstSample->pstData, _pu32ChannelNumber, _pu32FrameNumber, _pu32SampleRate);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets sample data
+ * @param[in]   _pstSample                    Concerned sample
+ * @param[in]   _afData                       Data to set (samples are expected to be signed/normalized)
+ * @param[in]   _u32SampleNumber              Number of samples in the data array
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_SetSampleData(orxSOUND_SAMPLE *_pstSample, const orxFLOAT *_afData, orxU32 _u32SampleNumber)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSample != orxNULL);
+  orxASSERT(_afData != orxNULL);
+
+  /* Sets sample's data */
+  eResult = orxSoundSystem_SetSampleData(_pstSample->pstData, _afData, _u32SampleNumber);
 
   /* Done! */
   return eResult;
