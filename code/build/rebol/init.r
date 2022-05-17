@@ -27,14 +27,14 @@ extern: %../../../extern/
 
 ; Helpers
 log: func [
-  message [string!]
+  message [string! char! block!]
   /only
   /no-break
 ] [
   unless only [
-    prin [{[} now/time {] }]
+    prin [{== }]
   ]
-  either no-break [prin message] [print message]
+  do either no-break [:prin] [:print] reform message
 ]
 extension?: function [
   {Is an extension?}
@@ -112,15 +112,13 @@ usage: func [
   /message content [string!]
 ] [
   if content [
-    prin {== }
-    print content
-    print {}
+    log rejoin [content newline]
   ]
 
-  prin [{== Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. {/} platform-info/script]]
+  log/no-break reform [{Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. {/} platform-info/script]]
 
   foreach [param desc default deps] params [
-    prin rejoin [
+    log/only/no-break rejoin [
       { }
       case [
         extension? param [
@@ -135,9 +133,9 @@ usage: func [
       ]
     ]
   ]
-  print [newline]
+  log/only newline
   foreach [param desc default deps] params [
-    print rejoin [
+    log/only rejoin [
       {  - } param {: } desc
       case [
         extension? param [
@@ -165,7 +163,7 @@ either all [
   use [interactive? args value +extensions -extensions] [
     +extensions: copy [] -extensions: copy []
     either interactive?: zero? length? args: copy system/options/args [
-      print {== No argument, switching to interactive mode}
+      log {No argument, switching to interactive mode}
       foreach [param desc default deps] params [
         either extension? param [
           until [
@@ -231,7 +229,7 @@ either all [
             extension: to-word next to-string dep
             unless find extension-group extension [
               append extension-group extension
-              log reform [{== [} param {] triggers [} dep {]}]
+              log [{[} param {] triggers [} dep {]}]
             ]
           ]
         ]
@@ -269,7 +267,7 @@ if dir? name: clean-path to-rebol-file name [clear back tail name]
 
 ; Inits project directory
 either exists? name [
-  log reform [{[} to-local-file name {] already exists, overwriting!}]
+  log [{[} to-local-file name {] already exists, overwriting!}]
 ] [
   until [
     attempt [make-dir/deep name]
@@ -280,7 +278,7 @@ change-dir name/..
 set [path name] split-path name
 
 ; Logs info
-log reform [
+log [
   {Initializing [} name {] in [} to-local-file path {] with extensions [}
   do [
     use [extensions] [
@@ -292,7 +290,7 @@ log reform [
 ]
 
 ; Copies all files
-log {== Creating files:}
+log {Creating files:}
 build: none
 do copy-files: function [
   from [file!]
@@ -326,7 +324,7 @@ if build [
     unless platform = 'windows [
       call/wait/shell form reduce [{chmod +x} platform-info/premake]
     ]
-    log reform [{Generating build files for [} platform {]:}]
+    log [{Generating build files for [} platform {]:}]
     foreach config platform-info/config [
       log/only reform [{  *} config]
       call/wait/shell/output rejoin [{"} to-local-file clean-path platform-info/premake {" } config] none
