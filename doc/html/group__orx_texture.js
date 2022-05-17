@@ -15,7 +15,6 @@ var group__orx_texture =
     ] ],
     [ "orxTexture_ClearCache", "group__orx_texture.html#ga04225363daa53b5135126794e4cf60de", null ],
     [ "orxTexture_Create", "group__orx_texture.html#ga0234c4923d3a53bd299c36bc9a96c60b", null ],
-    [ "orxTexture_CreateFromFile", "group__orx_texture.html#gad4d4f7570b466c3b053c6f1d55b0448e", null ],
     [ "orxTexture_Delete", "group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6", null ],
     [ "orxTexture_Exit", "group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688", null ],
     [ "orxTexture_Get", "group__orx_texture.html#gaea1f481e5be1f090f496b0c43ad9023b", null ],
@@ -26,6 +25,7 @@ var group__orx_texture =
     [ "orxTexture_GetSize", "group__orx_texture.html#ga870a6e1969393ad770be7f6e6342bb6b", null ],
     [ "orxTexture_Init", "group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299", null ],
     [ "orxTexture_LinkBitmap", "group__orx_texture.html#ga501b4c7fa170a0483a9b81bb775d867c", null ],
+    [ "orxTexture_Load", "group__orx_texture.html#gaf939e60bdc19924a531ddd68570b0090", null ],
     [ "orxTexture_Setup", "group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941", null ],
     [ "orxTexture_UnlinkBitmap", "group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a", null ]
 ];
