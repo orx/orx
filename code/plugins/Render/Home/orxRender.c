@@ -1339,6 +1339,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH));
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
+  /* Clips screen bitmap */
+  orxDisplay_SetBitmapClipping(orxNULL, 0, 0, orxF2U(orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH) - orxFLOAT_1)), orxF2U(fScreenHeight));
+
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
@@ -1442,6 +1445,9 @@ static orxINLINE void orxRender_Home_RenderConsole()
     /* Displays it */
     orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
+
+  /* Restores screen bitmap clipping */
+  orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fScreenWidth), orxF2U(fScreenHeight));
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
