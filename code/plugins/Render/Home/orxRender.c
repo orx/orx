@@ -141,6 +141,7 @@ typedef struct __orxRENDER_STATIC_t
   orxLINKLIST   stRenderList;                       /**< Rendering list */
   orxFLOAT      fDefaultConsoleOffset;              /**< Default console offset */
   orxFLOAT      fConsoleOffset;                     /**< Console offset */
+  orxFLOAT      fConsoleFontScale;                  /**< Console font scale */
   orxU32        u32SelectedFrame;                   /**< Selected frame */
   orxU32        u32SelectedThread;                  /**< Selected thread */
   orxU32        u32SelectedMarkerDepth;             /**< Selected marker depth */
@@ -162,12 +163,30 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Inits console
+/** Updates console
  */
-static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOAT _fScreenHeight)
+static orxINLINE void orxRender_Home_UpdateConsole(orxFLOAT _fScreenWidth, orxFLOAT _fScreenHeight)
 {
   const orxFONT  *pstFont;
-  orxFLOAT        fConsoleWidth;
+  orxFLOAT        fConsoleWidth, fConsoleFontScale;
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Gets font scale */
+  if((fConsoleFontScale = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE)) > orxFLOAT_0)
+  {
+    /* Gets it */
+    sstRender.fConsoleFontScale = fConsoleFontScale;
+  }
+  else
+  {
+    /* Stores it */
+    orxConfig_SetFloat(orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE, sstRender.fConsoleFontScale);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Use default screen size? */
   if((_fScreenWidth <= orxFLOAT_0) || (_fScreenHeight <= orxFLOAT_0))
@@ -183,10 +202,27 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
   pstFont = orxConsole_GetFont();
 
   /* Updates console log line length */
-  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * orxRENDER_KF_CONSOLE_FONT_SCALE)));
+  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * sstRender.fConsoleFontScale)));
 
   /* Sets default console offset */
-  sstRender.fDefaultConsoleOffset = sstRender.fConsoleOffset = -_fScreenHeight;
+  sstRender.fDefaultConsoleOffset = -_fScreenHeight;
+
+  /* Done! */
+  return;
+}
+
+/** Inits console
+ */
+static orxINLINE void orxRender_Home_InitConsole()
+{
+  /* Inits console scale */
+  sstRender.fConsoleFontScale = orxRENDER_KF_CONSOLE_FONT_SCALE;
+
+  /* Updates console */
+  orxRender_Home_UpdateConsole(orxFLOAT_0, orxFLOAT_0);
+
+  /* Updates current console offset */
+  sstRender.fConsoleOffset = sstRender.fDefaultConsoleOffset;
 
   /* Done! */
   return;
@@ -1215,8 +1251,8 @@ static orxINLINE void orxRender_Home_RenderConsole()
   pstMap = orxFont_GetMap(pstFont);
 
   /* Gets character size */
-  fCharacterHeight  = orxRENDER_KF_CONSOLE_FONT_SCALE * orxFont_GetCharacterHeight(pstFont);
-  fCharacterWidth   = orxRENDER_KF_CONSOLE_FONT_SCALE * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
+  fCharacterHeight  = sstRender.fConsoleFontScale * orxFont_GetCharacterHeight(pstFont);
+  fCharacterWidth   = sstRender.fConsoleFontScale * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
   /* Gets pixel texture */
   pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
@@ -1306,7 +1342,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
-  stTransform.fScaleY = stTransform.fScaleX = orxRENDER_KF_CONSOLE_FONT_SCALE;
+  stTransform.fScaleY = stTransform.fScaleX = sstRender.fConsoleFontScale;
   zText               = orxConsole_GetInput(&u32CursorIndex);
   acBackup[0]         = zText[u32CursorIndex];
   acBackup[1]         = (u32CursorIndex < 255) ? zText[u32CursorIndex + 1] : orxCHAR_NULL;
@@ -1388,7 +1424,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fScaleX   = u32MaxLength * fCharacterWidth;
   stTransform.fScaleY   = u32Count * fCharacterHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, stBackgroundColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  stTransform.fScaleY   = stTransform.fScaleX = orxRENDER_KF_CONSOLE_FONT_SCALE;
+  stTransform.fScaleY   = stTransform.fScaleX = sstRender.fConsoleFontScale;
 
   /* For all current completions */
   for(i = 0;
@@ -2364,6 +2400,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     /* Should render console? */
     if(orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_CONSOLE_START) != orxSTATUS_FAILURE)
     {
+      /* Updates console */
+      orxRender_Home_UpdateConsole(orxFLOAT_0, orxFLOAT_0);
+
       /* Is console enabled? */
       if(orxConsole_IsEnabled() != orxFALSE)
       {
@@ -2471,8 +2510,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         /* Gets payload */
         pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-        /* Inits console */
-        orxRender_Home_InitConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
+        /* Updates console */
+        orxRender_Home_UpdateConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
       }
 
       break;
@@ -3007,7 +3046,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
             /* Inits console */
-            orxRender_Home_InitConsole(orxFLOAT_0, orxFLOAT_0);
+            orxRender_Home_InitConsole();
 
             /* Inits selected marker depth */
             sstRender.u32SelectedMarkerDepth = 1;

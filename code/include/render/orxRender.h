@@ -73,6 +73,7 @@
 #define orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_ALPHA  "ConsoleCompletionAlpha"
 #define orxRENDER_KZ_CONFIG_CONSOLE_LOG_COLOR         "ConsoleLogColor"
 #define orxRENDER_KZ_CONFIG_CONSOLE_LOG_ALPHA         "ConsoleLogAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE        "ConsoleFontScale"
 
 
 /** Inputs
