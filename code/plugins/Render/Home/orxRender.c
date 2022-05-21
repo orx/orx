@@ -91,6 +91,7 @@
 #define orxRENDER_KF_CONSOLE_MARGIN_WIDTH           orx2F(0.02f)
 #define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT          orx2F(0.05f)
 #define orxRENDER_KF_CONSOLE_SPEED                  orx2F(3000.0f)
+#define orxRENDER_KF_CONSOLE_FONT_SCALE             orx2F(1.0f)
 
 #define orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY    orxKEYBOARD_KEY_SCROLL_LOCK
 #define orxRENDER_KE_KEY_PROFILER_PAUSE             orxKEYBOARD_KEY_SPACE
@@ -168,6 +169,13 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
   const orxFONT  *pstFont;
   orxFLOAT        fConsoleWidth;
 
+  /* Use default screen size? */
+  if((_fScreenWidth <= orxFLOAT_0) || (_fScreenHeight <= orxFLOAT_0))
+  {
+    /* Gets screen size */
+    orxDisplay_GetScreenSize(&_fScreenWidth, &_fScreenHeight);
+  }
+
   /* Gets console width */
   fConsoleWidth = _fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
 
@@ -175,7 +183,7 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
   pstFont = orxConsole_GetFont();
 
   /* Updates console log line length */
-  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / orxFont_GetCharacterWidth(pstFont, (orxU32)' ')));
+  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * orxRENDER_KF_CONSOLE_FONT_SCALE)));
 
   /* Sets default console offset */
   sstRender.fDefaultConsoleOffset = sstRender.fConsoleOffset = -_fScreenHeight;
@@ -1207,10 +1215,10 @@ static orxINLINE void orxRender_Home_RenderConsole()
   pstMap = orxFont_GetMap(pstFont);
 
   /* Gets character size */
-  fCharacterHeight  = orxFont_GetCharacterHeight(pstFont);
-  fCharacterWidth   = orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
+  fCharacterHeight  = orxRENDER_KF_CONSOLE_FONT_SCALE * orxFont_GetCharacterHeight(pstFont);
+  fCharacterWidth   = orxRENDER_KF_CONSOLE_FONT_SCALE * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
-  /* Creates pixel texture */
+  /* Gets pixel texture */
   pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
@@ -1298,7 +1306,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
-  stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fScaleY = stTransform.fScaleX = orxRENDER_KF_CONSOLE_FONT_SCALE;
   zText               = orxConsole_GetInput(&u32CursorIndex);
   acBackup[0]         = zText[u32CursorIndex];
   acBackup[1]         = (u32CursorIndex < 255) ? zText[u32CursorIndex + 1] : orxCHAR_NULL;
@@ -1310,7 +1318,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     if(orxConsole_IsInsertMode() != orxFALSE)
     {
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Overrides characters at cursor position */
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_INSERT_MARKER;
@@ -1321,7 +1329,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_OVERTYPE_MARKER;
 
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
     }
 
     /* Truncates to base input + cursor */
@@ -1330,14 +1338,14 @@ static orxINLINE void orxRender_Home_RenderConsole()
   else
   {
     /* Displays full input, including auto-completion */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
 
     /* Truncates to base input */
     ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   }
 
   /* Displays base input (ie. validated part) */
-  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   ((orxCHAR*)zText)[u32CursorIndex] = acBackup[0];
   if(u32CursorIndex < 255)
   {
@@ -1350,7 +1358,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       i++, stTransform.fDstY -= fCharacterHeight)
   {
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stLogColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stLogColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Gets log offset */
@@ -1367,7 +1375,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     fBackupX          = stTransform.fDstX;
     stTransform.fDstX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) - (orxString_GetLength(acBuffer) * fCharacterWidth);
     stTransform.fDstY = fBackupY;
-    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
     stTransform.fDstX = fBackupX;
   }
 
@@ -1380,7 +1388,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fScaleX   = u32MaxLength * fCharacterWidth;
   stTransform.fScaleY   = u32Count * fCharacterHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, stBackgroundColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  stTransform.fScaleY   = stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fScaleY   = stTransform.fScaleX = orxRENDER_KF_CONSOLE_FONT_SCALE;
 
   /* For all current completions */
   for(i = 0;
@@ -1396,7 +1404,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     stTransform.fDstY = fBackupY - ((u32Count - i - 1) * fCharacterHeight);
 
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Re-enables marker operations */
@@ -2961,7 +2969,6 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-            orxFLOAT fScreenWidth, fScreenHeight;
             const orxSTRING zPreviousSet;
 
             /* Backups previous input set */
@@ -2999,11 +3006,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
             orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
-            /* Gets screen size */
-            orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
-
             /* Inits console */
-            orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
+            orxRender_Home_InitConsole(orxFLOAT_0, orxFLOAT_0);
 
             /* Inits selected marker depth */
             sstRender.u32SelectedMarkerDepth = 1;
