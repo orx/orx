@@ -4910,19 +4910,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
 #endif /* __orxDEBUG__ */
 
-      /* Gets on-prepare command */
-      zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_PREPARE);
-
       /* Inits event */
       orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PREPARE, pstResult, orxNULL, &pstParent);
 
       /* Should continue? */
-      if(((zCommand == orxSTRING_EMPTY)
+      if((orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+      && (((zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_PREPARE)) == orxSTRING_EMPTY)
        || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(pstResult), &stCommandResult) == orxNULL)
        || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE)))
-       || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
-      && (orxEvent_Send(&stEvent) != orxSTATUS_FAILURE))
+       || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))))
       {
         orxVECTOR       vValue, vParentSize, vColor, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
