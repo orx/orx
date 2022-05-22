@@ -91,7 +91,7 @@
 
 /** Misc
  */
-#define orxTHREAD_KU32_TASK_LIST_SIZE                 64
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 256
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
