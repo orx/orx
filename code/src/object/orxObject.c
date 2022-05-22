@@ -1450,8 +1450,31 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
     orxCOLOR stColor;
 
     /* Inits color */
-    orxVector_Mulf(&(stColor.vRGB), &(_astArgList[1].vValue), orxCOLOR_NORMALIZER);
+    orxVector_SetAll(&(stColor.vRGB), orxFLOAT_1);
     stColor.fAlpha = orxFLOAT_1;
+
+    /* Is a vector value? */
+    if(orxString_ToVector(_astArgList[1].zValue, &(stColor.vRGB), orxNULL) != orxNULL)
+    {
+      /* Normalizes it */
+      orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+    }
+    /* Color literal */
+    else
+    {
+      /* Pushes color section */
+      orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+      /* Retrieves its value */
+      if(orxConfig_GetVector(_astArgList[1].zValue, &(stColor.vRGB)) != orxNULL)
+      {
+        /* Normalizes it */
+        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
 
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
@@ -3550,7 +3573,7 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetLifeTime, "LifeTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetColor */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_VECTOR}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetColor, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Color", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: SetRGB */
