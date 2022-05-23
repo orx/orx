@@ -5275,6 +5275,7 @@ orxSTATUS orxFASTCALL orxArchive_Init()
   stInfo.pfnTell    = &orxArchive_ZipTell;
   stInfo.pfnRead    = &orxArchive_ZipRead;
   stInfo.pfnWrite   = orxNULL;                // No write support
+  stInfo.pfnDelete  = orxNULL;                // No delete support
 
   // Registers it
   eResult = orxResource_RegisterType(&stInfo);
