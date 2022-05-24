@@ -5176,6 +5176,11 @@ orxS64 orxFASTCALL orxArchive_ZipSeek(orxHANDLE _hResource, orxS64 _s64Offset, o
     // Updates archive's cursor
     pstZipArchive->s64Cursor = s64Cursor;
   }
+  else
+  {
+    // Clears value
+    s64Cursor = -1;
+  }
 
   // Done!
   return s64Cursor;
