@@ -2636,6 +2636,47 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
   return eResult;
 }
 
+/** Unregisters a resource type
+ * @param[in] _zTypeTag         Tag of the resource type to unregister
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxResource_UnregisterType(const orxSTRING _zTypeTag)
+{
+  orxRESOURCE_TYPE *pstType;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zTypeTag != orxNULL);
+
+  /* For all registered types */
+  for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
+      (pstType != orxNULL) && (orxString_ICompare(pstType->stInfo.zTag, _zTypeTag) != 0);
+      pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)))
+    ;
+
+  /* Found? */
+  if(pstType != orxNULL)
+  {
+    /* Removes it */
+    orxLinkList_Remove(&(pstType->stNode));
+
+    /* Frees it */
+    orxBank_Free(sstResource.pstTypeBank, pstType);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
@@ -2647,13 +2688,13 @@ orxU32 orxFASTCALL orxResource_GetTypeCount()
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Updates result */
-  u32Result = orxBank_GetCount(sstResource.pstTypeBank);
+  u32Result = orxLinkList_GetCount(&(sstResource.stTypeList));
 
   /* Done! */
   return u32Result;
 }
 
-/** Gets registered type info at given index
+/** Gets registered type tag at given index
  * @param[in] _u32Index         Index of storage
  * @return Type tag string if index is valid, orxNULL otherwise
  */
@@ -2665,14 +2706,14 @@ const orxSTRING orxFASTCALL orxResource_GetTypeTag(orxU32 _u32Index)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
   /* Valid index? */
-  if(_u32Index < orxBank_GetCount(sstResource.pstTypeBank))
+  if(_u32Index < orxLinkList_GetCount(&(sstResource.stTypeList)))
   {
     orxRESOURCE_TYPE *pstType;
 
     /* Finds requested group */
-    for(pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, orxNULL);
+    for(pstType = (orxRESOURCE_TYPE *)orxLinkList_GetFirst(&(sstResource.stTypeList));
         _u32Index > 0;
-        pstType = (orxRESOURCE_TYPE *)orxBank_GetNext(sstResource.pstTypeBank, pstType), _u32Index--)
+        pstType = (orxRESOURCE_TYPE *)orxLinkList_GetNext(&(pstType->stNode)), _u32Index--)
       ;
 
     /* Checks */

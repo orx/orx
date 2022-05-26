@@ -292,12 +292,18 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPe
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
 
+/** Unregisters a resource type
+ * @param[in] _zTypeTag         Tag of the resource type to unregister
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_UnregisterType(const orxSTRING _zTypeTag);
+
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCount();
 
-/** Gets registered type info at given index
+/** Gets registered type tag at given index
  * @param[in] _u32Index         Index of storage
  * @return Type tag string if index is valid, orxNULL otherwise
  */
