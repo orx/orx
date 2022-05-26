@@ -251,7 +251,8 @@ typedef struct __orxSOUNDSYSTEM_FILTER_t
   orxSOUND_FILTER_DATA            stData;
   const orxSOUNDSYSTEM_SOUND     *pstSound;
   const orxSOUNDSYSTEM_BUS       *pstBus;
-  orxBOOL                         bUseCustomParam;
+  orxBOOL                         bUseCustomParam : 1;
+  orxBOOL                         bReady          : 1;
 
 } orxSOUNDSYSTEM_FILTER;
 
@@ -404,7 +405,7 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
 {
   orxEVENT                stEvent;                                                 \
   orxSOUND_EVENT_PAYLOAD  stPayload;
-  orxU32                  i, iCount;
+  orxSOUNDSYSTEM_FILTER  *pstFilter;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundSystem_Update");
@@ -416,15 +417,12 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
   orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
   /* For all filters */
-  for(i = 0, iCount = orxBank_GetCount(sstSoundSystem.pstFilterBank); i < iCount; i++)
+  for(pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetNext(sstSoundSystem.pstFilterBank, orxNULL);
+      pstFilter != orxNULL;
+      pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetNext(sstSoundSystem.pstFilterBank, pstFilter))
   {
-    orxSOUNDSYSTEM_FILTER *pstFilter;
-
-    /* Gets it */
-    pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetAtIndex(sstSoundSystem.pstFilterBank, i);
-
-    /* Uses custom param? */
-    if(pstFilter->bUseCustomParam != orxFALSE)
+    /* Uses custom param and is ready? */
+    if((pstFilter->bUseCustomParam != orxFALSE) && (pstFilter->bReady != orxFALSE))
     {
       const ma_engine_node *pstEngineNode;
       const orxSTRING       zName;
@@ -2245,6 +2243,10 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilterTask(void *_pCont
           /* Updates filter node */
           pstSound->pstFilterNode = (ma_node_base *)(&pstFilter->stNode);
 
+          /* Updates status */
+          orxMEMORY_BARRIER();
+          pstFilter->bReady = orxTRUE;
+
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
         }
@@ -3618,85 +3620,21 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
   /* Success? */
   if(pstFilter != orxNULL)
   {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
     /* Clears it */
     orxMemory_Zero(pstFilter, sizeof(orxSOUNDSYSTEM_FILTER));
 
-    /* Ready? */
-    if(_pstSound->bReady != orxFALSE)
-    {
-      ma_result hResult;
+    /* Prepares task parameter */
+    pstTaskParam                = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->pstFilter     = pstFilter;
+    pstFilter->bUseCustomParam  = _bUseCustomParam;
+    pstFilter->bReady           = orxFALSE;
+    pstFilter->pstSound         = _pstSound;
+    orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
 
-      /* Inits it */
-      hResult = orxSoundSystem_MiniAudio_InitFilter(pstFilter, _pstFilterData, &(_pstSound->stSound.engineNode));
-
-      /* Success? */
-      if(hResult == MA_SUCCESS)
-      {
-        ma_node *pstOutputNode;
-
-        /* Retrieves output node */
-        orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-        pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
-
-        /* Attaches filter output */
-        hResult = ma_node_attach_output_bus(&(pstFilter->stNode), 0, pstOutputNode, 0);
-
-        /* Success? */
-        if(hResult == MA_SUCCESS)
-        {
-          /* Attaches filter input */
-          hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, &(pstFilter->stNode), 0);
-
-          /* Success? */
-          if(hResult == MA_SUCCESS)
-          {
-            /* Updates filter node */
-            _pstSound->pstFilterNode = (ma_node_base *)(&pstFilter->stNode);
-
-            /* Updates filter */
-            orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
-            pstFilter->bUseCustomParam  = _bUseCustomParam;
-            pstFilter->pstSound         = _pstSound;
-
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
-          }
-          else
-          {
-            /* Restores previous connection */
-            hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, pstOutputNode, 0);
-            orxASSERT(hResult == MA_SUCCESS);
-
-            /* Deletes filter */
-            orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-          }
-        }
-        else
-        {
-          /* Deletes filter */
-          orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-        }
-      }
-      else
-      {
-        /* Deletes filter */
-        orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-      }
-    }
-    else
-    {
-      orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
-
-      /* Prepares task parameter */
-      pstTaskParam                = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
-      pstTaskParam->pstFilter     = pstFilter;
-      pstFilter->bUseCustomParam  = _bUseCustomParam;
-      pstFilter->pstSound         = _pstSound;
-      orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
-
-      /* Runs add filter task */
-      eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_AddFilterTask, orxNULL, orxNULL, pstTaskParam);
-    }
+    /* Runs add filter task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_AddFilterTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -3717,34 +3655,13 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilter(orxSOUNDSYSTEM_S
     /* Has filter(s)? */
     if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
     {
-      ma_node  *pstInputNode, *pstOutputNode;
-      ma_result hResult;
-
-      /* Retrieves input & output nodes */
-      orxASSERT(_pstSound->pstFilterNode->inputBusCount > 0);
-      orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-      pstInputNode  = _pstSound->pstFilterNode->pInputBuses[0].head.pNext->pNode;
-      pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
-
-      /* Deletes its filter (miniaudio will handle the detaching of the node) */
-      orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, _pstSound->pstFilterNode));
-
-      /* Attaches them together */
-      hResult = ma_node_attach_output_bus(pstInputNode, 0, pstOutputNode, 0);
-      orxASSERT(hResult == MA_SUCCESS);
-
-      /* Updates filter node */
-      _pstSound->pstFilterNode = (ma_node_base *)pstInputNode;
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Updates its status */
+      orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, _pstSound->pstFilterNode)->bReady = orxFALSE;
     }
   }
-  else
-  {
-    /* Runs remove last filter task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveLastFilterTask, orxNULL, orxNULL, _pstSound);
-  }
+
+  /* Runs remove last filter task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveLastFilterTask, orxNULL, orxNULL, _pstSound);
 
   /* Done! */
   return eResult;
@@ -3765,42 +3682,20 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
     if((_pstSound->pstFilterNode != orxNULL) && (_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode)))
     {
       ma_node_base *pstFilterNode;
-      ma_node      *pstOutputNode;
-      ma_result     hResult;
-
-      /* Retrieves last output node */
-      orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-      pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
 
       /* For all filter nodes */
-      for(pstFilterNode = _pstSound->pstFilterNode; pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode);)
+      for(pstFilterNode = _pstSound->pstFilterNode;
+          pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode);
+          pstFilterNode = (ma_node_base *)pstFilterNode->pInputBuses[0].head.pNext->pNode)
       {
-        ma_node *pstInputNode;
-
-        /* Retrieves its input node */
-        orxASSERT(pstFilterNode->inputBusCount > 0);
-        pstInputNode = pstFilterNode->pInputBuses[0].head.pNext->pNode;
-
-        /* Deletes its filter (miniaudio will handle the detaching of the node) */
-        orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode));
-
-        /* Updates it */
-        pstFilterNode = (ma_node_base *)pstInputNode;
+        /* Updates its status */
+        orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode)->bReady = orxFALSE;
       }
-
-      /* Updates filter node */
-      _pstSound->pstFilterNode = (ma_node_base *)&(_pstSound->stSound.engineNode);
-
-      /* Reattaches sound node */
-      hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, pstOutputNode, 0);
-      orxASSERT(hResult == MA_SUCCESS);
     }
   }
-  else
-  {
-    /* Runs remove all filters task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
-  }
+
+  /* Runs remove all filters task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
 
   /* Done! */
   return eResult;
@@ -4049,6 +3944,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddBusFilter(orxHANDLE _hBus, con
             orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
             pstFilter->bUseCustomParam  = _bUseCustomParam;
             pstFilter->pstBus           = pstBus;
+            orxMEMORY_BARRIER();
+            pstFilter->bReady           = orxTRUE;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
