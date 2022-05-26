@@ -463,6 +463,20 @@ static orxINLINE orxRESOURCE_GROUP *orxResource_CreateGroup(orxSTRINGID _stGroup
   return pstResult;
 }
 
+static orxINLINE orxRESOURCE_GROUP *orxResource_FindGroup(orxSTRINGID _stGroupID)
+{
+  orxRESOURCE_GROUP *pstResult;
+
+  /* Gets group */
+  for(pstResult = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+      (pstResult != orxNULL) && (pstResult->stID != _stGroupID);
+      pstResult = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstResult))
+    ;
+
+  /* Done! */
+  return pstResult;
+}
+
 static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   /* Profiles */
@@ -788,11 +802,8 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     /* Gets its ID */
     stGroupID = orxString_Hash(orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, ss32GroupIndex));
 
-    /* Looks for it in registered groups */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    /* Gets group */
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Found? */
     if(pstGroup != orxNULL)
@@ -1446,10 +1457,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -1586,17 +1594,14 @@ orxU32 orxFASTCALL orxResource_GetStorageCount(const orxSTRING _zGroup)
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -1626,17 +1631,14 @@ const orxSTRING orxFASTCALL orxResource_GetStorage(const orxSTRING _zGroup, orxU
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -1694,14 +1696,11 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
     /* Is not watch list? */
     if(stGroupID != orxString_Hash(orxRESOURCE_KZ_CONFIG_WATCH_LIST))
     {
-      orxRESOURCE_GROUP  *pstGroup = orxNULL;
+      orxRESOURCE_GROUP  *pstGroup;
       orxS32              j, jCount;
 
-      /* Finds it */
-      for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-          (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-          pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-        ;
+      /* Gets group */
+      pstGroup = orxResource_FindGroup(stGroupID);
 
       /* For all storages in list */
       for(j = 0, jCount = orxConfig_GetListCount(zGroup); j < jCount; j++)
@@ -1781,17 +1780,14 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -1899,17 +1895,14 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Not found? */
     if(pstGroup == orxNULL)
@@ -2906,17 +2899,14 @@ orxU32 orxFASTCALL orxResource_GetCacheCount(const orxSTRING _zGroup)
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Success? */
     if(pstGroup != orxNULL)
@@ -2948,17 +2938,14 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
   /* Valid? */
   if(*_zGroup != orxCHAR_NULL)
   {
-    orxRESOURCE_GROUP  *pstGroup = orxNULL;
+    orxRESOURCE_GROUP  *pstGroup;
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
     stGroupID = orxString_Hash(_zGroup);
 
     /* Gets group */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        (pstGroup != orxNULL) && (pstGroup->stID != stGroupID);
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-      ;
+    pstGroup = orxResource_FindGroup(stGroupID);
 
     /* Success? */
     if(pstGroup != orxNULL)
