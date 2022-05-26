@@ -4819,7 +4819,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     }
 
     /* Valid file to open? */
-    if(((zResourceLocation = orxResource_LocateInStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, zFileName)) != orxNULL)
+    if(((zResourceLocation = orxResource_LocateInStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, zFileName)) != orxNULL)
     && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
     {
       orxCONFIG_SECTION  *pstSection;

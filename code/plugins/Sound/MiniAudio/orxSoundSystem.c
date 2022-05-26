@@ -704,7 +704,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_OpenRecordingFile()
   orxSTATUS       eResult;
 
   /* Valid file to open? */
-  if(((zResourceLocation = orxResource_LocateInStorage(orxSOUND_KZ_RESOURCE_GROUP, orxNULL, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName)) != orxNULL)
+  if(((zResourceLocation = orxResource_LocateInStorage(orxSOUND_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName)) != orxNULL)
   && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
   {
     ma_encoder_config stEncoderConfig;
