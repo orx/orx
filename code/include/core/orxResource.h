@@ -316,6 +316,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
 
+/** Gets the cached location count for a given group
+ * @param[in] _zGroup           Concerned resource group
+ * @return    Item number
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCount(const orxSTRING _zGroup);
+
+/** Gets the next cached location for the given group and returns an iterator for next search
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out] _pzLocation      Current resource's location
+ * @param[out] _pzName          Current resource's name
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzName);
+
 
 #endif /* _orxRESOURCE_H_ */
 
