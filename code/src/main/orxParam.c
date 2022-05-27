@@ -823,6 +823,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Continue? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    /* Sends event */
+    eResult = orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_DISPLAY);
+
     /* Everything seems ok. Register the module help function */
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
     stParams.pfnParser  = orxParam_Help;
@@ -832,7 +835,11 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
     /* Register */
-    eResult = orxParam_Register(&stParams);
+    if(orxParam_Register(&stParams) == orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Restores display logs */
