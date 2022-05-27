@@ -254,6 +254,8 @@ project "[name]"
         "../include/**.h",
 [+scroll
         "../include/**.inl",]
+[+bundle
+        "../include/**.inc",]
         "../data/config/**.ini"
     }
 
@@ -275,6 +277,8 @@ project "[name]"
     {
 [+scroll
         ["inline"] = {"**.inl"},]
+[+bundle
+        ["bundle"] = {"**.inc"},]
         ["config"] = {"**.ini"}
     }
 

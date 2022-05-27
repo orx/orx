@@ -20,6 +20,11 @@
 #define orxIMGUI_IMPL
 #include "orxImGui.h"
 #undef orxIMGUI_IMPL]
+[+bundle
+
+#define orxBUNDLE_IMPL
+#include "orxBundle.h"
+#undef orxBUNDLE_IMPL]
 [+archive
 
 #define orxARCHIVE_IMPL
@@ -177,6 +182,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Exit from remote support
     orxRemote_Exit();
 ]
+[+bundle
+    // Exit from bundle support
+    orxBundle_Exit();
+]
     // Let orx clean all our mess automatically. :)
 }
 
@@ -194,6 +203,10 @@ void [!name]::BindObjects()
 [+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
+[+bundle
+    // Initialize bundle resource type
+    orxBundle_Init();
+]
 [+archive
     // Initialize archive (ZIP) resource type
     orxArchive_Init();
@@ -203,6 +216,8 @@ void [!name]::BindObjects()
     orxRemote_Init();
 ]
     // Add config storage to find the initial config file
+[+bundle
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);]
 [+archive
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
