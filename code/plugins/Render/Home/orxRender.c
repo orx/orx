@@ -1120,7 +1120,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Draws memory stats */
   {
-    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
+    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (1024.0f * 1024.0f * 1024.0f));
     static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB", "TB"};
     orxU64                  u64TotalCount = 0, u64TotalPeakCount = 0, u64TotalSize = 0, u64TotalPeakSize = 0, u64TotalOperationCount = 0;
     orxU32                  u32UnitIndex;
