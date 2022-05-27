@@ -556,6 +556,9 @@ orxSTATUS orxFASTCALL orxParam_Init()
 
           /* Pops config section */
           orxConfig_PopSection();
+
+          /* Sends event */
+          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_READY);
         }
         else
         {
@@ -574,6 +577,24 @@ orxSTATUS orxFASTCALL orxParam_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
+  /* Failed? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Deletes table */
+    if(sstParam.pstHashTable != orxNULL)
+    {
+      orxHashTable_Delete(sstParam.pstHashTable);
+      sstParam.pstHashTable = orxNULL;
+    }
+
+    /* Deletes bank */
+    if(sstParam.pstBank != orxNULL)
+    {
+      orxBank_Delete(sstParam.pstBank);
+      sstParam.pstBank = orxNULL;
+    }
+  }
+
   /* Done */
   return eResult;
 }
@@ -587,6 +608,12 @@ void orxFASTCALL orxParam_Exit()
   {
     /* Clears params */
     orxParam_SetArgs(0, orxNULL);
+
+    /* Deletes table */
+    orxHashTable_Delete(sstParam.pstHashTable);
+
+    /* Deletes bank */
+    orxBank_Delete(sstParam.pstBank);
 
     /* Module not ready now */
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
