@@ -1168,7 +1168,8 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       /* Finds best unit */
       for(u32UnitIndex = 0, fSize = orxU2F(u64Size), fPeakSize = orxU2F(u64PeakSize);
           (u32UnitIndex < orxARRAY_GET_ITEM_COUNT(azUnitList) - 1) && (fPeakSize > orx2F(1024.0f));
-          u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
+          u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f))
+        ;
 
       /* Is used? */
       if(u64Count > 0)
