@@ -178,10 +178,18 @@ This script will download all the needed dependencies and generate all the proje
 The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulls.**
 
 The easiest way to learn how to compile your project using orx for a given platform
-is to look at the tutorial build project files.
+is to check [orx's wiki](https://wiki.orx-project.org).
 
-NB: The debug version is far slower than the release one, but will output all the warning
-and error messages useful during development.
+The generated project files will contain 6 different configurations to build orx: `Debug`, `Profile` & `Release` in both regular and `Core` flavors. Here's what they do:
+
+- `Debug`: These configurations will build orx in debug mode. They are the only configurations that will output warning and error messages resulting from incorrect data, code and behaviors. These configurations are also much slower than the other ones but is recommended during development to catch any mistake. Note: the internal profiler is also available with these configurations.
+
+- `Profile`: These configurations will build orx in optimized mode but will keep the internal profiler, slightly slowing down the execution but allowing the user to get high level profiling information which can be very useful during development.
+
+- `Release`: These configurations will build orx in optimized mode, *without* the internal profiler. These are the configurations one should be using when shipping their project. Note: on Windows, the OS terminal will also be hidden with this configuration.
+
+- `Core`: Those configurations will only build orx's core as a static library. With these configurations, no plugins will be compiled/embedded. In non-`Core` configurations, all the plugins are built and embedded inside orx's library, and should be the configurations used by most users. The `Core` configurations are typically used to build orx's tools that do not require any plugin (`orxCrypt` & `orxFontGen`).
+
 
 Here's a quick list of the available compile preprocessor flags:
 
