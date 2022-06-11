@@ -1994,11 +1994,25 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
           }
 
+          /* Gets current parent */
+          zParent = orxConfig_GetParent(acFrameBuffer);
+
+          /* Already has parent? */
+          if((zParent != orxNULL)
+          && (orxString_Compare(zParent, zNewFrameParent) != 0))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (*zParent == orxCHAR_NULL) ? "@" : zParent, zNewFrameParent);
+          }
+
           /* Has prefix? */
           if(*zPrefix != orxCHAR_NULL)
           {
-            /* Sets new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            /* Clears new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, orxNULL);
+
+            /* Sets frame section's parent */
+            orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
           }
 
           /* Pushes its section */
@@ -2029,8 +2043,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Has prefix? */
                   if(*zPrefix != orxCHAR_NULL)
                   {
-                    /* Clears new parent's parent */
-                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                    /* Clears frame section's parent */
+                    orxConfig_SetParent(acFrameBuffer, orxNULL);
                   }
 
                   /* Stops */
@@ -2108,11 +2122,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Logs message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
 
+                  /* Use temp size? */
+                  if(bTempSize != orxFALSE)
+                  {
+                    /* Clears it */
+                    orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                  }
+
                   /* Has prefix? */
                   if(*zPrefix != orxCHAR_NULL)
                   {
-                    /* Clears new parent's parent */
-                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                    /* Clears frame section's parent */
+                    orxConfig_SetParent(acFrameBuffer, orxNULL);
                   }
 
                   /* Stops */
@@ -2124,11 +2145,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
 
+                /* Use temp size? */
+                if(bTempSize != orxFALSE)
+                {
+                  /* Clears it */
+                  orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                }
+
                 /* Has prefix? */
                 if(*zPrefix != orxCHAR_NULL)
                 {
-                  /* Clears new parent's parent */
-                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  /* Clears frame section's parent */
+                  orxConfig_SetParent(acFrameBuffer, orxNULL);
                 }
 
                 /* Stops */
@@ -2152,11 +2180,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               }
               else
               {
+                /* Use temp size? */
+                if(bTempSize != orxFALSE)
+                {
+                  /* Clears it */
+                  orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                }
+
                 /* Has prefix? */
                 if(*zPrefix != orxCHAR_NULL)
                 {
-                  /* Clears new parent's parent */
-                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  /* Clears frame section's parent */
+                  orxConfig_SetParent(acFrameBuffer, orxNULL);
                 }
 
                 /* Stops */
@@ -2196,19 +2231,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
           }
 
-          /* Gets current parent */
-          zParent = orxConfig_GetParent(acFrameBuffer);
-
-          /* Already has parent? */
-          if((zParent != orxNULL)
-          && (orxString_Compare(zParent, zNewFrameParent) != 0))
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (*zParent == orxCHAR_NULL) ? "@" : zParent, zNewFrameParent);
+            /* Sets new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
           }
-
-          /* Sets section's parent */
-          orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+          else
+          {
+            /* Sets frame section's parent */
+            orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+          }
 
           /* Gets event value count */
           s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
@@ -2237,13 +2270,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Re-enables display logs */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Clears new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, orxNULL);
-          }
-
           /* Use temp size? */
           if(bTempSize != orxFALSE)
           {
@@ -2265,7 +2291,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
           }
 
-          /* Clears frame's section parent */
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
+          {
+            /* Clears new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, orxNULL);
+          }
+
+          /* Clears frame section's parent */
           orxConfig_SetParent(acFrameBuffer, orxNULL);
 
           /* Success? */
