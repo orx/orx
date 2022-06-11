@@ -118,6 +118,7 @@ extern "C" {
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING    0x00000004 /**< Stop recording flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED  0x00000008 /**< Background muted flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT              0x00000010 /**< Exit flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED    0x00000020 /**< Device stopped flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -409,6 +410,49 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundSystem_Update");
+
+  /* Has device stopped? */
+  if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED))
+  {
+    orxSOUNDSYSTEM_SOUND *pstSound;
+
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED);
+
+    /* For all sounds */
+    for(pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, orxNULL);
+        pstSound != orxNULL;
+        pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, pstSound))
+    {
+      orxSTATUS eResult;
+
+      /* Stops sound */
+      if(pstSound->bReady != orxFALSE)
+      {
+        ma_sound_stop(&(pstSound->stSound));
+      }
+
+      /* Rewinds it */
+      eResult = (ma_sound_seek_to_pcm_frame(&(pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates engine node's local time */
+        ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), 0);
+
+        /* Is a stream? */
+        if(pstSound->bStream != orxFALSE)
+        {
+          /* Clears pending samples */
+          pstSound->stStream.u32PendingSampleNumber = 0;
+        }
+      }
+
+      /* Updates its status */
+      pstSound->bStopped = orxTRUE;
+    }
+  }
 
   /* Inits event */
   orxEVENT_INIT(stEvent, orxEVENT_TYPE_SOUND, orxSOUND_EVENT_SET_FILTER_PARAM, orxNULL, orxNULL, &stPayload);
@@ -761,6 +805,31 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecordingTask(void *_p
 
   /* Done! */
   return orxSTATUS_SUCCESS;
+}
+
+static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notification *_pstNotification)
+{
+  /* Depending on notification type */
+  switch(_pstNotification->type)
+  {
+    case ma_device_notification_type_stopped:
+    {
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
+      break;
+    }
+
+    default:
+    case ma_device_notification_type_started:
+    case ma_device_notification_type_rerouted:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
@@ -2780,11 +2849,12 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         ma_engine_config stEngineConfig;
 
         /* Inits engine */
-        stEngineConfig                  = ma_engine_config_init();
-        stEngineConfig.pContext         = &(sstSoundSystem.stContext);
-        stEngineConfig.pLog             = &(sstSoundSystem.stLog);
-        stEngineConfig.pResourceManager = &(sstSoundSystem.stResourceManager);
-        stEngineConfig.listenerCount    = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig                      = ma_engine_config_init();
+        stEngineConfig.pContext             = &(sstSoundSystem.stContext);
+        stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
+        stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
+        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
 
