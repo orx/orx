@@ -118,7 +118,10 @@ extern "C" {
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING    0x00000004 /**< Stop recording flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED  0x00000008 /**< Background muted flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT              0x00000010 /**< Exit flag */
-#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED    0x00000020 /**< Device stopped flag */
+
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE  0x80000000 /**< Device available flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED    0x40000000 /**< Device stopped flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_MASK_DEVICE            0xC0000000 /**< Device mask */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -812,16 +815,23 @@ static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notifi
   /* Depending on notification type */
   switch(_pstNotification->type)
   {
+    case ma_device_notification_type_started:
+    {
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED);
+
+      break;
+    }
+
     case ma_device_notification_type_stopped:
     {
       /* Updates status */
-      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE);
 
       break;
     }
 
     default:
-    case ma_device_notification_type_started:
     case ma_device_notification_type_rerouted:
     {
       break;
@@ -2194,14 +2204,23 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_PlayTask(void *_pContext)
   /* Ready? */
   if(pstSound->bReady != orxFALSE)
   {
-    /* Plays sound */
-    eResult = (ma_sound_start(&(pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Is device available? */
+    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
     {
-      /* Updates status */
-      pstSound->bStopped = orxFALSE;
+      /* Plays sound */
+      eResult = (ma_sound_start(&(pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        pstSound->bStopped = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -2901,7 +2920,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
               }
 
               /* Updates status */
-              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, (orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL & ~orxSOUNDSYSTEM_KU32_STATIC_MASK_DEVICE));
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
@@ -3580,14 +3599,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Play(orxSOUNDSYSTEM_SOUND *_pstSo
   /* Ready? */
   if(_pstSound->bReady != orxFALSE)
   {
-    /* Plays sound */
-    eResult = (ma_sound_start(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Is device available? */
+    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
     {
-      /* Updates status */
-      _pstSound->bStopped = orxFALSE;
+      /* Plays sound */
+      eResult = (ma_sound_start(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        _pstSound->bStopped = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
