@@ -413,8 +413,8 @@ static void orxFASTCALL orxPhysics_LiquidFun_SendContactEvent(b2Contact *_poCont
       }
 
       /* Updates part names */
-      pstEventStorage->stPayload.zSenderPartName    = orxBody_GetPartName(pstSourceBodyPart);
-      pstEventStorage->stPayload.zRecipientPartName = orxBody_GetPartName(pstDestinationBodyPart);
+      pstEventStorage->stPayload.pstSenderPart    = pstSourceBodyPart;
+      pstEventStorage->stPayload.pstRecipientPart = pstDestinationBodyPart;
     }
   }
 
