@@ -294,8 +294,8 @@ typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
   orxVECTOR                 vPosition;                /**< Contact position : 12 */
   orxVECTOR                 vNormal;                  /**< Contact normal : 24 */
-  struct __orxBODY_PART_t  *pstSenderPart;            /**< Sender part name : 28 */
-  struct __orxBODY_PART_t  *pstRecipientPart;         /**< Recipient part name : 32 */
+  struct __orxBODY_PART_t  *pstSenderPart;            /**< Sender part : 28 */
+  struct __orxBODY_PART_t  *pstRecipientPart;         /**< Recipient part : 32 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 
