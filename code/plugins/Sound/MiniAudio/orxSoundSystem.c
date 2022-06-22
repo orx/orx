@@ -2072,10 +2072,6 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
         /* Stores filter node */
         pstSound->pstFilterNode = (ma_node_base *)&(pstSound->stSound.engineNode);
 
-        /* Updates status */
-        orxMEMORY_BARRIER();
-        pstSound->bReady = orxTRUE;
-
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -2086,6 +2082,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
 
         /* Uninits data source */
         ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+        pstSound->stStream.stDataSource.flags = 0;
 
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't process resource [%s].", pstSound->zName, pstTaskParam->zLocation);
@@ -2095,6 +2092,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
     {
       /* Uninits data source */
       ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+      pstSound->stStream.stDataSource.flags = 0;
 
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize internal data source.", pstSound->zName);
@@ -2105,6 +2103,10 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
     /* Logs message */
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize resource data source for location [%s].", pstSound->zName, pstTaskParam->zLocation);
   }
+
+  /* Updates status */
+  orxMEMORY_BARRIER();
+  pstSound->bReady = orxTRUE;
 
   /* Updates task param */
   orxMEMORY_BARRIER();
