@@ -2059,10 +2059,12 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
 
       /* Stores info */
       hResult = ma_data_source_get_data_format(&(pstSound->stStream.stDataSource), NULL, (ma_uint32 *)&(pstSound->u32ChannelNumber), (ma_uint32 *)&(pstSound->u32SampleRate), NULL, 0);
-      orxASSERT(hResult == MA_SUCCESS);
 
       /* Creates sound */
-      hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstSound->stSound));
+      if(hResult == MA_SUCCESS)
+      {
+        hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstSound->stSound));
+      }
 
       /* Success? */
       if(hResult == MA_SUCCESS)
