@@ -1015,7 +1015,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSo
           orxSTRUCTURE *pOwner;
 
           /* Stores it */
-          if((pOwner = orxStructure_GetOwner(pstSound->hUserData)) != orxNULL)
+          if((orxSOUND(pstSound->hUserData) != orxNULL) && (pOwner = orxStructure_GetOwner(pstSound->hUserData)) != orxNULL)
           {
             pstSound->hOwner = orxStructure_GetOwner(pOwner);
           }
@@ -2015,7 +2015,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
   return eResult;
 }
 
-static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pContext)
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pContext)
 {
   orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
   orxSOUNDSYSTEM_SOUND       *pstSound;
@@ -2023,7 +2023,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamTask(void *_pC
   ma_result                   hResult;
 
   /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxSoundSystem_CreateStreamTask");
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadStreamTask");
 
   /* Gets task param */
   pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
@@ -3549,8 +3549,8 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_LoadStream(orxHANDLE 
       pstTaskParam            = orxSoundSystem_MiniAudio_GetTaskParam(pstResult);
       pstTaskParam->zLocation = zResourceLocation;
 
-      /* Runs create stream task */
-      orxThread_RunTask(&orxSoundSystem_MiniAudio_CreateStreamTask, orxNULL, orxNULL, pstTaskParam);
+      /* Runs load stream task */
+      orxThread_RunTask(&orxSoundSystem_MiniAudio_LoadStreamTask, orxNULL, orxNULL, pstTaskParam);
     }
     else
     {
@@ -4941,7 +4941,7 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_MiniAudio_GetStatus(const orxSO
   else
   {
     /* Updates result */
-    eResult = ((_pstSound->bStopped != orxFALSE) || (ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound)) == 0) || (ma_sound_at_end(&(_pstSound->stSound)) != MA_FALSE)) ? orxSOUNDSYSTEM_STATUS_STOP : orxSOUNDSYSTEM_STATUS_PAUSE;
+    eResult = ((_pstSound->bStopped != orxFALSE) || (ma_sound_at_end(&(_pstSound->stSound)) != MA_FALSE)) ? orxSOUNDSYSTEM_STATUS_STOP : orxSOUNDSYSTEM_STATUS_PAUSE;
   }
 
   /* Done! */
