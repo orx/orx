@@ -1648,7 +1648,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
           {
             // Calls its callback
-            bContinue = poSender->OnCollide(poRecipient, pstPayload->zSenderPartName, pstPayload->zRecipientPartName, pstPayload->vPosition, vNormal);
+            bContinue = poSender->OnCollide(poRecipient, pstPayload->pstSenderPart, pstPayload->pstRecipientPart, pstPayload->vPosition, vNormal);
           }
           else
           {
@@ -1664,7 +1664,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
           {
             // Calls its callback
-            poRecipient->OnCollide(poSender, pstPayload->zRecipientPartName, pstPayload->zSenderPartName, pstPayload->vPosition, pstPayload->vNormal);
+            poRecipient->OnCollide(poSender, pstPayload->pstRecipientPart, pstPayload->pstSenderPart, pstPayload->vPosition, pstPayload->vNormal);
           }
           else
           {
